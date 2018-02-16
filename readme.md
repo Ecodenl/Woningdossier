@@ -1,24 +1,24 @@
-#Woningdossier
+# Woningdossier
 
 
 
-##Setup
+## Setup
 
 
-###Vagrant + ansible
+### Vagrant + ansible
 
-###Docker
+### Docker
 
 
-##Conventies
+## Conventies
 Het woningdossier is gebaseerd op Laravel 5.5 LTS. We houden ons dan ook  zoveel 
 mogelijk aan aan de daarin geldende conventies, zoals PSR-4 autoloading.
 
-###Code conventies
+### Code conventies
 
 
-##Pull requests
+## Pull requests
 
 
-##In opdracht van
+## In opdracht van
 

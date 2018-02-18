@@ -29,3 +29,11 @@
   shell: locale-gen {{server.locale}}
   sudo: yes
 
+- name: Download Node 8 setup
+  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+
+- name: Install Node 8 & NPM 5
+  sudo: yes
+  apt:
+    name: nodejs
+    state: present

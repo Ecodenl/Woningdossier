@@ -132,7 +132,7 @@ build:
                     - npm run production
                 override:
                     -
-                        command: phpcs-run --standard=PSR-2 --
+                        command: phpcs-run
                         use_website_config: true
                     - php-scrutinizer-run
                     -

@@ -1,7 +1,7 @@
 ---
 server:
     install: '1'
-    packages: [vim, git, fail2ban, nodejs, npm, zip, gzip]
+    packages: [vim, git, fail2ban, zip, gzip]
     timezone: Europe/Amsterdam
     locale: nl_NL.UTF-8
 vagrant_local:

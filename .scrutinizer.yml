@@ -131,9 +131,7 @@ build:
                     - chmod -R 777 bootstrap/cache
                     - npm run production
                 override:
-                    -
-                        command: phpcs-run
-                        use_website_config: true
+                    - phpcs-run
                     - php-scrutinizer-run
                     -
                         command: 'vendor/bin/phpunit --coverage-clover=woondossier-report'

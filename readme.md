@@ -1,6 +1,9 @@
 # Woningdossier
 
-
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/?branch=develop)
+[![Code Coverage](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/?branch=develop)
+[![Build Status](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/build-status/develop)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/Ecodenl/Woningdossier/badges/code-intelligence.svg?b=develop)](https://scrutinizer-ci.com/code-intelligence)
 
 ## Setup
 

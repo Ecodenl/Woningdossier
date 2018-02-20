@@ -29,5 +29,6 @@ class CreateRoofTypesTable extends Migration
      */
     public function down()
     {
+    	Schema::dropIfExists('roof_types');
     }
 }

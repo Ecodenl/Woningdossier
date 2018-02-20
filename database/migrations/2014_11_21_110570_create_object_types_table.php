@@ -29,5 +29,6 @@ class CreateObjectTypesTable extends Migration
      */
     public function down()
     {
+    	Schema::dropIfExists('object_types');
     }
 }

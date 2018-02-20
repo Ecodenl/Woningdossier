@@ -34,7 +34,13 @@ class AddSoftdeletesToTasks extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            //
+            $table->dropSoftDeletes();
+        });
+        Schema::table('task_property_values', function(Blueprint $table){
+        	$table->dropSoftDeletes();
+        });
+        Schema::table('task_attachments', function(Blueprint $table){
+        	$table->dropSoftDeletes();
         });
     }
 }

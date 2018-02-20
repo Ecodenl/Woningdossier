@@ -51,6 +51,6 @@ class CreateBuildingFeaturesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('address_features');
+        Schema::dropIfExists('building_features');
     }
 }

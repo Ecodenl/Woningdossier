@@ -29,5 +29,6 @@ class CreateSpaceCategoriesTable extends Migration
      */
     public function down()
     {
+    	Schema::dropIfExists('space_categories');
     }
 }

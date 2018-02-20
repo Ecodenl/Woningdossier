@@ -29,5 +29,6 @@ class CreateBuildingCategoriesTable extends Migration
      */
     public function down()
     {
+    	Schema::dropIfExists('building_categories');
     }
 }

@@ -16,8 +16,8 @@ class CreatePeopleTable extends Migration
         Schema::create('people', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('contact_id')->unsigned();
-            $table->foreign('contact_id')->references('id')->on('contacts') ->onDelete('restrict');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
 
             $table->string('first_name')->default('');
             $table->string('last_name')->default('');

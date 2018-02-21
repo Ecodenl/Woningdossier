@@ -4,11 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Title extends Model
+class PersonType extends Model
 {
-	public function users(){
-		return $this->hasMany(User::class);
-	}
 
 	public function people(){
 		return $this->hasMany(People::class);

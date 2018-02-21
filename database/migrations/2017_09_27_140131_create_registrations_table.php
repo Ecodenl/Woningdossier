@@ -14,7 +14,7 @@ class CreateRegistrationsTable extends Migration
     public function up()
     {
 
-        Schema::create('registration_status', function (Blueprint $table) {
+        Schema::create('registration_statuses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
@@ -39,6 +39,6 @@ class CreateRegistrationsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('registrations');
-	    Schema::dropIfExists('registration_status');
+	    Schema::dropIfExists('registration_statuses');
     }
 }

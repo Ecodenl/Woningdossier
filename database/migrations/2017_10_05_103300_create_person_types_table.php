@@ -15,9 +15,7 @@ class CreatePersonTypesTable extends Migration
     {
         Schema::create('person_types', function (Blueprint $table) {
             $table->increments('id');
-
             $table->string('name')->default('');
-
             $table->timestamps();
         });
     }

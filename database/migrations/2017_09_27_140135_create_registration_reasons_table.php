@@ -19,7 +19,7 @@ class CreateRegistrationReasonsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('reason_registration', function (Blueprint $table) {
+        Schema::create('reason_registrations', function (Blueprint $table) {
             $table->integer('reason_id')->unsigned();
             $table->foreign('reason_id')->references('id')->on('reasons');
             $table->integer('registration_id')->unsigned();
@@ -36,7 +36,7 @@ class CreateRegistrationReasonsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reason_registration');
+        Schema::dropIfExists('reason_registrations');
         Schema::dropIfExists('reasons');
     }
 }

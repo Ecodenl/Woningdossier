@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateBuildingElementsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('building_elements', function (Blueprint $table) {
+            $table->increments('id');
+
+            $table->integer('address_id')->unsigned()->nullable()->default(null);
+            $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
+
+            $table->integer('measure_id')->unsigned()->nullable()->default(null);
+            $table->foreign('measure_id')->references('id')->on('measures') ->onDelete('restrict');
+
+            $table->integer('service_type_id')->unsigned()->nullable()->default(null);
+            $table->foreign('service_type_id')->references('id')->on('service_types') ->onDelete('restrict');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('building_elements');
+    }
+}

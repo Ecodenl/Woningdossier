@@ -12,3 +12,5 @@ yarn-error.log
 .env
 
 ubuntu-xenial-16.04-cloudimg-console.log
+_ide_helper_models.php
+.phpstorm.meta.php

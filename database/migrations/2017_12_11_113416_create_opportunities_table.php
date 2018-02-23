@@ -22,13 +22,14 @@ class CreateOpportunitiesTable extends Migration
         foreach ($permissions as $permissionName) {
             \Spatie\Permission\Models\Permission::create([
                     'name' => $permissionName,
-                    'guard_name' => 'api',
+                    'guard_name' => 'web',
                 ]
             );
         }
 
         $superuserRole->syncPermissions(\Spatie\Permission\Models\Permission::all());
 
+        /*
         Schema::create('opportunity_reactions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -67,17 +68,20 @@ class CreateOpportunitiesTable extends Migration
                 ]
             );
         }
+        */
+
         Schema::create('opportunities', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('measure_id');
             $table->foreign('measure_id')
                 ->references('id')->on('measures')
                 ->onDelete('restrict');
-            $table->unsignedInteger('contact_id');
-            $table->foreign('contact_id')
-                ->references('id')->on('contacts')
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')->on('users')
                 ->onDelete('restrict');
             $table->string('number');
+            /*
             $table->unsignedInteger('reaction_id')->nullable();
             $table->foreign('reaction_id')
                 ->references('id')->on('opportunity_reactions')
@@ -86,6 +90,7 @@ class CreateOpportunitiesTable extends Migration
             $table->foreign('status_id')
                 ->references('id')->on('opportunity_status')
                 ->onDelete('restrict');
+            */
             $table->unsignedInteger('registration_id')->nullable();
             $table->foreign('registration_id')
                 ->references('id')->on('registrations')
@@ -107,6 +112,7 @@ class CreateOpportunitiesTable extends Migration
             $table->timestamps();
         });
 
+        /*
         Schema::create('quotations_opportunities', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('opportunity_id');
@@ -127,6 +133,7 @@ class CreateOpportunitiesTable extends Migration
                 ->onDelete('restrict');
             $table->timestamps();
         });
+        */
     }
 
     /**
@@ -136,8 +143,11 @@ class CreateOpportunitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('opportunity_reactions');
-        Schema::dropIfExists('opportunity_status');
-        Schema::dropIfExists('opportunities');
+		//Schema::dropIfExists('quotations_opportunities');
+	    Schema::dropIfExists('opportunities');
+	    //Schema::dropIfExists('opportunity_status');
+        //Schema::dropIfExists('opportunity_reactions');
+
+
     }
 }

@@ -15,7 +15,7 @@ class CreateDeviceOptionsTable extends Migration
     {
         Schema::create('device_options', function (Blueprint $table) {
             $table->increments('id');
-
+			$table->string('name');
             $table->timestamps();
         });
     }

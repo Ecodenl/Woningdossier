@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateApplianceServicesTable extends Migration
+class CreateApplianceBuildingServicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,7 @@ class CreateApplianceServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('appliance_services', function (Blueprint $table) {
-            $table->increments('id');
-
+        Schema::create('appliance_building_services', function (Blueprint $table) {
             $table->integer('appliance_id')->unsigned()->nullable()->default(null);
             $table->foreign('appliance_id')->references('id')->on('appliances') ->onDelete('restrict');
 
@@ -32,6 +30,6 @@ class CreateApplianceServicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('appliance_services');
+        Schema::dropIfExists('appliance_building_services');
     }
 }

@@ -18,14 +18,14 @@ class CreateTasksTable extends Migration
             $table->string('name')->default('');
             $table->text('description');
 
-            $table->unsignedInteger('type_id');
-            $table->foreign('type_id')
+            $table->unsignedInteger('task_type_id');
+            $table->foreign('task_type_id')
                 ->references('id')->on('task_types')
                 ->onDelete('restrict');
 
-            $table->unsignedInteger('contact_id')->nullable()->default(null);
-            $table->foreign('contact_id')
-                ->references('id')->on('contacts')
+            $table->unsignedInteger('user_id')->nullable()->default(null);
+            $table->foreign('user_id')
+                ->references('id')->on('users')
                 ->onDelete('restrict');
 
             $table->unsignedInteger('status_id');
@@ -35,10 +35,12 @@ class CreateTasksTable extends Migration
                 ->references('id')->on('registrations')
                 ->onDelete('restrict');
 
+            /*
             $table->unsignedInteger('contact_group_id')->nullable()->default(null);
             $table->foreign('contact_group_id')
                 ->references('id')->on('contact_groups')
                 ->onDelete('restrict');
+			*/
 
             $table->unsignedInteger('opportunity_id')->nullable()->default(null);
             $table->foreign('opportunity_id')

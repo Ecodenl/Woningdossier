@@ -16,8 +16,8 @@ class CreateOrganisationsTable extends Migration
         Schema::create('organisations', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('contact_id')->unsigned();
-            $table->foreign('contact_id')->references('id')->on('contacts') ->onDelete('restrict');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
             $table->integer('type_id')->nullable()->unsigned();
             $table->foreign('type_id')->references('id')->on('organisation_types') ->onDelete('restrict');
             $table->string('name')->default('');

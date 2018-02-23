@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateContactEnergyHabitsTable extends Migration
+class CreateUserEnergyHabitsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateContactEnergyHabitsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contact_energy_habits', function (Blueprint $table) {
+        Schema::create('user_energy_habits', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('contact_id')->unsigned()->nullable()->default(null);
-            $table->foreign('contact_id')->references('id')->on('contacts') ->onDelete('restrict');
+            $table->integer('user_id')->unsigned()->nullable()->default(null);
+            $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
 
             $table->integer('residents_nr')->nullable()->default(null);
             $table->integer('thermostat_high')->nullable()->default(null);
@@ -49,6 +49,6 @@ class CreateContactEnergyHabitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contact_energy_habits');
+        Schema::dropIfExists('user_energy_habits');
     }
 }

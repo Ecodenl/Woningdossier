@@ -13,11 +13,14 @@ class CreateUsageTable extends Migration
      */
     public function up()
     {
-        Schema::create('usage', function (Blueprint $table) {
+        Schema::create('usages', function (Blueprint $table) {
             $table->increments('id');
 
+            // todo appliance_services?
+	        /*
             $table->integer('appliance_service_id')->unsigned()->nullable()->default(null);
             $table->foreign('appliance_service_id')->references('id')->on('appliance_services') ->onDelete('restrict');
+			*/
 
             $table->date('start_period')->nullable()->default(null);
             $table->date('end_period')->nullable()->default(null);
@@ -33,6 +36,6 @@ class CreateUsageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('usage');
+        Schema::dropIfExists('usages');
     }
 }

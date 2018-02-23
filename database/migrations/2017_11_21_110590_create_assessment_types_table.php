@@ -30,5 +30,6 @@ class CreateAssessmentTypesTable extends Migration
      */
     public function down()
     {
+    	Schema::dropIfExists('assessment_types');
     }
 }

@@ -29,5 +29,6 @@ class CreateEnergyLabelsTable extends Migration
      */
     public function down()
     {
+    	Schema::dropIfExists('energy_labels');
     }
 }

@@ -15,12 +15,8 @@ class CreateMeasureCategoriesTable extends Migration
     {
 
         Schema::create('measure_categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-
-            $table->integer('measure')->unsigned()->nullable()->default(null);
-            $table->foreign('measure')->references('id')->on('measures') ->onDelete('restrict');
-
+	        $table->increments('id');
+	        $table->string('name');
             $table->timestamps();
         });
 

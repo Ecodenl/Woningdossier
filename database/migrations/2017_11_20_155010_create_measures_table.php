@@ -18,8 +18,8 @@ class CreateMeasuresTable extends Migration
             $table->increments('id');
             $table->string('name');
 
-            $table->integer('service_type')->unsigned()->nullable()->default(null);
-            $table->foreign('service_type')->references('id')->on('service_types') ->onDelete('restrict');
+            $table->integer('service_type_id')->unsigned()->nullable()->default(null);
+            $table->foreign('service_type_id')->references('id')->on('service_types') ->onDelete('restrict');
 
             $table->timestamps();
         });

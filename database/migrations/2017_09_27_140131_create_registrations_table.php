@@ -25,7 +25,7 @@ class CreateRegistrationsTable extends Migration
             $table->integer('address_id')->unsigned();
             $table->foreign('address_id')->references('id')->on('addresses');
             $table->integer('registration_status_id')->unsigned()->nullable();
-            $table->foreign('registration_status_id')->references('id')->on('registration_status');
+            $table->foreign('registration_status_id')->references('id')->on('registration_statuses');
 
             $table->timestamps();
         });

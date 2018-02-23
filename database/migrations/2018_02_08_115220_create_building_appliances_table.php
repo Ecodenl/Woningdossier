@@ -19,8 +19,8 @@ class CreateBuildingAppliancesTable extends Migration
             $table->integer('address_id')->unsigned()->nullable()->default(null);
             $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
 
-            $table->integer('appliance')->unsigned()->nullable()->default(null);
-            $table->foreign('appliance')->references('id')->on('appliances') ->onDelete('restrict');
+            $table->integer('appliance_id')->unsigned()->nullable()->default(null);
+            $table->foreign('appliance_id')->references('id')->on('appliances') ->onDelete('restrict');
 
             $table->timestamps();
         });

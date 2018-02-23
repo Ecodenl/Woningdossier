@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ObjectType extends Model
+class EnergyLabel extends Model
 {
     public function buildingFeatures(){
     	return $this->hasMany(BuildingFeature::class);

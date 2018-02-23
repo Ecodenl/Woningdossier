@@ -19,20 +19,20 @@ class CreateBuildingFeaturesTable extends Migration
             $table->integer('address_id')->unsigned()->nullable()->default(null);
             $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
 
-            $table->integer('object_type')->unsigned()->nullable()->default(null);
-            $table->foreign('object_type')->references('id')->on('object_types') ->onDelete('restrict');
+            $table->integer('object_type_id')->unsigned()->nullable()->default(null);
+            $table->foreign('object_type_id')->references('id')->on('object_types') ->onDelete('restrict');
 
-            $table->integer('building_category')->unsigned()->nullable()->default(null);
-            $table->foreign('building_category')->references('id')->on('building_types') ->onDelete('restrict');
+            $table->integer('building_category_id')->unsigned()->nullable()->default(null);
+            $table->foreign('building_category_id')->references('id')->on('building_categories') ->onDelete('restrict');
 
-            $table->integer('building_type')->unsigned()->nullable()->default(null);
-            $table->foreign('building_type')->references('id')->on('building_categories') ->onDelete('restrict');
+            $table->integer('building_type_id')->unsigned()->nullable()->default(null);
+            $table->foreign('building_type_id')->references('id')->on('building_types') ->onDelete('restrict');
 
-            $table->integer('roof_type')->unsigned()->nullable()->default(null);
-            $table->foreign('roof_type')->references('id')->on('roof_types') ->onDelete('restrict');
+            $table->integer('roof_type_id')->unsigned()->nullable()->default(null);
+            $table->foreign('roof_type_id')->references('id')->on('roof_types') ->onDelete('restrict');
 
-            $table->integer('energy_label')->unsigned()->nullable()->default(null);
-            $table->foreign('energy_label')->references('id')->on('energy_labels') ->onDelete('restrict');
+            $table->integer('energy_label_id')->unsigned()->nullable()->default(null);
+            $table->foreign('energy_label_id')->references('id')->on('energy_labels') ->onDelete('restrict');
 
             $table->integer('surface')->nullable()->default(null);
             $table->integer('volume')->nullable()->default(null);

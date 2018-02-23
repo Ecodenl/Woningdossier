@@ -25,7 +25,7 @@ class CreateDevicesTable extends Migration
             $table->integer('device_type_id')->unsigned()->nullable()->default(null);
             $table->foreign('device_type_id')->references('id')->on('device_types') ->onDelete('restrict');
 
-            $table->string('device')->default('');
+            $table->string('name')->default('');
             $table->timestamps();
         });
     }

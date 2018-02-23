@@ -13,7 +13,8 @@ class CreateContactGroupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contact_groups', function (Blueprint $table) {
+    	/*
+        Schema::create('user_groups', function (Blueprint $table) {
             $table->increments('id');
 
             $table->string('name')->default('');
@@ -49,6 +50,7 @@ class CreateContactGroupsTable extends Migration
 
             $table->unique(['contact_id', 'contact_group_id']);
         });
+    	*/
     }
 
     /**
@@ -58,6 +60,6 @@ class CreateContactGroupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contact_groups');
+        //Schema::dropIfExists('contact_groups');
     }
 }

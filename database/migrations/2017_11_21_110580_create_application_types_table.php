@@ -30,5 +30,6 @@ class CreateApplicationTypesTable extends Migration
      */
     public function down()
     {
+    	Schema::dropIfExists('application_types');
     }
 }

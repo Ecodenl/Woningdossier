@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAddressContactUsageTable extends Migration
+class CreateAddressUserUsageTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateAddressContactUsageTable extends Migration
      */
     public function up()
     {
-        Schema::create('address_contact_usage', function (Blueprint $table) {
+        Schema::create('address_user_usages', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('address_id')->unsigned()->nullable()->default(null);
             $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
 
-            $table->integer('contact_id')->unsigned()->nullable()->default(null);
-            $table->foreign('contact_id')->references('id')->on('contacts') ->onDelete('restrict');
+            $table->integer('user_id')->unsigned()->nullable()->default(null);
+            $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
 
             $table->integer('usage_percentage')->nullable()->default(null);
 
@@ -38,6 +38,6 @@ class CreateAddressContactUsageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('address_contact_usage');
+        Schema::dropIfExists('address_user_usages');
     }
 }

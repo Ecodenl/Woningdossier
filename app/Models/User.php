@@ -50,4 +50,29 @@ class User extends Authenticatable
     public function people(){
     	return $this->hasMany(People::class);
     }
+
+    public function organisations(){
+    	return $this->hasMany(Organisation::class);
+    }
+
+    public function notes(){
+    	return $this->hasMany(UserNote::class);
+    }
+
+    public function addressUsage(){
+    	return $this->hasMany(AddressUserUsage::class);
+    }
+
+    public function energyHabits(){
+    	return $this->hasMany(UserEnergyHabit::class);
+    }
+
+    public function opportunities(){
+    	return $this->hasMany(Opportunity::class);
+    }
+
+	public function tasks(){
+		return $this->hasMany(Task::class);
+	}
+
 }

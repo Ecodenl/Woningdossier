@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\PhoneNumber;
+use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterFormRequest extends FormRequest
@@ -13,7 +15,7 @@ class RegisterFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +26,15 @@ class RegisterFormRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+	        'email' => 'required|string|email|max:255|unique:users',
+	        'password' => 'required|string|min:6',
+	        'first_name' => 'required|string|max:255',
+	        'last_name' => 'required|string|max:255',
+	        'postal_code' => ['required', new PostalCode()],
+	        'number' => 'required|alpha_num',
+	        'street' => 'required|string|max:255',
+	        'city' => 'required|string|max:255',
+	        'phone_number' => [ 'nullable', new PhoneNumber() ],
         ];
     }
 }

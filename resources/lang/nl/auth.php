@@ -18,7 +18,7 @@ return [
 
 	'register' => [
 		'form' => [
-			'header'                => 'Registratie',
+			'header'                => 'Registreren',
 			'e-mail'                => 'E-mailadres',
 			'first_name'            => 'Voornaam',
 			'last_name'             => 'Achternaam',
@@ -30,6 +30,16 @@ return [
 			'city'                  => 'Plaats',
 			'phone_number'          => 'Telefoonnummer',
 			'button'                => 'Registreren',
+		],
+	],
+	'login' => [
+		'form' => [
+			'header'                => 'Inloggen',
+			'e-mail'                => 'E-mailadres',
+			'password'              => 'Wachtwoord',
+			'remember_me'           => 'Onthouden',
+			'button'                => 'Login',
+			'forgot_password'       => 'Wachtwoord vergeten?',
 		],
 	],
 

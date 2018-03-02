@@ -24,6 +24,9 @@ class PhoneNumberTest extends TestCase
 			[ 'nl', 'fdkslfasjl', false, ],
 			[ 'nl', '59204585920', false, ],
 			[ 'nl', '1612345678', false, ],
+			[ 'nl', '(058) 1234567', true, ],
+			[ 'nl', '058 1234567', true, ],
+			[ 'nl', '058 123 45 67', true, ],
 		];
 	}
 

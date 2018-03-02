@@ -25,4 +25,9 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function confirm(Request $request){
+    	$email = $request->get('u');
+    	$token = $request->get('t');
+    }
 }

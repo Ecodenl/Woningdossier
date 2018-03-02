@@ -30,6 +30,9 @@ return [
 			'city'                  => 'Plaats',
 			'phone_number'          => 'Telefoonnummer',
 			'button'                => 'Registreren',
+			'message'               => [
+				'success'           => 'Bedankt. We hebben een e-mail met een bevestigingslink naar u toegestuurd om uw registratie te voltooien.'	,
+			],
 		],
 	],
 	'login' => [

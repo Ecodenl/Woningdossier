@@ -8,7 +8,7 @@ class PhoneNumber extends LocaleBasedRule implements Rule
 {
 
 	protected $countryRegexes = [
-		'nl' => '/(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0]{1}[0-9\-\s]{9}$)/',
+		'nl' => '/(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0]{1}[0-9\-\s]{9}$)|^\(0[1-9]{2}\)\s?[0-9]{7}|^\(0[1-9]{3}\)\s?[0-9]{6}|(\+31[0]?[1-9]{1}[0-9\s\-]{9})/',
 	];
 
 	/**
@@ -25,6 +25,7 @@ class PhoneNumber extends LocaleBasedRule implements Rule
 
     	// Move out the dashes. This is actually valid but can cause strange effects
     	$value = str_replace('-', '', $value);
+    	$value = str_replace(' ', '', $value);
 
     	return preg_match($this->countryRegexes[$this->country], $value) != false;
     }

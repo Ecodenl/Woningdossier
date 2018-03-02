@@ -6,6 +6,58 @@ use App\Events\UserCreated;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * App\Models\User
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AddressUserUsage[] $addressUsage
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Address[] $addresses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\EmailAddress[] $emailAddresses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserEnergyHabit[] $energyHabits
+ * @property-read \App\Models\LastNamePrefix $lastNamePrefix
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserNote[] $notes
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Opportunity[] $opportunities
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Organisation[] $organisations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\People[] $people
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PhoneNumber[] $phoneNumbers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
+ * @property-read \App\Models\Title $title
+ * @mixin \Eloquent
+ * @property int $id
+ * @property string $first_name
+ * @property int|null $last_name_prefix_id
+ * @property string $last_name
+ * @property string $email
+ * @property string $password
+ * @property string|null $remember_token
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property int|null $title_id
+ * @property string $phone_number
+ * @property string $mobile
+ * @property string $occupation
+ * @property string|null $last_visit
+ * @property int $visit_count
+ * @property int $active
+ * @property string|null $confirm_token
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereConfirmToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastNamePrefixId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastVisit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereOccupation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePhoneNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereTitleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
+ */
 class User extends Authenticatable
 {
     use Notifiable;

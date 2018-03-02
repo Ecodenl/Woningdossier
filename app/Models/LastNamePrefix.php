@@ -4,6 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\LastNamePrefix
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\People[] $people
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @mixin \Eloquent
+ * @property int $id
+ * @property string $name
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LastNamePrefix whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LastNamePrefix whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LastNamePrefix whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LastNamePrefix whereUpdatedAt($value)
+ */
 class LastNamePrefix extends Model
 {
 

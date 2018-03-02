@@ -11,6 +11,7 @@ use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -107,4 +108,31 @@ class RegisterController extends Controller
 
     	return $user;
     }
+
+	public function confirm(Request $request){
+		$validator = \Validator::make( $request->all(), [
+				'u' => 'required|email',
+				't' => 'required|alpha_num',
+			]
+		);
+
+		if ($validator->fails()) {
+			return redirect()
+				->route('register')
+				->withErrors($validator);
+		}
+
+		$email = $request->get('u');
+		$token = $request->get('t');
+
+		$user = User::where('email', $email)->where('confirm_token', $token)->first();
+		if (!$user instanceof User){
+			return redirect('register')->withErrors(trans('auth.confirm.error'));
+		}
+		else {
+			$user->confirm_token = null;
+			$user->save();
+			return redirect()->route('login')->with('success', trans('auth.confirm.success'));
+		}
+	}
 }

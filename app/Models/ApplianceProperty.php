@@ -4,6 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\ApplianceProperty
+ *
+ * @property-read \App\Models\Appliance $appliance
+ * @mixin \Eloquent
+ * @property int $id
+ * @property int|null $appliance_id
+ * @property string $name
+ * @property string $value
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereApplianceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereValue($value)
+ */
 class ApplianceProperty extends Model
 {
     public function appliance(){

@@ -1,13 +1,13 @@
 @if (session('success'))
+    <div class="alert alert-success" role="alert">
     @if(is_array(session('success')))
+        <ul>
         @foreach(session('success') as $successmsg)
-            <div class="alert alert-success" role="alert">
-                {{ $successmsg }}
-            </div>
+                <li>{{ $successmsg }}</li>
         @endforeach
+        </ul>
     @else
-        <div class="alert alert-success" role="alert">
             {{ session('success') }}
-        </div>
     @endif
+    </div>
 @endif

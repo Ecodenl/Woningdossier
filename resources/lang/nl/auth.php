@@ -45,5 +45,9 @@ return [
 			'forgot_password'       => 'Wachtwoord vergeten?',
 		],
 	],
+	'confirm' => [
+		'success' => 'Uw account is bevestigd. U kunt nu inloggen met uw gebruikersnaam en wachtwoord.',
+		'error' => 'Uw bevestigingslink is ongeldig. Is uw account wellicht al bevestigd?',
+	],
 
 ];

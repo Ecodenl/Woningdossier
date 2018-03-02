@@ -4,6 +4,42 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Opportunity
+ *
+ * @property-read \App\Models\Campaign $campaign
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\Measure $measure
+ * @property-read \App\Models\User $ownedBy
+ * @property-read \App\Models\Registration $registration
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
+ * @property-read \App\Models\User $user
+ * @mixin \Eloquent
+ * @property int $id
+ * @property int $measure_id
+ * @property int $user_id
+ * @property string $number
+ * @property int|null $registration_id
+ * @property int|null $campaign_id
+ * @property string|null $quotation_text
+ * @property string|null $desired_date
+ * @property int|null $created_by_id
+ * @property int|null $owned_by_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereCampaignId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereCreatedById($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereDesiredDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereMeasureId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereOwnedById($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereQuotationText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereRegistrationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereUserId($value)
+ */
 class Opportunity extends Model
 {
     public function measure(){

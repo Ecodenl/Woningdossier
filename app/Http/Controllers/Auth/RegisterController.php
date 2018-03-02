@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\Helpers\RegistrationHelper;
+use App\Http\Requests\RegisterFormRequest;
+use App\Models\Address;
+use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Rules\HouseNumber;
+use App\Rules\PhoneNumber;
+use App\Rules\PostalCode;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -27,7 +34,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -45,27 +52,59 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    /*protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+	        'email' => 'required|string|email|max:255|unique:users',
+	        'password' => 'required|string|min:6',
+	        'first_name' => 'required|string|max:255',
+	        'last_name' => 'required|string|max:255',
+	        'postal_code' => ['required', new PostalCode()],
+	        'number' => ['required', new HouseNumber()],
+	        'street' => 'required|string|max:255',
+	        'city' => 'required|string|max:255',
+	        'phone_number' => [ 'nullable', new PhoneNumber() ],
         ]);
-    }
+    }*/
+
+	/**
+	 * Handle a registration request for the application.
+	 *
+	 * @param  RegisterFormRequest  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function register(RegisterFormRequest $request)
+	{
+		//$this->validator($request->all())->validate();
+
+		event(new Registered($user = $this->create($request->all())));
+
+		//$this->guard()->login($user);
+
+		return $this->registered($request, $user)
+			?: redirect($this->redirectPath())->with('success', trans('auth.register.form.message.success'));
+	}
 
     /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+    	$user = User::create([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+		    'phone_number' => is_null($data['phone_number']) ? '' : $data['phone_number'],
+		    'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
+
+    	$address = new Address($data);
+    	$address->user()->associate($user)->save();
+
+    	return $user;
     }
 }

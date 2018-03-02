@@ -138,6 +138,8 @@ build:
                         coverage:
                             file: 'woondossier-report'
                             format: 'clover'
+#filter:
+#    excluded_paths:
+#        - tests/*
 filter:
-    excluded_paths:
-        - tests/*
+  paths: [app/*]

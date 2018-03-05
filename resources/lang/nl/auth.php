@@ -13,7 +13,8 @@ return [
 	|
 	*/
 
-	'failed'   => 'Uw gebruikersnaam of wachtwoord is onjuist',
+	'failed'   => 'Uw gebruikersnaam of wachtwoord is onjuist.',
+	'cooperation' => 'U bent geen lid van deze coöperatie.',
 	'throttle' => 'Te veel login pogingen. U kunt het opniew proberen over :seconds seconde(n).',
 
 	'register' => [

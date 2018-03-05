@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Helpers\RegistrationHelper;
 use App\Http\Requests\RegisterFormRequest;
 use App\Models\Address;
+use App\Models\Cooperation;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Rules\HouseNumber;
@@ -46,6 +47,16 @@ class RegisterController extends Controller
     {
         $this->middleware('guest');
     }
+
+	/**
+	 * Show the application registration form.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function showRegistrationForm()
+	{
+		return view('cooperation.auth.register');
+	}
 
     /**
      * Get a validator for an incoming registration request.
@@ -105,6 +116,10 @@ class RegisterController extends Controller
 
     	$address = new Address($data);
     	$address->user()->associate($user)->save();
+
+    	$cooperationId = \Session::get('cooperation');
+    	$cooperation = Cooperation::find($cooperationId);
+
 
     	return $user;
     }

@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\Models\Cooperation;
 use App\Models\User;
 use Faker\Factory;
 use Faker\Generator;
@@ -54,8 +55,11 @@ class RegisterTest extends DuskTestCase
     	$faker = $this->getLocalizedFaker();
     	$number = $this->getRandomHouseNumber($faker);
 
+    	//$cooperation = Cooperation::first();
+    	//dd($cooperation->slug);
+
         $this->browse(function (Browser $browser) use ($faker, $number) {
-            $browser->visit('/')
+            $browser->visit('http://hoom.woondossier.vm')
 	            ->clickLink('Registreren')
 	            ->assertPathIs('/register')
                 ->value('#email', 'test@example.org')

@@ -14,6 +14,7 @@ return [
     */
 
     'failed' => 'These credentials do not match our records.',
+    'cooperation' => 'You are not a member of this cooperation.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];

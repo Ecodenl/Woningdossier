@@ -12,26 +12,23 @@ you run it is a matter of taste.
 
 Options:
 - [Vagrant + ansible](docs/setup/vagrant-ansible.md)
-- Docker
+- Docker (will follow later)
 - Homestead
 
 ### The application
 
 
 
-## PHP versie
-Momenteel wordt PHP 7.1 als doelstelling gebruikt. Dit omdat Laravel 5.5 dit als 
-eis stelt. 
+## PHP version
+PHP 7.1 is the current targeted version as this is required by Laravel 5.5.
 
-## Conventies
-Het woningdossier is gebaseerd op Laravel 5.5 LTS. We houden ons dan ook  zoveel 
-mogelijk aan aan de daarin geldende conventies, zoals PSR-4 autoloading.
+## Conventions
+The woningdossier is based on Laravel 5.5 LTS. Our goal is to confirm as much as 
+possible to the conventions by the framework (i.e. PSR-4 autoloading).
 
-### Code conventies
+### Code conventions
 
 
 ## Pull requests
 
-
-## In opdracht van
 

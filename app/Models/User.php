@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Events\UserCreated;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\User
@@ -57,6 +58,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereTitleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
  */
 class User extends Authenticatable
 {
@@ -127,6 +129,25 @@ class User extends Authenticatable
 
 	public function tasks(){
 		return $this->hasMany(Task::class);
+	}
+
+	/**
+	 * The cooperations the user is associated with
+	 */
+	public function cooperations(){
+    	return $this->belongsToMany(Cooperation::class);
+	}
+
+	/**
+	 * Returns whether or not a user is associated with a particular Cooperation
+	 * @param Cooperation $cooperation
+	 *
+	 * @return bool
+	 */
+	public function isAssociatedWith(Cooperation $cooperation){
+		return $this->cooperations()
+		            ->where('id', $cooperation->id)
+		            ->count() > 0;
 	}
 
 }

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('content')
 
@@ -9,7 +9,7 @@
                 <div class="panel-heading">@lang('auth.login.form.header')</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -56,7 +56,7 @@
                                     @lang('auth.login.form.button')
                                 </button>
 
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
+                                <a class="btn btn-link" href="{{ route('cooperation.password.request', ['cooperation' => $cooperation]) }}">
                                     @lang('auth.login.form.forgot_password')
                                 </a>
                             </div>

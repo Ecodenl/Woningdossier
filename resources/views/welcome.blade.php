@@ -63,8 +63,6 @@
             @section('content')
             <div class="content">
 
-                @include('layouts.messages')
-
                 <div class="title m-b-md">
                     {{ config('app.name') }}
                 </div>

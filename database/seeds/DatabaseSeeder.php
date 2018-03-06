@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
 		$this->call(SpaceCategoriesTableSeeder::class);
 		$this->call(MeasuresTableSeeder::class);
 		$this->call(MeasureCategoriesTableSeeder::class);
+		$this->call(CooperationsTableSeeder::class);
     }
 }

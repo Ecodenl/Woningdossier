@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('content')
 <div class="container">

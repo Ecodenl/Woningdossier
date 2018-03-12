@@ -1,0 +1,5 @@
+#register {
+  .form-control.loading {
+    @include spinner(25px);
+  }
+}

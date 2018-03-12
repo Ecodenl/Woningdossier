@@ -42,7 +42,7 @@ class Address extends Model
 {
 
 	public $fillable = [
-		'street', 'number', 'city', 'postal_code',
+		'street', 'number', 'city', 'postal_code', 'bag_addressid',
 	];
 
 	/**

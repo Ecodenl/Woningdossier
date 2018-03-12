@@ -2,7 +2,26 @@
 
 return [
 	'cooperation' => [
-		'my-account' => 'Mijn account',
-		'my-cooperations' => 'Mijn coöperaties',
+		'my-account' => [
+			'settings' => [
+				'form' => [
+					'index' => [
+						'header' => 'Mijn account',
+						'submit' => 'Update',
+
+					],
+					'destroy' => [
+						'header' => 'Account verwijderen',
+						'label' => 'Mijn account verwijderen',
+						'submit' => 'Verwijderen',
+					]
+				],
+			],
+			'cooperations' => [
+				'form' => [
+					'header' => 'Mijn coöperaties',
+				],
+			],
+		],
 	],
 ];

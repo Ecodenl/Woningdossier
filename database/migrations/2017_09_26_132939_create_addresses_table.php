@@ -30,6 +30,8 @@ class CreateAddressesTable extends Migration
 
             $table->boolean('primary')->default(false);
 
+            $table->string('bag_addressid')->default('');
+
             $table->timestamps();
             $table->softDeletes();
         });

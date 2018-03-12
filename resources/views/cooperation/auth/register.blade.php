@@ -8,8 +8,9 @@
                 <div class="panel-heading">@lang('auth.register.form.header')</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
+                    <form class="form-horizontal" method="POST" id="register" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
+                        <input id="addressid" name="addressid" type="text" value="" style="display:none;">
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')</label>

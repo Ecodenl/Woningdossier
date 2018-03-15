@@ -21,37 +21,35 @@ require('./bootstrap');
 //    el: '#app'
 //});
 
-$("#register #number").focusout(function() {
-    var postalCode = $("#register #postal_code");
-    var number = $(this);
-    var street = $("#register #street");
-    var city = $("#register #city");
-    var addressId = $("#register #addressid");
+$("#register #street").focusin(
+    function(){
+        var postalCode = $("#register #postal_code");
+        var number = $("#register #number");
+        var houseNumberExtension = $("#register #house_number_extension");
+        var street = $("#register #street");
+        var city = $("#register #city");
+        var addressId = $("#register #addressid");
 
-    $.ajax({
-        method: 'get',
-        url: 'fill-address',
-        data: { postal_code: postalCode.val(), number: number.val() },
-        beforeSend: function(){
-            street.addClass("loading");
-            city.addClass("loading");
-        },
-        success: function(data){
-            street.removeClass("loading");
-            city.removeClass("loading");
-            if (data.length === 1){
-                var address = data[0];
+        $.ajax({
+            method: 'get',
+            url: 'fill-address',
+            data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
+            beforeSend: function(){
+                street.addClass("loading");
+                city.addClass("loading");
+            },
+            success: function(data){
+                street.removeClass("loading");
+                city.removeClass("loading");
+                var address = data;
                 console.log(address);
                 street.val(address.street);
                 number.val(address.number);
+                houseNumberExtension.val(address.house_number_extension);
                 addressId.val(address.id);
                 city.val(address.city);
-            }
-            else {
-                console.log("Multiple options");
-            }
-        },
-        dataType: 'json'
-    });
-
-});
+            },
+            dataType: 'json'
+        });
+    }
+);

@@ -12,13 +12,7 @@ class HouseNumberTest extends TestCase
 	public static function houseNumberProvider(){
 		return [
 			[ 'nl', '1', true, ],
-			[ 'nl', 'A', false, ],
-			[ 'nl', '1A', true, ],
-			[ 'nl', '1 A', true, ],
-			[ 'nl', '1-A', true, ],
-			[ 'nl', '1 - A', true, ],
-			[ 'nl', 'A1', false, ],
-			[ 'nl', '1-BOVEN', true, ],
+			[ 'nl', '-1', false, ],
 		];
 	}
 

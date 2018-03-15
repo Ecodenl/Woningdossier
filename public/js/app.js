@@ -98,10 +98,10 @@ __webpack_require__(2);
 //    el: '#app'
 //});
 
-$("#register #number").focusout(function () {
+$("#register #street").focusin(function () {
     var postalCode = $("#register #postal_code");
     var number = $("#register #number");
-
+    var houseNumberExtension = $("#register #house_number_extension");
     var street = $("#register #street");
     var city = $("#register #city");
     var addressId = $("#register #addressid");
@@ -109,7 +109,7 @@ $("#register #number").focusout(function () {
     $.ajax({
         method: 'get',
         url: 'fill-address',
-        data: { postal_code: postalCode.val(), number: number.val() },
+        data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
         beforeSend: function beforeSend() {
             street.addClass("loading");
             city.addClass("loading");
@@ -117,16 +117,13 @@ $("#register #number").focusout(function () {
         success: function success(data) {
             street.removeClass("loading");
             city.removeClass("loading");
-            if (data.length === 1) {
-                var address = data[0];
-                console.log(address);
-                street.val(address.street);
-                number.val(address.number);
-                addressId.val(address.id);
-                city.val(address.city);
-            } else {
-                console.log("Multiple options");
-            }
+            var address = data;
+            console.log(address);
+            street.val(address.street);
+            number.val(address.number);
+            houseNumberExtension.val(address.house_number_extension);
+            addressId.val(address.id);
+            city.val(address.city);
         },
         dataType: 'json'
     });

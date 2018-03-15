@@ -23,6 +23,7 @@ class CreateAddressesTable extends Migration
 
             $table->string('street')->default('');
             $table->string('number')->default('');
+	        $table->string('extension')->default('');
             $table->string('city')->default('');
             $table->string('postal_code')->default('');
 

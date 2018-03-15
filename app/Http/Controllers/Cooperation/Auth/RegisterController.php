@@ -158,29 +158,41 @@ class RegisterController extends Controller
 	public function fillAddress(Request $request){
     	$postalCode = trim(strip_tags($request->get('postal_code', '')));
     	$number = trim(strip_tags($request->get('number', '')));
+    	$extension = trim(strip_tags($request->get('house_number_extension', '')));
 
     	$options = $this->getAddressData($postalCode, $number);
 
-    	$results = [];
+    	$result = [];
+    	$dist = null;
 		if (is_array($options) && count($options) > 0){
 			foreach($options as $option){
-				$number = $option['huisnummer'];
-				if (!empty($option['huisletter']) && $option['huisletter'] != 'None'){
-					$number .= ' ' . $option['huisletter'];
+
+				//$number = $option['huisnummer'];
+				//if (!empty($option['huisletter']) && $option['huisletter'] != 'None'){
+				//	$number .= ' ' . $option['huisletter'];
+				//}
+
+				$houseNumberExtension = (!empty($option['huisnrtoev']) && $option['huisnrtoev'] != 'None') ? $option['huisnrtoev'] : '';
+
+				$newDist = null;
+				if (!empty($houseNumberExtension) && !empty($extension)){
+					$newDist = levenshtein(strtolower($houseNumberExtension), strtolower($extension), 1, 10, 1);
 				}
-				if (!empty($option['huisnrtoev']) && $option['huisnrtoev'] != 'None'){
-					$number .= ' ' . $option['huisnrtoev'];
+				if (is_null($dist) || isset($newDist) && $newDist < $dist) {
+					// best match
+					$result = [
+						'id'                     => md5( $option['bag_adresid'] ),
+						'street'                 => $option['straat'],
+						'number'                 => $option['huisnummer'],
+						'house_number_extension' => $houseNumberExtension,
+						'city'                   => $option['woonplaats'],
+					];
+					$dist = $newDist;
 				}
-				$results []= [
-					'id' => md5($option['bag_adresid']),
-					'street' => $option['straat'],
-					'number' => $number,
-					'city' => $option['woonplaats'],
-				];
 			}
 		}
 
-		return response()->json($results);
+		return response()->json($result);
 	}
 
 	protected function getAddressData($postalCode, $number, $pointer = null){

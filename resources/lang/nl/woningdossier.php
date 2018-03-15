@@ -8,7 +8,9 @@ return [
 					'index' => [
 						'header' => 'Mijn account',
 						'submit' => 'Update',
-
+					],
+					'store' => [
+						'success' => 'Gegevens succesvol gewijzigd',
 					],
 					'destroy' => [
 						'header' => 'Account verwijderen',

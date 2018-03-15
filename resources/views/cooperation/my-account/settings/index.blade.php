@@ -15,7 +15,8 @@
                                 <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')</label>
 
                                 <div class="col-md-8">
-                                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required autofocus>
+                                    {{--<input id="email" type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required autofocus>--}}
+                                    <span>{{ $user->email }}</span>
 
                                     @if ($errors->has('email'))
                                         <span class="help-block">
@@ -67,11 +68,25 @@
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                <label for="password" class="col-md-4 control-label">@lang('auth.register.form.password')</label>
+                            <div class="form-group{{ $errors->has('current_password') ? ' has-error' : '' }}">
+                                <label for="current_password" class="col-md-4 control-label">@lang('auth.register.form.current_password')</label>
 
                                 <div class="col-md-8">
-                                    <input id="password" type="password" class="form-control" name="password" required>
+                                    <input id="current_password" type="password" class="form-control" name="current_password">
+
+                                    @if ($errors->has('current_password'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('current_password') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                                <label for="password" class="col-md-4 control-label">@lang('auth.register.form.new_password')</label>
+
+                                <div class="col-md-8">
+                                    <input id="password" type="password" class="form-control" name="password">
 
                                     @if ($errors->has('password'))
                                         <span class="help-block">
@@ -82,10 +97,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="password-confirm" class="col-md-4 control-label">@lang('auth.register.form.password_confirmation')</label>
+                                <label for="password-confirm" class="col-md-4 control-label">@lang('auth.register.form.new_password_confirmation')</label>
 
                                 <div class="col-md-8">
-                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
                                 </div>
                             </div>
 

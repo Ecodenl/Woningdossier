@@ -8350,3 +8350,13 @@ button.close {
   }
 }
 
+.loading {
+  background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
+  background-size: 25px 25px;
+}
+
+#register .form-control.loading {
+  background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
+  background-size: 25px 25px;
+}
+

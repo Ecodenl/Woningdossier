@@ -3,7 +3,6 @@
 /public/storage
 /storage/*.key
 /vendor
-/.idea
 /.vagrant
 Homestead.json
 Homestead.yaml
@@ -11,6 +10,30 @@ npm-debug.log
 yarn-error.log
 .env
 
+# IntelliJ project files
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# NetBeans specific
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# OS
+.DS_Store
+
+# Local
 ubuntu-xenial-16.04-cloudimg-console.log
 _ide_helper_models.php
 .phpstorm.meta.php

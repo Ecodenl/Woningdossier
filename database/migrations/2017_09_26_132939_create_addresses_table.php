@@ -23,12 +23,15 @@ class CreateAddressesTable extends Migration
 
             $table->string('street')->default('');
             $table->string('number')->default('');
+	        $table->string('extension')->default('');
             $table->string('city')->default('');
             $table->string('postal_code')->default('');
 
             $table->boolean('owner')->unsigned()->nullable();
 
             $table->boolean('primary')->default(false);
+
+            $table->string('bag_addressid')->default('');
 
             $table->timestamps();
             $table->softDeletes();

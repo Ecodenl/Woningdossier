@@ -23,25 +23,10 @@ class RegisterTest extends DuskTestCase
 		return $faker;
 	}
 
-	public function getRandomHouseNumber(Generator $faker){
-		$randomHouseNumber = $faker->numberBetween(0, 10000);
-		$additions = ['BOVEN', 'BENEDEN', 'ONDER', 'HS', 'bis', 'ZW', 'RD', '-12', ];
-		if (mt_rand(0, 1) == 1){
-			if (mt_rand(0, 1) == 1){
-				$randomHouseNumber .= ' ';
-			}
-			$randomHouseNumber .= $additions[mt_rand(0, count($additions) - 1)];
-		}
-		else {
-			if(mt_rand(0, 1) == 1){
-				if (mt_rand(0, 1) == 1){
-					$randomHouseNumber .= ' ';
-				}
-				$randomHouseNumber .= $faker->randomLetter;
-			}
-		}
+	public function getRandomHouseNumberExtension(Generator $faker){
 
-		return $randomHouseNumber;
+		$additions = ['', ' ', 'BOVEN', 'BENEDEN', 'ONDER', 'HS', 'bis', 'ZW', 'RD', '-12', ];
+		return $additions[mt_rand(0, count($additions) - 1)];
 	}
 
     /**
@@ -53,12 +38,8 @@ class RegisterTest extends DuskTestCase
     public function testRegistration()
     {
     	$faker = $this->getLocalizedFaker();
-    	$number = $this->getRandomHouseNumber($faker);
 
-    	//$cooperation = Cooperation::first();
-    	//dd($cooperation->slug);
-
-        $this->browse(function (Browser $browser) use ($faker, $number) {
+        $this->browse(function (Browser $browser) use ($faker) {
             $browser->visit('http://hoom.woondossier.vm')
 	            ->clickLink('Registreren')
 	            ->assertPathIs('/register')
@@ -66,7 +47,8 @@ class RegisterTest extends DuskTestCase
 	            ->value('#first_name', $faker->firstName)
 	            ->value('#last_name', $faker->lastName)
 	            ->value('#postal_code', $faker->postcode)
-	            ->value('#number', $number)
+	            ->value('#number', $faker->numberBetween(0, 10000))
+	            ->value('#house_number_extension', $this->getRandomHouseNumberExtension($faker))
 				->value('#street', $faker->streetName)
 	            ->value('#city', $faker->city)
 	            ->value('#phone_number', mt_rand(0, 1) == 1 ? $faker->phoneNumber : '')

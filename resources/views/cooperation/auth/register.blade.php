@@ -8,11 +8,12 @@
                 <div class="panel-heading">@lang('auth.register.form.header')</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
+                    <form class="form-horizontal" method="POST" id="register" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
+                        <input id="addressid" name="addressid" type="text" value="" style="display:none;">
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')</label>
+                            <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')<span class="required">*</span></label>
 
                             <div class="col-md-8">
                                 <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
@@ -26,7 +27,7 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
-                            <label for="first_name" class="col-md-4 control-label">@lang('auth.register.form.first_name')</label>
+                            <label for="first_name" class="col-md-4 control-label">@lang('auth.register.form.first_name')<span class="required">*</span></label>
 
                             <div class="col-md-8">
                                 <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required autofocus>
@@ -40,7 +41,7 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
-                            <label for="last_name" class="col-md-4 control-label">@lang('auth.register.form.last_name')</label>
+                            <label for="last_name" class="col-md-4 control-label">@lang('auth.register.form.last_name')<span class="required">*</span></label>
 
                             <div class="col-md-8">
                                 <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required autofocus>
@@ -54,9 +55,9 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('postal_code') ? ' has-error' : '' }}">
-                            <label for="postal_code" class="col-md-4 control-label">@lang('auth.register.form.postal_code')</label>
+                            <label for="postal_code" class="col-md-4 control-label">@lang('auth.register.form.postal_code')<span class="required">*</span></label>
 
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <input id="postal_code" type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required autofocus>
 
                                 @if ($errors->has('postal_code'))
@@ -66,7 +67,7 @@
                                 @endif
                             </div>
 
-                            <label for="number" class="col-md-2 control-label">@lang('auth.register.form.number')</label>
+                            <label for="number" class="col-md-2 control-label">@lang('auth.register.form.number')<span class="required">*</span></label>
 
                             <div class="col-md-2">
                                 <input id="number" type="text" class="form-control" name="number" value="{{ old('number') }}" required autofocus>
@@ -77,10 +78,20 @@
                                     </span>
                                 @endif
                             </div>
+
+                            <div class="col-md-2">
+                                <input id="house_number_extension" type="text" class="form-control" name="house_number_extension" placeholder="@lang('auth.register.form.house_number_extension')" value="{{ old('house_number_extension') }}" autofocus>
+
+                                @if ($errors->has('house_number_extension'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('house_number_extension') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
                         </div>
 
                         <div class="form-group{{ $errors->has('street') ? ' has-error' : '' }}">
-                            <label for="street" class="col-md-4 control-label">@lang('auth.register.form.street')</label>
+                            <label for="street" class="col-md-4 control-label">@lang('auth.register.form.street')<span class="required">*</span></label>
 
                             <div class="col-md-8">
                                 <input id="street" type="text" class="form-control" name="street" value="{{ old('street') }}" required autofocus>
@@ -94,7 +105,7 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('city') ? ' has-error' : '' }}">
-                            <label for="city" class="col-md-4 control-label">@lang('auth.register.form.city')</label>
+                            <label for="city" class="col-md-4 control-label">@lang('auth.register.form.city')<span class="required">*</span></label>
 
                             <div class="col-md-8">
                                 <input id="city" type="text" class="form-control" name="city" value="{{ old('city') }}" required autofocus>
@@ -122,7 +133,7 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">@lang('auth.register.form.password')</label>
+                            <label for="password" class="col-md-4 control-label">@lang('auth.register.form.password')<span class="required">*</span></label>
 
                             <div class="col-md-8">
                                 <input id="password" type="password" class="form-control" name="password" required>
@@ -136,7 +147,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="password-confirm" class="col-md-4 control-label">@lang('auth.register.form.password_confirmation')</label>
+                            <label for="password-confirm" class="col-md-4 control-label">@lang('auth.register.form.password_confirmation')<span class="required">*</span></label>
 
                             <div class="col-md-8">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>

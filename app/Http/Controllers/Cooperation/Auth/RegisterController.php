@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
+use Ecodenl\PicoWrapper\PicoClient;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -114,12 +115,15 @@ class RegisterController extends Controller
 		    'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
 
+    	$address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
+    	$data['bag_addressid'] = isset($address['bag_adresid']) ? $address['bag_adresid'] : '';
+
     	$address = new Address($data);
     	$address->user()->associate($user)->save();
 
     	$cooperationId = \Session::get('cooperation');
     	$cooperation = Cooperation::find($cooperationId);
-
+		$user->cooperations()->attach($cooperation);
 
     	return $user;
     }
@@ -147,7 +151,68 @@ class RegisterController extends Controller
 		else {
 			$user->confirm_token = null;
 			$user->save();
-			return redirect()->route('login')->with('success', trans('auth.confirm.success'));
+			return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
 		}
+	}
+
+	public function fillAddress(Request $request){
+    	$postalCode = trim(strip_tags($request->get('postal_code', '')));
+    	$number = trim(strip_tags($request->get('number', '')));
+    	$extension = trim(strip_tags($request->get('house_number_extension', '')));
+
+    	$options = $this->getAddressData($postalCode, $number);
+
+    	$result = [];
+    	$dist = null;
+		if (is_array($options) && count($options) > 0){
+			foreach($options as $option){
+
+				//$number = $option['huisnummer'];
+				//if (!empty($option['huisletter']) && $option['huisletter'] != 'None'){
+				//	$number .= ' ' . $option['huisletter'];
+				//}
+
+				$houseNumberExtension = (!empty($option['huisnrtoev']) && $option['huisnrtoev'] != 'None') ? $option['huisnrtoev'] : '';
+
+				$newDist = null;
+				if (!empty($houseNumberExtension) && !empty($extension)){
+					$newDist = levenshtein(strtolower($houseNumberExtension), strtolower($extension), 1, 10, 1);
+				}
+				if (is_null($dist) || isset($newDist) && $newDist < $dist) {
+					// best match
+					$result = [
+						'id'                     => md5( $option['bag_adresid'] ),
+						'street'                 => $option['straat'],
+						'number'                 => $option['huisnummer'],
+						'house_number_extension' => $houseNumberExtension,
+						'city'                   => $option['woonplaats'],
+					];
+					$dist = $newDist;
+				}
+			}
+		}
+
+		return response()->json($result);
+	}
+
+	protected function getAddressData($postalCode, $number, $pointer = null){
+    	\Log::debug($postalCode . " " . $number . " " . $pointer);
+		/** @var PicoClient $pico */
+		$pico = app()->make('pico');
+		$postalCode = str_replace(' ', '', trim($postalCode));
+		$response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
+
+		if (!is_null($pointer)){
+			foreach($response as $addrInfo){
+				if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])){
+					//$data['bag_addressid'] = $addrInfo['bag_adresid'];
+					\Log::debug(json_encode($addrInfo));
+					return $addrInfo;
+				}
+			}
+			return [];
+		}
+
+		return $response;
 	}
 }

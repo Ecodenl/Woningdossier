@@ -39,7 +39,7 @@ class RegisterTest extends DuskTestCase
     {
     	$faker = $this->getLocalizedFaker();
 
-        $this->browse(function (Browser $browser) use ($faker, $number) {
+        $this->browse(function (Browser $browser) use ($faker) {
             $browser->visit('http://hoom.woondossier.vm')
 	            ->clickLink('Registreren')
 	            ->assertPathIs('/register')

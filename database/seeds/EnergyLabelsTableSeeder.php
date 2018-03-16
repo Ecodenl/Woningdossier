@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\EnergyLabel;
 
 class EnergyLabelsTableSeeder extends Seeder
 {
@@ -12,9 +13,6 @@ class EnergyLabelsTableSeeder extends Seeder
     public function run()
     {
 	    $energyLabels = [
-		    'A+++',
-		    'A++',
-		    'A+',
 		    'A',
 		    'B',
 		    'C',
@@ -24,9 +22,13 @@ class EnergyLabelsTableSeeder extends Seeder
 	    ];
 
 	    foreach($energyLabels as $energyLabel){
-	    	\DB::table('energy_labels')->insert(
-			    ['name' => $energyLabel]
-		    );
+//	    	\DB::table('energy_labels')->insert(
+//			    ['name' => $energyLabel]
+//		    );
+
+	    	EnergyLabel::create([
+	    	    'name' => $energyLabel
+            ]);
 	    }
     }
 }

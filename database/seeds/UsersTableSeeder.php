@@ -19,8 +19,17 @@ class UsersTableSeeder extends Seeder
 		        'password' => bcrypt('secret'),
 	        ],
         ];
+        /** @var \stdClass $cooperation */
+        $cooperation = DB::table('cooperations')->where('slug', 'hoom')->first();
         foreach($users as $user){
-        	DB::table('users')->insert($user);
+        	$userId = DB::table('users')->insertGetId($user);
+        	if ($cooperation instanceof stdClass) {
+		        DB::table( 'cooperation_user' )->insert( [
+			        'cooperation_id' => $cooperation->id,
+			        'user_id'        => $userId,
+		        ] );
+	        }
         }
+
     }
 }

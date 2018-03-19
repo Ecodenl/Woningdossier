@@ -32,5 +32,8 @@ return [
 				],
 			],
 		],
+		'tool' => [
+			'title' => 'Kitchen table tool',
+		],
 	],
 ];

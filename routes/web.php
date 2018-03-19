@@ -36,7 +36,8 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 				Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
 
-            Route::group(['prefix' => 'tools', 'as' => 'tools.', 'namespace' => 'Tools'], function () {
+            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
+            	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController');
             });
 

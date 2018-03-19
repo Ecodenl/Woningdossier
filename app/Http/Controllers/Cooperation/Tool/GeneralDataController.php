@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Tools;
+namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Models\BuildingType;
 use App\Models\EnergyLabel;
@@ -25,7 +25,7 @@ class GeneralDataController extends Controller
         $houseVentilations = [];
         $isInterested = ['jahoor', 'neehoor doe maar niet', 'kijk wel uit'];
 
-        return view('cooperation.tools.general-data.index', compact('buildingTypes', 'roofTypes', 'energyLabels',
+        return view('cooperation.tool.general-data.index', compact('buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildingTypes', 'houseVentilations', 'isInterested'));
     }
 

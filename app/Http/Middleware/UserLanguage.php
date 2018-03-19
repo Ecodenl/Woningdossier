@@ -29,6 +29,7 @@ class UserLanguage
 		// the request
 		if(!Session::has('locale'))
 		{
+			\Log::debug("Session does not have locale");
 			Session::put('locale', $request->getPreferredLanguage(config('woningdossier.supported_locales')));
 		}
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEnergyLabelsTable extends Migration
+class CreateMotivationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateEnergyLabelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('energy_labels', function (Blueprint $table) {
+        Schema::create('motivations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('calculate_value')->nullable();
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -30,6 +28,6 @@ class CreateEnergyLabelsTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('energy_labels');
+        Schema::dropIfExists('motivations');
     }
 }

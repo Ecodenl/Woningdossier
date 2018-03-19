@@ -16,6 +16,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 	Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function() {
 		Route::get('/', function() { return view( 'cooperation.welcome' ); })->name('welcome');
+		Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 		Route::get( 'confirm',
             'Auth\RegisterController@confirm' )->name( 'confirm' );
 

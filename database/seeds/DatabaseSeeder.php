@@ -31,5 +31,19 @@ class DatabaseSeeder extends Seeder
 		$this->call(MeasuresTableSeeder::class);
 		$this->call(MeasureCategoriesTableSeeder::class);
 		$this->call(CooperationsTableSeeder::class);
+
+		// New
+		$this->call(HeatingAgesTableSeeder::class);
+        $this->call(BuildingHeatingsTableSeeder::class);
+        $this->call(MotivationsTableSeeder::class);
+        $this->call(QualitiesTableSeeder::class);
+        $this->call(PresentWindowsTableSeeder::class);
+        $this->call(SolarWaterHeatersTableSeeder::class);
+        $this->call(PresentWindowsTableSeeder::class);
+        $this->call(PresentShowerWtwsTableSeeder::class);
+        $this->call(InterestedToExecuteMeasuresTableSeeder::class);
+        $this->call(ComfortComplaintsTableSeeder::class);
+        $this->call(ExperienceAirQualityInHomesTableSeeder::class);
+        $this->call(SufferFromsTableSeeder::class);
     }
 }

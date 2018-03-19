@@ -15,6 +15,12 @@
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
     @endif
+    <style>
+        .add-space {
+            margin: 10px;
+            padding: 0px 10px 0px 10px;
+        }
+    </style>
     @stack('css')
 </head>
 <body>

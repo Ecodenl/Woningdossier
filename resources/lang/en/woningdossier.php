@@ -1,6 +1,13 @@
 <?php
 
 return [
+	'navbar' => [
+		'language' => 'Language',
+		'languages' => [
+			'nl' => 'Dutch',
+			'en' => 'English',
+		],
+	],
 	'cooperation' => [
 		'my-account' => [
 			'settings' => [

@@ -40,7 +40,20 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    &nbsp;
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                            @lang('woningdossier.navbar.language')<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            @foreach(config('woningdossier.supported_locales') as $locale)
+                                @if(app()->getLocale() != $locale)
+                                <li>
+                                    <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
+                                </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->

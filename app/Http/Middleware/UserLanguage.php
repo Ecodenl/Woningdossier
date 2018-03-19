@@ -29,16 +29,20 @@ class UserLanguage
 		// the request
 		if(!Session::has('locale'))
 		{
+			\Log::debug("Session does not have locale");
 			Session::put('locale', $request->getPreferredLanguage(config('woningdossier.supported_locales')));
 		}
 
 		// Check if the session has the language. If not, take the default
 		// app.locale
 		if(!Session::has('locale')) {
+			\Log::debug("Sesssion does not have locale 2");
 			Session::put('locale', config('app.locale'));
 		}
 
+		\Log::debug("Use locale: " . Session::get('locale'));
 		app()->setLocale(Session::get('locale'));
+		\Log::debug("App locale: " . app()->getLocale());
 
 		return $next($request);
 	}

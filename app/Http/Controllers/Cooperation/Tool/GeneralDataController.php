@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Models\BuildingType;
 use App\Models\EnergyLabel;
+use App\Models\ExampleBuilding;
 use App\Models\RoofType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,8 +21,8 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::all();
+        $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
         // TODO: when models are present, use them.
-        $exampleBuildingTypes = [];
         $houseVentilations = [];
         $isInterested = ['jahoor', 'neehoor doe maar niet', 'kijk wel uit'];
 

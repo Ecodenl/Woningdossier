@@ -8350,6 +8350,10 @@ button.close {
   }
 }
 
+.form-horizontal .radio-inline {
+  padding-top: 0;
+}
+
 .loading {
   background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
   background-size: 25px 25px;

@@ -16,7 +16,7 @@ class CreatePresentHeatPumpsTable extends Migration
         Schema::create('present_heat_pumps', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('calculated_value');
+            $table->integer('calculate_value');
             $table->timestamps();
         });
     }

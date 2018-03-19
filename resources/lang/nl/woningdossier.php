@@ -37,6 +37,30 @@ return [
 		'tool' => [
 			'title' => 'Keukentafel tool',
 
+			'example-buildings' => [
+				'woning0' => 'Er is geen passende voorbeeldwoning',
+				'woning1' => 'Tussenwoning, drie bouwlagen en plat dak',
+				'woning2' => 'Hoekwoning, drie bouwlagen en plat dak',
+				'woning3' => 'Benedenwoning zonder opkamer (tussenwoning)',
+				'woning4' => 'Benedenwoning zonder opkamer (hoekwoning)',
+				'woning5' => 'Hoekhuis, twee bouwlagen en nieuwe dakopbouw',
+				'woning6' => 'Tussenwoning, twee bouwlagen en nieuwe dakopbouw',
+				'woning7' => 'Tussenwoning, twee bouwlagen en plat dak',
+				'woning8' => 'Arbeidershuis, twee bouwlagen (tussenwoning)',
+				'woning9' => 'Jaren \'30 tussenwoning met hellend dak',
+				'woning10' => 'Jaren \'30 hoekwoning met hellend dak',
+				'woning11' => 'Tussenwoning, drie bouwlagen en hellend dak',
+				'woning12' => 'Hoekwoning, drie bouwlagen en hellend dak',
+				'woning13' => 'Bovenwoning zonder opkamer (tussenwoning)',
+				'woning14' => 'Bovenwoning zonder opkamer (hoekwoning)',
+			],
+			'roof-types' => [
+				'type0' => 'Hellend dak met dakpannen',
+				'type1' => 'Hellend dak met bitumen',
+				'type2' => 'Platdak',
+				'type3' => 'Geen dak',
+			],
+
 			'general-data' => [
 				'title' => 'Algemene gegevens',
 
@@ -52,15 +76,15 @@ return [
 				],
 
 				'building-type' => [
-					'title' => 'Wat is het voor een woning ?',
+					'title' => 'Wat is het voor woning?',
 					'example-building-type' => 'Kies de best passende voorbeeldwoning',
-					'what-type' => 'Wat is de woningtype ?',
-					'what-user-surface' => 'Wat is de gebruiksoppervlakte van de woning',
+					'what-type' => 'Wat is de woningtype?',
+					'what-user-surface' => 'Wat is de gebruiksoppervlakte van de woning?',
 					'how-much-building-layers' => 'Hoe veel bouwlagen heeft het huis?',
 					'type-roof' => 'Type dak',
-					'is-monument' => 'Is het een monument',
-					'what-building-year' => 'Wat is het bouwjaar ?',
-					'current-energy-label' => 'Wat is het huidige energie label?'
+					'is-monument' => 'Is het een monument?',
+					'what-building-year' => 'Wat is het bouwjaar?',
+					'current-energy-label' => 'Wat is het huidige energielabel?'
 				],
 
 				'energy-saving-measures' => [
@@ -74,15 +98,15 @@ return [
 					'monovalent-heatpump' => 'Monovalente warmtepomp',
 					'sun-panel' => [
 						'title' => 'Zonnepanelen',
-						'yes' => 'Zo ja, wanneer zijn panelen geplaats ?'
+						'yes' => 'Zo ja, wanneer zijn panelen geplaatst?'
 					],
 					'sun-boiler' => 'Zonneboiler',
 					'house-ventilation' => [
-						'title' => 'Hoe word het huis geventileerd ?',
-						'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst',
+						'title' => 'Hoe word het huis geventileerd?',
+						'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
 					],
 					'additional' => 'Overig',
-					'interested' => 'Intresse ?',
+					'interested' => 'Intresse?',
 
 				],
 

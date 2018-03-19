@@ -13,7 +13,7 @@
 
                     <select id="example_building_type" class="form-control" name="example_building_type" >
                         @foreach($exampleBuildingTypes as $exampleBuildingType)
-                            <option value="{{old('example_building_type', $exampleBuildingType)}}">{{$exampleBuildingType}}</option>
+                            <option value="{{old('example_building_type', $exampleBuildingType->id)}}">@lang($exampleBuildingType->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -127,118 +127,136 @@
             <div id="building-type" class="col-md-12">
                 <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.building-type.title')</h4>
 
-                <div class="form-group add-space{{ $errors->has('building_type') ? ' has-error' : '' }}">
-                    <label for="building_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-type')</label>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group add-space{{ $errors->has('building_type') ? ' has-error' : '' }}">
+                            <label for="building_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-type')</label>
 
-                    <select id="building_type" class="form-control" name="building_type" >
-                        @foreach($buildingTypes as $buildingType)
-                            <option value="{{old('building_type', $buildingType->id)}}">{{$buildingType->name}}</option>
-                        @endforeach
-                    </select>
+                            <select id="building_type" class="form-control" name="building_type" >
+                                @foreach($buildingTypes as $buildingType)
+                                    <option value="{{old('building_type', $buildingType->id)}}">{{$buildingType->name}}</option>
+                                @endforeach
+                            </select>
 
-                    @if ($errors->has('building_type'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('building_type') }}</strong>
-                    </span>
-                    @endif
+                            @if ($errors->has('building_type'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('building_type') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group add-space{{ $errors->has('user_surface') ? ' has-error' : '' }}">
+                            <label for="user_surface" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label>
+
+                            <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" required autofocus>
+
+                            @if ($errors->has('user_surface'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('user_surface') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group add-space{{ $errors->has('roof_layers') ? ' has-error' : '' }}">
+                            <label for="roof_layers" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.how-much-building-layers')</label>
+
+                            <input id="roof_layers" type="text" class="form-control" name="roof_layers" value="{{old('roof_layers')}}" required autofocus>
+
+                            @if ($errors->has('roof_layers'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('roof_layers') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group add-space{{ $errors->has('roof_type') ? ' has-error' : '' }}">
+                            <label for="roof_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.type-roof')</label>
+
+                            <select id="roof_type" class="form-control" name="roof_type" required>
+                                @foreach($roofTypes as $roofType)
+                                    <option value="{{old('roof_type', $roofType->id)}}">@lang($roofType->translation_key)</option>
+                                @endforeach
+                            </select>
+
+
+                            @if ($errors->has('roof_type'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('roof_type') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group add-space{{ $errors->has('is_monument') ? ' has-error' : '' }}">
+                            <label for="is_monument" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.is-monument')</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="is_monument" value="1">Ja
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="is_monument" value="2">Nee
+                            </label>
+
+                            @if ($errors->has('is_monument'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('is_monument') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
 
 
-                <div class="form-group add-space{{ $errors->has('user_surface') ? ' has-error' : '' }}">
-                    <label for="user_surface" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group add-space{{ $errors->has('what_building_year') ? ' has-error' : '' }}">
+                            <label for="what_building_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')</label>
 
-                    <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" required autofocus>
+                            <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" required autofocus>
 
-                    @if ($errors->has('user_surface'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('user_surface') }}</strong>
-                    </span>
-                    @endif
-                </div>
+                            @if ($errors->has('what_building_year'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('what_building_year') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group add-space{{ $errors->has('current_energy_label') ? ' has-error' : '' }}">
+                            <label for="current_energy_label" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.current-energy-label')</label>
 
+                            <select id="current_energy_label" class="form-control" name="current_energy_label" required>
+                                @foreach($energyLabels as $energyLabel)
+                                    <option value="{{old('current_energy_label', $energyLabel->id)}}">{{$energyLabel->name}}</option>
+                                @endforeach
+                            </select>
 
-                <div class="form-group add-space{{ $errors->has('roof_layers') ? ' has-error' : '' }}">
-                    <label for="roof_layers" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.how-much-building-layers')</label>
-
-                    <input id="roof_layers" type="text" class="form-control" name="roof_layers" value="{{old('roof_layers')}}" required autofocus>
-
-                    @if ($errors->has('roof_layers'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('roof_layers') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-
-                <div class="form-group add-space{{ $errors->has('roof_type') ? ' has-error' : '' }}">
-                    <label for="roof_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.type-roof')</label>
-
-                    <select id="roof_type" class="form-control" name="roof_type" required>
-                        @foreach($roofTypes as $roofType)
-                            <option value="{{old('roof_type', $roofType->id)}}">{{$roofType->name}}</option>
-                        @endforeach
-                    </select>
-
-
-                    @if ($errors->has('roof_type'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('roof_type') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-
-                <div class="form-group add-space{{ $errors->has('is_monument') ? ' has-error' : '' }}">
-                    <label for="is_monument" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.is-monument')</label>
-
-                    <label class="radio-inline">
-                        <input type="radio" name="is_monument" value="1">Ja
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="is_monument" value="2">Nee
-                    </label>
-
-                    @if ($errors->has('is_monument'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('is_monument') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-
-                <div class="form-group add-space{{ $errors->has('what_building_year') ? ' has-error' : '' }}">
-                    <label for="what_building_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')</label>
-
-                    <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" required autofocus>
-
-                    @if ($errors->has('what_building_year'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('what_building_year') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-
-                <div class="form-group add-space{{ $errors->has('current_energy_label') ? ' has-error' : '' }}">
-                    <label for="current_energy_label" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.current-energy-label')</label>
-
-                    <select id="current_energy_label" class="form-control" name="current_energy_label" required>
-                        @foreach($energyLabels as $energyLabel)
-                            <option value="{{old('current_energy_label', $energyLabel->id)}}">{{$energyLabel->name}}</option>
-                        @endforeach
-                    </select>
-
-                    @if ($errors->has('current_energy_label'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('current_energy_label') }}</strong>
-                    </span>
-                    @endif
+                            @if ($errors->has('current_energy_label'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('current_energy_label') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="energy-saving-measures">
             <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.title')</h4>
+            <div class="row">
             <div class="col-sm-4">
 
                 <div class="form-group add-space{{ $errors->has('facade_insulation') ? ' has-error' : '' }}">
@@ -308,6 +326,7 @@
                         </span>
                     @endif
                 </div>
+            </div>
             </div>
 
             <div class="col-sm-4">

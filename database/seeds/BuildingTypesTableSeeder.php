@@ -13,16 +13,6 @@ class BuildingTypesTableSeeder extends Seeder
     public function run()
     {
 	    $buildingTypes = [
-		    'Vrijstaand',
-		    'Hoekwoning',
-		    'Tussenwoning',
-		    'Appartement',
-		    'Appartement VVE',
-		    'Gehele tussenwoning',
-		    'Beneden woning meerdere verdiepingen',
-	    ];
-
-	    $buildingTypes = [
 	        [
 	            'name' => 'Vrijstaande woning',
                 'calculate_value' => 2
@@ -32,7 +22,7 @@ class BuildingTypesTableSeeder extends Seeder
                 'calculate_value' => 3,
             ],
             [
-                'name' => 'hoekwoning',
+                'name' => 'Hoekwoning',
                 'calculate_value' => 4,
             ],
             [
@@ -60,23 +50,13 @@ class BuildingTypesTableSeeder extends Seeder
                 'calculate_value' => 10,
             ],
             [
-                'name' => 'Appartemenet heo kop een tussenverdieping',
+                'name' => 'Appartement hoek op een tussenverdieping',
                 'calculate_value' => 11,
             ],
         ];
 
 	    foreach($buildingTypes as $buildingType){
-//	    	\DB::table('building_types')->insert([
-//	    		'name' => $buildingType,
-//		    ]);
-
-            // Building type is an array with same key's as db
-//            \App\Models\BuildingType::create($buildingType);
-
-            BuildingType::create([
-                'name' => $buildingType['name'],
-                'calculate_value' => $buildingType['calculate_value']
-            ]);
+	    	DB::table('building_types')->insert($buildingType);
 	    }
     }
 }

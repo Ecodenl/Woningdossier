@@ -19,6 +19,7 @@ class EnergyLabelsTableSeeder extends Seeder
 		    'D',
 		    'E',
 		    'F',
+            'G'
 	    ];
 
 	    foreach($energyLabels as $energyLabel){

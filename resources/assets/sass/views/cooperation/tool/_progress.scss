@@ -1,0 +1,33 @@
+ul.progress-list {
+
+  $borderWidth: 5px;
+
+  li {
+    a {
+      img {
+        border: $borderWidth solid transparent;
+      }
+      &:hover, &:active, &:focus {
+        img {
+          border: $borderWidth solid $brand-secundairy !important;
+        }
+      }
+    }
+
+    &.active {
+      a {
+        img {
+          border: $borderWidth solid $brand-tertiary;
+        }
+      }
+
+    }
+    &.done {
+      a {
+        img {
+          border: $borderWidth solid $brand-primary;
+        }
+      }
+    }
+  }
+}

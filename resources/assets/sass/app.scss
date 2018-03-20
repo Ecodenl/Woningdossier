@@ -8,8 +8,12 @@
 // Bootstrap
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
+@import "bootstrap_overrides";
+
 @import "mixins/spinner";
 
 @import "misc";
 
 @import "views/cooperation/auth/register";
+
+@import "views/cooperation/tool/progress";

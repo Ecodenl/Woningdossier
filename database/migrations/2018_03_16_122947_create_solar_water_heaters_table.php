@@ -16,7 +16,7 @@ class CreateSolarWaterHeatersTable extends Migration
         Schema::create('solar_water_heaters', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('calculated_value');
+            $table->integer('calculate_value');
             $table->timestamps();
         });
     }

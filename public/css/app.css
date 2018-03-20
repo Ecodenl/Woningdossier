@@ -8350,6 +8350,10 @@ button.close {
   }
 }
 
+.form-horizontal .radio-inline {
+  padding-top: 0;
+}
+
 .loading {
   background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
   background-size: 25px 25px;
@@ -8358,5 +8362,23 @@ button.close {
 #register .form-control.loading {
   background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
   background-size: 25px 25px;
+}
+
+ul.progress-list li a img {
+  border: 5px solid transparent;
+}
+
+ul.progress-list li a:hover img,
+ul.progress-list li a:active img,
+ul.progress-list li a:focus img {
+  border: 5px solid #27ae60 !important;
+}
+
+ul.progress-list li.active a img {
+  border: 5px solid #2980b9;
+}
+
+ul.progress-list li.done a img {
+  border: 5px solid #30815f;
 }
 

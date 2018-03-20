@@ -16,27 +16,24 @@ class SolarWaterHeatersTableSeeder extends Seeder
 
             [
                 'name' => 'Geen',
-                'calculated_value' => 1,
+                'calculate_value' => 1,
             ],
             [
                 'name' => 'Voor warm tapwater',
-                'calculated_value' => 2,
+                'calculate_value' => 2,
             ],
             [
                 'name' => 'Voor verwarming',
-                'calculated_value' => 3,
+                'calculate_value' => 3,
             ],
             [
                 'name' => 'Voor verwarming en warm tapwater',
-                'calculated_value' => 4,
+                'calculate_value' => 4,
             ],
         ];
 
         foreach ($solarWaterHeaters as $solarWaterHeater ){
-            SolarWaterHeater::create([
-                'name' => $solarWaterHeater['name'],
-                'calculated_value' => $solarWaterHeater['calculated_value']
-            ]);
+        	DB::table('solar_water_heaters')->insert($solarWaterHeater);
         }
     }
 }

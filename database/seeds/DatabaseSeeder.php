@@ -11,7 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
 	    $this->call(TitlesTableSeeder::class);
 	    $this->call(IndustriesTableSeeder::class);
 	    $this->call(OrganisationTypesTableSeeder::class);
@@ -31,13 +30,12 @@ class DatabaseSeeder extends Seeder
 		$this->call(MeasuresTableSeeder::class);
 		$this->call(MeasureCategoriesTableSeeder::class);
 		$this->call(CooperationsTableSeeder::class);
-
+	    $this->call(UsersTableSeeder::class);
 		// New
 		$this->call(HeatingAgesTableSeeder::class);
         $this->call(BuildingHeatingsTableSeeder::class);
         $this->call(MotivationsTableSeeder::class);
         $this->call(QualitiesTableSeeder::class);
-        $this->call(PresentWindowsTableSeeder::class);
         $this->call(SolarWaterHeatersTableSeeder::class);
         $this->call(PresentWindowsTableSeeder::class);
         $this->call(PresentShowerWtwsTableSeeder::class);
@@ -45,5 +43,12 @@ class DatabaseSeeder extends Seeder
         $this->call(ComfortComplaintsTableSeeder::class);
         $this->call(ExperienceAirQualityInHomesTableSeeder::class);
         $this->call(SufferFromsTableSeeder::class);
+        $this->call(PresentHeatPumpsTableSeeder::class);
+
+        $this->call(ExampleBuildingsTableSeeder::class);
+        $this->call(RoofTypesTableSeeder::class);
+        $this->call(InterestsTableSeeder::class);
+        $this->call(VentilationsTableSeeder::class);
+        $this->call(ComfortLevelTapWatersTableSeeder::class);
     }
 }

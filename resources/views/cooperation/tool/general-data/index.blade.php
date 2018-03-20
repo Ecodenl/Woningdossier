@@ -281,7 +281,7 @@
 
                     <select id="facade_insulation" class="form-control" name="interested[facade_insulation]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[facade_insulation]', $interested)}}">{{$interested}}</option>
+                            <option value="{{old('interested[facade_insulation]', $interested->id)}}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -299,7 +299,7 @@
 
                     <select id="windows_in_living_space" class="form-control" name="windows_in_living_space" >
                         @foreach($buildingTypes as $buildingType)
-                            <option value="{{old('windows_in_living_space', $buildingType->ide)}}">{{$buildingType->name}}</option>
+                            <option value="{{old('windows_in_living_space', $buildingType->id)}}">{{$buildingType->name}}</option>
                         @endforeach
                     </select>
 
@@ -316,7 +316,7 @@
 
                     <select id="windows_in_living_space" class="form-control" name="interested[windows_in_living_space]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[windows_in_living_space]', $interested)}}">{{$interested}}</option>
+                            <option value="{{old('interested[windows_in_living_space]', $interested->id)}}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -352,7 +352,7 @@
 
                     <select id="floor_insulation" class="form-control" name="interested[floor_insulation]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[floor_insulation]', $interested)}}">{{$interested}}</option>
+                            <option value="{{ old('interested[floor_insulation]', $interested->id) }}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -387,7 +387,7 @@
 
                     <select id="roof_insulation" class="form-control" name="interested[roof_insulation]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[roof_insulation]', $interested)}}">{{$interested}}</option>
+                            <option value="{{ old('interested[roof_insulation]', $interested->id) }}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -421,7 +421,7 @@
 
                     <select id="hr_cv_boiler" class="form-control" name="interested[hr_cv_boiler]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[hr_cv_boiler]', $interested)}}">{{$interested}}</option>
+                            <option value="{{old('interested[hr_cv_boiler]', $interested->id)}}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -455,7 +455,7 @@
 
                     <select id="hybrid_heatpump" class="form-control" name="interested[hybrid_heatpump]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[hybrid_heatpump]', $interested)}}">{{$interested}}</option>
+                            <option value="{{old('interested[hybrid_heatpump]', $interested->id)}}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -490,7 +490,7 @@
 
                     <select id="sun_panel" class="form-control" name="interested[sun_panel]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[sun_panel]', $interested)}}">{{$interested}}</option>
+                            <option value="{{old('interested[sun_panel]', $interested->id)}}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -533,7 +533,7 @@
 
                     <select id="monovalent_heatpump" class="form-control" name="interested[monovalent_heatpump]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[monovalent_heatpump]', $interested)}}">{{$interested}}</option>
+                            <option value="{{ old('interested[monovalent_heatpump]', $interested->id) }}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -568,7 +568,7 @@
 
                     <select id="sun_boiler" class="form-control" name="interested[sun_boiler]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[sun_boiler]', $interested)}}">{{$interested}}</option>
+                            <option value="{{old('interested[sun_boiler]', $interested->id) }}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 
@@ -603,7 +603,7 @@
 
                     <select id="house_ventilation" class="form-control" name="interested[house_ventilation]" >
                         @foreach($isInterested as $interested)
-                            <option value="{{old('interested[house_ventilation]', $interested)}}">{{$interested}}</option>
+                            <option value="{{old('interested[house_ventilation]', $interested->id)}}">@lang($interested->translation_key)</option>
                         @endforeach
                     </select>
 

@@ -47,5 +47,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(ExampleBuildingsTableSeeder::class);
         $this->call(RoofTypesTableSeeder::class);
+        $this->call(InterestsTableSeeder::class);
     }
 }

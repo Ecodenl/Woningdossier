@@ -60,6 +60,13 @@ return [
 				'type2' => 'Platdak',
 				'type3' => 'Geen dak',
 			],
+			'interests' => [
+				'interest0' => 'Ja, op korte termijn',
+				'interest1' => 'Ja, op termijn',
+				'interest2' => 'Meer informatie gewenst',
+				'interest3' => 'Geen actie',
+				'interest4' => 'Niet mogelijk',
+			],
 
 			'general-data' => [
 				'title' => 'Algemene gegevens',
@@ -106,7 +113,7 @@ return [
 						'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
 					],
 					'additional' => 'Overig',
-					'interested' => 'Intresse?',
+					'interested' => 'Interesse?',
 
 				],
 

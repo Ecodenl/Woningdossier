@@ -13,6 +13,7 @@ use App\Models\PresentWindow;
 use App\Models\Quality;
 use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
+use App\Models\Ventilation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -31,7 +32,7 @@ class GeneralDataController extends Controller
         $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
 	    $isInterested = Interest::all();
         $insulations = PresentWindow::all();
-        $houseVentilations = [];
+        $houseVentilations = Ventilation::all();
         $qualities = Quality::all();
         $buildingHeatings = BuildingHeating::all();
         $solarWaterHeaters = SolarWaterHeater::all();

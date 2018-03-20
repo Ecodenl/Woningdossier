@@ -58,6 +58,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\UserProgress $progress
  */
 class User extends Authenticatable
 {
@@ -124,6 +125,10 @@ class User extends Authenticatable
 
 	public function tasks(){
 		return $this->hasMany(Task::class);
+	}
+
+	public function progress(){
+    	return $this->hasMany(UserProgress::class);
 	}
 
 	/**

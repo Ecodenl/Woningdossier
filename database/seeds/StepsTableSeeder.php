@@ -14,29 +14,49 @@ class StepsTableSeeder extends Seeder
         //
 	    $steps = [
 	    	[
-	    		'slug' => 'common-data',
-			    'name' => 'Common data',
+	    		'slug' => 'general-data',
+			    'name' => 'General data',
 			    'order' => 0,
 		    ],
 		    [
-			    'slug' => 'gevelisolatie',
-			    'name' => 'Gevelisolatie',
+			    'slug' => 'wall-insulation',
+			    'name' => 'Wall Insulation',
 			    'order' => 1,
 		    ],
 		    [
-			    'slug' => 'isolerende-beglazing',
-			    'name' => 'Isolerende beglazing',
+			    'slug' => 'insulated-glazing',
+			    'name' => 'Insulated Glazing',
 			    'order' => 2,
 		    ],
 		    [
-			    'slug' => 'vloerisolatie',
-			    'name' => 'Vloerisolatie',
+			    'slug' => 'floor-insulation',
+			    'name' => 'Floor Insulation',
 			    'order' => 3,
 		    ],
 		    [
-			    'slug' => 'dakisolatie',
-			    'name' => 'Dakisolatie',
+			    'slug' => 'roof-insulation',
+			    'name' => 'Roof Insulation',
 			    'order' => 4,
+		    ],
+		    [
+			    'slug' => 'high-efficiency-boiler',
+			    'name' => 'High Efficiency Boiler',
+			    'order' => 5,
+		    ],
+		    [
+			    'slug' => 'heat-pump',
+			    'name' => 'Heat Pump',
+			    'order' => 6,
+		    ],
+		    [
+			    'slug' => 'solar-panels',
+			    'name' => 'Solar Panels',
+			    'order' => 7,
+		    ],
+		    [
+			    'slug' => 'heater',
+			    'name' => 'Heater',
+			    'order' => 8,
 		    ],
 	    ];
 

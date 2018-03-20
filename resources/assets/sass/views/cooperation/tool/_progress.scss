@@ -1,10 +1,13 @@
 ul.progress-list {
 
   $borderWidth: 5px;
+  $imageSize: 50px;
 
   li {
     a {
       img {
+        width: $imageSize;
+        height: $imageSize;
         border: $borderWidth solid transparent;
       }
       &:hover, &:active, &:focus {

@@ -14,6 +14,7 @@ use App\Models\PresentWindow;
 use App\Models\Quality;
 use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
+use App\Models\Step;
 use App\Models\Ventilation;
 use Validator;
 use Illuminate\Http\Request;
@@ -42,12 +43,13 @@ class GeneralDataController extends Controller
         $centralHeatingAges = CentralHeatingAge::all();
         $heatPumps = PresentHeatPump::all();
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
-	    // TODO: when models are present, use them.
 
+        $steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.general-data.index', compact('buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildingTypes', 'houseVentilations', 'isInterested', 'insulations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
-            'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater'
+            'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
+            'steps'
         ));
     }
 

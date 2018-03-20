@@ -133,6 +133,24 @@ return [
 					'additional-info' => 'Toelichting op de woonsituatie'
 				],
 			],
+
+            'wall-insulation' => [
+                'intro' => [
+                    'title' => 'Gevelisolatie',
+                    'build-year' => 'Het huis is gebouwd in :year. Woningen met dit bouwjaar hebben vaak geen spouwmuur.',
+                    'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
+                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
+                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',
+                ],
+
+                'optional' => [
+                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
+                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
+                    'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
+                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
+                    'facade-best-insulation' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
+                ],
+            ],
 		],
 	],
 ];

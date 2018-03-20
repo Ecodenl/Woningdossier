@@ -14,7 +14,7 @@ class WallInsulationController extends Controller
      */
     public function index()
     {
-        //
+        return view('cooperation.tool.wall-insulation.index');
     }
 
     /**

@@ -18,7 +18,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		Route::get('/', function() { return view( 'cooperation.welcome' ); })->name('welcome');
 		Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 		Route::get( 'confirm',
-			'Auth\RegisterController@confirm' )->name( 'confirm' );
+            'Auth\RegisterController@confirm' )->name( 'confirm' );
 
 		Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
 		// Login, forgot password etc.
@@ -29,13 +29,20 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
 
-			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function(){
+			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
 
 				Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
+
+            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
+            	Route::get('/', 'ToolController@index')->name('index');
+                Route::resource('general-data', 'GeneralDataController');
+            });
+
 		});
+
 
 	});
 

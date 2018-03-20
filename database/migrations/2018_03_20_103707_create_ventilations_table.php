@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePresentShowerWtwsTable extends Migration
+class CreateVentilationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePresentShowerWtwsTable extends Migration
      */
     public function up()
     {
-        Schema::create('present_shower_wtws', function (Blueprint $table) {
+        Schema::create('ventilations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('calculate_value');
@@ -28,6 +28,6 @@ class CreatePresentShowerWtwsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('present_shower_wtws');
+        Schema::dropIfExists('ventilations');
     }
 }

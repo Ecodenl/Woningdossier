@@ -15,7 +15,7 @@ class HeatingAgesTableSeeder extends Seeder
         $heatingAges = [
 
             [
-                'name' => 'Aanwezig, recent vervange',
+                'name' => 'Aanwezig, recent vervangen',
                 'calculate_value' => 1,
             ],
             [
@@ -37,10 +37,7 @@ class HeatingAgesTableSeeder extends Seeder
         ];
 
         foreach ($heatingAges as $heatingAge) {
-            CentralHeatingAge::create([
-                'name' => $heatingAge['name'],
-                'calculate_value' => $heatingAge['calculate_value'],
-            ]);
+        	DB::table('central_heating_ages')->insert($heatingAge);
         }
     }
 }

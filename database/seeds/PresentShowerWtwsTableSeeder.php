@@ -16,19 +16,16 @@ class PresentShowerWtwsTableSeeder extends Seeder
 
             [
                 'name' => 'Geen',
-                'calculated_value' => 1,
+                'calculate_value' => 1,
             ],
             [
                 'name' => 'Aanwezig',
-                'calculated_value' => 2,
+                'calculate_value' => 2,
             ],
         ];
 
         foreach ($presentShowerWtws as $presentShowerWtw) {
-            PresentShowerWtw::create([
-                'name' => $presentShowerWtw['name'],
-                'calculated_value' => $presentShowerWtw['calculated_value'],
-            ]);
+        	DB::table('present_shower_wtws')->insert($presentShowerWtw);
         }
     }
 }

@@ -833,8 +833,8 @@
                         <label for="comfortniveau_warm_tapwater" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.comfortniveau-warm-tapwater')</label>
 
                         <select id="comfortniveau_warm_tapwater" class="form-control" name="comfortniveau_warm_tapwater" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('comfortniveau_warm_tapwater', $buildingType->ide)}}">{{$buildingType->name}}</option>
+                            @foreach($comfortLevelsTapWater as $comfortLevelTapWater)
+                                <option value="{{old('comfortniveau_warm_tapwater', $comfortLevelTapWater->id)}}">{{$comfortLevelTapWater->name}}</option>
                             @endforeach
                         </select>
 

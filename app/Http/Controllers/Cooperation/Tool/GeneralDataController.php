@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
+use App\Models\ComfortLevelTapWater;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\Interest;
@@ -38,12 +39,14 @@ class GeneralDataController extends Controller
         $solarWaterHeaters = SolarWaterHeater::all();
         $centralHeatingAges = CentralHeatingAge::all();
         $heatPumps = PresentHeatPump::all();
+        $comfortLevelsTapWater = ComfortLevelTapWater::all();
 	    // TODO: when models are present, use them.
 
 
         return view('cooperation.tool.general-data.index', compact('buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildingTypes', 'houseVentilations', 'isInterested', 'insulations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
-            'centralHeatingAges', 'heatPumps'));
+            'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater'
+        ));
     }
 
     /**

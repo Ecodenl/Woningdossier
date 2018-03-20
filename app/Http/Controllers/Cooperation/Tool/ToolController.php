@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 class ToolController extends Controller
 {
     public function index(){
-
-    	return view('cooperation.tool.index');
+	    $steps = Step::orderBy('order')->get();
+	    
+    	return view('cooperation.tool.index', compact('steps'));
     }
 }

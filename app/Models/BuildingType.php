@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingType whereUpdatedAt($value)
+ * @property int $calculate_value
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingType whereCalculateValue($value)
  */
 class BuildingType extends Model
 {

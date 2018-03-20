@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereMeasureId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereUpdatedAt($value)
+ * @property-read \App\Models\Building $building
  */
 class Device extends Model
 {
@@ -34,8 +35,8 @@ class Device extends Model
     	return $this->belongsTo(Measure::class);
     }
 
-    public function address(){
-    	return $this->belongsTo(Address::class);
+    public function building(){
+    	return $this->belongsTo(Building::class);
     }
 
     public function deviceType(){

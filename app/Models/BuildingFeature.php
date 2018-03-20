@@ -42,11 +42,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereSurface($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereVolume($value)
+ * @property-read \App\Models\Building $building
  */
 class BuildingFeature extends Model
 {
-    public function address(){
-    	return $this->belongsTo(Address::class);
+    public function building(){
+    	return $this->belongsTo(Building::class);
     }
 
     public function objectType(){

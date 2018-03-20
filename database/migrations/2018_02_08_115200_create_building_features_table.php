@@ -16,8 +16,8 @@ class CreateBuildingFeaturesTable extends Migration
         Schema::create('building_features', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('address_id')->unsigned()->nullable()->default(null);
-            $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
+            $table->integer('building_id')->unsigned()->nullable()->default(null);
+            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
 
             $table->integer('object_type_id')->unsigned()->nullable()->default(null);
             $table->foreign('object_type_id')->references('id')->on('object_types') ->onDelete('restrict');

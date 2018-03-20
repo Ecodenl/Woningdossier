@@ -22,8 +22,8 @@ class CreateRegistrationsTable extends Migration
 
         Schema::create('registrations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('address_id')->unsigned();
-            $table->foreign('address_id')->references('id')->on('addresses');
+            $table->integer('building_id')->unsigned();
+            $table->foreign('building_id')->references('id')->on('buildings');
             $table->integer('registration_status_id')->unsigned()->nullable();
             $table->foreign('registration_status_id')->references('id')->on('registration_statuses');
 

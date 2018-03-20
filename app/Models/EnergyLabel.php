@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\EnergyLabel whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\EnergyLabel whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\EnergyLabel whereUpdatedAt($value)
+ * @property int|null $calculate_value
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\EnergyLabel whereCalculateValue($value)
  */
 class EnergyLabel extends Model
 {

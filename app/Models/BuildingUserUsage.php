@@ -26,11 +26,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AddressUserUsage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AddressUserUsage whereUsagePercentage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AddressUserUsage whereUserId($value)
+ * @property-read \App\Models\Building $building
  */
-class AddressUserUsage extends Model
+class BuildingUserUsage extends Model
 {
-    public function address(){
-    	return $this->belongsTo(Address::class);
+    public function building(){
+    	return $this->belongsTo(Building::class);
     }
 
     public function user(){

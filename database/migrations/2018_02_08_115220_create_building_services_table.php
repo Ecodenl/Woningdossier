@@ -16,8 +16,8 @@ class CreateBuildingServicesTable extends Migration
         Schema::create('building_services', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('address_id')->unsigned()->nullable()->default(null);
-            $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
+            $table->integer('building_id')->unsigned()->nullable()->default(null);
+            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
 
             $table->integer('measure_id')->unsigned()->nullable()->default(null);
             $table->foreign('measure_id')->references('id')->on('measures') ->onDelete('restrict');

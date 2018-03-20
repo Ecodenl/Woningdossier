@@ -24,11 +24,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereMeasureId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereServiceTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereUpdatedAt($value)
+ * @property-read \App\Models\Building $building
  */
 class BuildingElement extends Model
 {
-	public function address(){
-		return $this->belongsTo(Address::class);
+	public function building(){
+		return $this->belongsTo(Building::class);
 	}
 
 	public function measure(){

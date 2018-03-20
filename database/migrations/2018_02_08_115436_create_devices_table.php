@@ -19,8 +19,8 @@ class CreateDevicesTable extends Migration
             $table->integer('measure_id')->unsigned()->nullable()->default(null);
             $table->foreign('measure_id')->references('id')->on('measures') ->onDelete('restrict');
 
-            $table->integer('address_id')->unsigned()->nullable()->default(null);
-            $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
+            $table->integer('building_id')->unsigned()->nullable()->default(null);
+            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
 
             $table->integer('device_type_id')->unsigned()->nullable()->default(null);
             $table->foreign('device_type_id')->references('id')->on('device_types') ->onDelete('restrict');

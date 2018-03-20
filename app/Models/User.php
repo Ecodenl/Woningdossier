@@ -59,6 +59,8 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
  */
 class User extends Authenticatable
 {
@@ -91,8 +93,8 @@ class User extends Authenticatable
     	return $this->belongsTo(Title::class);
     }
 
-    public function addresses(){
-    	return $this->hasMany(Address::class);
+    public function buildings(){
+    	return $this->hasMany(Building::class);
     }
 
     public function phoneNumbers(){
@@ -115,8 +117,8 @@ class User extends Authenticatable
     	return $this->hasMany(UserNote::class);
     }
 
-    public function addressUsage(){
-    	return $this->hasMany(AddressUserUsage::class);
+    public function buildingUsage(){
+    	return $this->hasMany(BuildingUserUsage::class);
     }
 
     public function energyHabits(){

@@ -33,12 +33,20 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
 
-				Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
+				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController');
+                Route::resource('wall-insulation', 'WallInsulationController');
+				Route::resource('insulated-glazing', 'InsulatedGlazingController');
+				Route::resource('floor-insulation', 'FloorInsulationController');
+				Route::resource('roof-insulation', 'RoofInsulationController');
+				Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController');
+				Route::resource('heat-pump', 'HeatPumpController');
+				Route::resource('solar-panels', 'SolarPanelsController');
+				Route::resource('heater', 'HeaterController');
             });
 
 		});

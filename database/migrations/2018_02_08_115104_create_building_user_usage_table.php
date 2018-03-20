@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAddressUserUsageTable extends Migration
+class CreateBuildingUserUsageTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateAddressUserUsageTable extends Migration
      */
     public function up()
     {
-        Schema::create('address_user_usages', function (Blueprint $table) {
+        Schema::create('building_user_usages', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('address_id')->unsigned()->nullable()->default(null);
-            $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
+            $table->integer('building_id')->unsigned()->nullable()->default(null);
+            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
 
             $table->integer('user_id')->unsigned()->nullable()->default(null);
             $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
@@ -38,6 +38,6 @@ class CreateAddressUserUsageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('address_user_usages');
+        Schema::dropIfExists('building_user_usages');
     }
 }

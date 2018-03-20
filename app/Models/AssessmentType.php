@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\AssessmentType
  *
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property string $description
@@ -18,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class AssessmentType extends Model
 {

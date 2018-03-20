@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Organisation
  *
- * @property-read \App\Models\Industry $industry
- * @property-read \App\Models\OrganisationType $organisationType
- * @property-read \App\Models\User $user
- * @mixin \Eloquent
  * @property int $id
  * @property int $user_id
  * @property int|null $type_id
@@ -22,6 +18,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read \App\Models\Industry|null $industry
+ * @property-read \App\Models\OrganisationType $organisationType
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organisation whereChamberOfCommerceNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organisation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organisation whereDeletedAt($value)
@@ -33,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organisation whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organisation whereVatNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organisation whereWebsite($value)
+ * @mixin \Eloquent
  */
 class Organisation extends Model
 {

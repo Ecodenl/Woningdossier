@@ -8365,6 +8365,8 @@ button.close {
 }
 
 ul.progress-list li a img {
+  width: 50px;
+  height: 50px;
   border: 5px solid transparent;
 }
 

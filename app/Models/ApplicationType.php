@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\ApplicationType
  *
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property string $description
@@ -18,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplicationType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplicationType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplicationType whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class ApplicationType extends Model
 {

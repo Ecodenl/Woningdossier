@@ -7,14 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Task
  *
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\User $finishedBy
- * @property-read \App\Models\Opportunity $opportunity
- * @property-read \App\Models\Registration $registration
- * @property-read \App\Models\User $responsibleUser
- * @property-read \App\Models\TaskType $type
- * @property-read \App\Models\User $user
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property string $description
@@ -32,6 +24,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\User|null $finishedBy
+ * @property-read \App\Models\Opportunity|null $opportunity
+ * @property-read \App\Models\Registration|null $registration
+ * @property-read \App\Models\User $responsibleUser
+ * @property-read \App\Models\TaskType $type
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereCreatedById($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereDateFinished($value)
@@ -49,6 +48,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereTaskTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereUserId($value)
+ * @mixin \Eloquent
  */
 class Task extends Model
 {

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Usage
  *
- * @mixin \Eloquent
  * @property int $id
  * @property string|null $start_period
  * @property string|null $end_period
@@ -20,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usage whereStartPeriod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usage whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usage whereUsage($value)
+ * @mixin \Eloquent
  */
 class Usage extends Model
 {

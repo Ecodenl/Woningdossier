@@ -10,20 +10,6 @@ use Illuminate\Support\Collection;
 /**
  * App\Models\User
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AddressUserUsage[] $addressUsage
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Address[] $addresses
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\EmailAddress[] $emailAddresses
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserEnergyHabit[] $energyHabits
- * @property-read \App\Models\LastNamePrefix $lastNamePrefix
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserNote[] $notes
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Opportunity[] $opportunities
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Organisation[] $organisations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\People[] $people
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PhoneNumber[] $phoneNumbers
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
- * @property-read \App\Models\Title $title
- * @mixin \Eloquent
  * @property int $id
  * @property string $first_name
  * @property int|null $last_name_prefix_id
@@ -41,6 +27,19 @@ use Illuminate\Support\Collection;
  * @property int $visit_count
  * @property int $active
  * @property string|null $confirm_token
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\EmailAddress[] $emailAddresses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserEnergyHabit[] $energyHabits
+ * @property-read \App\Models\LastNamePrefix|null $lastNamePrefix
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Opportunity[] $opportunities
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Organisation[] $organisations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\People[] $people
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PhoneNumber[] $phoneNumbers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
+ * @property-read \App\Models\Title|null $title
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereConfirmToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
@@ -58,7 +57,8 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereTitleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @mixin \Eloquent
+ * @property-read \App\Models\UserProgress $progress
  */
 class User extends Authenticatable
 {
@@ -91,8 +91,8 @@ class User extends Authenticatable
     	return $this->belongsTo(Title::class);
     }
 
-    public function addresses(){
-    	return $this->hasMany(Address::class);
+    public function buildings(){
+    	return $this->hasMany(Building::class);
     }
 
     public function phoneNumbers(){
@@ -111,12 +111,8 @@ class User extends Authenticatable
     	return $this->hasMany(Organisation::class);
     }
 
-    public function notes(){
-    	return $this->hasMany(UserNote::class);
-    }
-
-    public function addressUsage(){
-    	return $this->hasMany(AddressUserUsage::class);
+    public function buildingUsage(){
+    	return $this->hasMany(BuildingUserUsage::class);
     }
 
     public function energyHabits(){
@@ -129,6 +125,10 @@ class User extends Authenticatable
 
 	public function tasks(){
 		return $this->hasMany(Task::class);
+	}
+
+	public function progress(){
+    	return $this->hasMany(UserProgress::class);
 	}
 
 	/**

@@ -7,15 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\BuildingFeature
  *
- * @property-read \App\Models\Address $address
- * @property-read \App\Models\BuildingCategory $buildingCategory
- * @property-read \App\Models\BuildingType $buildingType
- * @property-read \App\Models\EnergyLabel $energyLabel
- * @property-read \App\Models\ObjectType $objectType
- * @property-read \App\Models\RoofType $roofType
- * @mixin \Eloquent
  * @property int $id
- * @property int|null $address_id
+ * @property int|null $building_id
  * @property int|null $object_type_id
  * @property int|null $building_category_id
  * @property int|null $building_type_id
@@ -28,9 +21,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $monument
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereAddressId($value)
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\BuildingCategory|null $buildingCategory
+ * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \App\Models\EnergyLabel|null $energyLabel
+ * @property-read \App\Models\ObjectType|null $objectType
+ * @property-read \App\Models\RoofType|null $roofType
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildingCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildingLayers($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildingTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereCreatedAt($value)
@@ -42,11 +41,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereSurface($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereVolume($value)
+ * @mixin \Eloquent
  */
 class BuildingFeature extends Model
 {
-    public function address(){
-    	return $this->belongsTo(Address::class);
+    public function building(){
+    	return $this->belongsTo(Building::class);
     }
 
     public function objectType(){

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Reason
  *
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property \Carbon\Carbon|null $created_at
@@ -16,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Reason whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Reason whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Reason whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Reason extends Model
 {

@@ -16,8 +16,8 @@ class CreateBuildingAppliancesTable extends Migration
         Schema::create('building_appliances', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('address_id')->unsigned()->nullable()->default(null);
-            $table->foreign('address_id')->references('id')->on('addresses') ->onDelete('restrict');
+            $table->integer('building_id')->unsigned()->nullable()->default(null);
+            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
 
             $table->integer('appliance_id')->unsigned()->nullable()->default(null);
             $table->foreign('appliance_id')->references('id')->on('appliances') ->onDelete('restrict');

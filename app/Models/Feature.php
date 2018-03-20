@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Feature
  *
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property \Carbon\Carbon|null $created_at
@@ -16,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Feature whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Feature whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Feature whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Feature extends Model
 {

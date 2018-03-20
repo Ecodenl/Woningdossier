@@ -7,12 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\People
  *
- * @property-read \App\Models\LastNamePrefix $lastNamePrefix
- * @property-read \App\Models\Organisation $organisation
- * @property-read \App\Models\PersonType $personType
- * @property-read \App\Models\Title $title
- * @property-read \App\Models\User $user
- * @mixin \Eloquent
  * @property int $id
  * @property int $user_id
  * @property string $first_name
@@ -29,6 +23,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read \App\Models\LastNamePrefix|null $lastNamePrefix
+ * @property-read \App\Models\Organisation|null $organisation
+ * @property-read \App\Models\PersonType $personType
+ * @property-read \App\Models\Title|null $title
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\People whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\People whereDateOfBirth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\People whereDateOfBirthPartner($value)
@@ -45,6 +44,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\People whereTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\People whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\People whereUserId($value)
+ * @mixin \Eloquent
  */
 class People extends Model
 {

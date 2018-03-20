@@ -7,14 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Opportunity
  *
- * @property-read \App\Models\Campaign $campaign
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\Measure $measure
- * @property-read \App\Models\User $ownedBy
- * @property-read \App\Models\Registration $registration
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
- * @property-read \App\Models\User $user
- * @mixin \Eloquent
  * @property int $id
  * @property int $measure_id
  * @property int $user_id
@@ -27,6 +19,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $owned_by_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\Campaign|null $campaign
+ * @property-read \App\Models\User|null $createdBy
+ * @property-read \App\Models\Measure $measure
+ * @property-read \App\Models\User|null $ownedBy
+ * @property-read \App\Models\Registration|null $registration
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereCampaignId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereCreatedById($value)
@@ -39,6 +38,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereRegistrationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Opportunity whereUserId($value)
+ * @mixin \Eloquent
  */
 class Opportunity extends Model
 {

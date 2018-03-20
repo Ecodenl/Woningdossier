@@ -15,10 +15,10 @@ class CreateUserProgressesTable extends Migration
     {
         Schema::create('user_progresses', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('step_id');
-            $table->foreign('step_id')->references('id')->on('steps');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->integer('step_id')->unsigned();
+            $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
             $table->timestamps();
         });
     }

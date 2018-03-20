@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\UserEnergyHabit
  *
- * @property-read \App\Models\User $user
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $user_id
  * @property int|null $residents_nr
@@ -32,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $end_date
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountElectricity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountGas($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountWarmWaterId($value)
@@ -55,6 +54,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereThermostatLow($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereUserId($value)
+ * @mixin \Eloquent
  */
 class UserEnergyHabit extends Model
 {

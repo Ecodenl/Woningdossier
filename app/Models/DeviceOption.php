@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\DeviceOption
  *
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property \Carbon\Carbon|null $created_at
@@ -16,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOption whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOption whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOption whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class DeviceOption extends Model
 {

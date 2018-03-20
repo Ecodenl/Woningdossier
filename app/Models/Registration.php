@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\Registration
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Opportunity[] $opportunities
- * @property-read \App\Models\RegistrationStatus $status
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
- * @mixin \Eloquent
  * @property int $id
- * @property int $address_id
+ * @property int $building_id
  * @property int|null $registration_status_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Registration whereAddressId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Opportunity[] $opportunities
+ * @property-read \App\Models\RegistrationStatus $status
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Registration whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Registration whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Registration whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Registration whereRegistrationStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Registration whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Registration extends Model
 {

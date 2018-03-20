@@ -15,8 +15,10 @@ use App\Models\Quality;
 use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
 use App\Models\Ventilation;
+use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 
 class GeneralDataController extends Controller
 {
@@ -68,15 +70,24 @@ class GeneralDataController extends Controller
     public function store(Request $request)
     {
 
+        $validator = Validator::make($request->all(), [
+            'building_type' => 'required|exists:building_types,id',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        dd('Validate passes');
 
         // Retrieve the name and basic data about the address
-        $nameResident = $request->name_resident;
-        $street = $request->street;
-        $houseNumber = $request->house_number;
-        $zipcode = $request->zip_code;
-        $city = $request->residence;
-        $email = $request->email;
-        $phoneNumber = $request->phone_number;
+//        $nameResident = $request->name_resident;
+//        $street = $request->street;
+//        $houseNumber = $request->house_number;
+//        $zipcode = $request->zip_code;
+//        $city = $request->residence;
+//        $email = $request->email;
+//        $phoneNumber = $request->phone_number;
 
         // Retrieve information about the building
         $buildingType = $request->building_type;

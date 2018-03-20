@@ -561,7 +561,7 @@
 
                         <select id="monovalent_heatpump" class="form-control" name="monovalent_heatpump" >
                             @foreach($heatPumps  as $heatPump)
-                                <option value="{{ old('interested', $heatPump->id) }}">@lang($heatPump->name)</option>
+                                <option value="{{ old('monovalent_heatpump', $heatPump->id) }}">@lang($heatPump->name)</option>
                             @endforeach
                         </select>
 

@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingHeatingsTableSeeder::class);
         $this->call(MotivationsTableSeeder::class);
         $this->call(QualitiesTableSeeder::class);
-        $this->call(PresentWindowsTableSeeder::class);
         $this->call(SolarWaterHeatersTableSeeder::class);
         $this->call(PresentWindowsTableSeeder::class);
         $this->call(PresentShowerWtwsTableSeeder::class);

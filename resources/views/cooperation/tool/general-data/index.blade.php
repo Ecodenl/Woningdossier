@@ -257,49 +257,14 @@
         <div id="energy-saving-measures">
             <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.title')</h4>
             <div class="row">
-                <div class="col-sm-4">
-
-                    <div class="form-group add-space{{ $errors->has('facade_insulation') ? ' has-error' : '' }}">
-                        <label for="facade_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.facade-insulation')</label>
-
-                        <select id="facade_insulation" class="form-control" name="facade_insulation" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('facade_insulation', $buildingType->id)}}">{{$buildingType->name}}</option>
-                            @endforeach
-                        </select>
-
-                        @if ($errors->has('facade_insulation'))
-                            <span class="help-block">
-                        <strong>{{ $errors->first('facade_insulation') }}</strong>
-                    </span>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group add-space{{ $errors->has('interested[facade_insulation]') ? ' has-error' : '' }}">
-                        <label for="facade_insulation" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label>
-
-                        <select id="facade_insulation" class="form-control" name="interested[facade_insulation]" >
-                            @foreach($isInterested as $interested)
-                                <option value="{{old('interested[facade_insulation]', $interested->id)}}">@lang($interested->translation_key)</option>
-                            @endforeach
-                        </select>
-
-                        @if ($errors->has('interested[facade_insulation]'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('interested[facade_insulation]') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('windows_in_living_space') ? ' has-error' : '' }}">
                         <label for="windows_in_living_space" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.window-in-living-space')</label>
 
                         <select id="windows_in_living_space" class="form-control" name="windows_in_living_space" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('windows_in_living_space', $buildingType->id)}}">{{$buildingType->name}}</option>
+                            @foreach($insulations as $insulation)
+                                <option value="{{old('windows_in_living_space', $insulation->id)}}">{{$insulation->name}}</option>
                             @endforeach
                         </select>
 
@@ -327,15 +292,88 @@
                         @endif
                     </div>
                 </div>
+                <div class="col-sm-4">
+                    <div class="form-group add-space{{ $errors->has('windows_in_sleeping_spaces') ? ' has-error' : '' }}">
+                        <label for="windows_in_sleeping_spaces" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.window-in-sleeping-spaces')</label>
+
+                        <select id="windows_in_sleeping_spaces" class="form-control" name="windows_in_sleeping_spaces" >
+                            @foreach($insulations as $insulation)
+                                <option value="{{old('windows_in_sleeping_spaces', $insulation->id)}}">{{$insulation->name}}</option>
+                            @endforeach
+                        </select>
+
+                        @if ($errors->has('windows_in_sleeping_spaces'))
+                            <span class="help-block">
+                        <strong>{{ $errors->first('windows_in_sleeping_spaces') }}</strong>
+                    </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group add-space{{ $errors->has('interested[windows_in_sleeping_spaces]') ? ' has-error' : '' }}">
+                        <label for="windows_in_sleeping_spaces" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label>
+
+                        <select id="windows_in_sleeping_spaces" class="form-control" name="interested[windows_in_sleeping_spaces]" >
+                            @foreach($isInterested as $interested)
+                                <option value="{{old('interested[windows_in_sleeping_spaces]', $interested->id)}}">@lang($interested->translation_key)</option>
+                            @endforeach
+                        </select>
+
+                        @if ($errors->has('interested[windows_in_sleeping_spaces]'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('interested[windows_in_sleeping_spaces]') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
             </div>
             <div class="row">
+                <div class="col-sm-4">
+
+                    <div class="form-group add-space{{ $errors->has('facade_insulation') ? ' has-error' : '' }}">
+                        <label for="facade_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.facade-insulation')</label>
+
+                        <select id="facade_insulation" class="form-control" name="facade_insulation" >
+                            @foreach($qualities as $quality)
+                                <option value="{{old('facade_insulation', $quality->id)}}">{{$quality->name}}</option>
+                            @endforeach
+                        </select>
+
+                        @if ($errors->has('facade_insulation'))
+                            <span class="help-block">
+                        <strong>{{ $errors->first('facade_insulation') }}</strong>
+                    </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group add-space{{ $errors->has('interested[facade_insulation]') ? ' has-error' : '' }}">
+                        <label for="facade_insulation" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label>
+
+                        <select id="facade_insulation" class="form-control" name="interested[facade_insulation]" >
+                            @foreach($isInterested as $interested)
+                                <option value="{{old('interested[facade_insulation]', $interested->id)}}">@lang($interested->translation_key)</option>
+                            @endforeach
+                        </select>
+
+                        @if ($errors->has('interested[facade_insulation]'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('interested[facade_insulation]') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('floor_insulation') ? ' has-error' : '' }}">
                         <label for="floor_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.floor-insulation')</label>
 
                         <select id="floor_insulation" class="form-control" name="floor_insulation" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('floor_insulation', $buildingType->id)}}">{{$buildingType->name}}</option>
+                            {{--@foreach($insulations as $insulation)--}}
+                                {{--<option value="{{old('floor_insulation', $insulation->id)}}">{{$insulation->name}}</option>--}}
+                            {{--@endforeach--}}
+                            @foreach($qualities as $quality)
+                                <option value="{{old('floor_insulation', $quality->id)}}">{{$quality->name}}</option>
                             @endforeach
                         </select>
 
@@ -363,14 +401,15 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-sm-4">
+
+                <div class="col-sm-6">
 
                     <div class="form-group add-space{{ $errors->has('roof_insulation') ? ' has-error' : '' }}">
                         <label for="roof_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.roof-insulation')</label>
 
                         <select id="roof_insulation" class="form-control" name="roof_insulation" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('roof_insulation', $buildingType->id)}}">{{$buildingType->name}}</option>
+                            @foreach($qualities as $quality)
+                                <option value="{{old('roof_insulation', $quality->id)}}">{{$quality->name}}</option>
                             @endforeach
                         </select>
 
@@ -381,7 +420,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('interested[roof_insulation]') ? ' has-error' : '' }}">
                         <label for="roof_insulation" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label>
 
@@ -398,15 +437,16 @@
                         @endif
                     </div>
                 </div>
-                </div>
+
+            </div>
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('hr_cv_boiler') ? ' has-error' : '' }}">
                         <label for="hr_cv_boiler" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hr-cv-boiler')</label>
 
                         <select id="hr_cv_boiler" class="form-control" name="hr_cv_boiler" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('hr_cv_boiler', $buildingType->id)}}">{{$buildingType->name}}</option>
+                            @foreach($centralHeatingAges as $centralHeatingAge)
+                                <option value="{{old('hr_cv_boiler', $centralHeatingAge->id)}}">{{$centralHeatingAge->name}}</option>
                             @endforeach
                         </select>
 
@@ -439,8 +479,8 @@
                         <label for="hybrid_heatpump" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hybrid-heatpump')</label>
 
                         <select id="hybrid_heatpump" class="form-control" name="hybrid_heatpump" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('hybrid_heatpump', $buildingType->id)}}">{{$buildingType->name}}</option>
+                            @foreach($heatPumps  as $heatPump)
+                                <option value="{{ old('hybrid_heatpump', $heatPump->id) }}">@lang($heatPump->name)</option>
                             @endforeach
                         </select>
 
@@ -474,11 +514,7 @@
                     <div class="form-group add-space{{ $errors->has('sun_panel') ? ' has-error' : '' }}">
                         <label for="sun_panel" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.title')</label>
 
-                        <select id="sun_panel" class="form-control" name="sun_panel" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('sun_panel', $buildingType->id)}}">{{$buildingType->name}}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="sun_panel" class="form-control" name="sun_panel">
 
                         @if ($errors->has('sun_panel'))
                             <span class="help-block">
@@ -523,7 +559,11 @@
                     <div class="form-group add-space{{ $errors->has('monovalent_heatpump') ? ' has-error' : '' }}">
                         <label for="monovalent_heatpump" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.monovalent-heatpump')</label>
 
-                        <input id="monovalent_heatpump" class="form-control" name="monovalent_heatpump" >
+                        <select id="monovalent_heatpump" class="form-control" name="monovalent_heatpump" >
+                            @foreach($heatPumps  as $heatPump)
+                                <option value="{{ old('interested', $heatPump->id) }}">@lang($heatPump->name)</option>
+                            @endforeach
+                        </select>
 
                         @if ($errors->has('monovalent_heatpump'))
                             <span class="help-block">
@@ -555,8 +595,11 @@
                         <label for="sun_boiler" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-boiler')</label>
 
                         <select id="sun_boiler" class="form-control" name="sun_boiler" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('sun_boiler', $buildingType->id)}}">{{$buildingType->name}}</option>
+                            {{--@foreach($buildingTypes as $buildingType)--}}
+                                {{--<option value="{{old('sun_boiler', $buildingType->id)}}">{{$buildingType->name}}</option>--}}
+                            {{--@endforeach--}}
+                            @foreach($solarWaterHeaters as $solarWaterHeater)
+                                <option value="{{old('sun_boiler', $solarWaterHeater->id)}}">{{$solarWaterHeater->name}}</option>
                             @endforeach
                         </select>
 
@@ -678,17 +721,25 @@
                 <div class="form-group add-space{{ $errors->has('cooked_on_gas') ? ' has-error' : '' }}">
                     <label for="cooked_on_gas" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
 
-                    <select id="cooked_on_gas" class="form-control" name="cooked_on_gas" >
-                        @foreach($buildingTypes as $buildingType)
-                            <option value="{{old('cooked_on_gas', $buildingType->id)}}">{{$buildingType->name}}</option>
-                        @endforeach
-                    </select>
+                    {{--<select id="cooked_on_gas" class="form-control" name="cooked_on_gas" >--}}
+                        {{--@foreach($buildingTypes as $buildingType)--}}
+                            {{--<option value="{{old('cooked_on_gas', $buildingType->id)}}">{{$buildingType->name}}</option>--}}
+                        {{--@endforeach--}}
+                    {{--</select>--}}
 
-                    @if ($errors->has('cooked_on_gas'))
+                    <label class="radio-inline">
+                        <input type="radio" name="cooked_on_gas" value="1">Ja
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="cooked_on_gas" value="2">Nee
+                    </label>
+
+
+                @if ($errors->has('cooked_on_gas'))
                         <span class="help-block">
-                    <strong>{{ $errors->first('cooked_on_gas') }}</strong>
-                </span>
-                    @endif
+                            <strong>{{ $errors->first('cooked_on_gas') }}</strong>
+                        </span>
+                @endif
                 </div>
             </div>
             </div>
@@ -742,9 +793,10 @@
                         <label for="situation_first_floor" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-first-floor')</label>
 
                         <select id="situation_first_floor" class="form-control" name="situation_first_floor" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('situation_first_floor', $buildingType->ide)}}">{{$buildingType->name}}</option>
+                            @foreach($buildingHeatings as $buildingHeating)
+                                <option value="{{old('situation_first_floor', $buildingHeating->ide)}}">{{$buildingHeating->name}}</option>
                             @endforeach
+
                         </select>
 
                         @if ($errors->has('situation_first_floor'))
@@ -761,8 +813,11 @@
                         <label for="situation_second_floor" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-second-floor')</label>
 
                         <select id="situation_second_floor" class="form-control" name="situation_second_floor" >
-                            @foreach($buildingTypes as $buildingType)
-                                <option value="{{old('situation_second_floor', $buildingType->ide)}}">{{$buildingType->name}}</option>
+                            {{--@foreach($buildingTypes as $buildingType)--}}
+                                {{--<option value="{{old('situation_second_floor', $buildingType->ide)}}">{{$buildingType->name}}</option>--}}
+                            {{--@endforeach--}}
+                            @foreach($buildingHeatings as $buildingHeating)
+                                <option value="{{old('situation_second_floor', $buildingHeating->ide)}}">{{$buildingHeating->name}}</option>
                             @endforeach
                         </select>
 
@@ -840,16 +895,17 @@
 
         </div>
 
-        <div class="col-md-12">
-            <hr>
-            <div class="form-group add-space">
-                <div class="">
-                    <button type="submit" class="btn btn-primary">
-                        @lang('default.buttons.store')
-                    </button>
+        <div class="row">
+            <div class="col-md-12">
+                <hr>
+                <div class="form-group add-space">
+                    <div class="">
+                        <button type="submit" class="btn btn-primary">
+                            @lang('default.buttons.store')
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-
     </form>
 @endsection

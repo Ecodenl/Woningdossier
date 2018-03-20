@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\BuildingHeating;
 use App\Models\BuildingType;
+use App\Models\CentralHeatingAge;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\Interest;
+use App\Models\PresentHeatPump;
+use App\Models\PresentWindow;
+use App\Models\Quality;
 use App\Models\RoofType;
+use App\Models\SolarWaterHeater;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -24,11 +30,19 @@ class GeneralDataController extends Controller
         $energyLabels = EnergyLabel::all();
         $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
 	    $isInterested = Interest::all();
+        $insulations = PresentWindow::all();
+        $houseVentilations = [];
+        $qualities = Quality::all();
+        $buildingHeatings = BuildingHeating::all();
+        $solarWaterHeaters = SolarWaterHeater::all();
+        $centralHeatingAges = CentralHeatingAge::all();
+        $heatPumps = PresentHeatPump::all();
 	    // TODO: when models are present, use them.
-	    $houseVentilations = [];
+
 
         return view('cooperation.tool.general-data.index', compact('buildingTypes', 'roofTypes', 'energyLabels',
-            'exampleBuildingTypes', 'houseVentilations', 'isInterested'));
+            'exampleBuildingTypes', 'houseVentilations', 'isInterested', 'insulations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
+            'centralHeatingAges', 'heatPumps'));
     }
 
     /**
@@ -77,6 +91,7 @@ class GeneralDataController extends Controller
         $monovalentHeatpump = $request->monovalent_heatpump;
         $houseVentilation = $request->house_ventilation;
         $windowsInLivingSpaces = $request->window_in_living_space;
+        $windowsInSleepingSpaces = $request->window_in_sleeping_spaces;
         $roofIsolation = $request->roof_insulation;
         $hybridHeatpump = $request->hybrid_heatpump;
         $sunPanelPlacedDate = $request->sun_panel_placed_date;
@@ -90,6 +105,7 @@ class GeneralDataController extends Controller
         $interestedMonovalentHeatpump = $request->interested['monovalent_heatpump'];
         $interestedHouseVentilation = $request->interested['house_ventilation'];
         $interestedWindowsInLivingSpaces = $request->interested['window_in_living_space'];
+        $interestedWindowsInSleepingSpaces = $request->interested['window_in_sleeping_spaces'];
         $interestedRoofIsolation = $request->interested['roof_insulation'];
         $interestedHybridHeatpump = $request->interested['hybrid_heatpump'];
         $interestedSunBoiler = $request->interested['sun_boiler'];

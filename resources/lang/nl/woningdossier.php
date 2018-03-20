@@ -98,6 +98,7 @@ return [
 					'title' => 'Welke energiebesparende maatregelen zijn al genomen in de woning?',
 					'facade-insulation' => 'Gevelisolatie',
 					'window-in-living-space' => 'Ramen in de leefruimtes',
+					'window-in-sleeping-spaces' => 'Ramen in de slaapruimtes',
 					'floor-insulation' => 'Vloer isolatie',
 					'roof-insulation' => 'Dak isolatie',
 					'hr-cv-boiler' => 'HR CV Ketel',

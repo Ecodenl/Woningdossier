@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\PresentWindow;
+use App\Models\Step;
+use App\Models\SurfacePaintedWall;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +17,10 @@ class WallInsulationController extends Controller
      */
     public function index()
     {
-        return view('cooperation.tool.wall-insulation.index');
+        $steps = Step::orderBy('order')->get();
+        $houseInsulations = PresentWindow::all();
+        $surfacePaintedWalls = SurfacePaintedWall::all();
+        return view('cooperation.tool.wall-insulation.index', compact('steps', 'houseInsulations', 'surfacePaintedWalls'));
     }
 
     /**

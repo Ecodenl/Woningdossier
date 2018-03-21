@@ -141,14 +141,39 @@ return [
                     'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
                     'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
                     'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',
+                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel ?',
+                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk ?'
                 ],
 
                 'optional' => [
+                    'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
                     'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
                     'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
                     'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
                     'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
                     'facade-best-insulation' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
+                ],
+
+                'indication-for-costs' => [
+                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+                    'gas-savings' => 'Gasbesparing',
+                    'co2-savings' => 'CO2 Besparing',
+                    'savings-in-euro' => 'Besparing in €',
+                    'indicative-costs' => 'Indicatieve kosten',
+                    'comparable-rate' => 'Vergelijkbare rente',
+                    'year' => 'Jaar',
+                ],
+
+                'taking-into-account' => [
+                    'title' => 'U kunt de komende jaren met de volgende onderhoudsmaatregelen rekening houden:',
+                    'sub-title' => 'Het is aan te raden om stukken gevel die nu al heel slecht zijn meteen aan te pakken.',
+                    'expected-costs' => 'Te verwachten kosten voor deze maatregel',
+                    'explanation-specific-situation' => 'Toelichting over de specifieke situatie',
+                    'repair-joint' => 'Reparatie voegwerk',
+                    'clean-brickwork' => 'Reinigen metselwerk',
+                    'impregnate-wall' => 'Impregneren gevel',
+                    'wall-painting' => 'Gevelschilderwerk op stuk of metselwerk',
+                    'year' => 'Jaar',
                 ],
             ],
 		],

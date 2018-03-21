@@ -9,6 +9,12 @@ return [
 		],
 	],
 	'cooperation' => [
+        'radiobutton' => [
+            'yes' => 'Yes',
+            'no' => 'No',
+            'unknown' => 'Unknown',
+            'mostly' => 'Mostly'
+        ],
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -67,7 +73,7 @@ return [
                     'sub-title' => 'It is advisable to immediately tackle pieces off wall / facade that are already in a bad condition',
                     'expected-costs' => 'Expected cost\'s for this measure',
                     'explanation-specific-situation' => 'Explanation about the specific situation',
-
+                    'additional-info' => 'Information about the specific information',
                     'year' => 'Year',
                 ],
             ],

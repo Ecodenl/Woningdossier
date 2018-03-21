@@ -9,6 +9,12 @@ return [
 		],
 	],
 	'cooperation' => [
+	    'radiobutton' => [
+	        'yes' => 'Ja',
+            'no' => 'Nee',
+            'unknown' => 'Onbekend',
+            'mostly' => 'Gedeeltelijk'
+        ],
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -174,6 +180,7 @@ return [
                     'impregnate-wall' => 'Impregneren gevel',
                     'wall-painting' => 'Gevelschilderwerk op stuk of metselwerk',
                     'year' => 'Jaar',
+                    'additional-info' => 'Toelichting over de specifieke situatie',
                 ],
             ],
 		],

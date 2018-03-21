@@ -34,13 +34,13 @@
                         <label for="house_has_cavity" class=" control-label">@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall')</label>
 
                         <label class="radio-inline">
-                            <input type="radio" name="house_has_cavity" value="1">Ja
+                            <input type="radio" name="house_has_cavity" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="house_has_cavity" value="2">Nee
+                            <input type="radio" name="house_has_cavity" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="house_has_cavity" value="3">Onbekend
+                            <input type="radio" name="house_has_cavity" value="3">@lang('woningdossier.cooperation.radiobutton.unknown')
                         </label>
 
                         @if ($errors->has('house_has_cavity'))
@@ -59,13 +59,13 @@
                         <label for="is_facade_plastered_painted" class=" control-label">@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted')</label>
 
                         <label class="radio-inline">
-                            <input id="is-painted" type="radio" name="is_facade_plastered_painted" value="1">Ja
+                            <input id="is-painted" type="radio" name="is_facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="is_facade_plastered_painted" value="2">Nee
+                            <input type="radio" name="is_facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="is_facade_plastered_painted" value="3">Gedeeltelijk
+                            <input type="radio" name="is_facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
                         </label>
 
                         @if ($errors->has('is_facade_plastered_painted'))
@@ -129,8 +129,8 @@
                         <label for="wall_joints" class=" control-label">@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')</label>
 
                         <select id="wall_joints" class="form-control" name="wall_joints">
-                            @foreach($surfacePaintedWalls as $surfacePaintedWall)
-                                <option @if(old('wall_joints') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
+                            @foreach($wallsNeedImpregnation as $wallNeedImpregnation)
+                                <option @if(old('wall_joints') == $wallNeedImpregnation->id) selected @endif value="{{$wallNeedImpregnation->id }}">{{$wallNeedImpregnation->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -147,8 +147,8 @@
                         <label for="contaminated_wall_joints" class=" control-label">@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty')</label>
                         
                         <select id="contaminated_wall_joints_surface" class="form-control" name="contaminated_wall_joints_surface">
-                            @foreach($surfacePaintedWalls as $surfacePaintedWall)
-                                <option @if(old('contaminated_wall_joints_surface') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
+                            @foreach($wallsNeedImpregnation as $wallNeedImpregnation)
+                                <option @if(old('contaminated_wall_joints_surface') == $wallNeedImpregnation->id) selected @endif value="{{$wallNeedImpregnation->id }}">{{$wallNeedImpregnation->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -294,24 +294,23 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
-                    <label for="additional-info" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
+                        <label for="additional-info" class=" control-label">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.additional-info')</label>
 
-                    <textarea id="additional-info" class="form-control" name="additional-info"> {{old('additional_info')}} </textarea>
+                        <textarea id="additional-info" class="form-control" name="additional-info"> {{old('additional_info')}} </textarea>
 
-                    @if ($errors->has('additional_info'))
-                        <span class="help-block">
+                        @if ($errors->has('additional_info'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('additional_info') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
-
 
         <div class="row">
             <div class="col-md-12">
@@ -319,7 +318,7 @@
                 <div class="form-group add-space">
                     <div class="">
                         <button type="submit" class="btn btn-primary">
-                            @lang('default.buttons.store')
+                            @lang('default.buttons.next')
                         </button>
                     </div>
                 </div>

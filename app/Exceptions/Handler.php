@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Models\Cooperation;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -25,6 +27,31 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+	/**
+	 * Convert an authentication exception into an unauthenticated response.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  \Illuminate\Auth\AuthenticationException  $exception
+	 * @return \Illuminate\Http\Response
+	 */
+	protected function unauthenticated($request, AuthenticationException $exception)
+	{
+		if ($request->expectsJson()) {
+			return response()->json(['error' => 'Unauthenticated.'], 401);
+		}
+
+		$cooperationId = $request->session()->get('cooperation');
+		if (is_null($cooperationId)){
+			return redirect()->route('index');
+		}
+		$cooperation = Cooperation::find($cooperationId);
+		if (!$cooperation instanceof Cooperation){
+			return redirect()->route('index');
+		}
+
+		return redirect()->route('cooperation.login', compact('cooperation'));
+	}
 
     /**
      * Report or log an exception.

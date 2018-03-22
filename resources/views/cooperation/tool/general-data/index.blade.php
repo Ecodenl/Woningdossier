@@ -8,8 +8,7 @@
         <div class="row">
             <div id="example-building" class="col-sm-12">
                 <div class="form-group add-space{{ $errors->has('example_building_type') ? ' has-error' : '' }}">
-                    <label for="example_building_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
-
+                    <label for="example_building_type" class=" control-label"><i data-toggle="collapse" data-target="#example-building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
                     <select id="example_building_type" class="form-control" name="example_building_type" >
                         @foreach($exampleBuildingTypes as $exampleBuildingType)
                             <option @if($exampleBuildingType->id == old('example_building_type')) selected @endif value="{{$exampleBuildingType->id}}">@lang($exampleBuildingType->translation_key)</option>
@@ -21,6 +20,14 @@
                     <strong>{{ $errors->first('example_building_type') }}</strong>
                 </span>
                     @endif
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-group add-space">
+                        <div id="example-building-type-info" class="collapse alert alert-info remove-collapse-space">
+                            I would like to have some help full information right here !
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,6 +144,9 @@
                                 @endforeach
                             </select>
 
+                            <div id="building-type-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
                             @if ($errors->has('building_type'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('building_type') }}</strong>
@@ -149,7 +159,9 @@
                             <label for="what_building_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')</label> <span>*</span>
 
                             <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" dneedrequired autofocus>
-
+                            <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
                             @if ($errors->has('what_building_year'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('what_building_year') }}</strong>
@@ -166,6 +178,10 @@
 
                             <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" req autofocus>
 
+                            <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
+
                             @if ($errors->has('user_surface'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('user_surface') }}</strong>
@@ -179,10 +195,14 @@
 
                             <input id="roof_layers" type="text" class="form-control" name="roof_layers" value="{{old('roof_layers')}}" req autofocus>
 
+                            <div id="roof-layers-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
+
                             @if ($errors->has('roof_layers'))
                                 <span class="help-block">
-                                <strong>{{ $errors->first('roof_layers') }}</strong>
-                            </span>
+                                    <strong>{{ $errors->first('roof_layers') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -199,6 +219,9 @@
                                 @endforeach
                             </select>
 
+                            <div id="roof-type-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
 
                             @if ($errors->has('roof_type'))
                                 <span class="help-block">
@@ -216,6 +239,9 @@
                                     <option @if($energyLabel->id == old('current_energy_label')) selected @endif value="{{$energyLabel->id}}">{{$energyLabel->name}}</option>
                                 @endforeach
                             </select>
+                            <div id="current-energy-label" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
 
                             @if ($errors->has('current_energy_label'))
                                 <span class="help-block">
@@ -240,6 +266,10 @@
                             <label class="radio-inline">
                                 <input type="radio" name="is_monument" value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
                             </label>
+
+                            <div id="is-monument-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
 
                             @if ($errors->has('is_monument'))
                                 <span class="help-block">
@@ -266,6 +296,10 @@
                                 <option @if($insulation->id == old('windows_in_living_space')) selected @endif value="{{$insulation->id}}">{{$insulation->name}}</option>
                             @endforeach
                         </select>
+
+                        <div id="windows-in-living-space-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('windows_in_living_space'))
                             <span class="help-block">
@@ -302,6 +336,10 @@
                                 <option @if($insulation->id == old('windows_in_sleeping_spaces')) selected @endif value="{{$insulation->id}}">{{$insulation->name}}</option>
                             @endforeach
                         </select>
+
+                        <div id="windows-in-sleeping-spaces-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('windows_in_sleeping_spaces'))
                             <span class="help-block">
@@ -341,6 +379,10 @@
                             @endforeach
                         </select>
 
+                        <div id="facade-insulation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('facade_insulation'))
                             <span class="help-block">
                         <strong>{{ $errors->first('facade_insulation') }}</strong>
@@ -374,6 +416,10 @@
                                 <option @if($quality->id == old('floor_insulation')) selected @endif value="{{$quality->id}}">{{$quality->name}}</option>
                             @endforeach
                         </select>
+
+                        <div id="floor-insulation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('floor_insulation'))
                             <span class="help-block">
@@ -410,6 +456,10 @@
                                 <option @if($quality->id == old('roof_insulation')) selected @endif value="{{ $quality->id}}">{{$quality->name}}</option>
                             @endforeach
                         </select>
+
+                        <div id="roof-insulation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('roof_insulation'))
                             <span class="help-block">
@@ -448,6 +498,9 @@
                             @endforeach
                         </select>
 
+                        <div id="hr-cv-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
                         @if ($errors->has('hr_cv_boiler'))
                             <span class="help-block">
                         <strong>{{ $errors->first('hr_cv_boiler') }}</strong>
@@ -482,6 +535,10 @@
                             @endforeach
                         </select>
 
+                        <div id="hybrid-heatpump-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('hybrid_heatpump'))
                             <span class="help-block">
                         <strong>{{ $errors->first('hybrid_heatpump') }}</strong>
@@ -514,6 +571,10 @@
 
                         <input type="text" id="sun_panel" class="form-control" name="sun_panel">
 
+                        <div id="sun-panel-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('sun_panel'))
                             <span class="help-block">
                         <strong>{{ $errors->first('sun_panel') }}</strong>
@@ -544,6 +605,10 @@
 
                         <input type="date" name="sun_panel_placed_date" id="sun_panel_placed_date" class="form-control" value="{{old('sun_panel_placed_date')}}">
 
+                        <div id="sun-panel-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('sun_panel_placed_date'))
                             <span class="help-block">
                         <strong>{{ $errors->first('sun_panel_placed_date') }}</strong>
@@ -563,6 +628,10 @@
                                 <option @if($heatPump->id == old('monovalent_heatpump')) selected @endif value="{{  $heatPump->id }}">@lang($heatPump->name)</option>
                             @endforeach
                         </select>
+
+                        <div id="monovalent-heatpump-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('monovalent_heatpump'))
                             <span class="help-block">
@@ -598,7 +667,9 @@
                                 <option @if($solarWaterHeater->id == old('sun_boiler')) selected @endif value="{{$solarWaterHeater->id}}">{{$solarWaterHeater->name}}</option>
                             @endforeach
                         </select>
-
+                        <div id="sun-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
                         @if ($errors->has('sun_boiler'))
                             <span class="help-block">
                         <strong>{{ $errors->first('sun_boiler') }}</strong>
@@ -636,6 +707,10 @@
                             @endforeach
                         </select>
 
+                        <div id="house-ventilation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('house_ventilation'))
                             <span class="help-block">
                         <strong>{{ $errors->first('house_ventilation') }}</strong>
@@ -667,6 +742,10 @@
 
                         <input type="date" id="house_ventilation_placed_date" class="form-control" name="house_ventilation_placed_date" >
 
+                        <div id="house-venrtilation-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('house_ventilation_placed_date'))
                             <span class="help-block">
                         <strong>{{ $errors->first('house_ventilation_placed_date') }}</strong>
@@ -681,6 +760,10 @@
                         <label for="additional" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.additional')</label>
 
                         <textarea id="additional" class="form-control" name="additional"> {{old('additional')}} </textarea>
+
+                        <div id="additional-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('additional'))
                             <span class="help-block">
@@ -704,6 +787,10 @@
 
                     <input type="text" id="total_citizens" class="form-control" value="{{old('total_citizens')}}" name="total_citizens" needrequired>
 
+                    <div id="total-citizens-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        And i would like to have it to...
+                    </div>
+
                     @if ($errors->has('total_citizens'))
                         <span class="help-block">
                     <strong>{{ $errors->first('total_citizens') }}</strong>
@@ -723,6 +810,9 @@
                         <input type="radio" name="cooked_on_gas" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                     </label>
 
+                    <div id="coocked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        And i would like to have it to...
+                    </div>
 
                     @if ($errors->has('cooked_on_gas'))
                         <span class="help-block">
@@ -739,6 +829,10 @@
 
                     <input type="text" id="thermostat_highest" class="form-control" value="{{old('thermostat_highest')}}" name="thermostat_highest" >
 
+                    <div id="thermostat-highest-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        And i would like to have it to...
+                    </div>
+
                     @if ($errors->has('thermostat_highest'))
                         <span class="help-block">
                     <strong>{{ $errors->first('thermostat_highest') }}</strong>
@@ -752,6 +846,10 @@
                     <label for="thermostat_lowest" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
 
                     <input id="thermostat_lowest" type="text" class="form-control" name="thermostat_lowest">
+
+                    <div id="thermostat-lowest-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        And i would like to have it to...
+                    </div>
 
                     @if ($errors->has('thermostat_lowest'))
                         <span class="help-block">
@@ -772,6 +870,10 @@
                             @endfor
                                 <option value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
                         </select>
+
+                        <div id="max-hours-thermostat-highest-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
                         @if ($errors->has('max_hours_thermostat_highest'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('max_hours_thermostat_highest') }}</strong>
@@ -790,6 +892,10 @@
                             @endforeach
 
                         </select>
+
+                        <div id="situation-first-floor-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('situation_first_floor'))
                             <span class="help-block">
@@ -813,6 +919,10 @@
                             @endforeach
                         </select>
 
+                        <div id="situation-second-floor-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('situation_second_floor'))
                             <span class="help-block">
                         <strong>{{ $errors->first('situation_second_floor') }}</strong>
@@ -830,6 +940,9 @@
                                 <option @if($comfortLevelTapWater->id == old('comfortniveau_warm_tapwater')) selected @endif value="{{$comfortLevelTapWater->id}}">{{$comfortLevelTapWater->name}}</option>
                             @endforeach
                         </select>
+                        <div id="comfortniveau-warm-tapwater" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('comfortniveau_warm_tapwater'))
                             <span class="help-block">
@@ -846,6 +959,10 @@
 
                         <input id="electricity_consumption_past_year" type="text" value="{{old('electricity_consumption_past_year')}}" class="form-control" name="electricity_consumption_past_year">
 
+                        <div id="electricity-consumption-past-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
                         @if ($errors->has('electricity_consumption_past_year'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('electricity_consumption_past_year') }}</strong>
@@ -858,6 +975,10 @@
                         <label for="gas_usage_past_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year')</label>
 
                         <input id="gas_usage_past_year" type="text" value="{{old('gas_usage_past_year')}}" class="form-control" name="gas_usage_past_year">
+
+                        <div id="gas-usage-past-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
 
                         @if ($errors->has('gas_usage_past_year'))
@@ -875,6 +996,10 @@
                         <label for="additional-info" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
 
                         <textarea id="additional-info" class="form-control" name="additional-info"> {{old('additional_info')}} </textarea>
+
+                        <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
 
                         @if ($errors->has('additional_info'))
                             <span class="help-block">
@@ -902,3 +1027,57 @@
         </div>
     </form>
 @endsection
+
+@push('js')
+    {{--<script>--}}
+        {{--$(document).ready(function () {--}}
+
+            {{--// select all select boxes--}}
+            {{--$.each($('select').prev(), function(index, value) {--}}
+                {{--// if the field is required skip it--}}
+                {{--if($(this).text() == '*') {--}}
+                    {{--var requiredSelectId = $(this).next().attr('id');--}}
+                    {{--// just select the previous element--}}
+                    {{--var requiredSelectLabel = $(this).prev();--}}
+                    {{--// replace _ with ---}}
+                    {{--var strippedSelectId = requiredSelectId.replace(/_/g, '-');--}}
+
+                    {{--requiredSelectLabel.prepend('<i data-toggle="collapse" data-target="#'+strippedSelectId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
+
+
+                {{--} else {--}}
+
+                    {{--var selectId = $(this).next().attr('id');--}}
+
+                    {{--var infoBoxId = selectId.replace(/_/g, '-');--}}
+
+                    {{--$(this).prepend('<i data-toggle="collapse" data-target="#'+infoBoxId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
+                {{--}--}}
+            {{--});--}}
+
+            {{--// select all input fields--}}
+            {{--$.each($('input').prev(), function(index, value) {--}}
+                {{--// if the field is we need to go one element back--}}
+                {{--if($(this).text() == '*') {--}}
+
+                    {{--// Get the id from the input--}}
+                    {{--var requiredInputId = $(this).next().attr('id');--}}
+                    {{--// replace the _ with ---}}
+                    {{--var strippedInputId = requiredInputId.replace(/_/g, '-');--}}
+                    {{--// just select the previous element (the label)--}}
+                    {{--var requiredLabel = $(this).prev();--}}
+
+                    {{--requiredLabel.prepend('<i data-toggle="collapse" data-target="#'+strippedInputId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
+
+                {{--} else {--}}
+                    {{--// get id--}}
+                    {{--var inputId = $(this).next().attr('id');--}}
+                    {{--// replace _ with ---}}
+                    {{--var infoBoxId = inputId.replace(/_/g, '-');--}}
+
+                    {{--$(this).prepend('<i data-toggle="collapse" data-target="#'+infoBoxId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
+                {{--}--}}
+            {{--});--}}
+        {{--})--}}
+    {{--</script>--}}
+@endpush

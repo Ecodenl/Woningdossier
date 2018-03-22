@@ -8354,6 +8354,25 @@ button.close {
   padding-top: 0;
 }
 
+/**
+  Helper classes for the html markup
+ */
+
+body #app .glyphicon-padding {
+  padding-right: 4px;
+  cursor: pointer;
+  color: #8eb4cb;
+}
+
+body #app .remove-collapse-space {
+  margin: 0px;
+  max-height: 55px;
+}
+
+body #app .alert-top-space {
+  margin-top: 10px;
+}
+
 .loading {
   background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
   background-size: 25px 25px;

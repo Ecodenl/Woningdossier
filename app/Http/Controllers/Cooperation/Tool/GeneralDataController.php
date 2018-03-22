@@ -72,9 +72,48 @@ class GeneralDataController extends Controller
     public function store(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'building_type' => 'required|exists:building_types,id',
-        ]);
+        // This will retrieve all the array keys and value's from the interested input fields
+        foreach($request->interested as $key => $interest) {
+
+            // Every interested field need's the same validation
+            $interestedRules['interested.'.$key] = 'required|exists:interests,id';
+
+            // Eevry input is required
+            $energySavingMeasureRules[$key] = 'required';
+
+        }
+
+
+        $validator = Validator::make($request->all(),
+            $interestedRules,
+            $energySavingMeasureRules,
+            [
+                'example_building_type' => 'required|exists:example_buildings,id',
+                'building_type' => 'required|exists:building_types,id',
+                'what_building_year' => 'required|numeric',
+                'user_surface' => 'required|numeric',
+                'is_monument' => 'numeric|digits_between:0,2',
+            ],
+            [
+                'windows_in_living_space' => 'exists:present_windows,id',
+                'windows_in_sleeping_spaces' => 'exists:present_windows,id',
+                'facade_insulation' => 'exists:qualities,id',
+                'floor_insulation' => 'exists:qualities,id',
+                'roof_insulation' => 'exists:qualities,id',
+                'hr_cv_boiler' => 'exists:central_heating_ages,id',
+                'hybrid_heatpump' => 'exists:present_heat_pumps,id',
+                'monovalent_heatpump' => 'exists:present_heat_pumps,id',
+                'sun_boiler' => 'exists:solar_water_heaters,id',
+                'house_ventilation' => 'exists:ventilations,id',
+
+                'total_citizens' => 'numeric',
+                'cooked_on_gas' => 'numeric',
+                'thermostat_highest' => 'numeric',
+                'thermostat_lowest' => 'numeric|digits_between:0,'.$request->thermostat_highest,
+                'electricity_consumption_past_year' => 'numeric',
+                'gas_usage_past_year' => 'numeric',
+            ]
+        );
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

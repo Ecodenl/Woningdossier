@@ -33,7 +33,7 @@
                     <div class="form-group add-space{{ $errors->has('name_resident') ? ' has-error' : '' }}">
                         <label for="name_resident" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.name-resident')</label>
 
-                        <input id="name_resident" type="text" class="form-control" name="name_resident" value="{{old('name_resident')}}" required autofocus>
+                        <input id="name_resident" type="text" class="form-control" name="name_resident" value="{{old('name_resident')}}" needrequired autofocus>
 
                         @if ($errors->has('name_resident'))
                             <span class="help-block">
@@ -45,7 +45,7 @@
                     <div class="form-group add-space{{ $errors->has('street') ? ' has-error' : '' }}">
                         <label for="street" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.street')</label>
 
-                        <input id="street" type="text" class="form-control" name="street" value="{{old('street')}}" required autofocus>
+                        <input id="street" type="text" class="form-control" name="street" value="{{old('street')}}" needrequired autofocus>
 
                         @if ($errors->has('street'))
                             <span class="help-block">
@@ -57,7 +57,7 @@
                     <div class="form-group add-space{{ $errors->has('house_number') ? ' has-error' : '' }}">
                         <label for="house-number" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.house-number')</label>
 
-                        <input id="house_number" type="text" class="form-control" name="house_number" value="{{old('house_number')}}" required autofocus>
+                        <input id="house_number" type="text" class="form-control" name="house_number" value="{{old('house_number')}}" needrequired autofocus>
 
                         @if ($errors->has('house_number'))
                             <span class="help-block">
@@ -71,7 +71,7 @@
                 <div class="form-group add-space{{ $errors->has('zip_code') ? ' has-error' : '' }}">
                     <label for="zip_code" class="control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.zip-code')</label>
 
-                    <input id="zip_code" type="text" class="form-control" name="zip_code" value="{{old('zip_code')}}" required autofocus>
+                    <input id="zip_code" type="text" class="form-control" name="zip_code" value="{{old('zip_code')}}" needrequired autofocus>
 
                     @if ($errors->has('zip_code'))
                         <span class="help-block">
@@ -85,7 +85,7 @@
                 <div class="form-group add-space{{ $errors->has('residence') ? ' has-error' : '' }}">
                     <label for="residence" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.residence')</label>
 
-                    <input id="residence" type="text" class="form-control" name="residence" value="{{old('residence')}}" required autofocus>
+                    <input id="residence" type="text" class="form-control" name="residence" value="{{old('residence')}}" needrequired autofocus>
 
                     @if ($errors->has('residence'))
                         <span class="help-block">
@@ -99,7 +99,7 @@
                 <div class="form-group add-space{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label for="email" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.email')</label>
 
-                    <input id="email" type="text" class="form-control" name="email" value="{{old('email')}}" required autofocus>
+                    <input id="email" type="text" class="form-control" name="email" value="{{old('email')}}" needrequired autofocus>
 
                     @if ($errors->has('email'))
                         <span class="help-block">
@@ -113,7 +113,7 @@
                 <div class="form-group add-space{{ $errors->has('phone_number') ? ' has-error' : '' }}">
                     <label for="phone_number" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.phone-number')</label>
 
-                    <input id="phone_number" type="text" class="form-control" name="phone_number" value="{{old('phone_number')}}" required autofocus>
+                    <input id="phone_number" type="text" class="form-control" name="phone_number" value="{{old('phone_number')}}" needrequired autofocus>
 
                     @if ($errors->has('phone_number'))
                         <span class="help-block">
@@ -149,7 +149,7 @@
                         <div class="form-group add-space{{ $errors->has('what_building_year') ? ' has-error' : '' }}">
                             <label for="what_building_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')</label>
 
-                            <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" required autofocus>
+                            <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" needrequired autofocus>
 
                             @if ($errors->has('what_building_year'))
                                 <span class="help-block">
@@ -165,7 +165,7 @@
                         <div class="form-group add-space{{ $errors->has('user_surface') ? ' has-error' : '' }}">
                             <label for="user_surface" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label>
 
-                            <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" required autofocus>
+                            <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" needrequired autofocus>
 
                             @if ($errors->has('user_surface'))
                                 <span class="help-block">
@@ -178,7 +178,7 @@
                         <div class="form-group add-space{{ $errors->has('roof_layers') ? ' has-error' : '' }}">
                             <label for="roof_layers" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.how-much-building-layers')</label>
 
-                            <input id="roof_layers" type="text" class="form-control" name="roof_layers" value="{{old('roof_layers')}}" required autofocus>
+                            <input id="roof_layers" type="text" class="form-control" name="roof_layers" value="{{old('roof_layers')}}" needrequired autofocus>
 
                             @if ($errors->has('roof_layers'))
                                 <span class="help-block">
@@ -194,7 +194,7 @@
                         <div class="form-group add-space{{ $errors->has('roof_type') ? ' has-error' : '' }}">
                             <label for="roof_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.type-roof')</label>
 
-                            <select id="roof_type" class="form-control" name="roof_type" required>
+                            <select id="roof_type" class="form-control" name="roof_type" needrequired>
                                 @foreach($roofTypes as $roofType)
                                     <option value="{{old('roof_type', $roofType->id)}}">@lang($roofType->translation_key)</option>
                                 @endforeach
@@ -212,7 +212,7 @@
                         <div class="form-group add-space{{ $errors->has('current_energy_label') ? ' has-error' : '' }}">
                             <label for="current_energy_label" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.current-energy-label')</label>
 
-                            <select id="current_energy_label" class="form-control" name="current_energy_label" required>
+                            <select id="current_energy_label" class="form-control" name="current_energy_label" needrequired>
                                 @foreach($energyLabels as $energyLabel)
                                     <option value="{{old('current_energy_label', $energyLabel->id)}}">{{$energyLabel->name}}</option>
                                 @endforeach
@@ -233,10 +233,13 @@
                             <label for="is_monument" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.is-monument')</label>
 
                             <label class="radio-inline">
-                                <input type="radio" name="is_monument" value="1">Ja
+                                <input type="radio" name="is_monument" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="is_monument" value="2">Nee
+                                <input type="radio" name="is_monument" value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="is_monument" value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
                             </label>
 
                             @if ($errors->has('is_monument'))
@@ -476,7 +479,7 @@
                         <label for="hybrid_heatpump" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hybrid-heatpump')</label>
 
                         <select id="hybrid_heatpump" class="form-control" name="hybrid_heatpump" >
-                            @foreach($heatPumps  as $heatPump)
+                            @foreach($heatPumps->take(2)  as $heatPump)
                                 <option value="{{ old('hybrid_heatpump', $heatPump->id) }}">@lang($heatPump->name)</option>
                             @endforeach
                         </select>
@@ -539,7 +542,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('sun_panel_placed_date') ? ' has-error' : '' }}">
-                        <label for="sun_panel_placed_date" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.yes')</label>
+                        <label for="sun_panel_placed_date" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-mechanic')</label>
 
                         <input type="date" name="sun_panel_placed_date" id="sun_panel_placed_date" class="form-control" value="{{old('sun_panel_placed_date')}}">
 
@@ -557,7 +560,7 @@
                         <label for="monovalent_heatpump" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.monovalent-heatpump')</label>
 
                         <select id="monovalent_heatpump" class="form-control" name="monovalent_heatpump" >
-                            @foreach($heatPumps  as $heatPump)
+                            @foreach($heatPumps->forget(1)  as $heatPump)
                                 <option value="{{ old('monovalent_heatpump', $heatPump->id) }}">@lang($heatPump->name)</option>
                             @endforeach
                         </select>
@@ -674,7 +677,7 @@
                     </span>
                         @endif
                     </div>
-            </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
@@ -774,9 +777,12 @@
                     <div class="form-group add-space{{ $errors->has('max_hours_thermostat_highest') ? ' has-error' : '' }}">
                         <label for="max_hours_thermostat_highest" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
 
-
-                        <input type="text"  id="max_hours_thermostat_highest" class="form-control" name="max_hours_thermostat_highest" >
-
+                        <select id="max_hours_thermostat_highest" class="form-control" name="max_hours_thermostat_highest">
+                            @for($hour = 0; $hour < 25; $hour++)
+                                <option value="{{$hour}}">{{$hour}}</option>
+                            @endfor
+                                <option value=""></option>
+                        </select>
                         @if ($errors->has('max_hours_thermostat_highest'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('max_hours_thermostat_highest') }}</strong>

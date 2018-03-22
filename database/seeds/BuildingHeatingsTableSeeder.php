@@ -29,7 +29,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 'calculate_value' => 4,
             ],
             [
-                'name' => 'Verwarmd, de meeste radiatoren staan aan',
+                'name' => 'Niet van toepassing',
                 'degree' => null,
                 'calculate_value' => null,
             ]

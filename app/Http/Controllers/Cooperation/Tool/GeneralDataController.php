@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Http\Requests\GeneralDataFormRequest;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
@@ -16,6 +17,7 @@ use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
 use App\Models\Ventilation;
+use Illuminate\Support\Facades\Session;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -69,57 +71,13 @@ class GeneralDataController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(GeneralDataFormRequest $request)
     {
 
-        // This will retrieve all the array keys and value's from the interested input fields
-        foreach($request->interested as $key => $interest) {
-
-            // Every interested field need's the same validation
-            $interestedRules['interested.'.$key] = 'required|exists:interests,id';
-
-            // Eevry input is required
-            $energySavingMeasureRules[$key] = 'required';
-
-        }
 
 
-        $validator = Validator::make($request->all(),
-            $interestedRules,
-            $energySavingMeasureRules,
-            [
-                'example_building_type' => 'required|exists:example_buildings,id',
-                'building_type' => 'required|exists:building_types,id',
-                'what_building_year' => 'required|numeric',
-                'user_surface' => 'required|numeric',
-                'is_monument' => 'numeric|digits_between:0,2',
-            ],
-            [
-                'windows_in_living_space' => 'exists:present_windows,id',
-                'windows_in_sleeping_spaces' => 'exists:present_windows,id',
-                'facade_insulation' => 'exists:qualities,id',
-                'floor_insulation' => 'exists:qualities,id',
-                'roof_insulation' => 'exists:qualities,id',
-                'hr_cv_boiler' => 'exists:central_heating_ages,id',
-                'hybrid_heatpump' => 'exists:present_heat_pumps,id',
-                'monovalent_heatpump' => 'exists:present_heat_pumps,id',
-                'sun_boiler' => 'exists:solar_water_heaters,id',
-                'house_ventilation' => 'exists:ventilations,id',
 
-                'total_citizens' => 'numeric',
-                'cooked_on_gas' => 'numeric',
-                'thermostat_highest' => 'numeric',
-                'thermostat_lowest' => 'numeric|digits_between:0,'.$request->thermostat_highest,
-                'electricity_consumption_past_year' => 'numeric',
-                'gas_usage_past_year' => 'numeric',
-            ]
-        );
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        dd('Validate passes');
 
         // Retrieve the name and basic data about the address
 //        $nameResident = $request->name_resident;
@@ -160,8 +118,8 @@ class GeneralDataController extends Controller
         $interestedSunPanels = $request->interested['sun_panel'];
         $interestedMonovalentHeatpump = $request->interested['monovalent_heatpump'];
         $interestedHouseVentilation = $request->interested['house_ventilation'];
-        $interestedWindowsInLivingSpaces = $request->interested['window_in_living_space'];
-        $interestedWindowsInSleepingSpaces = $request->interested['window_in_sleeping_spaces'];
+        $interestedWindowsInLivingSpaces = $request->interested['windows_in_living_space'];
+        $interestedWindowsInSleepingSpaces = $request->interested['windows_in_sleeping_spaces'];
         $interestedRoofIsolation = $request->interested['roof_insulation'];
         $interestedHybridHeatpump = $request->interested['hybrid_heatpump'];
         $interestedSunBoiler = $request->interested['sun_boiler'];
@@ -180,9 +138,8 @@ class GeneralDataController extends Controller
 
         // TODO: Save the collected data
 
-        dd($request->all());
 
-        return redirect(back());
+        return redirect()->back()->with('success', trans('Success'));
     }
 
     /**

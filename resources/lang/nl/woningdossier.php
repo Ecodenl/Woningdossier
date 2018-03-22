@@ -11,10 +11,11 @@ return [
 
 	'cooperation' => [
         'radiobutton' => [
+            'not-important' => 'Niet van toepassing',
             'yes' => 'Ja',
             'no' => 'Nee',
             'unknown' => 'Onbekend',
-            'mostly' => 'Gedeeltelijk'
+            'mostly' => 'Gedeeltelijk',
         ],
 		'my-account' => [
 			'settings' => [

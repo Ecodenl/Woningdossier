@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\InsulatingGlazing;
 use App\Models\InterestedToExecuteMeasure;
+use App\Models\MovingPartsOfWindowAndDoorIsolated;
 use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,6 +22,8 @@ class InsulatedGlazingController extends Controller
         $steps = Step::orderBy('order')->get();
 
         $interestedToExecuteMeasures = InterestedToExecuteMeasure::all();
+        $insulatedGlazings = InsulatingGlazing::all();
+        $insulateQualities = MovingPartsOfWindowAndDoorIsolated::all();
         $keys = [
             'glass-in-lead',
             'place-hr-only-glass',
@@ -28,7 +32,7 @@ class InsulatedGlazingController extends Controller
         ];
 
 
-        return view('cooperation.tool.insulated-glazing.index', compact('steps', 'interestedToExecuteMeasures', 'keys'));
+        return view('cooperation.tool.insulated-glazing.index', compact('steps', 'interestedToExecuteMeasures', 'keys', 'insulatedGlazings', 'insulateQualities'));
     }
 
     /**

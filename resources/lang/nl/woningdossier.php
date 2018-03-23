@@ -186,18 +186,6 @@ return [
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',
 
-                'information' => [
-                    'interested-to-measure' => [
-                        'title' => 'Bent u geintreseerd in één of meerdere van deze maatregelen?',
-                    ],
-                    'current-glass' => [
-                        'title' => 'Wat voor glas is er nu?'
-                    ],
-                    'are-rooms-heater' => [
-                        'title' => 'Zijn de kamers verwarmd'
-                    ],
-                ],
-
                 'glass-in-lead' => [
                     'title' => 'Glas in lood vervangen',
 
@@ -211,14 +199,22 @@ return [
 
                 ],
 
-               'place-hr-only-glass' => [
+                'place-hr-only-glass' => [
                    'title' => 'Plaatsen van HR++ glas (alleen het glas)',
-               ],
+                ],
 
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
                 'm2' => 'm2',
                 'total-windows' => 'Aantal ramen',
+
+                'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
+
+                'windows-surface' => [
+                    'comparable-houses' => 'Vergelijkbare huizen hebben :m2 m<sup>2</sup>',
+                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als u het niet weer laat u dit veld vrij.'
+                ],
+
 
             ]
 		],

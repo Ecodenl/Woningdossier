@@ -136,7 +136,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('building_type') ? ' has-error' : '' }}">
-                            <label for="building_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-type') </label>
+                            <label for="building_type" class=" control-label"><i data-toggle="collapse" data-target="#building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-type') </label>
 
                             <select id="building_type" class="form-control" name="building_type">
                                 @foreach($buildingTypes as $buildingType)
@@ -174,7 +174,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('user_surface') ? ' has-error' : '' }}">
-                            <label for="user_surface" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label> <span>*</span>
+                            <label for="user_surface" class=" control-label"><i data-toggle="collapse" data-target="#user-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label> <span>*</span>
 
                             <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" req autofocus>
 
@@ -191,7 +191,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('roof_layers') ? ' has-error' : '' }}">
-                            <label for="roof_layers" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.how-much-building-layers')</label>
+                            <label for="roof_layers" class=" control-label"><i data-toggle="collapse" data-target="#roof-layers-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.how-much-building-layers')</label>
 
                             <input id="roof_layers" type="text" class="form-control" name="roof_layers" value="{{old('roof_layers')}}" req autofocus>
 
@@ -211,7 +211,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('roof_type') ? ' has-error' : '' }}">
-                            <label for="roof_type" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.type-roof')</label>
+                            <label for="roof_type" class=" control-label"><i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.type-roof')</label>
 
                             <select id="roof_type" class="form-control" name="roof_type" req>
                                 @foreach($roofTypes as $roofType)
@@ -232,14 +232,14 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('current_energy_label') ? ' has-error' : '' }}">
-                            <label for="current_energy_label" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.current-energy-label')</label>
+                            <label for="current_energy_label" class=" control-label"><i data-toggle="collapse" data-target="#current-energy-label-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.current-energy-label')</label>
 
                             <select id="current_energy_label" class="form-control" name="current_energy_label" req>
                                 @foreach($energyLabels as $energyLabel)
                                     <option @if($energyLabel->id == old('current_energy_label')) selected @endif value="{{$energyLabel->id}}">{{$energyLabel->name}}</option>
                                 @endforeach
                             </select>
-                            <div id="current-energy-label" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            <div id="current-energy-label-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
 
@@ -255,7 +255,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group add-space{{ $errors->has('is_monument') ? ' has-error' : '' }}">
-                            <label for="is_monument" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.is-monument')</label>
+                            <label for="is_monument" class=" control-label"><i data-toggle="collapse" data-target="#is-monument-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.is-monument')</label>
 
                             <label class="radio-inline">
                                 <input type="radio" name="is_monument" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
@@ -289,7 +289,7 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('windows_in_living_space') ? ' has-error' : '' }}">
-                        <label for="windows_in_living_space" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.window-in-living-space')</label> <span>*</span>
+                        <label for="windows_in_living_space" class=" control-label"><i data-toggle="collapse" data-target="#windows-in-living-space-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.window-in-living-space')</label> <span>*</span>
 
                         <select id="windows_in_living_space" class="form-control" name="windows_in_living_space" >
                             @foreach($insulations as $insulation)
@@ -329,7 +329,7 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('windows_in_sleeping_spaces') ? ' has-error' : '' }}">
-                        <label for="windows_in_sleeping_spaces" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.window-in-sleeping-spaces')</label> <span>*</span>
+                        <label for="windows_in_sleeping_spaces" class=" control-label"><i data-toggle="collapse" data-target="#windows-is-sleeping-spaces-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.window-in-sleeping-spaces')</label> <span>*</span>
 
                         <select id="windows_in_sleeping_spaces" class="form-control" name="windows_in_sleeping_spaces" >
                             @foreach($insulations as $insulation)
@@ -371,7 +371,7 @@
                 <div class="col-sm-4">
 
                     <div class="form-group add-space{{ $errors->has('facade_insulation') ? ' has-error' : '' }}">
-                        <label for="facade_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.facade-insulation')</label> <span>*</span>
+                        <label for="facade_insulation" class=" control-label"><i data-toggle="collapse" data-target="#facade-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.facade-insulation')</label> <span>*</span>
 
                         <select id="facade_insulation" class="form-control" name="facade_insulation" >
                             @foreach($qualities as $quality)
@@ -409,7 +409,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('floor_insulation') ? ' has-error' : '' }}">
-                        <label for="floor_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.floor-insulation')</label> <span>*</span>
+                        <label for="floor_insulation" class=" control-label"><i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.floor-insulation')</label> <span>*</span>
 
                         <select id="floor_insulation" class="form-control" name="floor_insulation" >
                             @foreach($qualities as $quality)
@@ -445,11 +445,12 @@
                         @endif
                     </div>
                 </div>
-
+            </div>
+            <div class="row">
                 <div class="col-sm-6">
 
                     <div class="form-group add-space{{ $errors->has('roof_insulation') ? ' has-error' : '' }}">
-                        <label for="roof_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.roof-insulation')</label> <span>*</span>
+                        <label for="roof_insulation" class=" control-label"><i data-toggle="collapse" data-target="#roof-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.roof-insulation')</label> <span>*</span>
 
                         <select id="roof_insulation" class="form-control" name="roof_insulation" >
                             @foreach($qualities as $quality)
@@ -463,8 +464,8 @@
 
                         @if ($errors->has('roof_insulation'))
                             <span class="help-block">
-                        <strong>{{ $errors->first('roof_insulation') }}</strong>
-                    </span>
+                                <strong>{{ $errors->first('roof_insulation') }}</strong>
+                            </span>
                         @endif
                     </div>
                 </div>
@@ -490,7 +491,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('hr_cv_boiler') ? ' has-error' : '' }}">
-                        <label for="hr_cv_boiler" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hr-cv-boiler')</label> <span>*</span>
+                        <label for="hr_cv_boiler" class=" control-label"><i data-toggle="collapse" data-target="#hr-cv-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hr-cv-boiler')</label> <span>*</span>
 
                         <select id="hr_cv_boiler" class="form-control" name="hr_cv_boiler" >
                             @foreach($centralHeatingAges as $centralHeatingAge)
@@ -527,7 +528,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('hybrid_heatpump') ? ' has-error' : '' }}">
-                        <label for="hybrid_heatpump" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hybrid-heatpump')</label> <span>*</span>
+                        <label for="hybrid_heatpump" class=" control-label"><i data-toggle="collapse" data-target="#hybrid-heatpump-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hybrid-heatpump')</label> <span>*</span>
 
                         <select id="hybrid_heatpump" class="form-control" name="hybrid_heatpump" >
                             @foreach($heatPumps->take(2)  as $heatPump)
@@ -567,7 +568,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('sun_panel') ? ' has-error' : '' }}">
-                        <label for="sun_panel" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.title')</label>
+                        <label for="sun_panel" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.title')</label>
 
                         <input type="text" id="sun_panel" class="form-control" name="sun_panel">
 
@@ -601,7 +602,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('sun_panel_placed_date') ? ' has-error' : '' }}">
-                        <label for="sun_panel_placed_date" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-mechanic')</label>
+                        <label for="sun_panel_placed_date" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-mechanic')</label>
 
                         <input type="date" name="sun_panel_placed_date" id="sun_panel_placed_date" class="form-control" value="{{old('sun_panel_placed_date')}}">
 
@@ -621,7 +622,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('monovalent_heatpump') ? ' has-error' : '' }}">
-                        <label for="monovalent_heatpump" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.monovalent-heatpump')</label> <span>*</span>
+                        <label for="monovalent_heatpump" class=" control-label"><i data-toggle="collapse" data-target="#monovalent-heatpump-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.monovalent-heatpump')</label> <span>*</span>
 
                         <select id="monovalent_heatpump" class="form-control" name="monovalent_heatpump" >
                             @foreach($heatPumps->forget(1)  as $heatPump)
@@ -660,7 +661,7 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('sun_boiler') ? ' has-error' : '' }}">
-                        <label for="sun_boiler" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-boiler')</label> <span>*</span>
+                        <label for="sun_boiler" class=" control-label"><i data-toggle="collapse" data-target="#sun-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-boiler')</label> <span>*</span>
 
                         <select id="sun_boiler" class="form-control" name="sun_boiler" >
                             @foreach($solarWaterHeaters as $solarWaterHeater)
@@ -699,7 +700,7 @@
                 <div class="col-sm-4">
 
                     <div class="form-group add-space{{ $errors->has('house_ventilation') ? ' has-error' : '' }}">
-                        <label for="house_ventilation" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.title')</label> <span>*</span>
+                        <label for="house_ventilation" class=" control-label"><i data-toggle="collapse" data-target="#house-ventilation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.title')</label> <span>*</span>
 
                         <select needrequired id="house_ventilation" class="form-control" name="house_ventilation" >
                             @foreach($houseVentilations as $houseVentilation)
@@ -738,11 +739,11 @@
                 <div class="col-sm-6">
 
                     <div class="form-group add-space{{ $errors->has('house_ventilation_placed_date') ? ' has-error' : '' }}">
-                        <label for="house_ventilation_placed_date" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')</label>
+                        <label for="house_ventilation_placed_date" class=" control-label"><i data-toggle="collapse" data-target="#house-ventilation-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')</label>
 
                         <input type="date" id="house_ventilation_placed_date" class="form-control" name="house_ventilation_placed_date" >
 
-                        <div id="house-venrtilation-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="house-ventilation-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
@@ -783,7 +784,7 @@
             <div class="col-sm-6">
 
                 <div class="form-group add-space{{ $errors->has('total_citizens') ? ' has-error' : '' }}">
-                    <label for="total_citizens" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
+                    <label for="total_citizens" class=" control-label"><i data-toggle="collapse" data-target="#total-citizens-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
                     <input type="text" id="total_citizens" class="form-control" value="{{old('total_citizens')}}" name="total_citizens" needrequired>
 
@@ -802,7 +803,7 @@
             <div class="col-sm-6">
 
                 <div class="form-group add-space{{ $errors->has('cooked_on_gas') ? ' has-error' : '' }}">
-                    <label for="cooked_on_gas" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
+                    <label for="cooked_on_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
                     <label class="radio-inline">
                         <input type="radio" name="cooked_on_gas" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                     </label>
@@ -810,7 +811,7 @@
                         <input type="radio" name="cooked_on_gas" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                     </label>
 
-                    <div id="coocked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    <div id="cooked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And i would like to have it to...
                     </div>
 
@@ -825,7 +826,7 @@
             <div class="row">
             <div class="col-sm-6">
                 <div class="form-group add-space{{ $errors->has('thermostat_highest') ? ' has-error' : '' }}">
-                    <label for="thermostat_highest" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
+                    <label for="thermostat_highest" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-highest-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
 
                     <input type="text" id="thermostat_highest" class="form-control" value="{{old('thermostat_highest')}}" name="thermostat_highest" >
 
@@ -843,7 +844,7 @@
 
             <div class="col-sm-6">
                 <div class="form-group add-space{{ $errors->has('thermostat_lowest') ? ' has-error' : '' }}">
-                    <label for="thermostat_lowest" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
+                    <label for="thermostat_lowest" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-lowest-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
 
                     <input id="thermostat_lowest" type="text" class="form-control" name="thermostat_lowest">
 
@@ -862,7 +863,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('max_hours_thermostat_highest') ? ' has-error' : '' }}">
-                        <label for="max_hours_thermostat_highest" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
+                        <label for="max_hours_thermostat_highest" class=" control-label"><i data-toggle="collapse" data-target="#max-hours-thermostat-highest-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
 
                         <select id="max_hours_thermostat_highest" class="form-control" name="max_hours_thermostat_highest">
                             @for($hour = 0; $hour < 25; $hour++)
@@ -884,7 +885,7 @@
 
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('situation_first_floor') ? ' has-error' : '' }}">
-                        <label for="situation_first_floor" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-first-floor')</label>
+                        <label for="situation_first_floor" class=" control-label"><i data-toggle="collapse" data-target="#situation-first-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-first-floor')</label>
 
                         <select id="situation_first_floor" class="form-control" name="situation_first_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
@@ -908,12 +909,9 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('situation_second_floor') ? ' has-error' : '' }}">
-                        <label for="situation_second_floor" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-second-floor')</label>
+                        <label for="situation_second_floor" class=" control-label"><i data-toggle="collapse" data-target="#situation-second-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-second-floor')</label>
 
                         <select id="situation_second_floor" class="form-control" name="situation_second_floor" >
-                            {{--@foreach($buildingTypes as $buildingType)--}}
-                                {{--<option value="{{old('situation_second_floor', $buildingType->ide)}}">{{$buildingType->name}}</option>--}}
-                            {{--@endforeach--}}
                             @foreach($buildingHeatings as $buildingHeating)
                                 <option @if($buildingHeating->id == old('situation_second_floor')) selected @endif value="{{$buildingHeating->id}}">{{$buildingHeating->name}}</option>
                             @endforeach
@@ -933,14 +931,14 @@
          
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('comfortniveau_warm_tapwater') ? ' has-error' : '' }}">
-                        <label for="comfortniveau_warm_tapwater" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.comfortniveau-warm-tapwater')</label>
+                        <label for="comfortniveau_warm_tapwater" class=" control-label"><i data-toggle="collapse" data-target="#comfortniveau-warm-tapwater-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.comfortniveau-warm-tapwater')</label>
 
                         <select id="comfortniveau_warm_tapwater" class="form-control" name="comfortniveau_warm_tapwater" >
                             @foreach($comfortLevelsTapWater as $comfortLevelTapWater)
                                 <option @if($comfortLevelTapWater->id == old('comfortniveau_warm_tapwater')) selected @endif value="{{$comfortLevelTapWater->id}}">{{$comfortLevelTapWater->name}}</option>
                             @endforeach
                         </select>
-                        <div id="comfortniveau-warm-tapwater" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="comfortniveau-warm-tapwater-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
@@ -955,7 +953,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('electricity_consumption_past_year') ? ' has-error' : '' }}">
-                        <label for="electricity_consumption_past_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
+                        <label for="electricity_consumption_past_year" class=" control-label"><i data-toggle="collapse" data-target="#electricity-consumption-past-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
 
                         <input id="electricity_consumption_past_year" type="text" value="{{old('electricity_consumption_past_year')}}" class="form-control" name="electricity_consumption_past_year">
 
@@ -972,7 +970,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('gas_usage_past_year') ? ' has-error' : '' }}">
-                        <label for="gas_usage_past_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year')</label>
+                        <label for="gas_usage_past_year" class=" control-label"><i data-toggle="collapse" data-target="#gas-usage-past-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year')</label>
 
                         <input id="gas_usage_past_year" type="text" value="{{old('gas_usage_past_year')}}" class="form-control" name="gas_usage_past_year">
 
@@ -993,7 +991,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
-                        <label for="additional-info" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
+                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
 
                         <textarea id="additional-info" class="form-control" name="additional-info"> {{old('additional_info')}} </textarea>
 

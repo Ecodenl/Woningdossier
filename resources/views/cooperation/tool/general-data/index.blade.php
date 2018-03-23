@@ -423,8 +423,8 @@
 
                         @if ($errors->has('floor_insulation'))
                             <span class="help-block">
-                        <strong>{{ $errors->first('floor_insulation') }}</strong>
-                    </span>
+                                <strong>{{ $errors->first('floor_insulation') }}</strong>
+                            </span>
                         @endif
                     </div>
                 </div>

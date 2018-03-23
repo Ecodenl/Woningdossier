@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Http\Requests\GeneralDataFormRequest;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
+use App\Models\Cooperation;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\Interest;
@@ -16,6 +18,7 @@ use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
 use App\Models\Ventilation;
+use Illuminate\Support\Facades\Session;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -69,18 +72,13 @@ class GeneralDataController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(GeneralDataFormRequest $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'building_type' => 'required|exists:building_types,id',
-        ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
 
-        dd('Validate passes');
+
+
 
         // Retrieve the name and basic data about the address
 //        $nameResident = $request->name_resident;
@@ -121,8 +119,8 @@ class GeneralDataController extends Controller
         $interestedSunPanels = $request->interested['sun_panel'];
         $interestedMonovalentHeatpump = $request->interested['monovalent_heatpump'];
         $interestedHouseVentilation = $request->interested['house_ventilation'];
-        $interestedWindowsInLivingSpaces = $request->interested['window_in_living_space'];
-        $interestedWindowsInSleepingSpaces = $request->interested['window_in_sleeping_spaces'];
+        $interestedWindowsInLivingSpaces = $request->interested['windows_in_living_space'];
+        $interestedWindowsInSleepingSpaces = $request->interested['windows_in_sleeping_spaces'];
         $interestedRoofIsolation = $request->interested['roof_insulation'];
         $interestedHybridHeatpump = $request->interested['hybrid_heatpump'];
         $interestedSunBoiler = $request->interested['sun_boiler'];
@@ -141,9 +139,8 @@ class GeneralDataController extends Controller
 
         // TODO: Save the collected data
 
-        dd($request->all());
-
-        return redirect(back());
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation])->with('success', trans('Success'));
     }
 
     /**

@@ -9,11 +9,12 @@ return [
 		],
 	],
 	'cooperation' => [
-	    'radiobutton' => [
-	        'yes' => 'Ja',
+        'radiobutton' => [
+            'not-important' => 'Niet van toepassing',
+            'yes' => 'Ja',
             'no' => 'Nee',
             'unknown' => 'Onbekend',
-            'mostly' => 'Gedeeltelijk'
+            'mostly' => 'Gedeeltelijk',
         ],
 		'my-account' => [
 			'settings' => [
@@ -111,8 +112,8 @@ return [
 					'hybrid-heatpump' => 'Hybride warmtepomp',
 					'monovalent-heatpump' => 'Monovalente warmtepomp',
 					'sun-panel' => [
-						'title' => 'Zonnepanelen',
-						'yes' => 'Zo ja, wanneer zijn panelen geplaatst?'
+						'title' => 'Aantal zonnepanelen',
+                        'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
 					],
 					'sun-boiler' => 'Zonneboiler',
 					'house-ventilation' => [
@@ -123,23 +124,21 @@ return [
 					'interested' => 'Interesse?',
 
 				],
-
 				'data-about-usage' => [
 					'title' => 'Gegevens over het gebruik van de woning',
-					'total-citizens' => 'Wat is het aantal bewoners ?',
-					'thermostat-highest' => 'Op welke temperatuur staat de thermostaat op de hoge stand ?',
-					'thermostat-lowest' => 'Op welke temperatuur staat de thermostaat op lage stand ?',
-					'max-hours-thermostat-highest' => 'Hoe veel uren per dag staat de thermostaat op hoge stand ?',
-					'situation-first-floor' => 'Welke situatie is van toepassing op de eerste verdieping ?',
-					'situation-second-floor' => 'Welke situatie is van toepassing op de tweede verdieping ?',
-					'cooked-on-gas' => 'Wordt er op gas gekookt ?',
-					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater ?',
-					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar ?',
-					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar ?',
+					'total-citizens' => 'Wat is het aantal bewoners?',
+					'thermostat-highest' => 'Op welke temperatuur staat de thermostaat op de hoge stand?',
+					'thermostat-lowest' => 'Op welke temperatuur staat de thermostaat op lage stand?',
+					'max-hours-thermostat-highest' => 'Hoe veel uren per dag staat de thermostaat op hoge stand?',
+					'situation-first-floor' => 'Welke situatie is van toepassing op de eerste verdieping?',
+					'situation-second-floor' => 'Welke situatie is van toepassing op de tweede verdieping?',
+					'cooked-on-gas' => 'Wordt er op gas gekookt?',
+					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
+					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar? (in kWh per jaar)',
+					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m3 gas per jaar)',
 					'additional-info' => 'Toelichting op de woonsituatie'
 				],
 			],
-
             'wall-insulation' => [
                 'intro' => [
                     'title' => 'Gevelisolatie',

@@ -196,12 +196,29 @@ return [
                     'are-rooms-heater' => [
                         'title' => 'Zijn de kamers verwarmd'
                     ],
-                    'replace-glass-in-lead' => 'Glas in lood vervangen',
-                    'place-hr-only-glass' => 'Plaatsen van HR++ glas (alleen het glas)',
-                    'place-hr-with-frame' => 'Plaatsen van HR++ glas (Inclusief kozijn)',
-                    'triple-hr-glass' => 'Drievoudige HR beglazing inclusief kozijn',
                 ],
 
+                'glass-in-lead' => [
+                    'title' => 'Glas in lood vervangen',
+
+                ],
+
+                'place-hr-with-frame' => [
+                    'title' => 'Plaatsen van HR++ glas (Inclusief kozijn)',
+                ],
+                'triple-hr-glass' => [
+                    'title' => 'Drievoudige HR beglazing inclusief kozijn',
+
+                ],
+
+               'place-hr-only-glass' => [
+                   'title' => 'Plaatsen van HR++ glas (alleen het glas)',
+               ],
+
+                'current-glass' => 'Wat voor glas is er nu?',
+                'heated-rooms' => 'Zijn de kamers verwarmd?',
+                'm2' => 'm2',
+                'total-windows' => 'Aantal ramen',
 
             ]
 		],

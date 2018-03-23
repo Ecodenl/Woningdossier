@@ -6,6 +6,7 @@ use App\Models\InterestedToExecuteMeasure;
 use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Lang;
 
 class InsulatedGlazingController extends Controller
 {
@@ -19,8 +20,15 @@ class InsulatedGlazingController extends Controller
         $steps = Step::orderBy('order')->get();
 
         $interestedToExecuteMeasures = InterestedToExecuteMeasure::all();
+        $keys = [
+            'glass-in-lead',
+            'place-hr-only-glass',
+            'place-hr-with-frame',
+            'triple-hr-glass'
+        ];
 
-        return view('cooperation.tool.insulated-glazing.index', compact('steps', 'interestedToExecuteMeasures'));
+
+        return view('cooperation.tool.insulated-glazing.index', compact('steps', 'interestedToExecuteMeasures', 'keys'));
     }
 
     /**

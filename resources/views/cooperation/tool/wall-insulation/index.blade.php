@@ -373,7 +373,8 @@
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
-                        <button type="submit" class="btn btn-primary">
+                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                        <button type="submit" disabled class="disabled btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>
                     </div>

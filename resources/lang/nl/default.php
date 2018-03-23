@@ -5,6 +5,7 @@ return [
         'store' => 'Aanmaken',
         'update' => 'Update',
         'destroy' => 'Verwijderen',
-        'next' => 'Volgende'
+        'next' => 'Volgende',
+        'prev' => 'Vorige',
     ],
 ];

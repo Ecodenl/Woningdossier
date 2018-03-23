@@ -9,6 +9,13 @@ return [
 		],
 	],
 	'cooperation' => [
+        'radiobutton' => [
+            'not-important' => 'Niet van toepassing',
+            'yes' => 'Ja',
+            'no' => 'Nee',
+            'unknown' => 'Onbekend',
+            'mostly' => 'Gedeeltelijk',
+        ],
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -105,8 +112,8 @@ return [
 					'hybrid-heatpump' => 'Hybride warmtepomp',
 					'monovalent-heatpump' => 'Monovalente warmtepomp',
 					'sun-panel' => [
-						'title' => 'Zonnepanelen',
-						'yes' => 'Zo ja, wanneer zijn panelen geplaatst?'
+						'title' => 'Aantal zonnepanelen',
+                        'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
 					],
 					'sun-boiler' => 'Zonneboiler',
 					'house-ventilation' => [
@@ -117,22 +124,64 @@ return [
 					'interested' => 'Interesse?',
 
 				],
-
 				'data-about-usage' => [
 					'title' => 'Gegevens over het gebruik van de woning',
-					'total-citizens' => 'Wat is het aantal bewoners ?',
-					'thermostat-highest' => 'Op welke temperatuur staat de thermostaat op de hoge stand ?',
-					'thermostat-lowest' => 'Op welke temperatuur staat de thermostaat op lage stand ?',
-					'max-hours-thermostat-highest' => 'Hoe veel uren per dag staat de thermostaat op hoge stand ?',
-					'situation-first-floor' => 'Welke situatie is van toepassing op de eerste verdieping ?',
-					'situation-second-floor' => 'Welke situatie is van toepassing op de tweede verdieping ?',
-					'cooked-on-gas' => 'Wordt er op gas gekookt ?',
-					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater ?',
-					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar ?',
-					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar ?',
+					'total-citizens' => 'Wat is het aantal bewoners?',
+					'thermostat-highest' => 'Op welke temperatuur staat de thermostaat op de hoge stand?',
+					'thermostat-lowest' => 'Op welke temperatuur staat de thermostaat op lage stand?',
+					'max-hours-thermostat-highest' => 'Hoe veel uren per dag staat de thermostaat op hoge stand?',
+					'situation-first-floor' => 'Welke situatie is van toepassing op de eerste verdieping?',
+					'situation-second-floor' => 'Welke situatie is van toepassing op de tweede verdieping?',
+					'cooked-on-gas' => 'Wordt er op gas gekookt?',
+					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
+					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar? (in kWh per jaar)',
+					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m3 gas per jaar)',
 					'additional-info' => 'Toelichting op de woonsituatie'
 				],
 			],
+            'wall-insulation' => [
+                'intro' => [
+                    'title' => 'Gevelisolatie',
+                    'build-year' => 'Het huis is gebouwd in :year. Woningen met dit bouwjaar hebben vaak geen spouwmuur.',
+                    'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
+                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
+                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',
+                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel ?',
+                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk ?'
+                ],
+
+                'optional' => [
+                    'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
+                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
+                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
+                    'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
+                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
+                    'facade-best-insulation' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
+                ],
+
+                'indication-for-costs' => [
+                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+                    'gas-savings' => 'Gasbesparing',
+                    'co2-savings' => 'CO2 Besparing',
+                    'savings-in-euro' => 'Besparing in €',
+                    'indicative-costs' => 'Indicatieve kosten',
+                    'comparable-rate' => 'Vergelijkbare rente',
+                    'year' => 'Jaar',
+                ],
+
+                'taking-into-account' => [
+                    'title' => 'U kunt de komende jaren met de volgende onderhoudsmaatregelen rekening houden:',
+                    'sub-title' => 'Het is aan te raden om stukken gevel die nu al heel slecht zijn meteen aan te pakken.',
+                    'expected-costs' => 'Te verwachten kosten voor deze maatregel',
+                    'explanation-specific-situation' => 'Toelichting over de specifieke situatie',
+                    'repair-joint' => 'Reparatie voegwerk',
+                    'clean-brickwork' => 'Reinigen metselwerk',
+                    'impregnate-wall' => 'Impregneren gevel',
+                    'wall-painting' => 'Gevelschilderwerk op stuk of metselwerk',
+                    'year' => 'Jaar',
+                    'additional-info' => 'Toelichting over de specifieke situatie',
+                ],
+            ],
 
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',

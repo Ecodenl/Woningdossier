@@ -1,0 +1,21 @@
+/**
+  Helper classes for the html markup
+ */
+body {
+  #app {
+    .glyphicon-padding {
+      padding-right: 4px;
+      cursor: pointer;
+      color: $brand-info;
+    }
+
+    .remove-collapse-space {
+      margin: 0px;
+      max-height: 55px;
+    }
+
+    .alert-top-space {
+      margin-top: 10px;
+    }
+  }
+}

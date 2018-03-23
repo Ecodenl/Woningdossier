@@ -32,6 +32,7 @@ nb-configuration.xml
 
 # OS
 .DS_Store
+.sass-cache
 
 # Local
 ubuntu-xenial-16.04-cloudimg-console.log

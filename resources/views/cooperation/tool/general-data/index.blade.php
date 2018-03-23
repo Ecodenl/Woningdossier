@@ -158,7 +158,7 @@
                         <div class="form-group add-space{{ $errors->has('what_building_year') ? ' has-error' : '' }}">
                             <label for="what_building_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')</label> <span>*</span>
 
-                            <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" dneedrequired autofocus>
+                            <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" drequired autofocus>
                             <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
@@ -702,7 +702,7 @@
                     <div class="form-group add-space{{ $errors->has('house_ventilation') ? ' has-error' : '' }}">
                         <label for="house_ventilation" class=" control-label"><i data-toggle="collapse" data-target="#house-ventilation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.title')</label> <span>*</span>
 
-                        <select needrequired id="house_ventilation" class="form-control" name="house_ventilation" >
+                        <select required id="house_ventilation" class="form-control" name="house_ventilation" >
                             @foreach($houseVentilations as $houseVentilation)
                                 <option @if($houseVentilation->id == old('house_ventilation')) selected @endif value="{{$houseVentilation->id}}">{{$houseVentilation->name}}</option>
                             @endforeach
@@ -786,7 +786,7 @@
                 <div class="form-group add-space{{ $errors->has('total_citizens') ? ' has-error' : '' }}">
                     <label for="total_citizens" class=" control-label"><i data-toggle="collapse" data-target="#total-citizens-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
-                    <input type="text" id="total_citizens" class="form-control" value="{{old('total_citizens')}}" name="total_citizens" needrequired>
+                    <input type="text" id="total_citizens" class="form-control" value="{{old('total_citizens')}}" name="total_citizens" required>
 
                     <div id="total-citizens-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And i would like to have it to...

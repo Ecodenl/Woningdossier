@@ -133,6 +133,28 @@ return [
 					'additional-info' => 'Toelichting op de woonsituatie'
 				],
 			],
+
+            'insulated-glazing' => [
+                'title' => 'Isolerende beglazing',
+
+                'information' => [
+                    'interested-to-measure' => [
+                        'title' => 'Bent u geintreseerd in één of meerdere van deze maatregelen?',
+                    ],
+                    'current-glass' => [
+                        'title' => 'Wat voor glas is er nu?'
+                    ],
+                    'are-rooms-heater' => [
+                        'title' => 'Zijn de kamers verwarmd'
+                    ],
+                    'replace-glass-in-lead' => 'Glas in lood vervangen',
+                    'place-hr-only-glass' => 'Plaatsen van HR++ glas (alleen het glas)',
+                    'place-hr-with-frame' => 'Plaatsen van HR++ glas (Inclusief kozijn)',
+                    'triple-hr-glass' => 'Drievoudige HR beglazing inclusief kozijn',
+                ],
+
+
+            ]
 		],
 	],
 ];

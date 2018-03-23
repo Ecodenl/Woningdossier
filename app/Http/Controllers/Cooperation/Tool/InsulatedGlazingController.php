@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\InterestedToExecuteMeasure;
+use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +16,11 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
-        //
+        $steps = Step::orderBy('order')->get();
+
+        $interestedToExecuteMeasures = InterestedToExecuteMeasure::all();
+
+        return view('cooperation.tool.insulated-glazing.index', compact('steps', 'interestedToExecuteMeasures'));
     }
 
     /**

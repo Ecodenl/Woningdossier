@@ -158,7 +158,7 @@
                         <div class="form-group add-space{{ $errors->has('what_building_year') ? ' has-error' : '' }}">
                             <label for="what_building_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')</label> <span>*</span>
 
-                            <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" drequired autofocus>
+                            <input id="what_building_year" type="text" class="form-control" name="what_building_year" value="{{old('what_building_year')}}" required autofocus>
                             <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
@@ -176,7 +176,7 @@
                         <div class="form-group add-space{{ $errors->has('user_surface') ? ' has-error' : '' }}">
                             <label for="user_surface" class=" control-label"><i data-toggle="collapse" data-target="#user-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label> <span>*</span>
 
-                            <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" req autofocus>
+                            <input id="user_surface" type="text" class="form-control" name="user_surface" value="{{old('user_surface')}}" required autofocus>
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
@@ -1016,8 +1016,8 @@
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
-                        <button type="submit" class="btn btn-primary">
-                            @lang('default.buttons.store')
+                        <button type="submit" class="pull-right btn btn-primary">
+                            @lang('default.buttons.next')
                         </button>
                     </div>
                 </div>

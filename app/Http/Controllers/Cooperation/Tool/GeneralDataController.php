@@ -7,6 +7,7 @@ use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
+use App\Models\Cooperation;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\Interest;
@@ -138,8 +139,8 @@ class GeneralDataController extends Controller
 
         // TODO: Save the collected data
 
-
-        return redirect()->back()->with('success', trans('Success'));
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation])->with('success', trans('Success'));
     }
 
     /**

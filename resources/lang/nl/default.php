@@ -4,6 +4,8 @@ return [
     'buttons' => [
         'store' => 'Aanmaken',
         'update' => 'Update',
-        'destroy' => 'Verwijderen'
+        'destroy' => 'Verwijderen',
+        'next' => 'Volgende',
+        'prev' => 'Vorige',
     ],
 ];

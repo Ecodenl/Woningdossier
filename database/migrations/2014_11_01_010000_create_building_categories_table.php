@@ -15,7 +15,8 @@ class CreateBuildingCategoriesTable extends Migration
     {
         Schema::create('building_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('type');
+            $table->uuid('name');
             $table->timestamps();
         });
 

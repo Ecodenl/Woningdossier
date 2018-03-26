@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\CrawlSpaceHeight;
+use App\Models\Quality;
+use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +17,10 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
-        //
+        $insulations = Quality::all();
+        $steps = Step::orderBy('order')->get();
+        $crawlHeights = CrawlSpaceHeight::all();
+        return view('cooperation.tool.floor-insulation.index', compact('insulations', 'steps', 'crawlHeights'));
     }
 
     /**

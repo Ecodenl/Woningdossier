@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\CrawlSpaceHeight;
 use App\Models\Quality;
 use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
 
 class FloorInsulationController extends Controller
 {
@@ -33,15 +35,24 @@ class FloorInsulationController extends Controller
         //
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param FloorInsulationFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(FloorInsulationFormRequest $request)
     {
-        //
+        // Get the value's from the input's
+        $floorInsulation = $request->floor_insulation;
+        $hasCrawlspace = $request->has_crawlspace;
+        $hasCrawlspaceAccess = $request->crawlspace_access;
+        $crawlspaceHeight = $request->crawlspace_height;
+        $floorSurface = $request->floor_surface;
+
+        // TODO: store the request
+        return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => App::make('Cooperation')]);
     }
 
     /**

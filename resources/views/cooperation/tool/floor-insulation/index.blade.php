@@ -5,7 +5,7 @@
 
 @section('step_content')
     <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
+          action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="floor-insulation">
             <div class="row">
@@ -219,7 +219,7 @@
                     <div class="">
                         <a class="btn btn-success pull-left"
                            href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                        <button type="submit" disabled class="disabled btn btn-primary pull-right">
+                        <button type="submit" class="btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>
                     </div>

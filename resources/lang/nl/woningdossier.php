@@ -92,9 +92,9 @@ return [
 				'building-type' => [
 					'title' => 'Wat is het voor woning?',
 					'example-building-type' => 'Kies de best passende voorbeeldwoning',
-					'what-type' => 'Wat is de woningtype?',
+					'what-type' => 'Wat is het woningtype?',
 					'what-user-surface' => 'Wat is de gebruiksoppervlakte van de woning?',
-					'how-much-building-layers' => 'Hoe veel bouwlagen heeft het huis?',
+					'how-much-building-layers' => 'Hoeveel bouwlagen heeft het huis?',
 					'type-roof' => 'Type dak',
 					'is-monument' => 'Is het een monument?',
 					'what-building-year' => 'Wat is het bouwjaar?',

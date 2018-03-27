@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMeasureCategoriesTable extends Migration
+class CreateEnergyLabelsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateMeasureCategoriesTable extends Migration
      */
     public function up()
     {
-
-        Schema::create('measure_categories', function (Blueprint $table) {
-	        $table->increments('id');
-	        $table->string('name');
+        Schema::create('energy_labels', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('country_code', 2);
+            $table->integer('calculate_value')->nullable();
             $table->timestamps();
         });
 
@@ -30,6 +31,6 @@ class CreateMeasureCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('measure_categories');
+    	Schema::dropIfExists('energy_labels');
     }
 }

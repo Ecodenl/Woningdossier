@@ -15,7 +15,7 @@ class CreateBuildingTypesTable extends Migration
     {
         Schema::create('building_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->uuid('name');
             $table->integer('calculate_value');
             $table->timestamps();
         });

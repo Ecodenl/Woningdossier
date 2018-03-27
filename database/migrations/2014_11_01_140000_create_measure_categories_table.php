@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLastNamePrefixesTable extends Migration
+class CreateMeasureCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateLastNamePrefixesTable extends Migration
      */
     public function up()
     {
-        Schema::create('last_name_prefixes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 16)->default('');
+
+        Schema::create('measure_categories', function (Blueprint $table) {
+	        $table->increments('id');
+	        $table->uuid('name');
             $table->timestamps();
         });
+
+
     }
 
     /**
@@ -27,6 +30,6 @@ class CreateLastNamePrefixesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('last_name_prefixes');
+        Schema::dropIfExists('measure_categories');
     }
 }

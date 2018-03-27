@@ -52,6 +52,11 @@ class DatabaseSeeder extends Seeder
         $this->call(ComfortLevelTapWatersTableSeeder::class);
         $this->call(SurfacePaintedWallsTableSeeder::class);
         $this->call(WallNeedImpregnationsTableSeeder::class);
+        $this->call(InsulatingGlazingsTableSeeder::class);
+        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
+        $this->call(WoodElementsTableSeeder::class);
+        $this->call(DamageToPaintWorksTableSeeder::class);
+        $this->call(HouseFramesTableSeeder::class);
 
     }
 }

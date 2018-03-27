@@ -182,6 +182,53 @@ return [
                     'additional-info' => 'Toelichting over de specifieke situatie',
                 ],
             ],
+
+            'insulated-glazing' => [
+                'title' => 'Isolerende beglazing',
+
+                'glass-in-lead' => [
+                    'title' => 'Glas in lood vervangen',
+
+                ],
+
+                'place-hr-with-frame' => [
+                    'title' => 'Plaatsen van HR++ glas (Inclusief kozijn)',
+                ],
+                'triple-hr-glass' => [
+                    'title' => 'Drievoudige HR beglazing inclusief kozijn',
+
+                ],
+
+                'place-hr-only-glass' => [
+                   'title' => 'Plaatsen van HR++ glas (alleen het glas)',
+                ],
+
+                'current-glass' => 'Wat voor glas is er nu?',
+                'heated-rooms' => 'Zijn de kamers verwarmd?',
+                'm2' => 'm2',
+                'total-windows' => 'Aantal ramen',
+
+                'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
+
+                'windows-surface' => [
+                    'comparable-houses' => 'Vergelijkbare huizen hebben :m2 m<sup>2</sup>',
+                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als u het niet weer laat u dit veld vrij.'
+                ],
+
+                'paint-work' => [
+                    'title' => 'Vragen over het schilderwerk',
+                    'which-frames' => 'Welke kozijnen heeft uw huis?',
+                    'other-wood-elements' => [
+                        'title' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
+                        'element0' => 'Dakranden / boeidelen',
+                        'element1' => 'Dakkapellen',
+                        'element2' => 'Gevelbekleding',
+                    ],
+                    'last-paintjob' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
+                    'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
+                    'wood-rot-visible' => 'Is houtrot waarneembaar?'
+                ],
+            ]
 		],
 	],
 ];

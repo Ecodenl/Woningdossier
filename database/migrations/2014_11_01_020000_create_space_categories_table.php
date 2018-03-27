@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAssessmentTypesTable extends Migration
+class CreateSpaceCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateAssessmentTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('assessment_types', function (Blueprint $table) {
+        Schema::create('space_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('description')->default('');
+	        $table->string('type');
+	        $table->uuid('name');
             $table->timestamps();
         });
 
@@ -30,6 +30,6 @@ class CreateAssessmentTypesTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('assessment_types');
+    	Schema::dropIfExists('space_categories');
     }
 }

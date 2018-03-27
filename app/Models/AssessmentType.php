@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,4 +23,5 @@ use Illuminate\Database\Eloquent\Model;
 class AssessmentType extends Model
 {
     //
+	use TranslatableTrait;
 }

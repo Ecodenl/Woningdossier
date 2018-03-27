@@ -15,7 +15,7 @@ class CreateExampleBuildingsTable extends Migration
     {
         Schema::create('example_buildings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('translation_key');
+	        $table->uuid('name');
             $table->integer('order')->nullable();
             // more stuff to come here when specified..
             $table->timestamps();

@@ -11,72 +11,113 @@ class ExampleBuildingsTableSeeder extends Seeder
      */
     public function run()
     {
-        $translationPrefix = 'woningdossier.cooperation.tool.example-buildings.';
-
         $exampleBuildings = [
 			[
-				'translation_key' => $translationPrefix .'woning0',
+				'names' => [
+					'nl' => 'Er is geen passende voorbeeldwoning',
+				],
 				'order' => 99,
 			],
 	        [
-		        'translation_key' => $translationPrefix .'woning1',
+		        'names' => [
+			        'nl' => 'Tussenwoning, drie bouwlagen en plat dak',
+				],
 		        'order' => 0,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning2',
+		        'names' => [
+			        'nl' => 'Hoekwoning, drie bouwlagen en plat dak',
+				],
 		        'order' => 1,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning3',
+		        'names' => [
+			        'nl' => 'Benedenwoning zonder opkamer (tussenwoning)',
+				],
 		        'order' => 2,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning4',
+		        'names' => [
+			        'nl' => 'Benedenwoning zonder opkamer (hoekwoning)',
+				],
 		        'order' => 3,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning5',
+		        'names' => [
+			        'nl' => 'Hoekhuis, twee bouwlagen en nieuwe dakopbouw',
+				],
 		        'order' => 6,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning6',
+		        'names' => [
+			        'nl' => 'Tussenwoning, twee bouwlagen en nieuwe dakopbouw',
+				],
 		        'order' => 7,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning7',
+		        'names' => [
+			        'nl' => 'Tussenwoning, twee bouwlagen en plat dak',
+				],
 		        'order' => 8,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning8',
+		        'names' => [
+			        'nl' => 'Arbeidershuis, twee bouwlagen (tussenwoning)',
+				],
 		        'order' => 9,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning9',
+		        'names' => [
+			        'nl' => 'Jaren \'30 tussenwoning met hellend dak',
+				],
 		        'order' => 10,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning10',
+		        'names' => [
+			        'nl' => 'Jaren \'30 hoekwoning met hellend dak',
+				],
 		        'order' => 11,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning11',
+		        'names' => [
+			        'nl' => 'Tussenwoning, drie bouwlagen en hellend dak',
+				],
 		        'order' => 12,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning12',
+		        'names' => [
+			        'nl' => 'Hoekwoning, drie bouwlagen en hellend dak',
+				],
 		        'order' => 13,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning13',
+		        'names' => [
+			        'nl' => 'Bovenwoning zonder opkamer (tussenwoning)',
+				],
 		        'order' => 4,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix .'woning14',
+		        'names' => [
+			        'nl' => 'Bovenwoning zonder opkamer (hoekwoning)',
+				],
 		        'order' => 5,
 	        ],
         ];
 
-        DB::table('example_buildings')->insert($exampleBuildings);
+        foreach($exampleBuildings as $exampleBuilding){
+	        $uuid = \App\Helpers\Str::uuid();
+	        foreach($exampleBuilding['names'] as $locale => $name) {
+		        \DB::table( 'translations' )->insert( [
+			        'key'         => $uuid,
+			        'language'    => $locale,
+			        'translation' => $name,
+		        ] );
+	        }
 
+	        \DB::table('example_buildings')->insert([
+		        'name' => $uuid,
+		        'order' => $exampleBuilding['order'],
+	        ]);
+        }
     }
 }

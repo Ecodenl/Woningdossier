@@ -11,7 +11,7 @@
                     <label for="example_building_type" class=" control-label"><i data-toggle="collapse" data-target="#example-building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
                     <select id="example_building_type" class="form-control" name="example_building_type" >
                         @foreach($exampleBuildingTypes as $exampleBuildingType)
-                            <option @if($exampleBuildingType->id == old('example_building_type')) selected @endif value="{{$exampleBuildingType->id}}">@lang($exampleBuildingType->translation_key)</option>
+                            <option @if($exampleBuildingType->id == old('example_building_type')) selected @endif value="{{ $exampleBuildingType->id }}">{{ $exampleBuildingType->name }}</option>
                         @endforeach
                     </select>
 
@@ -25,7 +25,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space">
                         <div id="example-building-type-info" class="collapse alert alert-info remove-collapse-space">
-                            I would like to have some help full information right here !
+                            I would like to have some help full information right here!
                         </div>
                     </div>
                 </div>

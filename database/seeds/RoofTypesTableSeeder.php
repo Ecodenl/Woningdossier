@@ -11,33 +11,52 @@ class RoofTypesTableSeeder extends Seeder
      */
     public function run()
     {
-	    $translationPrefix = 'woningdossier.cooperation.tool.roof-types.';
-
         $roofTypes = [
         	[
-        		'translation_key' => $translationPrefix . 'type0',
+        		'names' => [
+        			'nl' => 'Hellend dak met dakpannen',
+		        ],
 		        'order' => 0,
 		        'calculate_value' => 1,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix . 'type1',
+		        'names' => [
+			        'nl' => 'Hellend dak met bitumen',
+		        ],
 		        'order' => 1,
 		        'calculate_value' => 1,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix . 'type2',
+		        'names' => [
+			        'nl' => 'Platdak',
+		        ],
 		        'order' => 2,
 		        'calculate_value' => 2,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix . 'type3',
+		        'names' => [
+			        'nl' => 'Geen dak',
+		        ],
 		        'order' => 3,
 		        'calculate_value' => 2,
 	        ],
         ];
 
-        foreach($roofTypes as $roofType){
-        	DB::table('roof_types')->insert($roofType);
-        }
+	    foreach ($roofTypes as $roofType) {
+		    $uuid = \App\Helpers\Str::uuid();
+		    foreach($roofType['names'] as $locale => $name) {
+			    \DB::table( 'translations' )->insert( [
+				    'key'         => $uuid,
+				    'language'    => $locale,
+				    'translation' => $name,
+			    ] );
+		    }
+
+		    \DB::table('roof_types')->insert([
+			    'calculate_value' => $roofType['calculate_value'],
+			    'order' => $roofType['order'],
+			    'name' => $uuid,
+		    ]);
+	    }
     }
 }

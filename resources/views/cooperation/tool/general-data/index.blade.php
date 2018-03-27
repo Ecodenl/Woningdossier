@@ -215,7 +215,7 @@
 
                             <select id="roof_type" class="form-control" name="roof_type" req>
                                 @foreach($roofTypes as $roofType)
-                                    <option @if($roofType->id == old('roof_type')) selected @endif value="{{$roofType->id}}">@lang($roofType->translation_key)</option>
+                                    <option @if($roofType->id == old('roof_type')) selected @endif value="{{$roofType->id}}">{{ $roofType->name }}</option>
                                 @endforeach
                             </select>
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTaskPropertiesTable extends Migration
+class CreateTranslationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,14 @@ class CreateTaskPropertiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('task_properties', function (Blueprint $table) {
+        Schema::create('translations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->uuid('key');
+            $table->string('language', 2); // iso language
+	        $table->text('translation');
             $table->timestamps();
+
+            $table->index('key');
         });
     }
 
@@ -27,6 +31,6 @@ class CreateTaskPropertiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('task_properties');
+        Schema::dropIfExists('translations');
     }
 }

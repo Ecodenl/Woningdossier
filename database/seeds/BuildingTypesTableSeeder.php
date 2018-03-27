@@ -14,49 +14,81 @@ class BuildingTypesTableSeeder extends Seeder
     {
 	    $buildingTypes = [
 	        [
-	            'name' => 'Vrijstaande woning',
+	            'names' => [
+	            	'nl' => 'Vrijstaande woning',
+	            ],
                 'calculate_value' => 2
             ],
             [
-                'name' => '2 onder 1 kap',
+                'names' => [
+                	'nl' => '2 onder 1 kap',
+                ],
                 'calculate_value' => 3,
             ],
             [
-                'name' => 'Hoekwoning',
+                'names' => [
+                	'nl' => 'Hoekwoning',
+                ],
                 'calculate_value' => 4,
             ],
             [
-                'name' => 'Tussenwoning',
+                'names' => [
+                	'nl' => 'Tussenwoning',
+                ],
                 'calculate_value' => 5,
             ],
             [
-                'name' => 'Benedenwoning hoek',
+                'names' => [
+                	'nl' => 'Benedenwoning hoek',
+                ],
                 'calculate_value' => 6,
             ],
             [
-                'name' => 'Benedenwoning tussen',
+                'names' => [
+                	'nl' => 'Benedenwoning tussen',
+                ],
                 'calculate_value' => 7,
             ],
             [
-                'name' => 'Bovenwoning hoek',
+                'names' => [
+                	'nl' => 'Bovenwoning hoek',
+                ],
                 'calculate_value' => 8,
             ],
             [
-                'name' => 'Bovenwoning tussen',
+                'names' => [
+                	'nl' => 'Bovenwoning tussen',
+                ],
                 'calculate_value' => 9,
             ],
             [
-                'name' => 'Appartement tussen op een tussenverdieping',
+                'names' => [
+                	'nl' => 'Appartement tussen op een tussenverdieping',
+                ],
                 'calculate_value' => 10,
             ],
             [
-                'name' => 'Appartement hoek op een tussenverdieping',
+                'names' => [
+                	'nl' => 'Appartement hoek op een tussenverdieping',
+                ],
                 'calculate_value' => 11,
             ],
         ];
 
 	    foreach($buildingTypes as $buildingType){
-	    	DB::table('building_types')->insert($buildingType);
+		    $uuid = \App\Helpers\Str::uuid();
+		    foreach($buildingType['names'] as $locale => $name) {
+			    \DB::table( 'translations' )->insert( [
+				    'key'         => $uuid,
+				    'language'    => $locale,
+				    'translation' => $name,
+			    ] );
+		    }
+
+		    \DB::table('building_types')->insert([
+			    'calculate_value' => $buildingType['calculate_value'],
+			    'name' => $uuid,
+		    ]);
 	    }
     }
 }

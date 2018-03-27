@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RoofType extends Model
 {
+	use TranslatableTrait;
+
     public function buildingFeatures(){
     	return $this->hasMany(BuildingFeature::class);
     }

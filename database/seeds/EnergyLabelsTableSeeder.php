@@ -13,23 +13,40 @@ class EnergyLabelsTableSeeder extends Seeder
     public function run()
     {
 	    $energyLabels = [
-		    'A',
-		    'B',
-		    'C',
-		    'D',
-		    'E',
-		    'F',
-            'G'
+	    	[
+		        'name' => 'A',
+			    'country_code' => 'nl',
+		    ],
+		    [
+		    	'name' => 'B',
+			    'country_code' => 'nl',
+		    ],
+		    [
+		    	'name' => 'C',
+			    'country_code' => 'nl',
+		    ],
+		    [
+		    	'name' => 'D',
+			    'country_code' => 'nl',
+		    ],
+		    [
+		    	'name' => 'E',
+			    'country_code' => 'nl',
+		    ],
+		    [
+		    	'name' => 'F',
+			    'country_code' => 'nl',
+		    ],
+            [
+            	'name' => 'G',
+	            'country_code' => 'nl',
+            ],
 	    ];
 
 	    foreach($energyLabels as $energyLabel){
-//	    	\DB::table('energy_labels')->insert(
-//			    ['name' => $energyLabel]
-//		    );
-
-	    	EnergyLabel::create([
-	    	    'name' => $energyLabel
-            ]);
+	    	\DB::table('energy_labels')->insert(
+			    $energyLabel
+		    );
 	    }
     }
 }

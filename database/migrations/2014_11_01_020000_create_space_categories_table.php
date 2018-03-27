@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBuildingCategoriesTable extends Migration
+class CreateSpaceCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateBuildingCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('building_categories', function (Blueprint $table) {
+        Schema::create('space_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+	        $table->string('type');
+	        $table->uuid('name');
             $table->timestamps();
         });
 
@@ -29,6 +30,6 @@ class CreateBuildingCategoriesTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('building_categories');
+    	Schema::dropIfExists('space_categories');
     }
 }

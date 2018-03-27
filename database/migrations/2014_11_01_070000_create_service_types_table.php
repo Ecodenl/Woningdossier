@@ -15,7 +15,8 @@ class CreateServiceTypesTable extends Migration
     {
         Schema::create('service_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->uuid('name');
+            $table->string('iso', 8)->default('');
             $table->timestamps();
         });
 

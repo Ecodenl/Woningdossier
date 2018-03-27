@@ -21,13 +21,15 @@ class DatabaseSeeder extends Seeder
 	    $this->call(CooperationsTableSeeder::class);
 	    $this->call(UsersTableSeeder::class);
 	    $this->call(StepsTableSeeder::class);
+	    $this->call(MeasureCategoriesTableSeeder::class);
+	    $this->call(MeasuresTableSeeder::class);
 
     	//
 	    $this->call(IndustriesTableSeeder::class);
 	    $this->call(OrganisationTypesTableSeeder::class);
 	    $this->call(OccupationsTableSeeder::class);
-		$this->call(MeasuresTableSeeder::class);
-		$this->call(MeasureCategoriesTableSeeder::class);
+
+
 
 
 		// New

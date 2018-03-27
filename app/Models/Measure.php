@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Measure extends Model
 {
+	use TranslatableTrait;
+
     public function serviceType(){
     	return $this->belongsTo(ServiceType::class);
     }
@@ -41,10 +44,6 @@ class Measure extends Model
 
     public function categories(){
     	return $this->belongsToMany(MeasureCategory::class);
-    }
-
-    public function opportunities(){
-    	return $this->hasMany(Opportunity::class);
     }
 
     public function properties(){

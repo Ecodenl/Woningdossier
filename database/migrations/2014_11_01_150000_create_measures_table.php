@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMeasureCategoriesTable extends Migration
+class CreateMeasuresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateMeasureCategoriesTable extends Migration
      */
     public function up()
     {
+        Schema::create('measures', function (Blueprint $table) {
+            $table->increments('id');
+            $table->uuid('name');
 
-        Schema::create('measure_categories', function (Blueprint $table) {
-	        $table->increments('id');
-	        $table->string('name');
             $table->timestamps();
         });
 
@@ -30,6 +30,6 @@ class CreateMeasureCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('measure_categories');
+        Schema::dropIfExists('measures');
     }
 }

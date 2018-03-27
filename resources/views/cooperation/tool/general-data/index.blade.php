@@ -33,103 +33,6 @@
         </div>
 
         <div class="row">
-            {{--
-            <div id="main-data" class="col-md-6">
-                <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.name-address-data.title')</h4>
-                    <div class="form-group add-space{{ $errors->has('name_resident') ? ' has-error' : '' }}">
-                        <label for="name_resident" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.name-resident')</label>
-
-                        <input id="name_resident" type="text" class="form-control" name="name_resident" value="{{old('name_resident')}}" req autofocus>
-
-                        @if ($errors->has('name_resident'))
-                            <span class="help-block">
-                        <strong>{{ $errors->first('name_resident') }}</strong>
-                    </span>
-                        @endif
-                    </div>
-
-                    <div class="form-group add-space{{ $errors->has('street') ? ' has-error' : '' }}">
-                        <label for="street" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.street')</label>
-
-                        <input id="street" type="text" class="form-control" name="street" value="{{old('street')}}" req autofocus>
-
-                        @if ($errors->has('street'))
-                            <span class="help-block">
-                        <strong>{{ $errors->first('street') }}</strong>
-                    </span>
-                        @endif
-                    </div>
-
-                    <div class="form-group add-space{{ $errors->has('house_number') ? ' has-error' : '' }}">
-                        <label for="house-number" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.house-number')</label>
-
-                        <input id="house_number" type="text" class="form-control" name="house_number" value="{{old('house_number')}}" req autofocus>
-
-                        @if ($errors->has('house_number'))
-                            <span class="help-block">
-                        <strong>{{ $errors->first('house_number') }}</strong>
-                    </span>
-                        @endif
-                    </div>
-
-
-
-                <div class="form-group add-space{{ $errors->has('zip_code') ? ' has-error' : '' }}">
-                    <label for="zip_code" class="control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.zip-code')</label>
-
-                    <input id="zip_code" type="text" class="form-control" name="zip_code" value="{{old('zip_code')}}" req autofocus>
-
-                    @if ($errors->has('zip_code'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('zip_code') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-
-
-                <div class="form-group add-space{{ $errors->has('residence') ? ' has-error' : '' }}">
-                    <label for="residence" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.residence')</label>
-
-                    <input id="residence" type="text" class="form-control" name="residence" value="{{old('residence')}}" req autofocus>
-
-                    @if ($errors->has('residence'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('residence') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-
-
-                <div class="form-group add-space{{ $errors->has('email') ? ' has-error' : '' }}">
-                    <label for="email" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.email')</label>
-
-                    <input id="email" type="text" class="form-control" name="email" value="{{old('email')}}" req autofocus>
-
-                    @if ($errors->has('email'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('email') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-
-
-                <div class="form-group add-space{{ $errors->has('phone_number') ? ' has-error' : '' }}">
-                    <label for="phone_number" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.name-address-data.phone-number')</label>
-
-                    <input id="phone_number" type="text" class="form-control" name="phone_number" value="{{old('phone_number')}}" req autofocus>
-
-                    @if ($errors->has('phone_number'))
-                        <span class="help-block">
-                        <strong>{{ $errors->first('phone_number') }}</strong>
-                    </span>
-                    @endif
-                </div>
-
-            </div>
-            --}}
             <div id="building-type" class="col-md-12">
                 <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.building-type.title')</h4>
 
@@ -140,7 +43,7 @@
 
                             <select id="building_type" class="form-control" name="building_type">
                                 @foreach($buildingTypes as $buildingType)
-                                    <option @if($buildingType->id == old('building_type')) selected @endif value="{{$buildingType->id}}">{{$buildingType->name}}</option>
+                                    <option @if($buildingType->id == old('building_type')) selected @endif value="{{ $buildingType->id }}">{{ $buildingType->name }}</option>
                                 @endforeach
                             </select>
 

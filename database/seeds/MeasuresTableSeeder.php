@@ -605,6 +605,46 @@ class MeasuresTableSeeder extends Seeder
 					    'Appliances',
 				    ],
 			    ],
+			    [
+				    'names' => [
+					    'nl' => 'Elektrische apparatuur',
+				    ],
+				    'service_types' => [
+					    'Appliances',
+				    ],
+			    ],
+			    [
+				    'names' => [
+					    'nl' => 'Monitoring verbruik',
+				    ],
+				    'service_types' => [
+					    'Building automation and control',
+				    ],
+			    ],
+			    [
+				    'names' => [
+					    'nl' => 'Energiemanagement',
+				    ],
+				    'service_types' => [
+					    'Building automation and control',
+				    ],
+			    ],
+			    [
+				    'names' => [
+					    'nl' => 'Zonwering',
+				    ],
+				    'service_types' => [
+					    'Others',
+				    ],
+			    ],
+			    [
+				    'names' => [
+					    'nl' => 'Standbyverbruik',
+				    ],
+				    'service_types' => [
+					    'Others',
+				    ],
+			    ],
 		    ],
 	    ];
 

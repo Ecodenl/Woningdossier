@@ -156,23 +156,27 @@ class GeneralDataController extends Controller
 
     	}
 
-	    $userEnegeryHabits = UserEnergyHabit::create([
-	        'user_id' => Auth::id(),
-            'resident_count' => $request->get('resident_count'),
-            'thermostat_high' => $request->get('thermostat_high'),
-            'thermostat_low' => $request->get('thermostat_low'),
-            'hours_high' => $request->get('hours_high'),
-            'heating_first_floor' => $request->get('heating_first_floor'),
-            'heating_second_floor' => $request->get('heating_second_floor'),
-            'cook_gas' => $request->get('cook_gas'),
-            'water_comfort_id' => $request->get('water_comfort'),
-            'amount_electricity' => $request->get('amount_electricity'),
-            'amount_gas' => $request->get('amount_gas'),
-            'amount_water' => $request->get('amount_water'),
-            'living_situation_extra' => $request->get('living_situation_extra'),
-            'motivation_extra' => $request->get('motivation_extra'),
-
-        ]);
+	    $userEnegeryHabits = UserEnergyHabit::updateOrCreate(
+	        [
+	            'user_id' => Auth::id()]
+            ,
+	        [
+                'user_id' => Auth::id(),
+                'resident_count' => $request->get('resident_count'),
+                'thermostat_high' => $request->get('thermostat_high'),
+                'thermostat_low' => $request->get('thermostat_low'),
+                'hours_high' => $request->get('hours_high'),
+                'heating_first_floor' => $request->get('heating_first_floor'),
+                'heating_second_floor' => $request->get('heating_second_floor'),
+                'cook_gas' => $request->get('cook_gas'),
+                'water_comfort_id' => $request->get('water_comfort'),
+                'amount_electricity' => $request->get('amount_electricity'),
+                'amount_gas' => $request->get('amount_gas'),
+                'amount_water' => $request->get('amount_water'),
+                'living_situation_extra' => $request->get('living_situation_extra'),
+                'motivation_extra' => $request->get('motivation_extra'),
+            ]
+        );
 
 
 

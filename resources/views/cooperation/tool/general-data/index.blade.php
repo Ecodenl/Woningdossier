@@ -918,7 +918,7 @@
 
                         <select id="water_comfort" class="form-control" name="water_comfort" >
                             @foreach($comfortLevelsTapWater as $comfortLevelTapWater)
-                                <option @if($comfortLevelTapWater->id == old('water_comfort')) selected @elseif(isset($energyHabit) && $energyHabit->water_comfort_id) selected @endif value="{{$comfortLevelTapWater->id}}">{{$comfortLevelTapWater->name}}</option>
+                                <option @if($comfortLevelTapWater->id == old('water_comfort')) selected @elseif(isset($energyHabit) && $energyHabit->water_comfort_id == $comfortLevelTapWater->id) selected @endif value="{{$comfortLevelTapWater->id}}">{{$comfortLevelTapWater->name}}</option>
                             @endforeach
                         </select>
                         <div id="comfortniveau-warm-tapwater-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -1012,22 +1012,21 @@
                 {{-- Well start at 1 so the translation will to. --}}
                 @for($i = 1; $i < 5; $i++)
                     <div class="col-sm-6">
-                        <div class="form-group add-space{{ $errors->has('motivation['.$i.']') ? ' has-error' : '' }}">
+                        <div class="form-group add-space{{ $errors->has('motivation.'.$i) ? ' has-error' : '' }}">
                             <label for="motivation[{{$i}}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{$i}}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
 
                             <select id="motivation[{{$i}}]" class="form-control" name="motivation[{{$i}}]" >
-                                @foreach($motivations as $motivation)
-                                    <option
-                                            @if(old('motivation['.$i.']') && $motivation->id == old('motivation['.$i.']'))
-                                            selected
 
-                                            @elseif(isset($energyHabit) && Auth::user()->motivations()->where('motivation_id', 2)->first()->motivation_id == $motivation->id)
+                                @isset($energyHabit)
+                                    @foreach($motivations as $motivation)
+                                        <option @if(Auth::user()->motivations()->where('id', $i)->first()->motivation_id == $motivation->id) selected @endif value="{{$motivation->id}}">{{$motivation->name}}  </option>
+                                    @endforeach
 
-                                            selected
-                                            @endif value="{{$motivation->id}}">{{$motivation->name}}
-                                    </option>
-                                @endforeach
-                                    <option @if()value=""></option>
+                                @else
+                                    @foreach($motivations as $motivation)
+                                        <option @if($motivation->id == old('motivation.'.$i)) selected @endif value="{{$motivation->id}}">{{$motivation->name}}</option>
+                                    @endforeach
+                                @endisset
 
 
                             </select>
@@ -1035,9 +1034,9 @@
                                 And I would like to have it too...
                             </div>
 
-                            @if ($errors->has('motivation['.$i.']'))
+                            @if ($errors->has('motivation.'.$i))
                                 <span class="help-block">
-                                <strong>{{ $errors->first('motivation['.$i.']') }}</strong>
+                                <strong>{{ $errors->first('motivation.'.$i) }}</strong>
                             </span>
                             @endif
                         </div>
@@ -1050,7 +1049,13 @@
                     <div class="form-group add-space{{ $errors->has('motivation_extra') ? ' has-error' : '' }}">
                         <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation-extra')</label>
 
-                        <textarea id="motivation-extra" class="form-control" name="motivation_extra"> {{ old('motivation_extra') }} </textarea>
+                        <textarea id="motivation-extra" class="form-control" name="motivation_extra">
+                            @if(old('motivation_extra') != "")
+                                {{old('motivation_extra')}}
+                            @elseif(isset($energyHabit))
+                                {{$energyHabit->motivation_extra}}
+                            @endif
+                        </textarea>
 
                         <div id="motivation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...

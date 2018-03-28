@@ -66,8 +66,8 @@ class GeneralDataFormRequest extends FormRequest
             'interested.sun_panel' => 'nullable|exists:interests,id',
             'sun_panel_placed_date' => 'nullable|date',
 
-            // data bout usage off the building
-            'total_citizens' => 'required|numeric',
+            // data about usage of the building
+            'resident_count' => 'required|numeric',
             'cooked_on_gas' => 'numeric',
             'thermostat_highest' => 'nullable|numeric',
             'thermostat_lowest' => 'nullable|numeric|digits_between:0,'.$this->request->get('thermostat_highest'),

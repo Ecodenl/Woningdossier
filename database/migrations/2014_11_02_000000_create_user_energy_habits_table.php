@@ -27,14 +27,11 @@ class CreateUserEnergyHabitsTable extends Migration
             $table->integer('heating_second_floor')->nullable()->default(null);
             $table->integer('heated_space_outside')->nullable()->default(null);
             $table->boolean('cook_gas')->default(false);
-            $table->integer('amount_warm_water_id')->nullable()->default(null);
+            $table->integer('water_comfort_id')->nullable()->default(null);
             $table->integer('amount_electricity')->nullable()->default(null);
             $table->integer('amount_gas')->nullable()->default(null);
             $table->integer('amount_water')->nullable()->default(null);
-            $table->boolean('motivation_comfort')->default(false);
-            $table->boolean('motivation_enviroment')->default(false);
-            $table->boolean('motivation_costs')->default(false);
-            $table->boolean('motivation_investment')->default(false);
+            $table->longText('living_situation_extra');
             $table->longText('motivation_extra');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();

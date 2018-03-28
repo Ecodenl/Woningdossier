@@ -141,15 +141,22 @@ class GeneralDataController extends Controller
 			}
 	    }
 
-	    foreach ($request->get('motivation') as $key => $motivation) {
+
+	    // Check if the user already has a motivation
+	    if(UserMotivation::where('user_id', Auth::id())->count() > 0) {
+    	    // if so drop the old ones
+            UserMotivation::where('user_id', Auth::id())->delete();
+        }
+        // get the motivations
+	    foreach ($request->get('motivation') as $key => $motivationId) {
     	    // Find the motivation so we can get the order value
-    	    $motivations = Motivation::find($motivation);
+    	    $motivations = Motivation::find($motivationId);
 
     	    // Then save the UserMotivation
     	    $userMotivation = UserMotivation::create(
                 [
     	            'user_id' => Auth::id(),
-                    'motivation_id' => $motivation,
+                    'motivation_id' => $motivationId,
                     'order' => $motivations->order,
                 ]
             );

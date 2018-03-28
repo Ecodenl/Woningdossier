@@ -30,8 +30,8 @@ class BuildingHeatingsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Niet van toepassing',
-                'degree' => null,
-                'calculate_value' => null,
+                'degree' => 10,
+                'calculate_value' => 4,
             ]
         ];
 

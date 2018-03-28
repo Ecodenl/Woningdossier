@@ -57,7 +57,23 @@ class WallInsulationController extends Controller
     }
 
     public function calculate(Request $request){
-		dd($request->all());
+	    //dd($request->all());
+    	$cavityWall = $request->get('cavity_wall', -1);
+
+    	$result = [];
+
+    	if ($cavityWall == 1){
+    	    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
+	    }
+	    elseif ($cavityWall == 2){
+		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
+	    }
+	    elseif($cavityWall == 0) {
+		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.research');
+	    }
+
+	    return response()->json($result);
+
     }
 
     /**

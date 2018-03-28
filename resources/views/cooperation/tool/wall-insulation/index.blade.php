@@ -57,17 +57,17 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('house_has_cavity') ? ' has-error' : '' }}">
-                        <label for="house_has_cavity" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label>
+                    <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
+                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label>
 
                         <label class="radio-inline">
-                            <input type="radio" name="house_has_cavity" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input type="radio" name="cavity_wall" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="house_has_cavity" value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            <input type="radio" name="cavity_wall" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="house_has_cavity" value="3">@lang('woningdossier.cooperation.radiobutton.unknown')
+                            <input type="radio" name="cavity_wall" value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
                         </label>
                         <br>
 
@@ -75,9 +75,9 @@
                             I would like to have some helpful information right here!
                         </div>
 
-                        @if ($errors->has('house_has_cavity'))
+                        @if ($errors->has('cavity_wall'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('house_has_cavity') }}</strong>
+                            <strong>{{ $errors->first('cavity_wall') }}</strong>
                         </span>
                         @endif
 
@@ -87,18 +87,18 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('is_facade_plastered_painted') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
 
-                        <label for="is_facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label>
+                        <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label>
 
                         <label class="radio-inline">
-                            <input id="is-painted" type="radio" name="is_facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input id="is-painted" type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="is_facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            <input type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="is_facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
+                            <input type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
                         </label>
                         <br>
 
@@ -106,9 +106,9 @@
                             I would like to have some helpful information right here!
                         </div>
 
-                        @if ($errors->has('is_facade_plastered_painted'))
+                        @if ($errors->has('facade_plastered_painted'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('is_facade_plastered_painted') }}</strong>
+                                <strong>{{ $errors->first('facade_plastered_painted') }}</strong>
                             </span>
                         @endif
 
@@ -119,12 +119,12 @@
 
                 <div id="painted-options" style="display: none;">
                     <div class="col-sm-6">
-                        <div class="form-group add-space{{ $errors->has('is_facade_plastered_painted_surface') ? ' has-error' : '' }}">
-                            <label for="is_facade_plastered_painted_surface" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.surface-paintwork') </label>
+                        <div class="form-group add-space{{ $errors->has('facade_plastered_painted_surface') ? ' has-error' : '' }}">
+                            <label for="facade_plastered_painted_surface" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.surface-paintwork') </label>
 
-                            <select id="is_facade_plastered_painted_surface" class="form-control" name="is_facade_plastered_painted_surface">
+                            <select id="facade_plastered_painted_surface" class="form-control" name="facade_plastered_painted_surface">
                                 @foreach($surfacePaintedWalls as $surfacePaintedWall)
-                                    <option @if(old('is_facade_plastered_painted_surface') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
+                                    <option @if(old('facade_plastered_painted_surface') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
                                 @endforeach
                             </select>
 
@@ -134,9 +134,9 @@
 
                         </div>
 
-                        @if ($errors->has('is_facade_plastered_painted_surface'))
+                        @if ($errors->has('facade_plastered_painted_surface'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('is_facade_plastered_painted_surface') }}</strong>
+                                <strong>{{ $errors->first('facade_plastered_painted_surface') }}</strong>
                             </span>
                         @endif
 
@@ -158,9 +158,9 @@
 
                         </div>
 
-                        @if ($errors->has('is_facade_plastered_painted_surface'))
+                        @if ($errors->has('facade_plastered_painted_surface'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('is_facade_plastered_painted_surface') }}</strong>
+                                <strong>{{ $errors->first('facade_plastered_painted_surface') }}</strong>
                             </span>
                         @endif
 
@@ -176,7 +176,7 @@
 
             <div id="wall-joints" class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('is_facade_plastered_painted_surface') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('facade_plastered_painted_surface') ? ' has-error' : '' }}">
                         <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')           </label>
 
                         <select id="wall_joints" class="form-control" name="wall_joints">
@@ -233,7 +233,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('is_facade_plastered_painted') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
                         <label for="facade_surface" class="control-label"><i data-toggle="collapse" data-target="#facade-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.not-right')           </label>
                         <input id="facade_surface" type="text" name="facade_surface" value="" class="form-control">
 
@@ -243,20 +243,20 @@
 
                     </div>
 
-                    @if ($errors->has('is_facade_plastered_painted'))
+                    @if ($errors->has('facade_plastered_painted'))
                         <span class="help-block">
-                            <strong>{{ $errors->first('is_facade_plastered_painted') }}</strong>
+                            <strong>{{ $errors->first('facade_plastered_painted') }}</strong>
                         </span>
                     @endif
 
                 </div>
             </div>
 
-            <div id="best-solution" class="row">
-                <div class="col-sm-6">
-                    <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.optional.facade-best-insulation')           </label>
-                        <input type="text" class="form-control disabled" disabled="" value="BEST SOLUTION">
+            <div class="row">
+                <div class="col-sm-12 col-md-8 col-md-offset-2">
+                    <div class="alert alert-info show" role="alert">
+                        <p>@lang('woningdossier.cooperation.tool.wall-insulation.insulation-advice.text')</p>
+                        <p id="insulation-advice"></p>
                     </div>
                 </div>
             </div>
@@ -413,6 +413,9 @@
                   url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                   data: form,
                   success: function(data){
+                      if (data.insulation_advice){
+                          $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+                      }
                     console.log(data);
                   }
               })

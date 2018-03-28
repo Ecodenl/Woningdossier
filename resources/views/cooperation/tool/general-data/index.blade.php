@@ -47,7 +47,8 @@
                                                 selected="selected"
                                             @elseif(isset($building->buildingFeatures->buildingType) && $building->buildingFeatures->buildingType->id == $buildingType->id)
                                                 selected="selected"
-                                            @endif value="{{ $buildingType->id }}">{{ $buildingType->name }}</option>
+                                            @endif value="{{ $buildingType->id }}">{{ $buildingType->name }}
+                                    </option>
                                 @endforeach
                             </select>
 
@@ -681,7 +682,7 @@
                     <div class="form-group add-space{{ $errors->has('house_ventilation') ? ' has-error' : '' }}">
                         <label for="house_ventilation" class=" control-label"><i data-toggle="collapse" data-target="#house-ventilation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.title')</label> <span>*</span>
 
-                        <select required id="house_ventilation" class="form-control" name="house_ventilation" >
+                        <select needrequired id="house_ventilation" class="form-control" name="house_ventilation" >
                             @foreach($houseVentilations as $houseVentilation)
                                 <option @if($houseVentilation->id == old('house_ventilation')) selected @endif value="{{$houseVentilation->id}}">{{$houseVentilation->name}}</option>
                             @endforeach
@@ -765,7 +766,7 @@
                 <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
                     <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
-                    <input type="text" id="resident_count" class="form-control" value="{{ old('resident_count') }}" name="resident_count" required>
+                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != "") {{old('resident_count')}} @elseif(isset($energyHabit)) {{$energyHabit->resident_count}} @endif" name="resident_count" needrequired>
 
                     <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
@@ -781,59 +782,61 @@
 
             <div class="col-sm-6">
 
-                <div class="form-group add-space{{ $errors->has('cooked_on_gas') ? ' has-error' : '' }}">
-                    <label for="cooked_on_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
+                <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
+                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
                     <label class="radio-inline">
-                        <input type="radio" name="cooked_on_gas" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) selected @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="cooked_on_gas" value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->coock_gas == 2 ) selected @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
                     </label>
 
                     <div id="cooked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
                     </div>
 
-                    @if ($errors->has('cooked_on_gas'))
+                    @if ($errors->has('cook_gas'))
                         <span class="help-block">
-                            <strong>{{ $errors->first('cooked_on_gas') }}</strong>
+                            <strong>{{ $errors->first('cook_gas') }}</strong>
                         </span>
                     @endif
                 </div>
             </div>
             </div>
+
             <div class="row">
             <div class="col-sm-6">
-                <div class="form-group add-space{{ $errors->has('thermostat_highest') ? ' has-error' : '' }}">
-                    <label for="thermostat_highest" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-highest-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
+                <div class="form-group add-space{{ $errors->has('thermostat_high') ? ' has-error' : '' }}">
+                    <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
 
-                    <input type="text" id="thermostat_highest" class="form-control" value="{{ old('thermostat_highest') }}" name="thermostat_highest" >
+                    <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{old('thermostat_high')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
 
-                    <div id="thermostat-highest-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    <div id="thermostat-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
                     </div>
 
-                    @if ($errors->has('thermostat_highest'))
+                    @if ($errors->has('thermostat_high'))
                         <span class="help-block">
-                    <strong>{{ $errors->first('thermostat_highest') }}</strong>
+                    <strong>{{ $errors->first('thermostat_high') }}</strong>
                 </span>
                     @endif
                 </div>
             </div>
 
+
             <div class="col-sm-6">
-                <div class="form-group add-space{{ $errors->has('thermostat_lowest') ? ' has-error' : '' }}">
-                    <label for="thermostat_lowest" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-lowest-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
+                <div class="form-group add-space{{ $errors->has('thermostat_low') ? ' has-error' : '' }}">
+                    <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
 
-                    <input id="thermostat_lowest" type="text" class="form-control" name="thermostat_lowest">
+                    <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(old('thermostat_low') != "") {{old('thermostat_low')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_low}} @endif" placeholder="{{old('thermostat_low')}}">
 
-                    <div id="thermostat-lowest-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    <div id="thermostat-low-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
                     </div>
 
-                    @if ($errors->has('thermostat_lowest'))
+                    @if ($errors->has('thermostat_low'))
                         <span class="help-block">
-                            <strong>{{ $errors->first('thermostat_lowest') }}</strong>
+                            <strong>{{ $errors->first('thermostat_low') }}</strong>
                         </span>
                     @endif
                 </div>
@@ -841,89 +844,90 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('max_hours_thermostat_highest') ? ' has-error' : '' }}">
-                        <label for="max_hours_thermostat_highest" class=" control-label"><i data-toggle="collapse" data-target="#max-hours-thermostat-highest-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
+                    <div class="form-group add-space{{ $errors->has('hours_high') ? ' has-error' : '' }}">
+                        <label for="hours_high" class=" control-label"><i data-toggle="collapse" data-target="#hours-hight-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
 
-                        <select id="max_hours_thermostat_highest" class="form-control" name="max_hours_thermostat_highest">
+                        <select id="hours_high" class="form-control" name="hours_high">
                             @for($hour = 0; $hour < 25; $hour++)
                                 <option value="{{$hour}}">{{$hour}}</option>
                             @endfor
-                                <option value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
+                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->id == $hour) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
                         </select>
 
-                        <div id="max-hours-thermostat-highest-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="hours-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>
-                        @if ($errors->has('max_hours_thermostat_highest'))
+                        @if ($errors->has('hours_high'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('max_hours_thermostat_highest') }}</strong>
+                                <strong>{{ $errors->first('hours_high') }}</strong>
                             </span>
                         @endif
                     </div>
                 </div>
 
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('situation_first_floor') ? ' has-error' : '' }}">
-                        <label for="situation_first_floor" class=" control-label"><i data-toggle="collapse" data-target="#situation-first-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-first-floor')</label>
+                    <div class="form-group add-space{{ $errors->has('heating_first_floor') ? ' has-error' : '' }}">
+                        <label for="heating_first_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-first-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-first-floor')</label>
 
-                        <select id="situation_first_floor" class="form-control" name="situation_first_floor" >
+                        <select id="heating_first_floor" class="form-control" name="heating_first_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('situation_first_floor')) selected @endif value="{{ $buildingHeating->id}}">{{$buildingHeating->name}}</option>
+                                <option @if($buildingHeating->id == old('heating_first_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_first_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id}}">{{$buildingHeating->name}}</option>
                             @endforeach
 
                         </select>
 
-                        <div id="situation-first-floor-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="heating-first-floor-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>
 
-                        @if ($errors->has('situation_first_floor'))
+                        @if ($errors->has('heating_first_floor'))
                             <span class="help-block">
-                        <strong>{{ $errors->first('situation_first_floor') }}</strong>
+                        <strong>{{ $errors->first('heating_first_floor') }}</strong>
                     </span>
                         @endif
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('situation_second_floor') ? ' has-error' : '' }}">
-                        <label for="situation_second_floor" class=" control-label"><i data-toggle="collapse" data-target="#situation-second-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-second-floor')</label>
+                    <div class="form-group add-space{{ $errors->has('heating_second_floor') ? ' has-error' : '' }}">
+                        <label for="heating_second_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-second-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-second-floor')</label>
 
-                        <select id="situation_second_floor" class="form-control" name="situation_second_floor" >
+                        <select id="heating_second_floor" class="form-control" name="heating_second_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('situation_second_floor')) selected @endif value="{{$buildingHeating->id}}">{{$buildingHeating->name}}</option>
+                                <option @if($buildingHeating->id == old('heating_second_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_second_floor == $buildingHeating->id) selected @endif value="{{$buildingHeating->id}}">{{$buildingHeating->name}}</option>
                             @endforeach
                         </select>
 
-                        <div id="situation-second-floor-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="heating-second-floor-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>
 
-                        @if ($errors->has('situation_second_floor'))
+                        @if ($errors->has('heating_second_floor'))
                             <span class="help-block">
-                        <strong>{{ $errors->first('situation_second_floor') }}</strong>
+                        <strong>{{ $errors->first('heating_second_floor') }}</strong>
                     </span>
                         @endif
                     </div>
                 </div>
          
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('comfortniveau_warm_tapwater') ? ' has-error' : '' }}">
-                        <label for="comfortniveau_warm_tapwater" class=" control-label"><i data-toggle="collapse" data-target="#comfortniveau-warm-tapwater-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.comfortniveau-warm-tapwater')</label>
+                    <div class="form-group add-space{{ $errors->has('water_comfort') ? ' has-error' : '' }}">
+                        <label for="water_comfort" class=" control-label"><i data-toggle="collapse" data-target="#comfortniveau-warm-tapwater-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.comfortniveau-warm-tapwater')</label>
 
-                        <select id="comfortniveau_warm_tapwater" class="form-control" name="comfortniveau_warm_tapwater" >
+                        <select id="water_comfort" class="form-control" name="water_comfort" >
                             @foreach($comfortLevelsTapWater as $comfortLevelTapWater)
-                                <option @if($comfortLevelTapWater->id == old('comfortniveau_warm_tapwater')) selected @endif value="{{$comfortLevelTapWater->id}}">{{$comfortLevelTapWater->name}}</option>
+                                <option @if($comfortLevelTapWater->id == old('water_comfort')) selected @elseif(isset($energyHabit) && $energyHabit->water_comfort_id) selected @endif value="{{$comfortLevelTapWater->id}}">{{$comfortLevelTapWater->name}}</option>
                             @endforeach
                         </select>
                         <div id="comfortniveau-warm-tapwater-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>
 
-                        @if ($errors->has('comfortniveau_warm_tapwater'))
+                        @if ($errors->has('water_comfort'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('comfortniveau_warm_tapwater') }}</strong>
+                                <strong>{{ $errors->first('water_comfort') }}</strong>
                             </span>
                         @endif
                     </div>
@@ -931,36 +935,43 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('electricity_consumption_past_year') ? ' has-error' : '' }}">
-                        <label for="electricity_consumption_past_year" class=" control-label"><i data-toggle="collapse" data-target="#electricity-consumption-past-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
+                    <div class="form-group add-space{{ $errors->has('amount_electricity') ? ' has-error' : '' }}">
+                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
 
-                        <input id="electricity_consumption_past_year" type="text" value="{{ old('electricity_consumption_past_year') }}" class="form-control" name="electricity_consumption_past_year">
 
-                        <div id="electricity-consumption-past-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != "") {{old('amount_electricity')}} @elseif(isset($energyHabit)) {{$energyHabit->amount_electricity}} @endif" class="form-control" name="amount_electricity">
+
+                        <div id="amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>
 
-                        @if ($errors->has('electricity_consumption_past_year'))
+                        @if ($errors->has('amount_electricity'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('electricity_consumption_past_year') }}</strong>
+                                <strong>{{ $errors->first('amount_electricity') }}</strong>
                             </span>
                         @endif
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('gas_usage_past_year') ? ' has-error' : '' }}">
-                        <label for="gas_usage_past_year" class=" control-label"><i data-toggle="collapse" data-target="#gas-usage-past-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year')</label>
+                    <div class="form-group add-space{{ $errors->has('amount_gas') ? ' has-error' : '' }}">
+                        <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year')</label>
 
-                        <input id="gas_usage_past_year" type="text" value="{{ old('gas_usage_past_year') }}" class="form-control" name="gas_usage_past_year">
+                        <input id="amount_gas" type="text"
+                               value="@if(old('amount_gas') != "")
+                                        {{old('amount_gas')}}
+                                      @elseif(isset($energyHabit))
+                                        {{$energyHabit->amount_gas}}
+                                      @endif"
+                               class="form-control" name="amount_gas">
 
-                        <div id="gas-usage-past-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="amount-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>
 
 
-                        @if ($errors->has('gas_usage_past_year'))
+                        @if ($errors->has('amount_gas'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('gas_usage_past_year') }}</strong>
+                                <strong>{{ $errors->first('amount_gas') }}</strong>
                             </span>
                         @endif
                     </div>
@@ -969,18 +980,85 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
-                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
+                    <div class="form-group add-space{{ $errors->has('living_situation_extra') ? ' has-error' : '' }}">
+                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#living-situation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
 
-                        <textarea id="additional-info" class="form-control" name="additional-info"> {{ old('additional_info') }} </textarea>
+                        <textarea id="additional-info" class="form-control" name="living_situation_extra">
+                            @if(old('living_situation_extra') != "")
+                                {{old('living_situation_extra')}}
+                            @elseif(isset($energyHabit))
+                                {{$energyHabit->living_situation_extra}}
+                            @endif
+                        </textarea>
 
-                        <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="living-situation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>
 
-                        @if ($errors->has('additional_info'))
+                        @if ($errors->has('living_situation_extra'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('additional_info') }}</strong>
+                                <strong>{{ $errors->first('living_situation_extra') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.title')</h4>
+                </div>
+
+                {{-- Well start at 1 so the translation will to. --}}
+                @for($i = 1; $i < 5; $i++)
+                    <div class="col-sm-6">
+                        <div class="form-group add-space{{ $errors->has('motivation['.$i.']') ? ' has-error' : '' }}">
+                            <label for="motivation[{{$i}}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{$i}}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
+
+                            <select id="motivation[{{$i}}]" class="form-control" name="motivation[{{$i}}]" >
+                                @foreach($motivations as $motivation)
+                                    <option
+                                            @if(old('motivation['.$i.']') && $motivation->id == old('motivation['.$i.']'))
+                                            selected
+
+                                            @elseif(isset($energyHabit) && Auth::user()->motivations()->where('motivation_id', 2)->first()->motivation_id == $motivation->id)
+
+                                            selected
+                                            @endif value="{{$motivation->id}}">{{$motivation->name}}
+                                    </option>
+                                @endforeach
+                                    <option @if()value=""></option>
+
+
+                            </select>
+                            <div id="motivation-{{$i}}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And I would like to have it too...
+                            </div>
+
+                            @if ($errors->has('motivation['.$i.']'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('motivation['.$i.']') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                @endfor
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('motivation_extra') ? ' has-error' : '' }}">
+                        <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation-extra')</label>
+
+                        <textarea id="motivation-extra" class="form-control" name="motivation_extra"> {{ old('motivation_extra') }} </textarea>
+
+                        <div id="motivation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And I would like to have it too...
+                        </div>
+
+                        @if ($errors->has('motivation_extra'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('motivation_extra') }}</strong>
                             </span>
                         @endif
                     </div>

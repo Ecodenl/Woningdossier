@@ -105,7 +105,13 @@ return [
 					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
 					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar? (in kWh per jaar)',
 					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m3 gas per jaar)',
-					'additional-info' => 'Toelichting op de woonsituatie'
+					'additional-info' => 'Toelichting op de woonsituatie',
+
+                    'motivation' => [
+                        'title' => 'Wat is de motivatie om aan de slag te gaan',
+                        'priority' => 'Priotiteit :prio',
+                    ],
+                    'motivation-extra' => 'Toelichting op de motivatie',
 				],
 			],
             'wall-insulation' => [

@@ -33,7 +33,6 @@ class WallInsulationController extends Controller
         /** @var BuildingElement $houseInsulation */
         //dd($houseInsulation->element->values);
 
-        //$houseInsulations = PresentWindow::all();
         $surfacePaintedWalls = SurfacePaintedWall::all();
         $wallsNeedImpregnation = WallNeedImpregnation::all();
         return view('cooperation.tool.wall-insulation.index', compact('steps', 'building', 'houseInsulation', 'surfacePaintedWalls', 'wallsNeedImpregnation'));
@@ -65,7 +64,9 @@ class WallInsulationController extends Controller
 	    /**
 	     * @var Building $building
 	     */
-	    $building = \Auth::user()->buildings()->first();
+	    $user = \Auth::user();
+	    $building = $user->buildings()->first();
+	    $energyHabits = $user->energyHabits;
 
     	$cavityWall = $request->get('cavity_wall', -1);
 		$elements = $request->get('element', []);
@@ -88,13 +89,7 @@ class WallInsulationController extends Controller
 	    $elementValueId = array_shift($elements);
 	    $elementValue = ElementValue::find($elementValueId);
 	    if ($elementValue instanceof ElementValue){
-			/*if (isset($elementValue->calculate_value) && $elementValue->calculate_value < 3){
-				$result['savings_gas'] = min(
-					$facadeSurface * Kengetallen::ENERGY_SAVING_WALL_INSULATION,
-					Calculator::maxGasSavings($building->buildingType)
-				);
-			}*/
-			$result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $facadeSurface);
+			$result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $facadeSurface, $energyHabits->amount_gas);
 	    }
 
 	    $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);

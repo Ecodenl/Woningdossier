@@ -4,11 +4,13 @@ namespace App\Helpers;
 
 use App\Models\Building;
 use App\Models\BuildingType;
+use App\Models\BuildingTypeElementMaxSaving;
+use App\Models\Element;
 use App\Models\ElementValue;
 
 class Calculator {
 
-	public static function calculateGasSavings(Building $building, ElementValue $element, $surface){
+	public static function calculateGasSavings(Building $building, ElementValue $element, $surface, $gasUsage){
 		$result = 0;
 		$building->getBuildingType();
 		if (isset($element->calculate_value) && $element->calculate_value < 3){
@@ -16,7 +18,7 @@ class Calculator {
 				$surface * Kengetallen::ENERGY_SAVING_WALL_INSULATION,
 				self::maxGasSavings($building->getBuildingType())
 			);
-			self::debug($result . " = min(" . $surface . " * " . Kengetallen::ENERGY_SAVING_WALL_INSULATION . ", " . self::maxGasSavings($building->getBuildingType()) . ")");
+			self::debug($result . " = min(" . $surface . " * " . Kengetallen::ENERGY_SAVING_WALL_INSULATION . ", " . self::maxGasSavings($gasUsage, $building->getBuildingType(), $element->element) . ")");
 		}
 		return $result;
 	}
@@ -34,9 +36,15 @@ class Calculator {
 	}
 
 	// in m3 per year
-	public static function maxGasSavings(BuildingType $buildingType){
-
-		return 220;
+	public static function maxGasSavings($usage, BuildingType $buildingType, Element $element){
+		$saving = 0;
+		$maxSaving = BuildingTypeElementMaxSaving::where('building_type', $buildingType->id)
+			->where('element_id', $element->id)
+			->first();
+		if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
+			$saving = $maxSaving->max_saving;
+		}
+		return $usage * $saving;
 	}
 
 	protected static function debug($line){

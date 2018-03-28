@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
 	    $this->call(InterestsTableSeeder::class);
 		$this->call(ElementsValuesTableSeeder::class);
 	    $this->call(MotivationsTableSeeder::class);
-
+		$this->call(BuildingTypeElementMaxSavingTableSeeder::class);
 
 
     	//

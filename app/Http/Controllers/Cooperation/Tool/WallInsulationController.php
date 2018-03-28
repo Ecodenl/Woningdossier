@@ -66,7 +66,7 @@ class WallInsulationController extends Controller
 	     */
 	    $user = \Auth::user();
 	    $building = $user->buildings()->first();
-	    $energyHabits = $user->energyHabits;
+	    $energyHabits = $user->energyHabit;
 
     	$cavityWall = $request->get('cavity_wall', -1);
 		$elements = $request->get('element', []);

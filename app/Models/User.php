@@ -83,6 +83,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+
+
     public function buildings(){
     	return $this->hasMany(Building::class);
     }
@@ -91,8 +93,8 @@ class User extends Authenticatable
     	return $this->hasMany(BuildingUserUsage::class);
     }
 
-    public function energyHabits(){
-    	return $this->hasMany(UserEnergyHabit::class);
+    public function energyHabit(){
+    	return $this->hasOne(UserEnergyHabit::class);
     }
 
 	public function progress(){

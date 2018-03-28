@@ -16,14 +16,18 @@ use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\Interest;
+use App\Models\Motivation;
 use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
 use App\Models\Quality;
 use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
+use App\Models\UserEnergyHabit;
+use App\Models\UserMotivation;
 use App\Models\UserProgress;
 use App\Models\Ventilation;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use Illuminate\Http\Request;
@@ -46,14 +50,14 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
-	    $building = \Auth::user()->buildings()->first();
+        $building = \Auth::user()->buildings()->first();
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
         $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
-	    $interests = Interest::orderBy('order')->get();
-	    $elements = Element::orderBy('order')->get();
+        $interests = Interest::orderBy('order')->get();
+        $elements = Element::orderBy('order')->get();
 
 
         $insulations = PresentWindow::all();
@@ -64,8 +68,12 @@ class GeneralDataController extends Controller
         $centralHeatingAges = CentralHeatingAge::all();
         $heatPumps = PresentHeatPump::all();
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
-
+        $motivations = Motivation::orderBy('order')->get();
+        $energyHabit = Auth::user()->energyHabit;
         $steps = Step::orderBy('order')->get();
+
+
+
 
         return view('cooperation.tool.general-data.index', compact(
         	'building',
@@ -73,7 +81,7 @@ class GeneralDataController extends Controller
             'exampleBuildingTypes', 'interests', 'elements',
 	        'insulations','houseVentilations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
-            'steps'
+            'steps', 'motivations', 'energyHabit'
         ));
     }
 
@@ -96,7 +104,7 @@ class GeneralDataController extends Controller
     public function store(GeneralDataFormRequest $request)
     {
 	    /** @var Building $building */
-    	$building = \Auth::user()->buildings()->first();
+    	$building = Auth::user()->buildings()->first();
     	$features = $building->buildingFeatures;
     	if (!$features instanceof BuildingFeature){
     		$features = new BuildingFeature();
@@ -132,7 +140,40 @@ class GeneralDataController extends Controller
 				$buildingElement->save();
 			}
 	    }
-    	//dd($request->all());
+
+	    foreach ($request->get('motivation') as $key => $motivation) {
+    	    // Find the motivation so we can get the order value
+    	    $motivations = Motivation::find($motivation);
+
+    	    // Then save the UserMotivation
+    	    $userMotivation = UserMotivation::create(
+                [
+    	            'user_id' => Auth::id(),
+                    'motivation_id' => $motivation,
+                    'order' => $motivations->order,
+                ]
+            );
+
+    	}
+
+	    $userEnegeryHabits = UserEnergyHabit::create([
+	        'user_id' => Auth::id(),
+            'resident_count' => $request->get('resident_count'),
+            'thermostat_high' => $request->get('thermostat_high'),
+            'thermostat_low' => $request->get('thermostat_low'),
+            'hours_high' => $request->get('hours_high'),
+            'heating_first_floor' => $request->get('heating_first_floor'),
+            'heating_second_floor' => $request->get('heating_second_floor'),
+            'cook_gas' => $request->get('cook_gas'),
+            'water_comfort_id' => $request->get('water_comfort'),
+            'amount_electricity' => $request->get('amount_electricity'),
+            'amount_gas' => $request->get('amount_gas'),
+            'amount_water' => $request->get('amount_water'),
+            'living_situation_extra' => $request->get('living_situation_extra'),
+            'motivation_extra' => $request->get('motivation_extra'),
+
+        ]);
+
 
 
 	    /*

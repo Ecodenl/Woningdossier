@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class UserMotivation extends Model
 {
 
+    protected $fillable = ['user_id', 'motivation_id', 'order'];
+
 	public function user(){
 		return $this->belongsTo(User::class);
 	}

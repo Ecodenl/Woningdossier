@@ -68,11 +68,14 @@ class GeneralDataFormRequest extends FormRequest
 
             // data about usage of the building
             'resident_count' => 'required|numeric',
-            'cooked_on_gas' => 'numeric',
-            'thermostat_highest' => 'nullable|numeric',
-            'thermostat_lowest' => 'nullable|numeric|digits_between:0,'.$this->request->get('thermostat_highest'),
-            'electricity_consumption_past_year' => 'nullable|numeric',
-            'gas_usage_past_year' => 'nullable|numeric',
+            'cook_gas' => 'required|numeric',
+            'thermostat_high' => 'nullable|numeric',
+            'thermostat_low' => 'nullable|numeric|digits_between:0,'.$this->request->get('thermostat_high'),
+            'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
+            'heating_second_floor' => 'required|numeric|exists:building_heatings,id',
+            'water_comfort' => 'required|numeric|exists:comfort_level_tap_waters,id',
+            'amount_electricity' => 'nullable|numeric',
+            'amount_gas' => 'nullable|numeric',
 
 
         ];

@@ -58,7 +58,31 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserEnergyHabit extends Model
 {
-    public function user(){
-    	return $this->belongsTo(User::class);
+    protected $fillable = [
+        'user_id',
+        'resident_count',
+        'thermostat_high',
+        'thermostat_low',
+        'hours_high',
+        'heating_first_floor',
+        'heating_second_floor',
+        'cook_gas',
+        'water_comfort_id',
+        'amount_electricity',
+        'amount_gas',
+        'amount_water',
+        'living_situation_extra',
+        'motivation_extra'
+    ];
+
+
+    /**
+     * Get the user that belongsTo this habit.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

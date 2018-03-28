@@ -14,9 +14,9 @@
                         @if(isset($building->buildingFeatures->build_year))
                         <label for="house_has_insulation" class=" control-label">
                             @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year', ['year' => $building->buildingFeatures->build_year])
-                            @if($building->buildingFeatures->build_year > 1985)
+                            @if($building->buildingFeatures->build_year >= 1985)
                                 @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1985')
-                            @elseif($building->buildingFeatures->build_year > 1930)
+                            @elseif($building->buildingFeatures->build_year >= 1930)
                                 @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1930')
                             @else
                                 @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-pre-1930')

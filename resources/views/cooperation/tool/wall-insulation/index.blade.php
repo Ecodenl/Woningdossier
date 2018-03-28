@@ -405,6 +405,21 @@
 
 @push('js')
     <script>
+        $(document).ready(function(){
+           $("select, input[type=radio]").change(function(){
+              var form = $(this).closest("form").serialize();
+              $.ajax({
+                  type: "POST",
+                  url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
+                  data: form,
+                  success: function(data){
+                    console.log(data);
+                  }
+              })
+           });
+        });
+
+        // todo fix this
         $( document ).change(function() {
             // check if the is painted button is yes
             if ($('#is-painted').is(':checked')) {

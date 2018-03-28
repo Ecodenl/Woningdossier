@@ -57,7 +57,7 @@ class WallInsulationController extends Controller
     }
 
     public function calculate(Request $request){
-
+		dd($request->all());
     }
 
     /**

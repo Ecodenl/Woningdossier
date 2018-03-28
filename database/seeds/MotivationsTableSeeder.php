@@ -14,28 +14,51 @@ class MotivationsTableSeeder extends Seeder
     {
         $motivations = [
             [
-                'name' => 'Comfortverbetering',
+                'names' => [
+                	'nl' => 'Comfortverbetering',
+                ],
                 'calculate_value' => null,
+	            'order' => 0,
             ],
             [
-                'name' => 'Iets voor het milieu doen',
+	            'names' => [
+		            'nl' => 'Iets voor het milieu doen',
+	            ],
                 'calculate_value' => null,
+	            'order' => 1,
             ],
             [
-                'name' => 'Verlaging van de maandlasten',
+	            'names' => [
+		            'nl' => 'Verlaging van de maandlasten',
+	            ],
                 'calculate_value' => null,
+	            'order' => 2,
             ],
             [
-                'name' => 'Goed rendement op de investering',
+	            'names' => [
+		            'nl' => 'Goed rendement op de investering',
+	            ],
                 'calculate_value' => null,
+	            'order' => 3,
             ],
         ];
 
-        foreach ($motivations as $motivation) {
-            Motivation::create([
-                'name' => $motivation['name'],
-                'calculate_value' => $motivation['calculate_value'],
-            ]);
-        }
+
+	    foreach($motivations as $motivation){
+		    $uuid = \App\Helpers\Str::uuid();
+		    foreach($motivation['names'] as $locale => $name) {
+			    \DB::table( 'translations' )->insert( [
+				    'key'         => $uuid,
+				    'language'    => $locale,
+				    'translation' => $name,
+			    ] );
+		    }
+
+		    \DB::table('motivations')->insert([
+			    'name' => $uuid,
+			    'calculate_value' => $motivation['calculate_value'],
+			    'order' => $motivation['order'],
+		    ]);
+	    }
     }
 }

@@ -11,31 +11,59 @@ class InterestsTableSeeder extends Seeder
      */
     public function run()
     {
-	    $translationPrefix = 'woningdossier.cooperation.tool.interests.';
-
         $interests = [
 			[
-				'translation_key' => $translationPrefix . 'interest0',
+				'names' => [
+					'nl' => 'Ja, op korte termijn',
+				],
 				'calculate_value' => 1,
+				'order' => 0,
 			],
 	        [
-		        'translation_key' => $translationPrefix . 'interest1',
+		        'names' => [
+		        	'nl' => 'Ja, op termijn',
+		        ],
 		        'calculate_value' => 2,
+		        'order' => 1,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix . 'interest2',
+		        'names' => [
+			        'nl' => 'Meer informatie gewenst',
+		        ],
 		        'calculate_value' => 3,
+		        'order' => 2,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix . 'interest3',
+		        'names' => [
+			        'nl' => 'Geen actie',
+		        ],
 		        'calculate_value' => 4,
+		        'order' => 3,
 	        ],
 	        [
-		        'translation_key' => $translationPrefix . 'interest4',
+		        'names' => [
+			        'nl' => 'Niet mogelijk',
+		        ],
 		        'calculate_value' => 5,
+		        'order' => 4,
 	        ],
         ];
 
-	    DB::table('interests')->insert($interests);
+        foreach($interests as $interest){
+	        $uuid = \App\Helpers\Str::uuid();
+	        foreach($interest['names'] as $locale => $name) {
+		        \DB::table( 'translations' )->insert( [
+			        'key'         => $uuid,
+			        'language'    => $locale,
+			        'translation' => $name,
+		        ] );
+	        }
+
+	        \DB::table('interests')->insert([
+		        'name' => $uuid,
+		        'calculate_value' => $interest['calculate_value'],
+		        'order' => $interest['order'],
+	        ]);
+        }
     }
 }

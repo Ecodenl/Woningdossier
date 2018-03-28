@@ -20,15 +20,19 @@ class DatabaseSeeder extends Seeder
 	    $this->call(RoofTypesTableSeeder::class);
 	    $this->call(CooperationsTableSeeder::class);
 	    $this->call(UsersTableSeeder::class);
+	    $this->call(BuildingsTableSeeder::class);
 	    $this->call(StepsTableSeeder::class);
 	    $this->call(MeasureCategoriesTableSeeder::class);
 	    $this->call(MeasuresTableSeeder::class);
 	    $this->call(ExampleBuildingsTableSeeder::class);
+	    $this->call(InterestsTableSeeder::class);
+		$this->call(ElementsValuesTableSeeder::class);
+	    $this->call(MotivationsTableSeeder::class);
+
 
 
     	//
 	    $this->call(IndustriesTableSeeder::class);
-	    $this->call(OrganisationTypesTableSeeder::class);
 	    $this->call(OccupationsTableSeeder::class);
 
 
@@ -37,7 +41,7 @@ class DatabaseSeeder extends Seeder
 		// New
 		$this->call(HeatingAgesTableSeeder::class);
         $this->call(BuildingHeatingsTableSeeder::class);
-        $this->call(MotivationsTableSeeder::class);
+
         $this->call(QualitiesTableSeeder::class);
         $this->call(SolarWaterHeatersTableSeeder::class);
         $this->call(PresentWindowsTableSeeder::class);
@@ -49,7 +53,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PresentHeatPumpsTableSeeder::class);
 
 
-        $this->call(InterestsTableSeeder::class);
         $this->call(VentilationsTableSeeder::class);
         $this->call(ComfortLevelTapWatersTableSeeder::class);
         $this->call(SurfacePaintedWallsTableSeeder::class);

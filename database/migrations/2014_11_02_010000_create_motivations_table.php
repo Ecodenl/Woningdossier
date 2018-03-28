@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrganisationTypesTable extends Migration
+class CreateMotivationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateOrganisationTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('organisation_types', function (Blueprint $table) {
+        Schema::create('motivations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+	        $table->uuid('name');
+            $table->integer('calculate_value')->nullable();
+            $table->integer('order');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateOrganisationTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('organisation_types');
+        Schema::dropIfExists('motivations');
     }
 }

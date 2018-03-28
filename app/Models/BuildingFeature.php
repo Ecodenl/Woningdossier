@@ -49,10 +49,6 @@ class BuildingFeature extends Model
     	return $this->belongsTo(Building::class);
     }
 
-    public function objectType(){
-    	return $this->belongsTo(ObjectType::class);
-    }
-
     public function buildingCategory(){
     	return $this->belongsTo(BuildingCategory::class);
     }

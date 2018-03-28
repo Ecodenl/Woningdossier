@@ -29,8 +29,8 @@ class ServiceType extends Model
     	return $this->hasMany(Measure::class);
     }
 
-    public function buildingElements(){
-    	return $this->hasMany(BuildingElement::class);
+    public function elements(){
+    	return $this->hasMany(Element::class);
     }
 
 	public function buildingServices(){

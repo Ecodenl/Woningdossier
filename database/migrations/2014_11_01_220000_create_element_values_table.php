@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInterestsTable extends Migration
+class CreateElementValuesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateInterestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('interests', function (Blueprint $table) {
+        Schema::create('element_values', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('translation_key');
-            $table->integer('calculate_value');
+            $table->integer('element_id')->unsigned();
+            $table->foreign('element_id')->references('id')->on('elements')->onDelete('restrict');
+            $table->uuid('value');
+            $table->integer('order');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateInterestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('interests');
+        Schema::dropIfExists('element_values');
     }
 }

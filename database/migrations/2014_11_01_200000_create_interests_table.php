@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateObjectTypesTable extends Migration
+class CreateInterestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateObjectTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('object_types', function (Blueprint $table) {
+        Schema::create('interests', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->uuid('name');
+            $table->integer('calculate_value');
+            $table->integer('order');
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -29,6 +29,6 @@ class CreateObjectTypesTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('object_types');
+        Schema::dropIfExists('interests');
     }
 }

@@ -24,7 +24,7 @@
                         </label>
                         @endif
 
-                        <label for="element_{{ $houseInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation')           </label>
+                        <label for="element_{{ $houseInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation') </label>
 
                         <select id="element_{{ $houseInsulation->element->id }}" class="form-control" name="element[{{ $houseInsulation->element->id }}]">
                             @foreach($houseInsulation->element->values()->orderBy('order')->get() as $elementValue)
@@ -225,30 +225,24 @@
 
             </div>
 
-            <div id="facade-surface" class="row">
-                <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.optional.house-with-same-situation')           </label>
-                        <input type="text" class="form-control disabled" disabled="" value="WAARDE">
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
-                        <label for="facade_surface" class="control-label"><i data-toggle="collapse" data-target="#facade-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.not-right')           </label>
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#facade-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.house-with-same-situation')
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.not-right')
+                        </label>
                         <input id="facade_surface" type="text" name="facade_surface" value="" class="form-control">
-
                         <div id="facade-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
-
-                    </div>
-
-                    @if ($errors->has('facade_plastered_painted'))
+                        @if ($errors->has('facade_surface'))
                         <span class="help-block">
-                            <strong>{{ $errors->first('facade_plastered_painted') }}</strong>
+                            <strong>{{ $errors->first('facade_surface') }}</strong>
                         </span>
-                    @endif
-
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -268,37 +262,38 @@
             <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.title')</h4>
 
             <div id="costs" class="row">
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')           </label>
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')</label>
                         <div class="input-group">
                             <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                            <input type="text" class="form-control disabled" disabled="" value="114">
+                            <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings') </label>
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
                         <div class="input-group">
                             <span class="input-group-addon">CO2 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                            <input type="text" class="form-control disabled" disabled="" value="215">
+                            <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.savings-in-euro') </label>
-
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.savings-in-euro')</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                            <input type="text" class="form-control disabled" disabled="" value="63">
+                            <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')           </label>
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                             <input type="text" class="form-control disabled" disabled="" value="653">
@@ -306,9 +301,9 @@
                     </div>
 
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')           </label>
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
                         <div class="input-group">
                             <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
                             <input type="text" class="form-control disabled" disabled="" value="5,3">
@@ -406,7 +401,7 @@
 @push('js')
     <script>
         $(document).ready(function(){
-           $("select, input[type=radio]").change(function(){
+           $("select, input[type=radio], input[type=text]").change(function(){
               var form = $(this).closest("form").serialize();
               $.ajax({
                   type: "POST",
@@ -415,6 +410,15 @@
                   success: function(data){
                       if (data.insulation_advice){
                           $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+                      }
+                      if (data.savings_gas){
+                          $("input#savings_gas").val(Math.round(data.savings_gas));
+                      }
+                      if (data.savings_co2){
+                          $("input#savings_co2").val(Math.round(data.savings_co2));
+                      }
+                      if (data.savings_money){
+                          $("input#savings_money").val(Math.round(data.savings_money));
                       }
                     console.log(data);
                   }

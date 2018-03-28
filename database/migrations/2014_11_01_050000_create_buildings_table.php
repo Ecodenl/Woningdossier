@@ -19,10 +19,6 @@ class CreateBuildingsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
 
-            //$table->string('type_id', 16)->nullable()->default(null);
-	        $table->integer('building_type_id')->unsigned()->nullable();
-	        $table->foreign('building_type_id')->references('id')->on('building_types');
-
             $table->string('street')->default('');
             $table->string('number')->default('');
 	        $table->string('extension')->default('');

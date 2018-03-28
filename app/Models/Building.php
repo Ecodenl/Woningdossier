@@ -49,10 +49,6 @@ class Building extends Model
 		'street', 'number', 'city', 'postal_code', 'bag_addressid',
 	];
 
-	public function buildingType(){
-		return $this->belongsTo(BuildingType::class);
-	}
-
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
@@ -86,5 +82,15 @@ class Building extends Model
 	 */
 	public function buildingServices(){
 		return $this->hasMany(BuildingService::class);
+	}
+
+	/**
+	 * @return BuildingType|null
+	 */
+	public function getBuildingType(){
+		if ($this->buildingFeatures instanceof BuildingFeature){
+			return $this->buildingFeatures->buildingType;
+		}
+		return null;
 	}
 }

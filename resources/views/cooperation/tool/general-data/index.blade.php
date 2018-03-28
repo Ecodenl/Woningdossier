@@ -1004,12 +1004,12 @@
                 </div>
             </div>
 
+            {{--
             <div class="row">
                 <div class="col-sm-12">
                     <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.title')</h4>
                 </div>
 
-                {{-- Well start at 1 so the translation will to. --}}
                 @for($i = 1; $i < 5; $i++)
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('motivation['.$i.']') ? ' has-error' : '' }}">
@@ -1044,6 +1044,7 @@
                     </div>
                 @endfor
             </div>
+            --}}
 
             <div class="row">
                 <div class="col-sm-12">

@@ -654,7 +654,7 @@ class MeasuresTableSeeder extends Seeder
 			                ->where('language', 'nl')
 			                ->first(['key']);
 
-	    	// Get the category. If it doesn't exist: create it
+	    	// Get the category.
 	    	$cat = \DB::table('measure_categories')->where('name', $nameUuid->key)->first();
 	    	if ($cat instanceof \stdClass){
 			    // Create the measures

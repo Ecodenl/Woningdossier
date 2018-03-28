@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Http\Requests\GeneralDataFormRequest;
+use App\Models\Building;
+use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Cooperation;
+use App\Models\Element;
+use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\Interest;
@@ -17,6 +22,7 @@ use App\Models\Quality;
 use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
+use App\Models\UserProgress;
 use App\Models\Ventilation;
 use Illuminate\Support\Facades\Session;
 use Validator;
@@ -26,18 +32,30 @@ use App\Http\Controllers\Controller;
 
 class GeneralDataController extends Controller
 {
-    /**
+	protected $step;
+
+	public function __construct(Request $request) {
+		$slug = str_replace('/tool/', '', $request->getRequestUri());
+		$this->step = Step::where('slug', $slug)->first();
+	}
+
+	/**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+	    $building = \Auth::user()->buildings()->first();
+
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
-        $energyLabels = EnergyLabel::all();
+        $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
         $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
-	    $isInterested = Interest::all();
+	    $interests = Interest::orderBy('order')->get();
+	    $elements = Element::orderBy('order')->get();
+
+
         $insulations = PresentWindow::all();
         $houseVentilations = Ventilation::all();
         $qualities = Quality::all();
@@ -49,8 +67,11 @@ class GeneralDataController extends Controller
 
         $steps = Step::orderBy('order')->get();
 
-        return view('cooperation.tool.general-data.index', compact('buildingTypes', 'roofTypes', 'energyLabels',
-            'exampleBuildingTypes', 'houseVentilations', 'isInterested', 'insulations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
+        return view('cooperation.tool.general-data.index', compact(
+        	'building',
+        	'buildingTypes', 'roofTypes', 'energyLabels',
+            'exampleBuildingTypes', 'interests', 'elements',
+	        'insulations','houseVentilations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
             'steps'
         ));
@@ -74,21 +95,47 @@ class GeneralDataController extends Controller
      */
     public function store(GeneralDataFormRequest $request)
     {
+	    /** @var Building $building */
+    	$building = \Auth::user()->buildings()->first();
+    	$features = $building->buildingFeatures;
+    	if (!$features instanceof BuildingFeature){
+    		$features = new BuildingFeature();
+	    }
+		$features->build_year = $request->get('build_year');
+    	$features->surface = $request->get('surface');
+    	$features->monument = $request->get('monument', 0);
+    	$features->building_layers = $request->get('building_layers');
+
+    	$energyLabel = EnergyLabel::find($request->get('energy_label_id'));
+    	$features->energyLabel()->associate($energyLabel);
+
+    	$buildingType = BuildingType::find($request->get('building_type_id'));
+    	$features->buildingType()->associate($buildingType);
+
+    	$roofType = RoofType::find($request->get('roof_type_id'));
+    	$features->roofType()->associate($roofType);
+
+    	$building->buildingFeatures()->save($features);
+
+    	$elements = $request->get('element', []);
+    	foreach($elements as $elementId => $elementValueId){
+			$element = Element::find($elementId);
+			$elementValue = ElementValue::find($elementValueId);
+			if ($element instanceof Element && $elementValue instanceof ElementValue){
+				$buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
+				if (!$buildingElement instanceof BuildingElement){
+					$buildingElement = new BuildingElement();
+				}
+				$buildingElement->elementValue()->associate($elementValue);
+				$buildingElement->element()->associate($element);
+				$buildingElement->building()->associate($building);
+				$buildingElement->save();
+			}
+	    }
+    	//dd($request->all());
 
 
-
-
-
-
-        // Retrieve the name and basic data about the address
-//        $nameResident = $request->name_resident;
-//        $street = $request->street;
-//        $houseNumber = $request->house_number;
-//        $zipcode = $request->zip_code;
-//        $city = $request->residence;
-//        $email = $request->email;
-//        $phoneNumber = $request->phone_number;
-
+	    /*
         // Retrieve information about the building
         $buildingType = $request->building_type;
         $userSurface = $request->user_surface;
@@ -136,11 +183,13 @@ class GeneralDataController extends Controller
         $comfortNiveauWarmTapWater = $request->comfortniveau_warm_tapwater;
         $pastYearElectricityUsage = $request->electricity_consumption_past_year;
         $pastYearGasUsage = $request->gas_usage_past_year;
-
+*/
         // TODO: Save the collected data
 
+	    // Save progress
+	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation])->with('success', trans('Success'));
+        return redirect()->route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation]);
     }
 
     /**

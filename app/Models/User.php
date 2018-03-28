@@ -83,32 +83,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function lastNamePrefix(){
-    	return $this->belongsTo(LastNamePrefix::class);
-    }
-
-    public function title(){
-    	return $this->belongsTo(Title::class);
-    }
-
     public function buildings(){
     	return $this->hasMany(Building::class);
-    }
-
-    public function phoneNumbers(){
-    	return $this->hasMany(PhoneNumber::class);
-    }
-
-    public function emailAddresses(){
-    	return $this->hasMany(EmailAddress::class);
-    }
-
-    public function people(){
-    	return $this->hasMany(People::class);
-    }
-
-    public function organisations(){
-    	return $this->hasMany(Organisation::class);
     }
 
     public function buildingUsage(){
@@ -119,16 +95,12 @@ class User extends Authenticatable
     	return $this->hasMany(UserEnergyHabit::class);
     }
 
-    public function opportunities(){
-    	return $this->hasMany(Opportunity::class);
-    }
-
-	public function tasks(){
-		return $this->hasMany(Task::class);
-	}
-
 	public function progress(){
     	return $this->hasMany(UserProgress::class);
+	}
+
+	public function motivations(){
+    	return $this->hasMany(UserMotivation::class);
 	}
 
 	/**
@@ -148,6 +120,13 @@ class User extends Authenticatable
 		return $this->cooperations()
 		            ->where('id', $cooperation->id)
 		            ->count() > 0;
+	}
+
+	public function complete(Step $step){
+		return UserProgress::firstOrCreate([
+			'step_id' => $step->id,
+			'user_id' => \Auth::user()->id,
+		]);
 	}
 
 }

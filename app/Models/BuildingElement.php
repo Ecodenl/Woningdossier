@@ -27,19 +27,25 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingElement extends Model
 {
+	/**
+	 * The attributes that should be cast to native types.
+	 *
+	 * @var array
+	 */
+	protected $casts = [
+		'extra' => 'array',
+	];
+
 	public function building(){
 		return $this->belongsTo(Building::class);
 	}
 
-	public function measure(){
-		return $this->belongsTo(Measure::class);
+	public function element(){
+		return $this->belongsTo(Element::class);
 	}
 
-	public function serviceType(){
-		return $this->belongsTo(ServiceType::class);
+	public function elementValue(){
+		return $this->belongsTo(ElementValue::class);
 	}
 
-	public function values(){
-		return $this->hasMany(BuildingElementValue::class);
-	}
 }

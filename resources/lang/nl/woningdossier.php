@@ -44,37 +44,6 @@ return [
 		'tool' => [
 			'title' => 'Keukentafel tool',
 
-			'example-buildings' => [
-				'woning0' => 'Er is geen passende voorbeeldwoning',
-				'woning1' => 'Tussenwoning, drie bouwlagen en plat dak',
-				'woning2' => 'Hoekwoning, drie bouwlagen en plat dak',
-				'woning3' => 'Benedenwoning zonder opkamer (tussenwoning)',
-				'woning4' => 'Benedenwoning zonder opkamer (hoekwoning)',
-				'woning5' => 'Hoekhuis, twee bouwlagen en nieuwe dakopbouw',
-				'woning6' => 'Tussenwoning, twee bouwlagen en nieuwe dakopbouw',
-				'woning7' => 'Tussenwoning, twee bouwlagen en plat dak',
-				'woning8' => 'Arbeidershuis, twee bouwlagen (tussenwoning)',
-				'woning9' => 'Jaren \'30 tussenwoning met hellend dak',
-				'woning10' => 'Jaren \'30 hoekwoning met hellend dak',
-				'woning11' => 'Tussenwoning, drie bouwlagen en hellend dak',
-				'woning12' => 'Hoekwoning, drie bouwlagen en hellend dak',
-				'woning13' => 'Bovenwoning zonder opkamer (tussenwoning)',
-				'woning14' => 'Bovenwoning zonder opkamer (hoekwoning)',
-			],
-			'roof-types' => [
-				'type0' => 'Hellend dak met dakpannen',
-				'type1' => 'Hellend dak met bitumen',
-				'type2' => 'Platdak',
-				'type3' => 'Geen dak',
-			],
-			'interests' => [
-				'interest0' => 'Ja, op korte termijn',
-				'interest1' => 'Ja, op termijn',
-				'interest2' => 'Meer informatie gewenst',
-				'interest3' => 'Geen actie',
-				'interest4' => 'Niet mogelijk',
-			],
-
 			'general-data' => [
 				'title' => 'Algemene gegevens',
 
@@ -142,7 +111,10 @@ return [
             'wall-insulation' => [
                 'intro' => [
                     'title' => 'Gevelisolatie',
-                    'build-year' => 'Het huis is gebouwd in :year. Woningen met dit bouwjaar hebben vaak geen spouwmuur.',
+                    'build-year' => 'Het huis is gebouwd in :year.',
+	                'build-year-post-1985' => 'Bij woningen met dit bouwjaar is de gevel vaak al tijdens de bouw geïsoleerd',
+	                'build-year-post-1930' => 'Woningen met dit bouwjaar hebben vaak wel een spouwmuur',
+	                'build-year-pre-1930' => 'Woningen met dit bouwjaar hebben vaak geen spouwmuur',
                     'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
                     'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
                     'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',

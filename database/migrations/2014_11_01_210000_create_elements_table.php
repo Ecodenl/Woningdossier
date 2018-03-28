@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMotivationsTable extends Migration
+class CreateElementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateMotivationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('motivations', function (Blueprint $table) {
+        Schema::create('elements', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value')->nullable();
+            $table->uuid('name');
+            $table->integer('service_type_id')->unsigned();
+            $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('restrict');
+            $table->integer('order');
+            $table->uuid('info');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateMotivationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('motivations');
+        Schema::dropIfExists('elements');
     }
 }

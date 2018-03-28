@@ -10,12 +10,31 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
-                        <label for="house_has_insulation" class=" control-label">@lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year')           </label>
-                        <label for="house_has_insulation" class=" control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation')           </label>
 
-                        <select id="house_has_insulation" class="form-control" name="house_has_insulation" >
-                            @foreach($houseInsulations as $houseInsulation)
-                                <option @if(old('house_has_insulation') == $houseInsulation->id) selected @endif value="{{$houseInsulation->id}}">{{$houseInsulation->name}}</option>
+                        @if(isset($building->buildingFeatures->build_year))
+                        <label for="house_has_insulation" class=" control-label">
+                            @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year', ['year' => $building->buildingFeatures->build_year])
+                            @if($building->buildingFeatures->build_year > 1985)
+                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1985')
+                            @elseif($building->buildingFeatures->build_year > 1930)
+                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1930')
+                            @else
+                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-pre-1930')
+                            @endif
+                        </label>
+                        @endif
+
+                        <label for="element_{{ $houseInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation')           </label>
+
+                        <select id="element_{{ $houseInsulation->element->id }}" class="form-control" name="element[{{ $houseInsulation->element->id }}]">
+                            @foreach($houseInsulation->element->values()->orderBy('order')->get() as $elementValue)
+                                <option
+                                        @if(old('element[' . $houseInsulation->element->id . ']') && $elementValue->id == old('element[' . $houseInsulation->element->id . ']'))
+                                        selected="selected"
+                                        @elseif(isset($houseInsulation->elementValue) && $houseInsulation->elementValue->id == $elementValue->id)
+                                        selected="selected"
+                                        @endif
+                                value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                             @endforeach
                         </select>
 
@@ -30,7 +49,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space">
                         <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
-                            I would like to have some help full information right here !
+                            I would like to have some helpful information right here!
                         </div>
                     </div>
                 </div>
@@ -53,7 +72,7 @@
                         <br>
 
                         <div id="cavity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some help full information right here !
+                            I would like to have some helpful information right here!
                         </div>
 
                         @if ($errors->has('house_has_cavity'))
@@ -84,7 +103,7 @@
                         <br>
 
                         <div id="wall-painted" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some help full information right here !
+                            I would like to have some helpful information right here!
                         </div>
 
                         @if ($errors->has('is_facade_plastered_painted'))
@@ -167,7 +186,7 @@
                         </select>
 
                         <div id="wall-joints-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some help full information right here !
+                            I would like to have some helpful information right here!
                         </div>
                     </div>
 
@@ -191,7 +210,7 @@
                         </select>
 
                         <div id="wall-joints-surface" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some help full information right here !
+                            I would like to have some helpful information right here!
                         </div>
 
                     </div>
@@ -219,7 +238,7 @@
                         <input id="facade_surface" type="text" name="facade_surface" value="" class="form-control">
 
                         <div id="facade-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some help full information right here !
+                            I would like to have some helpful information right here!
                         </div>
 
                     </div>
@@ -353,7 +372,7 @@
                         <textarea id="additional-info" class="form-control" name="additional-info"> {{old('additional_info')}} </textarea>
 
                         <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some help full information right here !
+                            I would like to have some helpful information right here!
                         </div>
 
                         @if ($errors->has('additional_info'))
@@ -386,6 +405,21 @@
 
 @push('js')
     <script>
+        $(document).ready(function(){
+           $("select, input[type=radio]").change(function(){
+              var form = $(this).closest("form").serialize();
+              $.ajax({
+                  type: "POST",
+                  url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
+                  data: form,
+                  success: function(data){
+                    console.log(data);
+                  }
+              })
+           });
+        });
+
+        // todo fix this
         $( document ).change(function() {
             // check if the is painted button is yes
             if ($('#is-painted').is(':checked')) {

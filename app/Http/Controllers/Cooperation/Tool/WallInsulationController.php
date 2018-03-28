@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\Building;
+use App\Models\BuildingElement;
 use App\Models\PresentWindow;
 use App\Models\Step;
 use App\Models\SurfacePaintedWall;
@@ -19,10 +21,18 @@ class WallInsulationController extends Controller
     public function index()
     {
         $steps = Step::orderBy('order')->get();
-        $houseInsulations = PresentWindow::all();
+        /** @var Building $building */
+        $building = \Auth::user()->buildings()->first();
+
+        $houseInsulation = $building->buildingElements()->where('element_id', 3)->first();
+
+        /** @var BuildingElement $houseInsulation */
+        //dd($houseInsulation->element->values);
+
+        //$houseInsulations = PresentWindow::all();
         $surfacePaintedWalls = SurfacePaintedWall::all();
         $wallsNeedImpregnation = WallNeedImpregnation::all();
-        return view('cooperation.tool.wall-insulation.index', compact('steps', 'houseInsulations', 'surfacePaintedWalls', 'wallsNeedImpregnation'));
+        return view('cooperation.tool.wall-insulation.index', compact('steps', 'building', 'houseInsulation', 'surfacePaintedWalls', 'wallsNeedImpregnation'));
     }
 
     /**
@@ -44,6 +54,10 @@ class WallInsulationController extends Controller
     public function store(Request $request)
     {
         
+    }
+
+    public function calculate(Request $request){
+		dd($request->all());
     }
 
     /**

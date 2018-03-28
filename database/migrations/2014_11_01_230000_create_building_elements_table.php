@@ -17,13 +17,15 @@ class CreateBuildingElementsTable extends Migration
             $table->increments('id');
 
             $table->integer('building_id')->unsigned()->nullable()->default(null);
-            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
+            $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
-            $table->integer('measure_id')->unsigned()->nullable()->default(null);
-            $table->foreign('measure_id')->references('id')->on('measures') ->onDelete('restrict');
+            $table->integer('element_id')->unsigned();
+            $table->foreign('element_id')->references('id')->on('elements')->onDelete('restrict');
 
-            $table->integer('service_type_id')->unsigned()->nullable()->default(null);
-            $table->foreign('service_type_id')->references('id')->on('service_types') ->onDelete('restrict');
+            $table->integer('element_value_id')->unsigned();
+            $table->foreign('element_value_id')->references('id')->on('element_values')->onDelete('restrict');
+
+            $table->json('extra')->nullable();
 
             $table->timestamps();
         });

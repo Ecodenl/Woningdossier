@@ -19,9 +19,6 @@ class CreateBuildingFeaturesTable extends Migration
             $table->integer('building_id')->unsigned()->nullable()->default(null);
             $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
 
-            $table->integer('object_type_id')->unsigned()->nullable()->default(null);
-            $table->foreign('object_type_id')->references('id')->on('object_types') ->onDelete('restrict');
-
             $table->integer('building_category_id')->unsigned()->nullable()->default(null);
             $table->foreign('building_category_id')->references('id')->on('building_categories') ->onDelete('restrict');
 

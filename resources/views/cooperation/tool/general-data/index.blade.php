@@ -954,7 +954,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('amount_gas') ? ' has-error' : '' }}">
-                        <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year')</label>
+                        <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year') <span>*</span></label>
 
                         <input id="amount_gas" type="text"
                                value="@if(old('amount_gas') != "")
@@ -962,7 +962,7 @@
                                       @elseif(isset($energyHabit))
                                         {{$energyHabit->amount_gas}}
                                       @endif"
-                               class="form-control" name="amount_gas">
+                               class="form-control" name="amount_gas" required>
 
                         <div id="amount-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...

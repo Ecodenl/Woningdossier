@@ -682,7 +682,7 @@
                     <div class="form-group add-space{{ $errors->has('house_ventilation') ? ' has-error' : '' }}">
                         <label for="house_ventilation" class=" control-label"><i data-toggle="collapse" data-target="#house-ventilation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.title')</label> <span>*</span>
 
-                        <select needrequired id="house_ventilation" class="form-control" name="house_ventilation" >
+                        <select required id="house_ventilation" class="form-control" name="house_ventilation" >
                             @foreach($houseVentilations as $houseVentilation)
                                 <option @if($houseVentilation->id == old('house_ventilation')) selected @endif value="{{$houseVentilation->id}}">{{$houseVentilation->name}}</option>
                             @endforeach
@@ -766,7 +766,7 @@
                 <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
                     <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
-                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != "") {{old('resident_count')}} @elseif(isset($energyHabit)) {{$energyHabit->resident_count}} @endif" name="resident_count" needrequired>
+                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != "") {{old('resident_count')}} @elseif(isset($energyHabit)) {{$energyHabit->resident_count}} @endif" name="resident_count" required>
 
                     <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...

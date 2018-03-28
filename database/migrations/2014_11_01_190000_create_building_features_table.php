@@ -31,6 +31,9 @@ class CreateBuildingFeaturesTable extends Migration
             $table->integer('energy_label_id')->unsigned()->nullable()->default(null);
             $table->foreign('energy_label_id')->references('id')->on('energy_labels') ->onDelete('restrict');
 
+            $table->integer('cavity_wall')->nullable()->default(null);
+            $table->integer('facade_plastered_painted')->nullable()->default(null);
+
             $table->integer('surface')->nullable()->default(null);
             $table->integer('volume')->nullable()->default(null);
             $table->integer('build_year')->nullable()->default(null);

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Calculator;
+use App\Helpers\Kengetallen;
 use App\Models\Building;
 use App\Models\BuildingElement;
+use App\Models\BuildingType;
+use App\Models\ElementValue;
 use App\Models\PresentWindow;
 use App\Models\Step;
 use App\Models\SurfacePaintedWall;
@@ -29,7 +33,6 @@ class WallInsulationController extends Controller
         /** @var BuildingElement $houseInsulation */
         //dd($houseInsulation->element->values);
 
-        //$houseInsulations = PresentWindow::all();
         $surfacePaintedWalls = SurfacePaintedWall::all();
         $wallsNeedImpregnation = WallNeedImpregnation::all();
         return view('cooperation.tool.wall-insulation.index', compact('steps', 'building', 'houseInsulation', 'surfacePaintedWalls', 'wallsNeedImpregnation'));
@@ -57,7 +60,43 @@ class WallInsulationController extends Controller
     }
 
     public function calculate(Request $request){
-		dd($request->all());
+	    //dd($request->all());
+	    /**
+	     * @var Building $building
+	     */
+	    $user = \Auth::user();
+	    $building = $user->buildings()->first();
+	    $energyHabits = $user->energyHabit;
+
+    	$cavityWall = $request->get('cavity_wall', -1);
+		$elements = $request->get('element', []);
+		$facadeSurface = $request->get('facade_surface', 0);
+
+    	$result = [
+    		'savings_gas' => 0,
+	    ];
+
+    	if ($cavityWall == 1){
+    	    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
+	    }
+	    elseif ($cavityWall == 2){
+		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
+	    }
+	    elseif($cavityWall == 0) {
+		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.research');
+	    }
+
+	    $elementValueId = array_shift($elements);
+	    $elementValue = ElementValue::find($elementValueId);
+	    if ($elementValue instanceof ElementValue){
+			$result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $facadeSurface, $energyHabits->amount_gas);
+	    }
+
+	    $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
+	    $result['savings_money'] = Calculator::calculateMoneySavings($result['savings_gas']);
+
+	    return response()->json($result);
+
     }
 
     /**

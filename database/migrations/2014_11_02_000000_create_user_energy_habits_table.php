@@ -31,8 +31,8 @@ class CreateUserEnergyHabitsTable extends Migration
             $table->integer('amount_electricity')->nullable()->default(null);
             $table->integer('amount_gas')->nullable()->default(null);
             $table->integer('amount_water')->nullable()->default(null);
-            $table->longText('living_situation_extra');
-            $table->longText('motivation_extra');
+            $table->longText('living_situation_extra')->nullable();
+            $table->longText('motivation_extra')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();

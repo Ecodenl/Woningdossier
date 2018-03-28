@@ -134,8 +134,14 @@ return [
                     'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
                     'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
                     'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
-                    'facade-best-insulation' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
                 ],
+
+	            'insulation-advice' => [
+	            	'text' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
+		            'cavity-wall' => 'Spouwmuurisolatie',
+		            'facade-internal' => 'Binnengevelisolatie',
+		            'research' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
+	            ],
 
                 'indication-for-costs' => [
                     'title' => 'Indicatie voor kosten en baten voor deze maatregel',

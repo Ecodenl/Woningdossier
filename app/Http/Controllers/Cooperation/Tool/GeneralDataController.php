@@ -149,15 +149,12 @@ class GeneralDataController extends Controller
         }
         // get the motivations
 	    foreach ($request->get('motivation') as $key => $motivationId) {
-    	    // Find the motivation so we can get the order value
-    	    $motivations = Motivation::find($motivationId);
-
     	    // Then save the UserMotivation
     	    $userMotivation = UserMotivation::create(
                 [
     	            'user_id' => Auth::id(),
                     'motivation_id' => $motivationId,
-                    'order' => $motivations->order,
+                    'order' => $key
                 ]
             );
 
@@ -165,8 +162,8 @@ class GeneralDataController extends Controller
 
 	    $userEnegeryHabits = UserEnergyHabit::updateOrCreate(
 	        [
-	            'user_id' => Auth::id()]
-            ,
+	            'user_id' => Auth::id()
+            ],
 	        [
                 'user_id' => Auth::id(),
                 'resident_count' => $request->get('resident_count'),

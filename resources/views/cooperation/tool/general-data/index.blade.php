@@ -178,13 +178,13 @@
                             <label for="monument" class=" control-label"><i data-toggle="collapse" data-target="#is-monument-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.is-monument')</label>
 
                             <label class="radio-inline">
-                                <input type="radio" name="monument" value="1" @if(isset($building->buildingFeatures->monument) && $building->buildingFeatures->monument == 1) checked="checked" @elseif(old('monument') == 1) checked="checked" @endif>@lang('woningdossier.cooperation.radiobutton.yes')
+                                <input type="radio" name="monument" value="1" @if(isset($building->buildingFeatures->monument) && $building->buildingFeatures->monument == 1) checked @elseif(old('monument') == 1) checked @endif>@lang('woningdossier.cooperation.radiobutton.yes')
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="monument" value="2" @if(isset($building->buildingFeatures->monument) && $building->buildingFeatures->monument == 2) checked="checked" @elseif(old('monument') == 2) checked="checked" @endif>@lang('woningdossier.cooperation.radiobutton.no')
+                                <input type="radio" name="monument" value="2" @if(isset($building->buildingFeatures->monument) && $building->buildingFeatures->monument == 2) checked @elseif(old('monument') == 2) checked @endif>@lang('woningdossier.cooperation.radiobutton.no')
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="monument" value="0" @if(isset($building->buildingFeatures->monument) && $building->buildingFeatures->monument == 0) checked="checked" @elseif(old('monument') == 0) checked="checked" @endif>@lang('woningdossier.cooperation.radiobutton.unknown')
+                                <input type="radio" name="monument" value="0" @if(isset($building->buildingFeatures->monument) && $building->buildingFeatures->monument == "0") checked @elseif(old('monument') == "0") checked @endif>@lang('woningdossier.cooperation.radiobutton.unknown')
                             </label>
 
                             <div id="is-monument-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -785,10 +785,10 @@
                 <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
                     <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
                     <label class="radio-inline">
-                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) selected @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->coock_gas == 2 ) selected @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 2 ) checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
                     </label>
 
                     <div id="cooked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -983,13 +983,7 @@
                     <div class="form-group add-space{{ $errors->has('living_situation_extra') ? ' has-error' : '' }}">
                         <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#living-situation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
 
-                        <textarea id="additional-info" class="form-control" name="living_situation_extra">
-                            @if(old('living_situation_extra') != "")
-                                {{old('living_situation_extra')}}
-                            @elseif(isset($energyHabit))
-                                {{$energyHabit->living_situation_extra}}
-                            @endif
-                        </textarea>
+                        <textarea id="additional-info" class="form-control" name="living_situation_extra">@if(old('living_situation_extra') != ""){{old('living_situation_extra')}}@elseif(isset($energyHabit)){{$energyHabit->living_situation_extra}}@endif</textarea>
 
                         <div id="living-situation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
@@ -1019,7 +1013,7 @@
 
                                 @isset($energyHabit)
                                     @foreach($motivations as $motivation)
-                                        <option @if(Auth::user()->motivations()->where('id', $i)->first()->motivation_id == $motivation->id) selected @endif value="{{$motivation->id}}">{{$motivation->name}}  </option>
+                                        <option @if(old('motivation.'.$i) == $motivation->id) selected @elseif(Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id) selected @endif value="{{$motivation->id}}">{{$motivation->name}}  </option>
                                     @endforeach
 
                                 @else
@@ -1049,13 +1043,7 @@
                     <div class="form-group add-space{{ $errors->has('motivation_extra') ? ' has-error' : '' }}">
                         <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation-extra')</label>
 
-                        <textarea id="motivation-extra" class="form-control" name="motivation_extra">
-                            @if(old('motivation_extra') != "")
-                                {{old('motivation_extra')}}
-                            @elseif(isset($energyHabit))
-                                {{$energyHabit->motivation_extra}}
-                            @endif
-                        </textarea>
+                        <textarea id="motivation-extra" class="form-control" name="motivation_extra">@if(old('motivation_extra') != ""){{old('motivation_extra')}}@elseif(isset($energyHabit)){{$energyHabit->motivation_extra}}@endif</textarea>
 
                         <div id="motivation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...

@@ -871,7 +871,7 @@
 
                         <select id="heating_first_floor" class="form-control" name="heating_first_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_first_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_first_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id}}">{{$buildingHeating->name}}</option>
+                                <option @if($buildingHeating->id == old('heating_first_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_first_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
                             @endforeach
 
                         </select>
@@ -896,7 +896,7 @@
 
                         <select id="heating_second_floor" class="form-control" name="heating_second_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_second_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_second_floor == $buildingHeating->id) selected @endif value="{{$buildingHeating->id}}">{{$buildingHeating->name}}</option>
+                                <option @if($buildingHeating->id == old('heating_second_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_second_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
                             @endforeach
                         </select>
 

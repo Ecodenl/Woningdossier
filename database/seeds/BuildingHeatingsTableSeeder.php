@@ -14,33 +14,50 @@ class BuildingHeatingsTableSeeder extends Seeder
     {
         $buildingHeatings = [
             [
-                'name' => 'Verwarmd, de meeste radiatoren staan aan',
+                'names' => [
+                	'nl' => 'Verwarmd, de meeste radiatoren staan aan',
+	            ],
                 'degree' => 18,
                 'calculate_value' => 2,
             ],
             [
-                'name' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                'names' => [
+                	'nl' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                ],
                 'degree' => 13,
                 'calculate_value' => 3,
             ],
             [
-                'name' => 'Onverwarmd, de radiatoren staan op * of uit',
+                'names' => [
+                	'nl' => 'Onverwarmd, de radiatoren staan op * of uit',
+                ],
                 'degree' => 10,
                 'calculate_value' => 4,
             ],
             [
-                'name' => 'Niet van toepassing',
+                'names' => [
+                	'nl' => 'Niet van toepassing',
+                ],
                 'degree' => 10,
                 'calculate_value' => 4,
-            ]
+            ],
         ];
 
-        foreach ($buildingHeatings as $buildingHeating) {
-            BuildingHeating::create([
-                'name' => $buildingHeating['name'],
-                'degree' => $buildingHeating['degree'],
-                'calculate_value' => $buildingHeating['calculate_value']
-            ]);
-        }
+	    foreach ($buildingHeatings as $buildingHeating) {
+		    $uuid = \App\Helpers\Str::uuid();
+		    foreach($buildingHeating['names'] as $locale => $name) {
+			    \DB::table( 'translations' )->insert( [
+				    'key'         => $uuid,
+				    'language'    => $locale,
+				    'translation' => $name,
+			    ] );
+		    }
+
+		    \DB::table('building_heatings')->insert([
+			    'name' => $uuid,
+			    'degree' => $buildingHeating['degree'],
+			    'calculate_value' => $buildingHeating['calculate_value'],
+		    ]);
+	    }
     }
 }

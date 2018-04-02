@@ -57,7 +57,7 @@ class MeasuresTableSeeder extends Seeder
 			    ],
 			    [
 				    'names' => [
-					    'nl' => 'Gevel isolatie  binnenzijde',
+					    'nl' => 'Gevel isolatie binnenzijde',
 				    ],
 				    'service_types' => [
 					    'Heating',
@@ -325,32 +325,6 @@ class MeasuresTableSeeder extends Seeder
 		    'Warmtepomp' => [
 			    [
 				    'names' => [
-					    'nl' => 'Gevel isolatie spouw',
-				    ],
-				    'service_types' => [
-					    'Heating',
-				    ],
-			    ],
-			    [
-				    'names' => [
-					    'nl' => 'Gevel isolatie  binnenzijde',
-				    ],
-				    'service_types' => [
-					    'Heating',
-				    ],
-			    ],
-			    [
-				    'names' => [
-					    'nl' => 'Gevel isolatie buitenzijde',
-				    ],
-				    'service_types' => [
-					    'Heating',
-				    ],
-			    ],
-		    ],
-		    'Biomassa' => [
-			    [
-				    'names' => [
 					    'nl' => 'Hybride (bron lucht)',
 				    ],
 				    'service_types' => [
@@ -398,7 +372,7 @@ class MeasuresTableSeeder extends Seeder
 				    ],
 			    ],
 		    ],
-		    'Warmte afgifte' => [
+		    'Biomassa' => [
 			    [
 				    'names' => [
 					    'nl' => 'Pelletketel',
@@ -440,7 +414,7 @@ class MeasuresTableSeeder extends Seeder
 				    ],
 			    ],
 		    ],
-		    'Zonnepanelen' => [
+		    'Warmte afgifte' => [
 			    [
 				    'names' => [
 					    'nl' => 'Laag temperatuur vloerverwarming',
@@ -489,6 +463,9 @@ class MeasuresTableSeeder extends Seeder
 					    'PV-wind',
 				    ],
 			    ],
+		    ],
+		    'Zonnepanelen' => [
+
 		    ],
 		    'Zonneboiler' => [
 			    [

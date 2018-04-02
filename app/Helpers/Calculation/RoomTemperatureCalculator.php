@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Helpers\Calculation;
 
 use App\Models\BuildingHeating;
 use App\Models\UserEnergyHabit;
@@ -103,7 +103,7 @@ class RoomTemperatureCalculator {
 		$this->rooms[self::FLOOR_GROUND_ROOM_HALL]['hours high'] = $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['hours high'];
 		$this->rooms[self::FLOOR_GROUND_ROOM_HALL]['temp low'] = $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['temp low'] - 1;
 		$this->rooms[self::FLOOR_GROUND_ROOM_HALL]['hours low'] = $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['hours low'];
-		$this->rooms[self::FLOOR_GROUND_ROOM_HALL]['average'] = $this->calculateAverage(self::FLOOR_GROUND_ROOM_KITCHEN);
+		$this->rooms[self::FLOOR_GROUND_ROOM_HALL]['average'] = $this->calculateAverage(self::FLOOR_GROUND_ROOM_HALL);
 
 		// 1st fl bedroom1
 		$this->rooms[self::FLOOR_ONE_ROOM_BEDROOM1]['temp high'] = $habits->heatingFirstFloor instanceof BuildingHeating ? $habits->heatingFirstFloor->degree : 10;
@@ -143,15 +143,18 @@ class RoomTemperatureCalculator {
 
 	public function getAverageHouseTemperature(){
 		$total = 0;
+		$surface = 0;
 		foreach($this->rooms as $room => $values){
-			$total += $values['average'];
+			$total += $values['m2'] * $values['average'];
+			$surface += $values['m2'];
 		}
-		return $total / count($this->rooms);
+
+		return number_format($total / $surface, 1);
 	}
 
 	protected function calculateTempLow($room){
 		if ($this->rooms[$room]['temp high'] == 18){
-			return $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM] - 2;
+			return $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['temp low'] - 2;
 		}
 		if ($this->rooms[$room]['temp high'] == 13){
 			return 10;

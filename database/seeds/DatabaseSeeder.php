@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(ElementsValuesTableSeeder::class);
 	    $this->call(MotivationsTableSeeder::class);
 		$this->call(BuildingTypeElementMaxSavingTableSeeder::class);
+	    $this->call(BuildingHeatingsTableSeeder::class);
 
 
     	//
@@ -40,7 +41,6 @@ class DatabaseSeeder extends Seeder
 
 		// New
 		$this->call(HeatingAgesTableSeeder::class);
-        $this->call(BuildingHeatingsTableSeeder::class);
 
         $this->call(QualitiesTableSeeder::class);
         $this->call(SolarWaterHeatersTableSeeder::class);

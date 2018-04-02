@@ -296,7 +296,7 @@
                         <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" class="form-control disabled" disabled="" value="653">
+                            <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
 
@@ -306,7 +306,7 @@
                         <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
                         <div class="input-group">
                             <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                            <input type="text" class="form-control disabled" disabled="" value="5,3">
+                            <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
                         </div>
                     </div>
                 </div>
@@ -419,6 +419,12 @@
                       }
                       if (data.savings_money){
                           $("input#savings_money").val(Math.round(data.savings_money));
+                      }
+                      if (data.cost_indication){
+                          $("input#cost_indication").val(Math.round(data.cost_indication));
+                      }
+                      if (data.interest_comparable){
+                          $("input#interest_comparable").val(data.interest_comparable);
                       }
                     console.log(data);
                   }

@@ -85,4 +85,18 @@ class UserEnergyHabit extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+    public function heatingFirstFloor(){
+    	return $this->belongsTo(BuildingHeating::class, 'heating_first_floor');
+    }
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+    public function heatingSecondFloor(){
+    	return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
+    }
 }

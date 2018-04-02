@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\Kengetallen;
+use App\Helpers\KeyFigures\WallInsulation\Temperature;
+use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\BuildingElement;
-use App\Models\BuildingType;
 use App\Models\ElementValue;
-use App\Models\PresentWindow;
 use App\Models\Step;
 use App\Models\SurfacePaintedWall;
 use App\Models\WallNeedImpregnation;
@@ -76,24 +76,30 @@ class WallInsulationController extends Controller
     		'savings_gas' => 0,
 	    ];
 
+	    $advice = Temperature::WALL_INSULATION_JOINTS;
     	if ($cavityWall == 1){
+		    $advice = Temperature::WALL_INSULATION_JOINTS;
     	    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
 	    }
 	    elseif ($cavityWall == 2){
+    		$advice = Temperature::WALL_INSULATION_FACADE;
 		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
 	    }
 	    elseif($cavityWall == 0) {
+		    $advice = Temperature::WALL_INSULATION_RESEARCH;
 		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.research');
 	    }
 
 	    $elementValueId = array_shift($elements);
 	    $elementValue = ElementValue::find($elementValueId);
 	    if ($elementValue instanceof ElementValue){
-			$result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $facadeSurface, $energyHabits->amount_gas);
+			$result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabits, $facadeSurface, $advice);
 	    }
 
 	    $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-	    $result['savings_money'] = Calculator::calculateMoneySavings($result['savings_gas']);
+	    $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
+	    $result['cost_indication'] = Calculator::calculateCostIndication($facadeSurface, $advice);
+	    $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
 	    return response()->json($result);
 

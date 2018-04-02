@@ -170,11 +170,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <div class="form-group add-space {{$errors->has('zinc-replaced') ? ' has-error' : ''}}">
                             <label for="zinc-replaced" class=" control-label"><i data-toggle="collapse" data-target="#zinc-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.zinc-replaced')</label>
 
-                            <input type="number" class="form-control" value="@if(old('zinc-replaced')) {{old('zinc-replaced')}} @elseif(isset($answer)) {{$answer}} @endif">
+                            <input type="date" class="form-control" value="@if(old('zinc-replaced')) {{old('zinc-replaced')}} @elseif(isset($answer)) {{$answer}} @endif">
 
                             <div id="zinc-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -322,7 +322,7 @@
                         <div class="form-group add-space">
                             <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.co2')         </label>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <span class="input-group-addon">co<sup>2</sup></span>
                                 <input type="text" class="form-control disabled" disabled="" value="114">
                             </div>
                         </div>
@@ -351,8 +351,8 @@
                         <div class="form-group add-space">
                             <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.indicative-costs-replacement')      </label>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                <input type="text" class="form-control disabled" disabled="" value="114">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                <input type="datetime-local" class="form-control disabled" disabled="" value="114">
                             </div>
                         </div>
                     </div>

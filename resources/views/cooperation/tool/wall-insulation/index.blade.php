@@ -435,20 +435,22 @@
             });
             // Trigger the change event so it will load the data
             $("select, input[type=radio], input[type=text]").trigger('change');
+
+            // todo fix this
+            // fix ?
+            $( document ).change(function() {
+                // check if the is painted button is yes
+                if ($('#is-painted').is(':checked')) {
+                    $('#painted-options').show();
+                } else {
+                    $('#painted-options').hide();
+                }
+            });
+            // trigger the change
+            $('#is-painted').trigger('change');
         });
 
-        // todo fix this
-        // fix ?
-        $( document ).change(function() {
-            // check if the is painted button is yes
-            if ($('#is-painted').is(':checked')) {
-                $('#painted-options').show();
-            } else {
-                $('#painted-options').hide();
-            }
-        });
-        // trigger the change
-        $('#is-painted').trigger('change');
+
     </script>
 @endpush
 

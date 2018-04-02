@@ -212,7 +212,51 @@ return [
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
-            ]
+            ],
+
+            'roof-insulation' => [
+                'title' => 'Dakisolatie',
+                'current-situation' => [
+                    'title' => 'Huidige situatie',
+                    'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
+                    'main-roof' => 'Wat is het hoofddak?',
+                    'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
+                    'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
+                    'flat-roof-surface' => [
+                        'comparable-houses' => 'Vergelijkbare woningen hebben een plat dak van :m2 m<sup>2</sup>',
+                        'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
+                    ],
+                    'pitched-roof' => 'Is het hellende dak geïsoleerd?',
+                    'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
+                    'zinc-replaced' => 'Wanner is het zinkwerk voor het laats vernieuwd?',
+                    'pitched-roof-surface' => [
+                        'comparable-houses' => 'Vergelijkbare woningen hebben een hellend dak van :m2 m<sup>2</sup>',
+                        'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
+                    ],
+                ],
+
+                'flat-roof' => [
+                    'title' => 'Plat dak',
+                    'insulate-roof' => 'Wilt u een plat dak isoleren',
+                    'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
+                ],
+                'pitched-roof' => [
+                    'title' => 'Hellend dak',
+                    'insulate-roof' => 'Wilt u het hellende dak isoleren',
+                    'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
+                ],
+
+                'costs' => [
+                    'title' => 'Kosten en baten voor isoleren van het :type dak',
+                    'gas' => 'Gasbesparing',
+                    'co2' => 'CO2 Besparing',
+                    'savings-in-euro' => 'Besparing in €',
+                    'indicative-costs-insulation' => 'Indicatieve kosten annbrengen insolatie',
+                    'indicative-costs-replacement' => 'indicatieve kosten vervanging dakbedekking',
+                    'indicative-replace-date' => 'Indicatie vervangingsmoment dakbedekking',
+                    'comparable-rent' => 'Vergelijkbare rente'
+                ],
+            ],
 		],
 	],
 ];

@@ -63,7 +63,7 @@
                         <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label>
 
                         <label class="radio-inline">
-                            <input id="is-painted" type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input  type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
                             <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "2") checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
@@ -94,7 +94,7 @@
                         <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label>
 
                         <label class="radio-inline">
-                            <input @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->plastered_wall_surface == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input id="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->plastered_wall_surface == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
                             <input @if(old('facade_plastered_painted') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->plastered_wall_surface == "2") checked @endif type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
@@ -436,17 +436,9 @@
             // Trigger the change event so it will load the data
             $("select, input[type=radio], input[type=text]").trigger('change');
         });
-        //
+
         // todo fix this
-        // in a cleaner way
-        // i mean fix it
-        $(document).ready(function () {
-            if ($('#is-painted').is(':checked')) {
-                $('#painted-options').show();
-            } else {
-                $('#painted-options').hide();
-            }
-        });
+        // fix ?
         $( document ).change(function() {
             // check if the is painted button is yes
             if ($('#is-painted').is(':checked')) {
@@ -455,6 +447,8 @@
                 $('#painted-options').hide();
             }
         });
+        // trigger the change
+        $('#is-painted').trigger('change');
     </script>
 @endpush
 

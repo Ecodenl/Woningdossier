@@ -17,7 +17,7 @@ class CreateMeasureApplicationsTable extends Migration
             $table->increments('id');
             $table->enum('measure_type', ['energy_saving', 'maintenance']);
             $table->uuid('measure_name');
-            $table->enum('application', ['place', 'replace', 'remove']);
+            $table->enum('application', ['place', 'replace', 'remove', 'repair']);
             $table->double('costs', 8, 2);
             $table->uuid('cost_unit');
 	        $table->double('minimal_costs', 8, 2);

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSurfacePaintedWallsTable extends Migration
+class CreateFacadeSurfacesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateSurfacePaintedWallsTable extends Migration
      */
     public function up()
     {
-        Schema::create('surface_painted_walls', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value');
-            $table->timestamps();
+        Schema::create('facade_surfaces', function (Blueprint $table) {
+	        $table->increments('id');
+	        $table->string('name');
+	        $table->integer('calculate_value')->nullable();
+	        $table->timestamps();
         });
     }
 
@@ -28,6 +28,6 @@ class CreateSurfacePaintedWallsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('surface_painted_walls');
+        Schema::dropIfExists('facade_surfaces');
     }
 }

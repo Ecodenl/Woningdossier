@@ -9,6 +9,7 @@ use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\ElementValue;
+use App\Models\FacadeSurface;
 use App\Models\Step;
 use App\Models\SurfacePaintedWall;
 use App\Models\WallNeedImpregnation;
@@ -33,9 +34,9 @@ class WallInsulationController extends Controller
         /** @var BuildingElement $houseInsulation */
         //dd($houseInsulation->element->values);
 
-        $surfacePaintedWalls = SurfacePaintedWall::all();
+        $surfaces = FacadeSurface::all();
         $wallsNeedImpregnation = WallNeedImpregnation::all();
-        return view('cooperation.tool.wall-insulation.index', compact('steps', 'building', 'houseInsulation', 'surfacePaintedWalls', 'wallsNeedImpregnation'));
+        return view('cooperation.tool.wall-insulation.index', compact('steps', 'building', 'houseInsulation', 'surfaces', 'wallsNeedImpregnation'));
     }
 
     /**

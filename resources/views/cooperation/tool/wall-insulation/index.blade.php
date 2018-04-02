@@ -123,8 +123,8 @@
                             <label for="facade_plastered_painted_surface" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.surface-paintwork') </label>
 
                             <select id="facade_plastered_painted_surface" class="form-control" name="facade_plastered_painted_surface">
-                                @foreach($surfacePaintedWalls as $surfacePaintedWall)
-                                    <option @if(old('facade_plastered_painted_surface') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
+                                @foreach($surfaces as $surface)
+                                    <option @if(old('facade_plastered_painted_surface') == $surface->id) selected @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
                                 @endforeach
                             </select>
 
@@ -147,8 +147,8 @@
                             <label for="damage_paintwork" class=" control-label"><i data-toggle="collapse" data-target="#damage-paintwork-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.damage-paintwork') </label>
 
                             <select id="damage_paintwork" class="form-control" name="damage_paintwork">
-                                @foreach($surfacePaintedWalls as $surfacePaintedWall)
-                                    <option @if(old('damage_paintwork_surface') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
+                                @foreach($surfaces as $surface)
+                                    <option @if(old('damage_paintwork_surface') == $surface->id) selected @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
                                 @endforeach
                             </select>
 

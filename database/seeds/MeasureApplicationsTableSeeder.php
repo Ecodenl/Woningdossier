@@ -24,6 +24,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 
 
         $measureApplications = [
+        	// Energiebesparende maatregelen
             [
             	'measure_type' => 'energy_saving',
                 'measure_names' => [
@@ -117,15 +118,81 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'minimal_costs' => 650, // euro
 		        'maintenance_interval' => 100,
 		        'maintenance_unit' => [
-			        'nl' => 'per jaar',
+			        'nl' => 'jaar',
 		        ],
 	        ],
 
-	        // add more here!
+	        // add more energiebesparende maatregelen here!
 
 
 
+	        // Onderhoudsmaatregelen
+	        [
+	        	'measure_type' => 'maintenance',
+		        'measure_names' => [
+		        	'nl' => 'Reparatie voegwerk',
+		        ],
+		        'application' => 'repair',
+		        'costs' => 55, // euro
+		        'cost_unit' => [
+		        	'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 350,
+		        'maintenance_interval' => 100,
+		        'maintenance_unit' => [
+		        	'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Reinigen metselwerk',
+		        ],
+		        'application' => 'repair',
+		        'costs' => 15, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 150,
+		        'maintenance_interval' => 100,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Impregneren gevel',
+		        ],
+		        'application' => 'place',
+		        'costs' => 10, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 150,
+		        'maintenance_interval' => 15,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Gevelschilderwerk op stuk- of metselwerk',
+		        ],
+		        'application' => 'place',
+		        'costs' => 35, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 350,
+		        'maintenance_interval' => 10,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
 
+			// add more onderhoudsmaatregelen here!
 
         ];
 

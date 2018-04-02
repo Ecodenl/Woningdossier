@@ -1,11 +1,9 @@
 <?php
 
-namespace Tests\Unit\app\Helpers\KeyFigures;
+namespace Tests\Unit\app\Helpers\KeyFigures\WallInsulation;
 
-use App\Helpers\KeyFigures\Temperature;
+use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TemperatureTest extends TestCase
 {

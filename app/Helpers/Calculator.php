@@ -3,12 +3,13 @@
 namespace App\Helpers;
 
 use App\Helpers\Calculation\RoomTemperatureCalculator;
-use App\Helpers\KeyFigures\Temperature;
+use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Models\Building;
 use App\Models\BuildingType;
 use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 
 class Calculator {
@@ -45,12 +46,23 @@ class Calculator {
 		return $result;
 	}
 
+	public static function calculateCostIndication($surface, $measureAdvice){
+		$measureApplication = MeasureApplication::translated('measure_name', $measureAdvice, 'nl')->first();
+		if (!$measureApplication instanceof MeasureApplication) return 0;
+
+		$result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
+		self::debug("Cost indication: " . $result . " = max(" . $surface . " * " . $measureApplication->costs . ", " . $measureApplication->minimal_costs . ")");
+
+		return $result;
+	}
+
+
 	// in m3 per year
 	public static function maxGasSavings($usage, BuildingType $buildingType, Element $element){
 		$saving = 0;
 		$maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
-			->where('element_id', $element->id)
-			->first();
+		                                         ->where('element_id', $element->id)
+		                                         ->first();
 		if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
 			$saving = $maxSaving->max_saving;
 		}

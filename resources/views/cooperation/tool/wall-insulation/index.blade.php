@@ -296,7 +296,7 @@
                         <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" class="form-control disabled" disabled="" value="653">
+                            <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
 
@@ -419,6 +419,9 @@
                       }
                       if (data.savings_money){
                           $("input#savings_money").val(Math.round(data.savings_money));
+                      }
+                      if (data.cost_indication){
+                          $("input#cost_indication").val(Math.round(data.cost_indication));
                       }
                     console.log(data);
                   }

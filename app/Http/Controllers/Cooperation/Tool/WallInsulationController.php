@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculator;
-use App\Helpers\Kengetallen;
-use App\Helpers\KeyFigures\Temperature;
+use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Models\Building;
 use App\Models\BuildingElement;
-use App\Models\BuildingType;
 use App\Models\ElementValue;
-use App\Models\PresentWindow;
 use App\Models\Step;
 use App\Models\SurfacePaintedWall;
 use App\Models\WallNeedImpregnation;
@@ -99,6 +96,7 @@ class WallInsulationController extends Controller
 
 	    $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
 	    $result['savings_money'] = Calculator::calculateMoneySavings($result['savings_gas']);
+	    $result['cost_indication'] = Calculator::calculateCostIndication($facadeSurface, $advice);
 
 	    return response()->json($result);
 

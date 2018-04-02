@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers\KeyFigures;
+namespace App\Helpers\KeyFigures\WallInsulation;
 
 class Temperature {
 

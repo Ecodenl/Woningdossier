@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
 	    $this->call(MotivationsTableSeeder::class);
 		$this->call(BuildingTypeElementMaxSavingTableSeeder::class);
 	    $this->call(BuildingHeatingsTableSeeder::class);
+		$this->call(MeasureApplicationsTableSeeder::class);
+
 
 
     	//

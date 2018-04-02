@@ -192,13 +192,13 @@
                     <div class="col-sm-12">
                         <div class="form-group add-space {{$errors->has('pitched-roof-surfaces') ? ' has-error' : ''}}">
 
-                            <label for="pitched-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#comparable-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.pitched-roof-surface.comparable-houses')</label>
+                            <label for="pitched-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#pitched-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.pitched-roof-surface.comparable-houses')</label>
                             <br>
                             <label for="pitched-roof-surfaces" class=" control-label">@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.pitched-roof-surface.not-right')</label>
 
                             <input type="number" class="form-control" value="@if(old('pitched-roof-surfaces')) {{old('pitched-roof-surfaces')}} @elseif(isset($answer)) {{$answer}} @endif">
 
-                            <div id="comparable-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            <div id="pitched-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
                             </div>
 

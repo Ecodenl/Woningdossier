@@ -25,7 +25,7 @@ class CreateBuildingElementsTable extends Migration
             $table->integer('element_value_id')->unsigned();
             $table->foreign('element_value_id')->references('id')->on('element_values')->onDelete('restrict');
 
-            $table->json('extra')->nullable();
+            $table->text('extra')->nullable();
 
             $table->timestamps();
         });

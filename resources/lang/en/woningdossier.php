@@ -55,7 +55,13 @@ return [
                     'if-facade-dirty' => 'Are there wall joints that are contaminated ?',
                     'house-with-same-situation' => 'Houses with the same situation often have the same wall / facade surface',
                     'not-right' => 'Not right ?, enter the correct number here. If you do not know the right value leave this field empty.',
-                    'facade-best-insulation' => 'The wall / facade is best insulated in the following way',
+                ],
+
+                'insulation-advice' => [
+	                'text' => 'The wall / facade is best insulated in the following way',
+	                'cavity-wall' => 'Cavity wall insulation',
+	                'facade-internal' => 'Internal wall insulation',
+	                'research' => 'More research is needed to find out how the walls are best insulated',
                 ],
 
                 'indication-for-costs' => [

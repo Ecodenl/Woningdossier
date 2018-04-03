@@ -99,36 +99,42 @@ class ElementsValuesTableSeeder extends Seeder
 					        'nl' => 'Onbekend',
 				        ],
 				        'order' => 0,
+				        'calculate_value' => 1,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Geen isolatie',
 				        ],
 				        'order' => 1,
+				        'calculate_value' => 2,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Matige isolatie (tot 8 cm isolatie)',
 				        ],
 				        'order' => 2,
+				        'calculate_value' => 3,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
 				        ],
 				        'order' => 3,
+				        'calculate_value' => 4,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
 				        ],
 				        'order' => 4,
+				        'calculate_value' => 5,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Niet van toepassing',
 				        ],
 				        'order' => 5,
+				        'calculate_value' => 6,
 			        ],
 		        ],
 	        ],
@@ -279,6 +285,7 @@ class ElementsValuesTableSeeder extends Seeder
 			        	'element_id' => $elementId,
 				        'value' => $uuid,
 				        'order' => $elementValue['order'],
+				        'calculate_value' => isset($elementValue['calculate_value']) ? $elementValue['calculate_value'] : null,
 			        ]);
 		        }
 	        }

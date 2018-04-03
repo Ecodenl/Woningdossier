@@ -45,6 +45,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingFeature extends Model
 {
+
+	public $fillable = [
+		'surface', 'build_year',
+	];
+
     public function building(){
     	return $this->belongsTo(Building::class);
     }

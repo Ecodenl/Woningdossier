@@ -871,7 +871,7 @@
 
                         <select id="heating_first_floor" class="form-control" name="heating_first_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_first_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_first_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id}}">{{$buildingHeating->name}}</option>
+                                <option @if($buildingHeating->id == old('heating_first_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_first_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
                             @endforeach
 
                         </select>
@@ -896,7 +896,7 @@
 
                         <select id="heating_second_floor" class="form-control" name="heating_second_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_second_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_second_floor == $buildingHeating->id) selected @endif value="{{$buildingHeating->id}}">{{$buildingHeating->name}}</option>
+                                <option @if($buildingHeating->id == old('heating_second_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_second_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
                             @endforeach
                         </select>
 
@@ -954,7 +954,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('amount_gas') ? ' has-error' : '' }}">
-                        <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year')</label>
+                        <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year') <span>*</span></label>
 
                         <input id="amount_gas" type="text"
                                value="@if(old('amount_gas') != "")
@@ -962,7 +962,7 @@
                                       @elseif(isset($energyHabit))
                                         {{$energyHabit->amount_gas}}
                                       @endif"
-                               class="form-control" name="amount_gas">
+                               class="form-control" name="amount_gas" required>
 
                         <div id="amount-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
@@ -998,12 +998,12 @@
                 </div>
             </div>
 
+            {{--
             <div class="row">
                 <div class="col-sm-12">
                     <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.title')</h4>
                 </div>
 
-                {{-- Well start at 1 so the translation will to. --}}
                 @for($i = 1; $i < 5; $i++)
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('motivation.'.$i) ? ' has-error' : '' }}">
@@ -1037,6 +1037,7 @@
                     </div>
                 @endfor
             </div>
+            --}}
 
             <div class="row">
                 <div class="col-sm-12">

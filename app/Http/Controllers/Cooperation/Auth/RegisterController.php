@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\RegistrationHelper;
 use App\Http\Requests\RegisterFormRequest;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Http\Controllers\Controller;
@@ -118,8 +119,15 @@ class RegisterController extends Controller
     	$address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
     	$data['bag_addressid'] = isset($address['bag_adresid']) ? $address['bag_adresid'] : '';
 
+	    $features = new BuildingFeature([
+		    'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
+		    'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
+	    ]);
+
     	$address = new Building($data);
     	$address->user()->associate($user)->save();
+
+    	$features->building()->associate($address)->save();
 
     	$cooperationId = \Session::get('cooperation');
     	$cooperation = Cooperation::find($cooperationId);

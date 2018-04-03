@@ -16,7 +16,7 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-    	\Log::debug(__METHOD__);
+    	//\Log::debug(__METHOD__);
 	    //view()->composer('cooperation.layouts.app',  CooperationComposer::class);
 	    //view()->composer('*',  CooperationComposer::class);
 	    \View::creator('*', CooperationComposer::class);
@@ -29,14 +29,14 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function register()
     {
-    	\Log::debug(__METHOD__);
+    	//\Log::debug(__METHOD__);
 
     	$this->app->bind('Cooperation', function($app){
     		$cooperation = null;
 		    if (\Session::has('cooperation')) {
 			    $cooperation = Cooperation::find( \Session::get( 'cooperation' ) );
 		    }
-		    \Log::debug("Returning cooperation");
+		    //\Log::debug("Returning cooperation");
 		    return $cooperation;
 	    });
 
@@ -48,7 +48,7 @@ class WoningdossierServiceProvider extends ServiceProvider
 			    	$cooperationStyle = $cooperation->style;
 			    }
 		    }
-		    \Log::debug("Returning style");
+		    //\Log::debug("Returning style");
 		    return $cooperationStyle;
 	    });
     }

@@ -25,11 +25,8 @@ use App\Models\SolarWaterHeater;
 use App\Models\Step;
 use App\Models\UserEnergyHabit;
 use App\Models\UserMotivation;
-use App\Models\UserProgress;
 use App\Models\Ventilation;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -150,7 +147,7 @@ class GeneralDataController extends Controller
         // get the motivations
 	    foreach ($request->get('motivation') as $key => $motivationId) {
     	    // Then save the UserMotivation
-    	    $userMotivation = UserMotivation::create(
+    	    UserMotivation::create(
                 [
     	            'user_id' => Auth::id(),
                     'motivation_id' => $motivationId,
@@ -160,7 +157,7 @@ class GeneralDataController extends Controller
 
     	}
 
-	    $userEnegeryHabits = UserEnergyHabit::updateOrCreate(
+	    UserEnergyHabit::updateOrCreate(
 	        [
 	            'user_id' => Auth::id()
             ],

@@ -54,7 +54,7 @@ class FacadeSurfacesTableSeeder extends Seeder
 		        'execution_term_name' => [
 			        'nl' => 'Binnen 1 jaar',
 		        ],
-		        'term_years' => 1,
+		        'term_years' => 0,
 	        ],
 	        [
 		        'names' => [
@@ -65,7 +65,7 @@ class FacadeSurfacesTableSeeder extends Seeder
 		        'execution_term_name' => [
 			        'nl' => 'Binnen 1 jaar',
 		        ],
-		        'term_years' => 1,
+		        'term_years' => 0,
 	        ],
 	        [
 		        'names' => [
@@ -76,7 +76,7 @@ class FacadeSurfacesTableSeeder extends Seeder
 		        'execution_term_name' => [
 			        'nl' => 'Binnen 1 jaar',
 		        ],
-		        'term_years' => 1,
+		        'term_years' => 0,
 	        ],
         ];
 

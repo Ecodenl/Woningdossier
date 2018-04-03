@@ -24,17 +24,15 @@
                         </label>
                         @endif
 
-                        <label for="element_{{ $houseInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation') </label>
+                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation') </label>
 
-                        <select id="element_{{ $houseInsulation->element->id }}" class="form-control" name="element[{{ $houseInsulation->element->id }}]">
-                            @foreach($houseInsulation->element->values()->orderBy('order')->get() as $elementValue)
+                        <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
+                            @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
                                 <option
-                                        @if(old('element[' . $houseInsulation->element->id . ']') && $elementValue->id == old('element[' . $houseInsulation->element->id . ']'))
+                                        @if(old('element[' . $facadeInsulation->element->id . ']') && $elementValue->id == old('element[' . $facadeInsulation->element->id . ']'))
                                         selected="selected"
-{{--                                        @elseif(isset($houseInsulation->elementValue) && $houseInsulation->elementValue->id == $elementValue->id)--}}
-                                        {{--selected="selected"--}}
-                                        @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
-                                            selected
+                                        @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
+                                            selected="selected"
                                         @endif
                                 value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                             @endforeach

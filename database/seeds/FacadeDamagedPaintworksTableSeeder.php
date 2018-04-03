@@ -18,6 +18,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
 			    ],
 			    'calculate_value' => 0,
 			    'order' => 0,
+			    'term_years' => 15,
 		    ],
 		    [
 			    'names' => [
@@ -25,6 +26,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
 			    ],
 			    'calculate_value' => 3,
 			    'order' => 1,
+			    'term_years' => 7,
 		    ],
 		    [
 			    'names' => [
@@ -32,6 +34,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
 			    ],
 			    'calculate_value' => 5,
 			    'order' => 2,
+			    'term_years' => 0,
 		    ],
 	    ];
 
@@ -50,6 +53,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
 			    'name' => $uuid,
 			    'calculate_value' => $item['calculate_value'],
 			    'order' => $item['order'],
+			    'term_years' => $item['term_years'],
 		    ]);
 	    }
     }

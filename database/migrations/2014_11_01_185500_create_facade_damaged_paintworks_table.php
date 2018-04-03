@@ -18,6 +18,7 @@ class CreateFacadeDamagedPaintworksTable extends Migration
 	        $table->uuid('name');
 	        $table->integer('calculate_value')->nullable();
 	        $table->integer('order');
+	        $table->integer('term_years')->nullable();
             $table->timestamps();
         });
     }

@@ -145,7 +145,7 @@ class GeneralDataController extends Controller
             UserMotivation::where('user_id', Auth::id())->delete();
         }
         // get the motivations
-	    foreach ($request->get('motivation') as $key => $motivationId) {
+	    foreach ($request->get('motivation', []) as $key => $motivationId) {
     	    // Then save the UserMotivation
     	    UserMotivation::create(
                 [

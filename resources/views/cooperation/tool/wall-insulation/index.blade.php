@@ -31,8 +31,10 @@
                                 <option
                                         @if(old('element[' . $houseInsulation->element->id . ']') && $elementValue->id == old('element[' . $houseInsulation->element->id . ']'))
                                         selected="selected"
-                                        @elseif(isset($houseInsulation->elementValue) && $houseInsulation->elementValue->id == $elementValue->id)
-                                        selected="selected"
+{{--                                        @elseif(isset($houseInsulation->elementValue) && $houseInsulation->elementValue->id == $elementValue->id)--}}
+                                        {{--selected="selected"--}}
+                                        @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
+                                            selected
                                         @endif
                                 value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                             @endforeach
@@ -61,13 +63,13 @@
                         <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label>
 
                         <label class="radio-inline">
-                            <input type="radio" name="cavity_wall" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input  type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="cavity_wall" value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "2") checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="cavity_wall" value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
+                            <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "0") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "0") checked @endif value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
                         </label>
                         <br>
 
@@ -92,13 +94,13 @@
                         <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label>
 
                         <label class="radio-inline">
-                            <input id="is-painted" type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input id="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->plastered_wall_surface == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            <input @if(old('facade_plastered_painted') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->plastered_wall_surface == "2") checked @endif type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
+                            <input @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->plastered_wall_surface == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
                         </label>
                         <br>
 
@@ -119,12 +121,12 @@
 
                 <div id="painted-options" style="display: none;">
                     <div class="col-sm-6">
-                        <div class="form-group add-space{{ $errors->has('facade_plastered_painted_surface') ? ' has-error' : '' }}">
-                            <label for="facade_plastered_painted_surface" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.surface-paintwork') </label>
+                        <div class="form-group add-space{{ $errors->has('plastered_wall_surface') ? ' has-error' : '' }}">
+                            <label for="plastered_wall_surface" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.surface-paintwork') </label>
 
-                            <select id="facade_plastered_painted_surface" class="form-control" name="facade_plastered_painted_surface">
+                            <select id="plastered_wall_surface" class="form-control" name="plastered_wall_surface">
                                 @foreach($surfacePaintedWalls as $surfacePaintedWall)
-                                    <option @if(old('facade_plastered_painted_surface') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
+                                    <option @if(old('plastered_wall_surface') == $surfacePaintedWall->id) selected @elseif(isset($buildingFeature) && $buildingFeature->plastered_wall_surface == $surfacePaintedWall->id ) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
                                 @endforeach
                             </select>
 
@@ -134,9 +136,9 @@
 
                         </div>
 
-                        @if ($errors->has('facade_plastered_painted_surface'))
+                        @if ($errors->has('plastered_wall_surface'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('facade_plastered_painted_surface') }}</strong>
+                                <strong>{{ $errors->first('plastered_wall_surface') }}</strong>
                             </span>
                         @endif
 
@@ -148,7 +150,7 @@
 
                             <select id="damage_paintwork" class="form-control" name="damage_paintwork">
                                 @foreach($surfacePaintedWalls as $surfacePaintedWall)
-                                    <option @if(old('damage_paintwork_surface') == $surfacePaintedWall->id) selected @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
+                                    <option @if(old('damage_paintwork_surface') == $surfacePaintedWall->id) selected @elseif(isset($buildingFeature) && $buildingFeature->damage_paintwork == $surfacePaintedWall->id ) selected  @endif value="{{$surfacePaintedWall->id }}">{{$surfacePaintedWall->name}}</option>
                                 @endforeach
                             </select>
 
@@ -158,9 +160,9 @@
 
                         </div>
 
-                        @if ($errors->has('facade_plastered_painted_surface'))
+                        @if ($errors->has('damage_paintwork_surface'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('facade_plastered_painted_surface') }}</strong>
+                                <strong>{{ $errors->first('damage_paintwork_surface') }}</strong>
                             </span>
                         @endif
 
@@ -176,12 +178,12 @@
 
             <div id="wall-joints" class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('facade_plastered_painted_surface') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('plastered_wall_surface') ? ' has-error' : '' }}">
                         <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')           </label>
 
                         <select id="wall_joints" class="form-control" name="wall_joints">
                             @foreach($wallsNeedImpregnation as $wallNeedImpregnation)
-                                <option @if(old('wall_joints') == $wallNeedImpregnation->id) selected @endif value="{{$wallNeedImpregnation->id }}">{{$wallNeedImpregnation->name}}</option>
+                                <option @if(old('wall_joints') == $wallNeedImpregnation->id) selected @elseif(isset($buildingFeature) && $buildingFeature->wall_joints == $wallNeedImpregnation->id ) selected  @endif value="{{$wallNeedImpregnation->id }}">{{$wallNeedImpregnation->name}}</option>
                             @endforeach
                         </select>
 
@@ -200,12 +202,12 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('contaminated_wall_joints_surface') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
                         <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty') </label>
 
-                        <select id="contaminated_wall_joints_surface" class="form-control" name="contaminated_wall_joints_surface">
+                        <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
                             @foreach($wallsNeedImpregnation as $wallNeedImpregnation)
-                                <option @if(old('contaminated_wall_joints_surface') == $wallNeedImpregnation->id) selected @endif value="{{$wallNeedImpregnation->id }}">{{$wallNeedImpregnation->name}}</option>
+                                <option @if(old('contaminated_wall_joints') == $wallNeedImpregnation->id) selected @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $wallNeedImpregnation->id ) selected  @endif value="{{$wallNeedImpregnation->id }}">{{$wallNeedImpregnation->name}}</option>
                             @endforeach
                         </select>
 
@@ -215,9 +217,9 @@
 
                     </div>
 
-                    @if ($errors->has('contaminated_wall_joints_surface'))
+                    @if ($errors->has('contaminated_wall_joints'))
                         <span class="help-block">
-                            <strong>{{ $errors->first('contaminated_wall_joints_surface') }}</strong>
+                            <strong>{{ $errors->first('contaminated_wall_joints') }}</strong>
                         </span>
                     @endif
 
@@ -233,7 +235,7 @@
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.house-with-same-situation')
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.not-right')
                         </label>
-                        <input id="facade_surface" type="text" name="facade_surface" value="" class="form-control">
+                        <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')) {{old('wall_surface')}} @elseif(isset($buildingFeature)) {{$buildingFeature->wall_surface}} @endif" class="form-control" >
                         <div id="facade-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
@@ -364,7 +366,7 @@
                     <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
                         <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.additional-info')           </label>
 
-                        <textarea id="additional-info" class="form-control" name="additional-info"> {{old('additional_info')}} </textarea>
+                        <textarea id="additional-info" class="form-control" name="additional_info">@if(old('additional_info')){{old('additional_info')}}@elseif(isset($buildingFeature)){{$buildingFeature->additional_info}}@endif</textarea>
 
                         <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
@@ -388,7 +390,7 @@
                 <div class="form-group add-space">
                     <div class="">
                         <a class="btn btn-success pull-left" href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                        <button type="submit" disabled class="disabled btn btn-primary pull-right">
+                        <button type="submit" class="btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>
                     </div>
@@ -401,7 +403,8 @@
 @push('js')
     <script>
         $(document).ready(function(){
-           $("select, input[type=radio], input[type=text]").change(function(){
+
+            $("select, input[type=radio], input[type=text]").change(function(){
               var form = $(this).closest("form").serialize();
               $.ajax({
                   type: "POST",
@@ -429,18 +432,25 @@
                     console.log(data);
                   }
               })
-           });
+            });
+            // Trigger the change event so it will load the data
+            $("select, input[type=radio], input[type=text]").trigger('change');
+
+            // todo fix this
+            // fix ?
+            $( document ).change(function() {
+                // check if the is painted button is yes
+                if ($('#is-painted').is(':checked')) {
+                    $('#painted-options').show();
+                } else {
+                    $('#painted-options').hide();
+                }
+            });
+            // trigger the change
+            $('#is-painted').trigger('change');
         });
 
-        // todo fix this
-        $( document ).change(function() {
-            // check if the is painted button is yes
-            if ($('#is-painted').is(':checked')) {
-                $('#painted-options').show();
-            } else {
-                $('#painted-options').hide();
-            }
-        });
+
     </script>
 @endpush
 

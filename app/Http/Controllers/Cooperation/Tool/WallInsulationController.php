@@ -8,13 +8,14 @@ use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\BuildingElement;
+use App\Models\Cooperation;
 use App\Models\ElementValue;
 use App\Models\FacadeSurface;
 use App\Models\Step;
-use App\Models\SurfacePaintedWall;
 use App\Models\WallNeedImpregnation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class WallInsulationController extends Controller
 {
@@ -23,20 +24,28 @@ class WallInsulationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+    	$mySlug = 'wall-insulation';
+    	$myStep = Step::where('slug', $mySlug)->first();
+    	$prev = Step::where('order', $myStep->order - 1)->first();
+    	if (!\Auth::user()->hasCompleted($prev)){
+    		return redirect('/tool/' . $prev->slug . '/')->with(['cooperation' => $request->get('cooperation')]);
+	    }
+
         $steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();
 
         $houseInsulation = $building->buildingElements()->where('element_id', 3)->first();
+        $buildingFeature = $building->buildingFeatures;
 
         /** @var BuildingElement $houseInsulation */
         //dd($houseInsulation->element->values);
 
         $surfaces = FacadeSurface::all();
         $wallsNeedImpregnation = WallNeedImpregnation::all();
-        return view('cooperation.tool.wall-insulation.index', compact('steps', 'building', 'houseInsulation', 'surfaces', 'wallsNeedImpregnation'));
+        return view('cooperation.tool.wall-insulation.index', compact('steps', 'building', 'houseInsulation', 'surfaces', 'wallsNeedImpregnation', 'buildingFeature'));
     }
 
     /**
@@ -57,7 +66,40 @@ class WallInsulationController extends Controller
      */
     public function store(Request $request)
     {
-        
+
+        // Get all the values from the form
+        $wallInsulationQualities = $request->get('element', '');
+        $plasteredWallSurface = $request->get('plastered_wall_surface', '');
+        $damagedPaintwork = $request->get('damage_paintwork', '');
+        $wallJoints = $request->get('wall_joints', '');
+        $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
+        $wallSurface = $request->get('facade_surface', '');
+        $additionalInfo = $request->get('additional_info', '');
+        $cavityWall = $request->get('cavity_wall', '');
+        foreach ($wallInsulationQualities as $wallInsulationQuality) {
+            $wallInsulationQuality = $wallInsulationQuality;
+        }
+
+        // get the user buildingfeature
+        $user = Auth::user();
+        $building = $user->buildings()->first();
+        $buildingFeatures = $building->buildingFeatures();
+
+        // Update the building feature table with some fresh data
+        $buildingFeatures->update([
+            'element_values' => $wallInsulationQuality,
+            'plastered_wall_surface' => $plasteredWallSurface,
+            'wall_joints' => $wallJoints,
+            'cavity_wall' => $cavityWall,
+            'contaminated_wall_joints' => $wallJointsContaminated,
+            'wall_surface' => $wallSurface,
+            'damage_paintwork' => $damagedPaintwork,
+            'additional_info' => $additionalInfo,
+        ]);
+
+
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.insulated-glazing.index', ['cooperation' => $cooperation]);
     }
 
     public function calculate(Request $request){

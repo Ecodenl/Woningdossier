@@ -56,11 +56,11 @@ class GeneralDataFormRequest extends FormRequest
             //'facade_insulation' => 'required|exists:qualities,id',
             //'floor_insulation' => 'required|exists:qualities,id',
             //'roof_insulation' => 'required|exists:qualities,id',
-            'hr_cv_boiler' => 'required|exists:central_heating_ages,id',
-            'hybrid_heatpump' => 'required|exists:present_heat_pumps,id',
-            'monovalent_heatpump' => 'required|exists:present_heat_pumps,id',
-            'sun_boiler' => 'required|exists:solar_water_heaters,id',
-            'house_ventilation' => 'required|exists:ventilations,id',
+            'hr_cv_boiler' => 'exists:central_heating_ages,id',
+            'hybrid_heatpump' => 'exists:present_heat_pumps,id',
+            'monovalent_heatpump' => 'exists:present_heat_pumps,id',
+            'sun_boiler' => 'exists:solar_water_heaters,id',
+            'house_ventilation' => 'exists:ventilations,id',
             'house_ventilation_placed_date' => 'nullable|required_if:house_ventilation,2|date',
             'sun_panel' => 'nullable|numeric',
             'interested.sun_panel' => 'nullable|exists:interests,id',
@@ -73,9 +73,10 @@ class GeneralDataFormRequest extends FormRequest
             'thermostat_low' => 'nullable|numeric|digits_between:0,'.$this->request->get('thermostat_high'),
             'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
             'heating_second_floor' => 'required|numeric|exists:building_heatings,id',
-            'water_comfort' => 'required|numeric|exists:comfort_level_tap_waters,id',
+            'water_comfort' => 'numeric|exists:comfort_level_tap_waters,id',
             'amount_electricity' => 'nullable|numeric',
             'amount_gas' => 'nullable|numeric',
+            'motivation.*' => 'numeric'
 
 
         ];

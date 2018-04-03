@@ -25,11 +25,8 @@ use App\Models\SolarWaterHeater;
 use App\Models\Step;
 use App\Models\UserEnergyHabit;
 use App\Models\UserMotivation;
-use App\Models\UserProgress;
 use App\Models\Ventilation;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -141,40 +138,46 @@ class GeneralDataController extends Controller
 			}
 	    }
 
-	    /*
-	    foreach ($request->get('motivation') as $key => $motivation) {
-    	    // Find the motivation so we can get the order value
-    	    $motivations = Motivation::find($motivation);
 
+	    // Check if the user already has a motivation
+	    if(UserMotivation::where('user_id', Auth::id())->count() > 0) {
+    	    // if so drop the old ones
+            UserMotivation::where('user_id', Auth::id())->delete();
+        }
+        // get the motivations
+	    foreach ($request->get('motivation') as $key => $motivationId) {
     	    // Then save the UserMotivation
-    	    $userMotivation = UserMotivation::create(
+    	    UserMotivation::create(
                 [
     	            'user_id' => Auth::id(),
-                    'motivation_id' => $motivation,
-                    'order' => $motivations->order,
+                    'motivation_id' => $motivationId,
+                    'order' => $key
                 ]
             );
 
     	}
-	    */
 
-	    $userEnegeryHabits = UserEnergyHabit::create([
-	        'user_id' => Auth::id(),
-            'resident_count' => $request->get('resident_count'),
-            'thermostat_high' => $request->get('thermostat_high'),
-            'thermostat_low' => $request->get('thermostat_low'),
-            'hours_high' => $request->get('hours_high'),
-            'heating_first_floor' => $request->get('heating_first_floor'),
-            'heating_second_floor' => $request->get('heating_second_floor'),
-            'cook_gas' => $request->get('cook_gas'),
-            'water_comfort_id' => $request->get('water_comfort'),
-            'amount_electricity' => $request->get('amount_electricity'),
-            'amount_gas' => $request->get('amount_gas'),
-            'amount_water' => $request->get('amount_water'),
-            'living_situation_extra' => $request->get('living_situation_extra'),
-            'motivation_extra' => $request->get('motivation_extra'),
-
-        ]);
+	    UserEnergyHabit::updateOrCreate(
+	        [
+	            'user_id' => Auth::id()
+            ],
+	        [
+                'user_id' => Auth::id(),
+                'resident_count' => $request->get('resident_count'),
+                'thermostat_high' => $request->get('thermostat_high'),
+                'thermostat_low' => $request->get('thermostat_low'),
+                'hours_high' => $request->get('hours_high'),
+                'heating_first_floor' => $request->get('heating_first_floor'),
+                'heating_second_floor' => $request->get('heating_second_floor'),
+                'cook_gas' => $request->get('cook_gas'),
+                'water_comfort_id' => $request->get('water_comfort'),
+                'amount_electricity' => $request->get('amount_electricity'),
+                'amount_gas' => $request->get('amount_gas'),
+                'amount_water' => $request->get('amount_water'),
+                'living_situation_extra' => $request->get('living_situation_extra'),
+                'motivation_extra' => $request->get('motivation_extra'),
+            ]
+        );
 
 
 

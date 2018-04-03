@@ -73,9 +73,10 @@ class GeneralDataFormRequest extends FormRequest
             'thermostat_low' => 'nullable|numeric|digits_between:0,'.$this->request->get('thermostat_high'),
             'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
             'heating_second_floor' => 'required|numeric|exists:building_heatings,id',
-            'water_comfort' => 'required|numeric|exists:comfort_level_tap_waters,id',
+            'water_comfort' => 'numeric|exists:comfort_level_tap_waters,id',
             'amount_electricity' => 'nullable|numeric',
             'amount_gas' => 'nullable|numeric',
+            'motivation.*' => 'numeric'
 
 
         ];

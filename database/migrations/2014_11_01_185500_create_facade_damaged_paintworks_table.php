@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDamageToPaintWorksTable extends Migration
+class CreateFacadeDamagedPaintworksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateDamageToPaintWorksTable extends Migration
      */
     public function up()
     {
-        Schema::create('damage_to_paint_works', function (Blueprint $table) {
+        Schema::create('facade_damaged_paintworks', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value');
+	        $table->uuid('name');
+	        $table->integer('calculate_value')->nullable();
+	        $table->integer('order');
+	        $table->integer('term_years')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateDamageToPaintWorksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('damage_to_paint_works');
+        Schema::dropIfExists('facade_damaged_paintworks');
     }
 }

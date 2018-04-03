@@ -19,8 +19,14 @@ class BankInterestCalculator {
 		self::$numbers['investment'] = $investment;
 		self::$numbers['saving'] = $saving;
 		self::$numbers['result'] = self::tw($saving, $interest, $period);
-		self::$numbers['increment'] = round((self::$numbers['result'] / self::$numbers['investment']) * 100);
-		self::$numbers['comparable'] = round((pow(self::$numbers['result'] / self::$numbers['investment'], 1/$period) - 1) * 100, 1);
+		if (self::$numbers['investment'] <= 0) {
+			self::$numbers['increment'] = 0;
+			self::$numbers['comparable'] = 0;
+		}
+		else {
+			self::$numbers['increment'] = round( ( self::$numbers['result'] / self::$numbers['investment'] ) * 100 );
+			self::$numbers['comparable'] = round((pow(self::$numbers['result'] / self::$numbers['investment'], 1/$period) - 1) * 100, 1);
+		}
 
 		return self::$numbers['comparable'];
 	}

@@ -10,7 +10,9 @@ use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
+use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
+use Carbon\Carbon;
 
 class Calculator {
 
@@ -56,6 +58,44 @@ class Calculator {
 		return $result;
 	}
 
+	/**
+	 * Return the costs of applying a particular measure in a particular year.
+	 * This takes yearly cost indexing into account.
+	 *
+	 * @param MeasureApplication $measure
+	 * @param $number
+	 * @param null $applicationYear
+	 *
+	 * @return float|int
+	 */
+	public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null){
+		if ($number <= 0) return 0;
+		// if $applicationYear is null, we assume this year.
+		if (is_null($applicationYear)){
+			$applicationYear = Carbon::now()->year;
+		}
+		$yearFactor = $applicationYear - Carbon::now()->year;
+		if ($yearFactor < 0){
+			$yearFactor = 0;
+		}
+
+		$total = max($number * $measure->costs, $measure->minimal_costs);
+		self::debug(__METHOD__ . " Non indexed costs: " . $total . " = max(" . $number . " * " . $measure->costs . ", " . $measure->minimal_costs . ")");
+		// Apply indexing (general indexing which applies for measures)
+
+		$index = PriceIndexing::where('short', 'common')->first();
+		// default = 2%
+		$costIndex = 2;
+		if ($index instanceof PriceIndexing){
+			$costIndex = $index->percentage;
+		}
+
+		$totalIndexed = $total * pow((1 + ($costIndex / 100)), $yearFactor);
+
+		self::debug(__METHOD__ . " Indexed costs: " . $totalIndexed . " = " . $total . " * " . (1 + ($costIndex / 100)) . "^" . $yearFactor);
+
+		return $totalIndexed;
+	}
 
 	// in m3 per year
 	public static function maxGasSavings($usage, BuildingType $buildingType, Element $element){

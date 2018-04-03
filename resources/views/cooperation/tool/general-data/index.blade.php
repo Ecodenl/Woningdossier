@@ -849,9 +849,9 @@
 
                         <select id="hours_high" class="form-control" name="hours_high">
                             @for($hour = 0; $hour < 25; $hour++)
-                                <option value="{{$hour}}">{{$hour}}</option>
+                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @endif value="{{ $hour }}">{{ $hour }}</option>
                             @endfor
-                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->id == $hour) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
+                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
                         </select>
 
                         <div id="hours-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -939,7 +939,7 @@
                         <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
 
 
-                        <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != "") {{old('amount_electricity')}} @elseif(isset($energyHabit)) {{$energyHabit->amount_electricity}} @endif" class="form-control" name="amount_electricity">
+                        <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity">
 
                         <div id="amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
@@ -956,14 +956,7 @@
                     <div class="form-group add-space{{ $errors->has('amount_gas') ? ' has-error' : '' }}">
                         <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year') <span>*</span></label>
 
-                        <input id="amount_gas" type="text"
-                               value="@if(old('amount_gas') != "")
-                                        {{old('amount_gas')}}
-                                      @elseif(isset($energyHabit))
-                                        {{$energyHabit->amount_gas}}
-                                      @endif"
-                               class="form-control" name="amount_gas" required>
-
+                        <input id="amount_gas" type="text" value="@if(old('amount_gas') != ""){{ old('amount_gas') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_gas }}@endif" class="form-control" name="amount_gas" required>
                         <div id="amount-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>

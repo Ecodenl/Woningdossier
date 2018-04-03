@@ -34,19 +34,22 @@ class CreateBuildingFeaturesTable extends Migration
             $table->integer('cavity_wall')->nullable()->default(null);
 
             $table->integer('wall_surface')->nullable()->default(null);
+            $table->integer('facade_plastered_painted')->nullable()->default(null);
 
             $table->integer('wall_joints')->unsigned()->nullable()->default(null);
-            $table->foreign('wall_joints')->references('id')->on('wall_need_impregnations')->onDelete('restrict');
+            $table->foreign('wall_joints')->references('id')->on('facade_surfaces')->onDelete('restrict');
 
             $table->integer('contaminated_wall_joints')->unsigned()->nullable()->default(null);
-            $table->foreign('contaminated_wall_joints')->references('id')->on('wall_need_impregnations')->onDelete('restrict');
-
-            $table->integer('damage_paintwork')->nullable()->default(null);
+            $table->foreign('contaminated_wall_joints')->references('id')->on('facade_surfaces')->onDelete('restrict');
 
             $table->integer('element_values')->unsigned()->nullable()->default(null);
             $table->foreign('element_values')->references('id')->on('element_values')->onDelete('restrict');
 
-            $table->integer('plastered_wall_surface')->nullable()->default(null);
+            $table->integer('facade_plastered_surface_id')->unsigned()->nullable()->default(null);
+            $table->foreign('facade_plastered_surface_id')->references('id')->on('facade_plastered_surfaces')->onDelete('restrict');
+
+			$table->integer('facade_damaged_paintwork_id')->unsigned()->nullable()->default(null);
+			$table->foreign('facade_damaged_paintwork_id')->references('id')->on('facade_damaged_paintworks')->onDelete('restrict');
 
             $table->integer('surface')->nullable()->default(null);
             $table->integer('volume')->nullable()->default(null);

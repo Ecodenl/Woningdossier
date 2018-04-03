@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWallNeedImpregnationsTable extends Migration
+class CreateFacadePlasteredSurfacesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateWallNeedImpregnationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('wall_need_impregnations', function (Blueprint $table) {
+        Schema::create('facade_plastered_surfaces', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value');
+	        $table->uuid('name');
+	        $table->integer('calculate_value')->nullable();
+	        $table->integer('order');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateWallNeedImpregnationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wall_need_impregnations');
+        Schema::dropIfExists('facade_plastered_surfaces');
     }
 }

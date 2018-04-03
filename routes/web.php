@@ -38,9 +38,9 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
-                Route::resource('general-data', 'GeneralDataController');
+                Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
-                Route::resource('wall-insulation', 'WallInsulationController');
+                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
                 Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
 
 				Route::resource('insulated-glazing', 'InsulatedGlazingController');

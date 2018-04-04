@@ -212,7 +212,26 @@ return [
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
-            ]
+            ],
+
+            'heat-pump' => [
+                'title' => 'Warmtepomp',
+                'current-gas-usage' => 'Huidig gasverbruik',
+                'heat-pump-type' => 'Kies de soort warmtepomp',
+                'gas-usage-for-tapwater' => 'Gasgebruik voor tapwater',
+                'gas-usage-for-heating' => 'Gasgebruik voor de verwarming',
+                'indication-for-costs' => [
+                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+                    'gas-savings' => 'Gasbesparing',
+                    'co2-savings' => 'CO2 Besparing',
+                    'savings-in-euro' => 'Besparing in €',
+                    'moreusage-electro-in-euro' => 'Meerverbruik in elektra in €',
+                    'saldo' => 'Saldo',
+                    'indicative-costs' => 'Indicatieve kosten',
+                    'comparable-rate' => 'Vergelijkbare rente',
+                    'year' => 'Jaar',
+                ],
+            ],
 		],
 	],
 ];

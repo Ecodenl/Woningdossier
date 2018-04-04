@@ -212,7 +212,26 @@ return [
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
-            ]
+            ],
+            'boiler' => [
+                'title' => 'HR CV Ketel',
+
+                'current-gas-usage' => 'Huidig gasverbruik',
+                'resident-count' => 'Huidig aantal bewoners',
+                'boiler-type' => 'Wat is het type van de huidige CV ketel',
+                'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst ?',
+
+                'indication-for-costs' => [
+                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+                    'gas-savings' => 'Gasbesparing',
+                    'co2-savings' => 'CO2 Besparing',
+                    'savings-in-euro' => 'Besparing in €',
+                    'indicative-costs' => 'Indicatieve kosten',
+                    'indicative-replacement' => 'Indicatie vervangingsmoment cv ketel',
+                    'comparable-rate' => 'Vergelijkbare rente',
+                    'year' => 'Jaar',
+                ],
+            ],
 		],
 	],
 ];

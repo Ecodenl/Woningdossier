@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\BoilerType;
+use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +16,9 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function index()
     {
-        //
+        $boilerTypes = BoilerType::all();
+        $steps = Step::orderBy('order')->get();
+        return view('cooperation.tool.hr-boiler.index', compact('boilerTypes', 'steps'));
     }
 
     /**

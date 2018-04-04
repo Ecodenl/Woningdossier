@@ -3,6 +3,7 @@
 @section('step_title', __('woningdossier.cooperation.tool.general-data.title'))
 
 @section('step_content')
+
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
@@ -1011,16 +1012,22 @@
 
                             <select id="motivation[{{$i}}]" class="form-control" name="motivation[{{$i}}]" >
 
-                                @isset($energyHabit)
+                                @if($energyHabit != null)
                                     @foreach($motivations as $motivation)
-                                        <option @if(old('motivation.'.$i) == $motivation->id) selected @elseif(Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id) selected @endif value="{{$motivation->id}}">{{$motivation->name}}  </option>
+                                        <option
+                                                @if($motivation->id == old('motivation.'.$i))
+                                                    selected
+                                                @elseif(old() == false && Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id)
+                                                    selected
+                                                @endif value="{{$motivation->id}}">{{$motivation->name}}
+                                        </option>
                                     @endforeach
 
                                 @else
                                     @foreach($motivations as $motivation)
                                         <option @if($motivation->id == old('motivation.'.$i)) selected @endif value="{{$motivation->id}}">{{$motivation->name}}</option>
                                     @endforeach
-                                @endisset
+                                @endif
 
 
                             </select>
@@ -1030,8 +1037,8 @@
 
                             @if ($errors->has('motivation.'.$i))
                                 <span class="help-block">
-                                <strong>{{ $errors->first('motivation.'.$i) }}</strong>
-                            </span>
+                                    <strong>{{ $errors->first('motivation.'.$i) }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>

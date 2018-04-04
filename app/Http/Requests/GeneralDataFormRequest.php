@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Motivation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -82,7 +83,8 @@ class GeneralDataFormRequest extends FormRequest
         ];
 
         $validationRules = array_merge($interestedRules, $remainingRules);
-        
+
+
         return $validationRules;
     }
 }

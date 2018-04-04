@@ -784,7 +784,7 @@
             <div class="col-sm-6">
 
                 <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
-                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
+                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label> <span>*</span>
                     <label class="radio-inline">
                         <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                     </label>
@@ -1131,7 +1131,7 @@
                     {{--var infoBoxId = inputId.replace(/_/g, '-');--}}
 
                     {{--$(this).prepend('<i data-toggle="collapse" data-target="#'+infoBoxId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
-                {{--}--}}
+                {{-- }}
             {{--});--}}
         {{--})--}}
     {{--</script>--}}

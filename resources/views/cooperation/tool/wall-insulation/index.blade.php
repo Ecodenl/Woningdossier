@@ -31,6 +31,8 @@
                                 <option
                                         @if(old('element[' . $facadeInsulation->element->id . ']') && $elementValue->id == old('element[' . $facadeInsulation->element->id . ']'))
                                         selected="selected"
+                                        @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
+                                                selected="selected"
                                         @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
                                             selected="selected"
                                         @endif

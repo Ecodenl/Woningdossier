@@ -7,6 +7,7 @@ use App\Helpers\Calculation\MeasureApplicationCostCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\Cooperation;
@@ -75,7 +76,7 @@ class WallInsulationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(WallInsulationRequest $request)
     {
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');

@@ -26,8 +26,10 @@ class WallInsulationRequest extends FormRequest
     {
         return [
             'element' => 'exists:element_values,id',
-            'plastered_wall_surface' => 'between:1,3',
-            'cavity_wall' => 'between:0,2',
+            // radio buttons
+            'facade_plastered_painted' => 'required|between:1,3',
+            'cavity_wall' => 'required|between:0,2',
+            // inputs
             'damage_paintwork' => 'exists:facade_damaged_paintworks,id',
             'facade_plastered_surface_id' => 'exists:facade_plastered_surfaces,id',
             'wall_joints' => 'exists:facade_surfaces,id',

@@ -178,7 +178,7 @@
 
             <div id="wall-joints" class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('facade_plastered_surface_id') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('wall_joints') ? ' has-error' : '' }}">
                         <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')           </label>
 
                         <select id="wall_joints" class="form-control" name="wall_joints">
@@ -190,13 +190,13 @@
                         <div id="wall-joints-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
-                    </div>
 
-                    @if ($errors->has('wall_joints'))
-                        <span class="help-block">
+                        @if ($errors->has('wall_joints'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('wall_joints') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
 
 
                 </div>
@@ -215,13 +215,13 @@
                             I would like to have some helpful information right here!
                         </div>
 
-                    </div>
-
-                    @if ($errors->has('contaminated_wall_joints'))
-                        <span class="help-block">
+                        @if ($errors->has('contaminated_wall_joints'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('contaminated_wall_joints') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
 
                 </div>
 

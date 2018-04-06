@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\BuildingCurrentHeating;
+use App\Models\HeatSource;
 use App\Models\PresentHeatPump;
 use App\Models\Step;
 use Illuminate\Http\Request;
@@ -17,8 +19,10 @@ class HeatPumpController extends Controller
     public function index()
     {
         $heatpumpTypes = PresentHeatPump::all();
+        $buildingCurrentHeatings = BuildingCurrentHeating::all();
+        $heatSources = HeatSource::all();
         $steps = Step::orderBy('order')->get();
-        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes', 'steps'));
+        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes', 'steps', 'heatSources', 'buildingCurrentHeatings'));
     }
 
     /**

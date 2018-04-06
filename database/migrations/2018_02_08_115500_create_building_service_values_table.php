@@ -19,8 +19,8 @@ class CreateBuildingServiceValuesTable extends Migration
             $table->integer('building_service_id')->unsigned()->nullable()->default(null);
             $table->foreign('building_service_id')->references('id')->on('building_services') ->onDelete('restrict');
 
-            $table->string('name')->default('');
-            $table->string('value')->default('');
+            $table->uuid('name');
+            $table->string('calculate_value')->default('');
             $table->timestamps();
         });
     }

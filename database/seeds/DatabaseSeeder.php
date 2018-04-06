@@ -66,6 +66,6 @@ class DatabaseSeeder extends Seeder
         $this->call(HouseFramesTableSeeder::class);
         $this->call(BuildingCurrentHeatingsTableSeeder::class);
         $this->call(HeatSourcesTableSeeder::class);
-
+        $this->call(BuildingServiceTypeTableSeeder::class);
     }
 }

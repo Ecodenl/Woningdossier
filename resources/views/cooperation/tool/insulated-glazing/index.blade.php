@@ -23,6 +23,12 @@
                                 @lang('woningdossier.cooperation.tool.insulated-glazing.'.$key.'.title')
                             </label>
 
+                            <select id="{{ $key }}" class="form-control" name="{{ $key }}" >
+                                @foreach($interests as $interest)
+                                    <option @if($interest->id == old($key)) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                @endforeach
+                            </select>
+
                             <select class="form-control" name="{{$key}}">
                                 @foreach($interestedToExecuteMeasures as $interestedToExecuteMeasure)
                                     <option @if($interestedToExecuteMeasure->id == old($key)) selected

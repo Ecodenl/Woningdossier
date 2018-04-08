@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculation\MeasureApplicationCostCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;

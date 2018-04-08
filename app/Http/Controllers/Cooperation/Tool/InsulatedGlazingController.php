@@ -4,16 +4,15 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Cooperation;
-use App\Models\DamageToPaintWork;
+//use App\Models\DamageToPaintWork;
 use App\Models\HouseFrame;
 use App\Models\InsulatingGlazing;
-use App\Models\InterestedToExecuteMeasure;
+use App\Models\Interest;
 use App\Models\MovingPartsOfWindowAndDoorIsolated;
 use App\Models\Step;
 use App\Models\WoodElement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Lang;
 
 class InsulatedGlazingController extends Controller
 {
@@ -26,7 +25,9 @@ class InsulatedGlazingController extends Controller
     {
         $steps = Step::orderBy('order')->get();
 
-        $interestedToExecuteMeasures = InterestedToExecuteMeasure::all();
+	    $interests = Interest::orderBy('order')->get();
+
+        //$interestedToExecuteMeasures = InterestedToExecuteMeasure::all();
         $insulatedGlazings = InsulatingGlazing::all();
         $insulateQualities = MovingPartsOfWindowAndDoorIsolated::all();
         $keys = [
@@ -42,7 +43,7 @@ class InsulatedGlazingController extends Controller
         $houseFrames = HouseFrame::all();
 
 
-        return view('cooperation.tool.insulated-glazing.index', compact('steps', 'interestedToExecuteMeasures', 'keys',
+        return view('cooperation.tool.insulated-glazing.index', compact('steps', 'interests', 'keys',
             'insulatedGlazings', 'insulateQualities', 'woodElements', 'damageToPaintWorks', 'houseFrames'
         ));
     }

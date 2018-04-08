@@ -7,6 +7,7 @@ use App\Helpers\Calculation\MeasureApplicationCostCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\Cooperation;
@@ -75,17 +76,18 @@ class WallInsulationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(WallInsulationRequest $request)
     {
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
-        $plasteredWallSurface = $request->get('plastered_wall_surface', '');
-        $damagedPaintwork = $request->get('damage_paintwork', '');
+        $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');
+        $damagedPaintwork = $request->get('facade_damaged_paintwork_id', 0);
         $wallJoints = $request->get('wall_joints', '');
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
         $wallSurface = $request->get('facade_surface', '');
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
+        $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
         foreach ($wallInsulationQualities as $wallInsulationQuality) {
             $wallInsulationQuality = $wallInsulationQuality;
         }
@@ -98,13 +100,14 @@ class WallInsulationController extends Controller
         // Update the building feature table with some fresh data
         $buildingFeatures->update([
             'element_values' => $wallInsulationQuality,
-            'plastered_wall_surface' => $plasteredWallSurface,
+            'facade_plastered_surface_id' => $plasteredWallSurface,
             'wall_joints' => $wallJoints,
             'cavity_wall' => $cavityWall,
             'contaminated_wall_joints' => $wallJointsContaminated,
             'wall_surface' => $wallSurface,
-            'damage_paintwork' => $damagedPaintwork,
+            'facade_damaged_paintwork_id' => $damagedPaintwork,
             'additional_info' => $additionalInfo,
+            'facade_plastered_painted' => $facadePlasteredOrPainted
         ]);
 
 

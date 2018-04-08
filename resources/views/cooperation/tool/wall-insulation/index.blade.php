@@ -31,6 +31,8 @@
                                 <option
                                         @if(old('element[' . $facadeInsulation->element->id . ']') && $elementValue->id == old('element[' . $facadeInsulation->element->id . ']'))
                                         selected="selected"
+                                        @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
+                                                selected="selected"
                                         @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
                                             selected="selected"
                                         @endif
@@ -58,7 +60,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label>
+                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
 
                         <label class="radio-inline">
                             <input  type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
@@ -89,7 +91,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
 
-                        <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label>
+                        <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label> <span> *</span>
 
                         <label class="radio-inline">
                             <input id="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
@@ -176,7 +178,7 @@
 
             <div id="wall-joints" class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('facade_plastered_surface_id') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('wall_joints') ? ' has-error' : '' }}">
                         <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')           </label>
 
                         <select id="wall_joints" class="form-control" name="wall_joints">
@@ -188,13 +190,13 @@
                         <div id="wall-joints-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
-                    </div>
 
-                    @if ($errors->has('wall_joints'))
-                        <span class="help-block">
+                        @if ($errors->has('wall_joints'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('wall_joints') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
 
 
                 </div>
@@ -213,13 +215,13 @@
                             I would like to have some helpful information right here!
                         </div>
 
-                    </div>
-
-                    @if ($errors->has('contaminated_wall_joints'))
-                        <span class="help-block">
+                        @if ($errors->has('contaminated_wall_joints'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('contaminated_wall_joints') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
 
                 </div>
 

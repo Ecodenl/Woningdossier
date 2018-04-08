@@ -34,10 +34,8 @@ class WallInsulationRequest extends FormRequest
             'facade_plastered_surface_id' => 'exists:facade_plastered_surfaces,id',
             'wall_joints' => 'exists:facade_surfaces,id',
             'contaminated_wall_joints' => 'exists:facade_surfaces,id',
-            // todo: exists function when data is ready
             'facade_surface' => 'nullable|numeric',
             'additional_info' => 'nullable',
-
         ];
     }
 }

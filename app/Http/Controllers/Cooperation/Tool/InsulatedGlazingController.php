@@ -37,7 +37,8 @@ class InsulatedGlazingController extends Controller
         ];
 
         $woodElements = WoodElement::all();
-        $damageToPaintWorks = DamageToPaintWork::all();
+        //$damageToPaintWorks = DamageToPaintWork::all();
+	    $damageToPaintWorks = [];
         $houseFrames = HouseFrame::all();
 
 

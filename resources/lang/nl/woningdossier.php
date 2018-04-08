@@ -132,8 +132,7 @@ return [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
                     'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
                     'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
-                    'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
-                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
+	                'facade-surface' => 'Geveloppervlakte van de woning',
                 ],
 
 	            'insulation-advice' => [

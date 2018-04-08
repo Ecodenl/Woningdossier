@@ -232,8 +232,7 @@
                     <div class="form-group add-space">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#facade-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.house-with-same-situation')
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.not-right')
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.facade-surface')
                         </label>
                         <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')) {{old('wall_surface')}} @elseif(isset($buildingFeature)) {{$buildingFeature->wall_surface}} @endif" class="form-control" >
                         <div id="facade-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

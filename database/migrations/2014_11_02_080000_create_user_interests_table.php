@@ -16,14 +16,14 @@ class CreateUserInterestsTable extends Migration
         Schema::create('user_interests', function (Blueprint $table) {
             $table->increments('id');
 
-            $this->integer('user_id')->unsigned();
-            $this->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+	        $table->integer('user_id')->unsigned();
+	        $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
-            $this->enum('interested_in_type', ['service', 'element', 'measure_application']);
-            $this->integer('interested_in_id')->unsigned();
+	        $table->enum('interested_in_type', ['service', 'element', 'measure_application']);
+	        $table->integer('interested_in_id')->unsigned();
 
-            $this->integer('interest_id')->unsigned();
-            $this->foreign('interest_id')->references('id')->on('interests')->onDelete('restrict');
+	        $table->integer('interest_id')->unsigned();
+	        $table->foreign('interest_id')->references('id')->on('interests')->onDelete('restrict');
 
             $table->timestamps();
         });

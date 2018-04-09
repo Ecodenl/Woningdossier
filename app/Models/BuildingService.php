@@ -32,19 +32,8 @@ class BuildingService extends Model
 		return $this->belongsTo(Building::class);
 	}
 
-	public function measure(){
-		return $this->belongsTo(Measure::class);
-	}
-
 	public function serviceType(){
 		return $this->belongsTo(ServiceType::class);
 	}
 
-	public function appliances(){
-		return $this->belongsToMany(Appliance::class);
-	}
-
-	public function values(){
-		return $this->hasMany(BuildingServiceValue::class);
-	}
 }

@@ -64,6 +64,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
         $this->call(WoodElementsTableSeeder::class);
         $this->call(HouseFramesTableSeeder::class);
+        $this->call(ServiceValuesTableSeeder::class);
 
     }
 }

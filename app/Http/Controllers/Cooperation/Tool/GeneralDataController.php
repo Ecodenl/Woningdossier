@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
+use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
@@ -21,6 +22,8 @@ use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
 use App\Models\Quality;
 use App\Models\RoofType;
+use App\Models\Service;
+use App\Models\ServiceValue;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
 use App\Models\UserEnergyHabit;
@@ -55,6 +58,7 @@ class GeneralDataController extends Controller
         $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::orderBy('order')->get();
+        $services = Service::orderBy('order')->get();
 
 
         $insulations = PresentWindow::all();
@@ -78,7 +82,7 @@ class GeneralDataController extends Controller
             'exampleBuildingTypes', 'interests', 'elements',
 	        'insulations','houseVentilations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
-            'steps', 'motivations', 'energyHabit'
+            'steps', 'motivations', 'energyHabit', 'services'
         ));
     }
 
@@ -113,6 +117,7 @@ class GeneralDataController extends Controller
     	$building->buildingFeatures()->save($features);
 
     	$elements = $request->get('element', []);
+
     	foreach($elements as $elementId => $elementValueId){
 			$element = Element::find($elementId);
 			$elementValue = ElementValue::find($elementValueId);
@@ -126,7 +131,35 @@ class GeneralDataController extends Controller
 				$buildingElement->building()->associate($building);
 				$buildingElement->save();
 			}
+	    }    	
+
+	    // save the services
+        // TODO: add validation
+        // TODO: Save the additional non option fields
+        // TODO: Save the extra fields
+	    $services = $request->get('service', []);
+    	foreach($services as $serviceId => $serviceValueId){
+            // get the extra fields
+            $serviceExtra = $request->input('service.'.$serviceId.'.extra', '');
+
+			$service = Service::find($serviceId);
+			$serviceValue = ServiceValue::find($serviceValueId);
+			if ($service instanceof Service && $serviceValue instanceof ServiceValue){
+
+				$buildingService = $building->buildingServices()->where('service_id', $service->id)->first();
+                $buildingService->extra = ['date' => $serviceExtra];
+
+                if (!$buildingService instanceof BuildingService){
+					$buildingService = new BuildingService();
+				}
+				$buildingService->serviceValue()->associate($serviceValue);
+				$buildingService->service()->associate($service);
+				$buildingService->building()->associate($building);
+				$buildingService->save();
+			}
 	    }
+
+	    dd($buildingService);
 
 
 	    // Check if the user already has a motivation

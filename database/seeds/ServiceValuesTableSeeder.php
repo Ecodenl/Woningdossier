@@ -31,7 +31,7 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                     [
                         'values' => [
-                            'nl' => 'Hybride warmepompt met buitenlucht als warmtebron',
+                            'nl' => 'Hybride warmtepomp met buitenlucht als warmtebron',
                         ],
                         'order' => 2,
                         'calculate_value' => 2,
@@ -158,32 +158,32 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                 ],
             ],
-            [
-                'names' => [
-                    'nl' => 'Douche wtw',
-                ],
-                'service_type' => 'Heating',
-                'order' => 0,
-                'info' => [
-                    'nl' => 'Infotext hier',
-                ],
-                'service_values' => [
-                    [
-                        'values' => [
-                            'nl' => 'Geen',
-                        ],
-                        'order' => 1,
-                        'calculate_value' => 1,
-                    ],
-                    [
-                        'values' => [
-                            'nl' => 'Aanwezig',
-                        ],
-                        'order' => 2,
-                        'calculate_value' => 2,
-                    ],
-                ],
-            ],
+//            [
+//                'names' => [
+//                    'nl' => 'Douche wtw',
+//                ],
+//                'service_type' => 'Heating',
+//                'order' => 0,
+//                'info' => [
+//                    'nl' => 'Infotext hier',
+//                ],
+//                'service_values' => [
+//                    [
+//                        'values' => [
+//                            'nl' => 'Geen',
+//                        ],
+//                        'order' => 1,
+//                        'calculate_value' => 1,
+//                    ],
+//                    [
+//                        'values' => [
+//                            'nl' => 'Aanwezig',
+//                        ],
+//                        'order' => 2,
+//                        'calculate_value' => 2,
+//                    ],
+//                ],
+//            ],
             [
                 'names' => [
                     'nl' => 'Hoe wordt het huis geventileerd ?',

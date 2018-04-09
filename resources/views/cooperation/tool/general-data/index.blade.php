@@ -468,7 +468,121 @@
 
             </div>
             --}}
+
+        @foreach($services as $i => $service)
+            @if ($i % 2 == 0)
+                <div class="row" id="service_row_{{$service->id}}">
+            @endif
+                <div class="col-sm-4">
+                    <div class="form-group add-space{{ $errors->has('service.'.$service->id) ? ' has-error' : '' }}">
+                        <label for="service_{{ $service->id }}" class="control-label">
+                            <i data-toggle="collapse" data-target="#service_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            {{ $service->name }}
+                        </label>
+                        <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}]">
+                            @foreach($service->values()->orderBy('order')->get() as $serviceValue)
+                                <option @if($serviceValue->id == old('service['. $service->id.']')) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                            @endforeach
+                        </select>
+
+                        <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{ $service->info }}
+                        </div>
+
+                        @if ($errors->has('service.' . $service->id))
+                            <span class="help-block">
+                                    <strong>{{ $errors->first('service.' . $service->id) }}</strong>
+                                </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
+                        <label for="user_interest_service_{{ $service->id }}" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label> <span>*</span>
+
+                        <select id="user_interest_service_{{ $service->id }}" class="form-control" name="user_interest[service][{{ $service->id }}]" >
+                            @foreach($interests as $interest)
+                                <option @if($interest->id == old('user_interest[service][' . $service->id . ']')) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                            @endforeach
+                        </select>
+
+                        @if ($errors->has('user_interest.service.' . $service->id))
+                            <span class="help-block">
+                            <strong>{{ $errors->first('user_interest.service.' . $service->id) }}</strong>
+                        </span>
+                        @endif
+                    </div>
+                </div>
+
+                @if ($i % 2 == 1)
+                    </div>
+                @endif
+        @endforeach
+
+                {{-- note that because of ->count, odd counts % 2 result in 1, whereas $i starts with 0 and therefore has the inverted result --}}
+                @if($services->count() % 2 == 1)
+                    {{-- last (row) div was not closed. Close it --}}
+                    </form>
+                @endif
+            {{-- Close the measure div --}}
+            </div>
+
             <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group add-space{{ $errors->has('') ? ' has-error' : '' }}">
+                        <label for="sun_panel" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.title')</label>
+
+                        <input type="text" id="sun_panel" class="form-control" name="sun_panel">
+
+                        <div id="sun-panel-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And I would like to have it too...
+                        </div>
+
+                        @if ($errors->has('sun_panel'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('sun_panel') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group add-space{{ $errors->has('interested[sun_panel]') ? ' has-error' : '' }}">
+                        <label for="sun_panel_interested" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label>
+
+                        <select id="sun_panel_interested" class="form-control" name="interested[sun_panel]" >
+                            @foreach($interests as $interested)
+                                <option @if($interested->id == old('interested[sun_panel]')) selected @endif value="{{$interested->id}}">{{ $interested->name }}</option>
+                            @endforeach
+                        </select>
+
+                        @if ($errors->has('interested[sun_panel]'))
+                            <span class="help-block">
+                                    <strong>{{ $errors->first('interested[sun_panel]') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-sm-6" id="sun_panel_placed_date_element">
+                    <div class="form-group add-space{{ $errors->has('sun_panel_placed_date') ? ' has-error' : '' }}">
+                        <label for="sun_panel_placed_date" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes')</label>
+
+                        <input type="date" name="sun_panel_placed_date" id="sun_panel_placed_date" class="form-control" value="{{ old('sun_panel_placed_date') }}">
+
+                        <div id="sun-panel-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And I would like to have it too...
+                        </div>
+
+                        @if ($errors->has('sun_panel_placed_date'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('sun_panel_placed_date') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('hr_cv_boiler') ? ' has-error' : '' }}">
                         <label for="hr_cv_boiler" class=" control-label"><i data-toggle="collapse" data-target="#hr-cv-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.hr-cv-boiler')</label> <span>*</span>
@@ -753,9 +867,9 @@
                         @endif
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
-        </div>
+
 
         <div id="data-about-usage">
 
@@ -1067,59 +1181,48 @@
                 </div>
             </div>
         </div>
+
     </form>
 @endsection
 
 @push('js')
-    {{--<script>--}}
-        {{--$(document).ready(function () {--}}
 
-            {{--// select all select boxes--}}
-            {{--$.each($('select').prev(), function(index, value) {--}}
-                {{--// if the field is required skip it--}}
-                {{--if($(this).text() == '*') {--}}
-                    {{--var requiredSelectId = $(this).next().attr('id');--}}
-                    {{--// just select the previous element--}}
-                    {{--var requiredSelectLabel = $(this).prev();--}}
-                    {{--// replace _ with ---}}
-                    {{--var strippedSelectId = requiredSelectId.replace(/_/g, '-');--}}
+    <script>
 
-                    {{--requiredSelectLabel.prepend('<i data-toggle="collapse" data-target="#'+strippedSelectId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
+        $(document).ready(function () {
+            // get the house ventilation input name and add [extra]
+            var serviceName = $('#service_5').attr('name') + '[extra]';
+            // append the extra field after the service
+            $('#service_row_5').append("<div class='col-sm-6' id='service_5_extra'>    <div class='form-group add-space{{ $errors->has('service.5.extra') ? ' has-error' : '' }}'><label for='service_5_extra' class=' control-label'><i data-toggle='collapse' data-target='#sun-panel-placed-date-info' class='glyphicon glyphicon-info-sign glyphicon-padding collapsed' aria-expanded='false'></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')</label><input type='date' name='"+serviceName+"' id='service_5_extra' class='form-control' value='{{ old('service.5.extra') }}'><div id='sun-panel-placed-date-info' class='collapse alert alert-info remove-collapse-space alert-top-space'>And I would like to have it too...</div>@if ($errors->has('service.5.extra'))<span class='help-block'><strong>{{ $errors->first('service.5.extra') }}</strong></span>@endif</div></div>");
 
 
-                {{--} else {--}}
+            // Check if the house ventialtion is mechanic
+            $(document).change('#service_5', function () {
 
-                    {{--var selectId = $(this).next().attr('id');--}}
+                console.log('changed');
+                // service 5 is the "Hoe word het huis geventileerd" question, this could change if question's get added or removed
+                var houseVentilation = $('#service_5 option:selected').val();
 
-                    {{--var infoBoxId = selectId.replace(/_/g, '-');--}}
+                if (houseVentilation == 16 || houseVentilation == 18) {
+                    $('#service_5_extra').show();
+                } else {
+                    $('#service_5_extra').hide();
+                }
+            });
 
-                    {{--$(this).prepend('<i data-toggle="collapse" data-target="#'+infoBoxId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
-                {{--}--}}
-            {{--});--}}
+            // check if a user is interested in a sun panel
+            $(document).change('#sun_panel_interested', function() {
+                var interested = $('#sun_panel_interested option:selected').val();
 
-            {{--// select all input fields--}}
-            {{--$.each($('input').prev(), function(index, value) {--}}
-                {{--// if the field is we need to go one element back--}}
-                {{--if($(this).text() == '*') {--}}
+                if(interested == 1 || interested == 2) {
+                    $('#sun_panel_placed_date_element').show();
+                } else {
+                    $('#sun_panel_placed_date_element').hide();
+                }
 
-                    {{--// Get the id from the input--}}
-                    {{--var requiredInputId = $(this).next().attr('id');--}}
-                    {{--// replace the _ with ---}}
-                    {{--var strippedInputId = requiredInputId.replace(/_/g, '-');--}}
-                    {{--// just select the previous element (the label)--}}
-                    {{--var requiredLabel = $(this).prev();--}}
+            });
 
-                    {{--requiredLabel.prepend('<i data-toggle="collapse" data-target="#'+strippedInputId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
-
-                {{--} else {--}}
-                    {{--// get id--}}
-                    {{--var inputId = $(this).next().attr('id');--}}
-                    {{--// replace _ with ---}}
-                    {{--var infoBoxId = inputId.replace(/_/g, '-');--}}
-
-                    {{--$(this).prepend('<i data-toggle="collapse" data-target="#'+infoBoxId+'-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>');--}}
-                {{--}--}}
-            {{--});--}}
-        {{--})--}}
-    {{--</script>--}}
+            $('#service_5', '#sun_panel_interested').trigger('change')
+        });
+    </script>
 @endpush

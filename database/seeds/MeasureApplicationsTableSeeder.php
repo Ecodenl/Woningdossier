@@ -121,7 +121,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Glas in lood vervangen',
@@ -137,7 +137,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van HR++ glas (alleen het glas)',
@@ -153,7 +153,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van HR++ glas (inclusief kozijn)',
@@ -169,7 +169,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van drievoudige HR beglazing (inclusief kozijn)',

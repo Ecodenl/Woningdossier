@@ -16,6 +16,7 @@ class ElementsValuesTableSeeder extends Seeder
 	            'names' => [
 	                'nl' => 'Ramen in de leefruimtes',
 		        ],
+		        'short' => 'living-rooms-windows',
 		        'service_type' => 'Heating',
 		        'order' => 0,
 		        'info' => [
@@ -52,6 +53,7 @@ class ElementsValuesTableSeeder extends Seeder
 		        'names' => [
 			        'nl' => 'Ramen in de slaapruimtes',
 		        ],
+		        'short' => 'sleeping-rooms-windows',
 		        'service_type' => 'Heating',
 		        'order' => 1,
 		        'info' => [
@@ -88,6 +90,7 @@ class ElementsValuesTableSeeder extends Seeder
 		        'names' => [
 			        'nl' => 'Gevelisolatie',
 		        ],
+		        'short' => 'wall-isolation',
 		        'service_type' => 'Heating',
 		        'order' => 2,
 		        'info' => [
@@ -142,6 +145,7 @@ class ElementsValuesTableSeeder extends Seeder
 		        'names' => [
 			        'nl' => 'Vloerisolatie',
 		        ],
+		        'short' => 'floor-isolation',
 		        'service_type' => 'Heating',
 		        'order' => 3,
 		        'info' => [
@@ -190,6 +194,7 @@ class ElementsValuesTableSeeder extends Seeder
 		        'names' => [
 			        'nl' => 'Dakisolatie',
 		        ],
+		        'short' => 'roof-isolation',
 		        'service_type' => 'Heating',
 		        'order' => 4,
 		        'info' => [
@@ -234,6 +239,129 @@ class ElementsValuesTableSeeder extends Seeder
 			        ],
 		        ],
 	        ],
+			[
+				'names' => [
+					'nl' => 'Kierdichting',
+				],
+				'short' => 'crack-sealing',
+				'service_type' => 'Heating',
+				'order' => 5,
+				'info' => [
+					'nl' => 'Infotext hier',
+				],
+				'element_values' => [
+					[
+						'values' => [
+							'nl' => 'Ja, in goede staat',
+						],
+						'order' => 0,
+						'calculate_value' => 1,
+					],
+					[
+						'values' => [
+							'nl' => 'Ja, in slechte staat',
+						],
+						'order' => 1,
+						'calculate_value' => 2,
+					],
+					[
+						'values' => [
+							'nl' => 'Nee',
+						],
+						'order' => 2,
+						'calculate_value' => 3,
+					],
+					[
+						'values' => [
+							'nl' => 'Onbekend',
+						],
+						'order' => 3,
+						'calculate_value' => 4,
+					],
+				],
+			],
+	        [
+	        	'names' => [
+	        		'nl' => 'Kozijnen',
+		        ],
+		        'short' => 'frames',
+		        'service_type' => 'Heating',
+		        'order' => 6,
+		        'info' => [
+		        	'nl' => 'Infotext hier',
+		        ],
+		        'element_values' => [
+			        [
+				        'values' => [
+					        'nl' => 'Alleen houten kozijnen',
+				        ],
+				        'order' => 0,
+				        'calculate_value' => 1,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Houten kozijnen en enkele andere kozijnen (bijvoorbeeld kunststof of aluminium)',
+				        ],
+				        'order' => 1,
+				        'calculate_value' => 2,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Enkele houten kozijnen, voornamelijk kunststof en of aluminium',
+				        ],
+				        'order' => 2,
+				        'calculate_value' => 3,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Geen houten kozijnen',
+				        ],
+				        'order' => 3,
+				        'calculate_value' => 4,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Overig',
+				        ],
+				        'order' => 4,
+				        'calculate_value' => 5,
+			        ],
+		        ],
+	        ],
+	        [
+		        'names' => [
+			        'nl' => 'Houten bouwdelen',
+		        ],
+		        'short' => 'wood-elements',
+		        'service_type' => 'Heating',
+		        'order' => 7,
+		        'info' => [
+			        'nl' => 'Infotext hier',
+		        ],
+		        'element_values' => [
+			        [
+				        'values' => [
+					        'nl' => 'Dakranden / boeidelen',
+				        ],
+				        'order' => 0,
+				        'calculate_value' => 1,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Dakkapellen',
+				        ],
+				        'order' => 1,
+				        'calculate_value' => 2,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Gevelbekleding',
+				        ],
+				        'order' => 2,
+				        'calculate_value' => 3,
+			        ],
+		        ],
+	        ],
         ];
 
         foreach($elements as $element){
@@ -266,6 +394,7 @@ class ElementsValuesTableSeeder extends Seeder
 	        if ($serviceType instanceof \stdClass) {
 		        $elementId = \DB::table( 'elements' )->insertGetId( [
 			        'name'            => $uuid,
+			        'short' => $element['short'],
 			        'service_type_id' => $serviceType->id,
 			        'order' => $element['order'],
 					'info' => $infoUuid,

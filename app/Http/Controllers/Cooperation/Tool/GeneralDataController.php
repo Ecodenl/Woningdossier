@@ -139,15 +139,20 @@ class GeneralDataController extends Controller
         // TODO: Save the extra fields
 	    $services = $request->get('service', []);
     	foreach($services as $serviceId => $serviceValueId){
-            // get the extra fields
-            $serviceExtra = $request->input('service.'.$serviceId.'.extra', '');
 
 			$service = Service::find($serviceId);
 			$serviceValue = ServiceValue::find($serviceValueId);
+
+
 			if ($service instanceof Service && $serviceValue instanceof ServiceValue){
+                // get the extra fields
+                $serviceExtra = $request->input($serviceId.'.extra');
 
 				$buildingService = $building->buildingServices()->where('service_id', $service->id)->first();
-                $buildingService->extra = ['date' => $serviceExtra];
+
+				if (isset($serviceExtra)) {
+				    $buildingService->extra = ['date' => $serviceExtra];
+                }
 
                 if (!$buildingService instanceof BuildingService){
 					$buildingService = new BuildingService();

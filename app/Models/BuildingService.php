@@ -28,9 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingService extends Model
 {
-
-    protected $fillable = ['building_id', 'service_id', 'service_value_id', 'extra'];
-
     /**
      * The attributes that should be cast to native types.
      *

@@ -470,20 +470,26 @@
             --}}
 
         @foreach($services as $i => $service)
-            @if ($i % 2 == 0)
+            @if ($i % 2 == 0 || strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
                 <div class="row" id="service_row_{{$service->id}}">
             @endif
+
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('service.'.$service->id) ? ' has-error' : '' }}">
                         <label for="service_{{ $service->id }}" class="control-label">
                             <i data-toggle="collapse" data-target="#service_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                             {{ $service->name }}
                         </label>
-                        <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}]">
-                            @foreach($service->values()->orderBy('order')->get() as $serviceValue)
-                                <option @if($serviceValue->id == old('service['. $service->id.']')) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
-                            @endforeach
-                        </select>
+                        {{-- This will check if the service has values, if so we need an selectbox and ifnot textbox --}}
+                        @if($service->values()->where('service_id', $service->id)->first() != null)
+                            <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}]">
+                                @foreach($service->values()->orderBy('order')->get() as $serviceValue)
+                                    <option @if($serviceValue->id == old('service['. $service->id.']')) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <input type="text" id="service_{{ $service->id }}" class="form-control" value="@if(old('service.'.$service->id)) {{old('service.'.$service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                        @endif
 
                         <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{ $service->info }}
@@ -491,8 +497,8 @@
 
                         @if ($errors->has('service.' . $service->id))
                             <span class="help-block">
-                                    <strong>{{ $errors->first('service.' . $service->id) }}</strong>
-                                </span>
+                                <strong>{{ $errors->first('service.' . $service->id) }}</strong>
+                            </span>
                         @endif
                     </div>
                 </div>
@@ -514,7 +520,43 @@
                     </div>
                 </div>
 
-                @if ($i % 2 == 1)
+                @if(strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
+                    <div class="col-sm-6">
+
+                        <div class="form-group add-space{{ $errors->has('house_ventilation_placed_date') ? ' has-error' : '' }}">
+                            <label for="service_{{ $service->id }}" class="control-label">
+                                <i data-toggle="collapse" data-target="#service_{{ $service->id }}-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                @if(strpos($service->name, 'geventileerd'))
+                                    @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')
+                                @elseif(strpos($service->name, 'zonnepanelen'))
+                                    @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes')
+                                @endif
+
+                            </label>
+                            <?php
+                                if(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['date'])) {
+                                    $date = $building->buildingServices()->where('service_id', $service->id)->first()->extra['date'];
+                                    $date = \Carbon\Carbon::parse($date)->format('Y-m-d');
+                                }
+                            ?>
+                            <input type="text" id="{{$service->id.'-extra'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif" class="form-control" name="{{$service->id.'[extra]'}}" >
+
+                            <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And I would like to have it too...
+                            </div>
+
+                            @if ($errors->has($service->id.'.extra'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first($service->id.'.extra') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+
+
+                @if ($i % 2 == 1 || strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
                     </div>
                 @endif
         @endforeach
@@ -527,60 +569,60 @@
             {{-- Close the measure div --}}
             </div>
 
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group add-space{{ $errors->has('') ? ' has-error' : '' }}">
-                        <label for="sun_panel" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.title')</label>
+            {{--<div class="row">--}}
+                {{--<div class="col-sm-4">--}}
+                    {{--<div class="form-group add-space{{ $errors->has('') ? ' has-error' : '' }}">--}}
+                        {{--<label for="sun_panel" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.title')</label>--}}
 
-                        <input type="text" id="sun_panel" class="form-control" name="sun_panel">
+                        {{--<input type="text" id="sun_panel" class="form-control" name="sun_panel">--}}
 
-                        <div id="sun-panel-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And I would like to have it too...
-                        </div>
+                        {{--<div id="sun-panel-info" class="collapse alert alert-info remove-collapse-space alert-top-space">--}}
+                            {{--And I would like to have it too...--}}
+                        {{--</div>--}}
 
-                        @if ($errors->has('sun_panel'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('sun_panel') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group add-space{{ $errors->has('interested[sun_panel]') ? ' has-error' : '' }}">
-                        <label for="sun_panel_interested" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label>
+                        {{--@if ($errors->has('sun_panel'))--}}
+                            {{--<span class="help-block">--}}
+                                {{--<strong>{{ $errors->first('sun_panel') }}</strong>--}}
+                            {{--</span>--}}
+                        {{--@endif--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="col-sm-2">--}}
+                    {{--<div class="form-group add-space{{ $errors->has('interested[sun_panel]') ? ' has-error' : '' }}">--}}
+                        {{--<label for="sun_panel_interested" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label>--}}
 
-                        <select id="sun_panel_interested" class="form-control" name="interested[sun_panel]" >
-                            @foreach($interests as $interested)
-                                <option @if($interested->id == old('interested[sun_panel]')) selected @endif value="{{$interested->id}}">{{ $interested->name }}</option>
-                            @endforeach
-                        </select>
+                        {{--<select id="sun_panel_interested" class="form-control" name="interested[sun_panel]" >--}}
+                            {{--@foreach($interests as $interested)--}}
+                                {{--<option @if($interested->id == old('interested[sun_panel]')) selected @endif value="{{$interested->id}}">{{ $interested->name }}</option>--}}
+                            {{--@endforeach--}}
+                        {{--</select>--}}
 
-                        @if ($errors->has('interested[sun_panel]'))
-                            <span class="help-block">
-                                    <strong>{{ $errors->first('interested[sun_panel]') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-sm-6" id="sun_panel_placed_date_element">
-                    <div class="form-group add-space{{ $errors->has('sun_panel_placed_date') ? ' has-error' : '' }}">
-                        <label for="sun_panel_placed_date" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes')</label>
+                        {{--@if ($errors->has('interested[sun_panel]'))--}}
+                            {{--<span class="help-block">--}}
+                                    {{--<strong>{{ $errors->first('interested[sun_panel]') }}</strong>--}}
+                            {{--</span>--}}
+                        {{--@endif--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="col-sm-6" id="sun_panel_placed_date_element">--}}
+                    {{--<div class="form-group add-space{{ $errors->has('sun_panel_placed_date') ? ' has-error' : '' }}">--}}
+                        {{--<label for="sun_panel_placed_date" class=" control-label"><i data-toggle="collapse" data-target="#sun-panel-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes')</label>--}}
 
-                        <input type="date" name="sun_panel_placed_date" id="sun_panel_placed_date" class="form-control" value="{{ old('sun_panel_placed_date') }}">
+                        {{--<input type="date" name="sun_panel_placed_date" id="sun_panel_placed_date" class="form-control" value="{{ old('sun_panel_placed_date') }}">--}}
 
-                        <div id="sun-panel-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And I would like to have it too...
-                        </div>
+                        {{--<div id="sun-panel-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">--}}
+                            {{--And I would like to have it too...--}}
+                        {{--</div>--}}
 
-                        @if ($errors->has('sun_panel_placed_date'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('sun_panel_placed_date') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
+                        {{--@if ($errors->has('sun_panel_placed_date'))--}}
+                            {{--<span class="help-block">--}}
+                                {{--<strong>{{ $errors->first('sun_panel_placed_date') }}</strong>--}}
+                            {{--</span>--}}
+                        {{--@endif--}}
+                    {{--</div>--}}
+                {{--</div>--}}
 
-            </div>
+            {{--</div>--}}
 
             {{-- <div class="row">
                 <div class="col-sm-4">
@@ -1193,7 +1235,7 @@
             // get the house ventilation input name and add [extra]
             var serviceName = $('#service_5').attr('name') + '[extra]';
             // append the extra field after the service
-            $('#service_row_5').append("<div class='col-sm-6' id='service_5_extra'>    <div class='form-group add-space{{ $errors->has('service.5.extra') ? ' has-error' : '' }}'><label for='service_5_extra' class=' control-label'><i data-toggle='collapse' data-target='#sun-panel-placed-date-info' class='glyphicon glyphicon-info-sign glyphicon-padding collapsed' aria-expanded='false'></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')</label><input type='date' name='5[extra]' id='service_5_extra' class='form-control' value='{{ old('service.5.extra') }}'><div id='sun-panel-placed-date-info' class='collapse alert alert-info remove-collapse-space alert-top-space'>And I would like to have it too...</div>@if ($errors->has('service.5.extra'))<span class='help-block'><strong>{{ $errors->first('service.5.extra') }}</strong></span>@endif</div></div>");
+            {{--$('#service_row_5').append("<div class='col-sm-6' id='service_5_extra'>    <div class='form-group add-space{{ $errors->has('service.5.extra') ? ' has-error' : '' }}'><label for='service_5_extra' class=' control-label'><i data-toggle='collapse' data-target='#sun-panel-placed-date-info' class='glyphicon glyphicon-info-sign glyphicon-padding collapsed' aria-expanded='false'></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')</label><input type='date' name='5[extra]' id='service_5_extra' class='form-control' value='{{ old('service.5.extra') }}'><div id='sun-panel-placed-date-info' class='collapse alert alert-info remove-collapse-space alert-top-space'>And I would like to have it too...</div>@if ($errors->has('service.5.extra'))<span class='help-block'><strong>{{ $errors->first('service.5.extra') }}</strong></span>@endif</div></div>");--}}
 
 
             // Check if the house ventialtion is mechanic
@@ -1204,9 +1246,9 @@
                 var houseVentilation = $('#service_5 option:selected').val();
 
                 if (houseVentilation == 16 || houseVentilation == 18) {
-                    $('#service_5_extra').show();
+                    $('#5-extra').show();
                 } else {
-                    $('#service_5_extra').hide();
+                    $('#5-extra').hide();
                 }
             });
 

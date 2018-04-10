@@ -29,6 +29,7 @@ use App\Models\Step;
 use App\Models\UserEnergyHabit;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -51,7 +52,6 @@ class GeneralDataController extends Controller
     public function index()
     {
         $building = \Auth::user()->buildings()->first();
-
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
@@ -94,8 +94,10 @@ class GeneralDataController extends Controller
      */
     public function store(GeneralDataFormRequest $request)
     {
+
 	    /** @var Building $building */
     	$building = Auth::user()->buildings()->first();
+
     	$features = $building->buildingFeatures;
     	if (!$features instanceof BuildingFeature){
     		$features = new BuildingFeature();
@@ -131,7 +133,7 @@ class GeneralDataController extends Controller
 				$buildingElement->building()->associate($building);
 				$buildingElement->save();
 			}
-	    }    	
+	    }
 
 	    // save the services
         // TODO: add validation
@@ -140,32 +142,39 @@ class GeneralDataController extends Controller
 	    $services = $request->get('service', []);
     	foreach($services as $serviceId => $serviceValueId){
 
+    	    // get the service based on the service id from the form
 			$service = Service::find($serviceId);
+			//get the service values
 			$serviceValue = ServiceValue::find($serviceValueId);
+            // get the extra fields (date)
+            $serviceExtra = $request->input($serviceId.'.extra', "");
 
+            if ($service instanceof Service){
+                // get a building service
+                $buildingService = $building->buildingServices()->where('service_id', $service->id)->first();
 
-			if ($service instanceof Service && $serviceValue instanceof ServiceValue){
-                // get the extra fields
-                $serviceExtra = $request->input($serviceId.'.extra');
-
-				$buildingService = $building->buildingServices()->where('service_id', $service->id)->first();
-
-				if (isset($serviceExtra)) {
-				    $buildingService->extra = ['date' => $serviceExtra];
-                }
 
                 if (!$buildingService instanceof BuildingService){
-					$buildingService = new BuildingService();
-				}
-				$buildingService->serviceValue()->associate($serviceValue);
-				$buildingService->service()->associate($service);
-				$buildingService->building()->associate($building);
-				$buildingService->save();
-			}
+                    $buildingService = new BuildingService();
+                }
+                // check if the current service is a sun panel
+                // if so, we will need to put the value / valueId inside the extra field.
+                if (strpos($service->name, 'zonnepanelen') == true) {
+                    $buildingService->extra = ['value' => $serviceValueId, 'date' => $serviceExtra];
+                }
+                // if its a ventilation, is has a dropdown so it has a serviceValue
+                else if (strpos($service->name, 'geventileerd') == true) {
+                    $buildingService->extra = ['date' => $serviceExtra];
+                    $buildingService->serviceValue()->associate($serviceValue);
+                } else {
+                    $buildingService->serviceValue()->associate($serviceValue);
+                }
+
+                $buildingService->service()->associate($service);
+                $buildingService->building()->associate($building);
+                $buildingService->save();
+            }
 	    }
-
-	    dd($buildingService);
-
 
 	    // Check if the user already has a motivation
 	    if(UserMotivation::where('user_id', Auth::id())->count() > 0) {

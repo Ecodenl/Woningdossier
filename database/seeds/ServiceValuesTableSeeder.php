@@ -231,6 +231,19 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                 ],
             ],
+            [
+                'names' => [
+                    'nl' => 'Aantal zonnepanelen',
+                ],
+                'service_type' => 'Others',
+                'order' => 0,
+                'info' => [
+                    'nl' => 'Infotext hier',
+                ],
+                'service_values' => [
+
+                ],
+            ],
 
         ];
 

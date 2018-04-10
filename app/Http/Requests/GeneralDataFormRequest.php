@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class GeneralDataFormRequest extends FormRequest
@@ -14,7 +16,7 @@ class GeneralDataFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -22,22 +24,26 @@ class GeneralDataFormRequest extends FormRequest
      *
      * @return array
      */
+
     public function rules()
     {
 
-        // This will retrieve all the array keys and value's from the interested input fields
-        foreach($this->request->get('interested') as $key => $interest) {
-            // This will put every interested input on required
-            $interestedRules['interested.' . $key] = 'required|exists:interests,id';
-
-
+        foreach($this->request->get('service') as $serviceId => $serviceValueId) {
+            $service = Service::find($serviceId);
+            // if the service exist it has service values, check if it exist
+            if ($service->values()->where('service_id', $serviceId)->first() != null) {
+                $serviceRules['service.' . $serviceId] = 'required|exists:services,id';
+            } else {
+                $serviceRules['service.' . $serviceId] = 'nullable|numeric';
+            }
         }
-        // Remove the sun_panel_interested field,
-        // Cause the sun panel itselft isn't required.
-        unset($interestedRules['interested.sun_panel']);
+
 
         // Add the remaining rules
         $remainingRules = [
+            // validate all the interested rules
+            'user_interest.*.*' => 'required|exists:interests,id',
+
             // start
             'example_building_type' => 'required|exists:example_buildings,id',
             'building_type_id' => 'required|exists:building_types,id',
@@ -77,12 +83,25 @@ class GeneralDataFormRequest extends FormRequest
             'amount_electricity' => 'nullable|numeric',
             'amount_gas' => 'nullable|numeric',
             'motivation.*' => 'numeric'
-
-
         ];
 
-        $validationRules = array_merge($interestedRules, $remainingRules);
-        
-        return $validationRules;
+        $rules = array_merge($remainingRules);
+
+        return $rules;
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            foreach($this->request->get('service') as $serviceId => $serviceValueId) {
+
+                $parentServiceField = 'service.' . $serviceId;
+
+                // if the extra field has a value but the parent does not send them back
+                if (Request::input($parentServiceField, '') <= 0 && Request::input($serviceId.'.extra', '') != "") {
+                    $validator->errors()->add($serviceId.'.extra', __('auth.general-data.may-not-be-filled'));
+                }
+            }
+        });
     }
 }

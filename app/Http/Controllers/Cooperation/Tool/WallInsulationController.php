@@ -28,6 +28,11 @@ class WallInsulationController extends Controller
 	public function __construct(Request $request) {
 		$slug = str_replace('/tool/', '', $request->getRequestUri());
 		$this->step = Step::where('slug', $slug)->first();
+		$myStep = Step::where('slug', $this->step->slug)->first();
+		$prev = Step::where('order', $myStep->order - 1)->first();
+		if (!\Auth::user()->hasCompleted($prev)){
+			return redirect('/tool/' . $prev->slug . '/')->with(['cooperation' => $request->get('cooperation')]);
+		}
 	}
 
     /**
@@ -35,15 +40,8 @@ class WallInsulationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-    	$mySlug = 'wall-insulation';
-    	$myStep = Step::where('slug', $mySlug)->first();
-    	$prev = Step::where('order', $myStep->order - 1)->first();
-    	if (!\Auth::user()->hasCompleted($prev)){
-    		return redirect('/tool/' . $prev->slug . '/')->with(['cooperation' => $request->get('cooperation')]);
-	    }
-
         $steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();

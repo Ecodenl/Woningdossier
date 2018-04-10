@@ -12,27 +12,33 @@ use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Cooperation;
-//use App\Models\DamageToPaintWork;
 use App\Models\Element;
 use App\Models\ElementValue;
-use App\Models\HouseFrame;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
-use App\Models\MovingPartsOfWindowAndDoorIsolated;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
-use App\Models\WoodElement;
 use App\Models\WoodRotStatus;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class InsulatedGlazingController extends Controller
 {
+
+	public function __construct(Request $request) {
+		$slug = str_replace('/tool/', '', $request->getRequestUri());
+		$this->step = Step::where('slug', $slug)->first();
+		$myStep = Step::where('slug', $this->step->slug)->first();
+		$prev = Step::where('order', $myStep->order - 1)->first();
+		if (!\Auth::user()->hasCompleted($prev)){
+			return redirect('/tool/' . $prev->slug . '/')->with(['cooperation' => $request->get('cooperation')]);
+		}
+	}
+
     /**
      * Display a listing of the resource.s
      *

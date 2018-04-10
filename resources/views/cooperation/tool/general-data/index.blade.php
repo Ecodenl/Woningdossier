@@ -1254,13 +1254,13 @@
 
             // check if a user is interested in a sun panel
             $(document).change('#service_6', function() {
-                console.log('ooke')
+                console.log('ooke');
                 var interested = $('#service_6').val();
 
                 if(interested >= 0) {
                     $('#6-extra').show();
                 } else {
-                    $('#6-extra').show();
+                    $('#6-extra').hide();
                 }
 
             });

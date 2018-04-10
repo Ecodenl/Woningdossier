@@ -45,7 +45,7 @@
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                @if(App::environment() == 'development') {{-- currently only for development --}}
+                @if(App::environment() == 'local') {{-- currently only for local --}}
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li class="dropdown">

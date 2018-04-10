@@ -335,6 +335,88 @@
             </div>
         </div>
 
+        <div id="indication-for-costs">
+            <hr>
+            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.title')</h4>
+
+            <div id="costs" class="row">
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">CO2 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.savings-in-euro')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                            <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="taking-into-account">
+            <hr>
+            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.title')</h4>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.insulated-glazing.taking-into-account.paintwork')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                            <input type="text" id="paintwork_costs" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.insulated-glazing.taking-into-account.paintwork_year')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="paintwork_year" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         <div class="row">
             <div class="col-md-12">
                 <hr>
@@ -373,6 +455,7 @@
                         if (data.insulation_advice){
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
                         }
+                        */
                         if (data.savings_gas){
                             $("input#savings_gas").val(Math.round(data.savings_gas));
                         }
@@ -388,23 +471,12 @@
                         if (data.interest_comparable){
                             $("input#interest_comparable").val(data.interest_comparable);
                         }
-                        if (data.repair_joint){
-                            $("input#repair_joint").val(Math.round(data.repair_joint.costs));
-                            $("span#repair_joint_year").html("(in " + data.repair_joint.year + ")");
+                        if (data.paintwork.costs){
+                            $("input#paintwork_costs").val(Math.round(data.paintwork.costs));
                         }
-                        if (data.clean_brickwork){
-                            $("input#clean_brickwork").val(Math.round(data.clean_brickwork.costs));
-                            $("span#clean_brickwork_year").html("(in " + data.clean_brickwork.year + ")");
+                        if (data.paintwork.year){
+                            $("input#paintwork_year").val(data.paintwork.year);
                         }
-                        if (data.impregnate_wall){
-                            $("input#impregnate_wall").val(Math.round(data.impregnate_wall.costs));
-                            $("span#impregnate_wall_year").html("(in " + data.impregnate_wall.year + ")");
-                        }
-                        if (data.paint_wall){
-                            $("input#paint_wall").val(Math.round(data.paint_wall.costs));
-                            $("span#paint_wall_year").html("(in " + data.paint_wall.year + ")");
-                        }
-                        */
                         console.log(data);
                     }
                 });

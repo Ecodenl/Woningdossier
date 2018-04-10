@@ -204,7 +204,12 @@ return [
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
-            ]
+
+	            'taking-into-account' => [
+	            	'paintwork' => 'Indicatieve kosten schilderwerk',
+		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
+	            ],
+            ],
 		],
 	],
 ];

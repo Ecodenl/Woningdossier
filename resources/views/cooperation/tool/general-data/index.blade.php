@@ -523,7 +523,7 @@
                 @if(strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
                     <div class="col-sm-6">
 
-                        <div class="form-group add-space{{ $errors->has('house_ventilation_placed_date') ? ' has-error' : '' }}">
+                        <div id="{{$service->id.'-extra'}}" class="form-group add-space{{ $errors->has('house_ventilation_placed_date') ? ' has-error' : '' }}">
                             <label for="service_{{ $service->id }}" class="control-label">
                                 <i data-toggle="collapse" data-target="#service_{{ $service->id }}-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 @if(strpos($service->name, 'geventileerd'))
@@ -539,7 +539,7 @@
                                     $date = \Carbon\Carbon::parse($date)->format('Y-m-d');
                                 }
                             ?>
-                            <input type="text" id="{{$service->id.'-extra'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif" class="form-control" name="{{$service->id.'[extra]'}}" >
+                            <input type="text"  value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif" class="form-control" name="{{$service->id.'[extra]'}}" >
 
                             <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -1253,13 +1253,14 @@
             });
 
             // check if a user is interested in a sun panel
-            $(document).change('#sun_panel_interested', function() {
-                var interested = $('#sun_panel_interested option:selected').val();
+            $(document).change('#service_6', function() {
+                console.log('ooke')
+                var interested = $('#service_6').val();
 
-                if(interested == 1 || interested == 2) {
-                    $('#sun_panel_placed_date_element').show();
+                if(interested >= 0) {
+                    $('#6-extra').show();
                 } else {
-                    $('#sun_panel_placed_date_element').hide();
+                    $('#6-extra').show();
                 }
 
             });

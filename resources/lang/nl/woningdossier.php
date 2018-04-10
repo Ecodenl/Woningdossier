@@ -16,6 +16,11 @@ return [
             'unknown' => 'Onbekend',
             'mostly' => 'Gedeeltelijk',
         ],
+        'option' => [
+            'yes' => 'Ja',
+            'no' => 'Nee',
+            'unknown' => 'Onbekend',
+        ],
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -210,6 +215,22 @@ return [
 		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
 	            ],
             ],
+
+			'floor-insulation' => [
+				'title' => 'Vloerisolatie',
+				'floor-insulation' => 'U hebt de volgende isolatie ingevuld voor de vloer weet u nu meer? Pas de waarde dan hier aan',
+				'has-crawlspace' => [
+					'title' => 'Heeft deze woning een kruipruimte',
+					'no-crawlspace' => 'De vloer kan alleen van boven af geïsoleerd worden. Let op de hoogtes bij deuren en bij de trap. Vraag om aanvullend advies.',
+				],
+				'crawlspace-access' => [
+					'title' => 'Is de kruipruimte toegankelijk?',
+					'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
+				],
+				'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
+				'floor-surface-comparable' => 'Het vloeroppervlak van vergelijkbare woningen is :surface, klopt dit oppervlak ? Zo niet, wijzig het dan hier.',
+				'floor-best-insulation' => 'De vloer kan het beste op de volgende manier geïsoleerd worden:'
+			],
 		],
 	],
 ];

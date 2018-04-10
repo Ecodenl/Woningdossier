@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHouseFramesTable extends Migration
+class CreatePaintworkStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateHouseFramesTable extends Migration
      */
     public function up()
     {
-        Schema::create('house_frames', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value');
-            $table->timestamps();
+        Schema::create('paintwork_statuses', function (Blueprint $table) {
+	        $table->increments('id');
+	        $table->uuid('name');
+	        $table->integer('calculate_value')->nullable();
+	        $table->integer('order');
+	        $table->timestamps();
         });
     }
 
@@ -28,6 +29,6 @@ class CreateHouseFramesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('house_frames');
+        Schema::dropIfExists('paintwork_statuses');
     }
 }

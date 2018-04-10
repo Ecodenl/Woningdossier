@@ -132,8 +132,7 @@ return [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
                     'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
                     'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
-                    'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
-                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
+	                'facade-surface' => 'Geveloppervlakte van de woning',
                 ],
 
 	            'insulation-advice' => [
@@ -194,25 +193,23 @@ return [
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 
-                'windows-surface' => [
-                    'comparable-houses' => 'Vergelijkbare huizen hebben :m2 m<sup>2</sup>',
-                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als u het niet weer laat u dit veld vrij.'
-                ],
+                'facade-surface' => 'Geveloppervlakte van de woning',
+                'windows-surface' => 'Totale raamoppervlakte van de woning',
 
                 'paint-work' => [
                     'title' => 'Vragen over het schilderwerk',
                     'which-frames' => 'Welke kozijnen heeft uw huis?',
-                    'other-wood-elements' => [
-                        'title' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
-                        'element0' => 'Dakranden / boeidelen',
-                        'element1' => 'Dakkapellen',
-                        'element2' => 'Gevelbekleding',
-                    ],
+                    'other-wood-elements' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
                     'last-paintjob' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
-            ]
+
+	            'taking-into-account' => [
+	            	'paintwork' => 'Indicatieve kosten schilderwerk',
+		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
+	            ],
+            ],
 		],
 	],
 ];

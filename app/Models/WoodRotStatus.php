@@ -5,9 +5,7 @@ namespace App\Models;
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
-class InsulatingGlazing extends Model
+class WoodRotStatus extends Model
 {
-
-	use TranslatableTrait;
-
+    use TranslatableTrait;
 }

@@ -121,6 +121,87 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
+	        [ // stap: isolerende beglazing
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Glas in lood vervangen',
+		        ],
+		        'application' => 'replace',
+		        'costs' => 150, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 40,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [ // stap: isolerende beglazing
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Plaatsen van HR++ glas (alleen het glas)',
+		        ],
+		        'application' => 'place',
+		        'costs' => 144, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 40,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [ // stap: isolerende beglazing
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Plaatsen van HR++ glas (inclusief kozijn)',
+		        ],
+		        'application' => 'place',
+		        'costs' => 550, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 40,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [ // stap: isolerende beglazing
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Plaatsen van drievoudige HR beglazing (inclusief kozijn)',
+		        ],
+		        'application' => 'place',
+		        'costs' => 700, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 40,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Kierdichting verbeteren',
+		        ],
+		        'application' => 'place',
+		        'costs' => 400, // euro
+		        'cost_unit' => [
+			        'nl' => 'per stuk',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 15,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+
 
 	        // add more energiebesparende maatregelen here!
 
@@ -187,6 +268,22 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        ],
 		        'minimal_costs' => 350,
 		        'maintenance_interval' => 10,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Schilderwerk houten geveldelen',
+		        ],
+		        'application' => 'place',
+		        'costs' => 140, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 400,
+		        'maintenance_interval' => 7,
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],

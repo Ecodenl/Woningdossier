@@ -18,7 +18,7 @@ class CreateElementValuesTable extends Migration
             $table->integer('element_id')->unsigned();
             $table->foreign('element_id')->references('id')->on('elements')->onDelete('restrict');
             $table->uuid('value');
-            $table->integer('calculate_value')->unsigned()->nullable();
+            $table->float('calculate_value')->nullable();
             $table->integer('order');
             $table->timestamps();
         });

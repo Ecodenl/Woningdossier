@@ -54,7 +54,10 @@ class GeneralDataController extends Controller
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
         $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
-        $elements = Element::orderBy('order')->get();
+        $elements = Element::whereIn('short', [
+        	'living-rooms-windows', 'sleeping-rooms-windows',
+	        'wall-isolation', 'floor-isolation', 'roof-isolation',
+	        ])->orderBy('order')->get();
 
 
         $insulations = PresentWindow::all();
@@ -168,59 +171,6 @@ class GeneralDataController extends Controller
                 'motivation_extra' => $request->get('motivation_extra'),
             ]
         );
-
-
-
-	    /*
-        // Retrieve information about the building
-        $buildingType = $request->building_type;
-        $userSurface = $request->user_surface;
-        $roofLayers = $request->roof_layers;
-        $roofType = $request->roof_type;
-        $isMonument = $request->is_monument == 1 ? 1 : 0;
-        $buildingYear = $request->what_building_year;
-        $currentEnergyLabel = $request->current_energy_label;
-
-        // Retrieve values off the energy-saving-measures
-        $facadeInsulation = $request->facade_insulation;
-        $floorInsulation = $request->floor_insulation;
-        $HrCvBoiler = $request->hr_cv_boiler;
-        $sunPanels = $request->sun_panel;
-        $monovalentHeatpump = $request->monovalent_heatpump;
-        $houseVentilation = $request->house_ventilation;
-        $windowsInLivingSpaces = $request->window_in_living_space;
-        $windowsInSleepingSpaces = $request->window_in_sleeping_spaces;
-        $roofIsolation = $request->roof_insulation;
-        $hybridHeatpump = $request->hybrid_heatpump;
-        $sunPanelPlacedDate = $request->sun_panel_placed_date;
-        $sunBoiler = $request->sun_boiler;
-        $houseVentilationPlacedDate = $request->house_ventilation_placed_date;
-        // Retrieve the "interested in" from the above values ^
-        $interestedFacadeInsulation = $request->interested['facade_insulation'];
-        $interestedFloorInsulation = $request->interested['floor_insulation'];
-        $interestedHrCvBoiler = $request->interested['hr_cv_boiler'];
-        $interestedSunPanels = $request->interested['sun_panel'];
-        $interestedMonovalentHeatpump = $request->interested['monovalent_heatpump'];
-        $interestedHouseVentilation = $request->interested['house_ventilation'];
-        $interestedWindowsInLivingSpaces = $request->interested['windows_in_living_space'];
-        $interestedWindowsInSleepingSpaces = $request->interested['windows_in_sleeping_spaces'];
-        $interestedRoofIsolation = $request->interested['roof_insulation'];
-        $interestedHybridHeatpump = $request->interested['hybrid_heatpump'];
-        $interestedSunBoiler = $request->interested['sun_boiler'];
-
-        // Retrieve the info about the energy consumption in the building
-        $totalCitizens = $request->total_citizens;
-        $cookedOnGas = $request->cooked_on_gas;
-        $thermostatHighest = $request->thermostat_highest;
-        $thermostatLowest = $request->thermostat_lowest;
-        $themostatMaxHourOnHighest = $request->max_hours_thermostat_highest;
-        $situationFirstFloor = $request->situation_first_floor;
-        $situationSecondFloor = $request->situation_second_floor;
-        $comfortNiveauWarmTapWater = $request->comfortniveau_warm_tapwater;
-        $pastYearElectricityUsage = $request->electricity_consumption_past_year;
-        $pastYearGasUsage = $request->gas_usage_past_year;
-*/
-        // TODO: Save the collected data
 
 	    // Save progress
 	    \Auth::user()->complete($this->step);

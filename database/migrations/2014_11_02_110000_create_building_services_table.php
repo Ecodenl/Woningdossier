@@ -19,11 +19,13 @@ class CreateBuildingServicesTable extends Migration
             $table->integer('building_id')->unsigned()->nullable()->default(null);
             $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
 
-            $table->integer('measure_id')->unsigned()->nullable()->default(null);
-            $table->foreign('measure_id')->references('id')->on('measures') ->onDelete('restrict');
+	        $table->integer('service_id')->unsigned();
+	        $table->foreign('service_id')->references('id')->on('services')->onDelete('restrict');
 
-            $table->integer('service_type_id')->unsigned()->nullable()->default(null);
-            $table->foreign('service_type_id')->references('id')->on('service_types') ->onDelete('restrict');
+	        $table->integer('service_value_id')->unsigned();
+	        $table->foreign('service_value_id')->references('id')->on('service_values')->onDelete('restrict');
+
+	        $table->text('extra')->nullable();
 
             $table->timestamps();
         });

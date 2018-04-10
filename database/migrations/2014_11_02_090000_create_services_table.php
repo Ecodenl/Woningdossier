@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInsulatingGlazingsTable extends Migration
+class CreateServicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,15 @@ class CreateInsulatingGlazingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('insulating_glazings', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value')->nullable();
+            $table->uuid('name');
+
+            $table->integer('service_type_id')->unsigned();
+            $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('restrict');
+
+	        $table->integer('order');
+	        $table->uuid('info');
             $table->timestamps();
         });
     }
@@ -28,6 +33,6 @@ class CreateInsulatingGlazingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insulating_glazings');
+        Schema::dropIfExists('services');
     }
 }

@@ -272,6 +272,22 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Schilderwerk houten geveldelen',
+		        ],
+		        'application' => 'place',
+		        'costs' => 140, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 400,
+		        'maintenance_interval' => 7,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
 
 			// add more onderhoudsmaatregelen here!
 

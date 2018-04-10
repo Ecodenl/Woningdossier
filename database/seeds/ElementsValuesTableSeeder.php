@@ -296,35 +296,35 @@ class ElementsValuesTableSeeder extends Seeder
 					        'nl' => 'Alleen houten kozijnen',
 				        ],
 				        'order' => 0,
-				        'calculate_value' => 1,
+				        'calculate_value' => 1, // 100%
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Houten kozijnen en enkele andere kozijnen (bijvoorbeeld kunststof of aluminium)',
 				        ],
 				        'order' => 1,
-				        'calculate_value' => 2,
+				        'calculate_value' => 0.7, // 70%
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Enkele houten kozijnen, voornamelijk kunststof en of aluminium',
 				        ],
 				        'order' => 2,
-				        'calculate_value' => 3,
+				        'calculate_value' => 0.3, // 30%
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Geen houten kozijnen',
 				        ],
 				        'order' => 3,
-				        'calculate_value' => 4,
+				        'calculate_value' => 0, // 0%
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Overig',
 				        ],
 				        'order' => 4,
-				        'calculate_value' => 5,
+				        'calculate_value' => 0, // 0%
 			        ],
 		        ],
 	        ],
@@ -344,21 +344,21 @@ class ElementsValuesTableSeeder extends Seeder
 					        'nl' => 'Dakranden / boeidelen',
 				        ],
 				        'order' => 0,
-				        'calculate_value' => 1,
+				        'calculate_value' => 10, // m2
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Dakkapellen',
 				        ],
 				        'order' => 1,
-				        'calculate_value' => 2,
+				        'calculate_value' => 2.5, // m2
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Gevelbekleding',
 				        ],
 				        'order' => 2,
-				        'calculate_value' => 3,
+				        'calculate_value' => 5, // m2
 			        ],
 		        ],
 	        ],

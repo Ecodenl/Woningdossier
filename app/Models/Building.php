@@ -106,4 +106,11 @@ class Building extends Model
 	public function currentInsulatedGlazing(){
 		return $this->hasMany(BuildingInsulatedGlazing::class);
 	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function currentPaintworkStatus(){
+		return $this->hasOne(BuildingPaintworkStatus::class);
+	}
 }

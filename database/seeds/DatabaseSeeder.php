@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 	    $this->call(MeasuresTableSeeder::class);
 	    $this->call(ExampleBuildingsTableSeeder::class);
 	    $this->call(InterestsTableSeeder::class);
+	    $this->call(InsulatingGlazingsTableSeeder::class);
 		$this->call(ElementsValuesTableSeeder::class);
 	    $this->call(MotivationsTableSeeder::class);
 		$this->call(BuildingTypeElementMaxSavingTableSeeder::class);
@@ -35,7 +36,9 @@ class DatabaseSeeder extends Seeder
 		$this->call(FacadeDamagedPaintworksTableSeeder::class);
 		$this->call(FacadePlasteredSurfacesTableSeeder::class);
 		$this->call(PriceIndexingsTableSeeder::class);
-
+		$this->call(KeyFigureTemperaturesTableSeeder::class);
+		$this->call(PaintworkStatusesTableSeeder::class);
+		$this->call(WoodRotStatusesTableSeeder::class);
 
     	//
 	    $this->call(IndustriesTableSeeder::class);
@@ -59,6 +62,5 @@ class DatabaseSeeder extends Seeder
 
         $this->call(VentilationsTableSeeder::class);
         $this->call(ComfortLevelTapWatersTableSeeder::class);
-        $this->call(InsulatingGlazingsTableSeeder::class);
     }
 }

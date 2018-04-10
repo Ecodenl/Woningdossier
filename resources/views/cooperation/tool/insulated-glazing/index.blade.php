@@ -46,7 +46,7 @@
                     <div class=" col-sm-3 ">
                         <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') ? ' has-error' : '' }}">
                             <label class=" control-label">
-                                <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulated_glazing_id-info"
+                                <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                             </label>
@@ -156,7 +156,7 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.moving-parts-quality')
                         </label>
 
-                        <select class="form-control" name="buillding_elements[crack-sealing]">
+                        <select class="form-control" name="building_elements[crack-sealing]">
                             @foreach($crackSealing->values()->orderBy('order')->get() as $sealingValue)
                                 <option @if($sealingValue->id == old('building_elements.crack-sealing') || ($building->getBuildingElement('crack-sealing') instanceof \App\Models\BuildingElement && $building->getElement('crack-sealing')->element_value_id == $sealingValue->id)) selected @endif value="{{ $sealingValue->id }}">{{ $sealingValue->value }}</option>
                             @endforeach
@@ -245,14 +245,14 @@
 
                         @if ($errors->has('building_elements.wood-elements'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('building-elements.wood-elements') }}</strong>
+                                <strong>{{ $errors->first('building_elements.wood-elements') }}</strong>
                             </span>
                         @endif
                     </div>
                     <div class="form-group add-space">
                         @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
                             <label for="building_elements.wood-elements.{{ $woodElement->id }}" class="checkbox-inline">
-                                <input type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" name="building_elements.wood-elements[{{ $woodElement->id }}]">
+                                <input type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" name="building_elements[wood-elements][{{ $woodElement->id }}]">
                                 {{ $woodElement->value }}
                             </label>
                         @endforeach
@@ -262,45 +262,45 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space {{ $errors->has('last_paint_job') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.last_painted_year') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#last-paint-job-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="collapse" data-target="#building_paintwork_statuses.last_painted_year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
                         </label>
 
-                        <input type="text" name="last_paint_job" class="form-control">
+                        <input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
 
-                        <div id="last-paint-job-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="building_paintwork_statuses.last_painted_year" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('last_paint_job'))
+                        @if ($errors->has('building_paintwork_statuses.last_painted_year'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('last_paint_job') }}</strong>
+                            <strong>{{ $errors->first('building_paintwork_statuses.last_painted_year') }}</strong>
                         </span>
                         @endif
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group add-space {{ $errors->has('paint_damage_visible') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.paintwork_status_id') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#paint-damage-visible-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="collapse" data-target="#building_paintwork_statuses.paintwork_status_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.paint-damage-visible')
                         </label>
 
-                        <select class="form-control" name="paint_damage_visible">
-                            @foreach($damageToPaintWorks as $damageToPaintWork)
-                                <option @if($damageToPaintWork->id == old('wood_root_visible')) selected @endif value="{{$damageToPaintWork->id}}">@lang($damageToPaintWork->name)</option>
+                        <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
+                            @foreach($paintworkStatuses as $paintworkStatus)
+                                <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->paintwork_status_id == $paintworkStatus->id) ) selected @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
                             @endforeach
                         </select>
 
-                        <div id="paint-damage-visible-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="building_paintwork_statuses.paintwork_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('paint_damage_visible'))
+                        @if ($errors->has('building_paintwork_statuses.paintwork_status_id'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('paint_damage_visible') }}</strong>
+                            <strong>{{ $errors->first('building_paintwork_statuses.paintwork_status_id') }}</strong>
                         </span>
                         @endif
                     </div>
@@ -309,25 +309,25 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space {{ $errors->has('wood_root_visible') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.wood_rot_status_id') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#wood-rot-visible-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="collapse" data-target="#building_paintwork_statuses.wood_rot_status_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.wood-rot-visible')
                         </label>
 
-                        <select class="form-control" name="wood_root_visible">
-                            @foreach($damageToPaintWorks as $damageToPaintWork)
-                                <option @if($damageToPaintWork->id == old('wood_root_visible')) selected @endif value="{{$damageToPaintWork->id}}">@lang($damageToPaintWork->name)</option>
+                        <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
+                            @foreach($woodRotStatuses as $woodRotStatus)
+                                <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>
                             @endforeach
                         </select>
 
-                        <div id="wood-rot-visible-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="building_paintwork_statuses.wood_rot_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('wood_root_visible'))
+                        @if ($errors->has('building_paintwork_statuses.wood_rot_status_id'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('wood_root_visible') }}</strong>
+                                <strong>{{ $errors->first('building_paintwork_statuses.wood_rot_status_id') }}</strong>
                             </span>
                         @endif
                     </div>
@@ -351,3 +351,67 @@
     </form>
 
 @endsection
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
+                /*if ($('#is-painted').is(':checked')) {
+                    $('#painted-options').show();
+                } else {
+                    $('#painted-options').hide();
+                }*/
+
+                var form = $(this).closest("form").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('cooperation.tool.insulated-glazing.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    data: form,
+                    success: function (data) {
+
+                        /*
+                        if (data.insulation_advice){
+                            $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+                        }
+                        if (data.savings_gas){
+                            $("input#savings_gas").val(Math.round(data.savings_gas));
+                        }
+                        if (data.savings_co2){
+                            $("input#savings_co2").val(Math.round(data.savings_co2));
+                        }
+                        if (data.savings_money){
+                            $("input#savings_money").val(Math.round(data.savings_money));
+                        }
+                        if (data.cost_indication){
+                            $("input#cost_indication").val(Math.round(data.cost_indication));
+                        }
+                        if (data.interest_comparable){
+                            $("input#interest_comparable").val(data.interest_comparable);
+                        }
+                        if (data.repair_joint){
+                            $("input#repair_joint").val(Math.round(data.repair_joint.costs));
+                            $("span#repair_joint_year").html("(in " + data.repair_joint.year + ")");
+                        }
+                        if (data.clean_brickwork){
+                            $("input#clean_brickwork").val(Math.round(data.clean_brickwork.costs));
+                            $("span#clean_brickwork_year").html("(in " + data.clean_brickwork.year + ")");
+                        }
+                        if (data.impregnate_wall){
+                            $("input#impregnate_wall").val(Math.round(data.impregnate_wall.costs));
+                            $("span#impregnate_wall_year").html("(in " + data.impregnate_wall.year + ")");
+                        }
+                        if (data.paint_wall){
+                            $("input#paint_wall").val(Math.round(data.paint_wall.costs));
+                            $("span#paint_wall_year").html("(in " + data.paint_wall.year + ")");
+                        }
+                        */
+                        console.log(data);
+                    }
+                });
+            });
+            // Trigger the change event so it will load the data
+            $("select, input[type=radio], input[type=text]").trigger('change');
+
+        });
+    </script>
+@endpush

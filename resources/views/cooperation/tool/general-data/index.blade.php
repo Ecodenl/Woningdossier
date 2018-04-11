@@ -658,12 +658,6 @@
                 language: "nl"
             });
 
-            // get the house ventilation input name and add [extra]
-            var serviceName = $('#service_5').attr('name') + '[extra]';
-            // append the extra field after the service
-            {{--$('#service_row_5').append("<div class='col-sm-6' id='service_5_extra'>    <div class='form-group add-space{{ $errors->has('service.5.extra') ? ' has-error' : '' }}'><label for='service_5_extra' class=' control-label'><i data-toggle='collapse' data-target='#sun-panel-placed-date-info' class='glyphicon glyphicon-info-sign glyphicon-padding collapsed' aria-expanded='false'></i>@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')</label><input type='date' name='5[extra]' id='service_5_extra' class='form-control' value='{{ old('service.5.extra') }}'><div id='sun-panel-placed-date-info' class='collapse alert alert-info remove-collapse-space alert-top-space'>And I would like to have it too...</div>@if ($errors->has('service.5.extra'))<span class='help-block'><strong>{{ $errors->first('service.5.extra') }}</strong></span>@endif</div></div>");--}}
-
-
             // Check if the house ventialtion is mechanic
             $(document).change('#service_5', function () {
 
@@ -691,7 +685,7 @@
 
             });
 
-            $('#service_5 #sun_panel_interested').trigger('change')
+            $('#service_5, #service_6').trigger('change')
         });
     </script>
 @endpush

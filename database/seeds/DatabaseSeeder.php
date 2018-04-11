@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(KeyFigureTemperaturesTableSeeder::class);
 		$this->call(PaintworkStatusesTableSeeder::class);
 		$this->call(WoodRotStatusesTableSeeder::class);
-
+		$this->call(CrawlspaceAccessesTableSeeder::class);
 
 
 
@@ -59,7 +59,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(VentilationsTableSeeder::class);
         $this->call(ComfortLevelTapWatersTableSeeder::class);
-	    $this->call(CrawlSpaceHeightsTableSeeder::class);
 
     }
 }

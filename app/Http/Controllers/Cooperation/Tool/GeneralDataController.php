@@ -55,7 +55,7 @@ class GeneralDataController extends Controller
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
         	'living-rooms-windows', 'sleeping-rooms-windows',
-	        'wall-isolation', 'floor-isolation', 'roof-isolation',
+	        'wall-insulation', 'floor-insulation', 'roof-insulation',
 	        ])->orderBy('order')->get();
 
 

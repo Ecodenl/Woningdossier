@@ -422,7 +422,7 @@
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
-                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.insulated-glazing.store', [ 'cooperation' => $cooperation ]) }}">@lang('default.buttons.prev')</a>
                         <button type="submit" class="disabled btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>

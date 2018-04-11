@@ -77,10 +77,15 @@ class Building extends Model
 		return $this->hasMany(BuildingElement::class);
 	}
 
+	/**
+	 * @param $short
+	 *
+	 * @return BuildingElement|null
+	 */
 	public function getBuildingElement($short){
 		return $this->buildingElements()
 			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-			->where('e.short', $short)->first();
+			->where('e.short', $short)->first(['building_elements.*']);
 	}
 
 	/**

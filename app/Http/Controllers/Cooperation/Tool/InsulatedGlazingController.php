@@ -29,24 +29,14 @@ use App\Http\Controllers\Controller;
 class InsulatedGlazingController extends Controller
 {
 
-	public function __construct(Request $request) {
-		$slug = str_replace('/tool/', '', $request->getRequestUri());
-		$this->step = Step::where('slug', $slug)->first();
-		$myStep = Step::where('slug', $this->step->slug)->first();
-		$prev = Step::where('order', $myStep->order - 1)->first();
-		if (!\Auth::user()->hasCompleted($prev)){
-			return redirect('/tool/' . $prev->slug . '/')->with(['cooperation' => $request->get('cooperation')]);
-		}
-	}
-
     /**
      * Display a listing of the resource.s
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-	    /**
+    	/**
 	     * @var Building $building
 	     */
     	$building = \Auth::user()->buildings->first();
@@ -255,7 +245,8 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-        $cooperation = Cooperation::all();
+
+        $cooperation = Cooperation::find($request->session()->get('cooperation'));
         $steps = Step::orderBy('order')->get();
 
         return redirect()->route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation]);

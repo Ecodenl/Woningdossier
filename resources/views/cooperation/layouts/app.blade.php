@@ -78,7 +78,7 @@
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
+                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
                                 {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
                                 <li>
                                     <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"

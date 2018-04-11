@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCrawlSpaceHeightsTable extends Migration
+class CreateCrawlspaceAccessesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateCrawlSpaceHeightsTable extends Migration
      */
     public function up()
     {
-        Schema::create('crawl_space_heights', function (Blueprint $table) {
+        Schema::create('crawlspace_accesses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value');
+	        $table->uuid('name');
+	        $table->integer('calculate_value')->nullable();
+	        $table->integer('order');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateCrawlSpaceHeightsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('crawl_space_heights');
+        Schema::dropIfExists('crawlspace_accesses');
     }
 }

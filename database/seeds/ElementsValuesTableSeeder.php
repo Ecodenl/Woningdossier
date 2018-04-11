@@ -90,7 +90,7 @@ class ElementsValuesTableSeeder extends Seeder
 		        'names' => [
 			        'nl' => 'Gevelisolatie',
 		        ],
-		        'short' => 'wall-isolation',
+		        'short' => 'wall-insulation',
 		        'service_type' => 'Heating',
 		        'order' => 2,
 		        'info' => [
@@ -127,17 +127,10 @@ class ElementsValuesTableSeeder extends Seeder
 			        ],
 			        [
 				        'values' => [
-					        'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
-				        ],
-				        'order' => 4,
-				        'calculate_value' => 5,
-			        ],
-			        [
-				        'values' => [
 					        'nl' => 'Niet van toepassing',
 				        ],
 				        'order' => 5,
-				        'calculate_value' => 6,
+				        'calculate_value' => 5,
 			        ],
 		        ],
 	        ],
@@ -145,7 +138,7 @@ class ElementsValuesTableSeeder extends Seeder
 		        'names' => [
 			        'nl' => 'Vloerisolatie',
 		        ],
-		        'short' => 'floor-isolation',
+		        'short' => 'floor-insulation',
 		        'service_type' => 'Heating',
 		        'order' => 3,
 		        'info' => [
@@ -157,36 +150,35 @@ class ElementsValuesTableSeeder extends Seeder
 					        'nl' => 'Onbekend',
 				        ],
 				        'order' => 0,
+				        'calculate_value' => 1,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Geen isolatie',
 				        ],
 				        'order' => 1,
+				        'calculate_value' => 2,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Matige isolatie (tot 8 cm isolatie)',
 				        ],
 				        'order' => 2,
+				        'calculate_value' => 3,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
 				        ],
 				        'order' => 3,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => 'Goede isolatie (8 tot 20 cm isolatie)',
-				        ],
-				        'order' => 4,
+				        'calculate_value' => 4,
 			        ],
 			        [
 				        'values' => [
 					        'nl' => 'Niet van toepassing',
 				        ],
 				        'order' => 5,
+				        'calculate_value' => 5,
 			        ],
 		        ],
 	        ],
@@ -194,7 +186,7 @@ class ElementsValuesTableSeeder extends Seeder
 		        'names' => [
 			        'nl' => 'Dakisolatie',
 		        ],
-		        'short' => 'roof-isolation',
+		        'short' => 'roof-insulation',
 		        'service_type' => 'Heating',
 		        'order' => 4,
 		        'info' => [
@@ -375,14 +367,14 @@ class ElementsValuesTableSeeder extends Seeder
 		        'element_values' => [
 			        [
 				        'values' => [
-					        'nl' => 'Best hoog (meer dan 50 cm)',
+					        'nl' => 'Best hoog (meer dan 45 cm)',
 				        ],
 				        'order' => 0,
-				        'calculate_value' => 50, // cm
+				        'calculate_value' => 45, // cm
 			        ],
 			        [
 				        'values' => [
-					        'nl' => 'Laag (tussen 30 en 50 cm)',
+					        'nl' => 'Laag (tussen 30 en 45 cm)',
 				        ],
 				        'order' => 1,
 				        'calculate_value' => 30, // m2

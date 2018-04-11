@@ -25,24 +25,14 @@ use Illuminate\Support\Facades\Auth;
 class WallInsulationController extends Controller
 {
 
-	public function __construct(Request $request) {
-		$slug = str_replace('/tool/', '', $request->getRequestUri());
-		$this->step = Step::where('slug', $slug)->first();
-		$myStep = Step::where('slug', $this->step->slug)->first();
-		$prev = Step::where('order', $myStep->order - 1)->first();
-		if (!\Auth::user()->hasCompleted($prev)){
-			return redirect('/tool/' . $prev->slug . '/')->with(['cooperation' => $request->get('cooperation')]);
-		}
-	}
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $steps = Step::orderBy('order')->get();
+    	$steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();
 		// todo should use short here
@@ -71,6 +61,7 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
+    	$this->checkAllowed($request);
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
         $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');
@@ -81,9 +72,6 @@ class WallInsulationController extends Controller
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
-        foreach ($wallInsulationQualities as $wallInsulationQuality) {
-            $wallInsulationQuality = $wallInsulationQuality;
-        }
 
         // get the user buildingfeature
         $user = Auth::user();
@@ -92,7 +80,7 @@ class WallInsulationController extends Controller
 
         // Update the building feature table with some fresh data
         $buildingFeatures->update([
-            'element_values' => $wallInsulationQuality,
+            'element_values' => $wallInsulationQualities,
             'facade_plastered_surface_id' => $plasteredWallSurface,
             'wall_joints' => $wallJoints,
             'cavity_wall' => $cavityWall,
@@ -111,7 +99,7 @@ class WallInsulationController extends Controller
     }
 
     public function calculate(Request $request){
-	    /**
+    	/**
 	     * @var Building $building
 	     */
 	    $user = \Auth::user();

@@ -228,8 +228,13 @@ return [
 					'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
 				],
 				'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
-				'floor-surface-comparable' => 'Het vloeroppervlak van vergelijkbare woningen is :surface, klopt dit oppervlak ? Zo niet, wijzig het dan hier.',
-				'floor-best-insulation' => 'De vloer kan het beste op de volgende manier geïsoleerd worden:'
+				'floor-surface' => 'Vloeroppervlak van de woning',
+				'insulation-advice' => [
+					'text' => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
+					'floor' => 'Vloerisolatie',
+					'bottom' => 'Bodemisolatie',
+					'research' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
+				],
 			],
 		],
 	],

@@ -40,14 +40,20 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
             	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
-                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
-                Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
+                Route::group(['middleware' => 'filled-step:general-data'], function(){
+                	// Wall Insulation
+	                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
+	                Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
 
-				Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-	            Route::post('insulated-glazing/calculate', 'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
+	                // Insulated glazing
+	                Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+	                Route::post('insulated-glazing/calculate', 'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
 
-				Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-	            Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+	                // Floor Insulation
+	                Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
+	                Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+
+                });
 
 
 	            Route::resource('roof-insulation', 'RoofInsulationController');

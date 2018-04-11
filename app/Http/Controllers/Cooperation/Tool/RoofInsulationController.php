@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\Building;
+use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\Quality;
+use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use Illuminate\Http\Request;
@@ -18,26 +22,32 @@ class RoofInsulationController extends Controller
      */
     public function index()
     {
-        $qualities = Quality::all();
-        $roofTypes = RoofType::all();
-        $steps = Step::orderBy('order')->get();
+	    /** @var Building $building */
+	    $building = \Auth::user()->buildings()->first();
+
+		/** @var BuildingFeature $features */
+	    $features = $building->buildingFeatures;
+	    $roofTypes = RoofType::all();
+	    $steps = Step::orderBy('order')->get();
+	    $currentRoofTypes = $building->roofTypes;
+	    $roofTileStatuses = RoofTileStatus::all();
+
+
+	    //$buildingInsulation = $building->getBuildingElement('roof-insulation');
+	    //$roofInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
+
+        //$qualities = Quality::all();
+
         $heatings = BuildingHeating::all();
 
         // If the answer's modal is present replace the answer with the model thing thing
         $answer = 'Waarde.';
 
 
-        return view('cooperation.tool.roof-insulation.index', compact('qualities', 'roofTypes', 'steps', 'answer', 'heatings'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('cooperation.tool.roof-insulation.index', compact(
+        	'roofTypes', 'currentRoofTypes', 'features',
+        	'steps',
+        	'answer', 'heatings'));
     }
 
     /**
@@ -51,48 +61,4 @@ class RoofInsulationController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

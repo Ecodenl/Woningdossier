@@ -118,4 +118,14 @@ class Building extends Model
 	public function currentPaintworkStatus(){
 		return $this->hasOne(BuildingPaintworkStatus::class);
 	}
+
+	/**
+	 * Returns all roof types of this building. Get the primary via the
+	 * building features.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function roofTypes(){
+		return $this->hasMany(BuildingRoofType::class);
+	}
 }

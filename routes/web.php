@@ -57,6 +57,9 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 
 	            Route::resource('roof-insulation', 'RoofInsulationController');
+	            Route::post('roof-insulation/calculate', 'RoofInsulationController@calculate')->name('roof-insulation.calculate');
+
+
 				Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController');
 				Route::resource('heat-pump', 'HeatPumpController');
 				Route::resource('solar-panels', 'SolarPanelsController');

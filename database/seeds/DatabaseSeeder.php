@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(PaintworkStatusesTableSeeder::class);
 		$this->call(WoodRotStatusesTableSeeder::class);
 		$this->call(CrawlspaceAccessesTableSeeder::class);
-
+		$this->call(RoofTileStatusesTableSeeder::class);
 
 
 

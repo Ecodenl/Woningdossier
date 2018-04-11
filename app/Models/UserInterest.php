@@ -56,11 +56,26 @@ class UserInterest extends Model
 		return $interests;
 	}
 
+	public function getInterestsInRoofTypes(){
+		$interests = [];
+		$serviceInterests = $this->where('interested_in_type', 'roof_type')->get();
+		/** @var self $serviceInterest */
+		foreach($serviceInterests as $serviceInterest){
+			$serviceInterest->interested_in_id;
+			$element = RoofType::find($serviceInterest->interested_in_id);
+			if ($element instanceof RoofType){
+				$interests[]= $element;
+			}
+		}
+		return $interests;
+	}
+
 	public function getInterests(){
 		return [
 			'service' => $this->getInterestsInServices(),
 			'element' => $this->getInterestsInElements(),
 			'measure_application' => $this->getInterestInMeasureApplications(),
+			'roof_type' => $this->getInterestsInRoofTypes(),
 		];
 	}
 }

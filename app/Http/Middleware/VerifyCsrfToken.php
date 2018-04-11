@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         'tool/wall-insulation/calculate',
 	    'tool/insulated-glazing/calculate',
 	    'tool/floor-insulation/calculate',
+	    'tool/roof-insulation/calculate',
     ];
 }

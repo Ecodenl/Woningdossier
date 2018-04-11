@@ -201,6 +201,71 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Isolatie hellend dak van binnen uit',
+		        ],
+		        'application' => 'place',
+		        'costs' => 90, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 650, // euro
+		        'maintenance_interval' => 100,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Isolatie hellend dak met vervanging van de dakpannen',
+		        ],
+		        'application' => 'replace',
+		        'costs' => 65, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 1200, // euro
+		        'maintenance_interval' => 100,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Isolatie plat dak op huidige dakbedekking',
+		        ],
+		        'application' => 'place',
+		        'costs' => 40, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 350, // euro
+		        'maintenance_interval' => 25,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Isolatie plat dak met vervanging van de dakbedekking',
+		        ],
+		        'application' => 'replace',
+		        'costs' => 30, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 350, // euro
+		        'maintenance_interval' => 50,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+
 
 
 	        // add more energiebesparende maatregelen here!

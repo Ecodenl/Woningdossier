@@ -82,15 +82,28 @@ class GeneralDataFormRequest extends FormRequest
 
                 $parentServiceField = 'service.' . $serviceId;
 
+                // Find a service
+                $service = Service::find($serviceId);
+
                 // if the extra field has a value but the parent does not send them back
                 if (Request::input($parentServiceField, '') <= 0 && Request::input($serviceId.'.extra', '') != "") {
                     $validator->errors()->add($serviceId.'.extra', __('auth.general-data.may-not-be-filled'));
                 }
                 // This will check if the ventilation field and the date field are valid
                 // If the ventilation field value is not mechanic and the extra / date field is not empty return an error
-                // TODO: find a non hardcoded solution
-                else if (Request::input('service.5', '') != 16 || 18 && Request::input('5.extra', '') != "") {
-                    $validator->errors()->add('5.extra', __('auth.general-data.may-not-be-filled'));
+                if($service->short == "house-ventilation") {
+
+                    // The selected service, calculate value
+                    $currentServiceCalculateValue = $service->values()->find($serviceValueId)->calculate_value;
+                    // The extra field for the service field
+                    $serviceExtra = Request::input(''.$serviceId.'.extra', '');
+
+                    if ($currentServiceCalculateValue == 2  || $currentServiceCalculateValue == 4 && $serviceExtra != "") {
+                        // if the selected calculate value = 2 or 4 do nothing
+                    } else  {
+                        // throw error
+                        $validator->errors()->add(''.$serviceId.'.extra', __('auth.general-data.may-not-be-filled'));
+                    }
                 }
             }
         });

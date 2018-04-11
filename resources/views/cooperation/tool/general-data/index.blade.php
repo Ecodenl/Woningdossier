@@ -275,19 +275,19 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('service.'.$service->id) ? ' has-error' : '' }}">
-                        <label for="service_{{ $service->id }}" class="control-label">
+                        <label for="{{$service->short}}" class="control-label">
                             <i data-toggle="collapse" data-target="#service_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                             {{ $service->name }}
                         </label>
                         {{-- This will check if the service has values, if so we need an selectbox and ifnot textbox --}}
                         @if($service->values()->where('service_id', $service->id)->first() != null)
-                            <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}]">
+                            <select id="{{$service->short}}" class="form-control" name="service[{{ $service->id }}]">
                                 @foreach($service->values()->orderBy('order')->get() as $serviceValue)
-                                    <option @if($serviceValue->id == old('service['. $service->id.']')) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                    <option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                                 @endforeach
                             </select>
                         @else
-                            <input type="text" id="service_{{ $service->id }}" class="form-control" value="@if(old('service.'.$service->id)) {{old('service.'.$service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            <input type="text" id="{{$service->short}}" class="form-control" value="@if(old('service.'.$service->id)) {{old('service.'.$service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
                         @endif
 
                         <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -320,9 +320,9 @@
                 </div>
 
                 @if(strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 {{ $errors->has(''.$service->id.'.extra') ? ' show' : '' }}">
 
-                        <div id="{{$service->id.'-extra'}}" class="form-group add-space{{ $errors->has('house_ventilation_placed_date') ? ' has-error' : '' }}">
+                        <div id="{{$service->id.'-extra'}}" class="form-group add-space{{ $errors->has(''.$service->id.'.extra') ? ' has-error' : '' }}">
                             <label for="service_{{ $service->id }}" class="control-label">
                                 <i data-toggle="collapse" data-target="#service_{{ $service->id }}-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 @if(strpos($service->name, 'geventileerd'))
@@ -340,7 +340,7 @@
                             ?>
 
                             <div class="input-group date">
-                                <input type="text" class="form-control" name="{{$service->id.'[extra]'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                <input type="text" class="form-control" name="{{$service->id.'[extra]'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                             </div>
                             <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -659,33 +659,36 @@
             });
 
             // Check if the house ventialtion is mechanic
-            $(document).change('#service_5', function () {
+            $(document).change('#house-ventilation', function () {
 
-                console.log('changed');
-                // service 5 is the "Hoe word het huis geventileerd" question, this could change if question's get added or removed
-                var houseVentilation = $('#service_5 option:selected').val();
+                // Housse ventilation
+                var houseVentilation = $('#house-ventilation option:selected').text()
 
-                if (houseVentilation == 16 || houseVentilation == 18) {
-                    $('#5-extra').show();
+                // text wont change, id's will
+                if (houseVentilation == "Mechanisch" || houseVentilation == "Decentraal mechanisch") {
+                    $('#house-ventilation').parent().parent().next().next().show();
                 } else {
-                    $('#5-extra').hide();
+                    $('#house-ventilation').parent().parent().next().next().hide();
+                    $('#house-ventilation').parent().parent().next().next().find('input').val("")
                 }
             });
 
             // check if a user is interested in a sun panel
-            $(document).change('#service_6', function() {
-                console.log('ooke');
-                var interested = $('#service_6').val();
+            $(document).change('#total-sun-panels', function() {
+                var totalSunPanels = $('#total-sun-panels').val();
+                // var extraFieldSunPanel =  $('#total-sun-panels').parent().parent().next().next();
 
-                if(interested > 0) {
-                    $('#6-extra').show();
+                if(totalSunPanels > 0) {
+                    $('#total-sun-panels').parent().parent().next().next().show();
                 } else {
-                    $('#6-extra').hide();
+                    $('#total-sun-panels').parent().parent().next().next().hide();
+                    // Clear the value off the date
+                    $('#total-sun-panels').parent().parent().next().next().find('input').val("")
                 }
 
             });
 
-            $('#service_5, #service_6').trigger('change')
+            $('#house-ventilation, #total-sun-panels').trigger('change')
         });
     </script>
 @endpush

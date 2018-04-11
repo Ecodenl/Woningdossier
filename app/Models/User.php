@@ -172,11 +172,4 @@ class User extends Authenticatable
 		return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
 	}
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function interests(){
-		return $this->hasMany(UserInterest::class);
-	}
-
 }

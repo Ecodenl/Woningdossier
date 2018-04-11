@@ -82,6 +82,12 @@ class Building extends Model
 			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
 			->where('e.short', $short)->first();
 	}
+	
+	public function getBuildingService($short){
+		return $this->buildingServices()
+			->leftJoin('services as s', 'building_services.service_id', '=', 'e.id')
+			->where('e.short', $short)->first();
+	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany

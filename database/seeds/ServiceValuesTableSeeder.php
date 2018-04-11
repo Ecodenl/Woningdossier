@@ -16,6 +16,7 @@ class ServiceValuesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Hybride warmtepomp',
                 ],
+                'short' => 'hybrid-heat-pump',
                 'service_type' => 'Heating',
                 'order' => 0,
                 'info' => [
@@ -42,6 +43,7 @@ class ServiceValuesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Volledige warmtepomp',
                 ],
+                'short' => 'full-heat-pump',
                 'service_type' => 'Heating',
                 'order' => 0,
                 'info' => [
@@ -75,6 +77,7 @@ class ServiceValuesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Zonneboiler',
                 ],
+                'short' => 'sun-boiler',
                 'service_type' => 'Heating',
                 'order' => 0,
                 'info' => [
@@ -115,6 +118,7 @@ class ServiceValuesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'HR CV ketel',
                 ],
+                'short' => 'hr-boiler',
                 'service_type' => 'Heating',
                 'order' => 0,
                 'info' => [
@@ -188,6 +192,7 @@ class ServiceValuesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Hoe wordt het huis geventileerd ?',
                 ],
+                'short' => 'house-ventilation',
                 'service_type' => 'Ventilation',
                 'order' => 0,
                 'info' => [
@@ -235,6 +240,7 @@ class ServiceValuesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Aantal zonnepanelen',
                 ],
+                'short' => 'total-sun-panels',
                 'service_type' => 'Others',
                 'order' => 0,
                 'info' => [
@@ -277,6 +283,7 @@ class ServiceValuesTableSeeder extends Seeder
             if ($serviceType instanceof \stdClass) {
                 $serviceId = \DB::table( 'services' )->insertGetId( [
                     'name'            => $uuid,
+                    'short' => $service['short'],
                     'service_type_id' => $serviceType->id,
                     'order' => $service['order'],
                     'info' => $infoUuid,

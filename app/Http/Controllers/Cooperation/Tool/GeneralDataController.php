@@ -19,7 +19,6 @@ use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
-use App\Models\Quality;
 use App\Models\RoofType;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
@@ -56,13 +55,12 @@ class GeneralDataController extends Controller
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
         	'living-rooms-windows', 'sleeping-rooms-windows',
-	        'wall-isolation', 'floor-isolation', 'roof-isolation',
+	        'wall-insulation', 'floor-insulation', 'roof-insulation',
 	        ])->orderBy('order')->get();
 
 
         $insulations = PresentWindow::all();
         $houseVentilations = Ventilation::all();
-        $qualities = Quality::all();
         $buildingHeatings = BuildingHeating::all();
         $solarWaterHeaters = SolarWaterHeater::all();
         $centralHeatingAges = CentralHeatingAge::all();
@@ -79,7 +77,7 @@ class GeneralDataController extends Controller
         	'building',
         	'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildingTypes', 'interests', 'elements',
-	        'insulations','houseVentilations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
+	        'insulations','houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
             'steps', 'motivations', 'energyHabit'
         ));

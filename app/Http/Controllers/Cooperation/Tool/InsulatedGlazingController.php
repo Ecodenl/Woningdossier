@@ -12,35 +12,31 @@ use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Cooperation;
-//use App\Models\DamageToPaintWork;
 use App\Models\Element;
 use App\Models\ElementValue;
-use App\Models\HouseFrame;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
-use App\Models\MovingPartsOfWindowAndDoorIsolated;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
-use App\Models\WoodElement;
 use App\Models\WoodRotStatus;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class InsulatedGlazingController extends Controller
 {
+
     /**
      * Display a listing of the resource.s
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-	    /**
+    	/**
 	     * @var Building $building
 	     */
     	$building = \Auth::user()->buildings->first();
@@ -249,7 +245,8 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-        $cooperation = Cooperation::all();
+
+        $cooperation = Cooperation::find($request->session()->get('cooperation'));
         $steps = Step::orderBy('order')->get();
 
         return redirect()->route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation]);

@@ -13,5 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'tool/wall-insulation/calculate',
+	    'tool/insulated-glazing/calculate',
+	    'tool/floor-insulation/calculate',
     ];
 }

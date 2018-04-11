@@ -18,7 +18,7 @@ class UserLanguage
      */
 	public function handle($request, Closure $next)
 	{
-		if (app()->environment('development')) {
+		if (app()->environment('local')) {
 
 			// Set the language from the URL segment (this allows us to later on
 			// add a language switcher via URL for better front-site indexing).

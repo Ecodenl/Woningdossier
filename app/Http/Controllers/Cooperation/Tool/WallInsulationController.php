@@ -80,7 +80,7 @@ class WallInsulationController extends Controller
 
         // Update the building feature table with some fresh data
         $buildingFeatures->update([
-            'element_values' => $wallInsulationQualities,
+            'element_values' => reset($wallInsulationQualities),
             'facade_plastered_surface_id' => $plasteredWallSurface,
             'wall_joints' => $wallJoints,
             'cavity_wall' => $cavityWall,

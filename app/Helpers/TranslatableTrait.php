@@ -54,4 +54,19 @@ trait TranslatableTrait {
 
 		return $translation->translation;
 	}
+
+
+	/**
+	 * Scope a query to check translations table.
+	 *
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @param string $locale
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeTranslated($query, $attribute, $name , $locale = 'nl')
+	{
+		return $query->where('translations.language', '=', $locale)
+		            ->where('translations.translation', '=', $name)
+		            ->join('translations', $this->getTable() . '.'. $attribute, '=', 'translations.key');
+	}
 }

@@ -106,6 +106,15 @@ class User extends Authenticatable
 	}
 
 	/**
+	 * Returns the user progress.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function completedSteps(){
+    	return $this->hasMany(UserProgress::class);
+	}
+
+	/**
 	 * The cooperations the user is associated with
 	 */
 	public function cooperations(){
@@ -129,6 +138,23 @@ class User extends Authenticatable
 			'step_id' => $step->id,
 			'user_id' => \Auth::user()->id,
 		]);
+	}
+
+	/**
+	 * Returns whether or not a user has completed a particular step
+	 * @param Step $step
+	 *
+	 * @return bool
+	 */
+	public function hasCompleted(Step $step){
+		return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function interests(){
+		return $this->hasMany(UserInterest::class);
 	}
 
 }

@@ -26,23 +26,27 @@ class DatabaseSeeder extends Seeder
 	    $this->call(MeasuresTableSeeder::class);
 	    $this->call(ExampleBuildingsTableSeeder::class);
 	    $this->call(InterestsTableSeeder::class);
+	    $this->call(InsulatingGlazingsTableSeeder::class);
 		$this->call(ElementsValuesTableSeeder::class);
 	    $this->call(MotivationsTableSeeder::class);
 		$this->call(BuildingTypeElementMaxSavingTableSeeder::class);
-
-
-    	//
-	    $this->call(IndustriesTableSeeder::class);
-	    $this->call(OccupationsTableSeeder::class);
+	    $this->call(BuildingHeatingsTableSeeder::class);
+		$this->call(MeasureApplicationsTableSeeder::class);
+		$this->call(FacadeSurfacesTableSeeder::class);
+		$this->call(FacadeDamagedPaintworksTableSeeder::class);
+		$this->call(FacadePlasteredSurfacesTableSeeder::class);
+		$this->call(PriceIndexingsTableSeeder::class);
+		$this->call(KeyFigureTemperaturesTableSeeder::class);
+		$this->call(PaintworkStatusesTableSeeder::class);
+		$this->call(WoodRotStatusesTableSeeder::class);
+		$this->call(CrawlspaceAccessesTableSeeder::class);
 
 
 
 
 		// New
 		$this->call(HeatingAgesTableSeeder::class);
-        $this->call(BuildingHeatingsTableSeeder::class);
 
-        $this->call(QualitiesTableSeeder::class);
         $this->call(SolarWaterHeatersTableSeeder::class);
         $this->call(PresentWindowsTableSeeder::class);
         $this->call(PresentShowerWtwsTableSeeder::class);
@@ -55,13 +59,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(VentilationsTableSeeder::class);
         $this->call(ComfortLevelTapWatersTableSeeder::class);
-        $this->call(SurfacePaintedWallsTableSeeder::class);
-        $this->call(WallNeedImpregnationsTableSeeder::class);
-        $this->call(InsulatingGlazingsTableSeeder::class);
-        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
-        $this->call(WoodElementsTableSeeder::class);
-        $this->call(DamageToPaintWorksTableSeeder::class);
-        $this->call(HouseFramesTableSeeder::class);
 
     }
 }

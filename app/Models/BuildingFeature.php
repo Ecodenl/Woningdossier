@@ -45,6 +45,21 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingFeature extends Model
 {
+
+    protected $fillable = [
+        'element_values',
+        'plastered_wall_surface',
+        'wall_joints',
+        'cavity_wall',
+        'contaminated_wall_joints',
+        'wall_surface',
+        'damage_paintwork',
+        'additional_info',
+	    'surface',
+	    'build_year',
+        'facade_plastered_painted'
+    ];
+
     public function building(){
     	return $this->belongsTo(Building::class);
     }

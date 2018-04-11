@@ -16,6 +16,11 @@ return [
             'unknown' => 'Onbekend',
             'mostly' => 'Gedeeltelijk',
         ],
+        'option' => [
+            'yes' => 'Ja',
+            'no' => 'Nee',
+            'unknown' => 'Onbekend',
+        ],
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -132,8 +137,7 @@ return [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
                     'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
                     'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
-                    'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
-                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
+	                'facade-surface' => 'Geveloppervlakte van de woning',
                 ],
 
 	            'insulation-advice' => [
@@ -194,69 +198,87 @@ return [
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 
-                'windows-surface' => [
-                    'comparable-houses' => 'Vergelijkbare huizen hebben :m2 m<sup>2</sup>',
-                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als u het niet weer laat u dit veld vrij.'
-                ],
+                'facade-surface' => 'Geveloppervlakte van de woning',
+                'windows-surface' => 'Totale raamoppervlakte van de woning',
 
                 'paint-work' => [
                     'title' => 'Vragen over het schilderwerk',
                     'which-frames' => 'Welke kozijnen heeft uw huis?',
-                    'other-wood-elements' => [
-                        'title' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
-                        'element0' => 'Dakranden / boeidelen',
-                        'element1' => 'Dakkapellen',
-                        'element2' => 'Gevelbekleding',
-                    ],
+                    'other-wood-elements' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
                     'last-paintjob' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
+
+	            'taking-into-account' => [
+	            	'paintwork' => 'Indicatieve kosten schilderwerk',
+		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
+	            ],
             ],
 
-            'roof-insulation' => [
-                'title' => 'Dakisolatie',
-                'current-situation' => [
-                    'title' => 'Huidige situatie',
-                    'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
-                    'main-roof' => 'Wat is het hoofddak?',
-                    'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
-                    'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
-                    'flat-roof-surface' => [
-                        'comparable-houses' => 'Vergelijkbare woningen hebben een plat dak van :m2 m<sup>2</sup>',
-                        'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
-                    ],
-                    'pitched-roof' => 'Is het hellende dak geïsoleerd?',
-                    'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
-                    'zinc-replaced' => 'Wanner is het zinkwerk voor het laats vernieuwd?',
-                    'pitched-roof-surface' => [
-                        'comparable-houses' => 'Vergelijkbare woningen hebben een hellend dak van :m2 m<sup>2</sup>',
-                        'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
-                    ],
-                ],
+			'floor-insulation' => [
+				'title' => 'Vloerisolatie',
+				'floor-insulation' => 'U hebt de volgende isolatie ingevuld voor de vloer weet u nu meer? Pas de waarde dan hier aan',
+				'has-crawlspace' => [
+					'title' => 'Heeft deze woning een kruipruimte',
+					'no-crawlspace' => 'De vloer kan alleen van boven af geïsoleerd worden. Let op de hoogtes bij deuren en bij de trap. Vraag om aanvullend advies.',
+				],
+				'crawlspace-access' => [
+					'title' => 'Is de kruipruimte toegankelijk?',
+					'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
+				],
+				'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
+				'floor-surface' => 'Vloeroppervlak van de woning',
+				'insulation-advice' => [
+					'text' => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
+					'floor' => 'Vloerisolatie',
+					'bottom' => 'Bodemisolatie',
+					'research' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
+				],
+			],
+			'roof-insulation' => [
+				'title' => 'Dakisolatie',
+				'current-situation' => [
+					'title' => 'Huidige situatie',
+					'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
+					'main-roof' => 'Wat is het hoofddak?',
+					'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
+					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
+					'flat-roof-surface' => [
+						'comparable-houses' => 'Vergelijkbare woningen hebben een plat dak van :m2 m<sup>2</sup>',
+						'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
+					],
+					'pitched-roof' => 'Is het hellende dak geïsoleerd?',
+					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
+					'zinc-replaced' => 'Wanner is het zinkwerk voor het laats vernieuwd?',
+					'pitched-roof-surface' => [
+						'comparable-houses' => 'Vergelijkbare woningen hebben een hellend dak van :m2 m<sup>2</sup>',
+						'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
+					],
+				],
 
-                'flat-roof' => [
-                    'title' => 'Plat dak',
-                    'insulate-roof' => 'Wilt u een plat dak isoleren',
-                    'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
-                ],
-                'pitched-roof' => [
-                    'title' => 'Hellend dak',
-                    'insulate-roof' => 'Wilt u het hellende dak isoleren',
-                    'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
-                ],
+				'flat-roof' => [
+					'title' => 'Plat dak',
+					'insulate-roof' => 'Wilt u een plat dak isoleren',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
+				],
+				'pitched-roof' => [
+					'title' => 'Hellend dak',
+					'insulate-roof' => 'Wilt u het hellende dak isoleren',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
+				],
 
-                'costs' => [
-                    'title' => 'Kosten en baten voor isoleren van het :type dak',
-                    'gas' => 'Gasbesparing',
-                    'co2' => 'CO2 Besparing',
-                    'savings-in-euro' => 'Besparing in €',
-                    'indicative-costs-insulation' => 'Indicatieve kosten annbrengen insolatie',
-                    'indicative-costs-replacement' => 'indicatieve kosten vervanging dakbedekking',
-                    'indicative-replace-date' => 'Indicatie vervangingsmoment dakbedekking',
-                    'comparable-rent' => 'Vergelijkbare rente'
-                ],
-            ],
+				'costs' => [
+					'title' => 'Kosten en baten voor isoleren van het :type dak',
+					'gas' => 'Gasbesparing',
+					'co2' => 'CO2 Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs-insulation' => 'Indicatieve kosten annbrengen insolatie',
+					'indicative-costs-replacement' => 'indicatieve kosten vervanging dakbedekking',
+					'indicative-replace-date' => 'Indicatie vervangingsmoment dakbedekking',
+					'comparable-rent' => 'Vergelijkbare rente'
+				],
+			],
 		],
 	],
 ];

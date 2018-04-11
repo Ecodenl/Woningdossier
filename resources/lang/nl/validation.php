@@ -32,7 +32,7 @@ return [
 	'boolean'              => 'De :attribute moet waar of onwaar zijn.',
 	'confirmed'            => 'De :attribute bevestiging is niet correct.',
 	'current_password'     => 'Uw huidige password is niet correct.',
-	'date'                 => 'De :attribute is geen geldige datum.',
+	'date'                 => 'Vul een geldige datum in',
 	'date_format'          => 'De :attribute is niet volgens het formaat :format.',
 	'different'            => 'De :attribute en :other mogen niet hetzelfde zijn.',
 	'digits'               => 'De :attribute moet :digits cijfers zijn.',

@@ -16,15 +16,22 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('floor_insulation') ? ' has-error' : '' }}">
-                        <label for="floor_insulation" class=" control-label"><i data-toggle="collapse"
-                                                                                data-target="#floor-insulation-info"
-                                                                                class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.floor-insulation.floor-insulation')
+
+                        <label for="element_{{ $floorInsulation->element->id }}" class="control-label">
+                            <i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> @lang('woningdossier.cooperation.tool.floor-insulation.floor-insulation')
                         </label>
 
-                        <select id="floor_insulation" class="form-control" name="floor_insulation">
-                            @foreach($insulations->take(5) as $insulation)
-                                <option @if(old('floor_insulation') == $insulation->id) selected
-                                        @endif value="{{$insulation->id}}">{{$insulation->name}}</option>
+                        <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $floorInsulation->element->id }}]">
+                            @foreach($floorInsulation->element->values()->orderBy('order')->get() as $elementValue)
+                                <option
+                                        @if(old('element[' . $floorInsulation->element->id . ']') && $floorInsulation->id == old('element[' . $floorInsulation->element->id . ']'))
+                                        selected="selected"
+                                        @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
+                                        selected="selected"
+                                        @elseif(isset($floorInsulation->element_value_id) && $elementValue->id == $floorInsulation->element_value_id)
+                                        selected="selected"
+                                        @endif
+                                        value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                             @endforeach
                         </select>
 
@@ -38,12 +45,13 @@
 
                 <div class="col-sm-12">
                     <div class="form-group add-space">
-                        <div id="floor-insulation-info" class="collapse alert alert-info remove-collapse-space">
-                            I would like to have some help full information right here !
+                        <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
+                            I would like to have some helpful information right here!
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-sm-12">
                     <div id="has-no-crawlspace"

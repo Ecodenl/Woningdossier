@@ -362,6 +362,47 @@ class ElementsValuesTableSeeder extends Seeder
 			        ],
 		        ],
 	        ],
+	        [
+		        'names' => [
+			        'nl' => 'Kruipruimte',
+		        ],
+		        'short' => 'crawlspace',
+		        'service_type' => 'Heating',
+		        'order' => 8,
+		        'info' => [
+			        'nl' => 'Infotext hier',
+		        ],
+		        'element_values' => [
+			        [
+				        'values' => [
+					        'nl' => 'Best hoog (meer dan 50 cm)',
+				        ],
+				        'order' => 0,
+				        'calculate_value' => 50, // cm
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Laag (tussen 30 en 50 cm)',
+				        ],
+				        'order' => 1,
+				        'calculate_value' => 30, // m2
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Heel laag (minder dan 30 cm)',
+				        ],
+				        'order' => 2,
+				        'calculate_value' => 0, // m2
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'Onbekend',
+				        ],
+				        'order' => 3,
+				        'calculate_value' => 0, // m2
+			        ],
+		        ],
+	        ],
         ];
 
         foreach($elements as $element){

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Http\Requests\FloorInsulationFormRequest;
+use App\Models\Building;
 use App\Models\CrawlSpaceHeight;
 use App\Models\Quality;
 use App\Models\Step;
@@ -19,22 +20,24 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
+	    /** @var Building $building */
+	    $building = \Auth::user()->buildings()->first();
+	    // todo should use short here
+		$floorInsulation = $building->buildingElements()->where('element_id', 4)->first();
+
+
         $insulations = Quality::all();
         $steps = Step::orderBy('order')->get();
         $crawlHeights = CrawlSpaceHeight::all();
-        return view('cooperation.tool.floor-insulation.index', compact('insulations', 'steps', 'crawlHeights'));
+        return view('cooperation.tool.floor-insulation.index', compact(
+            'floorInsulation',
+            'steps', 'crawlHeights'
+        ));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    public function calculate(Request $request){
 
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -55,48 +58,4 @@ class FloorInsulationController extends Controller
         return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => App::make('Cooperation')]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

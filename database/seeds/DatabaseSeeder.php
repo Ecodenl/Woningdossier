@@ -40,8 +40,6 @@ class DatabaseSeeder extends Seeder
 		$this->call(PaintworkStatusesTableSeeder::class);
 		$this->call(WoodRotStatusesTableSeeder::class);
 
-    	//
-	    $this->call(IndustriesTableSeeder::class);
 
 
 
@@ -49,7 +47,6 @@ class DatabaseSeeder extends Seeder
 		// New
 		$this->call(HeatingAgesTableSeeder::class);
 
-        $this->call(QualitiesTableSeeder::class);
         $this->call(SolarWaterHeatersTableSeeder::class);
         $this->call(PresentWindowsTableSeeder::class);
         $this->call(PresentShowerWtwsTableSeeder::class);

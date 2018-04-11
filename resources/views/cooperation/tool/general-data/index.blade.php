@@ -7,6 +7,7 @@
 @endpush
 
 @section('step_content')
+
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
@@ -398,7 +399,7 @@
             <div class="col-sm-6">
 
                 <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
-                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label>
+                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label> <span>*</span>
                     <label class="radio-inline">
                         <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                     </label>
@@ -606,6 +607,51 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.title')</h4>
+                </div>
+
+                {{-- Well start at 1 so the translation will to. --}}
+                @for($i = 1; $i < 5; $i++)
+                    <div class="col-sm-6">
+                        <div class="form-group add-space{{ $errors->has('motivation.'.$i) ? ' has-error' : '' }}">
+                            <label for="motivation[{{$i}}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{$i}}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
+
+                            <select id="motivation[{{$i}}]" class="form-control" name="motivation[{{$i}}]" >
+
+                                @if($energyHabit != null)
+                                    @foreach($motivations as $motivation)
+                                        <option
+                                                @if($motivation->id == old('motivation.'.$i))
+                                                    selected
+                                                @elseif(old() == false && Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id)
+                                                    selected
+                                                @endif value="{{$motivation->id}}">{{$motivation->name}}
+                                        </option>
+                                    @endforeach
+
+                                @else
+                                    @foreach($motivations as $motivation)
+                                        <option @if($motivation->id == old('motivation.'.$i)) selected @endif value="{{$motivation->id}}">{{$motivation->name}}</option>
+                                    @endforeach
+                                @endif
+
+
+                            </select>
+                            <div id="motivation-{{$i}}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And I would like to have it too...
+                            </div>
+
+                            @if ($errors->has('motivation.'.$i))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('motivation.'.$i) }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                @endfor
+            </div>
 
             <div class="row">
                 <div class="col-sm-12">

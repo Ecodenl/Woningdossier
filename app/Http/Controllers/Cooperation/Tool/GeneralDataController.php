@@ -77,6 +77,9 @@ class GeneralDataController extends Controller
         $steps = Step::orderBy('order')->get();
 
 
+      
+
+
 
 
         return view('cooperation.tool.general-data.index', compact(

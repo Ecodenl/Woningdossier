@@ -45,6 +45,7 @@
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                @if(App::environment() == 'development') {{-- currently only for development --}}
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
@@ -62,6 +63,7 @@
                         </ul>
                     </li>
                 </ul>
+                @endif
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">

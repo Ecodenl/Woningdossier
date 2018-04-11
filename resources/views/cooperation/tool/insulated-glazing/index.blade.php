@@ -13,135 +13,130 @@
                     <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.insulated-glazing.title')</h4>
                 </div>
             </div>
-            @foreach ($keys as $key)
+            {{--@foreach ($keys as $key)--}}
+            @foreach($measureApplications as $measureApplication)
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group add-space {{ $errors->has($key) ? ' has-error' : '' }}">
+                        <div class="form-group add-space {{ $errors->has('user_interests.' . $measureApplication->id) ? ' has-error' : '' }}">
                             <label class=" control-label">
-                                <i data-toggle="collapse" data-target="#{{$key}}-info"
+                                <i data-toggle="collapse" data-target="#user_interests_{{ $measureApplication->id }}-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('woningdossier.cooperation.tool.insulated-glazing.'.$key.'.title')
+                                {{--@lang('woningdossier.cooperation.tool.insulated-glazing.'.$key.'.title')--}}
+                                {{ $measureApplication->measure_name }}
                             </label>
 
-                            <select id="{{ $key }}" class="form-control" name="{{ $key }}" >
+                            <select id="{{ $measureApplication->id }}" class="form-control" name="user_interests[{{ $measureApplication->id }}]" >
                                 @foreach($interests as $interest)
-                                    <option @if($interest->id == old($key)) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                    <option @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id])) selected="selected" @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                 @endforeach
                             </select>
 
-                            <select class="form-control" name="{{$key}}">
-                                @foreach($interestedToExecuteMeasures as $interestedToExecuteMeasure)
-                                    <option @if($interestedToExecuteMeasure->id == old($key)) selected
-                                            @endif value="{{$interestedToExecuteMeasure->id}}">@lang($interestedToExecuteMeasure->name)</option>
-                                @endforeach
-                            </select>
-
-                            <div id="{{$key}}-info"
+                            <div id="user_interests_{{ $measureApplication->id }}-info"
                                  class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
 
-                            @if ($errors->has($key))
+                            @if ($errors->has('user_interests.' . $measureApplication->id))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first($key) }}</strong>
+                                    <strong>{{ $errors->first('user_interests.' . $measureApplication->id) }}</strong>
                                 </span>
                             @endif
                         </div>
                     </div>
                     <div class=" col-sm-3 ">
-                        <div class="form-group add-space {{ $errors->has($key) ? ' has-error' : '' }}">
+                        <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') ? ' has-error' : '' }}">
                             <label class=" control-label">
-                                <i data-toggle="collapse" data-target="#{{$key}}-current-glass-info"
+                                <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                             </label>
 
-                            <select class="form-control" name="{{$key}}[current-glass]">
+                            <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
                                 @foreach($insulatedGlazings as $insulateGlazing)
-                                    <option @if($insulateGlazing->id == old($key.'current-glass')) selected
-                                            @endif value="{{$insulateGlazing->id}}">@lang($insulateGlazing->name)</option>
+                                    <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulated_glazing_id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
                                 @endforeach
                             </select>
 
-                            <div id="{{$key}}-current-glass-info"
+                            <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulated_glazing_id-info"
                                  class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
 
-                            @if ($errors->has($key.'current-glass'))
+                            @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first($key.'current-glass') }}</strong>
+                                    <strong>{{ $errors->first('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') }}</strong>
                                 </span>
                             @endif
                         </div>
                     </div>
                     <div class=" col-sm-3 ">
-                        <div class="form-group add-space {{ $errors->has($key) ? ' has-error' : '' }}">
+                        <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') ? ' has-error' : '' }}">
                             <label class=" control-label">
-                                <i data-toggle="collapse" data-target="#{{$key}}-heated-rooms-info"
+                                <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('woningdossier.cooperation.tool.insulated-glazing.heated-rooms')
                             </label>
 
-                            <select class="form-control" name="{{$key}}[heated-rooms]">
-                                @foreach($insulatedGlazings as $insulateGlazing)
-                                    <option @if($insulateGlazing->id == old($key.'heated-rooms')) selected
-                                            @endif value="{{$insulateGlazing->id}}">@lang($insulateGlazing->name)</option>
+                            <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][building_heating_id]">
+
+                                @foreach($heatings as $heating)
+                                    <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
                                 @endforeach
+
                             </select>
 
-                            <div id="{{$key}}-heated-rooms-info"
+                            <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
                                  class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
 
-                            @if ($errors->has($key.'heated-rooms'))
+                            @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first($key['heated-rooms']) }}</strong>
+                                    <strong>{{ $errors->first('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') }}</strong>
                                 </span>
                             @endif
                         </div>
                     </div>
                     <div class=" col-sm-3 ">
-                        <div class="form-group add-space {{ $errors->has($key) ? ' has-error' : '' }}">
+                        <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2') ? ' has-error' : '' }}">
                             <label class=" control-label">
-                                <i data-toggle="collapse" data-target="#{{$key}}-m2-info"
+                                <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('woningdossier.cooperation.tool.insulated-glazing.m2')
                             </label>
 
-                            <input type="text" name="{{$key}}[m2]" value="{{old($key.'m2')}}" class="form-control">
+                            <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">
 
-                            <div id="{{$key}}-m2-info"
+                            <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
                                  class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
 
-                            @if ($errors->has($key.'m2'))
+                            @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first($key.'m2') }}</strong>
+                                    <strong>{{ $errors->first('building_insulated_glazings.' . $measureApplication->id . '.m2') }}</strong>
                                 </span>
                             @endif
                         </div>
                     </div>
                     <div class=" col-sm-3 ">
-                        <div class="form-group add-space {{ $errors->has($key) ? ' has-error' : '' }}">
+                        <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.windows') ? ' has-error' : '' }}">
                             <label class=" control-label">
-                                <i data-toggle="collapse" data-target="#{{$key}}-total-windows-info"
+                                <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('woningdossier.cooperation.tool.insulated-glazing.total-windows')
                             </label>
 
-                            <input type="text" name="{{$key}}[total-windows]" value="{{old($key.'total-windows')}}"
+                            <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}"
                                    class="form-control">
-                            <div id="{{$key}}-total-windows-info"
+                            <div id="building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                  class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
                             </div>
 
-                            @if ($errors->has($key.'total-windows'))
+                            @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.windows'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first($key.'total-windows') }}</strong>
+                                    <strong>{{ $errors->first('building_insulated_glazings.' . $measureApplication->id . '.windows') }}</strong>
                                 </span>
                             @endif
                         </div>
@@ -155,14 +150,39 @@
         <div id="remaining-questions">
             <div class="row">
                 <div class="col-sm-12">
+                    <div class="form-group add-space {{ $errors->has('building_elements.crack-sealing') ? ' has-error' : '' }}">
+                        <label for="" class="control-label">
+                            <i data-toggle="collapse" data-target="#building_elements.crack-sealing-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('woningdossier.cooperation.tool.insulated-glazing.moving-parts-quality')
+                        </label>
+
+                        <select class="form-control" name="building_elements[crack-sealing]">
+                            @foreach($crackSealing->values()->orderBy('order')->get() as $sealingValue)
+                                <option @if($sealingValue->id == old('building_elements.crack-sealing') || ($building->getBuildingElement('crack-sealing') instanceof \App\Models\BuildingElement && $building->getElement('crack-sealing')->element_value_id == $sealingValue->id)) selected @endif value="{{ $sealingValue->id }}">{{ $sealingValue->value }}</option>
+                            @endforeach
+                        </select>
+
+                        <div id="building_elements.crack-sealing-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
+                        @if ($errors->has('building_elements.crack-sealing'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('building_elements.crack-sealing') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
                     <div class="form-group add-space {{ $errors->has('window_surface') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
                             <i data-toggle="collapse" data-target="#window-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.insulated-glazing.windows-surface.comparable-houses')
-                            @lang('woningdossier.cooperation.tool.insulated-glazing.windows-surface.not-right')
+                            @lang('woningdossier.cooperation.tool.insulated-glazing.windows-surface')
                         </label>
 
-                        <input type="text" name="window_surface"  value="{{old('window_surface', 'WAARDE')}}" class="form-control">
+                        <input type="text" name="window_surface"  value="{{ old('window_surface') }}" class="form-control">
 
                         <div id="window-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -171,32 +191,6 @@
                         @if ($errors->has('window_surface'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('window_surface') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space {{ $errors->has('moving_parts_quality') ? ' has-error' : '' }}">
-                        <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#moving-parts-quality-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.insulated-glazing.moving-parts-quality')
-                        </label>
-
-                        <select class="form-control" name="moving_parts_quality">
-                            @foreach($insulateQualities as $insulateQuality)
-                                <option @if($insulateQuality->id == old('moving_parts_quality')) selected @endif value="{{$insulateGlazing->id}}">@lang($insulateQuality->name)</option>
-                            @endforeach
-                        </select>
-
-                        <div id="moving-parts-quality-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
-                        </div>
-
-                        @if ($errors->has('moving_parts_quality'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('moving_parts_quality') }}</strong>
                             </span>
                         @endif
                     </div>
@@ -213,15 +207,15 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space {{ $errors->has('which_frames') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_elements.frames') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
                             <i data-toggle="collapse" data-target="#which-frames-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.which-frames')
                         </label>
 
-                        <select class="form-control" name="which_frames">
-                            @foreach($houseFrames as $houseFrame)
-                                <option @if($houseFrame->id == old('which_frames')) selected @endif value="{{$houseFrame->id}}">{{$houseFrame->name}}</option>
+                        <select class="form-control" name="building_elements[frames]">
+                            @foreach($frames->values()->orderBy('order')->get() as $frameValue)
+                                <option @if($frameValue->id == old('building_elements.frames')  || ($building->getBuildingElement('frames') instanceof \App\Models\BuildingElement && $building->getElement('frames')->element_value_id == $frameValue->id)) selected @endif value="{{ $frameValue->id }}">{{ $frameValue->value }}</option>
                             @endforeach
                         </select>
 
@@ -229,9 +223,9 @@
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('which_frames'))
+                        @if ($errors->has('building_elements.frames'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('which_frames') }}</strong>
+                            <strong>{{ $errors->first('building_elements.frames') }}</strong>
                         </span>
                         @endif
                     </div>
@@ -239,35 +233,28 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space {{ $errors->has('woodelement') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_elements.wood-elements') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#wood-element-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.other-wood-elements.title')
+                            <i data-toggle="collapse" data-target="#wood-elements-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.other-wood-elements')
                         </label>
 
                         <div id="wood-element-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('woodelement'))
+                        @if ($errors->has('building_elements.wood-elements'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('woodelement') }}</strong>
+                                <strong>{{ $errors->first('building_elements.wood-elements') }}</strong>
                             </span>
                         @endif
                     </div>
-                    <div class="form-group add-space {{ $errors->has('woodelement') ? ' has-error' : '' }}">
-                        @foreach($woodElements as $woodElement)
-                            <label for="" class="checkbox-inline">
-                                <input type="checkbox" name="woodelement[{{str_slug(__($woodElement->translation_key))}}]">
-                                @lang($woodElement->translation_key)
+                    <div class="form-group add-space">
+                        @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
+                            <label for="building_elements.wood-elements.{{ $woodElement->id }}" class="checkbox-inline">
+                                <input type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" name="building_elements[wood-elements][{{ $woodElement->id }}]">
+                                {{ $woodElement->value }}
                             </label>
-
-                            @if ($errors->has(str_slug(__($woodElement->translation_key))))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first(str_slug(__($woodElement->translation_key))) }}</strong>
-                                </span>
-                            @endif
-
                         @endforeach
                     </div>
                 </div>
@@ -275,45 +262,45 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space {{ $errors->has('last_paint_job') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.last_painted_year') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#last-paint-job-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="collapse" data-target="#building_paintwork_statuses.last_painted_year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
                         </label>
 
-                        <input type="text" name="last_paint_job" class="form-control">
+                        <input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
 
-                        <div id="last-paint-job-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="building_paintwork_statuses.last_painted_year" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('last_paint_job'))
+                        @if ($errors->has('building_paintwork_statuses.last_painted_year'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('last_paint_job') }}</strong>
+                            <strong>{{ $errors->first('building_paintwork_statuses.last_painted_year') }}</strong>
                         </span>
                         @endif
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group add-space {{ $errors->has('paint_damage_visible') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.paintwork_status_id') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#paint-damage-visible-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="collapse" data-target="#building_paintwork_statuses.paintwork_status_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.paint-damage-visible')
                         </label>
 
-                        <select class="form-control" name="paint_damage_visible">
-                            @foreach($damageToPaintWorks as $damageToPaintWork)
-                                <option @if($damageToPaintWork->id == old('wood_root_visible')) selected @endif value="{{$damageToPaintWork->id}}">@lang($damageToPaintWork->name)</option>
+                        <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
+                            @foreach($paintworkStatuses as $paintworkStatus)
+                                <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->paintwork_status_id == $paintworkStatus->id) ) selected @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
                             @endforeach
                         </select>
 
-                        <div id="paint-damage-visible-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="building_paintwork_statuses.paintwork_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('paint_damage_visible'))
+                        @if ($errors->has('building_paintwork_statuses.paintwork_status_id'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('paint_damage_visible') }}</strong>
+                            <strong>{{ $errors->first('building_paintwork_statuses.paintwork_status_id') }}</strong>
                         </span>
                         @endif
                     </div>
@@ -322,31 +309,113 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space {{ $errors->has('wood_root_visible') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.wood_rot_status_id') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#wood-rot-visible-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="collapse" data-target="#building_paintwork_statuses.wood_rot_status_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.wood-rot-visible')
                         </label>
 
-                        <select class="form-control" name="wood_root_visible">
-                            @foreach($damageToPaintWorks as $damageToPaintWork)
-                                <option @if($damageToPaintWork->id == old('wood_root_visible')) selected @endif value="{{$damageToPaintWork->id}}">@lang($damageToPaintWork->name)</option>
+                        <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
+                            @foreach($woodRotStatuses as $woodRotStatus)
+                                <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>
                             @endforeach
                         </select>
 
-                        <div id="wood-rot-visible-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        <div id="building_paintwork_statuses.wood_rot_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                        @if ($errors->has('wood_root_visible'))
+                        @if ($errors->has('building_paintwork_statuses.wood_rot_status_id'))
                             <span class="help-block">
-                                <strong>{{ $errors->first('wood_root_visible') }}</strong>
+                                <strong>{{ $errors->first('building_paintwork_statuses.wood_rot_status_id') }}</strong>
                             </span>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
+
+        <div id="indication-for-costs">
+            <hr>
+            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.title')</h4>
+
+            <div id="costs" class="row">
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">CO2 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.savings-in-euro')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                            <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="taking-into-account">
+            <hr>
+            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.title')</h4>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.insulated-glazing.taking-into-account.paintwork')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                            <input type="text" id="paintwork_costs" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group add-space">
+                        <label class="control-label">@lang('woningdossier.cooperation.tool.insulated-glazing.taking-into-account.paintwork_year')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <input type="text" id="paintwork_year" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         <div class="row">
             <div class="col-md-12">
@@ -364,3 +433,57 @@
     </form>
 
 @endsection
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
+                /*if ($('#is-painted').is(':checked')) {
+                    $('#painted-options').show();
+                } else {
+                    $('#painted-options').hide();
+                }*/
+
+                var form = $(this).closest("form").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('cooperation.tool.insulated-glazing.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    data: form,
+                    success: function (data) {
+
+                        /*
+                        if (data.insulation_advice){
+                            $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+                        }
+                        */
+                        if (data.savings_gas){
+                            $("input#savings_gas").val(Math.round(data.savings_gas));
+                        }
+                        if (data.savings_co2){
+                            $("input#savings_co2").val(Math.round(data.savings_co2));
+                        }
+                        if (data.savings_money){
+                            $("input#savings_money").val(Math.round(data.savings_money));
+                        }
+                        if (data.cost_indication){
+                            $("input#cost_indication").val(Math.round(data.cost_indication));
+                        }
+                        if (data.interest_comparable){
+                            $("input#interest_comparable").val(data.interest_comparable);
+                        }
+                        if (data.paintwork.costs){
+                            $("input#paintwork_costs").val(Math.round(data.paintwork.costs));
+                        }
+                        if (data.paintwork.year){
+                            $("input#paintwork_year").val(data.paintwork.year);
+                        }
+                        console.log(data);
+                    }
+                });
+            });
+            // Trigger the change event so it will load the data
+            $("select, input[type=radio], input[type=text]").trigger('change');
+
+        });
+    </script>
+@endpush

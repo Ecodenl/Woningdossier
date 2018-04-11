@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMovingPartsOfWindowAndDoorIsolatedsTable extends Migration
+class CreateInsulatingGlazingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateMovingPartsOfWindowAndDoorIsolatedsTable extends Migration
      */
     public function up()
     {
-        Schema::create('moving_parts_of_window_and_door_isolateds', function (Blueprint $table) {
+        Schema::create('insulating_glazings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value');
+            $table->uuid('name');
+            $table->integer('calculate_value')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateMovingPartsOfWindowAndDoorIsolatedsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('moving_parts_of_window_and_door_isolateds');
+        Schema::dropIfExists('insulating_glazings');
     }
 }

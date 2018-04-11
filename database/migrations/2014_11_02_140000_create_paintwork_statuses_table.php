@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInsulatingGlazingsTable extends Migration
+class CreatePaintworkStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateInsulatingGlazingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('insulating_glazings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->integer('calculate_value')->nullable();
-            $table->timestamps();
+        Schema::create('paintwork_statuses', function (Blueprint $table) {
+	        $table->increments('id');
+	        $table->uuid('name');
+	        $table->integer('calculate_value')->nullable();
+	        $table->integer('order');
+	        $table->timestamps();
         });
     }
 
@@ -28,6 +29,6 @@ class CreateInsulatingGlazingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insulating_glazings');
+        Schema::dropIfExists('paintwork_statuses');
     }
 }

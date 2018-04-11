@@ -77,6 +77,12 @@ class Building extends Model
 		return $this->hasMany(BuildingElement::class);
 	}
 
+	public function getBuildingElement($short){
+		return $this->buildingElements()
+			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+			->where('e.short', $short)->first();
+	}
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
@@ -92,5 +98,19 @@ class Building extends Model
 			return $this->buildingFeatures->buildingType;
 		}
 		return null;
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function currentInsulatedGlazing(){
+		return $this->hasMany(BuildingInsulatedGlazing::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function currentPaintworkStatus(){
+		return $this->hasOne(BuildingPaintworkStatus::class);
 	}
 }

@@ -121,7 +121,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Glas in lood vervangen',
@@ -137,7 +137,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van HR++ glas (alleen het glas)',
@@ -153,7 +153,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van HR++ glas (inclusief kozijn)',
@@ -169,7 +169,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
-	        [
+	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van drievoudige HR beglazing (inclusief kozijn)',
@@ -268,6 +268,22 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        ],
 		        'minimal_costs' => 350,
 		        'maintenance_interval' => 10,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Schilderwerk houten geveldelen',
+		        ],
+		        'application' => 'place',
+		        'costs' => 140, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 400,
+		        'maintenance_interval' => 7,
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],

@@ -43,7 +43,9 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
                 Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
                 Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
 
-				Route::resource('insulated-glazing', 'InsulatedGlazingController');
+				Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+	            Route::post('insulated-glazing/calculate', 'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
+
 				Route::resource('floor-insulation', 'FloorInsulationController');
 				Route::resource('roof-insulation', 'RoofInsulationController');
 				Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController');

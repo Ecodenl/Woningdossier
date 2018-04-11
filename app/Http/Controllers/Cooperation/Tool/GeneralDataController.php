@@ -155,9 +155,9 @@ class GeneralDataController extends Controller
 	        [
                 'user_id' => Auth::id(),
                 'resident_count' => $request->get('resident_count'),
-                'thermostat_high' => $request->get('thermostat_high'),
-                'thermostat_low' => $request->get('thermostat_low'),
-                'hours_high' => $request->get('hours_high'),
+                'thermostat_high' => $request->get('thermostat_high', 20),
+                'thermostat_low' => $request->get('thermostat_low', 15),
+                'hours_high' => $request->get('hours_high', 12),
                 'heating_first_floor' => $request->get('heating_first_floor'),
                 'heating_second_floor' => $request->get('heating_second_floor'),
                 'cook_gas' => $request->get('cook_gas'),

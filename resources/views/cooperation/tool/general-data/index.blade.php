@@ -625,7 +625,7 @@
                                         <option
                                                 @if($motivation->id == old('motivation.'.$i))
                                                     selected
-                                                @elseif(old() == false && Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id)
+                                                @elseif(old() == false && isset(Auth::user()->motivations()->where('order', $i)->first()->motivation_id) && Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id)
                                                     selected
                                                 @endif value="{{$motivation->id}}">{{$motivation->name}}
                                         </option>

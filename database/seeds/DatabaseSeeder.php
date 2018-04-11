@@ -59,6 +59,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(VentilationsTableSeeder::class);
         $this->call(ComfortLevelTapWatersTableSeeder::class);
-
+        $this->call(ServiceValuesTableSeeder::class);
     }
 }

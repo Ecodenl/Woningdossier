@@ -25,6 +25,13 @@ use Illuminate\Support\Facades\Auth;
 class WallInsulationController extends Controller
 {
 
+
+    protected $step;
+
+    public function __construct(Request $request) {
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -61,7 +68,6 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-    	$this->checkAllowed($request);
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
         $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');

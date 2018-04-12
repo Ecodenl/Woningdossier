@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class SolarPanelsController extends Controller
 {
+    protected $step;
+
+    public function __construct(Request $request) {
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
     /**
      * Display a listing of the resource.
      *

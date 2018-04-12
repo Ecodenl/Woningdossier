@@ -52,10 +52,10 @@ class InsulatedGlazingFormRequest extends FormRequest
                 $totalWindows = Request::input('building_insulated_glazings.' . $userInterestId . '.windows', '');
 
                 // Check if the interest fields are filled
-                if ($m2 == "" && $interest->calculate_value == "1" || $interest->calculate_value == "2" || $interest->calculate_value == "3") {
+                if ($m2 == "" && ($interest->calculate_value == "1" || $interest->calculate_value == "2" || $interest->calculate_value == "3")) {
                     $validator->errors()->add('building_insulated_glazings.' . $userInterestId . '.m2', __('validation.custom.needs-to-be-filled'));
                 }
-                if ($totalWindows == "" && $interest->calculate_value == "1" || $interest->calculate_value == "2" || $interest->calculate_value == "3") {
+                if ($totalWindows == "" && ($interest->calculate_value == "1" || $interest->calculate_value == "2" || $interest->calculate_value == "3")) {
                     $validator->errors()->add('building_insulated_glazings.' . $userInterestId . '.windows', __('validation.custom.needs-to-be-filled'));
                 }
             }

@@ -93,7 +93,7 @@
                                 <div class="col-sm-12 col-md-6">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.surface') ? ' has-error' : '' }}">
 
-                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface.comparable-houses')</label>
+                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface')</label>
 
                                         <input type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][surface]" value="{{ old('building_roof_types.' . $roofCat . '.surface') }}">
 
@@ -252,7 +252,7 @@
 
                     @foreach(['flat', 'pitched'] as $roofCat)
                         <div class="costs {{ $roofCat }}-roof">
-                            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.costs.title-' . $roofCat)</h4>
+                            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.title')</h4>
                             <div class="row">
 
                                 <div class="col-md-4">
@@ -297,7 +297,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '.costs.indicative-costs-replacement')</label>
+                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.indicative-costs-replacement')</label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                             <input type="text" id="{{ $roofCat }}_replace_cost" class="form-control disabled" disabled="" value="0">
@@ -307,7 +307,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '.costs.indicative-replacement-year')</label>
+                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.indicative-replacement-year')</label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                             <input type="text" id="{{ $roofCat }}_replace_year" class="form-control disabled" disabled="" value="">

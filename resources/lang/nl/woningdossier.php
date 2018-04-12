@@ -243,18 +243,13 @@ return [
 					'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
 					'main-roof' => 'Wat is het hoofddak?',
 					'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
+					'is-pitched-roof-insulated' => 'is het hellende dak geïsoleerd?',
 					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
-					'flat-roof-surface' => [
-						'comparable-houses' => 'Vergelijkbare woningen hebben een plat dak van :m2 m<sup>2</sup>',
-						'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
-					],
+					'flat-roof-surface' => 'Dakoppervlak van platte dak',
 					'pitched-roof' => 'Is het hellende dak geïsoleerd?',
 					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
-					'zinc-replaced' => 'Wanner is het zinkwerk voor het laats vernieuwd?',
-					'pitched-roof-surface' => [
-						'comparable-houses' => 'Vergelijkbare woningen hebben een hellend dak van :m2 m<sup>2</sup>',
-						'not-right' => 'Klopt dit oppervlak? Zo niet, wijzig het dan hier.',
-					],
+					'zinc-replaced' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+					'pitched-roof-surface' => 'Dakoppervlak hellend dak',
 				],
 
 				'flat-roof' => [
@@ -267,16 +262,26 @@ return [
 					'insulate-roof' => 'Wilt u het hellende dak isoleren',
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
 				],
+				'measure-application' => [
+					'no-not-applicable' => 'Nee / Niet van toepassing',
+				],
 
 				'costs' => [
-					'title' => 'Kosten en baten voor isoleren van het :type dak',
 					'gas' => 'Gasbesparing',
 					'co2' => 'CO2 Besparing',
 					'savings-in-euro' => 'Besparing in €',
-					'indicative-costs-insulation' => 'Indicatieve kosten annbrengen insolatie',
-					'indicative-costs-replacement' => 'indicatieve kosten vervanging dakbedekking',
-					'indicative-replace-date' => 'Indicatie vervangingsmoment dakbedekking',
-					'comparable-rent' => 'Vergelijkbare rente'
+					'indicative-costs-insulation' => 'Indicatieve kosten aanbrengen isolatie',
+					'comparable-rent' => 'Vergelijkbare rente',
+					'flat' => [
+						'title' => 'Kosten en baten voor isoleren van het platte dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakbedekking',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakbedekking',
+					],
+					'pitched' => [
+						'title' => 'Kosten en baten voor isoleren van het hellende dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakpannen',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakpannen',
+					],
 				],
 			],
 		],

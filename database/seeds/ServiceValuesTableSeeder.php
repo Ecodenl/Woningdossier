@@ -286,16 +286,94 @@ class ServiceValuesTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Aantal zonnepanelen',
+                    'nl' => 'Zonnepanelen',
                 ],
                 'short' => 'total-sun-panels',
-                'service_type' => 'Others',
+                'service_type' => 'PV-wind',
                 'order' => 0,
                 'info' => [
                     'nl' => 'Infotext hier',
                 ],
-                'service_values' => [], // there are no values
+                'service_values' => [], // no values
             ],
+	        /*
+	        [
+	        	'names' => [
+	        		'nl' => 'PV panelen',
+		        ],
+		        'short' => 'pv-panels',
+		        'service_type' => 'PV-wind',
+		        'order' => 0,
+		        'info' => [
+		        	'nl' => 'Infotext hier',
+		        ],
+		        'service_values' => [
+			        // the peak powers
+			        [
+				        'values' => [
+					        'nl' => '260'
+				        ],
+				        'order' => 0,
+				        'calculate_value' => 260,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '265'
+				        ],
+				        'order' => 1,
+				        'calculate_value' => 265,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '270'
+				        ],
+				        'order' => 2,
+				        'calculate_value' => 270,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '275'
+				        ],
+				        'order' => 3,
+				        'calculate_value' => 275,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '280'
+				        ],
+				        'order' => 4,
+				        'calculate_value' => 280,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '285'
+				        ],
+				        'order' => 5,
+				        'calculate_value' => 285,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '290'
+				        ],
+				        'order' => 6,
+				        'calculate_value' => 290,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '295'
+				        ],
+				        'order' => 7,
+				        'calculate_value' => 295,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => '300'
+				        ],
+				        'order' => 8,
+				        'calculate_value' => 300,
+			        ],
+		        ],
+	        ],*/
 
         ];
 

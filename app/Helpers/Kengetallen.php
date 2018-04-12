@@ -6,8 +6,12 @@ class Kengetallen {
 
 	// D95
 	const EURO_SAVINGS_GAS = 0.64; // euro / m3 gas
+	// D96
+	const EURO_SAVINGS_ELECTRICITY = 0.2; // euro / kWh
 	// D99
 	const CO2_SAVING_GAS = 1.88; // kg / m3 gas
+	// D100
+	const CO2_SAVINGS_ELECTRICITY = 0.335; // kg / kWh
 
 	// D128
 	const PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING = 5; // %

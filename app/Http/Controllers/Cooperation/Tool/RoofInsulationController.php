@@ -18,6 +18,7 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
@@ -124,6 +125,11 @@ class RoofInsulationController extends Controller
 
 	    $roofInsulation = Element::where('short', 'roof-insulation')->first();
     	$adviceMap = $this->getMeasureApplicationsAdviceMap();
+		$totalSurface = 0;
+
+	    foreach(array_keys($result) as $cat){
+		    $totalSurface += isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
+	    }
 
 	    foreach(array_keys($result) as $cat){
 
@@ -142,7 +148,10 @@ class RoofInsulationController extends Controller
 
 		    $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
 		    $heating = null;
-		    //$year = isset($roofTypes[$cat]['extra']) ?
+		    $year = Carbon::now()->year;
+		    // default, changes only for roof tiles effect
+		    $factor = 1;
+
 		    if (isset($roofTypes[$cat]['building_heating_id'])){
 		    	$heating = BuildingHeating::find($roofTypes[$cat]['building_heating_id']);
 		    }
@@ -164,14 +173,44 @@ class RoofInsulationController extends Controller
 				$roofInsulationValue = ElementValue::where('element_id', $roofInsulation->id)->where('id', $roofTypes[$cat]['element_value_id'])->first();
 
 				if ($roofInsulationValue instanceof ElementValue && $heating instanceof BuildingHeating && isset($advice)){
-					$catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $roofInsulationValue, $user->energyHabit, $heating, $surface, $advice);
+					$catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $roofInsulationValue, $user->energyHabit, $heating, $surface, $totalSurface, $advice);
 					$catData['savings_co2'] = Calculator::calculateCo2Savings($catData['savings_gas']);
 					$catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));
 					$catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice->measure_name);
 					$catData['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
+					$catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($objAdvice, $year, $factor);
 				}
 
 		    }
+
+
+		    if (isset($roofTypes[$cat]['extra']) && in_array($result[$cat]['type'], ['bitumen', 'zinc'])){
+				$year = $roofTypes[$cat]['extra'];
+			    // no percentages here. We just do this to keep the determineApplicationYear definition in one place
+		    }
+		    if (isset($roofTypes[$cat]['extra']) && in_array($result[$cat]['type'], ['tiles'])){
+		    	// no year here. Default is this year.
+		    	$roofTilesStatus = RoofTileStatus::find((int) $roofTypes[$cat]['extra']);
+		    	if ($roofTilesStatus instanceof RoofTileStatus){
+		    		$factor = ($roofTilesStatus->calculate_value / 100);
+			    }
+		    }
+
+		    if (isset($advice)){
+		    	if ($advice == Temperature::ROOF_INSULATION_FLAT_REPLACE){
+					$replaceMeasure = MeasureApplication::translated('measure_name', 'Vervangen dakbedekking', 'nl')->first(['measure_applications.*']);
+			    }
+			    if ($advice == Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES){
+				    $replaceMeasure = MeasureApplication::translated('measure_name', 'Vervangen dakpannen', 'nl')->first(['measure_applications.*']);
+			    }
+
+			    if (isset($replaceMeasure)){
+				    $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
+				    $catData['replace']['cost'] = Calculator::calculateMeasureApplicationCosts( $replaceMeasure, $surface, $catData['replace']['year'] );
+			    }
+		    }
+
+
 
 
     		$result[$cat] = array_merge($result[$cat], $catData);

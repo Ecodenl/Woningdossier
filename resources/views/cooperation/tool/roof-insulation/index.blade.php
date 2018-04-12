@@ -300,7 +300,7 @@
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '.costs.indicative-costs-replacement')</label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_cost_replacement" class="form-control disabled" disabled="" value="0">
+                                            <input type="text" id="{{ $roofCat }}_replace_cost" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +310,7 @@
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '.costs.indicative-replacement-year')</label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_replacement_year" class="form-control disabled" disabled="" value="">
+                                            <input type="text" id="{{ $roofCat }}_replace_year" class="form-control disabled" disabled="" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -393,6 +393,14 @@
                             if (data.flat.hasOwnProperty('interest_comparable')){
                                 $("input#flat_interest_comparable").val(data.flat.interest_comparable);
                             }
+                            if (data.flat.hasOwnProperty('replace')){
+                                if (data.flat.replace.hasOwnProperty('year')){
+                                    $("input#flat_replace_year").val(data.flat.replace.year);
+                                }
+                                if (data.flat.replace.hasOwnProperty('cost')){
+                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.cost));
+                                }
+                            }
                         }
                         else {
                             $(".flat-roof").hide();
@@ -424,6 +432,14 @@
                             }
                             if (data.pitched.hasOwnProperty('interest_comparable')){
                                 $("input#pitched_interest_comparable").val(data.pitched.interest_comparable);
+                            }
+                            if (data.pitched.hasOwnProperty('replace')){
+                                if (data.pitched.replace.hasOwnProperty('year')){
+                                    $("input#pitched_replace_year").val(data.pitched.replace.year);
+                                }
+                                if (data.pitched.replace.hasOwnProperty('cost')){
+                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.cost));
+                                }
                             }
                         }
                         else {

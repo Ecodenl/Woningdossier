@@ -61,7 +61,6 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-    	$this->checkAllowed($request);
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
         $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');

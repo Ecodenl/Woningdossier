@@ -53,11 +53,11 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 	                Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
 	                Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
 
+	                // Roof Insulation
+	                Route::resource('roof-insulation', 'RoofInsulationController');
+	                Route::post('roof-insulation/calculate', 'RoofInsulationController@calculate')->name('roof-insulation.calculate');
                 });
 
-
-	            Route::resource('roof-insulation', 'RoofInsulationController');
-	            Route::post('roof-insulation/calculate', 'RoofInsulationController@calculate')->name('roof-insulation.calculate');
 
 
 				Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController');

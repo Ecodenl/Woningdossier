@@ -49,7 +49,7 @@ class Calculator {
 	}
 
 	public static function calculateCostIndication($surface, $measureAdvice){
-		$measureApplication = MeasureApplication::translated('measure_name', $measureAdvice, 'nl')->first();
+		$measureApplication = MeasureApplication::translated('measure_name', $measureAdvice, 'nl')->first(['measure_applications.*']);
 		if (!$measureApplication instanceof MeasureApplication) return 0;
 
 		$result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
@@ -107,8 +107,8 @@ class Calculator {
 			$saving = $maxSaving->max_saving;
 		}
 		self::debug("Max saving for building_type " . $buildingType->id . " + element " . $element->id . " = " . $saving . "%");
-		$result = $usage * $saving;
-		self::debug($result . " = " . $usage . " * " . $saving);
+		$result = $usage * ($saving / 100);
+		self::debug($result . " = " . $usage . " * " . ($saving / 100));
 		return $result;
 	}
 

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculation\MeasureApplicationCostCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\Cooperation;
@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Auth;
 
 class WallInsulationController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -31,17 +32,10 @@ class WallInsulationController extends Controller
      */
     public function index(Request $request)
     {
-    	$mySlug = 'wall-insulation';
-    	$myStep = Step::where('slug', $mySlug)->first();
-    	$prev = Step::where('order', $myStep->order - 1)->first();
-    	if (!\Auth::user()->hasCompleted($prev)){
-    		return redirect('/tool/' . $prev->slug . '/')->with(['cooperation' => $request->get('cooperation')]);
-	    }
-
-        $steps = Step::orderBy('order')->get();
+    	$steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();
-
+		// todo should use short here
         $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
         $buildingFeature = $building->buildingFeatures;
 
@@ -60,35 +54,23 @@ class WallInsulationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(WallInsulationRequest $request)
     {
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
-        $plasteredWallSurface = $request->get('plastered_wall_surface', '');
-        $damagedPaintwork = $request->get('damage_paintwork', '');
+        $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');
+        $damagedPaintwork = $request->get('facade_damaged_paintwork_id', 0);
         $wallJoints = $request->get('wall_joints', '');
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
         $wallSurface = $request->get('facade_surface', '');
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
-        foreach ($wallInsulationQualities as $wallInsulationQuality) {
-            $wallInsulationQuality = $wallInsulationQuality;
-        }
+        $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
 
         // get the user buildingfeature
         $user = Auth::user();
@@ -97,24 +79,26 @@ class WallInsulationController extends Controller
 
         // Update the building feature table with some fresh data
         $buildingFeatures->update([
-            'element_values' => $wallInsulationQuality,
-            'plastered_wall_surface' => $plasteredWallSurface,
+            'element_values' => $wallInsulationQualities,
+            'facade_plastered_surface_id' => $plasteredWallSurface,
             'wall_joints' => $wallJoints,
             'cavity_wall' => $cavityWall,
             'contaminated_wall_joints' => $wallJointsContaminated,
             'wall_surface' => $wallSurface,
-            'damage_paintwork' => $damagedPaintwork,
+            'facade_damaged_paintwork_id' => $damagedPaintwork,
             'additional_info' => $additionalInfo,
+            'facade_plastered_painted' => $facadePlasteredOrPainted
         ]);
 
 
+	    // Save progress
+	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
         return redirect()->route('cooperation.tool.insulated-glazing.index', ['cooperation' => $cooperation]);
     }
 
     public function calculate(Request $request){
-	    //dd($request->all());
-	    /**
+    	/**
 	     * @var Building $building
 	     */
 	    $user = \Auth::user();
@@ -245,48 +229,4 @@ class WallInsulationController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

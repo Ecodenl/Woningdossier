@@ -16,6 +16,11 @@ return [
             'unknown' => 'Onbekend',
             'mostly' => 'Gedeeltelijk',
         ],
+        'option' => [
+            'yes' => 'Ja',
+            'no' => 'Nee',
+            'unknown' => 'Onbekend',
+        ],
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -132,8 +137,7 @@ return [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
                     'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
                     'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
-                    'house-with-same-situation' => 'Woningen met dezelfde situatie hebben vaak deze geveloppervlakte.',
-                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als je het niet weet laat dit veld vrij.',
+	                'facade-surface' => 'Geveloppervlakte van de woning',
                 ],
 
 	            'insulation-advice' => [
@@ -194,44 +198,111 @@ return [
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 
-                'windows-surface' => [
-                    'comparable-houses' => 'Vergelijkbare huizen hebben :m2 m<sup>2</sup>',
-                    'not-right' => 'Klopt dit niet? Vul dan hier het juiste getal in, als u het niet weer laat u dit veld vrij.'
-                ],
+                'facade-surface' => 'Geveloppervlakte van de woning',
+                'windows-surface' => 'Totale raamoppervlakte van de woning',
 
                 'paint-work' => [
                     'title' => 'Vragen over het schilderwerk',
                     'which-frames' => 'Welke kozijnen heeft uw huis?',
-                    'other-wood-elements' => [
-                        'title' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
-                        'element0' => 'Dakranden / boeidelen',
-                        'element1' => 'Dakkapellen',
-                        'element2' => 'Gevelbekleding',
-                    ],
+                    'other-wood-elements' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
                     'last-paintjob' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
-            ],
-            'boiler' => [
-                'title' => 'HR CV Ketel',
 
-                'current-gas-usage' => 'Huidig gasverbruik',
-                'resident-count' => 'Huidig aantal bewoners',
-                'boiler-type' => 'Wat is het type van de huidige CV ketel',
-                'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst ?',
-
-                'indication-for-costs' => [
-                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
-                    'gas-savings' => 'Gasbesparing',
-                    'co2-savings' => 'CO2 Besparing',
-                    'savings-in-euro' => 'Besparing in €',
-                    'indicative-costs' => 'Indicatieve kosten',
-                    'indicative-replacement' => 'Indicatie vervangingsmoment cv ketel',
-                    'comparable-rate' => 'Vergelijkbare rente',
-                    'year' => 'Jaar',
-                ],
+	            'taking-into-account' => [
+	            	'paintwork' => 'Indicatieve kosten schilderwerk',
+		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
+	            ],
             ],
+
+			'floor-insulation' => [
+				'title' => 'Vloerisolatie',
+				'floor-insulation' => 'U hebt de volgende isolatie ingevuld voor de vloer weet u nu meer? Pas de waarde dan hier aan',
+				'has-crawlspace' => [
+					'title' => 'Heeft deze woning een kruipruimte',
+					'no-crawlspace' => 'De vloer kan alleen van boven af geïsoleerd worden. Let op de hoogtes bij deuren en bij de trap. Vraag om aanvullend advies.',
+				],
+				'crawlspace-access' => [
+					'title' => 'Is de kruipruimte toegankelijk?',
+					'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
+				],
+				'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
+				'floor-surface' => 'Vloeroppervlak van de woning',
+				'insulation-advice' => [
+					'text' => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
+					'floor' => 'Vloerisolatie',
+					'bottom' => 'Bodemisolatie',
+					'research' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
+				],
+			],
+			'roof-insulation' => [
+				'title' => 'Dakisolatie',
+				'current-situation' => [
+					'title' => 'Huidige situatie',
+					'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
+					'main-roof' => 'Wat is het hoofddak?',
+					'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
+					'is-pitched-roof-insulated' => 'is het hellende dak geïsoleerd?',
+					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
+					'flat-roof-surface' => 'Dakoppervlak van platte dak',
+					'pitched-roof' => 'Is het hellende dak geïsoleerd?',
+					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
+					'zinc-replaced' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+					'pitched-roof-surface' => 'Dakoppervlak hellend dak',
+				],
+
+				'flat-roof' => [
+					'title' => 'Plat dak',
+					'insulate-roof' => 'Wilt u een plat dak isoleren',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
+				],
+				'pitched-roof' => [
+					'title' => 'Hellend dak',
+					'insulate-roof' => 'Wilt u het hellende dak isoleren',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
+				],
+				'measure-application' => [
+					'no-not-applicable' => 'Nee / Niet van toepassing',
+				],
+
+				'costs' => [
+					'gas' => 'Gasbesparing',
+					'co2' => 'CO2 Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs-insulation' => 'Indicatieve kosten aanbrengen isolatie',
+					'comparable-rent' => 'Vergelijkbare rente',
+					'flat' => [
+						'title' => 'Kosten en baten voor isoleren van het platte dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakbedekking',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakbedekking',
+					],
+					'pitched' => [
+						'title' => 'Kosten en baten voor isoleren van het hellende dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakpannen',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakpannen',
+					],
+				],
+			],
+			'boiler' => [
+				'title' => 'HR CV Ketel',
+
+				'current-gas-usage' => 'Huidig gasverbruik',
+				'resident-count' => 'Huidig aantal bewoners',
+				'boiler-type' => 'Wat is het type van de huidige CV ketel',
+				'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst ?',
+
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'gas-savings' => 'Gasbesparing',
+					'co2-savings' => 'CO2 Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs' => 'Indicatieve kosten',
+					'indicative-replacement' => 'Indicatie vervangingsmoment cv ketel',
+					'comparable-rate' => 'Vergelijkbare rente',
+					'year' => 'Jaar',
+				],
+			],
 		],
 	],
 ];

@@ -57,6 +57,7 @@ class BuildingFeature extends Model
         'additional_info',
 	    'surface',
 	    'build_year',
+        'facade_plastered_painted'
     ];
 
     public function building(){

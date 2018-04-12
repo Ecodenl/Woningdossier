@@ -45,6 +45,7 @@
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                @if(App::environment() == 'local') {{-- currently only for local --}}
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
@@ -62,6 +63,7 @@
                         </ul>
                     </li>
                 </ul>
+                @endif
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
@@ -76,7 +78,7 @@
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
+                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
                                 {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
                                 <li>
                                     <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"

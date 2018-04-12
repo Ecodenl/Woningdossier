@@ -78,6 +78,17 @@ class Building extends Model
 	}
 
 	/**
+	 * @param $short
+	 *
+	 * @return BuildingElement|null
+	 */
+	public function getBuildingElement($short){
+		return $this->buildingElements()
+			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+			->where('e.short', $short)->first(['building_elements.*']);
+	}
+
+	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function buildingServices(){
@@ -92,5 +103,29 @@ class Building extends Model
 			return $this->buildingFeatures->buildingType;
 		}
 		return null;
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function currentInsulatedGlazing(){
+		return $this->hasMany(BuildingInsulatedGlazing::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function currentPaintworkStatus(){
+		return $this->hasOne(BuildingPaintworkStatus::class);
+	}
+
+	/**
+	 * Returns all roof types of this building. Get the primary via the
+	 * building features.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function roofTypes(){
+		return $this->hasMany(BuildingRoofType::class);
 	}
 }

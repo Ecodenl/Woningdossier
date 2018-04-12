@@ -22,7 +22,7 @@ class CreateBuildingElementsTable extends Migration
             $table->integer('element_id')->unsigned();
             $table->foreign('element_id')->references('id')->on('elements')->onDelete('restrict');
 
-            $table->integer('element_value_id')->unsigned();
+            $table->integer('element_value_id')->unsigned()->nullable();
             $table->foreign('element_value_id')->references('id')->on('element_values')->onDelete('restrict');
 
             $table->text('extra')->nullable();

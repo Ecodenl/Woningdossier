@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserInterest extends Model
 {
-    //
+
+    protected $fillable = ['user_id', 'interested_in_type', 'interested_in_id', 'interest_id'];
+
 	public function user(){
 		return $this->belongsTo(User::class);
 	}

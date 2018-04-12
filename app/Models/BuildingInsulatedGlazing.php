@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuildingInsulatedGlazing extends Model
 {
+
+    protected $fillable = ['building_id', 'measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows'];
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */

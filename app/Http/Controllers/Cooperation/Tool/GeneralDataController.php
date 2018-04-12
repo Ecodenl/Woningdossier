@@ -115,8 +115,10 @@ class GeneralDataController extends Controller
 
     	$elements = $request->get('element', []);
     	foreach($elements as $elementId => $elementValueId){
+
 			$element = Element::find($elementId);
 			$elementValue = ElementValue::find($elementValueId);
+
 			if ($element instanceof Element && $elementValue instanceof ElementValue){
 				$buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
 				if (!$buildingElement instanceof BuildingElement){

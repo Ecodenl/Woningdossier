@@ -61,7 +61,6 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-    	$this->checkAllowed($request);
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
         $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');
@@ -79,6 +78,7 @@ class WallInsulationController extends Controller
         $buildingFeatures = $building->buildingFeatures();
 
         // Update the building feature table with some fresh data
+        // todo: arrray to string convers
         $buildingFeatures->update([
             'element_values' => $wallInsulationQualities,
             'facade_plastered_surface_id' => $plasteredWallSurface,

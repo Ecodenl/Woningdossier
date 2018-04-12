@@ -157,4 +157,16 @@ class User extends Authenticatable
 		return $this->hasMany(UserInterest::class);
 	}
 
+    /**
+     * Returns a specific interested row for a specific type
+     *
+     * @param $type
+     * @param $interestedInId
+     * @return \Illuminate\Database\Eloquent\Model|null|object|static
+     */
+    public function getInterestedType($type, $interestedInId)
+    {
+        return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+    }
+
 }

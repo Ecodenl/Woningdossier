@@ -9,8 +9,11 @@ use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
+use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
+use App\Models\BuildingPaintworkStatus;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
@@ -25,6 +28,7 @@ use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
 {
@@ -40,6 +44,7 @@ class InsulatedGlazingController extends Controller
 	     * @var Building $building
 	     */
     	$building = \Auth::user()->buildings->first();
+//    	dd(Auth::user()->buildings()->getElement('crack-sealing'));
         $steps = Step::orderBy('order')->get();
 
 	    $interests = Interest::orderBy('order')->get();
@@ -86,6 +91,7 @@ class InsulatedGlazingController extends Controller
 				$measureApplications [] = $measureApplication;
 			}
 		}
+
 
         return view('cooperation.tool.insulated-glazing.index', compact(
         	'building', 'steps', 'interests',
@@ -245,6 +251,111 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
+
+        $building = Auth::user()->buildings()->first();
+        $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
+
+        // Saving the insulate glazings
+        foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
+
+            $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
+            $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
+            $m2 = $buildingInsulatedGlazing['m2'];
+            $windows = $buildingInsulatedGlazing['windows'];
+
+            // The interest for a measure
+            $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
+            // Update or Create the buildingInsulatedGlazing
+            BuildingInsulatedGlazing::updateOrCreate(
+                [
+                    'building_id' => $building->id,
+                    'measure_application_id' => $measureApplicationId,
+                ],
+                [
+                    'insulating_glazing_id' => $insulatedGlazingId,
+                    'building_heating_id' => $buildingHeatingId,
+                    'm2' => $m2,
+                    'windows' => $windows
+                ]
+            );
+            // We'll create the user interests for the measures or update it
+            $userInterest = UserInterest::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'interested_in_type' => 'measure_application',
+                    'interested_in_id' => $measureApplicationId,
+                ],
+                [
+                    'interest_id' => $userInterestId,
+                ]
+            );
+
+        }
+
+        // saving the main building elements
+        $elements = $request->input('building_elements', []);
+        foreach($elements as $elementId => $elementValueId){
+
+            $element = Element::find($elementId);
+            $elementValue = ElementValue::find(reset($elementValueId));
+
+            if ($element instanceof Element && $elementValue instanceof ElementValue){
+                $buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
+                if (!$buildingElement instanceof BuildingElement){
+                    $buildingElement = new BuildingElement();
+                }
+                $buildingElement->elementValue()->associate($elementValue);
+                $buildingElement->element()->associate($element);
+                $buildingElement->building()->associate($building);
+                $buildingElement->save();
+            }
+        }
+
+        // Saving the wood building elements
+        // Get the wood elements
+        $woodElements = $request->input('building_elements.wood-elements.*.*');
+
+        if (isset($woodElements)) {
+
+            // Get the first key for the woodElementId
+            $woodElementId = key($request->input('building_elements.wood-elements'));
+
+            // Check if there are wood elements drop them
+            if (BuildingElement::where('element_id', $woodElementId)->count() > 0) {
+                BuildingElement::where('element_id', $woodElementId)->delete();
+            }
+
+            // Save the woodElements
+            foreach ($woodElements as $woodElementValueId) {
+
+                BuildingElement::create(
+                    [
+                        'building_id' => $building->id,
+                        'element_id' => $woodElementId,
+                        'element_value_id' => $woodElementValueId
+                    ]
+                );
+            }
+        }
+
+        // Save the paintwork statuses
+        $paintWorkStatuses = $request->get('building_paintwork_statuses', "");
+        BuildingPaintworkStatus::updateOrCreate(
+            [
+                'building_id' => $building->id
+            ],
+            [
+                'last_painted_year' => $paintWorkStatuses['last_painted_year'],
+                'paintwork_status_id' => $paintWorkStatuses['paintwork_status_id'],
+                'wood_rot_status_id' => $paintWorkStatuses['paintwork_status_id'],
+            ]
+        );
+
+        // Save the window surface to the building feature
+        $windowSurface = $request->get('window_surface', '');
+        $buildingFeature = BuildingFeature::where('building_id', $building->id)->first()->update([
+            'window_surface' => $windowSurface
+        ]);
 
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
         $steps = Step::orderBy('order')->get();

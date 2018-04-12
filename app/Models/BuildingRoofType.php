@@ -11,9 +11,9 @@ class BuildingRoofType extends Model
 	 *
 	 * @var array
 	 */
-	protected $casts = [
+	/*protected $casts = [
 		'extra' => 'array',
-	];
+	];*/
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

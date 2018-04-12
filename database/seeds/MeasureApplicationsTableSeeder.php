@@ -265,6 +265,22 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Vervangen cv ketel',
+		        ],
+		        'application' => 'replace',
+		        'costs' => 2200, // euro
+		        'cost_unit' => [
+			        'nl' => 'per stuk',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 15,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
 
 
 

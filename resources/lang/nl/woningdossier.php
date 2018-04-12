@@ -290,7 +290,8 @@ return [
 				'current-gas-usage' => 'Huidig gasverbruik',
 				'resident-count' => 'Huidig aantal bewoners',
 				'boiler-type' => 'Wat is het type van de huidige CV ketel',
-				'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst ?',
+				'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst?',
+				'already-efficient' => 'Je hebt al een efficiënte CV ketel. Het vervangen zal alleen een beperkte energiebesparing opleveren',
 
 				'indication-for-costs' => [
 					'title' => 'Indicatie voor kosten en baten voor deze maatregel',

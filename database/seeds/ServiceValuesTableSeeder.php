@@ -59,14 +59,14 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                     [
                         'values' => [
-                            'nl' => 'Volledeige warmtepomp met buitenlucht als warmtebron',
+                            'nl' => 'Volledige warmtepomp met buitenlucht als warmtebron',
                         ],
                         'order' => 2,
                         'calculate_value' => 2,
                     ],
                     [
                         'values' => [
-                            'nl' => 'Volledeige warmtepomp met bodemenergie als warmtebron',
+                            'nl' => 'Volledige warmtepomp met bodemenergie als warmtebron',
                         ],
                         'order' => 3,
                         'calculate_value' => 3,
@@ -162,6 +162,54 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                 ],
             ],
+	        [
+		        'names' => [
+			        'nl' => 'CV ketel',
+		        ],
+		        'short' => 'boiler',
+		        'service_type' => 'Heating',
+		        'order' => 0,
+		        'info' => [
+			        'nl' => 'Info hier.',
+		        ],
+		        'service_values' => [
+			        [
+				        'values' => [
+					        'nl' => 'conventioneel rendement ketel',
+				        ],
+				        'order' => 1,
+				        'calculate_value' => 1,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'verbeterd rendement ketel',
+				        ],
+				        'order' => 2,
+				        'calculate_value' => 2,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'HR100 ketel',
+				        ],
+				        'order' => 3,
+				        'calculate_value' => 3,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'HR104 ketel',
+				        ],
+				        'order' => 4,
+				        'calculate_value' => 4,
+			        ],
+			        [
+				        'values' => [
+					        'nl' => 'HR107 ketel',
+				        ],
+				        'order' => 5,
+				        'calculate_value' => 5,
+			        ],
+		        ],
+	        ],
 //            [
 //                'names' => [
 //                    'nl' => 'Douche wtw',
@@ -190,7 +238,7 @@ class ServiceValuesTableSeeder extends Seeder
 //            ],
             [
                 'names' => [
-                    'nl' => 'Hoe wordt het huis geventileerd ?',
+                    'nl' => 'Hoe wordt het huis geventileerd?',
                 ],
                 'short' => 'house-ventilation',
                 'service_type' => 'Ventilation',
@@ -246,9 +294,7 @@ class ServiceValuesTableSeeder extends Seeder
                 'info' => [
                     'nl' => 'Infotext hier',
                 ],
-                'service_values' => [
-
-                ],
+                'service_values' => [], // there are no values
             ],
 
         ];

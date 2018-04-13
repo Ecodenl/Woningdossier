@@ -8,6 +8,7 @@ use App\Models\HeaterSpecification;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
+use App\Models\PvPanelYield;
 use App\Models\UserEnergyHabit;
 
 class KeyFigures {
@@ -26,11 +27,10 @@ class KeyFigures {
 	 * @param PvPanelOrientation $orientation
 	 * @param $angle
 	 *
-	 * @return HeaterYield|null
+	 * @return PvPanelYield|null
 	 */
 	public static function getYield(PvPanelOrientation $orientation, $angle){
-		return HeaterYield::where('pv_panel_orientation_id', $orientation->id)
-		                   ->where('angle', $angle)->first();
+		return \App\Helpers\KeyFigures\PvPanels\KeyFigures::getYield($orientation, $angle);
 	}
 
 	/**

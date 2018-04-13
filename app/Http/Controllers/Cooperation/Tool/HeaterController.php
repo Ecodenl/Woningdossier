@@ -7,7 +7,6 @@ use App\Helpers\Calculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
-use App\Model\HeaterYield;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
@@ -15,6 +14,7 @@ use App\Models\HeaterSpecification;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
+use App\Models\PvPanelYield;
 use App\Models\Step;
 use App\Models\UserEnergyHabit;
 use Illuminate\Http\Request;
@@ -112,7 +112,7 @@ class HeaterController extends Controller
 			    $helpFactor = 0;
 			    if ($orientation instanceof PvPanelOrientation && $angle > 0){
 				    $yield = KeyFigures::getYield($orientation, $angle);
-				    if ($yield instanceof HeaterYield && $locationFactor instanceof PvPanelLocationFactor) {
+				    if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
 					    $helpFactor = $yield->yield * $locationFactor->factor;
 				    }
 			    }

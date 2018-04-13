@@ -52,7 +52,6 @@ class DatabaseSeeder extends Seeder
 	    $this->call(KeyFigureBoilerEfficienciesTableSeeder::class);
 	    $this->call(PvPanelYieldsTableSeeder::class);
 		$this->call(KeyFigureConsumptionTapWatersTableSeeder::class);
-		$this->call(HeaterYieldsTableSeeder::class);
 
 
 		// New

@@ -480,8 +480,8 @@
                 });
             });
             // Trigger the change event so it will load the data
-            $("select, input[type=radio], input[type=text]").trigger('change');
-
+            //$("select, input[type=radio], input[type=text]").trigger('change');
+            $('form').find('*').filter(':input:visible:first').trigger('change');
         });
     </script>
 @endpush

@@ -286,7 +286,8 @@
         $(document).ready(function() {
 
             crawlspaceOptions();
-            formChange();
+            //formChange();
+            $('form').find('*').filter(':input:visible:first').trigger('change');
 
             $('#has_crawlspace').change(crawlspaceOptions);
             $("select, input[type=radio], input[type=text]").change(formChange);

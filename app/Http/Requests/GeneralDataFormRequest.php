@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Service;
+use App\Models\Motivation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -592,7 +592,7 @@
                     <div class="form-group add-space{{ $errors->has('living_situation_extra') ? ' has-error' : '' }}">
                         <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#living-situation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.additional-info')</label>
 
-                        <textarea id="additional-info" class="form-control" name="living_situation_extra">@if(old('living_situation_extra') != ""){{old('living_situation_extra')}}@elseif(isset($energyHabit)){{$energyHabit->living_situation_extra}}@endif</textarea>
+                        <textarea id="additional-info" class="form-control" name="living_situation_extra">@if(old('living_situation_extra') != ""){{old('living_situation_extra')}}@elseif(isset($energyHabit)){{ $energyHabit->living_situation_extra }}@endif</textarea>
 
                         <div id="living-situation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
@@ -612,13 +612,13 @@
                     <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.title')</h4>
                 </div>
 
-                {{-- Well start at 1 so the translation will to. --}}
+                {{-- Start at 1 so the translation will too. --}}
                 @for($i = 1; $i < 5; $i++)
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('motivation.'.$i) ? ' has-error' : '' }}">
-                            <label for="motivation[{{$i}}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{$i}}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
+                            <label for="motivation[{{ $i }}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{ $i }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
 
-                            <select id="motivation[{{$i}}]" class="form-control" name="motivation[{{$i}}]" >
+                            <select id="motivation[{{ $i }}]" class="form-control" name="motivation[{{ $i }}]" >
 
                                 @if($energyHabit != null)
                                     @foreach($motivations as $motivation)
@@ -627,7 +627,7 @@
                                                     selected
                                                 @elseif(old() == false && isset(Auth::user()->motivations()->where('order', $i)->first()->motivation_id) && Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id)
                                                     selected
-                                                @endif value="{{$motivation->id}}">{{$motivation->name}}
+                                                @endif value="{{ $motivation->id }}">{{ $motivation->name }}
                                         </option>
                                     @endforeach
 
@@ -639,7 +639,7 @@
 
 
                             </select>
-                            <div id="motivation-{{$i}}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            <div id="motivation-{{ $i }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
                             </div>
 

@@ -719,7 +719,7 @@
                     $('#house-ventilation').parent().parent().next().next().hide();
                     $('#house-ventilation').parent().parent().next().next().find('input').val("")
                 }
-            });s
+            });
 
             // check if a user is interested in a sun panel
             $(document).change('#total-sun-panels', function() {

@@ -76,12 +76,6 @@ class GeneralDataController extends Controller
         $energyHabit = Auth::user()->energyHabit;
         $steps = Step::orderBy('order')->get();
 
-
-      
-
-
-
-
         return view('cooperation.tool.general-data.index', compact(
         	'building',
         	'buildingTypes', 'roofTypes', 'energyLabels',

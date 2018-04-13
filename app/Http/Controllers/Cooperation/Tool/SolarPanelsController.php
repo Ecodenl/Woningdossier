@@ -17,6 +17,12 @@ use App\Http\Controllers\Controller;
 
 class SolarPanelsController extends Controller
 {
+    protected $step;
+
+    public function __construct(Request $request) {
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
     /**
      * Display a listing of the resource.
      *

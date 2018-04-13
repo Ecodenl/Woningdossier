@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Models\Step;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
@@ -12,12 +13,19 @@ use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
-use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class HighEfficiencyBoilerController extends Controller
 {
+
+    protected $step;
+
+    public function __construct(Request $request) {
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
+
     /**
      * Display a listing of the resource.
      *

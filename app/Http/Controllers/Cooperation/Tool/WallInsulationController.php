@@ -25,6 +25,13 @@ use Illuminate\Support\Facades\Auth;
 class WallInsulationController extends Controller
 {
 
+
+    protected $step;
+
+    public function __construct(Request $request) {
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -79,7 +86,7 @@ class WallInsulationController extends Controller
 
         // Update the building feature table with some fresh data
         $buildingFeatures->update([
-            'element_values' => $wallInsulationQualities,
+            'element_values' => reset($wallInsulationQualities),
             'facade_plastered_surface_id' => $plasteredWallSurface,
             'wall_joints' => $wallJoints,
             'cavity_wall' => $cavityWall,

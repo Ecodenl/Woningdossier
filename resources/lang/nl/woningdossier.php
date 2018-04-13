@@ -47,6 +47,13 @@ return [
 		],
 
 		'tool' => [
+
+			'unit' => [
+				'year' => 'jaar',
+				'liter' => 'liter',
+				'day' => 'dag',
+			],
+
 			'title' => 'Keukentafel tool',
 
 			'general-data' => [
@@ -236,6 +243,123 @@ return [
 					'research' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
 				],
 			],
+			'roof-insulation' => [
+				'title' => 'Dakisolatie',
+				'current-situation' => [
+					'title' => 'Huidige situatie',
+					'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
+					'main-roof' => 'Wat is het hoofddak?',
+					'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
+					'is-pitched-roof-insulated' => 'is het hellende dak geïsoleerd?',
+					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
+					'flat-roof-surface' => 'Dakoppervlak van platte dak',
+					'pitched-roof' => 'Is het hellende dak geïsoleerd?',
+					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
+					'zinc-replaced' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+					'pitched-roof-surface' => 'Dakoppervlak hellend dak',
+				],
+
+				'flat-roof' => [
+					'title' => 'Plat dak',
+					'insulate-roof' => 'Wilt u een plat dak isoleren',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
+				],
+				'pitched-roof' => [
+					'title' => 'Hellend dak',
+					'insulate-roof' => 'Wilt u het hellende dak isoleren',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
+				],
+				'measure-application' => [
+					'no-not-applicable' => 'Nee / Niet van toepassing',
+				],
+
+				'costs' => [
+					'gas' => 'Gasbesparing',
+					'co2' => 'CO2 Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs-insulation' => 'Indicatieve kosten aanbrengen isolatie',
+					'comparable-rent' => 'Vergelijkbare rente',
+					'flat' => [
+						'title' => 'Kosten en baten voor isoleren van het platte dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakbedekking',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakbedekking',
+					],
+					'pitched' => [
+						'title' => 'Kosten en baten voor isoleren van het hellende dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakpannen',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakpannen',
+					],
+				],
+			],
+			'boiler' => [
+				'title' => 'HR CV Ketel',
+
+				'current-gas-usage' => 'Huidig gasverbruik',
+				'resident-count' => 'Huidig aantal bewoners',
+				'boiler-type' => 'Wat is het type van de huidige CV ketel',
+				'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst?',
+				'already-efficient' => 'Je hebt al een efficiënte CV ketel. Het vervangen zal alleen een beperkte energiebesparing opleveren',
+
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'gas-savings' => 'Gasbesparing',
+					'co2-savings' => 'CO2 Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs' => 'Indicatieve kosten',
+					'indicative-replacement' => 'Indicatie vervangingsmoment cv ketel',
+					'comparable-rate' => 'Vergelijkbare rente',
+					'year' => 'Jaar',
+				],
+			],
+			'solar-panels' => [
+				'title' => 'Zonnepanelen',
+
+				'peak-power' => 'Piekvermogen per paneel',
+				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u ca. :number zonnepanelen in optimale oriëntatie nodig',
+				'number' => 'Hoeveel zonnepanelen moeten er komen?',
+				'pv-panel-orientation-id' => 'Wat is de oriëntatie van de panelen?',
+				'angle' => 'Wat is de hellingshoek van de panelen?',
+				'total-power' => 'Totale Wp vermogen van de installatie: :wp',
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'yield-electricity' => 'Opbrengst elektra',
+					'raise-own-consumption' => 'Opwekking t.o.v. eigen verbruik',
+					'co2-savings' => 'CO2 Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs' => 'Indicatieve kosten',
+					'comparable-rate' => 'Vergelijkbare rente',
+					'performance-of-system' => 'Prestatie van het systeem: :performance',
+					'year' => 'Jaar',
+					'performance' => [
+						'ideal' => 'Ideaal',
+						'possible' => 'Mogelijk',
+						'no-go' => 'Onrendabel',
+					],
+				],
+			],
+			'heater' => [
+				'title' => 'Zonneboiler',
+
+				'comfort-level-warm-tap-water' => 'Comfortniveau voor het gebruik van warm tapwater',
+				'pv-panel-orientation-id' => 'Oriëntatie van de collector',
+				'angle' => 'Hellingshoek van de collector',
+
+				'estimated-usage' => 'Geschat huidig gebruik',
+				'consumption-water' => 'Gebruik warm tapwater',
+				'consumption-gas' => 'Bijhorend gasverbruik',
+
+				'system-specs' => 'Specificaties systeem',
+				'size-boiler' => 'Grootte zonneboiler',
+				'size-collector' => 'Grootte collector',
+
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'production-heat' => 'Warmteproductie per jaar',
+					'percentage-consumption' => 'Aandeel van de zonneboiler aan het totaalverbruik voor warm water',
+
+				],
+			],
+
 		],
 	],
 ];

@@ -270,8 +270,10 @@
 
 
         @foreach($services as $i => $service)
-            @if ($i % 2 == 0 || strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
+            @if ($i % 2 == 0 || stripos($service->name, 'zonnepanelen'))
                 <div class="row" id="service_row_{{$service->id}}">
+            @elseif(strpos($service->name, 'geventileerd'))
+                </div><div class="row">
             @endif
 
                 <div class="col-sm-4">
@@ -717,7 +719,7 @@
                     $('#house-ventilation').parent().parent().next().next().hide();
                     $('#house-ventilation').parent().parent().next().next().find('input').val("")
                 }
-            });s
+            });
 
             // check if a user is interested in a sun panel
             $(document).change('#total-sun-panels', function() {

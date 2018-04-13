@@ -8373,6 +8373,10 @@ body #app .alert-top-space {
   margin-top: 10px;
 }
 
+body i.glyphicon-info-sign {
+  display: none;
+}
+
 .loading {
   background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
   background-size: 25px 25px;

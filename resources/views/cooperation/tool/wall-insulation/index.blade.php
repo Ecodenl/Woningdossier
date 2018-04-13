@@ -452,7 +452,9 @@
                           $("input#paint_wall").val(Math.round(data.paint_wall.costs));
                           $("span#paint_wall_year").html("(in " + data.paint_wall.year + ")");
                       }
-                    console.log(data);
+                      @if(App::environment('local'))
+                        console.log(data);
+                      @endif
                   }
               })
             });

@@ -65,9 +65,12 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 	            Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
 	            Route::post('solar-panels/calculate', 'SolarPanelsController@calculate')->name('solar-panels.calculate');
 
+	            Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
+	            Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
+
 
 				Route::resource('heat-pump', 'HeatPumpController');
-				Route::resource('heater', 'HeaterController');
+
             });
 
 		});

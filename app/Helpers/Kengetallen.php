@@ -18,4 +18,14 @@ class Kengetallen {
 	// D129
 	const PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING = 1; // %
 
+	// Energieinhoud gas
+	// D116
+	const GAS_CALORIFIC_VALUE = 31.65; // MJ
+	// D117
+	const GAS_CONVERSION_FACTOR = 3.6; // MJ / kWh
+
+
+	public static function gasKwhPerM3(){
+		return self::GAS_CALORIFIC_VALUE / self::GAS_CONVERSION_FACTOR;
+	}
 }

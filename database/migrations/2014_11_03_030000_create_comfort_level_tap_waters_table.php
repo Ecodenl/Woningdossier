@@ -15,7 +15,9 @@ class CreateComfortLevelTapWatersTable extends Migration
     {
         Schema::create('comfort_level_tap_waters', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->uuid('name');
+            $table->integer('calculate_value')->unsigned();
+            $table->integer('order')->unsigned();
             $table->timestamps();
         });
     }

@@ -304,6 +304,33 @@ return [
 					'year' => 'Jaar',
 				],
 			],
+			'solar-panels' => [
+				'title' => 'Zonnepanelen',
+
+				'peak-power' => 'Piekvermogen per paneel',
+				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u ca. :number zonnepanelen in optimale oriëntatie nodig',
+				'number' => 'Hoeveel zonnepanelen moeten er komen?',
+				'pv-panel-orientation-id' => 'Wat is de oriëntatie van de panelen?',
+				'angle' => 'Wat is de hellingshoek van de panelen?',
+				'total-power' => 'Totale Wp vermogen van de installatie: :wp',
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'yield-electricity' => 'Opbrengst elektra',
+					'raise-own-consumption' => 'Opwekking t.o.v. eigen verbruik',
+					'co2-savings' => 'CO2 Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs' => 'Indicatieve kosten',
+					'comparable-rate' => 'Vergelijkbare rente',
+					'performance-of-system' => 'Prestatie van het systeem: :performance',
+					'year' => 'Jaar',
+					'performance' => [
+						'ideal' => 'Ideaal',
+						'possible' => 'Mogelijk',
+						'no-go' => 'Onrendabel',
+					],
+				],
+			],
+
 		],
 	],
 ];

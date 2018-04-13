@@ -281,6 +281,22 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Plaatsen / vervangen zonnepanelen',
+		        ],
+		        'application' => 'place',
+		        'costs' => 450, // euro
+		        'cost_unit' => [
+			        'nl' => 'per paneel',
+		        ],
+		        'minimal_costs' => 1500, // euro
+		        'maintenance_interval' => 25,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
 
 
 

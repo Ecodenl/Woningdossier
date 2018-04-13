@@ -126,6 +126,13 @@ class Building extends Model
 	}
 
 	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function pvPanels(){
+		return $this->hasOne(BuildingPvPanel::class);
+	}
+
+	/**
 	 * Returns all roof types of this building. Get the primary via the
 	 * building features.
 	 *

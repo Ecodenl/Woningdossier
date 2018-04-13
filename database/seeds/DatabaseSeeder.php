@@ -42,9 +42,13 @@ class DatabaseSeeder extends Seeder
 		$this->call(CrawlspaceAccessesTableSeeder::class);
 		$this->call(RoofTileStatusesTableSeeder::class);
 	    $this->call(ServiceValuesTableSeeder::class);
+	    $this->call(PvPanelOrientationsTableSeeder::class);
+	    $this->call(PvPanelLocationFactorsTableSeeder::class);
 
 		// Depending on earlier seeded data
 	    $this->call(KeyFigureBoilerEfficienciesTableSeeder::class);
+	    $this->call(PvPanelYieldsTableSeeder::class);
+
 
 
 		// New

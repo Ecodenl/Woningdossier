@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Models\Step;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\Kengetallen;

@@ -223,7 +223,7 @@
     <script>
         $(document).ready(function() {
 
-            formChange();
+            //formChange();
 
             $("select, input[type=radio], input[type=text]").change(formChange);
 
@@ -288,6 +288,8 @@
                     }
                 });
             }
+
+            $('form').find('*').filter(':input:visible:first').trigger('change');
 
         });
     </script>

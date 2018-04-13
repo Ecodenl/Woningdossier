@@ -34,8 +34,7 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
-
-	    /** @var Building $building */
+    	/** @var Building $building */
 	    $building = \Auth::user()->buildings()->first();
 
 	    $buildingInsulation = $building->getBuildingElement('floor-insulation');

@@ -10,7 +10,7 @@ return [
     | Basically the same as APP_URL, but without the protocol. It
     |
     */
-	'domain' => env('APP_DOMAIN', 'hoom-dossier.nl'),
+	'domain' => env('APP_DOMAIN', 'hoomdossier.nl'),
 
 	/*
     |--------------------------------------------------------------------------

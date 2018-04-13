@@ -19,7 +19,7 @@ class CreateUserInterestsTable extends Migration
 	        $table->integer('user_id')->unsigned();
 	        $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
-	        $table->enum('interested_in_type', ['service', 'element', 'measure_application']);
+	        $table->enum('interested_in_type', ['service', 'element', 'measure_application', 'roof_type']);
 	        $table->integer('interested_in_id')->unsigned();
 
 	        $table->integer('interest_id')->unsigned();

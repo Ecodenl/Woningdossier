@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
+use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
@@ -20,11 +21,15 @@ use App\Models\Motivation;
 use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
 use App\Models\RoofType;
+use App\Models\Service;
+use App\Models\ServiceValue;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -57,6 +62,7 @@ class GeneralDataController extends Controller
         	'living-rooms-windows', 'sleeping-rooms-windows',
 	        'wall-insulation', 'floor-insulation', 'roof-insulation',
 	        ])->orderBy('order')->get();
+        $services = Service::orderBy('order')->get();
 
 
         $insulations = PresentWindow::all();
@@ -70,16 +76,13 @@ class GeneralDataController extends Controller
         $energyHabit = Auth::user()->energyHabit;
         $steps = Step::orderBy('order')->get();
 
-
-
-
         return view('cooperation.tool.general-data.index', compact(
         	'building',
         	'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildingTypes', 'interests', 'elements',
 	        'insulations','houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
-            'steps', 'motivations', 'energyHabit'
+            'steps', 'motivations', 'energyHabit', 'services'
         ));
     }
 
@@ -91,8 +94,10 @@ class GeneralDataController extends Controller
      */
     public function store(GeneralDataFormRequest $request)
     {
+
 	    /** @var Building $building */
     	$building = Auth::user()->buildings()->first();
+
     	$features = $building->buildingFeatures;
     	if (!$features instanceof BuildingFeature){
     		$features = new BuildingFeature();
@@ -114,9 +119,13 @@ class GeneralDataController extends Controller
     	$building->buildingFeatures()->save($features);
 
     	$elements = $request->get('element', []);
+
     	foreach($elements as $elementId => $elementValueId){
 			$element = Element::find($elementId);
 			$elementValue = ElementValue::find($elementValueId);
+            // Get the interest field off the element
+            $elementInterestId = $request->input('user_interest.element.'.$elementId.'', '');
+
 			if ($element instanceof Element && $elementValue instanceof ElementValue){
 				$buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
 				if (!$buildingElement instanceof BuildingElement){
@@ -126,8 +135,83 @@ class GeneralDataController extends Controller
 				$buildingElement->element()->associate($element);
 				$buildingElement->building()->associate($building);
 				$buildingElement->save();
+
+                // We'll create the user interests for the elements or update it
+                $userInterest = UserInterest::updateOrCreate(
+                    [
+                        'user_id' => Auth::id(),
+                        'interested_in_type' => 'element',
+                        'interested_in_id' => $elementId,
+                    ],
+                    [
+                        'user_id' => Auth::id(),
+                        'interested_in_type' => 'element',
+                        'interested_in_id' => $elementId,
+                        'interest_id' => $elementInterestId
+                    ]
+                );
 			}
 	    }
+
+	    // save the services
+        // TODO: add validation
+        // TODO: Save the interests
+	    $services = $request->get('service', []);
+    	foreach($services as $serviceId => $serviceValueId){
+
+
+    	    // get the service based on the service id from the form
+			$service = Service::find($serviceId);
+			//get the service values
+			$serviceValue = ServiceValue::find($serviceValueId);
+
+            // get the extra fields (date)
+            $serviceExtra = $request->input($serviceId.'.extra', "");
+
+            // Get the interest field off the service
+            $serviceInterestId = $request->input('user_interest.service.'.$serviceId.'', '');
+
+            if ($service instanceof Service){
+                // get a building service
+                $buildingService = $building->buildingServices()->where('service_id', $service->id)->first();
+
+                if (!$buildingService instanceof BuildingService){
+                    $buildingService = new BuildingService();
+                }
+                // check if the current service is a sun panel
+                // if so, we will need to put the value / valueId inside the extra field.
+                if (strpos($service->name, 'zonnepanelen') == true) {
+                    $buildingService->extra = ['value' => $serviceValueId, 'date' => $serviceExtra];
+                }
+                // if its a ventilation, is has a dropdown so it has a serviceValue
+                else if (strpos($service->name, 'geventileerd') == true) {
+                    $buildingService->extra = ['date' => $serviceExtra];
+                    $buildingService->serviceValue()->associate($serviceValue);
+                } else {
+                    $buildingService->serviceValue()->associate($serviceValue);
+                }
+
+                $buildingService->service()->associate($service);
+                $buildingService->building()->associate($building);
+                $buildingService->save();
+
+                // We'll create the user interests for the services or update it
+                $userInterest = UserInterest::updateOrCreate(
+                    [
+                        'user_id' => Auth::id(),
+                        'interested_in_type' => 'service',
+                        'interested_in_id' => $serviceId,
+                    ],
+                    [
+                        'user_id' => Auth::id(),
+                        'interested_in_type' => 'service',
+                        'interested_in_id' => $serviceId,
+                        'interest_id' => $serviceInterestId
+                    ]
+                );
+            }
+	    }
+
 
 
 	    // Check if the user already has a motivation

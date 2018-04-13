@@ -15,7 +15,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('floor_insulation') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('element.' . $floorInsulation->id) ? ' has-error' : '' }}">
 
                         <label for="element_{{ $floorInsulation->id }}" class="control-label">
                             <i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> @lang('woningdossier.cooperation.tool.floor-insulation.floor-insulation')
@@ -35,9 +35,9 @@
                             @endforeach
                         </select>
 
-                        @if ($errors->has('floor_insulation'))
+                        @if ($errors->has('element.' . $floorInsulation->id))
                             <span class="help-block">
-                                <strong>{{ $errors->first('floor_insulation') }}</strong>
+                                <strong>{{ $errors->first('element.' . $floorInsulation->id) }}</strong>
                             </span>
                         @endif
                     </div>
@@ -311,6 +311,9 @@
                     success: function(data){
                         if (data.insulation_advice){
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+                        }
+                        else {
+                            $("#insulation-advice").html("");
                         }
                         if (data.hasOwnProperty('savings_gas')){
                             $("input#savings_gas").val(Math.round(data.savings_gas));

@@ -87,6 +87,12 @@ class Building extends Model
 			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
 			->where('e.short', $short)->first(['building_elements.*']);
 	}
+	
+	public function getBuildingService($short){
+		return $this->buildingServices()
+			->leftJoin('services as s', 'building_services.service_id', '=', 'e.id')
+			->where('e.short', $short)->first();
+	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -117,5 +123,29 @@ class Building extends Model
 	 */
 	public function currentPaintworkStatus(){
 		return $this->hasOne(BuildingPaintworkStatus::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function pvPanels(){
+		return $this->hasOne(BuildingPvPanel::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function heater(){
+		return $this->hasOne(BuildingHeater::class);
+	}
+
+	/**
+	 * Returns all roof types of this building. Get the primary via the
+	 * building features.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function roofTypes(){
+		return $this->hasMany(BuildingRoofType::class);
 	}
 }

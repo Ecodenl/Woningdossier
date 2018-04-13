@@ -472,7 +472,10 @@
                         if (data.hasOwnProperty('paintwork.year')){
                             $("input#paintwork_year").val(data.paintwork.year);
                         }
+
+                        @if(App::environment('local'))
                         console.log(data);
+                        @endif
                     }
                 });
             });

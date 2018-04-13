@@ -133,6 +133,13 @@ class Building extends Model
 	}
 
 	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function heater(){
+		return $this->hasOne(BuildingHeater::class);
+	}
+
+	/**
 	 * Returns all roof types of this building. Get the primary via the
 	 * building features.
 	 *

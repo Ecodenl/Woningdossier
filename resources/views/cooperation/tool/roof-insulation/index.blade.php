@@ -446,7 +446,9 @@
                             $(".pitched-roof").hide();
                         }
 
+                        @if(App::environment('local'))
                         console.log(data);
+                        @endif
                     }
                 });
             }

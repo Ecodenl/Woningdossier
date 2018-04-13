@@ -47,6 +47,13 @@ return [
 		],
 
 		'tool' => [
+
+			'unit' => [
+				'year' => 'jaar',
+				'liter' => 'liter',
+				'day' => 'dag',
+			],
+
 			'title' => 'Keukentafel tool',
 
 			'general-data' => [
@@ -328,6 +335,28 @@ return [
 						'possible' => 'Mogelijk',
 						'no-go' => 'Onrendabel',
 					],
+				],
+			],
+			'heater' => [
+				'title' => 'Zonneboiler',
+
+				'comfort-level-warm-tap-water' => 'Comfortniveau voor het gebruik van warm tapwater',
+				'pv-panel-orientation-id' => 'Oriëntatie van de collector',
+				'angle' => 'Hellingshoek van de collector',
+
+				'estimated-usage' => 'Geschat huidig gebruik',
+				'consumption-water' => 'Gebruik warm tapwater',
+				'consumption-gas' => 'Bijhorend gasverbruik',
+
+				'system-specs' => 'Specificaties systeem',
+				'size-boiler' => 'Grootte zonneboiler',
+				'size-collector' => 'Grootte collector',
+
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'production-heat' => 'Warmteproductie per jaar',
+					'percentage-consumption' => 'Aandeel van de zonneboiler aan het totaalverbruik voor warm water',
+
 				],
 			],
 

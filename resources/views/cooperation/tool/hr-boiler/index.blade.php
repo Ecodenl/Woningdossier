@@ -212,7 +212,9 @@
                         if (data.hasOwnProperty('interest_comparable')){
                             $("input#interest_comparable").val(data.interest_comparable);
                         }
+                        @if(App::environment('local'))
                         console.log(data);
+                        @endif
                     }
                 });
             }

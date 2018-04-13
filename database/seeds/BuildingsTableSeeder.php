@@ -16,7 +16,7 @@ class BuildingsTableSeeder extends Seeder
 	        'street' => 'Hoekzijdsestraatweg',
 	        'number' => 1,
 	        'city' => 'Lutjebroek',
-	        'postal_code' => '1234 AB',
+	        'postal_code' => '1821 AB',
 	        'country_code' => 'nl',
 	        'bag_addressid' => '0580010000253148',
         ]);

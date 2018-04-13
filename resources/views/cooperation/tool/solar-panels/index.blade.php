@@ -282,7 +282,9 @@
                             $(".total-power").hide();
                         }
 
+                        @if(App::environment('local'))
                         console.log(data);
+                        @endif
                     }
                 });
             }

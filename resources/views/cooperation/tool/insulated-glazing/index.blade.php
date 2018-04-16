@@ -437,6 +437,14 @@
 @push('js')
     <script>
         $(document).ready(function() {
+
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
                 var form = $(this).closest("form").serialize();

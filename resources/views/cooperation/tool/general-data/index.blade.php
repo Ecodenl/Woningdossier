@@ -701,6 +701,14 @@
 
         $(document).ready(function () {
 
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+
             // Load the datepicker
             $('.input-group.date').datepicker({
                 language: "nl"

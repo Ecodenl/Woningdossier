@@ -234,7 +234,7 @@
                             <i data-toggle="collapse" data-target="#facade-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.facade-surface')
                         </label>
-                        <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')) {{old('wall_surface')}} @elseif(isset($buildingFeature)) {{$buildingFeature->wall_surface}} @endif" class="form-control" >
+                        <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')){{old('wall_surface')}}@elseif(isset($buildingFeature)){{$buildingFeature->wall_surface}}@endif" class="form-control" >
                         <div id="facade-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
@@ -402,6 +402,13 @@
 @push('js')
     <script>
         $(document).ready(function(){
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
            $("select, input[type=radio], input[type=text]").change(function(){
                if ($('.is-painted').is(':checked')) {
                    $('#painted-options').show();

@@ -285,9 +285,14 @@
     <script>
         $(document).ready(function() {
 
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
             crawlspaceOptions();
-            //formChange();
-            $('form').find('*').filter(':input:visible:first').trigger('change');
 
             $('#has_crawlspace').change(crawlspaceOptions);
             $("select, input[type=radio], input[type=text]").change(formChange);
@@ -341,6 +346,8 @@
                     }
                 });
             }
+
+            $('form').find('*').filter(':input:visible:first').trigger('change');
 
         });
     </script>

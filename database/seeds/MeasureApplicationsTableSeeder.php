@@ -265,6 +265,38 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Vervangen cv ketel',
+		        ],
+		        'application' => 'replace',
+		        'costs' => 2200, // euro
+		        'cost_unit' => [
+			        'nl' => 'per stuk',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 15,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Plaatsen / vervangen zonnepanelen',
+		        ],
+		        'application' => 'place',
+		        'costs' => 450, // euro
+		        'cost_unit' => [
+			        'nl' => 'per paneel',
+		        ],
+		        'minimal_costs' => 1500, // euro
+		        'maintenance_interval' => 25,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
 
 
 
@@ -353,6 +385,39 @@ class MeasureApplicationsTableSeeder extends Seeder
 			        'nl' => 'jaar',
 		        ],
 	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Vervangen dakpannen',
+		        ],
+		        'application' => 'replace',
+		        'costs' => 135, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 1200,
+		        'maintenance_interval' => 80,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Vervangen dakbedekking',
+		        ],
+		        'application' => 'replace',
+		        'costs' => 100, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 700,
+		        'maintenance_interval' => 25,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+	        ],
+
 
 			// add more onderhoudsmaatregelen here!
 

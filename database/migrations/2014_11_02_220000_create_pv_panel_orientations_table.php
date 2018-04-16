@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateComfortLevelTapWatersTable extends Migration
+class CreatePvPanelOrientationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateComfortLevelTapWatersTable extends Migration
      */
     public function up()
     {
-        Schema::create('comfort_level_tap_waters', function (Blueprint $table) {
+        Schema::create('pv_panel_orientations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->uuid('name');
+            $table->string('short');
+            $table->integer('order')->unsigned();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateComfortLevelTapWatersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comfort_level_tap_waters');
+        Schema::dropIfExists('pv_panel_orientations');
     }
 }

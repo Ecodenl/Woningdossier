@@ -33,6 +33,13 @@ use Illuminate\Support\Facades\Auth;
 class InsulatedGlazingController extends Controller
 {
 
+    protected $step;
+
+    public function __construct(Request $request) {
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
+
     /**
      * Display a listing of the resource.s
      *

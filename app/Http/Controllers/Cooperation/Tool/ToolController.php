@@ -8,6 +8,13 @@ use App\Http\Controllers\Controller;
 
 class ToolController extends Controller
 {
+    protected $step;
+
+    public function __construct(Request $request) {
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
+
     public function index(){
 	    $steps = Step::orderBy('order')->get();
 	    

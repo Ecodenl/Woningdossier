@@ -93,7 +93,7 @@
                                 <div class="col-sm-12 col-md-6">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.surface') ? ' has-error' : '' }}">
 
-                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface.comparable-houses')</label>
+                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface')</label>
 
                                         <input type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][surface]" value="{{ old('building_roof_types.' . $roofCat . '.surface') }}">
 
@@ -252,7 +252,7 @@
 
                     @foreach(['flat', 'pitched'] as $roofCat)
                         <div class="costs {{ $roofCat }}-roof">
-                            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.costs.title-' . $roofCat)</h4>
+                            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.title')</h4>
                             <div class="row">
 
                                 <div class="col-md-4">
@@ -297,20 +297,20 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '.costs.indicative-costs-replacement')</label>
+                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.indicative-costs-replacement')</label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_cost_replacement" class="form-control disabled" disabled="" value="0">
+                                            <input type="text" id="{{ $roofCat }}_replace_cost" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '.costs.indicative-replacement-year')</label>
+                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.indicative-replacement-year')</label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_replacement_year" class="form-control disabled" disabled="" value="">
+                                            <input type="text" id="{{ $roofCat }}_replace_year" class="form-control disabled" disabled="" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -352,7 +352,7 @@
     <script>
         $(document).ready(function() {
 
-            formChange();
+            //formChange();
 
             $("select, input[type=radio], input[type=text], input[type=number], input[type=checkbox]").change(formChange);
 
@@ -393,6 +393,14 @@
                             if (data.flat.hasOwnProperty('interest_comparable')){
                                 $("input#flat_interest_comparable").val(data.flat.interest_comparable);
                             }
+                            if (data.flat.hasOwnProperty('replace')){
+                                if (data.flat.replace.hasOwnProperty('year')){
+                                    $("input#flat_replace_year").val(data.flat.replace.year);
+                                }
+                                if (data.flat.replace.hasOwnProperty('cost')){
+                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.cost));
+                                }
+                            }
                         }
                         else {
                             $(".flat-roof").hide();
@@ -425,15 +433,27 @@
                             if (data.pitched.hasOwnProperty('interest_comparable')){
                                 $("input#pitched_interest_comparable").val(data.pitched.interest_comparable);
                             }
+                            if (data.pitched.hasOwnProperty('replace')){
+                                if (data.pitched.replace.hasOwnProperty('year')){
+                                    $("input#pitched_replace_year").val(data.pitched.replace.year);
+                                }
+                                if (data.pitched.replace.hasOwnProperty('cost')){
+                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.cost));
+                                }
+                            }
                         }
                         else {
                             $(".pitched-roof").hide();
                         }
 
+                        @if(App::environment('local'))
                         console.log(data);
+                        @endif
                     }
                 });
             }
+
+            $('form').find('*').filter(':input:visible:first').trigger('change');
 
         });
     </script>

@@ -18,7 +18,7 @@
     <style>
         .add-space {
             margin: 10px;
-            padding: 0px 10px 0px 10px;
+            padding: 0 10px 0 10px;
         }
     </style>
     @stack('css')

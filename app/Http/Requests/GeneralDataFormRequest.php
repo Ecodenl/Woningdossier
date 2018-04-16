@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Service;
+use App\Models\Motivation;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class GeneralDataFormRequest extends FormRequest
@@ -14,7 +17,7 @@ class GeneralDataFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -22,22 +25,36 @@ class GeneralDataFormRequest extends FormRequest
      *
      * @return array
      */
+
     public function rules()
     {
 
-        // This will retrieve all the array keys and value's from the interested input fields
-        foreach($this->request->get('interested') as $key => $interest) {
-            // This will put every interested input on required
-            $interestedRules['interested.' . $key] = 'required|exists:interests,id';
+        foreach($this->request->get('service') as $serviceId => $serviceValueId) {
+            $service = Service::find($serviceId);
+            // if the service exist it has service values, check if it exist
+            if ($service->values()->where('service_id', $serviceId)->first() != null) {
+                $serviceRules['service.' . $serviceId] = 'required|exists:service_values,id';
+            } else {
+                $serviceRules['service.' . $serviceId] = 'nullable|numeric';
+            }
+
+            if ($service->short == "house-ventilation" || $service->short == "total-sun-panels") {
+                // The extra field for the service field
+                $serviceRules[$serviceId.'.extra'] = 'nullable|date';
+            }
 
 
         }
-        // Remove the sun_panel_interested field,
-        // Cause the sun panel itselft isn't required.
-        unset($interestedRules['interested.sun_panel']);
+
 
         // Add the remaining rules
         $remainingRules = [
+            // validate all the interested rules
+            'user_interest.*.*' => 'required|exists:interests,id',
+
+            // Validate the elements
+            'element.*' => 'required|exists:element_values,id',
+
             // start
             'example_building_type' => 'required|exists:example_buildings,id',
             'building_type_id' => 'required|exists:building_types,id',
@@ -47,24 +64,6 @@ class GeneralDataFormRequest extends FormRequest
 	        'energy_label_id' => 'required|exists:energy_labels,id',
             'building_layers' => 'numeric|digits_between:1,999',
 	        'roof_type_id' => 'required|exists:roof_types,id',
-
-	        'element.*' => 'required|exists:element_values,id',
-	        'user_interest_element.*' => 'required|exists:interests,id',
-            // Energy measures
-            //'windows_in_living_space' => 'required|exists:present_windows,id',
-            //'windows_in_sleeping_spaces' => 'required|exists:present_windows,id',
-            //'facade_insulation' => 'required|exists:qualities,id',
-            //'floor_insulation' => 'required|exists:qualities,id',
-            //'roof_insulation' => 'required|exists:qualities,id',
-            'hr_cv_boiler' => 'exists:central_heating_ages,id',
-            'hybrid_heatpump' => 'exists:present_heat_pumps,id',
-            'monovalent_heatpump' => 'exists:present_heat_pumps,id',
-            'sun_boiler' => 'exists:solar_water_heaters,id',
-            'house_ventilation' => 'exists:ventilations,id',
-            'house_ventilation_placed_date' => 'nullable|required_if:house_ventilation,2|date',
-            'sun_panel' => 'nullable|numeric',
-            'interested.sun_panel' => 'nullable|exists:interests,id',
-            'sun_panel_placed_date' => 'nullable|date',
 
             // data about usage of the building
             'resident_count' => 'required|numeric',
@@ -77,12 +76,45 @@ class GeneralDataFormRequest extends FormRequest
             'amount_electricity' => 'nullable|numeric',
             'amount_gas' => 'nullable|numeric',
             'motivation.*' => 'numeric'
-
-
         ];
 
-        $validationRules = array_merge($interestedRules, $remainingRules);
-        
-        return $validationRules;
+        $rules = array_merge($remainingRules, $serviceRules);
+
+        return $rules;
+    }
+
+    public function withValidator($validator)
+    {
+        // Maybe take a look when its needed
+//        $validator->after(function ($validator) {
+//            foreach($this->request->get('service') as $serviceId => $serviceValueId) {
+//
+//                $parentServiceField = 'service.' . $serviceId;
+//
+//                // Find a service
+//                $service = Service::find($serviceId);
+//
+//                // if the extra field has a value but the parent does not send them back
+//                if (Request::input($parentServiceField, '') <= 0 && Request::input($serviceId.'.extra', '') != "") {
+//                    $validator->errors()->add($serviceId.'.extra', __('auth.general-data.may-not-be-filled'));
+//                }
+//                // This will check if the ventilation field and the date field are valid
+//                // If the ventilation field value is not mechanic and the extra / date field is not empty return an error
+//                if($service->short == "house-ventilation") {
+//
+//                    // The selected service, calculate value
+//                    $currentServiceCalculateValue = $service->values()->find($serviceValueId)->calculate_value;
+//                    // The extra field for the service field
+//                    $serviceExtra = Request::input(''.$serviceId.'.extra', '');
+//
+//                    if ($currentServiceCalculateValue == 2  || $currentServiceCalculateValue == 4 && $serviceExtra != "") {
+//                        // if the selected calculate value = 2 or 4 do nothing
+//                    } else  {
+//                        // throw error
+//                        $validator->errors()->add(''.$serviceId.'.extra', __('auth.general-data.may-not-be-filled'));
+//                    }
+//                }
+//            }
+//        });
     }
 }

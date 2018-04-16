@@ -99,4 +99,11 @@ class UserEnergyHabit extends Model
     public function heatingSecondFloor(){
     	return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
     }
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+    public function comfortLevelTapWater(){
+    	return $this->belongsTo(ComfortLevelTapWater::class, 'water_comfort_id');
+    }
 }

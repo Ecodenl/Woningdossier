@@ -286,7 +286,8 @@
         $(document).ready(function() {
 
             crawlspaceOptions();
-            formChange();
+            //formChange();
+            $('form').find('*').filter(':input:visible:first').trigger('change');
 
             $('#has_crawlspace').change(crawlspaceOptions);
             $("select, input[type=radio], input[type=text]").change(formChange);
@@ -311,6 +312,9 @@
                     success: function(data){
                         if (data.insulation_advice){
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+                        }
+                        else {
+                            $("#insulation-advice").html("");
                         }
                         if (data.hasOwnProperty('savings_gas')){
                             $("input#savings_gas").val(Math.round(data.savings_gas));

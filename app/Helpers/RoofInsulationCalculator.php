@@ -12,7 +12,8 @@ use Carbon\Carbon;
 
 class RoofInsulationCalculator {
 
-	public static function calculateGasSavings(Building $building, ElementValue $element, UserEnergyHabit $energyHabit, BuildingHeating $heating, $surface, $measureAdvice){
+	public static function calculateGasSavings(Building $building, ElementValue $element, UserEnergyHabit $energyHabit, BuildingHeating $heating, $surface, $totalSurface, $measureAdvice){
+		if ($totalSurface == 0) return 0;
 		$result = 0;
 		$building->getBuildingType();
 
@@ -22,22 +23,24 @@ class RoofInsulationCalculator {
 		if (isset($element->calculate_value) && $element->calculate_value < 3){
 			$result = min(
 				$surface * $kengetalEnergySaving,
-				Calculator::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element)
+				($surface / $totalSurface) * Calculator::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element)
 			);
-			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . Calculator::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element) . ")");
+			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", (" . $surface / $totalSurface . ") * " . Calculator::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element) . ")");
 		}
 		return $result;
 	}
 
-	public static function determineApplicationYear(MeasureApplication $measureApplication, $last){
+	public static function determineApplicationYear(MeasureApplication $measureApplication, $last, $factor){
 		self::debug(__METHOD__);
 
-		if ($last + $measureApplication->maintenance_interval <= Carbon::now()->year){
-			self::debug("Last replacement is longer than " . $measureApplication->maintenance_interval . " years ago.");
+		$correctedMaintenanceInterval = $factor * $measureApplication->maintenance_interval;
+
+		if ($last + $correctedMaintenanceInterval <= Carbon::now()->year){
+			self::debug("Last replacement is longer than " . $correctedMaintenanceInterval . " years ago.");
 			$year = Carbon::now()->year;
 		}
 		else {
-			$year = $last + $measureApplication->maintenance_interval;
+			$year = $last + $correctedMaintenanceInterval;
 		}
 
 		return $year;

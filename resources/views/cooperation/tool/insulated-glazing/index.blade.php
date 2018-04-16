@@ -447,11 +447,6 @@
     <script>
         $(document).ready(function() {
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
-                /*if ($('#is-painted').is(':checked')) {
-                    $('#painted-options').show();
-                } else {
-                    $('#painted-options').hide();
-                }*/
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
@@ -465,33 +460,34 @@
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
                         }
                         */
-                        if (data.savings_gas){
+                        if (data.hasOwnProperty('savings_gas')){
                             $("input#savings_gas").val(Math.round(data.savings_gas));
                         }
-                        if (data.savings_co2){
+                        if (data.hasOwnProperty('savings_co2')){
                             $("input#savings_co2").val(Math.round(data.savings_co2));
                         }
-                        if (data.savings_money){
+                        if (data.hasOwnProperty('savings_money')){
                             $("input#savings_money").val(Math.round(data.savings_money));
                         }
-                        if (data.cost_indication){
+                        if (data.hasOwnProperty('cost_indication')){
                             $("input#cost_indication").val(Math.round(data.cost_indication));
                         }
-                        if (data.interest_comparable){
+                        if (data.hasOwnProperty('interest_comparable')){
                             $("input#interest_comparable").val(data.interest_comparable);
                         }
-                        if (data.paintwork.costs){
+                        if (data.hasOwnProperty('paintwork.costs')){
                             $("input#paintwork_costs").val(Math.round(data.paintwork.costs));
                         }
-                        if (data.paintwork.year){
+                        if (data.hasOwnProperty('paintwork.year')){
                             $("input#paintwork_year").val(data.paintwork.year);
                         }
+
+                        @if(App::environment('local'))
                         console.log(data);
+                        @endif
                     }
                 });
             });
-            // Trigger the change event so it will load the data
-            $("select, input[type=radio], input[type=text]").trigger('change');
 
             $('.user-interest').change(function() {
                 $('.user-interest option:selected').each(function() {
@@ -503,8 +499,9 @@
                     }
                 });
             });
-
-            $('.user-interest').trigger('change')
+            // Trigger the change event so it will load the data
+            //$("select, input[type=radio], input[type=text]").trigger('change');
+            $('form').find('*').filter(':input:visible:first').trigger('change');
         });
 
     </script>

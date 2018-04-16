@@ -94,13 +94,13 @@
                         <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label> <span> *</span>
 
                         <label class="radio-inline">
-                            <input id="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input class="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
                             <input @if(old('facade_plastered_painted') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "2") checked @endif type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
+                            <input class="is-painted" @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
                         </label>
                         <br>
 
@@ -403,7 +403,7 @@
     <script>
         $(document).ready(function(){
            $("select, input[type=radio], input[type=text]").change(function(){
-               if ($('#is-painted').is(':checked')) {
+               if ($('.is-painted').is(':checked')) {
                    $('#painted-options').show();
                } else {
                    $('#painted-options').hide();
@@ -415,59 +415,51 @@
                   url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                   data: form,
                   success: function(data){
-                      if (data.insulation_advice){
+                      if (data.hasOwnProperty('insulation_advice')){
                           $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
                       }
-                      if (data.savings_gas){
+                      else {
+                          $("#insulation-advice").html("");
+                      }
+                      if (data.hasOwnProperty('savings_gas')){
                           $("input#savings_gas").val(Math.round(data.savings_gas));
                       }
-                      if (data.savings_co2){
+                      if (data.hasOwnProperty('savings_co2')){
                           $("input#savings_co2").val(Math.round(data.savings_co2));
                       }
-                      if (data.savings_money){
+                      if (data.hasOwnProperty('savings_money')){
                           $("input#savings_money").val(Math.round(data.savings_money));
                       }
-                      if (data.cost_indication){
+                      if (data.hasOwnProperty('cost_indication')){
                           $("input#cost_indication").val(Math.round(data.cost_indication));
                       }
-                      if (data.interest_comparable){
+                      if (data.hasOwnProperty('interest_comparable')){
                           $("input#interest_comparable").val(data.interest_comparable);
                       }
-                      if (data.repair_joint){
+                      if (data.hasOwnProperty('repair_joint')){
                           $("input#repair_joint").val(Math.round(data.repair_joint.costs));
                           $("span#repair_joint_year").html("(in " + data.repair_joint.year + ")");
                       }
-                      if (data.clean_brickwork){
+                      if (data.hasOwnProperty('clean_brickwork')){
                           $("input#clean_brickwork").val(Math.round(data.clean_brickwork.costs));
                           $("span#clean_brickwork_year").html("(in " + data.clean_brickwork.year + ")");
                       }
-                      if (data.impregnate_wall){
+                      if (data.hasOwnProperty('impregnate_wall')){
                           $("input#impregnate_wall").val(Math.round(data.impregnate_wall.costs));
                           $("span#impregnate_wall_year").html("(in " + data.impregnate_wall.year + ")");
                       }
-                      if (data.paint_wall){
+                      if (data.hasOwnProperty('paint_wall')){
                           $("input#paint_wall").val(Math.round(data.paint_wall.costs));
                           $("span#paint_wall_year").html("(in " + data.paint_wall.year + ")");
                       }
-                    console.log(data);
+                      @if(App::environment('local'))
+                        console.log(data);
+                      @endif
                   }
               })
             });
             // Trigger the change event so it will load the data
-            $("select, input[type=radio], input[type=text]").trigger('change');
-
-
-            // todo fix this
-            /*$( document ).change(function() {
-                // check if the is painted button is yes
-                if ($('#is-painted').is(':checked')) {
-                    $('#painted-options').show();
-                } else {
-                    $('#painted-options').hide();
-                }
-            });
-            // trigger the change
-            $('#is-painted').trigger('change');*/
+            $('form').find('*').filter(':input:visible:first').trigger('change');
         });
 
 

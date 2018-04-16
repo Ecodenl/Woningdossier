@@ -28,12 +28,29 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingService extends Model
 {
-	public function building(){
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'extra' => 'array',
+    ];
+
+    public function building(){
 		return $this->belongsTo(Building::class);
 	}
 
 	public function serviceType(){
 		return $this->belongsTo(ServiceType::class);
 	}
+
+    public function service(){
+        return $this->belongsTo(Service::class);
+    }
+
+    public function serviceValue(){
+        return $this->belongsTo(ServiceValue::class);
+    }
 
 }

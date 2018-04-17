@@ -31,7 +31,7 @@ class InsulatedGlazingCalculator {
 	}
 
 	// in m3 per year
-	public static function calculateGasSavings($windows, MeasureApplication $measureApplication, BuildingHeating $heating, InsulatingGlazing $glazing = null){
+	public static function calculateGasSavings($m2, MeasureApplication $measureApplication, BuildingHeating $heating, InsulatingGlazing $glazing = null){
 		$query = KeyFigureTemperature::where('measure_application_id', $measureApplication->id)
 				->where('building_heating_id', $heating->id);
 		if ($glazing instanceof InsulatingGlazing){
@@ -39,9 +39,9 @@ class InsulatedGlazingCalculator {
 		}
 		$keyFigureTemperature = $query->first();
 
-		$saving = $windows * $keyFigureTemperature->key_figure;
+		$saving = $m2 * $keyFigureTemperature->key_figure;
 
-		self::debug("Gas saving " . $saving . " = " . $windows . " * " . $keyFigureTemperature->key_figure);
+		self::debug("Gas saving " . $saving . " = " . $m2 . " * " . $keyFigureTemperature->key_figure);
 
 		return $saving;
 	}

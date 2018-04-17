@@ -85,6 +85,7 @@ class WallInsulationController extends Controller
         $buildingFeatures = $building->buildingFeatures();
 
         // Update the building feature table with some fresh data
+        // todo: arrray to string convers
         $buildingFeatures->update([
             'element_values' => reset($wallInsulationQualities),
             'facade_plastered_surface_id' => $plasteredWallSurface,

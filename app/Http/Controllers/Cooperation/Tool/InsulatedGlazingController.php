@@ -60,7 +60,7 @@ class InsulatedGlazingController extends Controller
 		$crackSealing = Element::where('short', 'crack-sealing')->first();
 		$frames = Element::where('short', 'frames')->first();
 		$woodElements = Element::where('short', 'wood-elements')->first();
-		$heatings = BuildingHeating::all();
+		$heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
 		$paintworkStatuses = PaintworkStatus::orderBy('order')->get();
 		$woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
@@ -139,7 +139,7 @@ class InsulatedGlazingController extends Controller
 			    array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
 
 				$gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
-					$buildingInsulatedGlazingsData['windows'], $measureApplication,
+					(int) $buildingInsulatedGlazingsData['m2'], $measureApplication,
 					$buildingHeating, $insulatedGlazing
 				);
 
@@ -154,18 +154,20 @@ class InsulatedGlazingController extends Controller
 		$result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
 		$result['paintwork'] = [
-			'cost' => 0,
+			'costs' => 0,
 			'year' => null,
 		];
 
-
+		$frames = Element::where('short', 'frames')->first();
 		$buildingElements = $request->get('building_elements', []);
-		$framesValueId = array_key_exists('frames', $buildingElements) ? $buildingElements['frames'] : 0;
+		$framesValueId = 0;
+		if (array_key_exists($frames->id, $buildingElements) && array_key_exists('frames', $buildingElements[$frames->id])){
+			$framesValueId = (int) $buildingElements[$frames->id]['frames'];
+		}
 		$frameElementValue = ElementValue::find($framesValueId);
 
 		// only applies for wooden frames
-		if ($frameElementValue instanceof ElementValue && $frameElementValue->element->short == 'frames') {
-
+		if ($frameElementValue instanceof ElementValue && $frameElementValue->element->short == 'frames' && $frameElementValue->calculate_value > 0) {
 			$windowSurface =    $request->get('window_surface', 0);
 			// frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
 			$woodElementValues = [];

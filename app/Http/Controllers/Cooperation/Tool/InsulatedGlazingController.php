@@ -366,8 +366,9 @@ class InsulatedGlazingController extends Controller
             'window_surface' => $windowSurface
         ]);
 
+	    // Save progress
+	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
-        $steps = Step::orderBy('order')->get();
 
         return redirect()->route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation]);
     }

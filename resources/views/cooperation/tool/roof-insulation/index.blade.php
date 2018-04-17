@@ -93,9 +93,9 @@
                                 <div class="col-sm-12 col-md-6">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.surface') ? ' has-error' : '' }}">
 
-                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface')</label>
+                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface')</label> <span> *</span>
 
-                                        <input type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['surface']) ? $currentCategorizedRoofTypes[$roofCat]['surface'] : old('building_roof_types.' . $roofCat . '.surface')}}">
+                                        <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['surface']) ? $currentCategorizedRoofTypes[$roofCat]['surface'] : old('building_roof_types.' . $roofCat . '.surface')}}">
 
                                         <div id="{{ $roofCat }}-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             And I would like to have it too...
@@ -114,18 +114,18 @@
 
                                 <div class="row cover-zinc">
                                     <div class="col-md-12">
-                                        <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra') ? ' has-error' : '' }}">
-                                            <label for="zinc-replaced" class="control-label"><i data-toggle="collapse" data-target="#zinc-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.zinc-replaced')</label>
+                                        <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
+                                            <label for="zinc-replaced" class="control-label"><i data-toggle="collapse" data-target="#zinc-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.zinc-replaced')</label> <span> *</span>
 
-                                            <input type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ isset($currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date'] : old('building_roof_types.' . $roofCat . '.extra') }}">
+                                            <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ isset($currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date'] : old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}">
 
                                             <div id="zinc-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                                 And I would like to have it too...
                                             </div>
 
-                                            @if ($errors->has('building_roof_types.' . $roofCat . '.extra'))
+                                            @if ($errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date'))
                                                 <span class="help-block">
-                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra') }}</strong>
+                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -138,23 +138,23 @@
 
                                 <div class="row cover-bitumen">
                                     <div class="col-md-12">
-                                        <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra') ? ' has-error' : '' }}">
-                                            <label for="bitumen-replaced" class=" control-label"><i data-toggle="collapse" data-target="#bitumen-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.bitumen-insulated')</label>
+                                        <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date') ? ' has-error' : '' }}">
+                                            <label for="bitumen-replaced" class=" control-label"><i data-toggle="collapse" data-target="#bitumen-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.bitumen-insulated')</label> <span> *</span>
 
                                             <?php
                                                 $default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date']) && $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] : '';
                                             ?>
 
-                                            <input type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
-                                                   value="{{ old('building_roof_types.' . $roofCat . '.extra', $default) }}">
+                                            <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
+                                                   value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', $default) }}">
 
                                             <div id="bitumen-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                                 And I would like to have it too...
                                             </div>
 
-                                            @if ($errors->has('building_roof_types.' . $roofCat . '.extra'))
+                                            @if ($errors->has('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date'))
                                                 <span class="help-block">
-                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra') }}</strong>
+                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -163,7 +163,7 @@
 
                                 <div class="row cover-tiles">
                                     <div class="col-md-12">
-                                        <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra') ? ' has-error' : '' }}">
+                                        <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.tiles_condition') ? ' has-error' : '' }}">
 
                                             <label for="tiles_condition" class=" control-label"><i data-toggle="collapse" data-target="#tiles-condition-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.in-which-condition-tiles')</label>
 
@@ -171,9 +171,9 @@
                                                 $default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition']) && $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] : '';
                                             ?>
 §
-                                            <select id="tiles_condition" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][tiles_condition]" >
+                                            <select  id="tiles_condition" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][tiles_condition]" >
                                                 @foreach($roofTileStatuses as $roofTileStatus)
-                                                    <option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra', $default)) selected  @endif value="{{ $roofTileStatus->id }}">{{ $roofTileStatus->name }}</option>
+                                                    <option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra.tiles_condition', $default)) selected  @endif value="{{ $roofTileStatus->id }}">{{ $roofTileStatus->name }}</option>
                                                 @endforeach
                                             </select>
 
@@ -181,9 +181,9 @@
                                                 And I would like to have it too...
                                             </div>
 
-                                            @if ($errors->has('building_roof_types.' . $roofCat . '.extra'))
+                                            @if ($errors->has('building_roof_types.' . $roofCat . '.extra.tiles_condition'))
                                                 <span class="help-block">
-                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra') }}</strong>
+                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra.tiles_condition') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -194,7 +194,7 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group add-space {{$errors->has('building_roof_types.' . $roofCat . '.measure_application_id') ? ' has-error' : ''}}">
+                                    <div class="form-group add-space {{$errors->has('building_roof_types.' . $roofCat . '.extra.measure_application_id') ? ' has-error' : ''}}">
 
                                         <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-interested-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.insulate-roof')</label>
 
@@ -205,16 +205,16 @@
                                         <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][measure_application_id]">
                                                 <option value="0" @if($default == 0) selected @endif>@lang('woningdossier.cooperation.tool.roof-insulation.measure-application.no-not-applicable')</option>
                                             @foreach($measureApplications[$roofCat] as $measureApplication)
-                                                <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
+                                                <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
                                             @endforeach
                                         </select>
 
                                         <div id="{{ $roofCat }}-interested-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             And I would like to have it too...
                                         </div>
-                                        @if ($errors->has('building_roof_types.' . $roofCat . '.measure_application_id'))
+                                        @if ($errors->has('building_roof_types.' . $roofCat . '.extra.measure_application_id'))
                                             <span class="help-block">
-                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.measure_application_id') }}</strong>
+                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra.measure_application_id') }}</strong>
                                             </span>
                                         @endif
                                     </div>

@@ -234,7 +234,7 @@
                             <i data-toggle="collapse" data-target="#facade-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.facade-surface')
                         </label>
-                        <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')) {{old('wall_surface')}} @elseif(isset($buildingFeature)) {{$buildingFeature->wall_surface}} @endif" class="form-control" >
+                        <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')){{old('wall_surface')}}@elseif(isset($buildingFeature)){{$buildingFeature->wall_surface}}@endif" class="form-control" >
                         <div id="facade-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
@@ -402,6 +402,13 @@
 @push('js')
     <script>
         $(document).ready(function(){
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
            $("select, input[type=radio], input[type=text]").change(function(){
                if ($('.is-painted').is(':checked')) {
                    $('#painted-options').show();
@@ -438,19 +445,36 @@
                       }
                       if (data.hasOwnProperty('repair_joint')){
                           $("input#repair_joint").val(Math.round(data.repair_joint.costs));
-                          $("span#repair_joint_year").html("(in " + data.repair_joint.year + ")");
+                          var contentYear = "";
+                          if (data.repair_joint.year > 0){
+                              contentYear = "(in " + data.repair_joint.year + ")";
+                          }
+                          $("span#repair_joint_year").html(contentYear);
                       }
                       if (data.hasOwnProperty('clean_brickwork')){
                           $("input#clean_brickwork").val(Math.round(data.clean_brickwork.costs));
-                          $("span#clean_brickwork_year").html("(in " + data.clean_brickwork.year + ")");
+                          var contentYear = "";
+                          if (data.clean_brickwork.year > 0){
+                              contentYear = "(in " + data.clean_brickwork.year + ")";
+                          }
+                          $("span#clean_brickwork_year").html(contentYear);
                       }
                       if (data.hasOwnProperty('impregnate_wall')){
                           $("input#impregnate_wall").val(Math.round(data.impregnate_wall.costs));
-                          $("span#impregnate_wall_year").html("(in " + data.impregnate_wall.year + ")");
+                          var contentYear = "";
+                          if (data.impregnate_wall.year > 0){
+                              contentYear = "(in " + data.impregnate_wall.year + ")";
+                          }
+                          $("span#impregnate_wall_year").html(contentYear);
                       }
                       if (data.hasOwnProperty('paint_wall')){
                           $("input#paint_wall").val(Math.round(data.paint_wall.costs));
-                          $("span#paint_wall_year").html("(in " + data.paint_wall.year + ")");
+                          var contentYear = "";
+                          if (data.paint_wall.year > 0){
+                              contentYear = "(in " + data.paint_wall.year + ")";
+                          }
+                          $("span#paint_wall_year").html(contentYear);
+
                       }
                       @if(App::environment('local'))
                         console.log(data);

@@ -104,6 +104,7 @@ return [
 	*/
 
 	'custom' => [
+	    'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
 		'attribute-name' => [
 			'rule-name' => 'custom-message',
 		],

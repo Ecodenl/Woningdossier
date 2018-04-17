@@ -7,10 +7,12 @@ use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\RoofInsulationCalculator;
+use App\Http\Requests\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingRoofType;
+use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
@@ -21,6 +23,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class RoofInsulationController extends Controller
 {
@@ -51,6 +54,7 @@ class RoofInsulationController extends Controller
 	    $heatings = BuildingHeating::all();
 	    $measureApplications = $this->getMeasureApplicationsAdviceMap();
 
+
 		$currentCategorizedRoofTypes = [
 			'flat' => [],
 			'pitched' => [],
@@ -60,7 +64,7 @@ class RoofInsulationController extends Controller
 			foreach($currentRoofTypes as $currentRoofType){
 				$cat = $this->getRoofTypeCategory($currentRoofType->roofType);
 				if (!empty($cat)) {
-					$currentCategorizedRoofTypes[] = $currentRoofType->toArray();
+					$currentCategorizedRoofTypes[$cat] = $currentRoofType->toArray();
 				}
 			}
 		}
@@ -235,9 +239,70 @@ class RoofInsulationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoofInsulationFormRequest $request)
     {
-        //
+
+        // Get the user his building / house
+        $building = Auth::user()->buildings()->first();
+        // the selected roof types for the current situation
+        $roofTypes = $request->input('building_roof_types', []);
+
+
+        // remove the old answers
+        if (BuildingRoofType::where('building_id', $building->id)->count() > 0) {
+            BuildingRoofType::where('building_id', $building->id)->delete();
+        }
+
+        foreach($roofTypes as $i => $details){
+            if (is_numeric($i) && is_numeric($details)){
+                $roofType = RoofType::find($details);
+                if ($roofType instanceof RoofType){
+                    $cat = $this->getRoofTypeCategory($roofType);
+                    // add as key to result array
+                    $result[$cat] = [
+                        'type' => $this->getRoofTypeSubCategory($roofType),
+                    ];
+
+                    $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
+                    $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : "";
+                    $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : "";
+                    $extraBitumenReplacedDate = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? $roofTypes[$cat]['extra']['bitumen_replaced_date'] : "";
+                    $extraZincReplacedDate = isset($roofTypes[$cat]['extra']['zinc_replaced_date']) ? $roofTypes[$cat]['extra']['zinc_replaced_date'] : "";
+                    $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : "";
+
+                    $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : "";
+
+                    $buildingFeature = BuildingFeature::where('building_id', $building->id)->update([
+                        'roof_type_id' => $request->input('building_features.roof_type_id')
+                    ]);
+
+                    // insert the new ones
+                    BuildingRoofType::updateOrCreate(
+                        [
+                            'building_id' => $building->id,
+                            'roof_type_id' => $roofType->id,
+                        ],
+                        [
+                            'element_value_id' => $elementValueId,
+                            'surface' => $surface,
+                            'building_heating_id' => $buildingHeating,
+                            'extra' => [
+                                'measure_application_id' => $extraMeasureApplication,
+                                'bitumen_replaced_date' => $extraBitumenReplacedDate,
+                                'zinc_replaced_date' => $extraZincReplacedDate,
+                                'tiles_condition' => $extraTilesCondition,
+                            ]
+                        ]
+                    );
+                }
+            }
+        }
+
+
+        // Save progress
+        \Auth::user()->complete($this->step);
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation]);
     }
 
 }

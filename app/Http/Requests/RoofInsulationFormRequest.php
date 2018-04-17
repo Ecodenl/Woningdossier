@@ -107,23 +107,29 @@ class RoofInsulationFormRequest extends FormRequest
                 ];
 
 
+
                 // If the surface is empty but the roof type is set, throw a error
-                $validator->after(function ($validator) use ($cat, $i, $roofType) {
+                $validator->after(function ($validator) use ($cat, $i, $result) {
                     if (Request::input('building_roof_types.'.$cat.'.surface') == "" && Request::input('building_roof_types.'.$i) != "") {
                         $validator->errors()->add('building_roof_types.'.$cat.'.surface', __('validation.custom.surface'));
                     }
-                    // find something to do this
-//                    if (Request::input('building_roof_types.'.$cat.'.extra.zinc_replaced_date') == "" && Request::input('building_roof_types.'.$i) == $roofType->id) {
-//                        $validator->errors()->add('building_roof_types.'.$cat.'.extra.zinc_replaced_date', __('validation.custom.surface'));
-//                    }
-//                    if (Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') == "" && Request::input('building_roof_types.'.$i) != "") {
+
+                    // get the zinc category
+                    $zincCat = isset($result['flat']['type']) ? $result['flat']['type'] : "";
+
+                    if (Request::input('building_roof_types.'.$cat.'.extra.zinc_replaced_date') == "" && $zincCat == "zinc") {
+                        $validator->errors()->add('building_roof_types.'.$cat.'.extra.zinc_replaced_date', __('validation.custom.surface'));
+                    }
+
+                    // get the bitumen thing category
+//                    $bitumenCat = isset($result['pitched']['type']) ? $result['pitched']['type'] : "";
+//                    if (Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') == "" && $bitumenCat == "bitumen") {
 //                        $validator->errors()->add('building_roof_types.'.$cat.'.extra.bitumen_replaced_date', __('validation.custom.surface'));
 //                    }
                 });
 
             }
         }
-
 
     }
 }

@@ -19,7 +19,7 @@ class FloorInsulationCalculator {
 		if (isset($element->calculate_value) && $element->calculate_value < 3){
 			$result = min(
 				$surface * $kengetalEnergySaving,
-				Calculator::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element)
+				Calculator::maxGasSavings($building, $energyHabit, $element->element)
 			);
 			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . Calculator::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element) . ")");
 		}

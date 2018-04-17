@@ -121,11 +121,10 @@ class RoofInsulationFormRequest extends FormRequest
                         $validator->errors()->add('building_roof_types.'.$cat.'.extra.zinc_replaced_date', __('validation.custom.surface'));
                     }
 
-                    // get the bitumen thing category
-//                    $bitumenCat = isset($result['pitched']['type']) ? $result['pitched']['type'] : "";
-//                    if (Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') == "" && $bitumenCat == "bitumen") {
-//                        $validator->errors()->add('building_roof_types.'.$cat.'.extra.bitumen_replaced_date', __('validation.custom.surface'));
-//                    }
+                    // if the roof is pitched and the replaced date is empty throw a error
+                    if (Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') == "" && (isset($result['pitched'])) == true) {
+                        $validator->errors()->add('building_roof_types.'.$cat.'.extra.bitumen_replaced_date', __('validation.custom.surface'));
+                    }
                 });
 
             }

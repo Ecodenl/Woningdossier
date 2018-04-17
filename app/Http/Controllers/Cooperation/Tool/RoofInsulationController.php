@@ -231,6 +231,7 @@ class RoofInsulationController extends Controller
 
 
 		return response()->json($result);
+
     }
 
     /**

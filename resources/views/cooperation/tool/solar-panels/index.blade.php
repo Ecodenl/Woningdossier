@@ -4,8 +4,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
+    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="solar-panels">
             <div class="row">
@@ -211,6 +210,20 @@
                 <div class="col-sm-12 col-md-8 col-md-offset-2">
                     <div class="alert show" role="alert">
                         <p id="performance-text"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                    <div class="form-group add-space">
+                        <div class="">
+                            <a class="btn btn-success pull-left" href="{{route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                            <button type="submit" class="btn btn-primary pull-right">
+                                @lang('default.buttons.next')
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

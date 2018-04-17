@@ -463,11 +463,6 @@
                     data: form,
                     success: function (data) {
 
-                        /*
-                        if (data.insulation_advice){
-                            $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
-                        }
-                        */
                         if (data.hasOwnProperty('savings_gas')){
                             $("input#savings_gas").val(Math.round(data.savings_gas));
                         }

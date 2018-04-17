@@ -11,7 +11,6 @@ class FloorInsulationCalculator {
 
 	public static function calculateGasSavings(Building $building, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice){
 		$result = 0;
-		$building->getBuildingType();
 
 		$kengetalEnergySaving = Temperature::energySavingFigureFloorInsulation($measureAdvice);
 		self::debug("Kengetal energebesparing = " . $kengetalEnergySaving);
@@ -21,7 +20,7 @@ class FloorInsulationCalculator {
 				$surface * $kengetalEnergySaving,
 				Calculator::maxGasSavings($building, $energyHabit, $element->element)
 			);
-			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . Calculator::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element) . ")");
+			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . Calculator::maxGasSavings($building, $energyHabit, $element->element) . ")");
 		}
 		else {
 			self::debug("No gas savings..");

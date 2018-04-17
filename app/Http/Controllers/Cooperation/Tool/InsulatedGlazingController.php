@@ -269,8 +269,8 @@ class InsulatedGlazingController extends Controller
 
             $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
             $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
-            $m2 = $buildingInsulatedGlazing['m2'];
-            $windows = $buildingInsulatedGlazing['windows'];
+            $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;
+            $windows = isset($buildingInsulatedGlazing['windows']) ? $buildingInsulatedGlazing['windows'] : 0;
 
             // The interest for a measure
             $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');

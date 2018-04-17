@@ -40,7 +40,7 @@ return [
 	'dimensions'           => 'De :attribute heeft ongeldige afmetingen.',
 	'distinct'             => 'De :attribute heeft een dubbele waarde.',
 	'email'                => 'De :attribute moet een geldig e-mailadres zijn.',
-	'exists'               => 'De geselecteerde waarde ongeldig.',
+	'exists'               => 'De geselecteerde waarde is ongeldig.',
 	'file'                 => 'De :attribute moet een bestand zijn.',
 	'filled'               => 'Het :attribute veld moet ingevuld zijn.',
 	'image'                => 'De :attribute moet een image zijn.',

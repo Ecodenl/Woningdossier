@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Http\Requests\HighEfficiencyBoilerFormRequest;
+use App\Models\Cooperation;
 use App\Models\Step;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
@@ -12,8 +14,10 @@ use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\UserEnergyHabit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -101,9 +105,47 @@ class HighEfficiencyBoilerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HighEfficiencyBoilerFormRequest $request)
     {
-        //
+
+
+        // Save the building service
+        $buildingServices = $request->input('building_services', '');
+        $buildingServiceId = key($buildingServices);
+
+        $serviceValue = isset($buildingServices[$buildingServiceId]['service_value_id']) ? $buildingServices[$buildingServiceId]['service_value_id'] : "";
+        $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : "";
+
+        BuildingService::updateOrCreate(
+            [
+                'building_id' => Auth::user()->buildings()->first()->id,
+                'service_id' => $buildingServiceId,
+            ],
+            [
+                'service_value_id' => $serviceValue,
+                'extra' => ['date' => $extra],
+            ]
+        );
+
+        // save the habits
+        $habits = $request->input('habit', '');
+        $gasUsage = isset($habits['gas_usage']) ? $habits['gas_usage'] : "";
+        $residentCount = isset($habits['resident_count']) ? $habits['resident_count'] : "";
+
+        UserEnergyHabit::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+            ],
+            [
+                'resident_count' => $residentCount,
+                'amount_gas' => $gasUsage,
+            ]
+        );
+
+        // Save progress
+        Auth::user()->complete($this->step);
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation]);
     }
 
 }

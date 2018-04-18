@@ -18,6 +18,10 @@ class CreateStepsTable extends Migration
             $table->string('slug');
             $table->string('name');
             $table->integer('order');
+
+            $table->integer('cooperation_id')->unsigned()->nullable()->default(null);
+            $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('restrict');
+
             $table->timestamps();
         });
     }

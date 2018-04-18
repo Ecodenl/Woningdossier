@@ -26,6 +26,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +42,7 @@ class InsulatedGlazingController extends Controller
     }
 
     /**
-     * Display a listing of the resource.s
+     * Display a listing of the resources
      *
      * @return \Illuminate\Http\Response
      */
@@ -108,6 +109,49 @@ class InsulatedGlazingController extends Controller
         ));
     }
 
+	protected function saveAdvices(Request $request){
+		/** @var JsonResponse $results */
+		$results = $this->calculate($request);
+		$results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		foreach($results['measure'] as $measureId => $data){
+			if (array_key_exists('costs', $data) && $data['costs'] > 0) {
+				$measureApplication = MeasureApplication::where( 'id',
+					$measureId )->where( 'step_id', $this->step->id )->first();
+
+				if ( $measureApplication instanceof MeasureApplication ) {
+					$actionPlanAdvice = new UserActionPlanAdvice( $data );
+					$actionPlanAdvice->user()->associate( Auth::user() );
+					$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+					$actionPlanAdvice->step()->associate( $this->step );
+					$actionPlanAdvice->save();
+				}
+			}
+		}
+
+		$keysToMeasure = [
+			'paintwork' => 'paint-wood-elements',
+			'crack-sealing' => 'crack-sealing',
+		];
+
+		foreach($keysToMeasure as $key => $measureShort){
+			if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0){
+				$measureApplication = MeasureApplication::where('short', $measureShort)->first();
+				if ($measureApplication instanceof MeasureApplication) {
+					$actionPlanAdvice = new UserActionPlanAdvice( $results[ $key ] );
+					$actionPlanAdvice->user()->associate( Auth::user() );
+					$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+					$actionPlanAdvice->step()->associate($this->step);
+					$actionPlanAdvice->save();
+				}
+			}
+		}
+
+	}
+
 	public function calculate(Request $request) {
 		/**
 		 * @var Building $building
@@ -120,6 +164,7 @@ class InsulatedGlazingController extends Controller
 			'savings_co2' => 0,
 			'savings_money' => 0,
 			'cost_indication' => 0,
+			'measure' => [],
 		];
 
 		$userInterests = $request->get('user_interests', []);
@@ -143,11 +188,18 @@ class InsulatedGlazingController extends Controller
 					$buildingHeating, $insulatedGlazing
 				);
 
-				$result['cost_indication'] += InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']);
+				$result['measure'][$measureApplication->id] = [
+					'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
+					'savings_gas' => $gasSavings,
+					'savings_co2' => Calculator::calculateCo2Savings( $gasSavings ),
+					'savings_money' => Calculator::calculateMoneySavings( $gasSavings ),
+				];
+
+				$result['cost_indication'] += $result['measure'][$measureApplication->id]['costs'];
 				$result['savings_gas'] += $gasSavings;
 
-				$result['savings_co2']   += Calculator::calculateCo2Savings( $gasSavings );
-				$result['savings_money'] += Calculator::calculateMoneySavings( $gasSavings );
+				$result['savings_co2']   += $result['measure'][$measureApplication->id]['savings_co2'];
+				$result['savings_money'] += $result['measure'][$measureApplication->id]['savings_money'];
 			}
 		}
 
@@ -167,26 +219,28 @@ class InsulatedGlazingController extends Controller
 		$frameElementValue = ElementValue::find($framesValueId);
 
 		// only applies for wooden frames
-		if ($frameElementValue instanceof ElementValue && $frameElementValue->element->short == 'frames' && $frameElementValue->calculate_value > 0) {
+		if ($frameElementValue instanceof ElementValue && $frameElementValue->element->short == 'frames'/* && $frameElementValue->calculate_value > 0*/) {
 			$windowSurface =    $request->get('window_surface', 0);
 			// frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
 			$woodElementValues = [];
 
-			foreach($buildingElements as $short => $ids){
+			foreach($buildingElements as $short => $serviceIds){
 				if ($short == 'wood-elements'){
-					foreach(array_keys($ids) as $id) {
-						$woodElementValue = ElementValue::find($id);
+					foreach($serviceIds as $serviceId => $ids) {
+						foreach ( array_keys( $ids ) as $id ) {
 
-						if ($woodElementValue->element->short == $short){
-							$woodElementValues []= $woodElementValue;
+							$woodElementValue = ElementValue::where('id',  $id )->where( 'element_id',
+								$serviceId)->first();
+
+							if ( $woodElementValue instanceof ElementValue && $woodElementValue->element->short == $short ) {
+								$woodElementValues [] = $woodElementValue;
+							}
 						}
 					}
 				}
 			}
 
-			$measureApplication = MeasureApplication::translated( 'measure_name',
-				'Schilderwerk houten geveldelen',
-				'nl' )->first( [ 'measure_applications.*' ] );
+			$measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 
 			$number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, $windowSurface);
 
@@ -210,15 +264,6 @@ class InsulatedGlazingController extends Controller
 				$number,
 				$year );
 			$result['paintwork'] = compact( 'costs', 'year' );
-			if ( $costs > 0 ) {
-				UserActionPlanAdvice::updateOrCreate( [
-					'user_id'                => \Auth::user()->id,
-					'measure_application_id' => $measureApplication->id,
-				],
-					[
-						'year' => $year,
-					] );
-			}
 		}
 
 		$result['crack-sealing'] = [
@@ -241,10 +286,11 @@ class InsulatedGlazingController extends Controller
 				$result['crack-sealing']['savings'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
 			}
 
-			$measureApplication = MeasureApplication::translated( 'measure_name',
+			$measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
+			/*$measureApplication = MeasureApplication::translated( 'measure_name',
 				'Kierdichting verbeteren',
 				'nl' )->first( [ 'measure_applications.*' ] );
-
+			*/
 			$result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1);
 		}
 
@@ -366,6 +412,7 @@ class InsulatedGlazingController extends Controller
             'window_surface' => $windowSurface
         ]);
 
+        $this->saveAdvices($request);
 	    // Save progress
 	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));

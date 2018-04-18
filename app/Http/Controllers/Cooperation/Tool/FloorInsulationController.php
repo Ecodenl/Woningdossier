@@ -165,30 +165,26 @@ class FloorInsulationController extends Controller
             );
         }
 
-        if (Element::find($elementId)->values()->where('calculate_value', '5.00')->first()->calculate_value == "5.0") {
+        $buildingElements = $request->input('building_elements', '');
+        $buildingElementId = array_keys($buildingElements)[1];
 
-        } else {
-            $buildingElements = $request->input('building_elements', '');
-            $buildingElementId = array_keys($buildingElements)[1];
+        $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : "";
+        $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : "";
+        $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : "";
 
-            $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : "";
-            $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : "";
-            $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : "";
-
-            BuildingElement::updateOrCreate(
-                [
-                    'building_id' => Auth::user()->buildings()->first()->id,
-                    'element_id' => $buildingElementId,
-                ],
-                [
-                    'element_value_id' => $heightCrawlspace,
-                    'extra' => [
-                        'has_crawlspace' => $hasCrawlspace,
-                        'access' => $crawlspaceHasAccess
-                    ]
+        BuildingElement::updateOrCreate(
+            [
+                'building_id' => Auth::user()->buildings()->first()->id,
+                'element_id' => $buildingElementId,
+            ],
+            [
+                'element_value_id' => $heightCrawlspace,
+                'extra' => [
+                    'has_crawlspace' => $hasCrawlspace,
+                    'access' => $crawlspaceHasAccess
                 ]
-            );
-        }
+            ]
+        );
         $floorSurface = $request->input('building_features', '');
 
         BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([

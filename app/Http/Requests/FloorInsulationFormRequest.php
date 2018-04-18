@@ -25,12 +25,14 @@ class FloorInsulationFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'floor_insulation' => 'required|exists:qualities,id',
-            // TODO: check for the value's when the right data is present
-            'has_crawlspace' => 'required',
-            'crawlspace_access' => 'required',
-            'crawlspace_height' => 'required|exists:crawl_space_heights,id',
-            'floor_surface' => 'required|numeric'
+
+            'element.*' => 'exists:element_values,id',
+            'element.*.extra' => 'nullable|alpha',
+            'element.*.element_value_id' => 'exists:element_values,id',
+            'element.crawlspace' => 'nullable|alpha',
+
+            'building_features.surface' => 'nullable|numeric',
+
         ];
     }
 }

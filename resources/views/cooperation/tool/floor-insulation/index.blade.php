@@ -65,7 +65,10 @@
                         <select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
                             @foreach(__('woningdossier.cooperation.option') as $i => $option)
                                 <option @if(old('building_elements[crawlspace]') == $i) selected
-                                        @elseif($i == $crawlspacePresent) selected
+                                        @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                        && is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                        && array_key_exists('has_crawlspace', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                        && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['has_crawlspace'] == $i ) selected
                                         @endif value="{{ $i }}">{{ $option }}</option>
                             @endforeach
                         </select>
@@ -98,7 +101,10 @@
                             <select id="crawlspace_access" class="form-control" name="building_elements[{{ $crawlspace->id }}][extra]">
                                 @foreach(__('woningdossier.cooperation.option') as $i => $option)
                                     <option @if(old('building_elements.crawlspace_access') == $option) selected
-                                            @elseif(is_array($buildingInsulation->extra) && array_key_exists('access', $buildingInsulation->extra) && $buildingInsulation->extra['access'] == $option) selected
+                                        @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                        && is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                        && array_key_exists('access', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                        && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['access'] == $i) selected
                                             @endif value="{{ $i }}">{{ $option }}</option>
                                 @endforeach
                             </select>
@@ -138,6 +144,10 @@
                             <select id="crawlspace_height" class="form-control" name="building_elements[{{ $crawlspace->id }}][element_value_id]">
                                 @foreach($crawlspace->values as $crawlHeight)
                                     <option @if(old('crawlspace_height') == $crawlHeight->id) selected
+                                            @elseif(
+                                            isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                            && $buildingElement->where('element_id', $crawlspace->id)->first()->element_value_id == $crawlHeight->id)
+                                                selected
                                             @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
                                 @endforeach
                             </select>

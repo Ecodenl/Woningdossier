@@ -10,6 +10,7 @@ use App\Helpers\NumberFormatter;
 use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
@@ -17,6 +18,7 @@ use App\Models\Step;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
 class FloorInsulationController extends Controller
 {
@@ -53,7 +55,7 @@ class FloorInsulationController extends Controller
 			$crawlspacePresent = 1; // now
 		}
 
-		//$crawlspaceAccessOptions = CrawlspaceAccess::all();
+		$buildingElement = Auth::user()->buildings()->first()->buildingElements;
 
 
 	    $buildingFeatures = $building->buildingFeatures;
@@ -62,7 +64,7 @@ class FloorInsulationController extends Controller
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
             'crawlspace', 'buildingCrawlspace',
-            'crawlspacePresent', 'steps', 'buildingFeatures'
+            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement'
         ));
     }
 
@@ -147,14 +149,51 @@ class FloorInsulationController extends Controller
      */
     public function store(FloorInsulationFormRequest $request)
     {
-    	// Get the value's from the input's
-        $floorInsulation = $request->floor_insulation;
-        $hasCrawlspace = $request->has_crawlspace;
-        $hasCrawlspaceAccess = $request->crawlspace_access;
-        $crawlspaceHeight = $request->crawlspace_height;
-        $floorSurface = $request->floor_surface;
 
-        // TODO: store the request
+    	// Get the value's from the input's
+        $elements = $request->input('element', '');
+
+        foreach ($elements as $elementId => $elementValueId) {
+            BuildingElement::updateOrCreate(
+                [
+                    'building_id' => Auth::user()->buildings()->first()->id,
+                    'element_id' => $elementId,
+                ],
+                [
+                    'element_value_id' => $elementValueId,
+                ]
+            );
+        }
+
+        if (Element::find($elementId)->values()->where('calculate_value', '5.00')->first()->calculate_value == "5.0") {
+
+        } else {
+            $buildingElements = $request->input('building_elements', '');
+            $buildingElementId = array_keys($buildingElements)[1];
+
+            $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : "";
+            $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : "";
+            $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : "";
+
+            BuildingElement::updateOrCreate(
+                [
+                    'building_id' => Auth::user()->buildings()->first()->id,
+                    'element_id' => $buildingElementId,
+                ],
+                [
+                    'element_value_id' => $heightCrawlspace,
+                    'extra' => [
+                        'has_crawlspace' => $hasCrawlspace,
+                        'access' => $crawlspaceHasAccess
+                    ]
+                ]
+            );
+        }
+        $floorSurface = $request->input('building_features', '');
+
+        BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([
+            'surface' => isset($floorSurface['surface']) ? $floorSurface['surface'] : "",
+        ]);
         return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => App::make('Cooperation')]);
     }
 

@@ -25,7 +25,7 @@
                             <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
                                 @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
                                     <option
-                                            @if(old('element[' . $floorInsulation->id . ']') && $floorInsulation->id == old('element[' . $floorInsulation->element->id . ']'))
+                                            @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->element->id . ''))
                                             selected="selected"
                                             @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
                                             selected="selected"
@@ -68,7 +68,7 @@
 
                             <select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
                                 @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                    <option @if(old('building_elements[crawlspace]') == $i) selected
+                                    <option @if(old('building_elements.crawlspace') == $i) selected
                                             @elseif($i == $crawlspacePresent) selected
                                             @endif value="{{ $i }}">{{ $option }}</option>
                                 @endforeach

@@ -163,47 +163,46 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="row crawlspace-accessible">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space{{ $errors->has('building_features.surface') ? ' has-error' : '' }}">
-
-                            <label for="floor_surface" class=" control-label">
-                                <i data-toggle="collapse" data-target="#floor-surface-info"
-                                   class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('woningdossier.cooperation.tool.floor-insulation.floor-surface')
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-addon">m<sup>2</sup></span>
-                                <input type="text" name="building_features[surface]" class="form-control" value="{{ old('building_features.surface', $buildingFeatures->surface) }}">
-                            </div>
-                            @if ($errors->has('building_features.surface'))
-                                <span class="help-block">
-                                <strong>{{ $errors->first('building_features.surface') }}</strong>
-                            </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="col-sm-12">
-                        <div class="form-group add-space">
-                            <div id="floor-surface-info" class="collapse alert alert-info remove-collapse-space">
-                                I would like to have some help full information right here !
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row crawlspace-accessible">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-info show" role="alert">
-                            <p>@lang('woningdossier.cooperation.tool.floor-insulation.insulation-advice.text')</p>
-                            <p id="insulation-advice"></p>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+            <div class="row crawlspace-accessible">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('building_features.surface') ? ' has-error' : '' }}">
+
+                        <label for="floor_surface" class=" control-label">
+                            <i data-toggle="collapse" data-target="#floor-surface-info"
+                               class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('woningdossier.cooperation.tool.floor-insulation.floor-surface')
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-addon">m<sup>2</sup></span>
+                            <input type="text" name="building_features[surface]" class="form-control" value="{{ old('building_features.surface', $buildingFeatures->surface) }}">
+                        </div>
+                        @if ($errors->has('building_features.surface'))
+                            <span class="help-block">
+                            <strong>{{ $errors->first('building_features.surface') }}</strong>
+                        </span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-group add-space">
+                        <div id="floor-surface-info" class="collapse alert alert-info remove-collapse-space">
+                            I would like to have some help full information right here !
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row crawlspace-accessible">
+                <div class="col-sm-12 col-md-8 col-md-offset-2">
+                    <div class="alert alert-info show" role="alert">
+                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.insulation-advice.text')</p>
+                        <p id="insulation-advice"></p>
+                    </div>
+                </div>
+            </div>
+
             <div id="indication-for-costs" class="crawlspace-accessible">
                 <hr>
                 <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.title')</h4>

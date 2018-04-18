@@ -29,9 +29,9 @@ class Calculator {
 		if (isset($element->calculate_value) && $element->calculate_value < 3){
 			$result = min(
 				$surface * $kengetalEnergySaving,
-				self::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element)
+				self::maxGasSavings($building, $energyHabit, $element->element)
 			);
-			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . self::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element) . ")");
+			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . self::maxGasSavings($building, $energyHabit, $element->element) . ")");
 		}
 		return $result;
 	}
@@ -98,7 +98,11 @@ class Calculator {
 	}
 
 	// in m3 per year
-	public static function maxGasSavings($usage, BuildingType $buildingType, Element $element){
+	public static function maxGasSavings(Building $building, UserEnergyHabit $energyHabit, Element $element){
+		$boiler = $building->getServiceValue('hr-boiler');
+		$buildingType = $building->getBuildingType();
+		$usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+		$usage = $usages['heating']['bruto'];
 		$saving = 0;
 		$maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
 		                                         ->where('element_id', $element->id)

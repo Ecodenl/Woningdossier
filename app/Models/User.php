@@ -105,6 +105,10 @@ class User extends Authenticatable
     	return $this->hasMany(UserMotivation::class);
 	}
 
+	public function actionPlanAdvices(){
+    	return $this->hasMany(UserActionPlanAdvice::class);
+	}
+
 	/**
 	 * Returns the user progress.
 	 *
@@ -171,5 +175,4 @@ class User extends Authenticatable
 	public function hasCompleted(Step $step){
 		return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
 	}
-
 }

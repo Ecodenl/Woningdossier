@@ -39,7 +39,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 	'nl' => 'Niet van toepassing',
                 ],
                 'degree' => 10,
-                'calculate_value' => 4,
+                'calculate_value' => 5,
             ],
         ];
 

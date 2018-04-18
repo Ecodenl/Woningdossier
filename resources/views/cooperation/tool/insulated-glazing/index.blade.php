@@ -453,8 +453,8 @@
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
-                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.insulated-glazing.store', [ 'cooperation' => $cooperation ]) }}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class="disabled btn btn-primary pull-right">
+                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.wall-insulation.index', [ 'cooperation' => $cooperation ]) }}">@lang('default.buttons.prev')</a>
+                        <button type="submit" class="btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>
                     </div>
@@ -468,6 +468,14 @@
 @push('js')
     <script>
         $(document).ready(function() {
+
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
                 var form = $(this).closest("form").serialize();
@@ -477,11 +485,6 @@
                     data: form,
                     success: function (data) {
 
-                        /*
-                        if (data.insulation_advice){
-                            $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
-                        }
-                        */
                         if (data.hasOwnProperty('savings_gas')){
                             $("input#savings_gas").val(Math.round(data.savings_gas));
                         }
@@ -497,10 +500,10 @@
                         if (data.hasOwnProperty('interest_comparable')){
                             $("input#interest_comparable").val(data.interest_comparable);
                         }
-                        if (data.hasOwnProperty('paintwork.costs')){
+                        if (data.hasOwnProperty('paintwork')){
                             $("input#paintwork_costs").val(Math.round(data.paintwork.costs));
                         }
-                        if (data.hasOwnProperty('paintwork.year')){
+                        if (data.hasOwnProperty('paintwork')){
                             $("input#paintwork_year").val(data.paintwork.year);
                         }
 

@@ -356,7 +356,7 @@
                             $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
                         ?>
 
-                        <textarea name="comment" id="" cols="30" rows="10" class="form-control">{{ $comment }}</textarea>
+                        <textarea name="comment" id="" class="form-control">{{ $comment }}</textarea>
 
                         <div id="comments-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...

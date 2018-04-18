@@ -42,7 +42,7 @@ class InsulatedGlazingController extends Controller
     }
 
     /**
-     * Display a listing of the resource.s
+     * Display a listing of the resources
      *
      * @return \Illuminate\Http\Response
      */

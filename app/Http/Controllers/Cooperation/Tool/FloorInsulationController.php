@@ -11,6 +11,7 @@ use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
+use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
@@ -190,7 +191,11 @@ class FloorInsulationController extends Controller
         BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([
             'surface' => isset($floorSurface['surface']) ? $floorSurface['surface'] : "",
         ]);
-        return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => App::make('Cooperation')]);
+
+        // Save progress
+        \Auth::user()->complete($this->step);
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]);
     }
 
 }

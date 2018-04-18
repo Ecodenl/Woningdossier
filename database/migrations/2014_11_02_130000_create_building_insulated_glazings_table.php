@@ -28,8 +28,9 @@ class CreateBuildingInsulatedGlazingsTable extends Migration
             $table->integer('building_heating_id')->unsigned()->nullable();
             $table->foreign('building_heating_id')->references('id')->on('building_heatings')->onDelete('restrict');
 
-            $table->integer('m2')->unsigned();
-            $table->integer('windows')->unsigned();
+            $table->integer('m2')->unsigned()->nullable()->default(null);
+            $table->integer('windows')->unsigned()->nullable()->default(null);
+            $table->string('extra')->nullable()->default(null);
 
             $table->timestamps();
         });

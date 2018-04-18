@@ -121,8 +121,10 @@ class GeneralDataController extends Controller
     	$elements = $request->get('element', []);
 
     	foreach($elements as $elementId => $elementValueId){
+
 			$element = Element::find($elementId);
 			$elementValue = ElementValue::find($elementValueId);
+
             // Get the interest field off the element
             $elementInterestId = $request->input('user_interest.element.'.$elementId.'', '');
 

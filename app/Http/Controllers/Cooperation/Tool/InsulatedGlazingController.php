@@ -9,8 +9,11 @@ use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
+use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
+use App\Models\BuildingPaintworkStatus;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
@@ -23,8 +26,10 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
 {
@@ -37,7 +42,7 @@ class InsulatedGlazingController extends Controller
     }
 
     /**
-     * Display a listing of the resource.s
+     * Display a listing of the resources
      *
      * @return \Illuminate\Http\Response
      */
@@ -47,6 +52,7 @@ class InsulatedGlazingController extends Controller
 	     * @var Building $building
 	     */
     	$building = \Auth::user()->buildings->first();
+//    	dd(Auth::user()->buildings()->getElement('crack-sealing'));
         $steps = Step::orderBy('order')->get();
 
 	    $interests = Interest::orderBy('order')->get();
@@ -55,7 +61,7 @@ class InsulatedGlazingController extends Controller
 		$crackSealing = Element::where('short', 'crack-sealing')->first();
 		$frames = Element::where('short', 'frames')->first();
 		$woodElements = Element::where('short', 'wood-elements')->first();
-		$heatings = BuildingHeating::all();
+		$heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
 		$paintworkStatuses = PaintworkStatus::orderBy('order')->get();
 		$woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
@@ -94,6 +100,7 @@ class InsulatedGlazingController extends Controller
 			}
 		}
 
+
         return view('cooperation.tool.insulated-glazing.index', compact(
         	'building', 'steps', 'interests',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
@@ -101,6 +108,49 @@ class InsulatedGlazingController extends Controller
 	        'paintworkStatuses', 'woodRotStatuses'
         ));
     }
+
+	protected function saveAdvices(Request $request){
+		/** @var JsonResponse $results */
+		$results = $this->calculate($request);
+		$results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		foreach($results['measure'] as $measureId => $data){
+			if (array_key_exists('costs', $data) && $data['costs'] > 0) {
+				$measureApplication = MeasureApplication::where( 'id',
+					$measureId )->where( 'step_id', $this->step->id )->first();
+
+				if ( $measureApplication instanceof MeasureApplication ) {
+					$actionPlanAdvice = new UserActionPlanAdvice( $data );
+					$actionPlanAdvice->user()->associate( Auth::user() );
+					$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+					$actionPlanAdvice->step()->associate( $this->step );
+					$actionPlanAdvice->save();
+				}
+			}
+		}
+
+		$keysToMeasure = [
+			'paintwork' => 'paint-wood-elements',
+			'crack-sealing' => 'crack-sealing',
+		];
+
+		foreach($keysToMeasure as $key => $measureShort){
+			if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0){
+				$measureApplication = MeasureApplication::where('short', $measureShort)->first();
+				if ($measureApplication instanceof MeasureApplication) {
+					$actionPlanAdvice = new UserActionPlanAdvice( $results[ $key ] );
+					$actionPlanAdvice->user()->associate( Auth::user() );
+					$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+					$actionPlanAdvice->step()->associate($this->step);
+					$actionPlanAdvice->save();
+				}
+			}
+		}
+
+	}
 
 	public function calculate(Request $request) {
 		/**
@@ -114,6 +164,7 @@ class InsulatedGlazingController extends Controller
 			'savings_co2' => 0,
 			'savings_money' => 0,
 			'cost_indication' => 0,
+			'measure' => [],
 		];
 
 		$userInterests = $request->get('user_interests', []);
@@ -133,52 +184,63 @@ class InsulatedGlazingController extends Controller
 			    array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
 
 				$gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
-					$buildingInsulatedGlazingsData['windows'], $measureApplication,
+					(int) $buildingInsulatedGlazingsData['m2'], $measureApplication,
 					$buildingHeating, $insulatedGlazing
 				);
 
-				$result['cost_indication'] += InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']);
+				$result['measure'][$measureApplication->id] = [
+					'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
+					'savings_gas' => $gasSavings,
+					'savings_co2' => Calculator::calculateCo2Savings( $gasSavings ),
+					'savings_money' => Calculator::calculateMoneySavings( $gasSavings ),
+				];
+
+				$result['cost_indication'] += $result['measure'][$measureApplication->id]['costs'];
 				$result['savings_gas'] += $gasSavings;
 
-				$result['savings_co2']   += Calculator::calculateCo2Savings( $gasSavings );
-				$result['savings_money'] += Calculator::calculateMoneySavings( $gasSavings );
+				$result['savings_co2']   += $result['measure'][$measureApplication->id]['savings_co2'];
+				$result['savings_money'] += $result['measure'][$measureApplication->id]['savings_money'];
 			}
 		}
 
 		$result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
 		$result['paintwork'] = [
-			'cost' => 0,
+			'costs' => 0,
 			'year' => null,
 		];
 
-
+		$frames = Element::where('short', 'frames')->first();
 		$buildingElements = $request->get('building_elements', []);
-		$framesValueId = array_key_exists('frames', $buildingElements) ? $buildingElements['frames'] : 0;
+		$framesValueId = 0;
+		if (array_key_exists($frames->id, $buildingElements) && array_key_exists('frames', $buildingElements[$frames->id])){
+			$framesValueId = (int) $buildingElements[$frames->id]['frames'];
+		}
 		$frameElementValue = ElementValue::find($framesValueId);
 
 		// only applies for wooden frames
-		if ($frameElementValue instanceof ElementValue && $frameElementValue->element->short == 'frames') {
-
+		if ($frameElementValue instanceof ElementValue && $frameElementValue->element->short == 'frames'/* && $frameElementValue->calculate_value > 0*/) {
 			$windowSurface =    $request->get('window_surface', 0);
 			// frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
 			$woodElementValues = [];
 
-			foreach($buildingElements as $short => $ids){
+			foreach($buildingElements as $short => $serviceIds){
 				if ($short == 'wood-elements'){
-					foreach(array_keys($ids) as $id) {
-						$woodElementValue = ElementValue::find($id);
+					foreach($serviceIds as $serviceId => $ids) {
+						foreach ( array_keys( $ids ) as $id ) {
 
-						if ($woodElementValue->element->short == $short){
-							$woodElementValues []= $woodElementValue;
+							$woodElementValue = ElementValue::where('id',  $id )->where( 'element_id',
+								$serviceId)->first();
+
+							if ( $woodElementValue instanceof ElementValue && $woodElementValue->element->short == $short ) {
+								$woodElementValues [] = $woodElementValue;
+							}
 						}
 					}
 				}
 			}
 
-			$measureApplication = MeasureApplication::translated( 'measure_name',
-				'Schilderwerk houten geveldelen',
-				'nl' )->first( [ 'measure_applications.*' ] );
+			$measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 
 			$number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, $windowSurface);
 
@@ -202,15 +264,6 @@ class InsulatedGlazingController extends Controller
 				$number,
 				$year );
 			$result['paintwork'] = compact( 'costs', 'year' );
-			if ( $costs > 0 ) {
-				UserActionPlanAdvice::updateOrCreate( [
-					'user_id'                => \Auth::user()->id,
-					'measure_application_id' => $measureApplication->id,
-				],
-					[
-						'year' => $year,
-					] );
-			}
 		}
 
 		$result['crack-sealing'] = [
@@ -233,10 +286,11 @@ class InsulatedGlazingController extends Controller
 				$result['crack-sealing']['savings'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
 			}
 
-			$measureApplication = MeasureApplication::translated( 'measure_name',
+			$measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
+			/*$measureApplication = MeasureApplication::translated( 'measure_name',
 				'Kierdichting verbeteren',
 				'nl' )->first( [ 'measure_applications.*' ] );
-
+			*/
 			$result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1);
 		}
 
@@ -253,8 +307,116 @@ class InsulatedGlazingController extends Controller
     public function store(InsulatedGlazingFormRequest $request)
     {
 
+        $building = Auth::user()->buildings()->first();
+        $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
+
+        // Saving the insulate glazings
+        foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
+
+            $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
+            $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
+            $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;
+            $windows = isset($buildingInsulatedGlazing['windows']) ? $buildingInsulatedGlazing['windows'] : 0;
+
+            // The interest for a measure
+            $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
+            // Update or Create the buildingInsulatedGlazing
+            BuildingInsulatedGlazing::updateOrCreate(
+                [
+                    'building_id' => $building->id,
+                    'measure_application_id' => $measureApplicationId,
+                ],
+                [
+                    'insulating_glazing_id' => $insulatedGlazingId,
+                    'building_heating_id' => $buildingHeatingId,
+                    'm2' => $m2,
+                    'windows' => $windows,
+                    'extra' => ['comment' => $request->input('comment', '')],
+                ]
+            );
+            // We'll create the user interests for the measures or update it
+            UserInterest::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'interested_in_type' => 'measure_application',
+                    'interested_in_id' => $measureApplicationId,
+                ],
+                [
+                    'interest_id' => $userInterestId,
+                ]
+            );
+
+        }
+
+        // saving the main building elements
+        $elements = $request->input('building_elements', []);
+        foreach($elements as $elementId => $elementValueId){
+
+            $element = Element::find($elementId);
+            $elementValue = ElementValue::find(reset($elementValueId));
+
+            if ($element instanceof Element && $elementValue instanceof ElementValue){
+                $buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
+                if (!$buildingElement instanceof BuildingElement){
+                    $buildingElement = new BuildingElement();
+                }
+                $buildingElement->elementValue()->associate($elementValue);
+                $buildingElement->element()->associate($element);
+                $buildingElement->building()->associate($building);
+                $buildingElement->save();
+            }
+        }
+
+        // Saving the wood building elements
+        // Get the wood elements
+        $woodElements = $request->input('building_elements.wood-elements.*.*');
+
+        if (isset($woodElements)) {
+
+            // Get the first key for the woodElementId
+            $woodElementId = key($request->input('building_elements.wood-elements'));
+
+            // Check if there are wood elements drop them
+            if (BuildingElement::where('element_id', $woodElementId)->count() > 0) {
+                BuildingElement::where('element_id', $woodElementId)->delete();
+            }
+
+            // Save the woodElements
+            foreach ($woodElements as $woodElementValueId) {
+
+                BuildingElement::create(
+                    [
+                        'building_id' => $building->id,
+                        'element_id' => $woodElementId,
+                        'element_value_id' => $woodElementValueId,
+                    ]
+                );
+            }
+        }
+
+        // Save the paintwork statuses
+        $paintWorkStatuses = $request->get('building_paintwork_statuses', "");
+        BuildingPaintworkStatus::updateOrCreate(
+            [
+                'building_id' => $building->id
+            ],
+            [
+                'last_painted_year' => $paintWorkStatuses['last_painted_year'],
+                'paintwork_status_id' => $paintWorkStatuses['paintwork_status_id'],
+                'wood_rot_status_id' => $paintWorkStatuses['paintwork_status_id'],
+            ]
+        );
+
+        // Save the window surface to the building feature
+        $windowSurface = $request->get('window_surface', '');
+        $buildingFeature = BuildingFeature::where('building_id', $building->id)->first()->update([
+            'window_surface' => $windowSurface
+        ]);
+
+        $this->saveAdvices($request);
+	    // Save progress
+	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
-        $steps = Step::orderBy('order')->get();
 
         return redirect()->route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation]);
     }

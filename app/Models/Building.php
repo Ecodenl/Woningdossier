@@ -87,11 +87,29 @@ class Building extends Model
 			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
 			->where('e.short', $short)->first(['building_elements.*']);
 	}
-	
+
+	/**
+	 * @param string $short
+	 *
+	 * @return BuildingService|null
+	 */
 	public function getBuildingService($short){
 		return $this->buildingServices()
-			->leftJoin('services as s', 'building_services.service_id', '=', 'e.id')
-			->where('e.short', $short)->first();
+			->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+			->where('s.short', $short)->first(['building_services.*']);
+	}
+
+	/**
+	 * @param string $short
+	 *
+	 * @return ServiceValue|null
+	 */
+	public function getServiceValue($short){
+		/** @var BuildingService $buildingService */
+		$buildingService = $this->getBuildingService($short);
+		$serviceValue = $buildingService->serviceValue;
+
+		return $serviceValue;
 	}
 
 	/**

@@ -108,6 +108,7 @@ return [
 		'attribute-name' => [
 			'rule-name' => 'custom-message',
 		],
+	    'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
 	],
 
 	/*

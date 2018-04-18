@@ -18,6 +18,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -85,6 +86,7 @@ class WallInsulationController extends Controller
         $buildingFeatures = $building->buildingFeatures();
 
         // Update the building feature table with some fresh data
+        // todo: arrray to string convers
         $buildingFeatures->update([
             'element_values' => reset($wallInsulationQualities),
             'facade_plastered_surface_id' => $plasteredWallSurface,
@@ -99,9 +101,52 @@ class WallInsulationController extends Controller
 
 
 	    // Save progress
+	    $this->saveAdvices($request);
 	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
         return redirect()->route('cooperation.tool.insulated-glazing.index', ['cooperation' => $cooperation]);
+    }
+
+    protected function saveAdvices(Request $request){
+	    /** @var JsonResponse $results */
+	    $results = $this->calculate($request);
+	    $results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+	    if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0){
+		    $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
+		    if ($measureApplication instanceof MeasureApplication){
+			    $actionPlanAdvice = new UserActionPlanAdvice($results);
+			    $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+				$actionPlanAdvice->user()->associate(Auth::user());
+				$actionPlanAdvice->measureApplication()->associate($measureApplication);
+				$actionPlanAdvice->step()->associate($this->step);
+				$actionPlanAdvice->save();
+		    }
+	    }
+
+	    $keysToMeasure = [
+	    	'paint_wall' => 'paint-wall',
+		    'repair_joint' => 'repair-joint',
+		    'clean_brickwork' => 'clean-brickwork',
+		    'impregnate_wall' => 'impregnate-wall',
+	    ];
+
+	    foreach($keysToMeasure as $key => $measureShort){
+	    	if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0){
+				$measureApplication = MeasureApplication::where('short', $measureShort)->first();
+				if ($measureApplication instanceof MeasureApplication) {
+					$actionPlanAdvice = new UserActionPlanAdvice( $results[ $key ] );
+					$actionPlanAdvice->user()->associate( Auth::user() );
+					$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+					$actionPlanAdvice->step()->associate($this->step);
+					$actionPlanAdvice->save();
+				}
+		    }
+	    }
+
     }
 
     public function calculate(Request $request){
@@ -118,6 +163,10 @@ class WallInsulationController extends Controller
 
     	$result = [
     		'savings_gas' => 0,
+		    'paint_wall' => [
+		    	'costs' => 0,
+			    'year' => 0,
+		    ],
 	    ];
 
 	    $advice = Temperature::WALL_INSULATION_JOINTS;
@@ -156,15 +205,6 @@ class WallInsulationController extends Controller
 	    }
 	    $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
 	    $result['repair_joint'] = compact('costs', 'year');
-	    if ($costs > 0) {
-		    UserActionPlanAdvice::updateOrCreate( [
-			    'user_id'                => Auth::user()->id,
-			    'measure_application_id' => $measureApplication->id,
-		    ],
-			    [
-				    'year' => $year,
-			    ] );
-	    }
 
 	    $measureApplication = MeasureApplication::translated('measure_name', 'Reinigen metselwerk', 'nl')->first(['measure_applications.*']);
 	    $surfaceId = $request->get('contaminated_wall_joints', 1);
@@ -177,15 +217,6 @@ class WallInsulationController extends Controller
 	    }
 	    $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
 	    $result['clean_brickwork'] = compact('costs', 'year');
-		if ($costs > 0) {
-			UserActionPlanAdvice::updateOrCreate( [
-				'user_id'                => Auth::user()->id,
-				'measure_application_id' => $measureApplication->id,
-			],
-				[
-					'year' => $year,
-				] );
-		}
 
 	    $measureApplication = MeasureApplication::translated('measure_name', 'Impregneren gevel', 'nl')->first(['measure_applications.*']);
 	    $surfaceId = $request->get('contaminated_wall_joints', 1);
@@ -198,39 +229,30 @@ class WallInsulationController extends Controller
 	    }
 	    $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
 	    $result['impregnate_wall'] = compact('costs', 'year');
-	    if ($costs > 0) {
-		    UserActionPlanAdvice::updateOrCreate( [
-			    'user_id'                => Auth::user()->id,
-			    'measure_application_id' => $measureApplication->id,
-		    ],
-			    [
-				    'year' => $year,
-			    ] );
-	    }
 
-	    $measureApplication = MeasureApplication::translated('measure_name', 'Gevelschilderwerk op stuk- of metselwerk', 'nl')->first(['measure_applications.*']);
-	    $surfaceId = $request->get('facade_plastered_surface_id', 1);
-	    $facadePlasteredSurface = FacadePlasteredSurface::find($surfaceId);
-	    $damageId = $request->get('facade_damaged_paintwork_id', 1);
-	    $facadeDamagedPaintwork = FacadeDamagedPaintwork::find($damageId);
-	    $number = 0;
-	    $year = null;
-	    if ($facadePlasteredSurface instanceof FacadePlasteredSurface && $facadeDamagedPaintwork instanceof FacadeDamagedPaintwork){
-		    $number = $facadePlasteredSurface->calculate_value;
-		    //$year = Carbon::now()->year + $facadePlasteredSurface->term_years;
-		    $year = Carbon::now()->year + $facadeDamagedPaintwork->term_years;
-	    }
-	    $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
-	    $result['paint_wall'] = compact('costs', 'year');
-	    if ($costs > 0) {
-		    UserActionPlanAdvice::updateOrCreate( [
-			    'user_id'                => Auth::user()->id,
-			    'measure_application_id' => $measureApplication->id,
-		    ],
-			    [
-				    'year' => $year,
-			    ] );
-	    }
+	    // Note: this answer options are harcoded in template
+	    $isPlastered = (int) $request->get('facade_plastered_painted', 2) != 2;
+
+		if ($isPlastered) {
+			$measureApplication     = MeasureApplication::translated( 'measure_name',
+				'Gevelschilderwerk op stuk- of metselwerk',
+				'nl' )->first( [ 'measure_applications.*' ] );
+			$surfaceId              = $request->get( 'facade_plastered_surface_id' );
+			$facadePlasteredSurface = FacadePlasteredSurface::find( $surfaceId );
+			$damageId               = $request->get( 'facade_damaged_paintwork_id' );
+			$facadeDamagedPaintwork = FacadeDamagedPaintwork::find( $damageId );
+			$number                 = 0;
+			$year                   = null;
+			if ( $facadePlasteredSurface instanceof FacadePlasteredSurface && $facadeDamagedPaintwork instanceof FacadeDamagedPaintwork ) {
+				$number = $facadePlasteredSurface->calculate_value;
+				//$year = Carbon::now()->year + $facadePlasteredSurface->term_years;
+				$year = Carbon::now()->year + $facadeDamagedPaintwork->term_years;
+			}
+			$costs                = Calculator::calculateMeasureApplicationCosts( $measureApplication,
+				$number,
+				$year );
+			$result['paint_wall'] = compact( 'costs', 'year' );
+		}
 
 	    return response()->json($result);
 

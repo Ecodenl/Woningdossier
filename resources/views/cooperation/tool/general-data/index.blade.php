@@ -224,7 +224,7 @@
                                 </label>
                                 <select id="element_{{ $element->id }}" class="form-control" name="element[{{ $element->id }}]">
                                     @foreach($element->values()->orderBy('order')->get() as $elementValue)
-                                        <option @if($elementValue->id == old('element.'.$element->id.'')) selected="selected" @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                        <option @if($elementValue->id == old('element.'.$element->id.'')) selected="selected" @elseif($building->buildingElements()->where('element_id', $element->id)->first() && $building->buildingElements()->where('element_id', $element->id)->first()->element_value_id == $elementValue->id) selected @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                                     @endforeach
                                 </select>
 
@@ -310,7 +310,7 @@
 
                         <select id="user_interest_service_{{ $service->id }}" class="form-control" name="user_interest[service][{{ $service->id }}]" >
                             @foreach($interests as $interest)
-                                <option @if($interest->id == old('user_interest[service][' . $service->id . ']')) selected @elseif(Auth::user()->getInterestedType('service', $service->id) != null && Auth::user()->getInterestedType('service', $service->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                <option @if($interest->id == old('user_interest.service.' . $service->id )) selected @elseif(Auth::user()->getInterestedType('service', $service->id) != null && Auth::user()->getInterestedType('service', $service->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                             @endforeach
                         </select>
 
@@ -343,7 +343,7 @@
                             ?>
 
                             <div class="input-group date">
-                                <input type="text" class="form-control" name="{{$service->id.'[extra]'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                <input type="text" class="form-control" name="{{$service->id.'.extra'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                             </div>
                             <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...

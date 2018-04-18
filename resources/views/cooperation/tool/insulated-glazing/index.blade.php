@@ -350,7 +350,13 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.comments')
                         </label>
 
-                        <textarea name="comment" id="" cols="30" rows="10" class="form-control">{{collect($buildingInsulatedGlazings)->where('extra', '!=', null)->first()->extra['comment']}}</textarea>
+                        <?php
+                            // We do this because we store the comment with every glazing
+                            $glazingWithComment = collect($buildingInsulatedGlazings)->where('extra', '!=', null)->first();
+                            $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
+                        ?>
+
+                        <textarea name="comment" id="" cols="30" rows="10" class="form-control">{{ $comment }}</textarea>
 
                         <div id="comments-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...

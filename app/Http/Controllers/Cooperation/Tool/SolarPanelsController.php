@@ -6,6 +6,7 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
 use App\Models\BuildingPvPanel;
 use App\Models\Cooperation;
@@ -128,7 +129,7 @@ class SolarPanelsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SolarPanelFormRequest $request)
     {
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : "0";

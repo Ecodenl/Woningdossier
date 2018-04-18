@@ -221,6 +221,7 @@ return [
 	            	'paintwork' => 'Indicatieve kosten schilderwerk',
 		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
 	            ],
+                'comments' => 'Opmerkingen.',
             ],
 
 			'floor-insulation' => [

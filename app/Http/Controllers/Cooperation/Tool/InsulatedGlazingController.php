@@ -330,11 +330,12 @@ class InsulatedGlazingController extends Controller
                     'insulating_glazing_id' => $insulatedGlazingId,
                     'building_heating_id' => $buildingHeatingId,
                     'm2' => $m2,
-                    'windows' => $windows
+                    'windows' => $windows,
+                    'extra' => ['comment' => $request->input('comment', '')],
                 ]
             );
             // We'll create the user interests for the measures or update it
-            $userInterest = UserInterest::updateOrCreate(
+            UserInterest::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
                     'interested_in_type' => 'measure_application',
@@ -387,7 +388,7 @@ class InsulatedGlazingController extends Controller
                     [
                         'building_id' => $building->id,
                         'element_id' => $woodElementId,
-                        'element_value_id' => $woodElementValueId
+                        'element_value_id' => $woodElementValueId,
                     ]
                 );
             }

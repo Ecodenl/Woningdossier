@@ -32,7 +32,6 @@ class InsulatedGlazingFormRequest extends FormRequest
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
             'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|digits_between:4,4',
-
         ];
 
         return $rules;

@@ -221,6 +221,7 @@ return [
 	            	'paintwork' => 'Indicatieve kosten schilderwerk',
 		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
 	            ],
+                'comments' => 'Opmerkingen.',
             ],
 
 			'floor-insulation' => [
@@ -360,6 +361,10 @@ return [
 				],
 			],
 
+			'my-plan' => [
+				'title' => 'Actieplan',
+				'description' => 'Onderstaande adviesmaatregelen zijn gebaseerd op de resultaten van de keukentafeltool. Met deze adviezen kunt u onderstaand uw meerjarenonderhoudsplan vormgeven',
+			],
 		],
 	],
 ];

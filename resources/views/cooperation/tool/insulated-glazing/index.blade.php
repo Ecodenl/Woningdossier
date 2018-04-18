@@ -104,7 +104,7 @@
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.m2')
-                                </label>
+                                </label> <span> *</span>
 
                                 <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">
 
@@ -126,7 +126,7 @@
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.total-windows')
-                                </label>
+                                </label> <span> *</span>
 
                                 <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}"
                                        class="form-control">
@@ -342,6 +342,34 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space {{ $errors->has('comments') ? ' has-error' : '' }}">
+                        <label for="" class="control-label">
+                            <i data-toggle="collapse" data-target="#comments-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('woningdossier.cooperation.tool.insulated-glazing.comments')
+                        </label>
+
+                        <?php
+                            // We do this because we store the comment with every glazing
+                            $glazingWithComment = collect($buildingInsulatedGlazings)->where('extra', '!=', null)->first();
+                            $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
+                        ?>
+
+                        <textarea name="comment" id="" cols="30" rows="10" class="form-control">{{ $comment }}</textarea>
+
+                        <div id="comments-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And i would like to have it to...
+                        </div>
+
+                        @if ($errors->has('comments'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('comments') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="indication-for-costs">
@@ -425,6 +453,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="row">
             <div class="col-md-12">

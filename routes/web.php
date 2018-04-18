@@ -71,6 +71,8 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 				Route::resource('heat-pump', 'HeatPumpController');
 
+
+				Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
             });
 
 		});

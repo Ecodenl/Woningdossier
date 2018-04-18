@@ -30,6 +30,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'measure_names' => [
                 	'nl' => 'Vloerisolatie',
                 ],
+	            'short' => 'floor-insulation',
 	            'application' => 'place',
 	            'costs' => 35, // euro
 	            'cost_unit' => [
@@ -40,12 +41,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 	            'maintenance_unit' => [
 	            	'nl' => 'per jaar',
 	            ],
+	            'step' => 'floor-insulation',
             ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Bodemisolatie',
 		        ],
+		        'short' => 'bottom-insulation',
 		        'application' => 'place',
 		        'costs' => 25, // euro
 		        'cost_unit' => [
@@ -56,12 +59,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'per jaar',
 		        ],
+		        'step' => 'floor-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
 		        ],
+		        'short' => 'floor-insulation-research',
 		        'application' => 'place',
 		        'costs' => 25, // euro
 		        'cost_unit' => [
@@ -72,12 +77,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'per jaar',
 		        ],
+		        'step' => 'floor-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Spouwmuurisolatie',
 		        ],
+		        'short' => 'cavity-wall-insulation',
 		        'application' => 'place',
 		        'costs' => 19, // euro
 		        'cost_unit' => [
@@ -88,12 +95,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'per jaar',
 		        ],
+		        'step' => 'wall-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Binnengevelisolatie',
 		        ],
+		        'short' => 'facade-wall-insulation',
 		        'application' => 'place',
 		        'costs' => 90, // euro
 		        'cost_unit' => [
@@ -104,12 +113,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'per jaar',
 		        ],
+		        'step' => 'wall-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
 		        ],
+		        'short' => 'wall-insulation-research',
 		        'application' => 'place',
 		        'costs' => 19, // euro
 		        'cost_unit' => [
@@ -120,12 +131,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'wall-insulation',
 	        ],
 	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Glas in lood vervangen',
 		        ],
+		        'short' => 'glass-in-lead',
 		        'application' => 'replace',
 		        'costs' => 150, // euro
 		        'cost_unit' => [
@@ -136,12 +149,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'insulated-glazing',
 	        ],
 	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van HR++ glas (alleen het glas)',
 		        ],
+		        'short' => 'hrpp-glass-only',
 		        'application' => 'place',
 		        'costs' => 144, // euro
 		        'cost_unit' => [
@@ -152,12 +167,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'insulated-glazing',
 	        ],
 	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van HR++ glas (inclusief kozijn)',
 		        ],
+		        'short' => 'hrpp-glass-frames',
 		        'application' => 'place',
 		        'costs' => 550, // euro
 		        'cost_unit' => [
@@ -168,12 +185,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'insulated-glazing',
 	        ],
 	        [ // stap: isolerende beglazing
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen van drievoudige HR beglazing (inclusief kozijn)',
 		        ],
+		        'short' => 'hr3p-frames',
 		        'application' => 'place',
 		        'costs' => 700, // euro
 		        'cost_unit' => [
@@ -184,12 +203,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'insulated-glazing',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Kierdichting verbeteren',
 		        ],
+		        'short' => 'crack-sealing',
 		        'application' => 'place',
 		        'costs' => 400, // euro
 		        'cost_unit' => [
@@ -200,12 +221,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'insulated-glazing',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Isolatie hellend dak van binnen uit',
 		        ],
+		        'short' => 'roof-insulation-pitched-inside',
 		        'application' => 'place',
 		        'costs' => 90, // euro
 		        'cost_unit' => [
@@ -216,12 +239,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'roof-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Isolatie hellend dak met vervanging van de dakpannen',
 		        ],
+		        'short' => 'roof-insulation-pitched-replace-tiles',
 		        'application' => 'replace',
 		        'costs' => 65, // euro
 		        'cost_unit' => [
@@ -232,12 +257,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'roof-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Isolatie plat dak op huidige dakbedekking',
 		        ],
+		        'short' => 'roof-insulation-flat-current',
 		        'application' => 'place',
 		        'costs' => 40, // euro
 		        'cost_unit' => [
@@ -248,12 +275,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'roof-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Isolatie plat dak met vervanging van de dakbedekking',
 		        ],
+		        'short' => 'roof-insulation-flat-replace-current',
 		        'application' => 'replace',
 		        'costs' => 30, // euro
 		        'cost_unit' => [
@@ -264,12 +293,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'roof-insulation',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Vervangen cv ketel',
 		        ],
+		        'short' => 'high-efficiency-boiler-replace',
 		        'application' => 'replace',
 		        'costs' => 2200, // euro
 		        'cost_unit' => [
@@ -280,12 +311,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'high-efficiency-boiler',
 	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
 			        'nl' => 'Plaatsen / vervangen zonnepanelen',
 		        ],
+		        'short' => 'solar-panels-place-replace',
 		        'application' => 'place',
 		        'costs' => 450, // euro
 		        'cost_unit' => [
@@ -296,6 +329,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'solar-panels',
 	        ],
 
 
@@ -310,6 +344,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'measure_names' => [
 		        	'nl' => 'Reparatie voegwerk',
 		        ],
+		        'short' => 'repair-joint',
 		        'application' => 'repair',
 		        'costs' => 55, // euro
 		        'cost_unit' => [
@@ -320,12 +355,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 		        	'nl' => 'jaar',
 		        ],
+		        'step' => 'wall-insulation',
 	        ],
 	        [
 		        'measure_type' => 'maintenance',
 		        'measure_names' => [
 			        'nl' => 'Reinigen metselwerk',
 		        ],
+		        'short' => 'clean-brickwork',
 		        'application' => 'repair',
 		        'costs' => 15, // euro
 		        'cost_unit' => [
@@ -336,12 +373,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'wall-insulation',
 	        ],
 	        [
 		        'measure_type' => 'maintenance',
 		        'measure_names' => [
 			        'nl' => 'Impregneren gevel',
 		        ],
+		        'short' => 'impregnate-wall',
 		        'application' => 'place',
 		        'costs' => 10, // euro
 		        'cost_unit' => [
@@ -352,12 +391,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'wall-insulation',
 	        ],
 	        [
 		        'measure_type' => 'maintenance',
 		        'measure_names' => [
 			        'nl' => 'Gevelschilderwerk op stuk- of metselwerk',
 		        ],
+		        'short' => 'paint-wall',
 		        'application' => 'place',
 		        'costs' => 35, // euro
 		        'cost_unit' => [
@@ -368,12 +409,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'wall-insulation',
 	        ],
 	        [
 		        'measure_type' => 'maintenance',
 		        'measure_names' => [
 			        'nl' => 'Schilderwerk houten geveldelen',
 		        ],
+		        'short' => 'paint-wood-elements',
 		        'application' => 'place',
 		        'costs' => 140, // euro
 		        'cost_unit' => [
@@ -384,12 +427,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'insulated-glazing',
 	        ],
 	        [
 		        'measure_type' => 'maintenance',
 		        'measure_names' => [
 			        'nl' => 'Vervangen dakpannen',
 		        ],
+		        'short' => 'replace-tiles',
 		        'application' => 'replace',
 		        'costs' => 135, // euro
 		        'cost_unit' => [
@@ -400,12 +445,14 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'roof-insulation',
 	        ],
 	        [
 		        'measure_type' => 'maintenance',
 		        'measure_names' => [
 			        'nl' => 'Vervangen dakbedekking',
 		        ],
+		        'short' => 'replace-roof-insulation',
 		        'application' => 'replace',
 		        'costs' => 100, // euro
 		        'cost_unit' => [
@@ -416,6 +463,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        'maintenance_unit' => [
 			        'nl' => 'jaar',
 		        ],
+		        'step' => 'roof-insulation',
 	        ],
 
 
@@ -492,15 +540,19 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        }
 	        }
 
+	        $step = DB::table('steps')->where('slug', $measureApplication['step'])->first();
+
 	        DB::table('measure_applications')->insert([
 	        	'measure_type' => $measureApplication['measure_type'],
 		        'measure_name' => $mnUuid,
+		        'short' => $measureApplication['short'],
 		        'application' => $measureApplication['application'],
 		        'costs' => $measureApplication['costs'],
 		        'cost_unit' => $cuUUID,
 		        'minimal_costs' => $measureApplication['minimal_costs'],
 		        'maintenance_interval' => $measureApplication['maintenance_interval'],
 		        'maintenance_unit' => $muUUID,
+		        'step_id' => $step->id,
 	        ]);
 
         }

@@ -29,14 +29,12 @@
                         <div id="water-comfort-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
-
-                    </div>
-
-                    @if ($errors->has('user_energy_habits.water_comfort_id'))
-                        <span class="help-block">
+                        @if ($errors->has('user_energy_habits.water_comfort_id'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('user_energy_habits.water_comfort_id') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
                 </div>
 
                 <div class="col-sm-4">
@@ -53,13 +51,13 @@
                             And i would like to have it to...
                         </div>
 
-                    </div>
-
-                    @if ($errors->has('building_heaters.pv_panel_orientation_id'))
-                        <span class="help-block">
+                        @if ($errors->has('building_heaters.pv_panel_orientation_id'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('building_heaters.pv_panel_orientation_id') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
                 </div>
 
                 <div class="col-sm-4">
@@ -77,13 +75,13 @@
                             And i would like to have it to...
                         </div>
 
-                    </div>
-
-                    @if ($errors->has('building_heaters.angle'))
-                        <span class="help-block">
+                        @if ($errors->has('building_heaters.angle'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('building_heaters.angle') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
                 </div>
 
             </div>
@@ -227,6 +225,21 @@
                 <div class="col-sm-12 col-md-8 col-md-offset-2">
                     <div class="alert show" role="alert">
                         <p id="performance-text"></p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                    <div class="form-group add-space">
+                        <div class="">
+                            <a class="btn btn-success pull-left"  href="{{route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                            <button type="submit"  class="btn disabled btn-primary pull-right">
+                                @lang('default.buttons.next')
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

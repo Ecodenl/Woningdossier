@@ -7,8 +7,11 @@ use App\Helpers\Calculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Http\Requests\HeaterFormRequest;
 use App\Models\Building;
+use App\Models\BuildingHeater;
 use App\Models\ComfortLevelTapWater;
+use App\Models\Cooperation;
 use App\Models\HeaterComponentCost;
 use App\Models\HeaterSpecification;
 use App\Models\KeyFigureConsumptionTapWater;
@@ -19,6 +22,7 @@ use App\Models\Step;
 use App\Models\UserEnergyHabit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class HeaterController extends Controller
 {
@@ -151,15 +155,43 @@ class HeaterController extends Controller
 	    return response()->json($result);
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Store or update the existing record
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param HeaterFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(HeaterFormRequest $request)
     {
-        //
+
+        // Store the building heater part
+        $buildingHeaters = $request->input('building_heaters', '');
+        $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : "";
+        $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : "";
+
+        BuildingHeater::updateOrCreate(
+            [
+                'building_id' => Auth::user()->buildings()->first()->id,
+            ],
+            [
+                'pv_panel_orientation_id' => $pvPanelOrientation,
+                'angle' => $angle,
+            ]
+        );
+
+        // Update the habit
+        $habits = $request->input('user_energy_habits', '');
+        $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : "";
+
+        UserEnergyHabit::where('user_id', Auth::id())->update([
+            'water_comfort_id' => $waterComFortId,
+        ]);
+
+        // Save progress
+        Auth::user()->complete($this->step);
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.heater.index', ['cooperation' => $cooperation]);
     }
 
 }

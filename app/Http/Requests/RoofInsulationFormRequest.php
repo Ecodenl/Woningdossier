@@ -122,9 +122,9 @@ class RoofInsulationFormRequest extends FormRequest
                     }
 
                     // if the roof is pitched and the replaced date is empty throw a error
-                    if (Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') == "" && (isset($result['pitched'])) == true) {
-                        $validator->errors()->add('building_roof_types.'.$cat.'.extra.bitumen_replaced_date', __('validation.custom.surface'));
-                    }
+                    //if (Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') == "" && (isset($result['pitched'])) == true) {
+                    //    $validator->errors()->add('building_roof_types.'.$cat.'.extra.bitumen_replaced_date', __('validation.custom.surface'));
+                    //}
                 });
 
             }

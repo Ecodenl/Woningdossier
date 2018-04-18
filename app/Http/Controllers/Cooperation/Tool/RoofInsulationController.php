@@ -19,7 +19,9 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
@@ -101,15 +103,59 @@ class RoofInsulationController extends Controller
     protected function getMeasureApplicationsAdviceMap(){
 	    return [
 		    'flat' => [
-			    Temperature::ROOF_INSULATION_FLAT_ON_CURRENT => MeasureApplication::translated('measure_name', 'Isolatie plat dak op huidige dakbedekking', 'nl')->first(['measure_applications.*']),
-			    Temperature::ROOF_INSULATION_FLAT_REPLACE => MeasureApplication::translated('measure_name', 'Isolatie plat dak met vervanging van de dakbedekking', 'nl')->first(['measure_applications.*']),
+			    Temperature::ROOF_INSULATION_FLAT_ON_CURRENT => MeasureApplication::where('short', 'roof-insulation-flat-current')->first(),
+			    Temperature::ROOF_INSULATION_FLAT_REPLACE => MeasureApplication::where('short', 'roof-insulation-flat-replace-current')->first(),
 		    ],
 		    'pitched' => [
-			    Temperature::ROOF_INSULATION_PITCHED_INSIDE => MeasureApplication::translated('measure_name', 'Isolatie hellend dak van binnen uit', 'nl')->first(['measure_applications.*']),
-			    Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES => MeasureApplication::translated('measure_name', 'Isolatie hellend dak met vervanging van de dakpannen', 'nl')->first(['measure_applications.*']),
+			    Temperature::ROOF_INSULATION_PITCHED_INSIDE => MeasureApplication::where('short', 'roof-insulation-pitched-inside')->first(),
+			    Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES => MeasureApplication::where('short', 'roof-insulation-pitched-replace-tiles')->first(),
 		    ],
 	    ];
     }
+
+	protected function saveAdvices(Request $request){
+		/** @var JsonResponse $results */
+		$results = $this->calculate($request);
+		$results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		foreach(['flat', 'pitched'] as $roofCat){
+			$measureApplicationId = $request->input( 'building_roof_types.' . $roofCat . '.measure_application_id', 0 );
+			if ( $measureApplicationId > 0 ) {
+				// results in an advice
+				$measureApplication = MeasureApplication::find( $measureApplicationId );
+				if ( $measureApplication instanceof MeasureApplication ) {
+					// The measure type determines which array keys to take
+					// as the replace array will always be present due to
+					// how calculate() works in this step
+					if($measureApplication->application == 'replace'){
+						if (isset($results[$roofCat]['replace']['costs']) && $results[$roofCat]['replace']['costs'] > 0) {
+							// take the replace array
+							$actionPlanAdvice = new UserActionPlanAdvice( $results[ $roofCat ]['replace'] );
+						}
+					}
+					else {
+						if(isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0){
+							// take the array $roofCat array
+							$actionPlanAdvice = new UserActionPlanAdvice( $results[ $roofCat ] );
+							$actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
+						}
+					}
+
+					if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
+						$actionPlanAdvice->user()->associate( Auth::user() );
+						$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+						$actionPlanAdvice->step()->associate( $this->step );
+						$actionPlanAdvice->save();
+					}
+				}
+
+			}
+		}
+
+	}
 
     public function calculate(Request $request){
 	    $result = [];
@@ -158,6 +204,7 @@ class RoofInsulationController extends Controller
 
 		    $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
 		    $heating = null;
+		    // should take the bitumen field
 		    $year = Carbon::now()->year;
 		    // default, changes only for roof tiles effect
 		    $factor = 1;
@@ -207,11 +254,12 @@ class RoofInsulationController extends Controller
 		    }
 
 		    if (isset($advice)){
-		    	if ($advice == Temperature::ROOF_INSULATION_FLAT_REPLACE){
-					$replaceMeasure = MeasureApplication::translated('measure_name', 'Vervangen dakbedekking', 'nl')->first(['measure_applications.*']);
+		    	// Apparently the replace costs should always be shown, even if the roof won't be replaced..
+		    	if ($advice == Temperature::ROOF_INSULATION_FLAT_REPLACE || Temperature::ROOF_INSULATION_FLAT_ON_CURRENT){
+				    $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
 			    }
 			    if ($advice == Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES){
-				    $replaceMeasure = MeasureApplication::translated('measure_name', 'Vervangen dakpannen', 'nl')->first(['measure_applications.*']);
+		    		$replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
 			    }
 
 			    if (isset($replaceMeasure)){
@@ -220,15 +268,8 @@ class RoofInsulationController extends Controller
 			    }
 		    }
 
-
-
-
     		$result[$cat] = array_merge($result[$cat], $catData);
 	    }
-
-
-		//dd($request->input('building_roof_types', []));
-
 
 		return response()->json($result);
 
@@ -301,6 +342,7 @@ class RoofInsulationController extends Controller
 
 
         // Save progress
+	    $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
         return redirect()->route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation]);

@@ -287,7 +287,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.gas')</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                            <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
                                             <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>
@@ -405,11 +405,13 @@
 
                         // default
                         //$(".cover-zinc").hide();
-                        $(".cover-bitumen").hide();
+                        $(".flat-roof .cover-bitumen").hide();
+                        $(".pitched-roof .cover-bitumen").hide();
+
 
                         if (data.hasOwnProperty('flat')){
                             $(".flat-roof").show();
-                            $(".cover-bitumen").show();
+                            $(".flat-roof .cover-bitumen").show();
                             //if (data.flat.hasOwnProperty('type') && data.flat.type === 'zinc'){
                             //    $(".cover-zinc").show();
                             //}
@@ -447,9 +449,10 @@
                             if (data.pitched.hasOwnProperty('type')){
                                 if(data.pitched.type === 'tiles'){
                                     $(".cover-tiles").show();
+                                    $(".pitched-roof .cover-bitumen").hide();
                                 }
                                 if (data.pitched.type === 'bitumen'){
-                                    $(".cover-butmen").show();
+                                    $(".pitched-roof .cover-bitumen").show();
                                 }
                             }
                             if (data.pitched.hasOwnProperty('savings_gas')){

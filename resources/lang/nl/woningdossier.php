@@ -271,7 +271,7 @@ return [
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
 				],
 				'measure-application' => [
-					'no-not-applicable' => 'Nee / Niet van toepassing',
+					'no' => 'Nee',
 				],
 
 				'costs' => [

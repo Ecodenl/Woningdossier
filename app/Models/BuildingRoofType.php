@@ -11,9 +11,13 @@ class BuildingRoofType extends Model
 	 *
 	 * @var array
 	 */
-	/*protected $casts = [
+	protected $casts = [
 		'extra' => 'array',
-	];*/
+	];
+
+	protected $fillable = [
+	    'building_id', 'roof_type_id', 'element_value_id', 'surface', 'building_heating_id', 'extra'
+    ];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

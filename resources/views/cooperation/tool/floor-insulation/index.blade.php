@@ -222,7 +222,7 @@
                                 $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : "";
                             ?>
 
-                            <textarea name="comment" id="" cols="30" rows="10" class="form-control">{{old('comment', $default)}}</textarea>
+                            <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
 
                             <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 I would like to have some helpful information right here!

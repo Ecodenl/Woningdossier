@@ -10,7 +10,16 @@ class UserActionPlanAdvice extends Model
 	public $fillable = [
 		'user_id', 'measure_application_id', // old
 		'costs', 'savings_gas', 'savings_electricity', 'savings_money',
-		'year',
+		'year', 'planned', 'planned_year',
+	];
+
+	/**
+	 * The attributes that should be cast to native types.
+	 *
+	 * @var array
+	 */
+	protected $casts = [
+		'planned' => 'boolean',
 	];
 
     public function user(){

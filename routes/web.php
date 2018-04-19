@@ -60,19 +60,21 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 	                // HR boiler
 	                Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
 	                Route::post('high-efficiency-boiler/calculate', 'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
+
+	                // Solar panels
+	                Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
+	                Route::post('solar-panels/calculate', 'SolarPanelsController@calculate')->name('solar-panels.calculate');
+
+	                // Heater (solar boiler)
+	                Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
+	                Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
                 });
 
-	            Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
-	            Route::post('solar-panels/calculate', 'SolarPanelsController@calculate')->name('solar-panels.calculate');
-
-	            Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
-	            Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
-
-
-				Route::resource('heat-pump', 'HeatPumpController');
+				//Route::resource('heat-pump', 'HeatPumpController');
 
 
 				Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
+				Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
             });
 
 		});

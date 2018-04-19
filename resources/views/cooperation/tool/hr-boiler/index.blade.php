@@ -71,13 +71,16 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.extra') ? ' has-error' : '' }}">
-                            <label for="high_efficiency_boiler_placed_date" class=" control-label"><i data-toggle="collapse" data-target="#high-efficiency-boiler-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.boiler.boiler-placed-date') </label>
+                            <label for="high_efficiency_boiler_placed_date" class=" control-label">
+                                <i data-toggle="collapse" data-target="#high-efficiency-boiler-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('woningdossier.cooperation.tool.boiler.boiler-placed-date')
+                            </label> <span> *</span>
 
                             <?php
                                 $default = $installedBoiler instanceof \App\Models\BuildingService ? $installedBoiler->extra['date'] : '';
                             ?>
 
-                            <input type="text" class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">
+                            <input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">
 
                             <div id="high-efficiency-boiler-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
@@ -92,6 +95,28 @@
 
 
                     </div>
+                    
+                    <div class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment') </label>
+                            <?php
+                                $default = $installedBoiler instanceof \App\Models\BuildingService ? $installedBoiler->extra['comment'] : '';
+                            ?>
+
+                            <textarea name="comment" id="" cols="30" rows="10" class="form-control">{{old('comment', $default)}}</textarea>
+
+                            <div id="comment" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                And i would like to have it to...
+                            </div>
+
+                            @if ($errors->has('comment'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('comment') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
 

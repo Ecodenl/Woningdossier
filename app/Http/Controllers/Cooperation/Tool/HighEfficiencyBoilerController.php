@@ -117,6 +117,7 @@ class HighEfficiencyBoilerController extends Controller
 
         $serviceValue = isset($buildingServices[$buildingServiceId]['service_value_id']) ? $buildingServices[$buildingServiceId]['service_value_id'] : "";
         $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : "";
+        $comment = $request->input('comment', '');
 
         BuildingService::updateOrCreate(
             [
@@ -125,7 +126,7 @@ class HighEfficiencyBoilerController extends Controller
             ],
             [
                 'service_value_id' => $serviceValue,
-                'extra' => ['date' => $extra],
+                'extra' => ['date' => $extra, 'comment' => $comment],
             ]
         );
 

@@ -27,7 +27,7 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
         return [
             'habit.*' => 'required|numeric',
             'building_services.*.service_value_id' => 'exists:service_values,id',
-            'building_services.*.extra' => 'required|numeric',
+            'building_services.*.extra' => 'required|numeric|digits:4',
         ];
     }
 }

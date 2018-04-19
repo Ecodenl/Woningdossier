@@ -90,6 +90,8 @@
                                     <strong>{{ $errors->first('building_elements.crawlspace') }}</strong>
                                 </span>
                             @endif
+                            
+                            
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
@@ -98,6 +100,8 @@
                             </div>
                         </div>
                     </div>
+
+
                 </div>
                 <div id="crawlspace-wrapper" class="crawlspace-accessible">
                     <div class="row">
@@ -208,6 +212,32 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                            <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment')        </label>
+                            <?php
+
+                                $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : "";
+                            ?>
+
+                            <textarea name="comment" id="" cols="30" rows="10" class="form-control">{{old('comment', $default)}}</textarea>
+
+                            <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                I would like to have some helpful information right here!
+                            </div>
+
+                            @if ($errors->has('comment'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('comment') }}</strong>
+                            </span>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row crawlspace-accessible">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">

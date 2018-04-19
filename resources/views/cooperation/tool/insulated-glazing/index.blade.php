@@ -347,7 +347,7 @@
                     <div class="form-group add-space {{ $errors->has('comments') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
                             <i data-toggle="collapse" data-target="#comments-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.insulated-glazing.comments')
+                            @lang('default.form.input.comment')
                         </label>
 
                         <?php

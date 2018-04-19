@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class FloorInsulationFormRequest extends FormRequest
+class HighEfficiencyBoilerFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,14 +25,9 @@ class FloorInsulationFormRequest extends FormRequest
     public function rules()
     {
         return [
-
-            'element.*' => 'exists:element_values,id',
-            'element.*.extra' => 'nullable|alpha',
-            'element.*.element_value_id' => 'exists:element_values,id',
-            'element.crawlspace' => 'nullable|alpha',
-
-            'building_features.surface' => 'nullable|numeric',
-
+            'habit.*' => 'required|numeric',
+            'building_services.*.service_value_id' => 'exists:service_values,id',
+            'building_services.*.extra' => 'required|numeric',
         ];
     }
 }

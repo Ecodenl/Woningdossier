@@ -20,6 +20,7 @@ class GeneralDataFormRequest extends FormRequest
         return Auth::check();
     }
 
+
     /**
      * Get the validation rules that apply to the request.
      *

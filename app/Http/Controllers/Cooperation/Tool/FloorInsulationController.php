@@ -181,6 +181,7 @@ class FloorInsulationController extends Controller
         $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : "";
         $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : "";
         $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : "";
+        $comment = $request->input('comment', '');
 
         BuildingElement::updateOrCreate(
             [
@@ -191,7 +192,8 @@ class FloorInsulationController extends Controller
                 'element_value_id' => $heightCrawlspace,
                 'extra' => [
                     'has_crawlspace' => $hasCrawlspace,
-                    'access' => $crawlspaceHasAccess
+                    'access' => $crawlspaceHasAccess,
+                    'comment' => $comment
                 ]
             ]
         );

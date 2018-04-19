@@ -10,6 +10,7 @@
 
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+
         <div class="row">
             <div id="example-building" class="col-sm-12">
                 <div class="form-group add-space{{ $errors->has('example_building_type') ? ' has-error' : '' }}">

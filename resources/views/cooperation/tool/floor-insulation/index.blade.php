@@ -90,6 +90,8 @@
                                     <strong>{{ $errors->first('building_elements.crawlspace') }}</strong>
                                 </span>
                             @endif
+                            
+                            
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
@@ -98,6 +100,8 @@
                             </div>
                         </div>
                     </div>
+
+
                 </div>
                 <div id="crawlspace-wrapper" class="crawlspace-accessible">
                     <div class="row">
@@ -209,6 +213,32 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                            <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment')        </label>
+                            <?php
+
+                                $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : "";
+                            ?>
+
+                            <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
+
+                            <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                I would like to have some helpful information right here!
+                            </div>
+
+                            @if ($errors->has('comment'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('comment') }}</strong>
+                            </span>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="row crawlspace-accessible">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-info show" role="alert">
@@ -217,58 +247,58 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div id="indication-for-costs" class="crawlspace-accessible">
-                <hr>
-                <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.title')</h4>
+                <div id="indication-for-costs" class="crawlspace-accessible">
+                    <hr>
+                    <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.title')</h4>
 
-                <div id="costs" class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                                <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
+                    <div id="costs" class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group add-space">
+                                <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                                    <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group add-space">
+                                <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">CO2 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                                    <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group add-space">
+                                <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.savings-in-euro')</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                                    <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">CO2 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                                <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group add-space">
+                                <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                    <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.savings-in-euro')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                                <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
 
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                                <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group add-space">
+                                <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                                    <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                                </div>
                             </div>
                         </div>
                     </div>

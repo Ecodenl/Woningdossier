@@ -5,7 +5,14 @@ return [
         'store' => 'Aanmaken',
         'update' => 'Update',
         'destroy' => 'Verwijderen',
-        'next' => 'Volgende',
+        'next' => 'Opslaan',
         'prev' => 'Vorige',
     ],
+
+    'form' => [
+        'input' => [
+            'comment' => 'Toelichting op de specifieke situatie'
+        ],
+    ],
 ];
+

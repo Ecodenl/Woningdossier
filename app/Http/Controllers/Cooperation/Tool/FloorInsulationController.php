@@ -209,22 +209,35 @@ class FloorInsulationController extends Controller
     }
 
 	protected function saveAdvices(Request $request){
-		/** @var JsonResponse $results */
-		$results = $this->calculate($request);
-		$results = $results->getData(true);
-
 		// Remove old results
-		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+		UserActionPlanAdvice::forMe()->forStep( $this->step )->delete();
 
-		if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0){
-			$measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
-			if ($measureApplication instanceof MeasureApplication){
-				$actionPlanAdvice = new UserActionPlanAdvice($results);
-				$actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-				$actionPlanAdvice->user()->associate(Auth::user());
-				$actionPlanAdvice->measureApplication()->associate($measureApplication);
-				$actionPlanAdvice->step()->associate($this->step);
-				$actionPlanAdvice->save();
+		$floorInsulation = Element::where('short', 'floor-insulation')->first();
+		$elements = $request->input('element');
+		if (array_key_exists($floorInsulation->id, $elements)) {
+			$floorInsulationValue = ElementValue::where( 'element_id',
+				$floorInsulation->id )->where( 'id',
+				$elements[ $floorInsulation->id ] )->first();
+			// don't save if not applicable
+			if ( $floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5 ) {
+
+				/** @var JsonResponse $results */
+				$results = $this->calculate( $request );
+				$results = $results->getData( true );
+
+				if ( isset( $results['insulation_advice'] ) && isset( $results['cost_indication'] ) && $results['cost_indication'] > 0 ) {
+					$measureApplication = MeasureApplication::translated( 'measure_name',
+						$results['insulation_advice'],
+						'nl' )->first( [ 'measure_applications.*' ] );
+					if ( $measureApplication instanceof MeasureApplication ) {
+						$actionPlanAdvice = new UserActionPlanAdvice( $results );
+						$actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+						$actionPlanAdvice->user()->associate( Auth::user() );
+						$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+						$actionPlanAdvice->step()->associate( $this->step );
+						$actionPlanAdvice->save();
+					}
+				}
 			}
 		}
 

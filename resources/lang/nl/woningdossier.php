@@ -229,6 +229,7 @@ return [
 				'floor-insulation' => 'U hebt de volgende isolatie ingevuld voor de vloer weet u nu meer? Pas de waarde dan hier aan',
 				'has-crawlspace' => [
 					'title' => 'Heeft deze woning een kruipruimte',
+					'unknown' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
 					'no-crawlspace' => 'De vloer kan alleen van boven af geïsoleerd worden. Let op de hoogtes bij deuren en bij de trap. Vraag om aanvullend advies.',
 				],
 				'crawlspace-access' => [

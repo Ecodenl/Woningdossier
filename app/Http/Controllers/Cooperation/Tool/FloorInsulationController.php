@@ -16,6 +16,8 @@ use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
@@ -91,6 +93,13 @@ class FloorInsulationController extends Controller
 
 	    $surface = array_key_exists('surface', $buildingFeatures) ? $buildingFeatures['surface'] : 0;
 
+	    if (array_key_exists('crawlspace', $buildingElements)){
+		    // Check if crawlspace is accessible. If not: show warning!
+		    if (in_array($buildingElements['crawlspace'], ["unknown"])) {
+			    $result['crawlspace'] = "warning";
+		    }
+	    }
+
 	    $crawlspaceValue = null;
 	    if (array_key_exists($crawlspace->id, $buildingElements)){
 	    	if (array_key_exists('element_value_id', $buildingElements[$crawlspace->id])){
@@ -100,7 +109,7 @@ class FloorInsulationController extends Controller
 		    }
 		    if (array_key_exists('extra', $buildingElements[$crawlspace->id])){
 	    		// Check if crawlspace is accessible. If not: show warning!
-	    		if ($buildingElements[$crawlspace->id]['extra'] == "no") {
+	    		if (in_array($buildingElements[$crawlspace->id]['extra'], ["no", "unknown"])) {
 				    $result['crawlspace_access'] = "warning";
 			    }
 		    }
@@ -193,9 +202,32 @@ class FloorInsulationController extends Controller
         ]);
 
         // Save progress
+	    $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
         return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]);
     }
+
+	protected function saveAdvices(Request $request){
+		/** @var JsonResponse $results */
+		$results = $this->calculate($request);
+		$results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0){
+			$measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
+			if ($measureApplication instanceof MeasureApplication){
+				$actionPlanAdvice = new UserActionPlanAdvice($results);
+				$actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+				$actionPlanAdvice->user()->associate(Auth::user());
+				$actionPlanAdvice->measureApplication()->associate($measureApplication);
+				$actionPlanAdvice->step()->associate($this->step);
+				$actionPlanAdvice->save();
+			}
+		}
+
+	}
 
 }

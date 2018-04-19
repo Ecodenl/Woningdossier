@@ -6,14 +6,21 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
+use App\Models\BuildingPvPanel;
+use App\Models\Cooperation;
+use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class SolarPanelsController extends Controller
 {
@@ -125,8 +132,58 @@ class SolarPanelsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SolarPanelFormRequest $request)
     {
-        //
+        $habit = $request->input('user_energy_habits', '');
+        $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : "0";
+
+        UserEnergyHabit::where('user_id', Auth::id())->update([
+            'amount_electricity' => $habitAmountElectricity,
+        ]);
+        $pvPanels = $request->input('building_pv_panels', '');
+        $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : "";
+        $number = isset($pvPanels['number']) ? $pvPanels['number'] : "";
+        $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : "";
+        $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : "";
+
+        BuildingPvPanel::updateOrCreate(
+            [
+                'building_id' => Auth::user()->buildings()->first()->id,
+            ],
+            [
+                'peak_power' => $peakPower,
+                'number' => $number,
+                'pv_panel_orientation_id' => $orientation,
+                'angle' => $angle,
+            ]
+        );
+
+        // Save progress
+	    $this->saveAdvices($request);
+        Auth::user()->complete($this->step);
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.heater.index', ['cooperation' => $cooperation]);
     }
+
+	protected function saveAdvices(Request $request){
+		/** @var JsonResponse $results */
+		$results = $this->calculate($request);
+		$results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		if (isset($results['cost_indication']) && $results['cost_indication'] > 0){
+			$measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
+			if ($measureApplication instanceof MeasureApplication){
+				$actionPlanAdvice = new UserActionPlanAdvice($results);
+				$actionPlanAdvice->costs = $results['cost_indication'];
+				$actionPlanAdvice->savings_electricity = $results['yield_electricity'];
+				$actionPlanAdvice->user()->associate(Auth::user());
+				$actionPlanAdvice->measureApplication()->associate($measureApplication);
+				$actionPlanAdvice->step()->associate($this->step);
+				$actionPlanAdvice->save();
+			}
+		}
+	}
 }

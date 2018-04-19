@@ -7,7 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingInsulatedGlazing extends Model
 {
 
-    protected $fillable = ['building_id', 'measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows'];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'extra' => 'array',
+    ];
+
+    protected $fillable = ['building_id', 'measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows', 'extra'];
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */

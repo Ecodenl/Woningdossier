@@ -14,6 +14,11 @@
         </li>
         @endif
 @endforeach
+        <li class="list-inline-item">
+                <a href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
+                        <img src="http://placekitten.com/g/50/50" class="img-circle" />
+                </a>
+        </li>
 </ul>
 
 {{--

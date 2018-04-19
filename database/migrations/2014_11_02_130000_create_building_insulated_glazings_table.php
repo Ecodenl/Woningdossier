@@ -30,6 +30,7 @@ class CreateBuildingInsulatedGlazingsTable extends Migration
 
             $table->integer('m2')->unsigned()->nullable()->default(null);
             $table->integer('windows')->unsigned()->nullable()->default(null);
+            $table->string('extra')->nullable()->default(null);
 
             $table->timestamps();
         });

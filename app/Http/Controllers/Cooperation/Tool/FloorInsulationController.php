@@ -10,13 +10,18 @@ use App\Helpers\NumberFormatter;
 use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
+use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
 class FloorInsulationController extends Controller
 {
@@ -53,7 +58,7 @@ class FloorInsulationController extends Controller
 			$crawlspacePresent = 1; // now
 		}
 
-		//$crawlspaceAccessOptions = CrawlspaceAccess::all();
+		$buildingElement = Auth::user()->buildings()->first()->buildingElements;
 
 
 	    $buildingFeatures = $building->buildingFeatures;
@@ -62,7 +67,7 @@ class FloorInsulationController extends Controller
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
             'crawlspace', 'buildingCrawlspace',
-            'crawlspacePresent', 'steps', 'buildingFeatures'
+            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement'
         ));
     }
 
@@ -88,6 +93,13 @@ class FloorInsulationController extends Controller
 
 	    $surface = array_key_exists('surface', $buildingFeatures) ? $buildingFeatures['surface'] : 0;
 
+	    if (array_key_exists('crawlspace', $buildingElements)){
+		    // Check if crawlspace is accessible. If not: show warning!
+		    if (in_array($buildingElements['crawlspace'], ["unknown"])) {
+			    $result['crawlspace'] = "warning";
+		    }
+	    }
+
 	    $crawlspaceValue = null;
 	    if (array_key_exists($crawlspace->id, $buildingElements)){
 	    	if (array_key_exists('element_value_id', $buildingElements[$crawlspace->id])){
@@ -97,7 +109,7 @@ class FloorInsulationController extends Controller
 		    }
 		    if (array_key_exists('extra', $buildingElements[$crawlspace->id])){
 	    		// Check if crawlspace is accessible. If not: show warning!
-	    		if ($buildingElements[$crawlspace->id]['extra'] == "no") {
+	    		if (in_array($buildingElements[$crawlspace->id]['extra'], ["no", "unknown"])) {
 				    $result['crawlspace_access'] = "warning";
 			    }
 		    }
@@ -147,15 +159,88 @@ class FloorInsulationController extends Controller
      */
     public function store(FloorInsulationFormRequest $request)
     {
-    	// Get the value's from the input's
-        $floorInsulation = $request->floor_insulation;
-        $hasCrawlspace = $request->has_crawlspace;
-        $hasCrawlspaceAccess = $request->crawlspace_access;
-        $crawlspaceHeight = $request->crawlspace_height;
-        $floorSurface = $request->floor_surface;
 
-        // TODO: store the request
-        return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => App::make('Cooperation')]);
+    	// Get the value's from the input's
+        $elements = $request->input('element', '');
+
+        foreach ($elements as $elementId => $elementValueId) {
+            BuildingElement::updateOrCreate(
+                [
+                    'building_id' => Auth::user()->buildings()->first()->id,
+                    'element_id' => $elementId,
+                ],
+                [
+                    'element_value_id' => $elementValueId,
+                ]
+            );
+        }
+
+        $buildingElements = $request->input('building_elements', '');
+        $buildingElementId = array_keys($buildingElements)[1];
+
+        $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : "";
+        $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : "";
+        $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : "";
+
+        BuildingElement::updateOrCreate(
+            [
+                'building_id' => Auth::user()->buildings()->first()->id,
+                'element_id' => $buildingElementId,
+            ],
+            [
+                'element_value_id' => $heightCrawlspace,
+                'extra' => [
+                    'has_crawlspace' => $hasCrawlspace,
+                    'access' => $crawlspaceHasAccess
+                ]
+            ]
+        );
+        $floorSurface = $request->input('building_features', '');
+
+        BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([
+            'surface' => isset($floorSurface['surface']) ? $floorSurface['surface'] : "",
+        ]);
+
+        // Save progress
+	    $this->saveAdvices($request);
+        \Auth::user()->complete($this->step);
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]);
     }
+
+	protected function saveAdvices(Request $request){
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep( $this->step )->delete();
+
+		$floorInsulation = Element::where('short', 'floor-insulation')->first();
+		$elements = $request->input('element');
+		if (array_key_exists($floorInsulation->id, $elements)) {
+			$floorInsulationValue = ElementValue::where( 'element_id',
+				$floorInsulation->id )->where( 'id',
+				$elements[ $floorInsulation->id ] )->first();
+			// don't save if not applicable
+			if ( $floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5 ) {
+
+				/** @var JsonResponse $results */
+				$results = $this->calculate( $request );
+				$results = $results->getData( true );
+
+				if ( isset( $results['insulation_advice'] ) && isset( $results['cost_indication'] ) && $results['cost_indication'] > 0 ) {
+					$measureApplication = MeasureApplication::translated( 'measure_name',
+						$results['insulation_advice'],
+						'nl' )->first( [ 'measure_applications.*' ] );
+					if ( $measureApplication instanceof MeasureApplication ) {
+						$actionPlanAdvice = new UserActionPlanAdvice( $results );
+						$actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+						$actionPlanAdvice->user()->associate( Auth::user() );
+						$actionPlanAdvice->measureApplication()->associate( $measureApplication );
+						$actionPlanAdvice->step()->associate( $this->step );
+						$actionPlanAdvice->save();
+					}
+				}
+			}
+		}
+
+	}
 
 }

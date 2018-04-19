@@ -313,6 +313,26 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        ],
 		        'step' => 'high-efficiency-boiler',
 	        ],
+
+
+	        [
+		        'measure_type' => 'energy_saving',
+		        'measure_names' => [
+			        'nl' => 'Plaatsen / vervangen zonneboiler',
+		        ],
+		        'short' => 'heater-place-replace',
+		        'application' => 'place',
+		        'costs' => 3800, // euro
+		        'cost_unit' => [
+			        'nl' => 'per installatie',
+		        ],
+		        'minimal_costs' => 0, // euro
+		        'maintenance_interval' => 25,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+		        'step' => 'heater',
+	        ],
 	        [
 		        'measure_type' => 'energy_saving',
 		        'measure_names' => [
@@ -465,6 +485,28 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        ],
 		        'step' => 'roof-insulation',
 	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Inspectie en reparatie daken',
+		        ],
+		        'short' => 'inspect-repair-roofs',
+		        'application' => 'replace',
+		        'costs' => 200, // euro
+		        'cost_unit' => [
+			        'nl' => 'per stuk',
+		        ],
+		        'minimal_costs' => 0,
+		        'maintenance_interval' => 5,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+		        'step' => 'roof-insulation',
+	        ],
+
+
+
+
 
 
 			// add more onderhoudsmaatregelen here!

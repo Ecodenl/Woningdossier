@@ -105,7 +105,7 @@
                         <div class="form-group add-space">
                             <label class="control-label">@lang('woningdossier.cooperation.tool.heater.consumption-gas')</label>
                             <div class="input-group">
-                                <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.unit.year')</span>
+                                <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.unit.year')</span>
                                 <input type="text" id="consumption_gas" class="form-control disabled" disabled="" value="0">
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                         <div class="form-group add-space">
                             <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.gas-savings')</label>
                             <div class="input-group">
-                                <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
+                                <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
                                 <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
                             </div>
                         </div>
@@ -184,7 +184,7 @@
                         <div class="form-group add-space">
                             <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.co2-savings')</label>
                             <div class="input-group">
-                                <span class="input-group-addon">co<sup>2</sup> / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
+                                <span class="input-group-addon">co<sub>2</sub> / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
                                 <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                             </div>
                         </div>
@@ -229,14 +229,13 @@
                 </div>
             </div>
 
-
             <div class="row">
                 <div class="col-md-12">
                     <hr>
                     <div class="form-group add-space">
                         <div class="">
                             <a class="btn btn-success pull-left"  href="{{route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                            <button type="submit"  class="btn disabled btn-primary pull-right">
+                            <button type="submit"  class="btn btn-primary pull-right">
                                 @lang('default.buttons.next')
                             </button>
                         </div>

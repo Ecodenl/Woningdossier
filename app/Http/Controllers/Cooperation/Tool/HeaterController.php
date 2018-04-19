@@ -15,11 +15,14 @@ use App\Models\Cooperation;
 use App\Models\HeaterComponentCost;
 use App\Models\HeaterSpecification;
 use App\Models\KeyFigureConsumptionTapWater;
+use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -189,9 +192,32 @@ class HeaterController extends Controller
         ]);
 
         // Save progress
+	    $this->saveAdvices($request);
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
         return redirect()->route('cooperation.tool.heater.index', ['cooperation' => $cooperation]);
     }
+
+	protected function saveAdvices(Request $request){
+		/** @var JsonResponse $results */
+		$results = $this->calculate($request);
+		$results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0){
+			$measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
+			if ($measureApplication instanceof MeasureApplication){
+				$actionPlanAdvice = new UserActionPlanAdvice($results);
+				$actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+				$actionPlanAdvice->user()->associate(Auth::user());
+				$actionPlanAdvice->measureApplication()->associate($measureApplication);
+				$actionPlanAdvice->step()->associate($this->step);
+				$actionPlanAdvice->save();
+			}
+		}
+
+	}
 
 }

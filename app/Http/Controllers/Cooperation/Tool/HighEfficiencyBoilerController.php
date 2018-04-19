@@ -49,8 +49,6 @@ class HighEfficiencyBoilerController extends Controller
 
 		$installedBoiler = BuildingService::where('service_id', $boiler->id)->first();
 
-
-
         return view('cooperation.tool.hr-boiler.index', compact(
         	'habit', 'boiler', 'boilerTypes', 'installedBoiler',
 	        'steps'));

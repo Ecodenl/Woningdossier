@@ -77,7 +77,7 @@
                             </label> <span> *</span>
 
                             <?php
-                                $default = ($installedBoiler instanceof \App\Models\BuildingService && array_key_exists('date', $installedBoiler->extra)) ? $installedBoiler->extra['date'] : '';
+                                $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('date', $installedBoiler->extra)) ? $installedBoiler->extra['date'] : '';
                             ?>
 
                             <input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">
@@ -100,7 +100,7 @@
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
                             <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment') </label>
                             <?php
-                                $default = ($installedBoiler instanceof \App\Models\BuildingService && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
+                                $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
                             ?>
 
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>

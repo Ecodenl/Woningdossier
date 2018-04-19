@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class FloorInsulationFormRequest extends FormRequest
+class SolarPanelFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,14 +25,12 @@ class FloorInsulationFormRequest extends FormRequest
     public function rules()
     {
         return [
+            'building_pv_panels.peak_power' => 'required|numeric|between:260,300',
+            'building_pv_panels.number' => 'required|numeric',
+            'building_pv_panels.angle' => 'required|numeric',
+            'building_pv_panels.pv_panel_orientation_id' => 'required|exists:pv_panel_orientations,id',
 
-            'element.*' => 'exists:element_values,id',
-            'element.*.extra' => 'nullable|alpha',
-            'element.*.element_value_id' => 'exists:element_values,id',
-            'element.crawlspace' => 'nullable|alpha',
-
-            'building_features.surface' => 'nullable|numeric',
-
+            'user_energy_habits.amount_electricity' => 'required|numeric'
         ];
     }
 }

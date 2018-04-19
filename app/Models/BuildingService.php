@@ -37,6 +37,8 @@ class BuildingService extends Model
         'extra' => 'array',
     ];
 
+    protected $fillable = ['service_value_id', 'extra', 'building_id', 'service_id'];
+
     public function building(){
 		return $this->belongsTo(Building::class);
 	}

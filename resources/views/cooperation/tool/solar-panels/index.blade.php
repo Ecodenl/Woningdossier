@@ -4,8 +4,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
+    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="solar-panels">
             <div class="row">
@@ -18,19 +17,19 @@
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.amount_electricity') ? ' has-error' : '' }}">
                         <label for="user_energy_habits_amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
 
-                        <input type="text" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
+                        <input type="number" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
 
                         <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
 
-                    </div>
+                        @if ($errors->has('user_energy_habits.amount_electricity'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('user_energy_habits.amount_electricity') }}</strong>
+                            </span>
+                        @endif
 
-                    @if ($errors->has('user_energy_habits.amount_electricity'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('user_energy_habits.amount_electricity') }}</strong>
-                        </span>
-                    @endif
+                    </div>
 
                 </div>
                 <div class="col-sm-6">
@@ -48,13 +47,13 @@
                             And i would like to have it to...
                         </div>
 
+                        @if ($errors->has('building_pv_panels.peak_power'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('building_pv_panels.peak_power') }}</strong>
+                            </span>
+                        @endif
                     </div>
 
-                    @if ($errors->has('building_pv_panels.peak_power'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('building_pv_panels.peak_power') }}</strong>
-                        </span>
-                    @endif
 
                 </div>
             </div>
@@ -73,19 +72,18 @@
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.number') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_number" class=" control-label"><i data-toggle="collapse" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.number')</label>
 
-                        <input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
+                        <input type="number" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
 
                         <div id="number-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
-
-                    </div>
-
-                    @if ($errors->has('building_pv_panels.number'))
-                        <span class="help-block">
+                        @if ($errors->has('building_pv_panels.number'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('building_pv_panels.number') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
                 </div>
 
                 <div class="col-sm-4">
@@ -102,13 +100,13 @@
                             And i would like to have it to...
                         </div>
 
-                    </div>
-
-                    @if ($errors->has('building_pv_panels.pv_panel_orientation_id'))
-                        <span class="help-block">
+                        @if ($errors->has('building_pv_panels.pv_panel_orientation_id'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('building_pv_panels.pv_panel_orientation_id') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
                 </div>
 
                 <div class="col-sm-4">
@@ -126,13 +124,13 @@
                             And i would like to have it to...
                         </div>
 
-                    </div>
-
-                    @if ($errors->has('building_pv_panels.angle'))
-                        <span class="help-block">
+                        @if ($errors->has('building_pv_panels.angle'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('building_pv_panels.angle') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
                 </div>
 
             </div>
@@ -215,6 +213,20 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                    <div class="form-group add-space">
+                        <div class="">
+                            <a class="btn btn-success pull-left" href="{{route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                            <button type="submit" class="btn btn-primary pull-right">
+                                @lang('default.buttons.next')
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </form>
 @endsection
@@ -230,7 +242,7 @@
                 }
             });
 
-            $("select, input[type=radio], input[type=text]").change(formChange);
+            $("select, input[type=radio], input[type=number]").change(formChange);
 
             function formChange(){
                 var form = $(this).closest("form").serialize();

@@ -19,13 +19,13 @@ class RoofTypesTableSeeder extends Seeder
 		        'order' => 0,
 		        'calculate_value' => 1,
 	        ],
-	        [
-		        'names' => [
-			        'nl' => 'Hellend dak met bitumen',
-		        ],
-		        'order' => 1,
-		        'calculate_value' => 2,
-	        ],
+//	        [
+//		        'names' => [
+//			        'nl' => 'Hellend dak met bitumen',
+//		        ],
+//		        'order' => 1,
+//		        'calculate_value' => 2,
+//	        ],
 	        [
 		        'names' => [
 			        'nl' => 'Plat dak',
@@ -33,13 +33,13 @@ class RoofTypesTableSeeder extends Seeder
 		        'order' => 2,
 		        'calculate_value' => 3,
 	        ],
-	        [
-		        'names' => [
-			        'nl' => 'Plat dak met zink',
-		        ],
-		        'order' => 3,
-		        'calculate_value' => 4,
-	        ],
+//	        [
+//		        'names' => [
+//			        'nl' => 'Plat dak met zink',
+//		        ],
+//		        'order' => 3,
+//		        'calculate_value' => 4,
+//	        ],
 	        [
 		        'names' => [
 			        'nl' => 'Geen dak',

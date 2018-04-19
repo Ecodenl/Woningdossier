@@ -216,7 +216,6 @@
                 @if ($i % 2 == 0)
                     <div class="row">
                 @endif
-
                         <div class="col-sm-4">
                             <div class="form-group add-space{{ $errors->has('element.'.$element->id) ? ' has-error' : '' }}">
                                 <label for="element_{{ $element->id }}" class="control-label">
@@ -257,7 +256,6 @@
                                 @endif
                             </div>
                         </div>
-
                 @if ($i % 2 == 1)
                     </div>
                 @endif
@@ -271,11 +269,12 @@
 
 
         @foreach($services as $i => $service)
-            @if ($i % 2 == 0 || stripos($service->name, 'zonnepanelen'))
+            @if ( $i % 2 == 0 || stripos($service->name, 'zonnepanelen'))
                 <div class="row" id="service_row_{{$service->id}}">
             @elseif(strpos($service->name, 'geventileerd'))
                 </div><div class="row">
             @endif
+
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('service.'.$service->id) ? ' has-error' : '' }}">
@@ -360,8 +359,7 @@
                 @endif
 
 
-
-                @if ($i % 2 == 1 || strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
+                @if (( $i % 2 == 1 && $service->short != "hr-boiler") || strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen') || $service->short == "sun-boiler")
                     </div>
                 @endif
         @endforeach
@@ -719,14 +717,14 @@
             $(document).change('#house-ventilation', function () {
 
                 // Housse ventilation
-                var houseVentilation = $('#house-ventilation option:selected').text()
+                var houseVentilation = $('#house-ventilation option:selected').text();
 
                 // text wont change, id's will
                 if (houseVentilation == "Mechanisch" || houseVentilation == "Decentraal mechanisch") {
                     $('#house-ventilation').parent().parent().next().next().show();
                 } else {
                     $('#house-ventilation').parent().parent().next().next().hide();
-                    $('#house-ventilation').parent().parent().next().next().find('input').val("")
+                    $('#house-ventilation').parent().parent().next().next().find('input').val("");
                 }
             });
 
@@ -740,9 +738,23 @@
                 } else {
                     $('#total-sun-panels').parent().parent().next().next().hide();
                     // Clear the value off the date
-                    $('#total-sun-panels').parent().parent().next().next().find('input').val("")
+                    $('#total-sun-panels').parent().parent().next().next().find('input').val("");
                 }
 
+            });
+
+            $(document).change('#hr-boiler', function() {
+                if ($('#hr-boiler').val() == 13) {
+                    // hide the input for the type of boiler
+                    $('#boiler').parent().hide();
+                    // Hide the interest input
+                    $('#boiler').parent().parent().next().hide();
+
+                } else {
+                    $('#boiler').parent().show();
+                    // Hide the interest input
+                    $('#boiler').parent().parent().next().show();
+                }
             });
 
             $('#house-ventilation, #total-sun-panels').trigger('change')

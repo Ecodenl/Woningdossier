@@ -14,7 +14,8 @@ class RoofTypesTableSeeder extends Seeder
         $roofTypes = [
         	[
         		'names' => [
-        			'nl' => 'Hellend dak met dakpannen',
+        			//'nl' => 'Hellend dak met dakpannen',
+			        'nl' => 'Hellend dak',
 		        ],
 		        'order' => 0,
 		        'calculate_value' => 1,
@@ -40,13 +41,13 @@ class RoofTypesTableSeeder extends Seeder
 //		        'order' => 3,
 //		        'calculate_value' => 4,
 //	        ],
-	        [
-		        'names' => [
-			        'nl' => 'Geen dak',
-		        ],
-		        'order' => 4,
-		        'calculate_value' => 5,
-	        ],
+//	        [
+//		        'names' => [
+//			        'nl' => 'Geen dak',
+//		        ],
+//		        'order' => 4,
+//		        'calculate_value' => 5,
+//	        ],
         ];
 
 	    foreach ($roofTypes as $roofType) {

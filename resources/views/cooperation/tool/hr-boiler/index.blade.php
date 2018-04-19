@@ -13,7 +13,7 @@
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.current-gas-usage')</label>
                         <div class="input-group">
-                            <span class="input-group-addon">gas</span>
+                            <span class="input-group-addon">m<sup>3</sup></span>
                             <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">
                         </div>
 
@@ -112,7 +112,7 @@
                     <div class="form-group add-space">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.gas-savings')</label>
                         <div class="input-group">
-                            <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
+                            <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
                             <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                     <div class="form-group add-space">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.co2-savings')</label>
                         <div class="input-group">
-                            <span class="input-group-addon">co<sup>2</sup> / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
+                            <span class="input-group-addon">CO<sub>2</sub> / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
                             <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
-                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
+                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
                         <button type="submit" class="btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>

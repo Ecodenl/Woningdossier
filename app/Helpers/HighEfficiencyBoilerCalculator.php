@@ -9,8 +9,9 @@ use Carbon\Carbon;
 
 class HighEfficiencyBoilerCalculator {
 
-	public static function calculateGasSavings(ServiceValue $currentBoiler, UserEnergyHabit $habit){
-		$current = self::calculateGasUsage($currentBoiler, $habit);
+	public static function calculateGasSavings(ServiceValue $currentBoiler, UserEnergyHabit $habit, $amountGas = null){
+		$current = self::calculateGasUsage($currentBoiler, $habit, $amountGas);
+		$amountGas = is_null($amountGas) ? $habit->amount_gas : $amountGas;
 
 		// now for the new
 		$bestBoiler = ServiceValue::where('service_id', $currentBoiler->service_id)->orderBy('order', 'desc')->first();
@@ -27,16 +28,18 @@ class HighEfficiencyBoilerCalculator {
 
 		$usageNew = $usage['heating'] + $usage['tap_water'] + $usage['cooking'];
 		// yes, array_sum is a method, but this is easier to compare to the theory
-		$result = $habit->amount_gas - $usageNew;
+		$result = $amountGas - $usageNew;
 
 		self::debug("Gas usage ( " . $usageNew . " ) with best boiler: " . json_encode($usage));
-		self::debug("Results in saving of " . $result . " = " . $habit->amount_gas . " - " . $usageNew);
+		self::debug("Results in saving of " . $result . " = " . $amountGas . " - " . $usageNew);
 
 		return $result;
 	}
 
 	// todo solar boiler should be put in this formula as well
-	public static function calculateGasUsage(ServiceValue $boiler, UserEnergyHabit $habit) {
+	public static function calculateGasUsage(ServiceValue $boiler, UserEnergyHabit $habit, $amountGas = null) {
+
+		$amountGas = is_null($amountGas) ? $habit->amount_gas : $amountGas;
 
 		$result = [
 			'heating' => [
@@ -60,7 +63,7 @@ class HighEfficiencyBoilerCalculator {
 		$result['tap_water']['bruto'] = 0;
 		$result['tap_water']['netto'] = $result['tap_water']['bruto'] * ($boilerEfficiency['wtw'] / 100);
 
-		$result['heating']['bruto'] = $habit->amount_gas - $result['tap_water']['bruto'] - $result['cooking'];
+		$result['heating']['bruto'] = $amountGas - $result['tap_water']['bruto'] - $result['cooking'];
 		$result['heating']['netto'] = $result['heating']['bruto'] * ($boilerEfficiency['heating'] / 100);
 
 		self::debug("Gas usage: " . json_encode($result));

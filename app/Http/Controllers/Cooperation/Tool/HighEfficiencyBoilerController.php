@@ -14,7 +14,9 @@ use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -85,7 +87,9 @@ class HighEfficiencyBoilerController extends Controller
 
 					$measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
 
-					$result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit);
+					$amountGas = $request->input('habit.gas_usage', null);
+
+					$result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas);
 					$result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
 					$result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
 					//$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure->measure_name);
@@ -107,8 +111,6 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {
-
-
         // Save the building service
         $buildingServices = $request->input('building_services', '');
         $buildingServiceId = key($buildingServices);
@@ -143,9 +145,32 @@ class HighEfficiencyBoilerController extends Controller
         );
 
         // Save progress
+	    $this->saveAdvices($request);
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
         return redirect()->route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation]);
     }
+
+	protected function saveAdvices(Request $request){
+		/** @var JsonResponse $results */
+		$results = $this->calculate($request);
+		$results = $results->getData(true);
+
+		// Remove old results
+		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		if (isset($results['cost_indication']) && $results['cost_indication'] > 0){
+			$measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
+			if ($measureApplication instanceof MeasureApplication){
+				$actionPlanAdvice = new UserActionPlanAdvice($results);
+				$actionPlanAdvice->costs = $results['cost_indication'];
+				$actionPlanAdvice->year = $results['replace_year'];
+				$actionPlanAdvice->user()->associate(Auth::user());
+				$actionPlanAdvice->measureApplication()->associate($measureApplication);
+				$actionPlanAdvice->step()->associate($this->step);
+				$actionPlanAdvice->save();
+			}
+		}
+	}
 
 }

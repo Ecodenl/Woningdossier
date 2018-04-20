@@ -33,7 +33,7 @@ class CreateBuildingFeaturesTable extends Migration
 
             $table->integer('cavity_wall')->nullable()->default(null);
 
-            $table->integer('wall_surface')->nullable()->default(null);
+            $table->decimal('wall_surface')->nullable()->default(null);
             $table->integer('facade_plastered_painted')->nullable()->default(null);
 
             $table->integer('wall_joints')->unsigned()->nullable()->default(null);

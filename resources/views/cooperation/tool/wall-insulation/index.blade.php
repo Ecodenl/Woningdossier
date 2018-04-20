@@ -29,10 +29,8 @@
                         <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
                             @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
                                 <option
-                                        @if(old('element[' . $facadeInsulation->element->id . ']') && $elementValue->id == old('element[' . $facadeInsulation->element->id . ']'))
+                                        @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
                                         selected="selected"
-                                        @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
-                                                selected="selected"
                                         @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
                                             selected="selected"
                                         @endif

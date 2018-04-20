@@ -85,10 +85,25 @@ class WallInsulationController extends Controller
         $building = $user->buildings()->first();
         $buildingFeatures = $building->buildingFeatures();
 
+        // Element id's and values
+        $elementId = key($wallInsulationQualities);
+        $elemetValueId = reset($wallInsulationQualities);
+
+        // Save the wall insulation
+        BuildingElement::updateOrCreate(
+            [
+                'building_id' => $building->id,
+                'element_id' => $elementId
+            ],
+            [
+                'element_value_id' => $elemetValueId,
+            ]
+        );
+
         // Update the building feature table with some fresh data
         // todo: arrray to string convers
         $buildingFeatures->update([
-            'element_values' => reset($wallInsulationQualities),
+//            'element_values' => reset($wallInsulationQualities),
             'facade_plastered_surface_id' => $plasteredWallSurface,
             'wall_joints' => $wallJoints,
             'cavity_wall' => $cavityWall,
@@ -98,6 +113,7 @@ class WallInsulationController extends Controller
             'additional_info' => $additionalInfo,
             'facade_plastered_painted' => $facadePlasteredOrPainted
         ]);
+
 
 
 	    // Save progress

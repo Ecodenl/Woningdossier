@@ -41,13 +41,13 @@ class RoofTypesTableSeeder extends Seeder
 //		        'order' => 3,
 //		        'calculate_value' => 4,
 //	        ],
-//	        [
-//		        'names' => [
-//			        'nl' => 'Geen dak',
-//		        ],
-//		        'order' => 4,
-//		        'calculate_value' => 5,
-//	        ],
+	        [
+		        'names' => [
+			        'nl' => 'Geen dak',
+		        ],
+		        'order' => 4,
+		        'calculate_value' => 5,
+	        ],
         ];
 
 	    foreach ($roofTypes as $roofType) {

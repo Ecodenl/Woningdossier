@@ -77,7 +77,7 @@
                                 {{ $advice->year }}
                             </div>
                             <div class="col-md-1">
-                                <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->year }}" />
+                                <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
                             </div>
                         </div>
                         @endforeach

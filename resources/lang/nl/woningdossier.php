@@ -225,6 +225,9 @@ return [
             ],
 
 			'floor-insulation' => [
+			    'intro' => [
+			        'title' => 'Vloerisolatie',
+                ],
 				'title' => 'Vloerisolatie',
 				'floor-insulation' => 'U hebt de volgende isolatie ingevuld voor de vloer weet u nu meer? Pas de waarde dan hier aan',
 				'has-crawlspace' => [

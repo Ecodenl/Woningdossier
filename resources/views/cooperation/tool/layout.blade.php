@@ -13,7 +13,7 @@
                     <div class="panel-heading">
                         @yield('step_title', '')
 
-                        @if(Route::currentRouteName() != 'cooperation.tool.index')
+                        @if(Route::currentRouteName() != 'cooperation.tool.index' || 'cooperation.tool.my-plan.index')
                             <button id="submit-form-top-right" class="pull-right btn btn-primary">
                                 @lang('default.buttons.next')
                             </button>

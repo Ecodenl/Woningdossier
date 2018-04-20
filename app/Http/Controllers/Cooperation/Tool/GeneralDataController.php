@@ -185,6 +185,7 @@ class GeneralDataController extends Controller
                 if (strpos($service->name, 'zonnepanelen') == true) {
                     $buildingService->extra = ['value' => $serviceValueId, 'date' => $serviceExtra];
                 }
+
                 // if its a ventilation, is has a dropdown so it has a serviceValue
                 else if (strpos($service->name, 'geventileerd') == true) {
                     $buildingService->extra = ['date' => $serviceExtra];

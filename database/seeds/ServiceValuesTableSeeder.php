@@ -164,7 +164,7 @@ class ServiceValuesTableSeeder extends Seeder
             ],
 	        [
 		        'names' => [
-			        'nl' => 'CV ketel',
+			        'nl' => 'Type ketel',
 		        ],
 		        'short' => 'boiler',
 		        'service_type' => 'Heating',

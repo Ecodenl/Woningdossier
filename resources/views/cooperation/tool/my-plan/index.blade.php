@@ -124,14 +124,14 @@
                         $("ul#years").html("");
                         $.each(data, function(year, steps){
                             var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th></th><th>Maatregel</th><th>Kosten</th><th>Besparing gas</th><th>Besparing elektra</th><th>Besparing euro</th></tr></thead><tbody>";
+                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>Maatregel</th><th>Kosten</th><th>Besparing gas</th><th>Besparing elektra</th><th>Besparing euro</th></tr></thead><tbody>";
+
+                            var totalCosts = 0;
+                            var totalSavingsGas = 0;
+                            var totalSavingsElectricity = 0;
+                            var totalSavingsMoney = 0;
 
                             $.each(steps, function(stepName, stepMeasures){
-
-                                var totalCosts = 0;
-                                var totalSavingsGas = 0;
-                                var totalSavingsElectricity = 0;
-                                var totalSavingsMoney = 0;
 
                                 $.each(stepMeasures, function(i, stepData){
 
@@ -140,13 +140,13 @@
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                    table += "<tr><td>" + stepName + "</td><td>" + stepData.measure + "</td><td>&euro; " + stepData.costs + "</td><td>" + stepData.savings_gas + " m<sup>3</sup></td><td>" + stepData.savings_electricity + " kWh</td><td>&euro; " + stepData.savings_money + "</td></tr>";
+                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs) + "</td><td>" + Math.round(stepData.savings_gas) + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity) + " kWh</td><td>&euro; " + Math.round(stepData.savings_money) + "</td></tr>";
                                 });
 
-                                table += "<tr><td><strong>Totaal</strong></td><td></td><td>&euro; " + totalCosts.toFixed(2) + "</td><td>" + totalSavingsGas.toFixed(2) + " m<sup>3</sup></td><td>" + totalSavingsElectricity.toFixed(2) + " kWh</td><td>&euro; " + totalSavingsMoney.toFixed(2) + "</td></tr>";
-                                table += "<tr><td colspan=\"6\"></td></tr>";
-
                             });
+
+                            table += "<tr><td><strong>Totaal</strong></td><td>&euro; " + Math.round(totalCosts) + "</td><td>" + Math.round(totalSavingsGas) + " m<sup>3</sup></td><td>" + Math.round(totalSavingsElectricity) + " kWh</td><td>&euro; " + Math.round(totalSavingsMoney) + "</td></tr>";
+                            table += "<tr><td colspan=\"5\"></td></tr>";
 
                             table += "</tbody></table>";
 

@@ -305,6 +305,8 @@
                         @endif
                     </div>
                 </div>
+                {{-- interest is not asked for current boiler --}}
+                @if($service->short != 'boiler')
                 <div class="col-sm-2">
                     <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
                         <label for="user_interest_service_{{ $service->id }}" class="control-label">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label> <span>*</span>
@@ -322,6 +324,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
 
                 @if(strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
                     <div class="col-sm-6 {{ $errors->has(''.$service->id.'.extra') ? ' show' : '' }}">

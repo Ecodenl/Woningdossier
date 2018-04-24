@@ -39,7 +39,7 @@ class WallInsulationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
     	$steps = Step::orderBy('order')->get();
         /** @var Building $building */

@@ -138,20 +138,22 @@ class GeneralDataController extends Controller
 				$buildingElement->building()->associate($building);
 				$buildingElement->save();
 
-                // We'll create the user interests for the elements or update it
-                $userInterest = UserInterest::updateOrCreate(
-                    [
-                        'user_id' => Auth::id(),
-                        'interested_in_type' => 'element',
-                        'interested_in_id' => $elementId,
-                    ],
-                    [
-                        'user_id' => Auth::id(),
-                        'interested_in_type' => 'element',
-                        'interested_in_id' => $elementId,
-                        'interest_id' => $elementInterestId
-                    ]
-                );
+				if (!empty($elementInterestId)) {
+					// We'll create the user interests for the elements or update it
+					UserInterest::updateOrCreate(
+						[
+							'user_id'            => Auth::id(),
+							'interested_in_type' => 'element',
+							'interested_in_id'   => $elementId,
+						],
+						[
+							'user_id'            => Auth::id(),
+							'interested_in_type' => 'element',
+							'interested_in_id'   => $elementId,
+							'interest_id'        => $elementInterestId
+						]
+					);
+				}
 			}
 	    }
 
@@ -199,19 +201,21 @@ class GeneralDataController extends Controller
                 $buildingService->save();
 
                 // We'll create the user interests for the services or update it
-                $userInterest = UserInterest::updateOrCreate(
-                    [
-                        'user_id' => Auth::id(),
-                        'interested_in_type' => 'service',
-                        'interested_in_id' => $serviceId,
-                    ],
-                    [
-                        'user_id' => Auth::id(),
-                        'interested_in_type' => 'service',
-                        'interested_in_id' => $serviceId,
-                        'interest_id' => $serviceInterestId
-                    ]
-                );
+	            if(!empty($serviceInterestId)) {
+		            UserInterest::updateOrCreate(
+			            [
+				            'user_id'            => Auth::id(),
+				            'interested_in_type' => 'service',
+				            'interested_in_id'   => $serviceId,
+			            ],
+			            [
+				            'user_id'            => Auth::id(),
+				            'interested_in_type' => 'service',
+				            'interested_in_id'   => $serviceId,
+				            'interest_id'        => $serviceInterestId
+			            ]
+		            );
+	            }
             }
 	    }
 

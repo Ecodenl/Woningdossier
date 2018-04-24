@@ -35,8 +35,8 @@ trait TranslatableTrait {
 	}
 
 	/**
-	 * @param $attribute
-	 * @param null $lang
+	 * @param string $attribute Model attribute
+	 * @param null|string $lang Locale to translate to
 	 *
 	 * @return mixed|string
 	 */

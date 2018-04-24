@@ -62,9 +62,9 @@ class Calculator {
 	 * Return the costs of applying a particular measure in a particular year.
 	 * This takes yearly cost indexing into account.
 	 *
-	 * @param MeasureApplication $measure
-	 * @param $number
-	 * @param null $applicationYear
+	 * @param MeasureApplication $measure The measure to apply
+	 * @param mixed $number The amount of measures. (might be m2, pieces, etc.)
+	 * @param null|int $applicationYear
 	 *
 	 * @return float|int
 	 */

@@ -314,7 +314,7 @@ class RoofInsulationController extends Controller
 
                     $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : "";
 
-                    $buildingFeature = BuildingFeature::where('building_id', $building->id)->update([
+                    BuildingFeature::where('building_id', $building->id)->update([
                         'roof_type_id' => $request->input('building_features.roof_type_id')
                     ]);
 

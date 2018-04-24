@@ -62,16 +62,16 @@
                                 {{ $advice->measureApplication->measure_name }}
                             </div>
                             <div class="col-md-1">
-                                {{ $advice->costs }}
+                                {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
                             </div>
                             <div class="col-md-2">
-                                {{ $advice->savings_gas }}
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }}
                             </div>
                             <div class="col-md-2">
-                                {{ $advice->savings_electricity }}
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }}
                             </div>
                             <div class="col-md-2">
-                                {{ $advice->savings_money }}
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
                             </div>
                             <div class="col-md-1">
                                 {{ $advice->year }}

@@ -154,6 +154,23 @@ class RoofInsulationController extends Controller
 				}
 
 			}
+			$extra = $request->input('building_roof_types.' . $roofCat . '.extra', []);
+			if (array_key_exists('zinc_replaced_date', $extra)) {
+				$zincReplaceYear = (int) $extra['zinc_replaced_date'];
+				$surface = $request->input('building_roof_types.' . $roofCat . '.surface', 0);
+				if ($zincReplaceYear > 0 && $surface > 0) {
+					$zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc')->first();
+
+					$year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
+					$costs = Calculator::calculateMeasureApplicationCosts( $zincReplaceMeasure, $surface, $year );
+
+					$actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
+					$actionPlanAdvice->user()->associate( Auth::user() );
+					$actionPlanAdvice->measureApplication()->associate( $zincReplaceMeasure );
+					$actionPlanAdvice->step()->associate( $this->step );
+					$actionPlanAdvice->save();
+				}
+			}
 		}
 
 	}

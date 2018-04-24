@@ -503,6 +503,24 @@ class MeasureApplicationsTableSeeder extends Seeder
 		        ],
 		        'step' => 'roof-insulation',
 	        ],
+	        [
+		        'measure_type' => 'maintenance',
+		        'measure_names' => [
+			        'nl' => 'Zinkwerk',
+		        ],
+		        'short' => 'replace-zinc',
+		        'application' => 'replace',
+		        'costs' => 125, // euro
+		        'cost_unit' => [
+			        'nl' => 'per m2',
+		        ],
+		        'minimal_costs' => 250,
+		        'maintenance_interval' => 25,
+		        'maintenance_unit' => [
+			        'nl' => 'jaar',
+		        ],
+		        'step' => 'roof-insulation',
+	        ],
 
 
 

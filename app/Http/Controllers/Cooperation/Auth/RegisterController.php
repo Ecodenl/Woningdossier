@@ -173,13 +173,7 @@ class RegisterController extends Controller
     	$result = [];
     	$dist = null;
 		if (is_array($options) && count($options) > 0){
-			foreach($options as $option){
-
-				//$number = $option['huisnummer'];
-				//if (!empty($option['huisletter']) && $option['huisletter'] != 'None'){
-				//	$number .= ' ' . $option['huisletter'];
-				//}
-
+			foreach ($options as $option){
 				$houseNumberExtension = (!empty($option['huisnrtoev']) && $option['huisnrtoev'] != 'None') ? $option['huisnrtoev'] : '';
 
 				$newDist = null;
@@ -211,7 +205,7 @@ class RegisterController extends Controller
 		$response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
 		if (!is_null($pointer)){
-			foreach($response as $addrInfo){
+			foreach ($response as $addrInfo){
 				if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])){
 					//$data['bag_addressid'] = $addrInfo['bag_adresid'];
 					\Log::debug(json_encode($addrInfo));

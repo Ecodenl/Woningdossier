@@ -144,7 +144,7 @@ class RoomTemperatureCalculator {
 	public function getAverageHouseTemperature(){
 		$total = 0;
 		$surface = 0;
-		foreach($this->rooms as $room => $values){
+		foreach ($this->rooms as $room => $values) {
 			$total += $values['m2'] * $values['average'];
 			$surface += $values['m2'];
 		}

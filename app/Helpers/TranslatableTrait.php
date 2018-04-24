@@ -26,7 +26,7 @@ trait TranslatableTrait {
 	 * @param   string  $uuid   The string to check
 	 * @return  boolean
 	 */
-	protected function isValidUuid( $uuid ) {
+	protected function isValidUuid($uuid) {
 
 		if (!is_string($uuid) || (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1)) {
 			return false;
@@ -35,8 +35,8 @@ trait TranslatableTrait {
 	}
 
 	/**
-	 * @param $attribute
-	 * @param null $lang
+	 * @param string $attribute Model attribute
+	 * @param null|string $lang Locale to translate to
 	 *
 	 * @return mixed|string
 	 */
@@ -63,7 +63,7 @@ trait TranslatableTrait {
 	 * @param string $locale
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeTranslated($query, $attribute, $name , $locale = 'nl')
+	public function scopeTranslated($query, $attribute, $name, $locale = 'nl')
 	{
 		return $query->where('translations.language', '=', $locale)
 		            ->where('translations.translation', '=', $name)

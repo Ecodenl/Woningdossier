@@ -33,8 +33,8 @@ class Temperature {
 	 * @return null|string Null on failure
 	 */
 	public static function energySavingFigureWallInsulation($measure, $avgHouseTemp){
-		if (!array_key_exists($measure, self::$calculationValues)) return null;
-		if ($avgHouseTemp < self::AVERAGE_TEMPERATURE_NORM) return 0;
+		if (!array_key_exists($measure, self::$calculationValues)) { return null; }
+		if ($avgHouseTemp < self::AVERAGE_TEMPERATURE_NORM) { return 0; }
 
 		$calcValues = self::$calculationValues[$measure];
 

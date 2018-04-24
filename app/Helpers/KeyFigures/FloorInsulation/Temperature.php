@@ -21,7 +21,7 @@ class Temperature {
 	 * @return null|string Null on failure
 	 */
 	public static function energySavingFigureFloorInsulation($measure){
-		if (!array_key_exists($measure, self::$calculationValues)) return null;
+		if (!array_key_exists($measure, self::$calculationValues)) { return null; }
 
 		return number_format(self::$calculationValues[$measure], 2);
 	}

@@ -44,7 +44,7 @@ class BankInterestCalculator {
 	 */
 	public static function tw($amountPerTerm, $interest = self::BANK_INTEREST_PER_YEAR, $period = self::INTEREST_PERIOD){
 		$amount = $amountPerTerm;
-		for($year = 1; $year < $period; $year++){
+		for($year = 1; $year < $period; $year++) {
 			$amount *= 1 + ($interest / 100);
 			$amount += $amountPerTerm;
 		}

@@ -127,6 +127,7 @@ class RoofInsulationController extends Controller
 				// results in an advice
 				$measureApplication = MeasureApplication::find( $measureApplicationId );
 				if ( $measureApplication instanceof MeasureApplication ) {
+					$actionPlanAdvice = null;
 					// The measure type determines which array keys to take
 					// as the replace array will always be present due to
 					// how calculate() works in this step
@@ -208,6 +209,9 @@ class RoofInsulationController extends Controller
 		    $year = Carbon::now()->year;
 		    // default, changes only for roof tiles effect
 		    $factor = 1;
+
+		    $advice = null;
+		    $objAdvice = null;
 
 		    if (isset($roofTypes[$cat]['building_heating_id'])){
 		    	$heating = BuildingHeating::find($roofTypes[$cat]['building_heating_id']);
@@ -314,7 +318,7 @@ class RoofInsulationController extends Controller
 
                     $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : "";
 
-                    $buildingFeature = BuildingFeature::where('building_id', $building->id)->update([
+                    BuildingFeature::where('building_id', $building->id)->update([
                         'roof_type_id' => $request->input('building_features.roof_type_id')
                     ]);
 

@@ -46,13 +46,12 @@ class InsulatedGlazingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
     	/**
 	     * @var Building $building
 	     */
     	$building = \Auth::user()->buildings->first();
-//    	dd(Auth::user()->buildings()->getElement('crack-sealing'));
         $steps = Step::orderBy('order')->get();
 
 	    $interests = Interest::orderBy('order')->get();
@@ -153,11 +152,6 @@ class InsulatedGlazingController extends Controller
 	}
 
 	public function calculate(Request $request) {
-		/**
-		 * @var Building $building
-		 */
-		$user     = \Auth::user();
-		$building = $user->buildings()->first();
 
 		$result = [
 			'savings_gas' => 0,
@@ -287,10 +281,7 @@ class InsulatedGlazingController extends Controller
 			}
 
 			$measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
-			/*$measureApplication = MeasureApplication::translated( 'measure_name',
-				'Kierdichting verbeteren',
-				'nl' )->first( [ 'measure_applications.*' ] );
-			*/
+
 			$result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1);
 		}
 
@@ -409,7 +400,7 @@ class InsulatedGlazingController extends Controller
 
         // Save the window surface to the building feature
         $windowSurface = $request->get('window_surface', '');
-        $buildingFeature = BuildingFeature::where('building_id', $building->id)->first()->update([
+        BuildingFeature::where('building_id', $building->id)->first()->update([
             'window_surface' => $windowSurface
         ]);
 

@@ -39,8 +39,6 @@ class HighEfficiencyBoilerController extends Controller
     public function index()
     {
     	$user = \Auth::user();
-	    /** @var Building $building */
-    	$building = $user->buildings()->first();
     	$habit = $user->energyHabit;
 	    $steps = Step::orderBy('order')->get();
 	    // NOTE: building element hr-boiler tells us if it's there

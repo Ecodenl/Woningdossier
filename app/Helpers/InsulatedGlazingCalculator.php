@@ -15,9 +15,9 @@ use Carbon\Carbon;
 class InsulatedGlazingCalculator {
 
 	public static function calculateCosts(MeasureApplication $measureApplication, Interest $interest, $m2, $windows) {
-		if ($windows <= 0) return 0;
-		if ($interest->calculate_value > 3) return 0;
-		if ($m2 <= 0) return 0;
+		if ($windows <= 0) { return 0; }
+		if ($interest->calculate_value > 3) { return 0; }
+		if ($m2 <= 0) { return 0; }
 		$m2PerWindow = max(1, $m2 / $windows);
 
 		self::debug(__METHOD__ . " m2PerWindow (" . $m2PerWindow . ") = " . $m2 . " / " . $windows);
@@ -46,7 +46,7 @@ class InsulatedGlazingCalculator {
 	public static function calculatePaintworkSurface(ElementValue $frame, array $woodElements, $windowSurface){
 		$number = $frame->calculate_value * $windowSurface;
 		self::debug(__METHOD__ . " " . $number . " = " . $frame->calculate_value . " * " . $windowSurface);
-		foreach($woodElements as $woodElement) {
+		foreach ($woodElements as $woodElement) {
 			$number += $woodElement->calculate_value;
 			self::debug($woodElement->calculate_value . " -> " . $number);
 		}

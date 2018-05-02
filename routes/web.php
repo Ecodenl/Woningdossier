@@ -48,6 +48,8 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
                         Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
                     });
 
+				    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+
                     // Wall Insulation
 	                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
 	                Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
@@ -77,7 +79,6 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 	                Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
                 });
 
-				//Route::resource('heat-pump', 'HeatPumpController');
 
 
 				Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');

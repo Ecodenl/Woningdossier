@@ -378,7 +378,7 @@ return [
 				'title' => 'Actieplan',
 				'description' => 'Onderstaande adviesmaatregelen zijn gebaseerd op de resultaten van de keukentafeltool. Met deze adviezen kunt u onderstaand uw meerjarenonderhoudsplan vormgeven',
 			],
-            ],
+
 
             'heat-pump' => [
                 'title' => 'Warmtepomp',
@@ -431,4 +431,5 @@ return [
                 ],
             ],
 		],
+    ],
 ];

@@ -21,6 +21,28 @@ return [
             'no' => 'Nee',
             'unknown' => 'Onbekend',
         ],
+        'home' => [
+            'disclaimer' => [
+                'title' => 'Disclaimer voor het gebruik van de tool.',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+
+            ],
+        ],
+        'help' => [
+            'title' => 'Help',
+            'help' => [
+                'title' => 'Hulp met het gebruik van de tool.',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+            ],
+        ],
+        'measure' => [
+            'title' => 'Maatregelen',
+            'measure' => [
+                'title' => 'Maatregelen',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+            ],
+        ],
+        
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -147,6 +169,10 @@ return [
 	                'facade-surface' => 'Geveloppervlakte van de woning',
                 ],
 
+                'alert' => [
+                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie'
+                ],
+
 	            'insulation-advice' => [
 	            	'text' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
 		            'cavity-wall' => 'Spouwmuurisolatie',
@@ -266,12 +292,12 @@ return [
 
 				'flat-roof' => [
 					'title' => 'Plat dak',
-					'insulate-roof' => 'Wilt u een plat dak isoleren',
+					'insulate-roof' => 'Hoe wilt u het platte dak isoleren',
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
 				],
 				'pitched-roof' => [
 					'title' => 'Hellend dak',
-					'insulate-roof' => 'Wilt u het hellende dak isoleren',
+					'insulate-roof' => 'Hoe wilt u het hellende dak isoleren',
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
 				],
 				'measure-application' => [
@@ -369,6 +395,16 @@ return [
 				'title' => 'Actieplan',
 				'description' => 'Onderstaande adviesmaatregelen zijn gebaseerd op de resultaten van de keukentafeltool. Met deze adviezen kunt u onderstaand uw meerjarenonderhoudsplan vormgeven',
 			],
+
+            'ventilation-information' => [
+                'title' => 'Informatie pagina over ventilatie.',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+
+                'downloads' => [
+                    'title' => 'Downloadbare informatie.',
+                    'content' => 'Pdf informatie...'
+                ],
+            ],
 		],
 	],
 ];

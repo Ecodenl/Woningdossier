@@ -253,6 +253,15 @@
                     </div>
                 </div>
             </div>
+            <div class="row" id="cavity-wall-alert" style="display: none;">
+                <div class="col-sm-12 col-md-8 col-md-offset-2">
+                    <div class="alert alert-warning" role="alert">
+                        <b><p>@lang('woningdossier.cooperation.tool.wall-insulation.alert.description')</p></b>
+                    </div>
+                </div>
+            </div>
+
+
 
         </div>
 
@@ -414,6 +423,7 @@
                    $('#painted-options').hide();
                }
 
+
               var form = $(this).closest("form").serialize();
               $.ajax({
                   type: "POST",
@@ -422,6 +432,14 @@
                   success: function(data){
                       if (data.hasOwnProperty('insulation_advice')){
                           $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+
+                          // If the advice is spouwmuurisolatie and the walls are painted give them a alert
+                          if ((data.insulation_advice == "Spouwmuurisolatie") && ($('.is-painted').is(':checked') == true)) {
+                              $('#cavity-wall-alert').show();
+                          } else  {
+                              $('#cavity-wall-alert').hide();
+                          }
+
                       }
                       else {
                           $("#insulation-advice").html("");

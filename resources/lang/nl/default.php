@@ -2,6 +2,7 @@
 
 return [
     'buttons' => [
+        'download' => 'Download bijlagen',
         'store' => 'Aanmaken',
         'update' => 'Update',
         'destroy' => 'Verwijderen',

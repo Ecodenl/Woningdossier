@@ -392,6 +392,15 @@
 
         <div class="row">
             <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_gevelisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_gevelisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_spouwisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_spouwisolatie.pdf')))))}}</a></li>
+                        </ol>
+                    </div>
+                </div>
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
@@ -435,7 +444,11 @@
 
                           // If the advice is spouwmuurisolatie and the walls are painted give them a alert
                           if ((data.insulation_advice == "Spouwmuurisolatie") && ($('.is-painted').is(':checked') == true)) {
+                              // Show the alert
                               $('#cavity-wall-alert').show();
+                              // Hide the indications and measures
+                              $('#taking-into-account').hide();
+                              $('#indication-for-costs').hide();
                           } else  {
                               $('#cavity-wall-alert').hide();
                           }

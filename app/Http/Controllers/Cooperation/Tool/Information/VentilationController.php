@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Tool;
+namespace App\Http\Controllers\Cooperation\Tool\Information;
 
 use App\Models\Cooperation;
 use App\Models\Step;

@@ -42,8 +42,11 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
             	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
-                Route::group(['middleware' => 'filled-step:general-data'], function(){
-                    Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                Route::group(['middleware' => 'filled-step:general-data'], function() {
+
+                    Route::group(['namespace' => 'information'], function () {
+                        Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                    });
 
                 	// Wall Insulation
 	                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);

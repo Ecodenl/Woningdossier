@@ -54,6 +54,15 @@ return [
 				'day' => 'dag',
 			],
 
+            'heat-pump-information' => [
+                'title' => 'Informatie pagina over warmtepomp.',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                'downloads' => [
+                    'title' => 'Downloadbare informatie.',
+                    'content' => 'Pdf informatie...'
+                ],
+            ],
+
 			'title' => 'Keukentafel tool',
 
 			'general-data' => [
@@ -422,5 +431,4 @@ return [
                 ],
             ],
 		],
-	],
 ];

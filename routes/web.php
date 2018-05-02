@@ -41,7 +41,14 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
                 Route::group(['middleware' => 'filled-step:general-data'], function(){
-                	// Wall Insulation
+
+                    // Extra pages with downloadable or information content.
+                    Route::group(['namespace' => 'information'], function () {
+                        Route::resource('heat-pump-information', 'HeatPumpController', ['only' => ['index', 'store']]);
+                        Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                    });
+
+                    // Wall Insulation
 	                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
 	                Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
 

@@ -18,7 +18,7 @@
     <style>
         .add-space {
             margin: 10px;
-            padding: 0px 10px 0px 10px;
+            padding: 0 10px 0 10px;
         }
     </style>
     @stack('css')
@@ -45,6 +45,7 @@
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                @if(App::environment() == 'local') {{-- currently only for local --}}
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
@@ -62,6 +63,7 @@
                         </ul>
                     </li>
                 </ul>
+                @endif
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
@@ -70,13 +72,14 @@
                         <li><a href="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">@lang('auth.login.form.header')</a></li>
                         <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                     @else
+                        <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
+                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
                                 {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
                                 <li>
                                     <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"

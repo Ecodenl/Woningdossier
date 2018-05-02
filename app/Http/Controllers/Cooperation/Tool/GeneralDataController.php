@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
+use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
@@ -19,13 +20,16 @@ use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
-use App\Models\Quality;
 use App\Models\RoofType;
+use App\Models\Service;
+use App\Models\ServiceValue;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -54,12 +58,15 @@ class GeneralDataController extends Controller
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
         $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
-        $elements = Element::orderBy('order')->get();
+        $elements = Element::whereIn('short', [
+        	'living-rooms-windows', 'sleeping-rooms-windows',
+	        'wall-insulation', 'floor-insulation', 'roof-insulation',
+	        ])->orderBy('order')->get();
+        $services = Service::orderBy('order')->get();
 
 
         $insulations = PresentWindow::all();
         $houseVentilations = Ventilation::all();
-        $qualities = Quality::all();
         $buildingHeatings = BuildingHeating::all();
         $solarWaterHeaters = SolarWaterHeater::all();
         $centralHeatingAges = CentralHeatingAge::all();
@@ -69,16 +76,13 @@ class GeneralDataController extends Controller
         $energyHabit = Auth::user()->energyHabit;
         $steps = Step::orderBy('order')->get();
 
-
-
-
         return view('cooperation.tool.general-data.index', compact(
         	'building',
         	'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildingTypes', 'interests', 'elements',
-	        'insulations','houseVentilations', 'qualities', 'buildingHeatings', 'solarWaterHeaters',
+	        'insulations','houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
-            'steps', 'motivations', 'energyHabit'
+            'steps', 'motivations', 'energyHabit', 'services'
         ));
     }
 
@@ -90,8 +94,10 @@ class GeneralDataController extends Controller
      */
     public function store(GeneralDataFormRequest $request)
     {
+
 	    /** @var Building $building */
     	$building = Auth::user()->buildings()->first();
+
     	$features = $building->buildingFeatures;
     	if (!$features instanceof BuildingFeature){
     		$features = new BuildingFeature();
@@ -113,9 +119,15 @@ class GeneralDataController extends Controller
     	$building->buildingFeatures()->save($features);
 
     	$elements = $request->get('element', []);
+
     	foreach($elements as $elementId => $elementValueId){
+
 			$element = Element::find($elementId);
 			$elementValue = ElementValue::find($elementValueId);
+
+            // Get the interest field off the element
+            $elementInterestId = $request->input('user_interest.element.'.$elementId.'', '');
+
 			if ($element instanceof Element && $elementValue instanceof ElementValue){
 				$buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
 				if (!$buildingElement instanceof BuildingElement){
@@ -125,8 +137,88 @@ class GeneralDataController extends Controller
 				$buildingElement->element()->associate($element);
 				$buildingElement->building()->associate($building);
 				$buildingElement->save();
+
+				if (!empty($elementInterestId)) {
+					// We'll create the user interests for the elements or update it
+					UserInterest::updateOrCreate(
+						[
+							'user_id'            => Auth::id(),
+							'interested_in_type' => 'element',
+							'interested_in_id'   => $elementId,
+						],
+						[
+							'user_id'            => Auth::id(),
+							'interested_in_type' => 'element',
+							'interested_in_id'   => $elementId,
+							'interest_id'        => $elementInterestId
+						]
+					);
+				}
 			}
 	    }
+
+	    // save the services
+        // TODO: add validation
+        // TODO: Save the interests
+	    $services = $request->get('service', []);
+    	foreach($services as $serviceId => $serviceValueId){
+
+
+    	    // get the service based on the service id from the form
+			$service = Service::find($serviceId);
+			//get the service values
+			$serviceValue = ServiceValue::find($serviceValueId);
+
+            // get the extra fields (date)
+            $serviceExtra = $request->input($serviceId.'.extra', "");
+
+            // Get the interest field off the service
+            $serviceInterestId = $request->input('user_interest.service.'.$serviceId.'', '');
+
+            if ($service instanceof Service){
+                // get a building service
+                $buildingService = $building->buildingServices()->where('service_id', $service->id)->first();
+
+                if (!$buildingService instanceof BuildingService){
+                    $buildingService = new BuildingService();
+                }
+                // check if the current service is a sun panel
+                // if so, we will need to put the value / valueId inside the extra field.
+                if (strpos($service->name, 'zonnepanelen') == true) {
+                    $buildingService->extra = ['value' => $serviceValueId, 'date' => $serviceExtra];
+                }
+
+                // if its a ventilation, is has a dropdown so it has a serviceValue
+                else if (strpos($service->name, 'geventileerd') == true) {
+                    $buildingService->extra = ['date' => $serviceExtra];
+                    $buildingService->serviceValue()->associate($serviceValue);
+                } else {
+                    $buildingService->serviceValue()->associate($serviceValue);
+                }
+
+                $buildingService->service()->associate($service);
+                $buildingService->building()->associate($building);
+                $buildingService->save();
+
+                // We'll create the user interests for the services or update it
+	            if(!empty($serviceInterestId)) {
+		            UserInterest::updateOrCreate(
+			            [
+				            'user_id'            => Auth::id(),
+				            'interested_in_type' => 'service',
+				            'interested_in_id'   => $serviceId,
+			            ],
+			            [
+				            'user_id'            => Auth::id(),
+				            'interested_in_type' => 'service',
+				            'interested_in_id'   => $serviceId,
+				            'interest_id'        => $serviceInterestId
+			            ]
+		            );
+	            }
+            }
+	    }
+
 
 
 	    // Check if the user already has a motivation
@@ -154,9 +246,9 @@ class GeneralDataController extends Controller
 	        [
                 'user_id' => Auth::id(),
                 'resident_count' => $request->get('resident_count'),
-                'thermostat_high' => $request->get('thermostat_high'),
-                'thermostat_low' => $request->get('thermostat_low'),
-                'hours_high' => $request->get('hours_high'),
+                'thermostat_high' => $request->get('thermostat_high', 20),
+                'thermostat_low' => $request->get('thermostat_low', 15),
+                'hours_high' => $request->get('hours_high', 12),
                 'heating_first_floor' => $request->get('heating_first_floor'),
                 'heating_second_floor' => $request->get('heating_second_floor'),
                 'cook_gas' => $request->get('cook_gas'),
@@ -168,59 +260,6 @@ class GeneralDataController extends Controller
                 'motivation_extra' => $request->get('motivation_extra'),
             ]
         );
-
-
-
-	    /*
-        // Retrieve information about the building
-        $buildingType = $request->building_type;
-        $userSurface = $request->user_surface;
-        $roofLayers = $request->roof_layers;
-        $roofType = $request->roof_type;
-        $isMonument = $request->is_monument == 1 ? 1 : 0;
-        $buildingYear = $request->what_building_year;
-        $currentEnergyLabel = $request->current_energy_label;
-
-        // Retrieve values off the energy-saving-measures
-        $facadeInsulation = $request->facade_insulation;
-        $floorInsulation = $request->floor_insulation;
-        $HrCvBoiler = $request->hr_cv_boiler;
-        $sunPanels = $request->sun_panel;
-        $monovalentHeatpump = $request->monovalent_heatpump;
-        $houseVentilation = $request->house_ventilation;
-        $windowsInLivingSpaces = $request->window_in_living_space;
-        $windowsInSleepingSpaces = $request->window_in_sleeping_spaces;
-        $roofIsolation = $request->roof_insulation;
-        $hybridHeatpump = $request->hybrid_heatpump;
-        $sunPanelPlacedDate = $request->sun_panel_placed_date;
-        $sunBoiler = $request->sun_boiler;
-        $houseVentilationPlacedDate = $request->house_ventilation_placed_date;
-        // Retrieve the "interested in" from the above values ^
-        $interestedFacadeInsulation = $request->interested['facade_insulation'];
-        $interestedFloorInsulation = $request->interested['floor_insulation'];
-        $interestedHrCvBoiler = $request->interested['hr_cv_boiler'];
-        $interestedSunPanels = $request->interested['sun_panel'];
-        $interestedMonovalentHeatpump = $request->interested['monovalent_heatpump'];
-        $interestedHouseVentilation = $request->interested['house_ventilation'];
-        $interestedWindowsInLivingSpaces = $request->interested['windows_in_living_space'];
-        $interestedWindowsInSleepingSpaces = $request->interested['windows_in_sleeping_spaces'];
-        $interestedRoofIsolation = $request->interested['roof_insulation'];
-        $interestedHybridHeatpump = $request->interested['hybrid_heatpump'];
-        $interestedSunBoiler = $request->interested['sun_boiler'];
-
-        // Retrieve the info about the energy consumption in the building
-        $totalCitizens = $request->total_citizens;
-        $cookedOnGas = $request->cooked_on_gas;
-        $thermostatHighest = $request->thermostat_highest;
-        $thermostatLowest = $request->thermostat_lowest;
-        $themostatMaxHourOnHighest = $request->max_hours_thermostat_highest;
-        $situationFirstFloor = $request->situation_first_floor;
-        $situationSecondFloor = $request->situation_second_floor;
-        $comfortNiveauWarmTapWater = $request->comfortniveau_warm_tapwater;
-        $pastYearElectricityUsage = $request->electricity_consumption_past_year;
-        $pastYearGasUsage = $request->gas_usage_past_year;
-*/
-        // TODO: Save the collected data
 
 	    // Save progress
 	    \Auth::user()->complete($this->step);

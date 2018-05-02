@@ -78,6 +78,41 @@ class Building extends Model
 	}
 
 	/**
+	 * @param $short
+	 *
+	 * @return BuildingElement|null
+	 */
+	public function getBuildingElement($short){
+		return $this->buildingElements()
+			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+			->where('e.short', $short)->first(['building_elements.*']);
+	}
+
+	/**
+	 * @param string $short
+	 *
+	 * @return BuildingService|null
+	 */
+	public function getBuildingService($short){
+		return $this->buildingServices()
+			->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+			->where('s.short', $short)->first(['building_services.*']);
+	}
+
+	/**
+	 * @param string $short
+	 *
+	 * @return ServiceValue|null
+	 */
+	public function getServiceValue($short){
+		/** @var BuildingService $buildingService */
+		$buildingService = $this->getBuildingService($short);
+		$serviceValue = $buildingService->serviceValue;
+
+		return $serviceValue;
+	}
+
+	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function buildingServices(){
@@ -92,5 +127,43 @@ class Building extends Model
 			return $this->buildingFeatures->buildingType;
 		}
 		return null;
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function currentInsulatedGlazing(){
+		return $this->hasMany(BuildingInsulatedGlazing::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function currentPaintworkStatus(){
+		return $this->hasOne(BuildingPaintworkStatus::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function pvPanels(){
+		return $this->hasOne(BuildingPvPanel::class);
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function heater(){
+		return $this->hasOne(BuildingHeater::class);
+	}
+
+	/**
+	 * Returns all roof types of this building. Get the primary via the
+	 * building features.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function roofTypes(){
+		return $this->hasMany(BuildingRoofType::class);
 	}
 }

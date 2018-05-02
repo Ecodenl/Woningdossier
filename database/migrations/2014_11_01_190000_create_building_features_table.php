@@ -33,7 +33,7 @@ class CreateBuildingFeaturesTable extends Migration
 
             $table->integer('cavity_wall')->nullable()->default(null);
 
-            $table->integer('wall_surface')->nullable()->default(null);
+            $table->decimal('wall_surface')->nullable()->default(null);
             $table->integer('facade_plastered_painted')->nullable()->default(null);
 
             $table->integer('wall_joints')->unsigned()->nullable()->default(null);
@@ -51,7 +51,8 @@ class CreateBuildingFeaturesTable extends Migration
 			$table->integer('facade_damaged_paintwork_id')->unsigned()->nullable()->default(null);
 			$table->foreign('facade_damaged_paintwork_id')->references('id')->on('facade_damaged_paintworks')->onDelete('restrict');
 
-            $table->integer('surface')->nullable()->default(null);
+            $table->decimal('surface')->nullable()->default(null);
+            $table->decimal('window_surface')->nullable()->default(null);
             $table->integer('volume')->nullable()->default(null);
             $table->integer('build_year')->nullable()->default(null);
             $table->integer('building_layers')->nullable()->default(null);

@@ -28,23 +28,31 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingService extends Model
 {
-	public function building(){
-		return $this->belongsTo(Building::class);
-	}
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'extra' => 'array',
+    ];
 
-	public function measure(){
-		return $this->belongsTo(Measure::class);
+    protected $fillable = ['service_value_id', 'extra', 'building_id', 'service_id'];
+
+    public function building(){
+		return $this->belongsTo(Building::class);
 	}
 
 	public function serviceType(){
 		return $this->belongsTo(ServiceType::class);
 	}
 
-	public function appliances(){
-		return $this->belongsToMany(Appliance::class);
-	}
+    public function service(){
+        return $this->belongsTo(Service::class);
+    }
 
-	public function values(){
-		return $this->hasMany(BuildingServiceValue::class);
-	}
+    public function serviceValue(){
+        return $this->belongsTo(ServiceValue::class);
+    }
+
 }

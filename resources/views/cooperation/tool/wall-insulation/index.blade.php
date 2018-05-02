@@ -29,7 +29,7 @@
                         <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
                             @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
                                 <option
-                                        @if(old('element[' . $facadeInsulation->element->id . ']') && $elementValue->id == old('element[' . $facadeInsulation->element->id . ']'))
+                                        @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
                                         selected="selected"
                                         @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
                                             selected="selected"
@@ -58,7 +58,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label>
+                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
 
                         <label class="radio-inline">
                             <input  type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
@@ -89,16 +89,16 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
 
-                        <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label>
+                        <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted') </label> <span> *</span>
 
                         <label class="radio-inline">
-                            <input id="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            <input class="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                         </label>
                         <label class="radio-inline">
                             <input @if(old('facade_plastered_painted') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "2") checked @endif type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
                         </label>
                         <label class="radio-inline">
-                            <input @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
+                            <input class="is-painted" @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
                         </label>
                         <br>
 
@@ -176,7 +176,7 @@
 
             <div id="wall-joints" class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('facade_plastered_surface_id') ? ' has-error' : '' }}">
+                    <div class="form-group add-space{{ $errors->has('wall_joints') ? ' has-error' : '' }}">
                         <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')           </label>
 
                         <select id="wall_joints" class="form-control" name="wall_joints">
@@ -188,13 +188,13 @@
                         <div id="wall-joints-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
-                    </div>
 
-                    @if ($errors->has('wall_joints'))
-                        <span class="help-block">
+                        @if ($errors->has('wall_joints'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('wall_joints') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
 
 
                 </div>
@@ -213,13 +213,13 @@
                             I would like to have some helpful information right here!
                         </div>
 
-                    </div>
-
-                    @if ($errors->has('contaminated_wall_joints'))
-                        <span class="help-block">
+                        @if ($errors->has('contaminated_wall_joints'))
+                            <span class="help-block">
                             <strong>{{ $errors->first('contaminated_wall_joints') }}</strong>
                         </span>
-                    @endif
+                        @endif
+                    </div>
+
 
                 </div>
 
@@ -230,10 +230,9 @@
                     <div class="form-group add-space">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#facade-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.house-with-same-situation')
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.not-right')
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.facade-surface')
                         </label>
-                        <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')) {{old('wall_surface')}} @elseif(isset($buildingFeature)) {{$buildingFeature->wall_surface}} @endif" class="form-control" >
+                        <input id="facade_surface" type="text" name="facade_surface" value="@if(old('wall_surface')){{old('wall_surface')}}@elseif(isset($buildingFeature)){{$buildingFeature->wall_surface}}@endif" class="form-control" >
                         <div id="facade-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
@@ -362,7 +361,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
-                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.additional-info')           </label>
+                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment')        </label>
 
                         <textarea id="additional-info" class="form-control" name="additional_info">@if(old('additional_info')){{old('additional_info')}}@elseif(isset($buildingFeature)){{$buildingFeature->additional_info}}@endif</textarea>
 
@@ -401,8 +400,15 @@
 @push('js')
     <script>
         $(document).ready(function(){
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
            $("select, input[type=radio], input[type=text]").change(function(){
-               if ($('#is-painted').is(':checked')) {
+               if ($('.is-painted').is(':checked')) {
                    $('#painted-options').show();
                } else {
                    $('#painted-options').hide();
@@ -414,59 +420,68 @@
                   url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                   data: form,
                   success: function(data){
-                      if (data.insulation_advice){
+                      if (data.hasOwnProperty('insulation_advice')){
                           $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
                       }
-                      if (data.savings_gas){
+                      else {
+                          $("#insulation-advice").html("");
+                      }
+                      if (data.hasOwnProperty('savings_gas')){
                           $("input#savings_gas").val(Math.round(data.savings_gas));
                       }
-                      if (data.savings_co2){
+                      if (data.hasOwnProperty('savings_co2')){
                           $("input#savings_co2").val(Math.round(data.savings_co2));
                       }
-                      if (data.savings_money){
+                      if (data.hasOwnProperty('savings_money')){
                           $("input#savings_money").val(Math.round(data.savings_money));
                       }
-                      if (data.cost_indication){
+                      if (data.hasOwnProperty('cost_indication')){
                           $("input#cost_indication").val(Math.round(data.cost_indication));
                       }
-                      if (data.interest_comparable){
+                      if (data.hasOwnProperty('interest_comparable')){
                           $("input#interest_comparable").val(data.interest_comparable);
                       }
-                      if (data.repair_joint){
+                      if (data.hasOwnProperty('repair_joint')){
                           $("input#repair_joint").val(Math.round(data.repair_joint.costs));
-                          $("span#repair_joint_year").html("(in " + data.repair_joint.year + ")");
+                          var contentYear = "";
+                          if (data.repair_joint.year > 0){
+                              contentYear = "(in " + data.repair_joint.year + ")";
+                          }
+                          $("span#repair_joint_year").html(contentYear);
                       }
-                      if (data.clean_brickwork){
+                      if (data.hasOwnProperty('clean_brickwork')){
                           $("input#clean_brickwork").val(Math.round(data.clean_brickwork.costs));
-                          $("span#clean_brickwork_year").html("(in " + data.clean_brickwork.year + ")");
+                          var contentYear = "";
+                          if (data.clean_brickwork.year > 0){
+                              contentYear = "(in " + data.clean_brickwork.year + ")";
+                          }
+                          $("span#clean_brickwork_year").html(contentYear);
                       }
-                      if (data.impregnate_wall){
+                      if (data.hasOwnProperty('impregnate_wall')){
                           $("input#impregnate_wall").val(Math.round(data.impregnate_wall.costs));
-                          $("span#impregnate_wall_year").html("(in " + data.impregnate_wall.year + ")");
+                          var contentYear = "";
+                          if (data.impregnate_wall.year > 0){
+                              contentYear = "(in " + data.impregnate_wall.year + ")";
+                          }
+                          $("span#impregnate_wall_year").html(contentYear);
                       }
-                      if (data.paint_wall){
+                      if (data.hasOwnProperty('paint_wall')){
                           $("input#paint_wall").val(Math.round(data.paint_wall.costs));
-                          $("span#paint_wall_year").html("(in " + data.paint_wall.year + ")");
+                          var contentYear = "";
+                          if (data.paint_wall.year > 0){
+                              contentYear = "(in " + data.paint_wall.year + ")";
+                          }
+                          $("span#paint_wall_year").html(contentYear);
+
                       }
-                    console.log(data);
+                      @if(App::environment('local'))
+                        console.log(data);
+                      @endif
                   }
               })
             });
             // Trigger the change event so it will load the data
-            $("select, input[type=radio], input[type=text]").trigger('change');
-
-
-            // todo fix this
-            /*$( document ).change(function() {
-                // check if the is painted button is yes
-                if ($('#is-painted').is(':checked')) {
-                    $('#painted-options').show();
-                } else {
-                    $('#painted-options').hide();
-                }
-            });
-            // trigger the change
-            $('#is-painted').trigger('change');*/
+            $('form').find('*').filter(':input:visible:first').trigger('change');
         });
 
 

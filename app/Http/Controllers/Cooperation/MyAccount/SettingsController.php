@@ -40,7 +40,7 @@ class SettingsController extends Controller
     }
 
     // Delete account
-    public function destroy(Request $request){
+    public function destroy(){
 
     }
 

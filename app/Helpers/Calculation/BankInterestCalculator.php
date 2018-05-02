@@ -25,7 +25,7 @@ class BankInterestCalculator {
 		}
 		else {
 			self::$numbers['increment'] = round( ( self::$numbers['result'] / self::$numbers['investment'] ) * 100 );
-			self::$numbers['comparable'] = round((pow(self::$numbers['result'] / self::$numbers['investment'], 1/$period) - 1) * 100, 1);
+			self::$numbers['comparable'] = round(max(0, (pow(self::$numbers['result'] / self::$numbers['investment'], 1/$period) - 1)) * 100, 1);
 		}
 
 		return self::$numbers['comparable'];
@@ -44,7 +44,7 @@ class BankInterestCalculator {
 	 */
 	public static function tw($amountPerTerm, $interest = self::BANK_INTEREST_PER_YEAR, $period = self::INTEREST_PERIOD){
 		$amount = $amountPerTerm;
-		for($year = 1; $year < $period; $year++){
+		for($year = 1; $year < $period; $year++) {
 			$amount *= 1 + ($interest / 100);
 			$amount += $amountPerTerm;
 		}

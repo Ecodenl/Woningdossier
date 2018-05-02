@@ -36,6 +36,9 @@ class BuildingElement extends Model
 		'extra' => 'array',
 	];
 
+	protected $fillable = ['building_id', 'element_id', 'element_value_id', 'extra'];
+
+
 	public function building(){
 		return $this->belongsTo(Building::class);
 	}

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 	    $this->call(MeasuresTableSeeder::class);
 	    $this->call(ExampleBuildingsTableSeeder::class);
 	    $this->call(InterestsTableSeeder::class);
+	    $this->call(InsulatingGlazingsTableSeeder::class);
 		$this->call(ElementsValuesTableSeeder::class);
 	    $this->call(MotivationsTableSeeder::class);
 		$this->call(BuildingTypeElementMaxSavingTableSeeder::class);
@@ -35,19 +36,27 @@ class DatabaseSeeder extends Seeder
 		$this->call(FacadeDamagedPaintworksTableSeeder::class);
 		$this->call(FacadePlasteredSurfacesTableSeeder::class);
 		$this->call(PriceIndexingsTableSeeder::class);
+		$this->call(KeyFigureTemperaturesTableSeeder::class);
+		$this->call(PaintworkStatusesTableSeeder::class);
+		$this->call(WoodRotStatusesTableSeeder::class);
+		$this->call(CrawlspaceAccessesTableSeeder::class);
+		$this->call(RoofTileStatusesTableSeeder::class);
+	    $this->call(ServiceValuesTableSeeder::class);
+	    $this->call(PvPanelOrientationsTableSeeder::class);
+	    $this->call(PvPanelLocationFactorsTableSeeder::class);
+	    $this->call(ComfortLevelTapWatersTableSeeder::class);
+		$this->call(HeaterSpecificationsTableSeeder::class);
+		$this->call(HeaterComponentCostsTableSeeder::class);
 
-
-    	//
-	    $this->call(IndustriesTableSeeder::class);
-	    $this->call(OccupationsTableSeeder::class);
-
-
+		// Depending on earlier seeded data
+	    $this->call(KeyFigureBoilerEfficienciesTableSeeder::class);
+	    $this->call(PvPanelYieldsTableSeeder::class);
+		$this->call(KeyFigureConsumptionTapWatersTableSeeder::class);
 
 
 		// New
 		$this->call(HeatingAgesTableSeeder::class);
 
-        $this->call(QualitiesTableSeeder::class);
         $this->call(SolarWaterHeatersTableSeeder::class);
         $this->call(PresentWindowsTableSeeder::class);
         $this->call(PresentShowerWtwsTableSeeder::class);

@@ -105,6 +105,10 @@ class User extends Authenticatable
     	return $this->hasMany(UserMotivation::class);
 	}
 
+	public function actionPlanAdvices(){
+    	return $this->hasMany(UserActionPlanAdvice::class);
+	}
+
 	/**
 	 * Returns the user progress.
 	 *
@@ -119,6 +123,28 @@ class User extends Authenticatable
 	 */
 	public function cooperations(){
     	return $this->belongsToMany(Cooperation::class);
+	}
+
+    /**
+     * Returns the interests off a user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function interests()
+    {
+        return $this->hasMany(UserInterest::class);
+	}
+
+    /**
+     * Returns a specific interested row for a specific type
+     *
+     * @param $type
+     * @param $interestedInId
+     * @return \Illuminate\Database\Eloquent\Model|null|object|static
+     */
+	public function getInterestedType($type, $interestedInId)
+    {
+        return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
 	}
 
 	/**
@@ -149,5 +175,4 @@ class User extends Authenticatable
 	public function hasCompleted(Step $step){
 		return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
 	}
-
 }

@@ -29,9 +29,9 @@ class Calculator {
 		if (isset($element->calculate_value) && $element->calculate_value < 3){
 			$result = min(
 				$surface * $kengetalEnergySaving,
-				self::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element)
+				self::maxGasSavings($building, $energyHabit, $element->element)
 			);
-			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . self::maxGasSavings($energyHabit->amount_gas, $building->getBuildingType(), $element->element) . ")");
+			self::debug($result . " = min(" . $surface . " * " . $kengetalEnergySaving . ", " . self::maxGasSavings($building, $energyHabit, $element->element) . ")");
 		}
 		return $result;
 	}
@@ -49,8 +49,8 @@ class Calculator {
 	}
 
 	public static function calculateCostIndication($surface, $measureAdvice){
-		$measureApplication = MeasureApplication::translated('measure_name', $measureAdvice, 'nl')->first();
-		if (!$measureApplication instanceof MeasureApplication) return 0;
+		$measureApplication = MeasureApplication::translated('measure_name', $measureAdvice, 'nl')->first(['measure_applications.*']);
+		if (!$measureApplication instanceof MeasureApplication) { return 0; }
 
 		$result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
 		self::debug("Cost indication: " . $result . " = max(" . $surface . " * " . $measureApplication->costs . ", " . $measureApplication->minimal_costs . ")");
@@ -62,14 +62,14 @@ class Calculator {
 	 * Return the costs of applying a particular measure in a particular year.
 	 * This takes yearly cost indexing into account.
 	 *
-	 * @param MeasureApplication $measure
-	 * @param $number
-	 * @param null $applicationYear
+	 * @param MeasureApplication $measure The measure to apply
+	 * @param mixed $number The amount of measures. (might be m2, pieces, etc.)
+	 * @param null|int $applicationYear
 	 *
 	 * @return float|int
 	 */
 	public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null){
-		if ($number <= 0) return 0;
+		if ($number <= 0) { return 0; }
 		// if $applicationYear is null, we assume this year.
 		if (is_null($applicationYear)){
 			$applicationYear = Carbon::now()->year;
@@ -98,7 +98,11 @@ class Calculator {
 	}
 
 	// in m3 per year
-	public static function maxGasSavings($usage, BuildingType $buildingType, Element $element){
+	public static function maxGasSavings(Building $building, UserEnergyHabit $energyHabit, Element $element){
+		$boiler = $building->getServiceValue('hr-boiler');
+		$buildingType = $building->getBuildingType();
+		$usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+		$usage = $usages['heating']['bruto'];
 		$saving = 0;
 		$maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
 		                                         ->where('element_id', $element->id)
@@ -107,8 +111,8 @@ class Calculator {
 			$saving = $maxSaving->max_saving;
 		}
 		self::debug("Max saving for building_type " . $buildingType->id . " + element " . $element->id . " = " . $saving . "%");
-		$result = $usage * $saving;
-		self::debug($result . " = " . $usage . " * " . $saving);
+		$result = $usage * ($saving / 100);
+		self::debug($result . " = " . $usage . " * " . ($saving / 100));
 		return $result;
 	}
 

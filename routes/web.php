@@ -46,7 +46,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
                 Route::group(['middleware' => 'filled-step:general-data'], function(){
 
                     // Extra pages with downloadable or information content.
-                    Route::group(['namespace' => 'information'], function () {
+                    Route::group(['namespace' => 'Information'], function () {
                         Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
                     });
 

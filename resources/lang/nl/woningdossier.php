@@ -292,12 +292,12 @@ return [
 
 				'flat-roof' => [
 					'title' => 'Plat dak',
-					'insulate-roof' => 'Hoe wilt u het platte dak isoleren',
+					'insulate-roof' => 'Hoe wilt u het platte dak isoleren?',
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
 				],
 				'pitched-roof' => [
 					'title' => 'Hellend dak',
-					'insulate-roof' => 'Hoe wilt u het hellende dak isoleren',
+					'insulate-roof' => 'Hoe wilt u het hellende dak isoleren?',
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
 				],
 				'measure-application' => [

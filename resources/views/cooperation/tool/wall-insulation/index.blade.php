@@ -50,6 +50,7 @@
                     <div class="form-group add-space">
                         <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
                             I would like to have some helpful information right here!
+                            I would like to have some helpful information right here!
                         </div>
                     </div>
                 </div>
@@ -243,9 +244,9 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="advice-help">
                 <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-info show" role="alert">
+                    <div class="alert alert-info" role="alert">
                         <p>@lang('woningdossier.cooperation.tool.wall-insulation.insulation-advice.text')</p>
                         <p id="insulation-advice"></p>
                     </div>
@@ -444,11 +445,20 @@
                           if ((data.insulation_advice == "Spouwmuurisolatie") && ($('.is-painted').is(':checked') == true)) {
                               // Show the alert
                               $('#cavity-wall-alert').show();
+
+                              // Hide the advice
+                              $("#advice-help").hide();
                               // Hide the indications and measures
                               $('#taking-into-account').hide();
                               $('#indication-for-costs').hide();
                           } else  {
+                              // hide the alert
                               $('#cavity-wall-alert').hide();
+
+                              // Show the advice
+                              $("#advice-help").show();
+                              $('#taking-into-account').show();
+                              $('#indication-for-costs').show();
                           }
 
                       }

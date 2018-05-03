@@ -20,6 +20,6 @@ class MeasureController extends Controller
             $files->push($file);
         }
 
-        return view('cooperation.measure.index', compact('files'));
+        return view('cooperation.measures.index', compact('files'));
     }
 }

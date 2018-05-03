@@ -18,7 +18,6 @@
                     You are logged in!
                         <br><br>
 
-
                     <a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a>
                         <br><br>
                         <div class="row">

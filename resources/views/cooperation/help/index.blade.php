@@ -11,14 +11,7 @@
 
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading">@lang('woningdossier.cooperation.help.help.title')</div>
-                                    <div class="panel-body">
-                                        @lang('woningdossier.cooperation.help.help.description')
-                                    </div>
-                                </div>
-                            </div>
-
+                                <p>@lang('woningdossier.cooperation.help.help.description')</p>
                         </div>
                     </div>
                 </div>

@@ -44,7 +44,6 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
                     // Extra pages with downloadable or information content.
                     Route::group(['namespace' => 'information'], function () {
-                        Route::resource('heat-pump-information', 'HeatPumpController', ['only' => ['index', 'store']]);
                         Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
                     });
 

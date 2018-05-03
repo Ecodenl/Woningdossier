@@ -48,11 +48,6 @@ class StepsTableSeeder extends Seeder
                 'order' => 6,
             ],
             [
-                'slug' => 'heat-pump-information',
-                'name' => 'Heat Pump information',
-                'order' => 7,
-            ],
-            [
                 'slug' => 'heat-pump',
                 'name' => 'Heat Pump',
                 'order' => 7,

@@ -50,6 +50,7 @@
                     <div class="form-group add-space">
                         <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
                             I would like to have some helpful information right here!
+                            I would like to have some helpful information right here!
                         </div>
                     </div>
                 </div>
@@ -243,14 +244,23 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="advice-help">
                 <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-info show" role="alert">
+                    <div class="alert alert-info" role="alert">
                         <p>@lang('woningdossier.cooperation.tool.wall-insulation.insulation-advice.text')</p>
                         <p id="insulation-advice"></p>
                     </div>
                 </div>
             </div>
+            <div class="row" id="cavity-wall-alert" style="display: none;">
+                <div class="col-sm-12 col-md-8 col-md-offset-2">
+                    <div class="alert alert-warning" role="alert">
+                        <b><p>@lang('woningdossier.cooperation.tool.wall-insulation.alert.description')</p></b>
+                    </div>
+                </div>
+            </div>
+
+
 
         </div>
 
@@ -381,6 +391,15 @@
 
         <div class="row">
             <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_gevelisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_gevelisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_spouwisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_spouwisolatie.pdf')))))}}</a></li>
+                        </ol>
+                    </div>
+                </div>
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
@@ -412,6 +431,7 @@
                    $('#painted-options').hide();
                }
 
+
               var form = $(this).closest("form").serialize();
               $.ajax({
                   type: "POST",
@@ -420,6 +440,27 @@
                   success: function(data){
                       if (data.hasOwnProperty('insulation_advice')){
                           $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
+
+                          // If the advice is spouwmuurisolatie and the walls are painted give them a alert
+                          if ((data.insulation_advice == "Spouwmuurisolatie") && ($('.is-painted').is(':checked') == true)) {
+                              // Show the alert
+                              $('#cavity-wall-alert').show();
+
+                              // Hide the advice
+                              $("#advice-help").hide();
+                              // Hide the indications and measures
+                              $('#taking-into-account').hide();
+                              $('#indication-for-costs').hide();
+                          } else  {
+                              // hide the alert
+                              $('#cavity-wall-alert').hide();
+
+                              // Show the advice
+                              $("#advice-help").show();
+                              $('#taking-into-account').show();
+                              $('#indication-for-costs').show();
+                          }
+
                       }
                       else {
                           $("#insulation-advice").html("");

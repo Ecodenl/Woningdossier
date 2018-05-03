@@ -28,6 +28,8 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
+			Route::get('help', 'HelpController@index')->name('help.index');
+			Route::get('measures', 'MeasureController@index')->name('measures.index');
 
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
@@ -40,7 +42,12 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
             	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
-                Route::group(['middleware' => 'filled-step:general-data'], function(){
+                Route::group(['middleware' => 'filled-step:general-data'], function() {
+
+                    Route::group(['namespace' => 'information'], function () {
+                        Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                    });
+
                 	// Wall Insulation
 	                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
 	                Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');

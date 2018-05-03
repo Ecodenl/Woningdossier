@@ -15,7 +15,7 @@
 
                         @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']))
                             <button id="submit-form-top-right" class="pull-right btn btn-primary">
-                                @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index']))
+                                @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                     @lang('default.buttons.next-page')
                                 @else
                                     @lang('default.buttons.next')

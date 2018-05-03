@@ -13,7 +13,7 @@
                             <div class="col-sm-12">
                                 <ul>
                                     @foreach($files as $file)
-                                        <li><a download="" href="{{asset($file)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($file)))))}}</a></li>
+                                        <li><a download="" href="{{ asset($file) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($file))))) }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>

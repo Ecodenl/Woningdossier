@@ -19,8 +19,7 @@
                         <div class="panel-heading">@lang('woningdossier.cooperation.tool.ventilation-information.downloads.title')</div>
                         <div class="panel-body">
                             <ol>
-                                <li><a download="" href="{{asset('storage/hoomdossier-assets/info-ventilatie.docx')}}">{{ucfirst(str_replace('-', ' ', basename(asset('storage/hoomdossier-assets/info-ventilatie.docx'))))}}</a></li>
-                                <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_ventilatiebox.pdf')}}">{{ucfirst(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_ventilatiebox.pdf'))))}}</a></li>
+                                <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Ventilatiebox.pdf')}}">{{ucfirst(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Ventilatiebox.pdf'))))}}</a></li>
                             </ol>
                         </div>
                     </div>

@@ -90,6 +90,7 @@ class ServiceTypesTableSeeder extends Seeder
 			    ],
 			    'iso' => '',
 		    ],
+
 	    ];
 
 

@@ -42,7 +42,10 @@ return [
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
             ],
         ],
-        
+		'disclaimer' => [
+			'title' => 'Disclaimer',
+		],
+
 		'my-account' => [
 			'settings' => [
 				'form' => [
@@ -116,7 +119,7 @@ return [
 					'monovalent-heatpump' => 'Monovalente warmtepomp',
 					'sun-panel' => [
 						'title' => 'Aantal zonnepanelen',
-                        'if-yes' => 'Zo ja, wanneer zijn panelen geplaatst?',
+                        'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
 					],
 					'sun-boiler' => 'Zonneboiler',
 					'house-ventilation' => [
@@ -405,6 +408,67 @@ return [
                     'content' => 'Pdf informatie...'
                 ],
             ],
+
+			'heat-pump-information' => [
+				'title' => 'Informatie pagina over warmtepomp.',
+				'description' => '',
+				'downloads' => [
+					'title' => 'Downloadbare informatie.',
+					'content' => 'Pdf informatie...'
+				],
+			],
+
+            'heat-pump' => [
+                'title' => 'Warmtepomp',
+                'description' => 'Een warmtepomp zorgt op een milieuvriendelijke manier voor verwarming van uw huis en warm water in de douche en keuken. Het is een duurzaam alternatief voor uw cv-ketel op gas: uw CO2-uitstoot voor verwarming daalt met zo\'n 50 tot 60 procent! Bovendien kunt u bij aankoop subsidie krijgen en gaat uw energierekening omlaag.<br><br><strong>Wat is een warmtepomp?</strong><br> Een warmtepomp is een onderdeel van een centrale verwarmingsinstallatie en zorgt ervoor dat het verwarmingswater wordt verwarmd en naar de laagtemperatuur verwarmingselementen zoals bijvoorbeeld vloerverwarming wordt gepompt. Meestal zorgt de warmtepomp ook voor warmtapwater, voor o.a. douchen en afwassen. We spreken dan van een combiwarmtepomp. Als de warmtepomp gebruikt wordt naast een cv-ketel die de piekvraag oplost, spreken we van een hybride- warmtepomp. <br><br><strong>Welke varianten zijn er?</strong><br>Warmtepompen zijn in verschillende soorten en maten verkrijgbaar. Belangrijk is welke energiebron wordt toegepast. Dat kan de bodem of de buitenlucht zijn. Het is belangrijk om een warmtepomp te kiezen die past bij uw woning. Hoe groter uw huis, hoe meer capaciteit er nodig is. Bij een combiwarmtepomp is daarnaast de CW-waarde belangrijk. Hoe hoger deze waarde, hoe meer warmtapwater de warmtepomp kan produceren.<br><br><strong>Hoeveel kan ik besparen?</strong><br>De rekenmethodiek voor het berekenen van de kosten en baten binnen het woondossier is op dit moment nog in ontwikkeling. Binnenkort kunt u hier terecht voor een indicatie wat een warmtepomp in uw situatie aan besparing op kan leveren.<br><br>Bij vragen over warmtepompen kunt u terecht bij uw coöperatie.',
+                'current-gas-usage' => 'Huidig gasverbruik',
+                'heat-pump-type' => 'Kies de soort warmtepomp',
+                'gas-usage-for-tapwater' => 'Gasgebruik voor warm tapwater',
+                'gas-usage-for-heating' => 'Gasgebruik voor de verwarming',
+
+                'net-gas-usage' => 'Netto gasgebruik obv rendement',
+                'energy-content' => 'Energieinhoud',
+                'heat' => 'Warmte',
+                'cop' => 'COP',
+                'electro-usage-heatpump' => 'Elektragebruik door de warmtepomp',
+
+                'hybrid-heatpump' => [
+                    'title' => 'Hybride warmtepomp met buitenlucht als warmtebron',
+                    'indication-for-costs' => [
+                        'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+                        'gas-savings' => 'Gasbesparing',
+                        'co2-savings' => 'CO2 Besparing',
+                        'savings-in-euro' => 'Besparing in €',
+                        'moreusage-electro-in-euro' => 'Meerverbruik in elektra in €',
+                        'electro-usage-heatpump' => 'Elektragebruik door de warmtepomp',
+                        'saldo' => 'Saldo',
+                        'indicative-costs' => 'Indicatieve kosten',
+                        'comparable-rate' => 'Vergelijkbare rente',
+                        'year' => 'Jaar',
+                    ],
+                ],
+                'full-heatpump' => [
+                    'title' => 'Volledige heatpump',
+                    'current-heating' => 'Hoe word de woning nu verwarmd?',
+                    'wanted-heat-source' => 'Welke soort warmtebron is gewenst?',
+                    'heat-usage' => [
+                        'heater' => 'Warmtegebruik voor verwarming',
+                        'warm-tapwater' => 'Warmtegebruik voor warm tapwater'
+                    ],
+                    'indication-for-costs' => [
+                        'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+                        'gas-savings' => 'Gasbesparing',
+                        'co2-savings' => 'CO2 Besparing',
+                        'savings-in-euro' => 'Besparing in €',
+                        'moreusage-electro-in-euro' => 'Meerverbruik in elektra in €',
+                        'electro-usage-heatpump' => 'Elektragebruik door de warmtepomp',
+                        'saldo' => 'Saldo',
+                        'indicative-costs' => 'Indicatieve kosten',
+                        'comparable-rate' => 'Vergelijkbare rente',
+                        'year' => 'Jaar',
+                    ],
+                ],
+            ],
 		],
-	],
+    ],
 ];

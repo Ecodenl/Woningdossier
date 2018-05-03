@@ -154,12 +154,32 @@
                         <div class="form-group add-space{{ $errors->has('energy_label_id') ? ' has-error' : '' }}">
                             <label for="energy_label_id" class=" control-label"><i data-toggle="collapse" data-target="#current-energy-label-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.current-energy-label')</label>
 
-                            <select id="energy_label_id" class="form-control" name="energy_label_id" req>
+                            <?php
+
+                                // order:
+                                //  1) old value
+                                //  2) db value
+                                //  3) default (G)
+
+                                $selected = old('energy_label_id');
+
+                                if (is_null($selected)){
+                                	if (isset($building->buildingFeatures->energyLabel) && $building->buildingFeatures->energyLabel instanceof \App\Models\EnergyLabel){
+                                		$selected = $building->buildingFeatures->energyLabel->id;
+                                    }
+                                }
+
+                                if (is_null($selected)){
+                                	$selectedLabelName = 'G';
+                                }
+                            ?>
+
+                            <select id="energy_label_id" class="form-control" name="energy_label_id">
                                 @foreach($energyLabels as $energyLabel)
                                     <option
-                                            @if(old('energy_label_id') && $buildingType->id == old('energy_label_id'))
+                                            @if(!is_null($selected) && $energyLabel->id == $selected)
                                             selected="selected"
-                                            @elseif(isset($building->buildingFeatures->energyLabel) && $building->buildingFeatures->energyLabel->id == $energyLabel->id)
+                                            @elseif(isset($selectedLabelName) && $energyLabel->name == $selectedLabelName)
                                             selected="selected"
                                             @endif
                                             value="{{ $energyLabel->id }}">{{ $energyLabel->name }}</option>

@@ -29,7 +29,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
 			Route::get('help', 'HelpController@index')->name('help.index');
-			Route::get('maatregelen', 'MeasureController@index')->name('measure.index');
+			Route::get('measures', 'MeasureController@index')->name('measures.index');
 
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);

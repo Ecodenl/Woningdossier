@@ -11,7 +11,12 @@
 
                         <div class="row">
                             <div class="col-sm-12">
-                                <p>@lang('woningdossier.cooperation.help.help.description')</p>
+                                <ul>
+                                    @foreach($files as $file)
+                                        <li><a download="" href="{{asset($file)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($file)))))}}</a></li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

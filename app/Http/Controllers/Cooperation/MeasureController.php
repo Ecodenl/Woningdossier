@@ -14,10 +14,17 @@ class MeasureController extends Controller
         $files = collect();
         // Go through the dir and get the filepath
         foreach (Storage::files('public/hoomdossier-assets') as $filePath) {
-            // Change public to storage
-            $file = str_replace('public', 'storage', $filePath);
-            // Put them inside the collection
-            $files->push($file);
+
+            // get the extenstion of the file
+            $fileExtension = pathinfo($filePath)['extension'];
+            // allowed extensions / files
+            $allowedExtensions = ['pdf', 'docx'];
+            if (in_array($fileExtension, $allowedExtensions)) {
+                // Change public to storage
+                $file = str_replace('public', 'storage', $filePath);
+                // push them inside a collection
+                $files->push($file);
+            }
         }
 
         return view('cooperation.measure.index', compact('files'));

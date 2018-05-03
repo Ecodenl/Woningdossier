@@ -194,6 +194,14 @@
 
         <div class="row">
             <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_cv-ketel.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_cv-ketel.pdf')))))}}</a></li>
+                        </ol>
+                    </div>
+                </div>
                 <hr>
                 <div class="form-group add-space">
                     <div class="">

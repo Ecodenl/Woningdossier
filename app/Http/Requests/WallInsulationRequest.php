@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class WallInsulationRequest extends FormRequest
 {
+
+	use DecimalReplacementTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,6 +19,13 @@ class WallInsulationRequest extends FormRequest
     {
         return Auth::check();
     }
+
+	public function getValidatorInstance()
+	{
+		$this->decimals(['facade_surface']);
+
+		return parent::getValidatorInstance();
+	}
 
     /**
      * Get the validation rules that apply to the request.

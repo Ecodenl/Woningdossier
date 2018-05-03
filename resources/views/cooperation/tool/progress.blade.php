@@ -1,6 +1,6 @@
 <ul class="progress-list list-inline">
 @foreach($steps as $step)
-{{--        @if($step->slug == 'heat-pump')--}}
+{{--        @if($step->slug == 'heat-pump' || $step->slug == 'heat-pump-information')--}}
         {{--<li class="list-inline-item">--}}
                 {{--<a href="{{route('cooperation.tool.'.$step->slug.'.index')}}">--}}
                         {{--<img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}" alt="{{ $step->name }}" class="img-circle"/>--}}

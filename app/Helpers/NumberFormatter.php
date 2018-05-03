@@ -24,4 +24,15 @@ class NumberFormatter {
 			self::$localeSeparators[$locale]['thousands']
 		);
 	}
+
+	public static function reverseFormat($number){
+		$locale = app()->getLocale();
+
+		$number = str_replace(
+			[ self::$localeSeparators[$locale]['thousands'] , " ", ],
+			[ '', '' ],
+			$number
+		);
+		return str_replace(self::$localeSeparators[$locale]['decimal'], '.', $number);
+	}
 }

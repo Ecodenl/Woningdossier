@@ -382,6 +382,7 @@ return [
 
             'heat-pump' => [
                 'title' => 'Warmtepomp',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
                 'current-gas-usage' => 'Huidig gasverbruik',
                 'heat-pump-type' => 'Kies de soort warmtepomp',
                 'gas-usage-for-tapwater' => 'Gasgebruik voor warm tapwater',

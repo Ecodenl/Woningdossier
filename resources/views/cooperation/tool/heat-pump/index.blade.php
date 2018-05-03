@@ -7,7 +7,7 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.heat-pump.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="start-information">
-            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.heat-pump.title')</h4>
+            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.heat-pump.description')</h4>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space">

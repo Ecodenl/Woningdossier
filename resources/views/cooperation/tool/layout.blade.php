@@ -37,6 +37,8 @@
             $('.panel-body form').submit();
         })
     </script>
+    <script src="{{ asset('js/are-you-sure.js') }}"></script>
+    <script>
+        $("form.form-horizontal").areYouSure();
+    </script>
 @endpush
-
-

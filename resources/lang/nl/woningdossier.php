@@ -42,6 +42,9 @@ return [
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
             ],
         ],
+		'disclaimer' => [
+			'title' => 'Disclaimer',
+		],
 
 		'my-account' => [
 			'settings' => [

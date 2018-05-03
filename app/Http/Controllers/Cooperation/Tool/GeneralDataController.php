@@ -264,6 +264,6 @@ class GeneralDataController extends Controller
 	    // Save progress
 	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation]);
+        return redirect()->route('cooperation.tool.ventilation-information.index', ['cooperation' => $cooperation]);
     }
 }

@@ -395,8 +395,8 @@
                     <div class="panel-heading">@lang('default.buttons.download')</div>
                     <div class="panel-body">
                         <ol>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_gevelisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_gevelisolatie.pdf')))))}}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_spouwisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_spouwisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')))))}}</a></li>
                         </ol>
                     </div>
                 </div>

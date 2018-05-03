@@ -243,7 +243,7 @@
                         <div class="panel-heading">@lang('default.buttons.download')</div>
                         <div class="panel-body">
                             <ol>
-                                <li><a download="" href="{{asset('storage/hoomdossier-assets/maatregelblad_zonneboiler.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_zonneboiler.pdf')))))}}</a></li>
+                                <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Zonneboiler.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Zonneboiler.pdf')))))}}</a></li>
                             </ol>
                         </div>
                     </div>

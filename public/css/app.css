@@ -8387,6 +8387,19 @@ body i.glyphicon-info-sign {
   background-size: 25px 25px;
 }
 
+.page-measures .container ul {
+  list-style: none;
+}
+
+.page-measures .container ul li {
+  line-height: 60px;
+}
+
+.page-measures .container ul li img {
+  width: 50px;
+  height: 50px;
+}
+
 ul.progress-list li a img {
   width: 50px;
   height: 50px;

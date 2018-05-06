@@ -184,7 +184,10 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.windows-surface')
                         </label>
 
-                        <input type="text" name="window_surface"  value="{{ old('window_surface') || isset($building->buildingFeatures->window_surface) ? $building->buildingFeatures->window_surface : '' }}" class="form-control">
+                        <div class="input-group">
+                            <input type="text" name="window_surface"  value="{{ old('window_surface') || isset($building->buildingFeatures->window_surface) ? $building->buildingFeatures->window_surface : '' }}" class="form-control">
+                            <span class="input-group-addon">m<sup>2</sup></span>
+                        </div>
 
                         <div id="window-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -381,7 +384,7 @@
                     <div class="form-group add-space">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')</label>
                         <div class="input-group">
-                            <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
                             <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
@@ -390,7 +393,7 @@
                     <div class="form-group add-space">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
                         <div class="input-group">
-                            <span class="input-group-addon">CO2 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <span class="input-group-addon">CO<sub>2</sub> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
                             <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>

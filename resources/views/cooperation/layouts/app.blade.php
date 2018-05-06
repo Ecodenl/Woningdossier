@@ -23,7 +23,7 @@
     </style>
     @stack('css')
 </head>
-<body>
+<body class="@yield('page_class')">
 <div id="app">
 
     <nav class="navbar navbar-default navbar-static-top">

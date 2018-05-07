@@ -397,6 +397,23 @@ return [
 			'my-plan' => [
 				'title' => 'Actieplan',
 				'description' => 'Onderstaande adviesmaatregelen zijn gebaseerd op de resultaten van de keukentafeltool. Met deze adviezen kunt u onderstaand uw meerjarenonderhoudsplan vormgeven',
+
+				'energy-saving-measures' => 'Energiebesparende maatregelen',
+				'maintenance-measures' => 'Onderhoud',
+
+				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
+				'no-year' => 'Geen jaartal',
+
+				'columns' => [
+					'interest' => 'Interesse',
+					'measure' => 'Maatregel',
+					'costs' => 'Kosten',
+					'savings-gas' => 'Besparing m<sup>3</sup> gas',
+					'savings-electricity' => 'Besparing kWh elektra',
+					'savings-costs' => 'Besparing in euro',
+					'advice-year' => 'Geadviseerd',
+					'planned-year' => 'Planning',
+				],
 			],
 
             'ventilation-information' => [

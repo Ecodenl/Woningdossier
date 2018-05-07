@@ -39,7 +39,7 @@ class MyPlanController extends Controller
 
 				if ($advice->planned){
 					$year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
-					if(is_null($year)) $year = 'no-year';
+					if(is_null($year)) $year = __('woningdossier.cooperation.tool.my-plan.no-year');
 					if(!array_key_exists($year, $sortedAdvices)){
 						$sortedAdvices[$year] = [];
 					}

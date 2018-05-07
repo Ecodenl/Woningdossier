@@ -141,7 +141,7 @@ return [
 					'cooked-on-gas' => 'Wordt er op gas gekookt?',
 					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
 					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar? (in kWh per jaar)',
-					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m3 gas per jaar)',
+					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m<sup>3</sup> gas per jaar)',
 					'additional-info' => 'Toelichting op de woonsituatie',
 
                     'motivation' => [
@@ -186,7 +186,7 @@ return [
                 'indication-for-costs' => [
                     'title' => 'Indicatie voor kosten en baten voor deze maatregel',
                     'gas-savings' => 'Gasbesparing',
-                    'co2-savings' => 'CO2 Besparing',
+                    'co2-savings' => 'CO<sub>2</sub> Besparing',
                     'savings-in-euro' => 'Besparing in €',
                     'indicative-costs' => 'Indicatieve kosten',
                     'comparable-rate' => 'Vergelijkbare rente',
@@ -229,7 +229,7 @@ return [
 
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
-                'm2' => 'm2',
+                'm2' => 'm<sup>2</sup>',
                 'total-windows' => 'Aantal ramen',
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
@@ -309,7 +309,7 @@ return [
 
 				'costs' => [
 					'gas' => 'Gasbesparing',
-					'co2' => 'CO2 Besparing',
+					'co2' => 'CO<sub>2</sub> Besparing',
 					'savings-in-euro' => 'Besparing in €',
 					'indicative-costs-insulation' => 'Indicatieve kosten aanbrengen isolatie',
 					'comparable-rent' => 'Vergelijkbare rente',
@@ -337,7 +337,7 @@ return [
 				'indication-for-costs' => [
 					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
 					'gas-savings' => 'Gasbesparing',
-					'co2-savings' => 'CO2 Besparing',
+					'co2-savings' => 'CO<sub>2</sub> Besparing',
 					'savings-in-euro' => 'Besparing in €',
 					'indicative-costs' => 'Indicatieve kosten',
 					'indicative-replacement' => 'Indicatie vervangingsmoment cv ketel',
@@ -358,7 +358,7 @@ return [
 					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
 					'yield-electricity' => 'Opbrengst elektra',
 					'raise-own-consumption' => 'Opwekking t.o.v. eigen verbruik',
-					'co2-savings' => 'CO2 Besparing',
+					'co2-savings' => 'CO<sub>2</sub> Besparing',
 					'savings-in-euro' => 'Besparing in €',
 					'indicative-costs' => 'Indicatieve kosten',
 					'comparable-rate' => 'Vergelijkbare rente',
@@ -397,6 +397,23 @@ return [
 			'my-plan' => [
 				'title' => 'Actieplan',
 				'description' => 'Onderstaande adviesmaatregelen zijn gebaseerd op de resultaten van de keukentafeltool. Met deze adviezen kunt u onderstaand uw meerjarenonderhoudsplan vormgeven',
+
+				'energy-saving-measures' => 'Energiebesparende maatregelen',
+				'maintenance-measures' => 'Onderhoud',
+
+				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
+				'no-year' => 'Geen jaartal',
+
+				'columns' => [
+					'interest' => 'Interesse',
+					'measure' => 'Maatregel',
+					'costs' => 'Kosten',
+					'savings-gas' => 'Besparing m<sup>3</sup> gas',
+					'savings-electricity' => 'Besparing kWh elektra',
+					'savings-costs' => 'Besparing in euro',
+					'advice-year' => 'Geadviseerd',
+					'planned-year' => 'Planning',
+				],
 			],
 
             'ventilation-information' => [
@@ -437,7 +454,7 @@ return [
                     'indication-for-costs' => [
                         'title' => 'Indicatie voor kosten en baten voor deze maatregel',
                         'gas-savings' => 'Gasbesparing',
-                        'co2-savings' => 'CO2 Besparing',
+                        'co2-savings' => 'CO<sub>2</sub> Besparing',
                         'savings-in-euro' => 'Besparing in €',
                         'moreusage-electro-in-euro' => 'Meerverbruik in elektra in €',
                         'electro-usage-heatpump' => 'Elektragebruik door de warmtepomp',
@@ -458,7 +475,7 @@ return [
                     'indication-for-costs' => [
                         'title' => 'Indicatie voor kosten en baten voor deze maatregel',
                         'gas-savings' => 'Gasbesparing',
-                        'co2-savings' => 'CO2 Besparing',
+                        'co2-savings' => 'CO<sub>2</sub> Besparing',
                         'savings-in-euro' => 'Besparing in €',
                         'moreusage-electro-in-euro' => 'Meerverbruik in elektra in €',
                         'electro-usage-heatpump' => 'Elektragebruik door de warmtepomp',

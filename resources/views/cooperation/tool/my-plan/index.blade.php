@@ -2,11 +2,13 @@
 
 @section('step_title', __('woningdossier.cooperation.tool.my-plan.title'))
 
+@section('page_class', 'page-my-plan')
+
 @section('step_content')
 
     <div class="row">
         <div class="col-md-12">
-            <h1>@lang('woningdossier.cooperation.tool.my-plan.title')</h1>
+            {{--<h1>@lang('woningdossier.cooperation.tool.my-plan.title')</h1>--}}
             <p>@lang('woningdossier.cooperation.tool.my-plan.description')</p>
         </div>
     </div>
@@ -16,7 +18,7 @@
     @foreach($advices as $measureType => $stepAdvices)
         <div class="row">
             <div class="col-md-12">
-                <h2>@if($measureType == 'energy_saving') Energiebesparende maatregelen @else Onderhoud @endif</h2>
+                <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
             @foreach($stepAdvices as $step => $advicesForStep)
 
@@ -27,28 +29,28 @@
 
                         <div class="row">
                             <div class="col-md-1">
-                                <strong>Interesse</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</strong>
                             </div>
                             <div class="col-md-2">
-                                <strong>Maatregel</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</strong>
                             </div>
                             <div class="col-md-1">
-                                <strong>Kosten</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</strong>
                             </div>
                             <div class="col-md-2">
-                                <strong>Besparing m<sup>3</sup> gas</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</strong>
                             </div>
                             <div class="col-md-2">
-                                <strong>Besparing kWh elektra</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</strong>
                             </div>
                             <div class="col-md-2">
-                                <strong>Besparing in euro</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</strong>
                             </div>
                             <div class="col-md-1">
-                                <strong>Geadviseerde uitvoering</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</strong>
                             </div>
                             <div class="col-md-1">
-                                <strong>Planning</strong>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</strong>
                             </div>
 
                         </div>
@@ -92,7 +94,7 @@
 
     <div class="row">
         <div class="plan-preview col-md-12">
-            <h2>Uw persoonlijke meerjarenonderhoudsplan</h2>
+            <h2>@lang('woningdossier.cooperation.tool.my-plan.maintenance-plan')</h2>
             <ul id="years">
 
             </ul>
@@ -124,7 +126,7 @@
                         $("ul#years").html("");
                         $.each(data, function(year, steps){
                             var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>Maatregel</th><th>Kosten</th><th>Besparing gas</th><th>Besparing elektra</th><th>Besparing euro</th></tr></thead><tbody>";
+                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th></tr></thead><tbody>";
 
                             var totalCosts = 0;
                             var totalSavingsGas = 0;
@@ -140,12 +142,12 @@
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs) + "</td><td>" + Math.round(stepData.savings_gas) + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity) + " kWh</td><td>&euro; " + Math.round(stepData.savings_money) + "</td></tr>";
+                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
                                 });
 
                             });
 
-                            table += "<tr><td><strong>Totaal</strong></td><td>&euro; " + Math.round(totalCosts) + "</td><td>" + Math.round(totalSavingsGas) + " m<sup>3</sup></td><td>" + Math.round(totalSavingsElectricity) + " kWh</td><td>&euro; " + Math.round(totalSavingsMoney) + "</td></tr>";
+                            table += "<tr><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></strong></td><td><strong>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
                             table += "<tr><td colspan=\"5\"></td></tr>";
 
                             table += "</tbody></table>";

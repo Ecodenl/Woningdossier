@@ -8387,6 +8387,37 @@ body i.glyphicon-info-sign {
   background-size: 25px 25px;
 }
 
+.page-help .container ul {
+  list-style: none;
+}
+
+.page-help .container ul li {
+  line-height: 60px;
+}
+
+.page-help .container ul li img {
+  width: 50px;
+  height: 50px;
+}
+
+.page-measures .container ul {
+  list-style: none;
+}
+
+.page-measures .container ul li {
+  line-height: 60px;
+}
+
+.page-measures .container ul li img {
+  width: 50px;
+  height: 50px;
+}
+
+.page-my-plan ul#years {
+  list-style: none;
+  padding-left: 0;
+}
+
 ul.progress-list li a img {
   width: 50px;
   height: 50px;

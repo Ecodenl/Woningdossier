@@ -15,56 +15,101 @@ class StepsTableSeeder extends Seeder
 	    $steps = [
 	    	[
 	    		'slug' => 'general-data',
-			    'name' => 'General data',
+			    'names' => [
+			    	'en' => 'General data',
+				    'nl' => 'Algemene gegevens',
+			    ],
 			    'order' => 0,
 		    ],
 		    [
 			    'slug' => 'ventilation-information',
-                'name' => 'Ventilation information',
+                'names' => [
+                	'en' => 'Ventilation information',
+	                'nl' => 'Ventilatie informatie',
+                ],
                 'order' => 1,
             ],
             [
                 'slug' => 'wall-insulation',
-			    'name' => 'Wall Insulation',
+			    'names' => [
+			    	'en' => 'Wall Insulation',
+				    'nl' => 'Gevelisolatie',
+			    ],
 			    'order' => 2,
 		    ],
 		    [
 			    'slug' => 'insulated-glazing',
-			    'name' => 'Insulated Glazing',
+			    'names' => [
+			    	'en' => 'Insulated Glazing',
+				    'nl' => 'Isolerende beglazing',
+			    ],
 			    'order' => 3,
 		    ],
 		    [
 			    'slug' => 'floor-insulation',
-			    'name' => 'Floor Insulation',
+			    'names' => [
+			    	'en' => 'Floor Insulation',
+				    'nl' => 'Vloerisolatie',
+			    ],
 			    'order' => 4,
 		    ],
 		    [
 			    'slug' => 'roof-insulation',
-			    'name' => 'Roof Insulation',
+			    'names' => [
+			    	'en' => 'Roof Insulation',
+				    'nl' => 'Dakisolatie',
+			    ],
 			    'order' => 5,
 		    ],
 		    [
 			    'slug' => 'high-efficiency-boiler',
-			    'name' => 'High Efficiency Boiler',
+			    'names' => [
+			    	'en' => 'High Efficiency Boiler',
+				    'nl' => 'HR CV-ketel',
+			    ],
 			    'order' => 6,
 		    ],
 		    [
 			    'slug' => 'heat-pump',
-			    'name' => 'Heat Pump',
+			    'names' => [
+			    	'en' => 'Heat Pump',
+				    'nl' => 'Warmtepomp',
+			    ],
 			    'order' => 7,
 		    ],
 		    [
 			    'slug' => 'solar-panels',
-			    'name' => 'Solar Panels',
+			    'names' => [
+			    	'en' => 'Solar Panels',
+				    'nl' => 'Zonnepanelen',
+			    ],
 			    'order' => 8,
 		    ],
 		    [
 			    'slug' => 'heater',
-			    'name' => 'Heater',
+			    'names' => [
+			    	'en' => 'Heater',
+				    'nl' => 'Zonneboiler',
+			    ],
 			    'order' => 9,
 		    ],
 	    ];
 
-        DB::table('steps')->insert($steps);
+	    foreach ($steps as $step) {
+		    $uuid = \App\Helpers\Str::uuid();
+		    foreach($step['names'] as $locale => $name) {
+			    \DB::table( 'translations' )->insert( [
+				    'key'         => $uuid,
+				    'language'    => $locale,
+				    'translation' => $name,
+			    ] );
+		    }
+
+		    \DB::table('steps')->insert([
+			    'slug' => $step['slug'],
+			    'name' => $uuid,
+			    'order' => $step['order'],
+		    ]);
+	    }
     }
 }

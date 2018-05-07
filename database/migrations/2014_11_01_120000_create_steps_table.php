@@ -16,7 +16,7 @@ class CreateStepsTable extends Migration
         Schema::create('steps', function (Blueprint $table) {
             $table->increments('id');
             $table->string('slug');
-            $table->string('name');
+	        $table->uuid('name');
             $table->integer('order');
 
             $table->integer('cooperation_id')->unsigned()->nullable()->default(null);

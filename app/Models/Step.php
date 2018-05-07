@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\TranslatableTrait;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +25,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Step extends Model
 {
+
+	use TranslatableTrait;
+
 	/**
 	 * The "booting" method of the model.
 	 *

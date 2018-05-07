@@ -10,13 +10,12 @@ class MeasureController extends Controller
 {
     public function index()
     {
-
     	// (parts of file => icons)
     	$categorizedFiles = [
 			'begrippenlijst' => 'general-data',
 		    'bodemisolatie' => 'floor-insulation',
 		    'vloerisolatie' => 'floor-insulation',
-		    'cv ketel' => 'high-efficiency-boiler',
+		    'cv-ketel' => 'high-efficiency-boiler',
 		    'dakisolatie' => 'roof-insulation',
 		    'wtw' => 'heater',
 		    'gevelisolatie' => 'wall-insulation',
@@ -31,6 +30,7 @@ class MeasureController extends Controller
 
 	    // allowed extensions / files
 	    $allowedExtensions = ['pdf'];
+	    $start = 'Maatregelblad_';
 
         // Create a new collection for the files
         //$files = collect();
@@ -45,7 +45,7 @@ class MeasureController extends Controller
             // get the extenstion of the file
             $fileExtension = pathinfo($filePath)['extension'];
             // don't display the Info- prefixed files. Only measures.
-            if (in_array($fileExtension, $allowedExtensions)) {
+            if (in_array($fileExtension, $allowedExtensions) && stristr($filePath, $start) !== false) {
 
             	// Change public to storage
                 $file = str_replace('public', 'storage', $filePath);

@@ -1,0 +1,21 @@
+.page-help {
+
+  .container {
+
+    ul {
+      list-style: none;
+
+      li {
+        $imageSize: 50px;
+
+        line-height: 60px;
+
+        img {
+
+          width: $imageSize;
+          height: $imageSize;
+        }
+      }
+    }
+  }
+}

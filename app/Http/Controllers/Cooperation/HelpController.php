@@ -19,15 +19,15 @@ class HelpController extends Controller
 		    'glasisolatie' => 'insulated-glazing',
 		    'vloerisolatie' => 'floor-insulation',
 		    'zonnepanelen' => 'solar-panels',
-
+			'zonneboiler' => 'heater',
+		    'actieplan' => 'my-plan',
 		    //
 		    'bodemisolatie' => 'floor-insulation',
-		    'wtw' => 'heater',
+		    'wtw' => 'ventilation-information',
 		    'spouwisolatie' => 'wall-insulation',
 		    'kierdichting' => 'insulated-glazing',
 		    'ventilatie' => 'ventilation-information',
 		    'warmtepomp' => 'heat-pump',
-		    'zonneboiler' => 'heater',
 	    ];
 
 	    // allowed extensions / files

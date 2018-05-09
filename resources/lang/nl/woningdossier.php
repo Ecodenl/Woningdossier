@@ -108,7 +108,7 @@ return [
 				],
 
 				'energy-saving-measures' => [
-					'title' => 'Welke energiebesparende maatregelen zijn al genomen in de woning?',
+					'title' => 'Wat is de huidige staat van isolatie van uw woning en in welke maatregelen heeft u interesse?',
 					'facade-insulation' => 'Gevelisolatie',
 					'window-in-living-space' => 'Ramen in de leefruimtes',
 					'window-in-sleeping-spaces' => 'Ramen in de slaapruimtes',

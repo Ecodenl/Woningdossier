@@ -20,6 +20,7 @@
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Ventilatiebox.pdf')}}">{{ucfirst(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Ventilatiebox.pdf'))))}}</a></li>
+                                <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Decentrale_WTW.pdf')}}">{{ucfirst(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Decentrale_WTW.pdf'))))}}</a></li>
                             </ol>
                         </div>
                     </div>

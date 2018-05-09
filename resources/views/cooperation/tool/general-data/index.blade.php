@@ -90,7 +90,10 @@
                         <div class="form-group add-space{{ $errors->has('surface') ? ' has-error' : '' }}">
                             <label for="surface" class=" control-label"><i data-toggle="collapse" data-target="#user-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label> <span>*</span>
 
-                            <input id="surface" type="text" class="form-control" name="surface" value="@if(isset($building->buildingFeatures->surface)){{ old('surface', $building->buildingFeatures->surface) }}@else{{ old('surface') }}@endif" required autofocus>
+                            <div class="input-group">
+                                <span class="input-group-addon">m<sup>2</sup></span>
+                                <input id="surface" type="text" class="form-control" name="surface" value="@if(isset($building->buildingFeatures->surface)){{ old('surface', $building->buildingFeatures->surface) }}@else{{ old('surface') }}@endif" required autofocus>
+                            </div>
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -450,7 +453,11 @@
                 <div class="form-group add-space{{ $errors->has('thermostat_high') ? ' has-error' : '' }}">
                     <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
 
-                    <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{old('thermostat_high')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
+                    <div class="input-group">
+                        <span class="input-group-addon">&deg;C</span>
+                        <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{old('thermostat_high')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
+                    </div>
+
 
                     <div id="thermostat-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
@@ -469,7 +476,10 @@
                 <div class="form-group add-space{{ $errors->has('thermostat_low') ? ' has-error' : '' }}">
                     <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
 
-                    <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(old('thermostat_low') != "") {{old('thermostat_low')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_low}} @endif" placeholder="{{old('thermostat_low')}}">
+                    <div class="input-group">
+                        <span class="input-group-addon">&deg;C</span>
+                        <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(old('thermostat_low') != "") {{old('thermostat_low')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_low}} @endif" placeholder="{{old('thermostat_low')}}">
+                    </div>
 
                     <div id="thermostat-low-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
@@ -488,12 +498,15 @@
                     <div class="form-group add-space{{ $errors->has('hours_high') ? ' has-error' : '' }}">
                         <label for="hours_high" class=" control-label"><i data-toggle="collapse" data-target="#hours-hight-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
 
-                        <select id="hours_high" class="form-control" name="hours_high">
-                            @for($hour = 0; $hour < 25; $hour++)
-                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @endif value="{{ $hour }}">{{ $hour }}</option>
-                            @endfor
-                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-addon">Uren</span>
+                            <select id="hours_high" class="form-control" name="hours_high">
+                                @for($hour = 0; $hour < 25; $hour++)
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @endif value="{{ $hour }}">{{ $hour }}</option>
+                                @endfor
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
+                            </select>
+                        </div>
 
                         <div id="hours-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...

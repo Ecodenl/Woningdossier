@@ -19,7 +19,7 @@
 
                         <div class="input-group">
                             <span class="input-group-addon">kWh / @lang('woningdossier.cooperation.tool.unit.year')</span>
-                            <input type="number" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
+                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
                         </div>
 
                         <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -77,7 +77,7 @@
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.number') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_number" class=" control-label"><i data-toggle="collapse" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.number')</label>
 
-                        <input type="number" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
+                        <input type="number" min="0" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
 
                         <div id="number-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -177,7 +177,7 @@
                         <div class="form-group add-space">
                             <label class="control-label">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.co2-savings')</label>
                             <div class="input-group">
-                                <span class="input-group-addon">co<sup>2</sup> / @lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.year')</span>
+                                <span class="input-group-addon">co<sub>2</sub> / @lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.year')</span>
                                 <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                             </div>
                         </div>

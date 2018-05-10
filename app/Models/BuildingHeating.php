@@ -26,4 +26,12 @@ class BuildingHeating extends Model
 {
     use TranslatableTrait;
 
+	/**
+	 * The attributes that should be cast to native types.
+	 *
+	 * @var array
+	 */
+	protected $casts = [
+		'is_default' => 'boolean',
+	];
 }

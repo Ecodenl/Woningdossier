@@ -18,6 +18,7 @@ class CreateBuildingHeatingsTable extends Migration
             $table->string('name');
             $table->integer('degree')->nullable();
             $table->integer('calculate_value')->nullable();
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
         });
     }

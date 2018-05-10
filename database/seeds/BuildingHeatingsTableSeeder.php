@@ -19,6 +19,7 @@ class BuildingHeatingsTableSeeder extends Seeder
 	            ],
                 'degree' => 18,
                 'calculate_value' => 2,
+	            'is_default' => false,
             ],
             [
                 'names' => [
@@ -26,6 +27,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 ],
                 'degree' => 13,
                 'calculate_value' => 3,
+                'is_default' => false,
             ],
             [
                 'names' => [
@@ -33,6 +35,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 ],
                 'degree' => 10,
                 'calculate_value' => 4,
+                'is_default' => true,
             ],
             [
                 'names' => [
@@ -40,6 +43,7 @@ class BuildingHeatingsTableSeeder extends Seeder
                 ],
                 'degree' => 18,
                 'calculate_value' => 5,
+                'is_default' => false,
             ],
         ];
 
@@ -57,6 +61,7 @@ class BuildingHeatingsTableSeeder extends Seeder
 			    'name' => $uuid,
 			    'degree' => $buildingHeating['degree'],
 			    'calculate_value' => $buildingHeating['calculate_value'],
+			    'is_default' => $buildingHeating['is_default'],
 		    ]);
 	    }
     }

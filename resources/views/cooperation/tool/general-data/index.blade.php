@@ -532,10 +532,9 @@
                                 }
                             }
                             if (is_null($selectedHFF)){
+	                            /** @var \Illuminate\Support\Collection $buildingHeatings */
                             	$degrees = $buildingHeatings->pluck('degree');
-                            	$itemIndex = array_flip($degrees->toArray())[min($degrees->toArray())];
-                            	/** @var \Illuminate\Support\Collection $buildingHeatings */
-                                $selectedHeating = $buildingHeatings->get($itemIndex, null);
+                            	$selectedHeating = $buildingHeatings->where('degree', '=', min($degrees->toArray()))->first();
                                 if ($selectedHeating instanceof \App\Models\BuildingHeating){
 	                                $selectedHFF = $selectedHeating->id;
                                 }
@@ -577,10 +576,9 @@
 		                    }
 	                    }
 	                    if (is_null($selectedHSF)){
-		                    $degrees = $buildingHeatings->pluck('degree');
-		                    $itemIndex = array_flip($degrees->toArray())[min($degrees->toArray())];
 		                    /** @var \Illuminate\Support\Collection $buildingHeatings */
-		                    $selectedHeating = $buildingHeatings->get($itemIndex, null);
+		                    $degrees = $buildingHeatings->pluck('degree');
+		                    $selectedHeating = $buildingHeatings->where('degree', '=', min($degrees->toArray()))->first();
 		                    if ($selectedHeating instanceof \App\Models\BuildingHeating){
 			                    $selectedHSF = $selectedHeating->id;
 		                    }

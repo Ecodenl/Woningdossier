@@ -49,9 +49,14 @@ class GeneralDataFormRequest extends FormRequest
 			        $serviceRules[ 'service.' . $serviceId ] = 'nullable|numeric';
 		        }
 
-		        if ( $service->short == "house-ventilation" || $service->short == "total-sun-panels" ) {
+		        if ( $service->short == "house-ventilation") {
 			        // The extra field for the service field
-			        $serviceRules[ $serviceId . '.extra' ] = 'nullable|numeric';
+			        $serviceRules[ $serviceId . '.extra.year' ] = 'nullable|numeric';
+		        }
+		        if ( $service->short == "total-sun-panels" ) {
+			        // The extra field for the service field
+			        //$serviceRules[ $serviceId . '.extra.value' ] = 'nullable|numeric';
+			        $serviceRules[ $serviceId . '.extra.year' ] = 'nullable|numeric';
 		        }
 	        }
         }

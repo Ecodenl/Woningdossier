@@ -2,9 +2,11 @@
 
 @section('step_title', __('woningdossier.cooperation.tool.general-data.title'))
 
+{{--
 @push('css')
     <link rel="stylesheet" href="{{asset('css/datepicker/bootstrap-datepicker3.css')}}">
 @endpush
+--}}
 
 @section('step_content')
 
@@ -333,7 +335,7 @@
                                 @endforeach
                             </select>
                         @else
-                            <input type="text" id="{{$service->short}}" class="form-control" value="@if(old('service.'.$service->id)) {{old('service.'.$service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
                         @endif
 
                         <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -382,14 +384,14 @@
 
                             </label>
                             <?php
-                                if(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['date'])) {
-                                    $year = $building->buildingServices()->where('service_id', $service->id)->first()->extra['date'];
+                                if(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['year'])) {
+                                    $year = $building->buildingServices()->where('service_id', $service->id)->first()->extra['year'];
                                 }
                             ?>
 
                             <div class="input-group">
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
-                                <input type="text" class="form-control" name="{{ $service->id }}[extra]" value="@if(old($service->id.'.extra')){{ old($service->id.'.extra') }}@elseif(isset($year)){{ $year }}@endif">
+                                <input type="text" class="form-control" name="{{ $service->id }}[extra][year]" value="@if(old($service->id.'.extra.year')){{ old($service->id.'.extra.year') }}@elseif(isset($year)){{ $year }}@endif">
                             </div>
                             <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -397,7 +399,7 @@
 
                             @if ($errors->has($service->id.'.extra'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first($service->id.'.extra') }}</strong>
+                                    <strong>{{ $errors->first($service->id.'.extra.year') }}</strong>
                                 </span>
                             @endif
                         </div>
@@ -784,8 +786,8 @@
 @endsection
 
 @push('js')
-    <script src="{{asset('js/datepicker/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('js/datepicker/bootstrap-datepicker.nl.min.js')}}"></script>
+    {{--<script src="{{asset('js/datepicker/bootstrap-datepicker.min.js')}}"></script>
+    <script src="{{asset('js/datepicker/bootstrap-datepicker.nl.min.js')}}"></script>--}}
     <script>
 
         $(document).ready(function () {
@@ -798,10 +800,12 @@
             });
 
 
+            {{--
             // Load the datepicker
             $('.input-group.date').datepicker({
                 language: "nl"
             });
+            --}}
 
             // Check if the house ventialtion is mechanic
             $(document).change('#house-ventilation', function () {
@@ -847,7 +851,7 @@
                 }
             });
 
-            $('#house-ventilation, #total-sun-panels').trigger('change')
+            //$('#house-ventilation, #total-sun-panels').trigger('change')
         });
     </script>
 @endpush

@@ -38,24 +38,23 @@ class GeneralDataFormRequest extends FormRequest
 
     public function rules()
     {
-
         foreach($this->request->get('service') as $serviceId => $serviceValueId) {
-            $service = Service::find($serviceId);
-            // if the service exist it has service values, check if it exist
-            if ($service->values()->where('service_id', $serviceId)->first() != null) {
-                $serviceRules['service.' . $serviceId] = 'required|exists:service_values,id';
-            } else {
-                $serviceRules['service.' . $serviceId] = 'nullable|numeric';
-            }
+        	if (!is_null($serviceValueId)) {
+		        $service = Service::find( $serviceId );
+		        // if the service exists it has service values, check if it exists
+		        if ( $service->values()->where( 'service_id',
+				        $serviceId )->first() != null ) {
+			        $serviceRules[ 'service.' . $serviceId ] = 'required|exists:service_values,id';
+		        } else {
+			        $serviceRules[ 'service.' . $serviceId ] = 'nullable|numeric';
+		        }
 
-            if ($service->short == "house-ventilation" || $service->short == "total-sun-panels") {
-                // The extra field for the service field
-                $serviceRules[$serviceId.'.extra'] = 'nullable|date';
-            }
-
-
+		        if ( $service->short == "house-ventilation" || $service->short == "total-sun-panels" ) {
+			        // The extra field for the service field
+			        $serviceRules[ $serviceId . '.extra' ] = 'nullable|numeric';
+		        }
+	        }
         }
-
 
         // Add the remaining rules
         $remainingRules = [
@@ -72,7 +71,7 @@ class GeneralDataFormRequest extends FormRequest
             'surface' => 'required|numeric',
             'monument' => 'numeric|digits_between:0,2',
 	        'energy_label_id' => 'required|exists:energy_labels,id',
-            'building_layers' => 'numeric|digits_between:1,999',
+            'building_layers' => 'numeric|digits_between:1,5',
 	        'roof_type_id' => 'required|exists:roof_types,id',
 
             // data about usage of the building

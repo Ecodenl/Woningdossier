@@ -383,13 +383,13 @@
                             </label>
                             <?php
                                 if(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['date'])) {
-                                    $date = $building->buildingServices()->where('service_id', $service->id)->first()->extra['date'];
-                                    $date = \Carbon\Carbon::parse($date)->format('d-m-Y');
+                                    $year = $building->buildingServices()->where('service_id', $service->id)->first()->extra['date'];
                                 }
                             ?>
 
-                            <div class="input-group date">
-                                <input type="text" class="form-control" name="{{$service->id.'.extra'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                            <div class="input-group">
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                <input type="text" class="form-control" name="{{ $service->id }}[extra]" value="@if(old($service->id.'.extra')){{ old($service->id.'.extra') }}@elseif(isset($year)){{ $year }}@endif">
                             </div>
                             <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -429,7 +429,7 @@
                 <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
                     <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
-                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != "") {{old('resident_count')}} @elseif(isset($energyHabit)) {{$energyHabit->resident_count}} @endif" name="resident_count" required>
+                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
 
                     <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...

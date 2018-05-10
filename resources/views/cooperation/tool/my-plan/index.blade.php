@@ -22,6 +22,54 @@
             </div>
             @foreach($stepAdvices as $step => $advicesForStep)
 
+                <div class="col-md-12">
+                    <table class="table table-condensed table-responsive">
+                        <thead>
+                            <tr>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
+                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($advicesForStep as $advice)
+                            <tr>
+                                <td>
+                                    <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
+                                </td>
+                                <td>
+                                    {{ $advice->measureApplication->measure_name }}
+                                </td>
+                                <td>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                                </td>
+                                <td>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }}
+                                </td>
+                                <td>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }}
+                                </td>
+                                <td>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                                </td>
+                                <td>
+                                    {{ $advice->year }}
+                                </td>
+                                <td>
+                                    <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+{{--
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ $step }}</div>
@@ -86,6 +134,7 @@
                     </div>
                 </div>
             </div>
+            --}}
             @endforeach
         </div>
     @endforeach

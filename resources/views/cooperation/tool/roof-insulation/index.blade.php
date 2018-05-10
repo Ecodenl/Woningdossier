@@ -287,7 +287,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.gas')</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">m3 / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                                            <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
                                             <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>
@@ -296,7 +296,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.co2')</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">co<sup>2</sup></span>
+                                            <span class="input-group-addon">co<sub>2</sub></span>
                                             <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>

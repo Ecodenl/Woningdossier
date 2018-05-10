@@ -11,6 +11,7 @@ use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\Cooperation;
+use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
@@ -18,6 +19,7 @@ use App\Models\FacadeSurface;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -131,6 +133,22 @@ class WallInsulationController extends Controller
 
 		// Remove old results
 		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+
+		/*
+	    $el = Element::where('short', 'wall-insulation')->first();
+	    if ($el instanceof Element){
+		    $userInterest = Auth::user()->getInterestedType('element', $el->id);
+		    if ($userInterest instanceof UserInterest){
+			    $interest= $userInterest->interest;
+			    if ($interest->calculate_value == 1){
+				    $results['year'] = Carbon::now()->year;
+			    }
+			    if ($interest->calculate_value == 2){
+				    $results['year'] = Carbon::now()->year + 5;
+			    }
+		    }
+	    }
+		*/
 
 	    if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0){
 		    $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);

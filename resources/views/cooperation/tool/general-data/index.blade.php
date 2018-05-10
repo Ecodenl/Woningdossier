@@ -92,7 +92,7 @@
 
                             <div class="input-group">
                                 <span class="input-group-addon">m<sup>2</sup></span>
-                                <input id="surface" type="text" class="form-control" name="surface" value="@if(isset($building->buildingFeatures->surface)){{ old('surface', $building->buildingFeatures->surface) }}@else{{ old('surface') }}@endif" required autofocus>
+                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('surface', 1)) }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
                             </div>
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

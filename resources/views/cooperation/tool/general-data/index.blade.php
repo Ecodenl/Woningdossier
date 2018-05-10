@@ -523,9 +523,29 @@
                     <div class="form-group add-space{{ $errors->has('heating_first_floor') ? ' has-error' : '' }}">
                         <label for="heating_first_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-first-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-first-floor')</label>
 
+                        <?php
+
+                            $selectedHFF = old('heating_first_floor', null);
+                            if (is_null($selectedHFF)){
+                            	if(isset($energyHabit)){
+		                            $selectedHFF = $energyHabit->heating_first_floor;
+                                }
+                            }
+                            if (is_null($selectedHFF)){
+                            	$degrees = $buildingHeatings->pluck('degree');
+                            	$itemIndex = array_flip($degrees->toArray())[min($degrees->toArray())];
+                            	/** @var \Illuminate\Support\Collection $buildingHeatings */
+                                $selectedHeating = $buildingHeatings->get($itemIndex, null);
+                                if ($selectedHeating instanceof \App\Models\BuildingHeating){
+	                                $selectedHFF = $selectedHeating->id;
+                                }
+                            }
+
+                        ?>
+
                         <select id="heating_first_floor" class="form-control" name="heating_first_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_first_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_first_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
+                                <option @if(!is_null($selectedHFF) && $buildingHeating->id == $selectedHFF) selected="selected" @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
                             @endforeach
 
                         </select>
@@ -548,9 +568,29 @@
                     <div class="form-group add-space{{ $errors->has('heating_second_floor') ? ' has-error' : '' }}">
                         <label for="heating_second_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-second-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-second-floor')</label>
 
+	                    <?php
+
+	                    $selectedHSF = old('heating_first_floor', null);
+	                    if (is_null($selectedHSF)){
+		                    if(isset($energyHabit)){
+			                    $selectedHSF = $energyHabit->heating_first_floor;
+		                    }
+	                    }
+	                    if (is_null($selectedHSF)){
+		                    $degrees = $buildingHeatings->pluck('degree');
+		                    $itemIndex = array_flip($degrees->toArray())[min($degrees->toArray())];
+		                    /** @var \Illuminate\Support\Collection $buildingHeatings */
+		                    $selectedHeating = $buildingHeatings->get($itemIndex, null);
+		                    if ($selectedHeating instanceof \App\Models\BuildingHeating){
+			                    $selectedHSF = $selectedHeating->id;
+		                    }
+	                    }
+
+	                    ?>
+
                         <select id="heating_second_floor" class="form-control" name="heating_second_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_second_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_second_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
+                                <option @if(!is_null($selectedHSF) && $buildingHeating->id == $selectedHSF) selected="selected" @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
                             @endforeach
                         </select>
 

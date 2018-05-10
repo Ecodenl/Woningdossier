@@ -17,7 +17,10 @@
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.amount_electricity') ? ' has-error' : '' }}">
                         <label for="user_energy_habits_amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
 
-                        <input type="number" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
+                        <div class="input-group">
+                            <span class="input-group-addon">kWh / @lang('woningdossier.cooperation.tool.unit.year')</span>
+                            <input type="number" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
+                        </div>
 
                         <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -36,12 +39,14 @@
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.peak_power') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_peak_power" class=" control-label"><i data-toggle="collapse" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.peak-power')</label>
 
-
-                        <select id="building_pv_panels_peak_power" class="form-control" name="building_pv_panels[peak_power]">
-                            @foreach(range(260, 300, 5) as $peakPower)
-                                <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
-                            @endforeach
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-addon">Wp</span>
+                            <select id="building_pv_panels_peak_power" class="form-control" name="building_pv_panels[peak_power]">
+                                @foreach(range(260, 300, 5) as $peakPower)
+                                    <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <div id="peak-power-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -113,12 +118,14 @@
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.angle') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.angle')</label>
 
-
-                        <select id="building_pv_panels_angle" class="form-control" name="building_pv_panels[angle]">
-                            @foreach([10, 15, 20, 30, 40, 45, 50, 60, 70, 75, 90] as $angle)
-                                <option @if(old('building_pv_panels.angle') == $angle || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
-                            @endforeach
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-addon">&deg;</span>
+                            <select id="building_pv_panels_angle" class="form-control" name="building_pv_panels[angle]">
+                                @foreach([10, 15, 20, 30, 40, 45, 50, 60, 70, 75, 90] as $angle)
+                                    <option @if(old('building_pv_panels.angle') == $angle || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...

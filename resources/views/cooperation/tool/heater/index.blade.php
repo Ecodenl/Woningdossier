@@ -65,11 +65,14 @@
                         <label for="building_heaters_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heater.angle')</label>
 
 
-                        <select id="building_heaters_angle" class="form-control" name="building_heaters[angle]">
-                            @foreach([20, 30, 40, 45, 50, 60, 70, 75, 90] as $angle)
-                                <option @if(old('building_heaters.angle') == $angle || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
-                            @endforeach
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-addon">&deg;</span>
+                            <select id="building_heaters_angle" class="form-control" name="building_heaters[angle]">
+                                @foreach([20, 30, 40, 45, 50, 60, 70, 75, 90] as $angle)
+                                    <option @if(old('building_heaters.angle') == $angle || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...

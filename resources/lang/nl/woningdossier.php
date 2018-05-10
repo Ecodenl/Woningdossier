@@ -140,7 +140,7 @@ return [
 					'situation-second-floor' => 'Welke situatie is van toepassing op de tweede verdieping?',
 					'cooked-on-gas' => 'Wordt er op gas gekookt?',
 					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
-					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar? (in kWh per jaar)',
+					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar?',
 					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m<sup>3</sup> gas per jaar)',
 					'additional-info' => 'Toelichting op de woonsituatie',
 

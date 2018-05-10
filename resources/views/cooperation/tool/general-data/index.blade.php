@@ -308,9 +308,28 @@
                         </label>
                         {{-- This will check if the service has values, if so we need an selectbox and ifnot textbox --}}
                         @if($service->values()->where('service_id', $service->id)->first() != null)
+
+                            <?php
+                                $selectedSV = old('service.' . $service->id, null);
+                                if (is_null($selectedSV)){
+                                	$buildServ = $building->buildingServices()->where('service_id', $service->id)->first();
+                                	if ($buildServ instanceof \App\Models\BuildingService){
+                                		$selectedSV = $buildServ->service_value_id;
+                                    }
+                                }
+                                if (is_null($selectedSV)){
+                                	/** @var \App\Models\Service $service */
+                                	$sv = $service->values()->where('is_default', true)->first();
+                                	if ($sv instanceof \App\Models\ServiceValue){
+                                		$selectedSV = $sv->id;
+                                    }
+                                }
+                            ?>
+
                             <select id="{{$service->short}}" class="form-control" name="service[{{ $service->id }}]">
                                 @foreach($service->values()->orderBy('order')->get() as $serviceValue)
-                                    <option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                    <option @if($serviceValue->id == $selectedSV) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                    {{--<option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>--}}
                                 @endforeach
                             </select>
                         @else

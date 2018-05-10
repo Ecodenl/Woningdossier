@@ -38,6 +38,7 @@ class ServiceValuesTableSeeder extends Seeder
                         'calculate_value' => 2,
                     ],
                 ],
+
             ],
             [
                 'names' => [
@@ -179,6 +180,7 @@ class ServiceValuesTableSeeder extends Seeder
 				        ],
 				        'order' => 1,
 				        'calculate_value' => 1,
+				        'is_default' => false,
 			        ],
 			        [
 				        'values' => [
@@ -186,6 +188,7 @@ class ServiceValuesTableSeeder extends Seeder
 				        ],
 				        'order' => 2,
 				        'calculate_value' => 2,
+				        'is_default' => false,
 			        ],
 			        [
 				        'values' => [
@@ -193,6 +196,7 @@ class ServiceValuesTableSeeder extends Seeder
 				        ],
 				        'order' => 3,
 				        'calculate_value' => 3,
+				        'is_default' => false,
 			        ],
 			        [
 				        'values' => [
@@ -200,6 +204,7 @@ class ServiceValuesTableSeeder extends Seeder
 				        ],
 				        'order' => 4,
 				        'calculate_value' => 4,
+				        'is_default' => false,
 			        ],
 			        [
 				        'values' => [
@@ -207,6 +212,7 @@ class ServiceValuesTableSeeder extends Seeder
 				        ],
 				        'order' => 5,
 				        'calculate_value' => 5,
+				        'is_default' => true,
 			        ],
 		        ],
 	        ],
@@ -428,6 +434,7 @@ class ServiceValuesTableSeeder extends Seeder
                         'value' => $uuid,
                         'order' => $serviceValue['order'],
                         'calculate_value' => isset($serviceValue['calculate_value']) ? $serviceValue['calculate_value'] : null,
+	                    'is_default' => $serviceValue['is_default'] ?? false,
                     ]);
                 }
             }

@@ -22,6 +22,7 @@ class CreateServiceValuesTable extends Migration
             $table->uuid('value')->default('');
 	        $table->integer('calculate_value')->unsigned()->nullable();
 	        $table->integer('order');
+	        $table->boolean('is_default')->default(false);
 
             $table->timestamps();
         });

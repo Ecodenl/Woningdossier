@@ -121,7 +121,21 @@ class RoofInsulationController extends Controller
 		// Remove old results
 		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 
-		foreach(['flat', 'pitched'] as $roofCat){
+		$roofTypes = $request->input('building_roof_types', []);
+		foreach($roofTypes as $i => $details){
+			if (is_numeric($i) && is_numeric($details)){
+				$roofType = RoofType::find($details);
+				if ($roofType instanceof RoofType){
+					$cat = $this->getRoofTypeCategory($roofType);
+					// add as key to result array
+					$result[$cat] = [
+						'type' => $this->getRoofTypeSubCategory($roofType),
+					];
+				}
+			}
+		}
+
+		foreach(array_keys($result) as $roofCat){
 			$measureApplicationId = $request->input( 'building_roof_types.' . $roofCat . '.measure_application_id', 0 );
 			if ( $measureApplicationId > 0 ) {
 				// results in an advice
@@ -171,6 +185,51 @@ class RoofInsulationController extends Controller
 					$actionPlanAdvice->save();
 				}
 			}
+			if (array_key_exists('tiles_condition', $extra)){
+				$tilesCondition = (int) $extra['tiles_condition'];
+				$surface = $request->input('building_roof_types.' . $roofCat . '.surface', 0);
+				if ($tilesCondition > 0 && $surface > 0){
+					$replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
+					// no year here. Default is this year. It is incremented by factor * maintenance years
+					$year = Carbon::now()->year;
+					$roofTilesStatus = RoofTileStatus::find($tilesCondition);
+
+					if ($roofTilesStatus instanceof RoofTileStatus){
+						$factor = ($roofTilesStatus->calculate_value / 100);
+
+						$year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
+						$costs = Calculator::calculateMeasureApplicationCosts( $replaceMeasure, $surface, $year );
+
+						$actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
+						$actionPlanAdvice->user()->associate( Auth::user() );
+						$actionPlanAdvice->measureApplication()->associate( $replaceMeasure );
+						$actionPlanAdvice->step()->associate( $this->step );
+						$actionPlanAdvice->save();
+					}
+				}
+			}
+			if (array_key_exists('bitumen_replaced_date', $extra)){
+				$bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
+				$surface = $request->input('building_roof_types.' . $roofCat . '.surface', 0);
+
+				if ($bitumenReplaceYear > 0 && $surface > 0){
+					$replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
+					// no percentages here. We just do this to keep the determineApplicationYear definition in one place
+					$year = $bitumenReplaceYear;
+					$factor = 1;
+
+					$year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
+					$costs = Calculator::calculateMeasureApplicationCosts( $replaceMeasure, $surface, $year );
+
+					$actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
+					$actionPlanAdvice->user()->associate( Auth::user() );
+					$actionPlanAdvice->measureApplication()->associate( $replaceMeasure );
+					$actionPlanAdvice->step()->associate( $this->step );
+					$actionPlanAdvice->save();
+				}
+
+			}
+
 		}
 
 	}

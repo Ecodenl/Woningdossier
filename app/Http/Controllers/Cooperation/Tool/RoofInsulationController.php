@@ -220,10 +220,11 @@ class RoofInsulationController extends Controller
 			    ],
 		    ];
 
-		    $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
+		    $surface = $roofTypes[$cat]['surface'] ?? 0;
 		    $heating = null;
 		    // should take the bitumen field
-		    $year = Carbon::now()->year;
+		    $year = $roofTypes[$cat]['extra']['bitumen_replaced_date'] ?? Carbon::now()->year;
+
 		    // default, changes only for roof tiles effect
 		    $factor = 1;
 
@@ -244,7 +245,6 @@ class RoofInsulationController extends Controller
 						$objAdvice = $measureAdvice;
 					}
 				}
-
 		    }
 
 	    	if (isset($roofTypes[$cat]['element_value_id'])) {
@@ -256,6 +256,7 @@ class RoofInsulationController extends Controller
 					$catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));
 					$catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice->measure_name);
 					$catData['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
+					// The replace year is about the replacement of bitumen..
 					$catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($objAdvice, $year, $factor);
 				}
 

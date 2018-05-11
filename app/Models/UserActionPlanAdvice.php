@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Calculator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,11 +44,15 @@ class UserActionPlanAdvice extends Model
 	                   ->get();
     	/** @var UserActionPlanAdvice $advice */
 	    foreach($advices as $advice){
-	    	if (is_null($advice->year)){
-	    		$advice->year = $advice->getAdviceYear();
-		    }
 	    	/** @var MeasureApplication $measureApplication */
 			$measureApplication = $advice->measureApplication;
+
+		    if (is_null($advice->year)){
+			    $advice->year = $advice->getAdviceYear();
+			    // re-index costs
+			    $advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
+		    }
+
 			if (!array_key_exists($measureApplication->measure_type, $result)){
 				$result[$measureApplication->measure_type] = [];
 			}

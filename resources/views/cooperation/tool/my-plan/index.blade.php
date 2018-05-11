@@ -20,23 +20,24 @@
             <div class="col-md-12">
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
-            @foreach($stepAdvices as $step => $advicesForStep)
 
-                <div class="col-md-12">
-                    <table class="table table-condensed table-responsive">
-                        <thead>
-                            <tr>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
-                                <th>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="col-md-12">
+                <table class="table table-condensed table-responsive">
+                    <thead>
+                    <tr>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+            @foreach($stepAdvices as $step => $advicesForStep)
                         @foreach($advicesForStep as $advice)
                             <tr>
                                 <td>
@@ -46,16 +47,16 @@
                                     {{ $advice->measureApplication->measure_name }}
                                 </td>
                                 <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
                                 </td>
                                 <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }}
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
                                 </td>
                                 <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }}
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
                                 </td>
                                 <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
                                 </td>
                                 <td>
                                     {{ $advice->year }}
@@ -65,10 +66,6 @@
                                 </td>
                             </tr>
                         @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
 {{--
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -136,6 +133,10 @@
             </div>
             --}}
             @endforeach
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     @endforeach
     </form>

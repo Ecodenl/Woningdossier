@@ -16,7 +16,14 @@ class CreateExampleBuildingsTable extends Migration
         Schema::create('example_buildings', function (Blueprint $table) {
             $table->increments('id');
 	        $table->uuid('name');
+	        $table->text('content');
+	        $table->integer('build_year')->nullable()->default(null);
+
+	        $table->integer('cooperation_id')->unsigned()->nullable()->default(null);
+	        $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('restrict');
+
             $table->integer('order')->nullable();
+            $table->boolean('is_default')->default(false);
             // more stuff to come here when specified..
             $table->timestamps();
         });

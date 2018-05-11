@@ -24,4 +24,14 @@ class ExampleBuilding extends Model
 {
     use TranslatableTrait;
 
+	/**
+	 * The attributes that should be cast to native types.
+	 *
+	 * @var array
+	 */
+	protected $casts = [
+		'content' => 'array',
+		'is_default' => 'boolean',
+	];
+
 }

@@ -99,7 +99,10 @@
 
                                         <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface')</label> <span> *</span>
 
-                                        <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['surface']) ? $currentCategorizedRoofTypes[$roofCat]['surface'] : old('building_roof_types.' . $roofCat . '.surface')}}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                            <input  type="number" min="0" class="form-control" name="building_roof_types[{{ $roofCat }}][surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['surface']) ? $currentCategorizedRoofTypes[$roofCat]['surface'] : old('building_roof_types.' . $roofCat . '.surface')}}">
+                                        </div>
 
                                         <div id="{{ $roofCat }}-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             And I would like to have it too...
@@ -119,7 +122,10 @@
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
                                         <label for="zinc-replaced" class="control-label"><i data-toggle="collapse" data-target="#zinc-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.zinc-replaced')</label> <span> *</span>
 
-                                        <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ isset($currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date'] : old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                            <input  type="number" min="1800" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ isset($currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date'] : old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}">
+                                        </div>
 
                                         <div id="zinc-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             And I would like to have it too...
@@ -142,8 +148,11 @@
 				                        $default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date']) && $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] : '';
 				                        ?>
 
-                                        <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
+                                        <div class="input-group">
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                            <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
                                                 value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', $default) }}">
+                                        </div>
 
                                         <div id="bitumen-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             And I would like to have it too...
@@ -287,7 +296,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.gas')</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters') / @lang('woningdossier.cooperation.tool.unit.year')</span>
                                             <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>
@@ -296,7 +305,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.co2')</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">co<sub>2</sub></span>
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.co2')</span>
                                             <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>

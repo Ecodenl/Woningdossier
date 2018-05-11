@@ -223,7 +223,7 @@ class RoofInsulationController extends Controller
 		    $surface = $roofTypes[$cat]['surface'] ?? 0;
 		    $heating = null;
 		    // should take the bitumen field
-		    $year = $roofTypes[$cat]['extra']['bitumen_replaced_date'] ?? Carbon::now()->year;
+		    $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year;
 
 		    // default, changes only for roof tiles effect
 		    $factor = 1;
@@ -259,35 +259,30 @@ class RoofInsulationController extends Controller
 					// The replace year is about the replacement of bitumen..
 					$catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($objAdvice, $year, $factor);
 				}
-
 		    }
 
-
-		    if (isset($roofTypes[$cat]['extra']) && in_array($result[$cat]['type'], ['bitumen', 'zinc'])){
-				$year = $roofTypes[$cat]['extra'];
-			    // no percentages here. We just do this to keep the determineApplicationYear definition in one place
-		    }
-		    if (isset($roofTypes[$cat]['extra']) && in_array($result[$cat]['type'], ['tiles'])){
-		    	// no year here. Default is this year.
-		    	$roofTilesStatus = RoofTileStatus::find((int) $roofTypes[$cat]['extra']);
-		    	if ($roofTilesStatus instanceof RoofTileStatus){
-		    		$factor = ($roofTilesStatus->calculate_value / 100);
+		    $tilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? (int) $roofTypes[$cat]['extra']['tiles_condition'] : null;
+		    if (!is_null($tilesCondition)){
+			    $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
+			    // no year here. Default is this year. It is incremented by factor * maintenance years
+			    $year = Carbon::now()->year;
+			    $roofTilesStatus = RoofTileStatus::find($tilesCondition);
+			    if ($roofTilesStatus instanceof RoofTileStatus){
+				    $factor = ($roofTilesStatus->calculate_value / 100);
 			    }
 		    }
 
-		    if (isset($advice)){
-		    	// Apparently the replace costs should always be shown, even if the roof won't be replaced..
-		    	if ($advice == Temperature::ROOF_INSULATION_FLAT_REPLACE || Temperature::ROOF_INSULATION_FLAT_ON_CURRENT){
-				    $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
-			    }
-			    if ($advice == Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES){
-		    		$replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
-			    }
+		    $bitumenReplaceYear = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : null;
+			if (!is_null($bitumenReplaceYear)){
+				$replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
+				// no percentages here. We just do this to keep the determineApplicationYear definition in one place
+				$year = $bitumenReplaceYear;
+			}
 
-			    if (isset($replaceMeasure)){
-				    $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-				    $catData['replace']['cost'] = Calculator::calculateMeasureApplicationCosts( $replaceMeasure, $surface, $catData['replace']['year'] );
-			    }
+
+		    if (isset($replaceMeasure)){
+			    $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
+			    $catData['replace']['cost'] = Calculator::calculateMeasureApplicationCosts( $replaceMeasure, $surface, $catData['replace']['year'] );
 		    }
 
     		$result[$cat] = array_merge($result[$cat], $catData);

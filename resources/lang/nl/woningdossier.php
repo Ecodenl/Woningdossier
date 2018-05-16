@@ -244,7 +244,7 @@ return [
                     'title' => 'Vragen over het schilderwerk',
                     'which-frames' => 'Welke kozijnen heeft uw huis?',
                     'other-wood-elements' => 'Welke andere houten bouwdelen zijn aanwezig in uw huis?',
-                    'last-paintjob' => 'Wanneer is het schilderwerk voor het laatst gedaan? (jaargetal)',
+                    'last-paintjob' => 'Wanneer is het schilderwerk voor het laatst gedaan?',
                     'paint-damage-visible' => 'Is verfschade waarneembaar? (barsten / bladders/ blazen)',
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],

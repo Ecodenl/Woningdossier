@@ -78,7 +78,7 @@ class WallInsulationController extends Controller
         $damagedPaintwork = $request->get('facade_damaged_paintwork_id', 0);
         $wallJoints = $request->get('wall_joints', '');
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
-        $wallSurface = $request->get('facade_surface', '');
+        $wallSurface = $request->get('wall_surface', '');
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
@@ -194,7 +194,7 @@ class WallInsulationController extends Controller
 
     	$cavityWall = $request->get('cavity_wall', -1);
 		$elements = $request->get('element', []);
-		$facadeSurface = NumberFormatter::reverseFormat($request->get('facade_surface', 0));
+		$facadeSurface = NumberFormatter::reverseFormat($request->get('wall_surface', 0));
 
     	$result = [
     		'savings_gas' => 0,

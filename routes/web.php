@@ -15,7 +15,9 @@
 Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function(){
 
 	Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function() {
-		Route::get('/', function() { return view( 'cooperation.welcome' ); })->name('welcome');
+		Route::get('/', function() {
+			return view( 'cooperation.welcome' ); }
+		)->name('welcome');
 
 		Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 		Route::get( 'confirm',
@@ -94,6 +96,23 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 });
 
+// todo add admin middleware checking ACLs
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], function(){
+
+	Route::group(['namespace' => 'Auth'], function(){
+		Route::get('login', 'LoginController@showLoginForm')->name('login');
+		Route::post('login', 'LoginController@login');
+		Route::get('logout', 'LoginController@logout')->name('logout');
+	});
+
+	// Logged In Section
+	Route::group(['middleware' => 'auth'], function(){
+		Route::get('/', 'AdminController@index')->name('index');
+
+		Route::resource('example-buildings', 'ExampleBuildingController');
+		Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+	});
+});
 
 
 Route::get('/', function () {

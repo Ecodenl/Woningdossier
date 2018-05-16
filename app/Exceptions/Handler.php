@@ -41,16 +41,22 @@ class Handler extends ExceptionHandler
 			return response()->json(['error' => 'Unauthenticated.'], 401);
 		}
 
-		$cooperationId = $request->session()->get('cooperation');
-		if (is_null($cooperationId)){
-			return redirect()->route('index');
+		if($request->routeIs('admin.*')){
+			return redirect()->route('admin.login');
 		}
-		$cooperation = Cooperation::find($cooperationId);
-		if (!$cooperation instanceof Cooperation){
-			return redirect()->route('index');
-		}
+		else {
+			$cooperationId = $request->session()->get( 'cooperation' );
+			if ( is_null( $cooperationId ) ) {
+				return redirect()->route( 'index' );
+			}
+			$cooperation = Cooperation::find( $cooperationId );
+			if ( ! $cooperation instanceof Cooperation ) {
+				return redirect()->route( 'index' );
+			}
 
-		return redirect()->route('cooperation.login', compact('cooperation'));
+			return redirect()->route( 'cooperation.login',
+				compact( 'cooperation' ) );
+		}
 	}
 
     /**

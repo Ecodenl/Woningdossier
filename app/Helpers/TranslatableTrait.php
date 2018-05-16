@@ -55,6 +55,64 @@ trait TranslatableTrait {
 		return $translation->translation;
 	}
 
+	public function getTranslations($key){
+		$attribute = parent::getAttribute($key);
+		if ($this->isValidUuid($attribute)) {
+			return Translation::where( 'key', $attribute )->get();
+		}
+		return $attribute;
+	}
+
+	/**
+	 * @param string $key attribute name
+	 * @param string $locale
+	 *
+	 * @return Translation|mixed
+	 */
+	public function getTranslation($key, $locale){
+		$attribute = parent::getAttribute($key);
+		if ($this->isValidUuid($attribute)) {
+			return Translation::where( 'key', $attribute )->where('language', $locale)->first();
+		}
+		return $attribute;
+	}
+
+	public function updateTranslation($key, $text, $locale){
+		// if $translation is null, the translation is probably there, but only
+		// for another language
+		$translation = $this->getTranslation($key, $locale);
+		if ($translation instanceof Translation) {
+			$translation->translation = $text;
+			$translation->save();
+		}
+		else {
+			//
+			$attribute = parent::getAttribute($key);
+			if ($this->isValidUuid($attribute)) {
+				// There is a UUID. We'll create a translation for this UUID +
+				// locale combination
+				Translation::updateOrCreate([
+					'key' => $attribute,
+					'language' => $locale,
+				], [ 'translation' => $text ]);
+			}
+		}
+	}
+
+	/**
+	 * @param array $localizedTexts
+	 *
+	 * @return string The translation UUID
+	 */
+	public function createTranslations($attribute, array $localizedTexts){
+		$key = Str::uuid();
+		foreach($localizedTexts as $language => $translation){
+			Translation::create(compact('key', 'translation', 'language'));
+		}
+		parent::setAttribute($attribute, $key);
+		return $key;
+	}
+
 
 	/**
 	 * Scope a query to check translations table.

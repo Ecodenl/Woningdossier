@@ -70,7 +70,7 @@ class GeneralDataFormRequest extends FormRequest
             'element.*' => 'required|exists:element_values,id',
 
             // start
-            'example_building_type' => 'required|exists:example_buildings,id',
+            'example_building_id' => 'required|exists:example_buildings,id',
             'building_type_id' => 'required|exists:building_types,id',
             'build_year' => 'required|numeric',
             'surface' => 'required|numeric',

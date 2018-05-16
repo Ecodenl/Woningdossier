@@ -53,6 +53,8 @@ class CreateBuildingFeaturesTable extends Migration
 
             $table->decimal('surface')->nullable()->default(null);
             $table->decimal('window_surface')->nullable()->default(null);
+	        $table->decimal('floor_surface')->nullable()->default(null);
+
             $table->integer('volume')->nullable()->default(null);
             $table->integer('build_year')->nullable()->default(null);
             $table->integer('building_layers')->nullable()->default(null);

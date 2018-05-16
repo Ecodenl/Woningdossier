@@ -8,11 +8,6 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="main-glass-questions">
-            <div class="row">
-                <div class="col-sm-12">
-                    <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.insulated-glazing.title')</h4>
-                </div>
-            </div>
             {{--@foreach ($keys as $key)--}}
             @foreach($measureApplications as $measureApplication)
                 <div class="row">
@@ -185,8 +180,8 @@
                         </label>
 
                         <div class="input-group">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                             <input type="text" name="window_surface"  value="{{ old('window_surface') || isset($building->buildingFeatures->window_surface) ? $building->buildingFeatures->window_surface : '' }}" class="form-control">
-                            <span class="input-group-addon">m<sup>2</sup></span>
                         </div>
 
                         <div id="window-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -280,7 +275,10 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
                         </label> <span>*</span>
 
-                        <input required type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
+                        <div class="input-group">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                            <input required type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
+                        </div>
 
                         <div id="building_paintwork_statuses.last_painted_year" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...

@@ -56,7 +56,7 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
+        $exampleBuildings = ExampleBuilding::orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
         	'living-rooms-windows', 'sleeping-rooms-windows',
@@ -79,7 +79,7 @@ class GeneralDataController extends Controller
         return view('cooperation.tool.general-data.index', compact(
         	'building',
         	'buildingTypes', 'roofTypes', 'energyLabels',
-            'exampleBuildingTypes', 'interests', 'elements',
+            'exampleBuildings', 'interests', 'elements',
 	        'insulations','houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
             'steps', 'motivations', 'energyHabit', 'services'

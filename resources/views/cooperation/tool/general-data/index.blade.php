@@ -15,24 +15,24 @@
 
         <div class="row">
             <div id="example-building" class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('example_building_type') ? ' has-error' : '' }}">
-                    <label for="example_building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
-                    <select id="example_building_type_id" class="form-control" name="example_building_type" >
-                        @foreach($exampleBuildingTypes as $exampleBuildingType)
-                            <option @if($exampleBuildingType->id == old('example_building_type')) selected @endif value="{{ $exampleBuildingType->id }}">{{ $exampleBuildingType->name }}</option>
+                <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
+                    <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
+                    <select id="example_building_id" class="form-control" name="example_building_id" >
+                        @foreach($exampleBuildings as $exampleBuilding)
+                            <option @if($exampleBuilding->id == old('example_building_type')) selected @endif value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                         @endforeach
                     </select>
 
-                    @if ($errors->has('example_building_type'))
+                    @if ($errors->has('example_building_id'))
                         <span class="help-block">
-                    <strong>{{ $errors->first('example_building_type') }}</strong>
+                    <strong>{{ $errors->first('example_building_id') }}</strong>
                 </span>
                     @endif
                 </div>
 
                 <div class="col-sm-12">
                     <div class="form-group add-space">
-                        <div id="example-building-type-info" class="collapse alert alert-info remove-collapse-space">
+                        <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
                             I would like to have some help full information right here!
                         </div>
                     </div>
@@ -94,7 +94,7 @@
 
                             <div class="input-group">
                                 <span class="input-group-addon">m<sup>2</sup></span>
-                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('surface', 1)) }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
+                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('surface')){{ \App\Helpers\NumberFormatter::format(old('surface', 1)) }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
                             </div>
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

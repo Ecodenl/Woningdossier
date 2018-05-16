@@ -17,6 +17,7 @@ class UsersTableSeeder extends Seeder
 		        'last_name' => 'Account',
 		        'email' => 'demo@example.org',
 		        'password' => bcrypt('secret'),
+		        'is_admin' => true,
 	        ],
         ];
         /** @var \stdClass $cooperation */

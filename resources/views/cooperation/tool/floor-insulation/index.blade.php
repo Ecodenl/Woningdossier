@@ -185,7 +185,7 @@
                 </div>
                 <div class="row crawlspace-accessible">
                     <div class="col-sm-12">
-                        <div class="form-group add-space{{ $errors->has('building_features.surface') ? ' has-error' : '' }}">
+                        <div class="form-group add-space{{ $errors->has('building_features.floor_surface') ? ' has-error' : '' }}">
 
                             <label for="floor_surface" class=" control-label">
                                 <i data-toggle="collapse" data-target="#floor-surface-info"
@@ -193,12 +193,12 @@
                                 @lang('woningdossier.cooperation.tool.floor-insulation.floor-surface')
                             </label>
                             <div class="input-group">
-                                <span class="input-group-addon">m<sup>2</sup></span>
-                                <input type="text" name="building_features[surface]" class="form-control" value="{{ old('building_features.surface', $buildingFeatures->surface) }}">
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                <input type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', $buildingFeatures->surface) }}">
                             </div>
-                            @if ($errors->has('building_features.surface'))
+                            @if ($errors->has('building_features.floor_surface'))
                                 <span class="help-block">
-                                <strong>{{ $errors->first('building_features.surface') }}</strong>
+                                <strong>{{ $errors->first('building_features.floor_surface') }}</strong>
                             </span>
                             @endif
                         </div>

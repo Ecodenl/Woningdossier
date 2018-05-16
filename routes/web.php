@@ -102,7 +102,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], fu
 	Route::group(['namespace' => 'Auth'], function(){
 		Route::get('login', 'LoginController@showLoginForm')->name('login');
 		Route::post('login', 'LoginController@login');
-		Route::get('logout', 'LoginController@logout')->name('logout');
+		Route::post('logout', 'LoginController@logout')->name('logout');
 	});
 
 	// Logged In Section
@@ -114,6 +114,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], fu
 	});
 });
 
+Route::post('logout', 'Admin\Auth\LoginController@logout')->name('logout');
 
 Route::get('/', function () {
 	return view('welcome');

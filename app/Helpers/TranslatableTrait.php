@@ -107,6 +107,9 @@ trait TranslatableTrait {
 	public function createTranslations($attribute, array $localizedTexts){
 		$key = Str::uuid();
 		foreach($localizedTexts as $language => $translation){
+			if(is_null($translation)){
+				$translation = '';
+			}
 			Translation::create(compact('key', 'translation', 'language'));
 		}
 		parent::setAttribute($attribute, $key);

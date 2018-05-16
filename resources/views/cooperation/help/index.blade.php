@@ -11,11 +11,13 @@
 
                     <div class="panel-body">
 
+                        {{--
                         <div class="row">
                             <div class="col-sm-12">
                                 <p>@lang('woningdossier.cooperation.help.help.description')</p>
                             </div>
                         </div>
+                        --}}
 
                         <div class="row">
                             <div class="col-sm-12">

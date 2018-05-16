@@ -2,9 +2,11 @@
 
 @section('step_title', __('woningdossier.cooperation.tool.general-data.title'))
 
+{{--
 @push('css')
     <link rel="stylesheet" href="{{asset('css/datepicker/bootstrap-datepicker3.css')}}">
 @endpush
+--}}
 
 @section('step_content')
 
@@ -13,24 +15,24 @@
 
         <div class="row">
             <div id="example-building" class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('example_building_type') ? ' has-error' : '' }}">
-                    <label for="example_building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
-                    <select id="example_building_type_id" class="form-control" name="example_building_type" >
-                        @foreach($exampleBuildingTypes as $exampleBuildingType)
-                            <option @if($exampleBuildingType->id == old('example_building_type')) selected @endif value="{{ $exampleBuildingType->id }}">{{ $exampleBuildingType->name }}</option>
+                <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
+                    <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
+                    <select id="example_building_id" class="form-control" name="example_building_id" >
+                        @foreach($exampleBuildings as $exampleBuilding)
+                            <option @if($exampleBuilding->id == old('example_building_type')) selected @endif value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                         @endforeach
                     </select>
 
-                    @if ($errors->has('example_building_type'))
+                    @if ($errors->has('example_building_id'))
                         <span class="help-block">
-                    <strong>{{ $errors->first('example_building_type') }}</strong>
+                    <strong>{{ $errors->first('example_building_id') }}</strong>
                 </span>
                     @endif
                 </div>
 
                 <div class="col-sm-12">
                     <div class="form-group add-space">
-                        <div id="example-building-type-info" class="collapse alert alert-info remove-collapse-space">
+                        <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
                             I would like to have some help full information right here!
                         </div>
                     </div>
@@ -90,7 +92,10 @@
                         <div class="form-group add-space{{ $errors->has('surface') ? ' has-error' : '' }}">
                             <label for="surface" class=" control-label"><i data-toggle="collapse" data-target="#user-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label> <span>*</span>
 
-                            <input id="surface" type="text" class="form-control" name="surface" value="@if(isset($building->buildingFeatures->surface)){{ old('surface', $building->buildingFeatures->surface) }}@else{{ old('surface') }}@endif" required autofocus>
+                            <div class="input-group">
+                                <span class="input-group-addon">m<sup>2</sup></span>
+                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('surface')){{ \App\Helpers\NumberFormatter::format(old('surface', 1)) }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
+                            </div>
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -305,13 +310,32 @@
                         </label>
                         {{-- This will check if the service has values, if so we need an selectbox and ifnot textbox --}}
                         @if($service->values()->where('service_id', $service->id)->first() != null)
+
+                            <?php
+                                $selectedSV = old('service.' . $service->id, null);
+                                if (is_null($selectedSV)){
+                                	$buildServ = $building->buildingServices()->where('service_id', $service->id)->first();
+                                	if ($buildServ instanceof \App\Models\BuildingService){
+                                		$selectedSV = $buildServ->service_value_id;
+                                    }
+                                }
+                                if (is_null($selectedSV)){
+                                	/** @var \App\Models\Service $service */
+                                	$sv = $service->values()->where('is_default', true)->first();
+                                	if ($sv instanceof \App\Models\ServiceValue){
+                                		$selectedSV = $sv->id;
+                                    }
+                                }
+                            ?>
+
                             <select id="{{$service->short}}" class="form-control" name="service[{{ $service->id }}]">
                                 @foreach($service->values()->orderBy('order')->get() as $serviceValue)
-                                    <option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                    <option @if($serviceValue->id == $selectedSV) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                    {{--<option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>--}}
                                 @endforeach
                             </select>
                         @else
-                            <input type="text" id="{{$service->short}}" class="form-control" value="@if(old('service.'.$service->id)) {{old('service.'.$service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
                         @endif
 
                         <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -360,14 +384,14 @@
 
                             </label>
                             <?php
-                                if(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['date'])) {
-                                    $date = $building->buildingServices()->where('service_id', $service->id)->first()->extra['date'];
-                                    $date = \Carbon\Carbon::parse($date)->format('d-m-Y');
+                                if(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['year'])) {
+                                    $year = $building->buildingServices()->where('service_id', $service->id)->first()->extra['year'];
                                 }
                             ?>
 
-                            <div class="input-group date">
-                                <input type="text" class="form-control" name="{{$service->id.'.extra'}}" value="@if(old($service->id.'.extra')) {{old($service->id.'.extra')}} @elseif(isset($date)){{$date}} @endif"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                            <div class="input-group">
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                <input type="text" class="form-control" name="{{ $service->id }}[extra][year]" value="@if(old($service->id.'.extra.year')){{ old($service->id.'.extra.year') }}@elseif(isset($year)){{ $year }}@endif">
                             </div>
                             <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -375,7 +399,7 @@
 
                             @if ($errors->has($service->id.'.extra'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first($service->id.'.extra') }}</strong>
+                                    <strong>{{ $errors->first($service->id.'.extra.year') }}</strong>
                                 </span>
                             @endif
                         </div>
@@ -407,7 +431,7 @@
                 <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
                     <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
-                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != "") {{old('resident_count')}} @elseif(isset($energyHabit)) {{$energyHabit->resident_count}} @endif" name="resident_count" required>
+                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
 
                     <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
@@ -450,7 +474,11 @@
                 <div class="form-group add-space{{ $errors->has('thermostat_high') ? ' has-error' : '' }}">
                     <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
 
-                    <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{old('thermostat_high')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
+                    <div class="input-group">
+                        <span class="input-group-addon">&deg;C</span>
+                        <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{old('thermostat_high')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
+                    </div>
+
 
                     <div id="thermostat-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
@@ -469,7 +497,10 @@
                 <div class="form-group add-space{{ $errors->has('thermostat_low') ? ' has-error' : '' }}">
                     <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
 
-                    <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(old('thermostat_low') != "") {{old('thermostat_low')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_low}} @endif" placeholder="{{old('thermostat_low')}}">
+                    <div class="input-group">
+                        <span class="input-group-addon">&deg;C</span>
+                        <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(old('thermostat_low') != "") {{old('thermostat_low')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_low}} @endif" placeholder="{{old('thermostat_low')}}">
+                    </div>
 
                     <div id="thermostat-low-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         And I would like to have it too...
@@ -488,12 +519,15 @@
                     <div class="form-group add-space{{ $errors->has('hours_high') ? ' has-error' : '' }}">
                         <label for="hours_high" class=" control-label"><i data-toggle="collapse" data-target="#hours-hight-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
 
-                        <select id="hours_high" class="form-control" name="hours_high">
-                            @for($hour = 0; $hour < 25; $hour++)
-                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @endif value="{{ $hour }}">{{ $hour }}</option>
-                            @endfor
-                                <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-addon">Uren</span>
+                            <select id="hours_high" class="form-control" name="hours_high">
+                                @for($hour = 0; $hour < 25; $hour++)
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @endif value="{{ $hour }}">{{ $hour }}</option>
+                                @endfor
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
+                            </select>
+                        </div>
 
                         <div id="hours-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
@@ -510,9 +544,26 @@
                     <div class="form-group add-space{{ $errors->has('heating_first_floor') ? ' has-error' : '' }}">
                         <label for="heating_first_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-first-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-first-floor')</label>
 
+                        <?php
+
+                            $selectedHFF = old('heating_first_floor', null);
+                            if (is_null($selectedHFF)){
+                            	if(isset($energyHabit)){
+		                            $selectedHFF = $energyHabit->heating_first_floor;
+                                }
+                            }
+                            if (is_null($selectedHFF)){
+                            	$selectedHeating = $buildingHeatings->where('is_default', '=', true)->first();
+                                if ($selectedHeating instanceof \App\Models\BuildingHeating){
+	                                $selectedHFF = $selectedHeating->id;
+                                }
+                            }
+
+                        ?>
+
                         <select id="heating_first_floor" class="form-control" name="heating_first_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_first_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_first_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
+                                <option @if(!is_null($selectedHFF) && $buildingHeating->id == $selectedHFF) selected="selected" @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
                             @endforeach
 
                         </select>
@@ -535,9 +586,26 @@
                     <div class="form-group add-space{{ $errors->has('heating_second_floor') ? ' has-error' : '' }}">
                         <label for="heating_second_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-second-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.situation-second-floor')</label>
 
+	                    <?php
+
+	                    $selectedHSF = old('heating_first_floor', null);
+	                    if (is_null($selectedHSF)){
+		                    if(isset($energyHabit)){
+			                    $selectedHSF = $energyHabit->heating_first_floor;
+		                    }
+	                    }
+	                    if (is_null($selectedHSF)){
+		                    $selectedHeating = $buildingHeatings->where('is_default', '=', true)->first();
+		                    if ($selectedHeating instanceof \App\Models\BuildingHeating){
+			                    $selectedHSF = $selectedHeating->id;
+		                    }
+	                    }
+
+	                    ?>
+
                         <select id="heating_second_floor" class="form-control" name="heating_second_floor" >
                             @foreach($buildingHeatings as $buildingHeating)
-                                <option @if($buildingHeating->id == old('heating_second_floor')) selected @elseif(isset($energyHabit) && $energyHabit->heating_second_floor == $buildingHeating->id) selected @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
+                                <option @if(!is_null($selectedHSF) && $buildingHeating->id == $selectedHSF) selected="selected" @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
                             @endforeach
                         </select>
 
@@ -718,8 +786,8 @@
 @endsection
 
 @push('js')
-    <script src="{{asset('js/datepicker/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('js/datepicker/bootstrap-datepicker.nl.min.js')}}"></script>
+    {{--<script src="{{asset('js/datepicker/bootstrap-datepicker.min.js')}}"></script>
+    <script src="{{asset('js/datepicker/bootstrap-datepicker.nl.min.js')}}"></script>--}}
     <script>
 
         $(document).ready(function () {
@@ -732,10 +800,12 @@
             });
 
 
+            {{--
             // Load the datepicker
             $('.input-group.date').datepicker({
                 language: "nl"
             });
+            --}}
 
             // Check if the house ventialtion is mechanic
             $(document).change('#house-ventilation', function () {
@@ -781,7 +851,7 @@
                 }
             });
 
-            $('#house-ventilation, #total-sun-panels').trigger('change')
+            //$('#house-ventilation, #total-sun-panels').trigger('change')
         });
     </script>
 @endpush

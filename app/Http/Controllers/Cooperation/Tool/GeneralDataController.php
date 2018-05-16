@@ -56,7 +56,7 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildingTypes = ExampleBuilding::orderBy('order')->get();
+        $exampleBuildings = ExampleBuilding::orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
         	'living-rooms-windows', 'sleeping-rooms-windows',
@@ -79,7 +79,7 @@ class GeneralDataController extends Controller
         return view('cooperation.tool.general-data.index', compact(
         	'building',
         	'buildingTypes', 'roofTypes', 'energyLabels',
-            'exampleBuildingTypes', 'interests', 'elements',
+            'exampleBuildings', 'interests', 'elements',
 	        'insulations','houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
             'steps', 'motivations', 'energyHabit', 'services'
@@ -158,11 +158,8 @@ class GeneralDataController extends Controller
 	    }
 
 	    // save the services
-        // TODO: add validation
-        // TODO: Save the interests
 	    $services = $request->get('service', []);
     	foreach($services as $serviceId => $serviceValueId){
-
 
     	    // get the service based on the service id from the form
 			$service = Service::find($serviceId);
@@ -170,7 +167,7 @@ class GeneralDataController extends Controller
 			$serviceValue = ServiceValue::find($serviceValueId);
 
             // get the extra fields (date)
-            $serviceExtra = $request->input($serviceId.'.extra', "");
+            $serviceExtra = $request->input($serviceId.'.extra', []);
 
             // Get the interest field off the service
             $serviceInterestId = $request->input('user_interest.service.'.$serviceId.'', '');
@@ -184,13 +181,14 @@ class GeneralDataController extends Controller
                 }
                 // check if the current service is a sun panel
                 // if so, we will need to put the value / valueId inside the extra field.
-                if (strpos($service->name, 'zonnepanelen') == true) {
-                    $buildingService->extra = ['value' => $serviceValueId, 'date' => $serviceExtra];
+                if ($service->short == 'total-sun-panels'){
+                    //$buildingService->extra = ['value' => $serviceValueId, 'date' => $serviceExtra];
+	                $serviceExtra['value'] = $serviceValueId;
+	                $buildingService->extra = array_only($serviceExtra, ['value', 'year']);
                 }
-
                 // if its a ventilation, is has a dropdown so it has a serviceValue
-                else if (strpos($service->name, 'geventileerd') == true) {
-                    $buildingService->extra = ['date' => $serviceExtra];
+                elseif ($service->short == 'house-ventilation'){
+                    $buildingService->extra = array_only($serviceExtra, ['year']);
                     $buildingService->serviceValue()->associate($serviceValue);
                 } else {
                     $buildingService->serviceValue()->associate($serviceValue);

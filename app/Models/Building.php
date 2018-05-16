@@ -77,6 +77,30 @@ class Building extends Model
 		return $this->hasMany(BuildingElement::class);
 	}
 
+	public function exampleBuilding(){
+		return $this->belongsTo(ExampleBuilding::class);
+	}
+
+	public function getExampleValueForStep(Step $step, $formKey){
+		return $this->getExampleValue($step->slug . '.'. $formKey);
+	}
+
+	public function getExampleValue($key){
+		$example = $this->exampleBuilding;
+		if (!$example instanceof ExampleBuilding){
+			return null;
+		}
+		return $example->getExampleValueForYear($this->getBuildYear(), $key);
+	}
+
+	public function getBuildYear(){
+		if (!$this->buildingFeatures instanceof BuildingFeature){
+			return null;
+		}
+		return $this->buildingFeatures->build_year;
+	}
+
+
 	/**
 	 * @param $short
 	 *

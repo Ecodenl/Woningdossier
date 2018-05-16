@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Calculator;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class UserActionPlanAdvice extends Model
@@ -44,6 +46,13 @@ class UserActionPlanAdvice extends Model
 	    foreach($advices as $advice){
 	    	/** @var MeasureApplication $measureApplication */
 			$measureApplication = $advice->measureApplication;
+
+		    if (is_null($advice->year)){
+			    $advice->year = $advice->getAdviceYear();
+			    // re-index costs
+			    $advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
+		    }
+
 			if (!array_key_exists($measureApplication->measure_type, $result)){
 				$result[$measureApplication->measure_type] = [];
 			}
@@ -55,6 +64,39 @@ class UserActionPlanAdvice extends Model
 	    }
 
     	return $result;
+    }
+
+    public function getAdviceYear(){
+    	// todo Find a neater solution for this as this was one of many additions in hindsight
+	    // Step slug => element short
+	    $slugElements = [
+	    	'wall-insulation' => 'wall-insulation',
+		    'insulated-glazing' => 'living-rooms-windows', // this is nonsense.. there's no location specification in this step, while there is on general-data
+	        'floor-insulation' => 'floor-insulation',
+	        //'roof-insulation' => 'roof-insulation',
+	    ];
+	    if (!$this->step instanceof Step){
+	    	return null;
+	    }
+	    if (!array_key_exists($this->step->slug, $slugElements)){
+	    	return null;
+	    }
+	    $elementShort = $slugElements[$this->step->slug];
+	    $element = Element::where('short', $elementShort)->first();
+	    if (!$element instanceof Element){
+	    	return null;
+	    }
+	    $userInterest = $this->user->getInterestedType('element', $element->id);
+	    if (!$userInterest instanceof UserInterest){
+	    	return null;
+	    }
+	    if ($userInterest->interest->calculate_value == 1){
+	    	return Carbon::now()->year;
+	    }
+	    if ($userInterest->interest->calculate_value == 2){
+		    return Carbon::now()->year + 5;
+	    }
+	    return null;
     }
 
 	/**

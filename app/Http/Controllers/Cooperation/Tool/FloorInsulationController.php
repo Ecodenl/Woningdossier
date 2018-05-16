@@ -91,7 +91,7 @@ class FloorInsulationController extends Controller
 	    $buildingElements = $request->get('building_elements', []);
 	    $buildingFeatures = $request->get('building_features', []);
 
-	    $surface = array_key_exists('surface', $buildingFeatures) ? $buildingFeatures['surface'] : 0;
+	    $surface = array_key_exists('floor_surface', $buildingFeatures) ? $buildingFeatures['floor_surface'] : 0;
 
 	    if (array_key_exists('crawlspace', $buildingElements)){
 		    // Check if crawlspace is accessible. If not: show warning!

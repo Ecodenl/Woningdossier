@@ -20,8 +20,53 @@
             <div class="col-md-12">
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
-            @foreach($stepAdvices as $step => $advicesForStep)
 
+            <div class="col-md-12">
+                <table class="table table-condensed table-responsive">
+                    <thead>
+                    <tr>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+            @foreach($stepAdvices as $step => $advicesForStep)
+                        @foreach($advicesForStep as $advice)
+                            <tr>
+                                <td>
+                                    <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
+                                </td>
+                                <td>
+                                    {{ $advice->measureApplication->measure_name }}
+                                </td>
+                                <td>
+                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                                </td>
+                                <td>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                                </td>
+                                <td>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                                </td>
+                                <td>
+                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                                </td>
+                                <td>
+                                    {{ $advice->year }}
+                                </td>
+                                <td>
+                                    <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
+                                </td>
+                            </tr>
+                        @endforeach
+{{--
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ $step }}</div>
@@ -86,7 +131,12 @@
                     </div>
                 </div>
             </div>
+            --}}
             @endforeach
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     @endforeach
     </form>
@@ -98,6 +148,19 @@
             <ul id="years">
 
             </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">@lang('default.buttons.download')</div>
+                <div class="panel-body">
+                    <ol>
+                        <li><a download="" href="{{asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf')))))}}</a></li>
+                    </ol>
+                </div>
+            </div>
         </div>
     </div>
 

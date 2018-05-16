@@ -13,7 +13,9 @@ use Carbon\Carbon;
 class RoofInsulationCalculator {
 
 	public static function calculateGasSavings(Building $building, ElementValue $element, UserEnergyHabit $energyHabit, BuildingHeating $heating, $surface, $totalSurface, $measureAdvice){
-		if ($totalSurface == 0) { return 0; }
+		if ($totalSurface == 0) {
+			return 0;
+		}
 		$result = 0;
 		$building->getBuildingType();
 

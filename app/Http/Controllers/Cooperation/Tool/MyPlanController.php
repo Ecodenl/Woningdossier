@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Calculator;
 use App\Http\Controllers\Controller;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
@@ -39,7 +41,16 @@ class MyPlanController extends Controller
 
 				if ($advice->planned){
 					$year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
-					if(is_null($year)) $year = __('woningdossier.cooperation.tool.my-plan.no-year');
+					if (is_null($year)) {
+						$year = $advice->getAdviceYear();
+					}
+					if(is_null($year)) {
+						$year = __('woningdossier.cooperation.tool.my-plan.no-year');
+						$costYear = Carbon::now()->year;
+					}
+					else {
+						$costYear = $year;
+					}
 					if(!array_key_exists($year, $sortedAdvices)){
 						$sortedAdvices[$year] = [];
 					}
@@ -51,7 +62,9 @@ class MyPlanController extends Controller
 
 					$sortedAdvices[$year][$step->name][] = [
 						'measure' => $advice->measureApplication->measure_name,
-						'costs' => $advice->costs,
+						// In the table the costs are indexed based on the advice year
+						// Now re-index costs based on user planned year in the personal plan
+						'costs' => Calculator::reindexCosts($advice->costs, $advice->year, $costYear),
 						'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
 						'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
 						'savings_money' => is_null($advice->savings_money) ? 0 : $advice->savings_money,

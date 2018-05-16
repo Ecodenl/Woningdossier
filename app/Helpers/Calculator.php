@@ -69,7 +69,9 @@ class Calculator {
 	 * @return float|int
 	 */
 	public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null){
-		if ($number <= 0) { return 0; }
+		if ($number <= 0) {
+			return 0;
+		}
 		// if $applicationYear is null, we assume this year.
 		if (is_null($applicationYear)){
 			$applicationYear = Carbon::now()->year;
@@ -95,6 +97,35 @@ class Calculator {
 		self::debug(__METHOD__ . " Indexed costs: " . $totalIndexed . " = " . $total . " * " . (1 + ($costIndex / 100)) . "^" . $yearFactor);
 
 		return $totalIndexed;
+	}
+
+	/**
+	 * @param float|int $costs Amount indexed on $fromYear
+	 * @param int $fromYear Previous year used for indexing
+	 * @param int $toYear New year to index
+	 *
+	 * @return float|int
+	 */
+	public static function reindexCosts($costs, $fromYear, $toYear){
+		if (is_null($fromYear)){
+			$fromYear = Carbon::now()->year;
+		}
+		if (is_null($toYear)){
+			$toYear = Carbon::now()->year;
+		}
+		$yearFactor = $toYear - $fromYear;
+
+		$index = PriceIndexing::where('short', 'common')->first();
+		// default = 2%
+		$costIndex = 2;
+		if ($index instanceof PriceIndexing){
+			$costIndex = $index->percentage;
+		}
+
+		$costsIndexed = $costs * pow((1 + ($costIndex / 100)), $yearFactor);
+		self::debug(__METHOD__ . " Re-indexed costs: " . $costsIndexed . " = " . $costs . " * " . (1 + ($costIndex / 100)) . "^" . $yearFactor);
+
+		return $costsIndexed;
 	}
 
 	// in m3 per year

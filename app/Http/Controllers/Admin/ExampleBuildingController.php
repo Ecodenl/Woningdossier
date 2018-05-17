@@ -559,7 +559,7 @@ class ExampleBuildingController extends Controller
 		}
 
     	$newEB = new ExampleBuilding($exampleBuilding->toArray());
-    	$name = $newEB->createTranslations($names);
+    	$name = $newEB->createTranslations('name', $names);
     	$newEB->name = $name;
 		$newEB->save();
 

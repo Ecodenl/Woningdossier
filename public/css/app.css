@@ -8373,6 +8373,10 @@ body #app .alert-top-space {
   margin-top: 10px;
 }
 
+body #app .small-text {
+  font-size: 13px;
+}
+
 body i.glyphicon-info-sign {
   display: none;
 }

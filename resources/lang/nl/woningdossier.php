@@ -132,7 +132,7 @@ return [
 						'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
 					],
 					'additional' => 'Overig',
-					'interested' => 'Interesse?',
+					'interested' => 'Interesse in verbetering?',
 
 				],
 				'data-about-usage' => [

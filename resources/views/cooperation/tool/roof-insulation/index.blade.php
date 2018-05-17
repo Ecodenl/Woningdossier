@@ -30,7 +30,7 @@
 
                             <div class="col-sm-12">
                                 <div id="no-roof-alert" class="help-block" style="display: none;">
-                                    <div class="alert alert-warning" role="alert">
+                                    <div class="alert alert-danger" role="alert">
                                         <p>@lang('woningdossier.cooperation.tool.roof-insulation.no-roof')</p>
                                     </div>
                                 </div>
@@ -423,6 +423,8 @@
                     data: form,
                     success: function(data){
                         if (!data.hasOwnProperty('flat') && !data.hasOwnProperty('pitched')){
+                            // if the type is not flat nor pitched show the alert
+                            $('#no-roof-alert').show();
                             $(".if-roof").hide();
                         }
                         else {
@@ -435,12 +437,10 @@
                         $(".flat-roof .cover-bitumen").hide();
                         $(".pitched-roof .cover-bitumen").hide();
 
-
                         if (data.hasOwnProperty('flat')){
                             $(".flat-roof").show();
                             $(".flat-roof .cover-bitumen").show();
 
-                            console.log('flat selected');
                             $('#no-roof-alert').hide();
 
                             //if (data.flat.hasOwnProperty('type') && data.flat.type === 'zinc'){
@@ -471,13 +471,15 @@
                             }
                         }
                         else {
+
                             $(".flat-roof").hide();
                         }
 
                         $(".cover-tiles").hide();
                         if (data.hasOwnProperty('pitched')){
-                            console.log('pithched selected');
+
                             $('#no-roof-alert').hide();
+
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')){
                                 if(data.pitched.type === 'tiles'){
@@ -513,7 +515,6 @@
                             }
                         }
                         else {
-                            $('#no-roof-alert').show();
                             $(".pitched-roof").hide();
                         }
 

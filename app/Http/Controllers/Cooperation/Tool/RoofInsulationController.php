@@ -61,6 +61,7 @@ class RoofInsulationController extends Controller
 		$currentCategorizedRoofTypes = [
 			'flat' => [],
 			'pitched' => [],
+//            'no' => [],
 		];
 		if ($currentRoofTypes instanceof Collection){
 			/** var BuildingRoofType $currentRoofType */
@@ -71,6 +72,7 @@ class RoofInsulationController extends Controller
 				}
 			}
 		}
+
 
         return view('cooperation.tool.roof-insulation.index', compact(
         	'features', 'roofTypes', 'steps',
@@ -383,13 +385,14 @@ class RoofInsulationController extends Controller
                     ];
 
                     $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
-                    $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : "";
+                    $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
+
                     $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : "";
                     $extraBitumenReplacedDate = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? $roofTypes[$cat]['extra']['bitumen_replaced_date'] : "";
                     $extraZincReplacedDate = isset($roofTypes[$cat]['extra']['zinc_replaced_date']) ? $roofTypes[$cat]['extra']['zinc_replaced_date'] : "";
                     $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : "";
 
-                    $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : "";
+                    $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
 
                     BuildingFeature::where('building_id', $building->id)->update([
                         'roof_type_id' => $request->input('building_features.roof_type_id')

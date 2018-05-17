@@ -22,12 +22,12 @@ class CreateBuildingRoofTypesTable extends Migration
             $table->integer('roof_type_id')->unsigned();
             $table->foreign('roof_type_id')->references('id')->on('roof_types')->onDelete('restrict');
 
-            $table->integer('element_value_id')->unsigned();
+            $table->integer('element_value_id')->unsigned()->nullable();
             $table->foreign('element_value_id')->references('id')->on('element_values')->onDelete('restrict');
 
-            $table->integer('surface')->unsigned();
+            $table->integer('surface')->unsigned()->nullable()->default(null);
 
-            $table->integer('building_heating_id')->unsigned();
+            $table->integer('building_heating_id')->unsigned()->nullable();
             $table->foreign('building_heating_id')->references('id')->on('building_heatings')->onDelete('restrict');
 
 	        $table->text('extra')->nullable();

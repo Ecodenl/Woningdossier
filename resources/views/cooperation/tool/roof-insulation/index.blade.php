@@ -28,13 +28,6 @@
                             @endif
 
 
-                            <div class="col-sm-12">
-                                <div id="no-roof-alert" class="help-block" style="display: none;">
-                                    <div class="alert alert-danger" role="alert">
-                                        <p>@lang('woningdossier.cooperation.tool.roof-insulation.no-roof')</p>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="col-sm-12">
                                 <div class="form-group add-space">
@@ -423,8 +416,6 @@
                     data: form,
                     success: function(data){
                         if (!data.hasOwnProperty('flat') && !data.hasOwnProperty('pitched')){
-                            // if the type is not flat nor pitched show the alert
-                            $('#no-roof-alert').show();
                             $(".if-roof").hide();
                         }
                         else {
@@ -441,7 +432,6 @@
                             $(".flat-roof").show();
                             $(".flat-roof .cover-bitumen").show();
 
-                            $('#no-roof-alert').hide();
 
                             //if (data.flat.hasOwnProperty('type') && data.flat.type === 'zinc'){
                             //    $(".cover-zinc").show();
@@ -478,7 +468,6 @@
                         $(".cover-tiles").hide();
                         if (data.hasOwnProperty('pitched')){
 
-                            $('#no-roof-alert').hide();
 
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')){

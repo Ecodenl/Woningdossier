@@ -94,7 +94,7 @@
 
                             <div class="input-group">
                                 <span class="input-group-addon">m<sup>2</sup></span>
-                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('surface')){{ \App\Helpers\NumberFormatter::format(old('surface', 1)) }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
+                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('surface')){{ \App\Helpers\NumberFormatter::format(old('surface'), 1) }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
                             </div>
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -476,7 +476,7 @@
 
                     <div class="input-group">
                         <span class="input-group-addon">&deg;C</span>
-                        <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{old('thermostat_high')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
+                        <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{ old('thermostat_high') }} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
                     </div>
 
 

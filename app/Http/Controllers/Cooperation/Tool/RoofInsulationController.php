@@ -39,14 +39,14 @@ class RoofInsulationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * return \Illuminate\Http\Response
      */
     public function index()
     {
-	    /** @var Building $building */
+	    /** var Building $building */
 	    $building = \Auth::user()->buildings()->first();
 
-		/** @var BuildingFeature $features */
+		/** var BuildingFeature $features */
 	    $features = $building->buildingFeatures;
 	    $roofTypes = RoofType::all();
 	    $steps = Step::orderBy('order')->get();
@@ -57,12 +57,13 @@ class RoofInsulationController extends Controller
 	    $measureApplications = $this->getMeasureApplicationsAdviceMap();
 
 
+
 		$currentCategorizedRoofTypes = [
 			'flat' => [],
 			'pitched' => [],
 		];
 		if ($currentRoofTypes instanceof Collection){
-			/** @var BuildingRoofType $currentRoofType */
+			/** var BuildingRoofType $currentRoofType */
 			foreach($currentRoofTypes as $currentRoofType){
 				$cat = $this->getRoofTypeCategory($currentRoofType->roofType);
 				if (!empty($cat)) {
@@ -114,7 +115,7 @@ class RoofInsulationController extends Controller
     }
 
 	protected function saveAdvices(Request $request){
-		/** @var JsonResponse $results */
+		/** var JsonResponse $results */
 		$results = $this->calculate($request);
 		$results = $results->getData(true);
 
@@ -237,7 +238,7 @@ class RoofInsulationController extends Controller
     public function calculate(Request $request){
 	    $result = [];
 	    /**
-	     * @var Building $building
+	     * var Building $building
 	     */
 	    $user     = \Auth::user();
 	    $building = $user->buildings()->first();
@@ -354,8 +355,8 @@ class RoofInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * param  \Illuminate\Http\Request  $request
+     * return \Illuminate\Http\Response
      */
     public function store(RoofInsulationFormRequest $request)
     {

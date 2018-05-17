@@ -27,6 +27,15 @@
                                 </span>
                             @endif
 
+
+                            <div class="col-sm-12">
+                                <div id="no-roof-alert" class="help-block" style="display: none;">
+                                    <div class="alert alert-warning" role="alert">
+                                        <p>@lang('woningdossier.cooperation.tool.roof-insulation.no-roof')</p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-sm-12">
                                 <div class="form-group add-space">
                                     <div id="roof-type-info" class="collapse alert alert-info remove-collapse-space">
@@ -417,6 +426,7 @@
                             $(".if-roof").hide();
                         }
                         else {
+
                             $(".if-roof").show();
                         }
 
@@ -429,6 +439,10 @@
                         if (data.hasOwnProperty('flat')){
                             $(".flat-roof").show();
                             $(".flat-roof .cover-bitumen").show();
+
+                            console.log('flat selected');
+                            $('#no-roof-alert').hide();
+
                             //if (data.flat.hasOwnProperty('type') && data.flat.type === 'zinc'){
                             //    $(".cover-zinc").show();
                             //}
@@ -462,6 +476,8 @@
 
                         $(".cover-tiles").hide();
                         if (data.hasOwnProperty('pitched')){
+                            console.log('pithched selected');
+                            $('#no-roof-alert').hide();
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')){
                                 if(data.pitched.type === 'tiles'){
@@ -497,6 +513,7 @@
                             }
                         }
                         else {
+                            $('#no-roof-alert').show();
                             $(".pitched-roof").hide();
                         }
 

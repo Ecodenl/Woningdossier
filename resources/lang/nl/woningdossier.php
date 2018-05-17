@@ -283,6 +283,7 @@ return [
 				],
 			],
 			'roof-insulation' => [
+                'no-roof' => 'Dit veld is verplicht als u een dak type heeft gekozen',
 				'title' => 'Dakisolatie',
 				'current-situation' => [
 					'title' => 'Huidige situatie',
@@ -309,7 +310,7 @@ return [
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
 				],
 				'measure-application' => [
-					'no' => 'Nee',
+					'no' => 'Niet',
 				],
 
 				'costs' => [
@@ -337,7 +338,7 @@ return [
 				'resident-count' => 'Huidig aantal bewoners',
 				'boiler-type' => 'Wat is het type van de huidige CV ketel',
 				'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst?',
-				'already-efficient' => 'Je hebt al een efficiënte CV ketel. Het vervangen zal alleen een beperkte energiebesparing opleveren',
+				'already-efficient' => 'Het vervangen van de huidige ketel zal alleen een beperkte energiebesparing opleveren omdat u al een HR ketel hebt.',
 
 				'indication-for-costs' => [
 					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
@@ -354,7 +355,7 @@ return [
 				'title' => 'Zonnepanelen',
 
 				'peak-power' => 'Piekvermogen per paneel',
-				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u ca. :number zonnepanelen in optimale oriëntatie nodig',
+				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
 				'number' => 'Hoeveel zonnepanelen moeten er komen?',
 				'pv-panel-orientation-id' => 'Wat is de oriëntatie van de panelen?',
 				'angle' => 'Wat is de hellingshoek van de panelen?',

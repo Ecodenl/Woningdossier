@@ -475,7 +475,7 @@
                     <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
 
                     <div class="input-group">
-                        <span class="input-group-addon">&deg;C</span>
+                        <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
                         <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{old('thermostat_high')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @endif" name="thermostat_high">
                     </div>
 
@@ -498,7 +498,7 @@
                     <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
 
                     <div class="input-group">
-                        <span class="input-group-addon">&deg;C</span>
+                        <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
                         <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(old('thermostat_low') != "") {{old('thermostat_low')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_low}} @endif" placeholder="{{old('thermostat_low')}}">
                     </div>
 

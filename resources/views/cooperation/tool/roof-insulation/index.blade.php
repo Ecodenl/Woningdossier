@@ -305,7 +305,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.co2')</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.co2')</span>
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.unit.year')</span>
                                             <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>

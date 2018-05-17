@@ -286,7 +286,7 @@
                     <div class="form-group add-space">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
                         <div class="input-group">
-                            <span class="input-group-addon">CO<sub>2</sub> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
                             <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>

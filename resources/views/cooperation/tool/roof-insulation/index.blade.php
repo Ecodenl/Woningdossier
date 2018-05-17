@@ -433,16 +433,16 @@
                             //    $(".cover-zinc").show();
                             //}
                             if (data.flat.hasOwnProperty('savings_gas')){
-                                $("input#flat_savings_gas").val(Math.round(data.flat.savings_gas));
+                                $("input#flat_savings_gas").val(Math.round(data.flat.savings_gas).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.flat.hasOwnProperty('savings_co2')){
-                                $("input#flat_savings_co2").val(Math.round(data.flat.savings_co2));
+                                $("input#flat_savings_co2").val(Math.round(data.flat.savings_co2).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.flat.hasOwnProperty('savings_money')){
-                                $("input#flat_savings_money").val(Math.round(data.flat.savings_money));
+                                $("input#flat_savings_money").val(Math.round(data.flat.savings_money).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.flat.hasOwnProperty('cost_indication')){
-                                $("input#flat_cost_indication").val(Math.round(data.flat.cost_indication));
+                                $("input#flat_cost_indication").val(Math.round(data.flat.cost_indication).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.flat.hasOwnProperty('interest_comparable')){
                                 $("input#flat_interest_comparable").val(data.flat.interest_comparable);
@@ -452,7 +452,7 @@
                                     $("input#flat_replace_year").val(data.flat.replace.year);
                                 }
                                 if (data.flat.replace.hasOwnProperty('cost')){
-                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.cost));
+                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.cost).toLocaleString('{{ app()->getLocale() }}'));
                                 }
                             }
                         }
@@ -473,16 +473,16 @@
                                 }
                             }
                             if (data.pitched.hasOwnProperty('savings_gas')){
-                                $("input#pitched_savings_gas").val(Math.round(data.pitched.savings_gas));
+                                $("input#pitched_savings_gas").val(Math.round(data.pitched.savings_gas).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.pitched.hasOwnProperty('savings_co2')){
-                                $("input#pitched_savings_co2").val(Math.round(data.pitched.savings_co2));
+                                $("input#pitched_savings_co2").val(Math.round(data.pitched.savings_co2).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.pitched.hasOwnProperty('savings_money')){
-                                $("input#pitched_savings_money").val(Math.round(data.pitched.savings_money));
+                                $("input#pitched_savings_money").val(Math.round(data.pitched.savings_money).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.pitched.hasOwnProperty('cost_indication')){
-                                $("input#pitched_cost_indication").val(Math.round(data.pitched.cost_indication));
+                                $("input#pitched_cost_indication").val(Math.round(data.pitched.cost_indication).toLocaleString('{{ app()->getLocale() }}'));
                             }
                             if (data.pitched.hasOwnProperty('interest_comparable')){
                                 $("input#pitched_interest_comparable").val(data.pitched.interest_comparable);
@@ -492,7 +492,7 @@
                                     $("input#pitched_replace_year").val(data.pitched.replace.year);
                                 }
                                 if (data.pitched.replace.hasOwnProperty('cost')){
-                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.cost));
+                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.cost).toLocaleString('{{ app()->getLocale() }}'));
                                 }
                             }
                         }

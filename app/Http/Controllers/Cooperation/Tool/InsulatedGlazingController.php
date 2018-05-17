@@ -64,19 +64,18 @@ class InsulatedGlazingController extends Controller
 		$paintworkStatuses = PaintworkStatus::orderBy('order')->get();
 		$woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
-		// nl names
-		$measureApplicationNames = [
-			'Bent u geïnteresseerd in glas in lood vervangen?',
-			'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
-			'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
-			'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
+		$measureApplicationShorts = [
+			'glass-in-lead',
+			'hrpp-glass-only',
+			'hrpp-glass-frames',
+			'hr3p-frames',
 		];
 
 		$buildingInsulatedGlazings = [];
 	    $userInterests = [];
 
-		foreach($measureApplicationNames as $measureApplicationName){
-			$measureApplication = MeasureApplication::translated('measure_name', $measureApplicationName, 'nl')->first(['measure_applications.*']);
+	    foreach($measureApplicationShorts as $measureApplicationShort){
+			$measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
 
 			if ($measureApplication instanceof MeasureApplication) {

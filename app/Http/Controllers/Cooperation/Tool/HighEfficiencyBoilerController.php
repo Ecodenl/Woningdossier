@@ -45,7 +45,7 @@ class HighEfficiencyBoilerController extends Controller
 	    $boiler = Service::where('short', 'boiler')->first();
 		$boilerTypes = $boiler->values()->orderBy('order')->get();
 
-		$installedBoiler = BuildingService::where('service_id', $boiler->id)->first();
+		$installedBoiler = BuildingService::where('service_id', $boiler->id)->where('building_id', Auth::user()->buildings()->first()->id)->first();
 
         return view('cooperation.tool.hr-boiler.index', compact(
         	'habit', 'boiler', 'boilerTypes', 'installedBoiler',

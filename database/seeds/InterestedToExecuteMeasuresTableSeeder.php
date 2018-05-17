@@ -26,11 +26,11 @@ class InterestedToExecuteMeasuresTableSeeder extends Seeder
                 'calculated_value' => 3,
             ],
             [
-                'name' => 'Geen actie',
+                'name' => 'Nee, geen interesse',
                 'calculated_value' => 4,
             ],
             [
-                'name' => 'Niet mogelijk',
+                'name' => 'Nee, niet mogelijk',
                 'calculated_value' => 5,
             ],
         ];

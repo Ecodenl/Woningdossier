@@ -27,6 +27,8 @@
                                 </span>
                             @endif
 
+
+
                             <div class="col-sm-12">
                                 <div class="form-group add-space">
                                     <div id="roof-type-info" class="collapse alert alert-info remove-collapse-space">
@@ -305,7 +307,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.co2')</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.co2')</span>
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.unit.year')</span>
                                             <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>
@@ -417,6 +419,7 @@
                             $(".if-roof").hide();
                         }
                         else {
+
                             $(".if-roof").show();
                         }
 
@@ -425,10 +428,11 @@
                         $(".flat-roof .cover-bitumen").hide();
                         $(".pitched-roof .cover-bitumen").hide();
 
-
                         if (data.hasOwnProperty('flat')){
                             $(".flat-roof").show();
                             $(".flat-roof .cover-bitumen").show();
+
+
                             //if (data.flat.hasOwnProperty('type') && data.flat.type === 'zinc'){
                             //    $(".cover-zinc").show();
                             //}
@@ -457,11 +461,14 @@
                             }
                         }
                         else {
+
                             $(".flat-roof").hide();
                         }
 
                         $(".cover-tiles").hide();
                         if (data.hasOwnProperty('pitched')){
+
+
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')){
                                 if(data.pitched.type === 'tiles'){

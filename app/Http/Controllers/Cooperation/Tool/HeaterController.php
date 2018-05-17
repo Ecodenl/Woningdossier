@@ -195,7 +195,7 @@ class HeaterController extends Controller
 	    $this->saveAdvices($request);
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.heater.index', ['cooperation' => $cooperation]);
+        return redirect()->route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]);
     }
 
 	protected function saveAdvices(Request $request){

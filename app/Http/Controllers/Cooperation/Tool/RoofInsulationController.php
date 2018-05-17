@@ -39,14 +39,14 @@ class RoofInsulationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * return \Illuminate\Http\Response
      */
     public function index()
     {
-	    /** @var Building $building */
+	    /** var Building $building */
 	    $building = \Auth::user()->buildings()->first();
 
-		/** @var BuildingFeature $features */
+		/** var BuildingFeature $features */
 	    $features = $building->buildingFeatures;
 	    $roofTypes = RoofType::all();
 	    $steps = Step::orderBy('order')->get();
@@ -57,12 +57,14 @@ class RoofInsulationController extends Controller
 	    $measureApplications = $this->getMeasureApplicationsAdviceMap();
 
 
+
 		$currentCategorizedRoofTypes = [
 			'flat' => [],
 			'pitched' => [],
+//            'no' => [],
 		];
 		if ($currentRoofTypes instanceof Collection){
-			/** @var BuildingRoofType $currentRoofType */
+			/** var BuildingRoofType $currentRoofType */
 			foreach($currentRoofTypes as $currentRoofType){
 				$cat = $this->getRoofTypeCategory($currentRoofType->roofType);
 				if (!empty($cat)) {
@@ -70,6 +72,7 @@ class RoofInsulationController extends Controller
 				}
 			}
 		}
+
 
         return view('cooperation.tool.roof-insulation.index', compact(
         	'features', 'roofTypes', 'steps',
@@ -114,7 +117,7 @@ class RoofInsulationController extends Controller
     }
 
 	protected function saveAdvices(Request $request){
-		/** @var JsonResponse $results */
+		/** var JsonResponse $results */
 		$results = $this->calculate($request);
 		$results = $results->getData(true);
 
@@ -237,7 +240,7 @@ class RoofInsulationController extends Controller
     public function calculate(Request $request){
 	    $result = [];
 	    /**
-	     * @var Building $building
+	     * var Building $building
 	     */
 	    $user     = \Auth::user();
 	    $building = $user->buildings()->first();
@@ -354,8 +357,8 @@ class RoofInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * param  \Illuminate\Http\Request  $request
+     * return \Illuminate\Http\Response
      */
     public function store(RoofInsulationFormRequest $request)
     {
@@ -382,13 +385,14 @@ class RoofInsulationController extends Controller
                     ];
 
                     $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
-                    $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : "";
+                    $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
+
                     $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : "";
                     $extraBitumenReplacedDate = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? $roofTypes[$cat]['extra']['bitumen_replaced_date'] : "";
                     $extraZincReplacedDate = isset($roofTypes[$cat]['extra']['zinc_replaced_date']) ? $roofTypes[$cat]['extra']['zinc_replaced_date'] : "";
                     $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : "";
 
-                    $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : "";
+                    $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
 
                     BuildingFeature::where('building_id', $building->id)->update([
                         'roof_type_id' => $request->input('building_features.roof_type_id')

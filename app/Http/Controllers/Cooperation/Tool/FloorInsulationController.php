@@ -199,8 +199,9 @@ class FloorInsulationController extends Controller
         );
         $floorSurface = $request->input('building_features', '');
 
+
         BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([
-            'surface' => isset($floorSurface['surface']) ? $floorSurface['surface'] : "",
+            'surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : "",
         ]);
 
         // Save progress

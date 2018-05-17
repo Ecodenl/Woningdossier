@@ -80,6 +80,8 @@ return [
 				'square-meters' => 'm<sup>2</sup>',
 				'cubic-meters' => 'm<sup>3</sup>',
 				'co2' => 'CO<sub>2</sub>',
+                'kilograms' => 'kg',
+                'degrees' => 'graden'
 			],
 
 			'title' => 'Keukentafel tool',
@@ -130,7 +132,7 @@ return [
 						'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
 					],
 					'additional' => 'Overig',
-					'interested' => 'Interesse?',
+					'interested' => 'Interesse in verbetering?',
 
 				],
 				'data-about-usage' => [
@@ -212,6 +214,7 @@ return [
 
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',
+                'sub-title' => 'Vragen over isolatieglas',
 
                 'glass-in-lead' => [
                     'title' => 'Glas in lood vervangen',
@@ -230,6 +233,9 @@ return [
                    'title' => 'Plaatsen van HR++ glas (alleen het glas)',
                 ],
 
+                'cracking-seal' => [
+                    'title' => 'Kierdichting'
+                ],
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
                 'm2' => 'm<sup>2</sup>',
@@ -281,6 +287,7 @@ return [
 				],
 			],
 			'roof-insulation' => [
+                'no-roof' => 'Dit veld is verplicht als u een dak type heeft gekozen',
 				'title' => 'Dakisolatie',
 				'current-situation' => [
 					'title' => 'Huidige situatie',
@@ -307,7 +314,7 @@ return [
 					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
 				],
 				'measure-application' => [
-					'no' => 'Nee',
+					'no' => 'Niet',
 				],
 
 				'costs' => [
@@ -335,7 +342,7 @@ return [
 				'resident-count' => 'Huidig aantal bewoners',
 				'boiler-type' => 'Wat is het type van de huidige CV ketel',
 				'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst?',
-				'already-efficient' => 'Je hebt al een efficiënte CV ketel. Het vervangen zal alleen een beperkte energiebesparing opleveren',
+				'already-efficient' => 'Het vervangen van de huidige ketel zal alleen een beperkte energiebesparing opleveren omdat u al een HR ketel hebt.',
 
 				'indication-for-costs' => [
 					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
@@ -352,7 +359,7 @@ return [
 				'title' => 'Zonnepanelen',
 
 				'peak-power' => 'Piekvermogen per paneel',
-				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u ca. :number zonnepanelen in optimale oriëntatie nodig',
+				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
 				'number' => 'Hoeveel zonnepanelen moeten er komen?',
 				'pv-panel-orientation-id' => 'Wat is de oriëntatie van de panelen?',
 				'angle' => 'Wat is de hellingshoek van de panelen?',

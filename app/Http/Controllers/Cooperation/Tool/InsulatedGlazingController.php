@@ -66,10 +66,10 @@ class InsulatedGlazingController extends Controller
 
 		// nl names
 		$measureApplicationNames = [
-			'Glas in lood vervangen',
-			'Plaatsen van HR++ glas (alleen het glas)',
-			'Plaatsen van HR++ glas (inclusief kozijn)',
-			'Plaatsen van drievoudige HR beglazing (inclusief kozijn)',
+			'Bent u geïnteresseerd in glas in lood vervangen?',
+			'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
+			'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
+			'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
 		];
 
 		$buildingInsulatedGlazings = [];
@@ -77,6 +77,7 @@ class InsulatedGlazingController extends Controller
 
 		foreach($measureApplicationNames as $measureApplicationName){
 			$measureApplication = MeasureApplication::translated('measure_name', $measureApplicationName, 'nl')->first(['measure_applications.*']);
+
 
 			if ($measureApplication instanceof MeasureApplication) {
 				// get current situation
@@ -98,6 +99,7 @@ class InsulatedGlazingController extends Controller
 				$measureApplications [] = $measureApplication;
 			}
 		}
+
 
 
         return view('cooperation.tool.insulated-glazing.index', compact(

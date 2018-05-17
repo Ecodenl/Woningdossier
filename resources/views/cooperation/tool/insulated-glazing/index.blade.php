@@ -7,6 +7,7 @@
 
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+        <h4 style="margin-left: -5px;"> @lang('woningdossier.cooperation.tool.insulated-glazing.sub-title')</h4>
         <div id="main-glass-questions">
             {{--@foreach ($keys as $key)--}}
             @foreach($measureApplications as $measureApplication)
@@ -147,6 +148,7 @@
         <div id="remaining-questions">
             <div class="row">
                 <div class="col-sm-12">
+                    <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.insulated-glazing.cracking-seal.title')</h4>
                     <div class="form-group add-space {{ $errors->has('building_elements.'.$crackSealing->id.'.crack-sealing') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
                             <i data-toggle="collapse" data-target="#building_elements.crack-sealing-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
@@ -169,6 +171,15 @@
                             </span>
                         @endif
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="paint-work">
+            <div class="row">
+                <div class="col-sm-12">
+                    <hr>
+                    <h4 style="margin-left: -5px;" >@lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.title') </h4>
                 </div>
             </div>
             <div class="row">
@@ -194,15 +205,6 @@
                             </span>
                         @endif
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="paint-work">
-            <div class="row">
-                <div class="col-sm-12">
-                    <hr>
-                    <h4 style="margin-left: -5px;" >@lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.title')</h4>
                 </div>
             </div>
             <div class="row">

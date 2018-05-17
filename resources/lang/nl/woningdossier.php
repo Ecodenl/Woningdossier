@@ -214,6 +214,7 @@ return [
 
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',
+                'sub-title' => 'Vragen over isolatieglas',
 
                 'glass-in-lead' => [
                     'title' => 'Glas in lood vervangen',
@@ -232,6 +233,9 @@ return [
                    'title' => 'Plaatsen van HR++ glas (alleen het glas)',
                 ],
 
+                'cracking-seal' => [
+                    'title' => 'Kierdichting'
+                ],
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
                 'm2' => 'm<sup>2</sup>',

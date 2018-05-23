@@ -56,7 +56,7 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildings = ExampleBuilding::orderBy('order')->get();
+        $exampleBuildings = ExampleBuilding::forMyCooperation()->orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
         	'living-rooms-windows', 'sleeping-rooms-windows',
@@ -75,9 +75,10 @@ class GeneralDataController extends Controller
         $motivations = Motivation::orderBy('order')->get();
         $energyHabit = Auth::user()->energyHabit;
         $steps = Step::orderBy('order')->get();
+        $step = $this->step;
 
         return view('cooperation.tool.general-data.index', compact(
-        	'building',
+        	'building', 'step',
         	'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements',
 	        'insulations','houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
@@ -94,9 +95,19 @@ class GeneralDataController extends Controller
      */
     public function store(GeneralDataFormRequest $request)
     {
-
 	    /** @var Building $building */
     	$building = Auth::user()->buildings()->first();
+
+    	$exampleBuildingId = $request->get('example_building_id', null);
+    	if (!is_null($exampleBuildingId)) {
+		    $exampleBuilding = ExampleBuilding::forMyCooperation()->where( 'id',
+			    $exampleBuildingId )->first();
+		    if ($exampleBuilding instanceof ExampleBuilding) {
+			    $building->exampleBuilding()->associate( $exampleBuilding );
+			    $building->save();
+		    }
+	    }
+
 
     	$features = $building->buildingFeatures;
     	if (!$features instanceof BuildingFeature){

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -106,6 +107,19 @@ class ExampleBuilding extends Model
 			return $content[$key];
 		}
 		return null;
+	}
+
+	/**
+	 * Scope a query to only include buildings for my cooperation
+	 *
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeForMyCooperation($query)
+	{
+		$cooperationId = \Session::get('cooperation', 0);
+
+		return $query->where('cooperation_id', '=', $cooperationId);
 	}
 
 }

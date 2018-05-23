@@ -112,6 +112,10 @@ return [
 					'current-energy-label' => 'Wat is het huidige energielabel?'
 				],
 
+				'example-building' => [
+					'no-match' => 'Er is geen passende voorbeeldwoning',
+				],
+
 				'energy-saving-measures' => [
 					'title' => 'Wat is de huidige staat van isolatie van uw woning en in welke maatregelen heeft u interesse?',
 					'facade-insulation' => 'Gevelisolatie',

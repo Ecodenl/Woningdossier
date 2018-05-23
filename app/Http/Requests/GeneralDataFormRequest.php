@@ -25,7 +25,7 @@ class GeneralDataFormRequest extends FormRequest
 
 	public function getValidatorInstance()
 	{
-		$this->decimals(['surface']);
+		$this->decimals(['surface', 'thermostat_high', 'thermostat_low']);
 
 		return parent::getValidatorInstance();
 	}
@@ -70,7 +70,7 @@ class GeneralDataFormRequest extends FormRequest
             'element.*' => 'required|exists:element_values,id',
 
             // start
-            'example_building_id' => 'required|exists:example_buildings,id',
+            'example_building_id' => 'nullable|exists:example_buildings,id',
             'building_type_id' => 'required|exists:building_types,id',
             'build_year' => 'required|numeric',
             'surface' => 'required|numeric',
@@ -83,7 +83,7 @@ class GeneralDataFormRequest extends FormRequest
             'resident_count' => 'required|numeric',
             'cook_gas' => 'required|numeric',
             'thermostat_high' => 'nullable|numeric',
-            'thermostat_low' => 'nullable|numeric|digits_between:0,'.$this->request->get('thermostat_high'),
+            'thermostat_low' => 'nullable|numeric|between:0,'.$this->request->get('thermostat_high'),
             'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
             'heating_second_floor' => 'required|numeric|exists:building_heatings,id',
             'water_comfort' => 'numeric|exists:comfort_level_tap_waters,id',

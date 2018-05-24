@@ -199,6 +199,9 @@
                     <div class="panel-body">
                         <ol>
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')))))}}</a></li>
+                            <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_CV-ketel.pdf"; ?>
+                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+
                         </ol>
                     </div>
                 </div>

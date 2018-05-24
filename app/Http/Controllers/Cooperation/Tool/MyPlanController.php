@@ -58,7 +58,6 @@ class MyPlanController extends Controller
         foreach($advices as $measureType => $stepAdvices) {
             foreach($stepAdvices as $step => $advicesForStep) {
                 foreach($advicesForStep as $advice) {
-
                     // check if the planned year is set and if not use the year
                     $plannedYear = $advice->planned_year == null ? $advice->year : $advice->planned_year;
                     // check if a user is interested in the measure
@@ -71,7 +70,7 @@ class MyPlanController extends Controller
                     $advicedYear = $advice->year;
 
                     // push the plan data to the array
-                   $userPlanData[$plannedYear] = [ $plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear];
+                   $userPlanData[$plannedYear][$measure] = [ $plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear];
                 }
             }
         }
@@ -84,12 +83,25 @@ class MyPlanController extends Controller
 
             ksort($userPlanData);
 
+
+            // foreach through all the plandata
             foreach ($userPlanData as $myPlan) {
-                fputcsv($file, $myPlan, ';');
+                // if the my plan is bigger then 1 it has more measures inside 1 year so we need to loop through it again.
+                // else the plandata has one measure inside 1 year so we dont need to loop through it again
+                if (count($myPlan) > 1) {
+                    foreach ($myPlan as $data) {
+                        fputcsv($file, $data, ';');
+                    }
+                } else {
+                    $planData = array_values($myPlan)[0];
+                    fputcsv($file, $planData, ';');
+                }
+
             }
 
             fclose($file);
         };
+
 
         return \Response::stream($callback, 200, $headers);
 	}

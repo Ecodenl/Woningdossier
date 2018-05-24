@@ -19,8 +19,14 @@
                     <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
                     <select id="example_building_id" class="form-control" name="example_building_id" >
                         @foreach($exampleBuildings as $exampleBuilding)
-                            <option @if($exampleBuilding->id == old('example_building_type')) selected @endif value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
+                            <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
+                                    selected="selected"
+                                    @elseif($exampleBuilding->id == old('example_building_id'))
+                                    selected="selected"
+                                    @endif
+                                    value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                         @endforeach
+                            <option value="" @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
                     </select>
 
                     @if ($errors->has('example_building_id'))
@@ -93,8 +99,8 @@
                             <label for="surface" class=" control-label"><i data-toggle="collapse" data-target="#user-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-user-surface')</label> <span>*</span>
 
                             <div class="input-group">
-                                <span class="input-group-addon">m<sup>2</sup></span>
-                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('surface')){{ \App\Helpers\NumberFormatter::format(old('surface'), 1) }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('surface')){{ old('surface') }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
                             </div>
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -476,7 +482,7 @@
 
                     <div class="input-group">
                         <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
-                        <input type="text" id="thermostat_high" class="form-control" value="@if(old('thermostat_high') != "") {{ old('thermostat_high') }} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_high}} @else 20 @endif" name="thermostat_high">
+                        <input type="text" id="thermostat_high" class="form-control" value="@if(!empty(old('thermostat_high'))){{ old('thermostat_high', 20) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_high, 1) }}@else{{ \App\Helpers\NumberFormatter::format(20, 1) }}@endif" name="thermostat_high">
                     </div>
 
 
@@ -499,7 +505,7 @@
 
                     <div class="input-group">
                         <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
-                        <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(old('thermostat_low') != "") {{old('thermostat_low')}} @elseif(isset($energyHabit)) {{$energyHabit->thermostat_low}} @else 16 @endif" placeholder="{{old('thermostat_low')}}">
+                        <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(!empty(old('thermostat_low'))){{ old('thermostat_low', 16) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_low, 1) }}@else{{ \App\Helpers\NumberFormatter::format(16, 1) }}@endif">
                     </div>
 
                     <div id="thermostat-low-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -648,7 +654,10 @@
                         <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
 
 
-                        <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity">
+                        <div class="input-group">
+                            <span class="input-group-addon">kWh</span>
+                            <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity">
+                        </div>
 
                         <div id="amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
@@ -665,7 +674,11 @@
                     <div class="form-group add-space{{ $errors->has('amount_gas') ? ' has-error' : '' }}">
                         <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.gas-usage-past-year') <span>*</span></label>
 
-                        <input id="amount_gas" type="text" value="@if(old('amount_gas') != ""){{ old('amount_gas') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_gas }}@endif" class="form-control" name="amount_gas" required>
+                        <div class="input-group">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters')</span>
+                            <input id="amount_gas" type="text" value="@if(old('amount_gas') != ""){{ old('amount_gas') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_gas }}@endif" class="form-control" name="amount_gas" required>
+                        </div>
+
                         <div id="amount-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
                         </div>

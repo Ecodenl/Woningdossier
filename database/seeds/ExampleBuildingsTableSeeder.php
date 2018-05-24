@@ -12,12 +12,12 @@ class ExampleBuildingsTableSeeder extends Seeder
     public function run()
     {
         $exampleBuildings = [
-			[
+			/*[
 				'names' => [
 					'nl' => 'Er is geen passende voorbeeldwoning',
 				],
 				'order' => 99,
-			],
+			],*/
 	        [
 		        'names' => [
 			        'nl' => 'Tussenwoning, drie bouwlagen en plat dak',

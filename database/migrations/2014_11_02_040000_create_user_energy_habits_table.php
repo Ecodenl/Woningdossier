@@ -20,8 +20,8 @@ class CreateUserEnergyHabitsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
 
             $table->integer('resident_count')->nullable()->default(null);
-            $table->integer('thermostat_high')->nullable()->default(null);
-            $table->integer('thermostat_low')->nullable()->default(null);
+            $table->decimal('thermostat_high')->nullable()->default(null);
+            $table->decimal('thermostat_low')->nullable()->default(null);
             $table->integer('hours_high')->nullable()->default(null);
             $table->integer('heating_first_floor')->unsigned()->nullable()->default(null);
             $table->foreign('heating_first_floor')->references('id')->on('building_heatings')->onDelete('restrict');

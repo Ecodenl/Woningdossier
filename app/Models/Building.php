@@ -81,12 +81,44 @@ class Building extends Model
 		return $this->belongsTo(ExampleBuilding::class);
 	}
 
+	/**
+	 *
+	 * @return null|ExampleBuilding
+	 */
+	public function getExampleBuilding(){
+		$example = $this->exampleBuilding;
+		if ($example instanceof ExampleBuilding){
+			return $example;
+		}
+		return $this->getFittingExampleBuilding();
+	}
+
+	/**
+	 *
+	 * @return ExampleBuilding|null
+	 */
+	public function getFittingExampleBuilding(){
+		// determine fitting example building based on year + house type
+		$features = $this->buildingFeatures;
+		if (!$features instanceof BuildingFeature){
+			return null;
+		}
+		if (!$features->buildingType instanceof BuildingType) {
+			return null;
+		}
+		$example = ExampleBuilding::whereNull('cooperation_id')
+		               ->where('buiding_type_id', $features->buildingType->id)
+						->first();
+
+		return $example;
+	}
+
 	public function getExampleValueForStep(Step $step, $formKey){
 		return $this->getExampleValue($step->slug . '.'. $formKey);
 	}
 
 	public function getExampleValue($key){
-		$example = $this->exampleBuilding;
+		$example = $this->getExampleBuilding();
 		if (!$example instanceof ExampleBuilding){
 			return null;
 		}

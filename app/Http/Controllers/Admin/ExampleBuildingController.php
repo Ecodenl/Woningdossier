@@ -310,7 +310,7 @@ class ExampleBuildingController extends Controller
 				    'type' => 'select',
 				    'options' => __('woningdossier.cooperation.option'),
 			    ],
-				'building_elements['. $crawlspace->id . '][element_value_id]' => [
+				'building_elements.'. $crawlspace->id . '.element_value_id' => [
 					'label' => __('woningdossier.cooperation.tool.floor-insulation.crawlspace-height'),
 					'type' => 'select',
 					'options' => $this->createOptions($crawlspace->values()->orderBy('order')->get(), 'value'),

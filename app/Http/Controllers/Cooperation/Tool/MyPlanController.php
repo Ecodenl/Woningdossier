@@ -28,17 +28,21 @@ class MyPlanController extends Controller
 
 
         // set the headers and stuff
-        header("Content-type: text/csv");
-        header("Content-Disposition: attachment; filename=my-personal-plan.csv");
-        header("Pragma: no-cache");
-        header("Expires: 0");
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=my-plan.csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
 
-
+        // get the data
         $user = \Auth::user();
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
-        $userPlanData = [
-            [
+        // Column names
+        $titles = [
+
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.year-or-planned'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.interest'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.measure'),
@@ -47,8 +51,10 @@ class MyPlanController extends Controller
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-electricity'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-costs'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.advice-year'),
-            ]
         ];
+
+        $userPlanData = [];
+
         foreach($advices as $measureType => $stepAdvices) {
             foreach($stepAdvices as $step => $advicesForStep) {
                 foreach($advicesForStep as $advice) {
@@ -63,20 +69,29 @@ class MyPlanController extends Controller
                     $electricitySavings = $advice->savings_electricity;
                     $savingsInEuro = $advice->savings_money;
                     $advicedYear = $advice->year;
-                    
+
                     // push the plan data to the array
-                    array_push($userPlanData, [$plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear]);
+                   $userPlanData[$plannedYear] = [ $plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear];
                 }
             }
         }
 
-        foreach ($userPlanData as $myPlan) {
-            print '"' . implode('";"', $myPlan) . '"';
-            print "\r\n";
-        }
+        $callback = function () use ($userPlanData, $titles)
+        {
 
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $titles, ';');
 
-        exit;
+            ksort($userPlanData);
+
+            foreach ($userPlanData as $myPlan) {
+                fputcsv($file, $myPlan, ';');
+            }
+
+            fclose($file);
+        };
+
+        return \Response::stream($callback, 200, $headers);
 	}
 
 	public function store(Request $request){

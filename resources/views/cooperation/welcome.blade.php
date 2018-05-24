@@ -64,8 +64,9 @@
     <div class="content">
 
         <div class="title m-b-md">
-            {{ config('app.name') }} voor {{ $cooperation->name }}
+            {{ $cooperation->name }}
         </div>
+        <h2>{{ config('app.name') }}</h2>
 
     </div>
 @endsection

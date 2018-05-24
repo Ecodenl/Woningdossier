@@ -85,7 +85,7 @@ return [
                 'degrees' => 'graden'
 			],
 
-			'title' => 'Basisadvies tool',
+			'title' => 'Basisadvies',
 
 			'general-data' => [
 				'title' => 'Algemene gegevens',

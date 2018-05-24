@@ -135,6 +135,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VentilationsTableSeeder::class);
 
 
-
+        $this->call(SqlDumpSeeder::class);
     }
 }

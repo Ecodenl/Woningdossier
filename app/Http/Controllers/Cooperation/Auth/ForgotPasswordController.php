@@ -42,14 +42,4 @@ class ForgotPasswordController extends Controller
 		return view('cooperation.auth.passwords.email');
 	}
 
-    public function sendResetLinkEmail()
-    {
-        $token = str_random(16);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
-
-        return (new MailMessage)
-            ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password', url(config('app.url').route('cooperation.password.reset', ['cooperation' => $cooperation, 'token' => $token])))
-            ->line('If you did not request a password reset, no further action is required.');
-	}
 }

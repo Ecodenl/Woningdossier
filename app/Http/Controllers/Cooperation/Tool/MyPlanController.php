@@ -84,18 +84,22 @@ class MyPlanController extends Controller
             ksort($userPlanData);
 
 
-            // foreach through all the plandata
-            foreach ($userPlanData as $myPlan) {
+            foreach ($userPlanData as $myPlans) {
+
+                foreach ($myPlans as $myPlan) {
+                    fputcsv($file, $myPlan, ';');
+                }
+
                 // if the my plan is bigger then 1 it has more measures inside 1 year so we need to loop through it again.
                 // else the plandata has one measure inside 1 year so we dont need to loop through it again
-                if (count($myPlan) > 1) {
-                    foreach ($myPlan as $data) {
-                        fputcsv($file, $data, ';');
-                    }
-                } else {
-                    $planData = array_values($myPlan)[0];
-                    fputcsv($file, $planData, ';');
-                }
+//                if (count($myPlan) > 1) {
+//                    foreach ($myPlan as $data) {
+//                        fputcsv($file, $data, ';');
+//                    }
+//                } else {
+//                    $planData = array_values($myPlan)[0];
+//                    fputcsv($file, $planData, ';');
+//                }
 
             }
 

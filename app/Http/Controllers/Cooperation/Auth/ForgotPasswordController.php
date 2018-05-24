@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class ForgotPasswordController extends Controller
 {
@@ -38,5 +40,16 @@ class ForgotPasswordController extends Controller
 	public function showLinkRequestForm()
 	{
 		return view('cooperation.auth.passwords.email');
+	}
+
+    public function sendResetLinkEmail()
+    {
+        $token = str_random(16);
+        $cooperation = Cooperation::find(\Session::get('cooperation'));
+
+        return (new MailMessage)
+            ->line('You are receiving this email because we received a password reset request for your account.')
+            ->action('Reset Password', url(config('app.url').route('cooperation.password.reset', ['cooperation' => $cooperation, 'token' => $token])))
+            ->line('If you did not request a password reset, no further action is required.');
 	}
 }

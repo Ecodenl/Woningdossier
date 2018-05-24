@@ -23,6 +23,62 @@ class MyPlanController extends Controller
 		));
 	}
 
+    public function export()
+    {
+
+
+        // set the headers and stuff
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename=my-personal-plan.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+
+        $user = \Auth::user();
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+
+        $userPlanData = [
+            [
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.year-or-planned'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.interest'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.measure'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.costs'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-gas'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-electricity'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-costs'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.advice-year'),
+            ]
+        ];
+        foreach($advices as $measureType => $stepAdvices) {
+            foreach($stepAdvices as $step => $advicesForStep) {
+                foreach($advicesForStep as $advice) {
+
+                    // check if the planned year is set and if not use the year
+                    $plannedYear = $advice->planned_year == null ? $advice->year : $advice->planned_year;
+                    // check if a user is interested in the measure
+                    $isInterested = $advice->planned == 1 ? "Ja" : "Nee";
+                    $costs = $advice->costs;
+                    $measure = $advice->measureApplication->measure_name;
+                    $gasSavings = $advice->savings_gas;
+                    $electricitySavings = $advice->savings_electricity;
+                    $savingsInEuro = $advice->savings_money;
+                    $advicedYear = $advice->year;
+                    
+                    // push the plan data to the array
+                    array_push($userPlanData, [$plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear]);
+                }
+            }
+        }
+
+        foreach ($userPlanData as $myPlan) {
+            print '"' . implode('";"', $myPlan) . '"';
+            print "\r\n";
+        }
+
+
+        exit;
+	}
+
 	public function store(Request $request){
 		$sortedAdvices = [];
 

@@ -416,7 +416,19 @@ return [
 
 				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
 				'no-year' => 'Geen jaartal',
+                'download' => 'Download mijn persoonlijke plan!',
 
+                'csv-columns' => [
+                    'year-or-planned' => 'Jaar / gepland jaar',
+                    'interest' => 'Interesse',
+                    'measure' => 'Maatregel',
+                    'costs' => 'Kosten',
+                    'savings-gas' => 'Besparing m3 gas',
+                    'savings-electricity' => 'Besparing kWh elektra',
+                    'savings-costs' => 'Besparing in euro',
+                    'advice-year' => 'Geadviseerd jaar',
+                    'planned-year' => 'Planning',
+                ],
 				'columns' => [
 					'interest' => 'Interesse',
 					'measure' => 'Maatregel',

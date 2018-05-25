@@ -51,6 +51,7 @@ class MyPlanController extends Controller
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-electricity'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-costs'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.advice-year'),
+	            __('woningdossier.cooperation.tool.my-plan.csv-columns.costs-advice-year'),
         ];
 
         $userPlanData = [];
@@ -62,15 +63,16 @@ class MyPlanController extends Controller
                     $plannedYear = $advice->planned_year == null ? $advice->year : $advice->planned_year;
                     // check if a user is interested in the measure
                     $isInterested = $advice->planned == 1 ? "Ja" : "Nee";
-                    $costs = $advice->costs;
+                    $costs = round($advice->costs);
                     $measure = $advice->measureApplication->measure_name;
-                    $gasSavings = $advice->savings_gas;
-                    $electricitySavings = $advice->savings_electricity;
-                    $savingsInEuro = $advice->savings_money;
+                    $gasSavings = round($advice->savings_gas);
+                    $electricitySavings = round($advice->savings_electricity);
+                    $savingsInEuro = round($advice->savings_money);
                     $advicedYear = $advice->year;
+                    $costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
 
                     // push the plan data to the array
-                   $userPlanData[$plannedYear][$measure] = [ $plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear];
+                   $userPlanData[$plannedYear][$measure] = [ $plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear, $costsAdvisedYear];
                 }
             }
         }

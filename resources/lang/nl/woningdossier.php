@@ -417,7 +417,7 @@ return [
 
 				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
 				'no-year' => 'Geen jaartal',
-                'download' => 'Download mijn persoonlijke plan!',
+                'download' => 'Download hier je actieplan',
 
                 'csv-columns' => [
                     'year-or-planned' => 'Jaar / gepland jaar',
@@ -429,6 +429,7 @@ return [
                     'savings-costs' => 'Besparing in euro',
                     'advice-year' => 'Geadviseerd jaar',
                     'planned-year' => 'Planning',
+	                'costs-advice-year' => 'Kosten in geadviseerd jaar',
                 ],
 				'columns' => [
 					'interest' => 'Interesse',

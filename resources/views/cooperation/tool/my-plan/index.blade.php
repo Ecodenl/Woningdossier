@@ -157,23 +157,19 @@
                 <div class="panel-heading">@lang('default.buttons.download')</div>
                 <div class="panel-body">
                     <ol>
-                        <li><a download="" href="{{asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf')))))}}</a></li>
+                        <li><a download="" href="{{ asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf')))))}}</a></li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
 
+    <hr>
 
     <div class="row">
         <div class="col-md-12">
-            <hr>
-            <div class="form-group add-space">
-                <div class="">
-                    <a href="{{route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">
-                        @lang('woningdossier.cooperation.tool.my-plan.download')
-                    </a>
-                </div>
+            <div class="form-group">
+                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.download')</a>
             </div>
         </div>
     </div>

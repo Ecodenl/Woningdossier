@@ -23,6 +23,95 @@ class MyPlanController extends Controller
 		));
 	}
 
+    public function export()
+    {
+
+
+        // set the headers and stuff
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=my-plan.csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        // get the data
+        $user = \Auth::user();
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+
+        // Column names
+        $titles = [
+
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.year-or-planned'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.interest'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.measure'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.costs'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-gas'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-electricity'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-costs'),
+                __('woningdossier.cooperation.tool.my-plan.csv-columns.advice-year'),
+	            __('woningdossier.cooperation.tool.my-plan.csv-columns.costs-advice-year'),
+        ];
+
+        $userPlanData = [];
+
+        foreach($advices as $measureType => $stepAdvices) {
+            foreach($stepAdvices as $step => $advicesForStep) {
+                foreach($advicesForStep as $advice) {
+                    // check if the planned year is set and if not use the year
+                    $plannedYear = $advice->planned_year == null ? $advice->year : $advice->planned_year;
+                    // check if a user is interested in the measure
+                    $isInterested = $advice->planned == 1 ? "Ja" : "Nee";
+                    $costs = round($advice->costs);
+                    $measure = $advice->measureApplication->measure_name;
+                    $gasSavings = round($advice->savings_gas);
+                    $electricitySavings = round($advice->savings_electricity);
+                    $savingsInEuro = round($advice->savings_money);
+                    $advicedYear = $advice->year;
+                    $costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
+
+                    // push the plan data to the array
+                   $userPlanData[$plannedYear][$measure] = [ $plannedYear, $isInterested, $measure ,$costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear, $costsAdvisedYear];
+                }
+            }
+        }
+
+        $callback = function () use ($userPlanData, $titles)
+        {
+
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $titles, ';');
+
+            ksort($userPlanData);
+
+
+            foreach ($userPlanData as $myPlans) {
+
+                foreach ($myPlans as $myPlan) {
+                    fputcsv($file, $myPlan, ';');
+                }
+
+                // if the my plan is bigger then 1 it has more measures inside 1 year so we need to loop through it again.
+                // else the plandata has one measure inside 1 year so we dont need to loop through it again
+//                if (count($myPlan) > 1) {
+//                    foreach ($myPlan as $data) {
+//                        fputcsv($file, $data, ';');
+//                    }
+//                } else {
+//                    $planData = array_values($myPlan)[0];
+//                    fputcsv($file, $planData, ';');
+//                }
+
+            }
+
+            fclose($file);
+        };
+
+
+        return \Response::stream($callback, 200, $headers);
+	}
+
 	public function store(Request $request){
 		$sortedAdvices = [];
 

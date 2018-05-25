@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class ForgotPasswordController extends Controller
 {
@@ -39,4 +41,5 @@ class ForgotPasswordController extends Controller
 	{
 		return view('cooperation.auth.passwords.email');
 	}
+
 }

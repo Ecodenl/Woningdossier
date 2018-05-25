@@ -21,6 +21,12 @@
                                     @lang('default.buttons.next')
                                 @endif
                             </button>
+                        @else
+                            @if(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
+                                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}" class="pull-right btn btn-primary">
+                                    @lang('woningdossier.cooperation.tool.my-plan.download')
+                                </a>
+                            @endif
                         @endif
                         <div class="clearfix"></div>
                     </div>
@@ -42,7 +48,11 @@
         })
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
+
+    @if(!in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
     <script>
         $("form.form-horizontal").areYouSure();
     </script>
+    @endif
+
 @endpush

@@ -19,7 +19,7 @@ class CooperationsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Het Nieuwe Wonen Rivierenland',
-                'slug' => 'HNWR'
+                'slug' => 'hnwr'
             ],
             [
                 'name' => 'BRED Breda',

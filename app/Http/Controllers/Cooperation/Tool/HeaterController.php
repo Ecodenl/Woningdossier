@@ -206,7 +206,7 @@ class HeaterController extends Controller
 		// Remove old results
 		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 
-		if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0){
+		if (isset($results['cost_indication']) && $results['cost_indication'] > 0){
 			$measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
 			if ($measureApplication instanceof MeasureApplication){
 				$actionPlanAdvice = new UserActionPlanAdvice($results);

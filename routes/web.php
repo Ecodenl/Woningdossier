@@ -116,6 +116,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], fu
 });
 
 Route::post('logout', 'Admin\Auth\LoginController@logout')->name('logout');
+//Route::get('password/reset/{token?}', 'Cooperation\Auth\ResetPasswordController@showResetForm')->name('password.reset');
+//Route::post('password/email', 'Cooperation\Auth\PasswordController@sendResetLinkEmail');
+//Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');
 
 Route::get('/', function () {
 	return view('welcome');

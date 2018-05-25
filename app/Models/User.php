@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Events\UserCreated;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
@@ -182,5 +184,16 @@ class User extends Authenticatable
 	 */
 	public function hasCompleted(Step $step){
 		return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
+	}
+
+	/**
+	 * Send the password reset notification.
+	 *
+	 * @param  string  $token
+	 * @return void
+	 */
+	public function sendPasswordResetNotification($token)
+	{
+		$this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
 	}
 }

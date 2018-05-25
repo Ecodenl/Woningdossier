@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
 
 class ResetPasswordController extends Controller
 {
@@ -46,7 +48,7 @@ class ResetPasswordController extends Controller
 	 * @param  string|null  $token
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function showResetForm(Request $request, $token = null)
+	public function showResetForm(Request $request, Cooperation $cooperation, $token = null)
 	{
 		return view('cooperation.auth.passwords.reset')->with(
 			['token' => $token, 'email' => $request->email]

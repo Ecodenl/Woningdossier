@@ -260,15 +260,17 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="form-group add-space {{ $errors->has('comments') ? ' has-error' : '' }}">
+                                    <div class="form-group add-space {{ $errors->has('building_roof_types.'.$roofCat.'.extra.comment') ? ' has-error' : '' }}">
                                         <label for="" class="control-label">
                                             <i data-toggle="collapse" data-target="#comments-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                             @lang('default.form.input.comment')
                                         </label>
 
 	                                    <?php
-	                                    $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['comment']) ? $currentCategorizedRoofTypes[$roofCat]['building_heating_id']['comment'] : "";
+	                                    $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['comment']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['comment'] : old('building_roof_types.' . $roofCat . '.extra.comment');
 	                                    ?>
+                                        
+                                        
 
                                         <textarea name="building_roof_types[{{ $roofCat }}][extra][comment]" id="" class="form-control">{{ $default }}</textarea>
 
@@ -276,9 +278,9 @@
                                             And i would like to have it to...
                                         </div>
 
-                                        @if ($errors->has('comments'))
+                                        @if ($errors->has('building_roof_types.'.$roofCat.'.extra.comment'))
                                             <span class="help-block">
-                                <strong>{{ $errors->first('comments') }}</strong>
+                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
                             </span>
                                         @endif
                                     </div>

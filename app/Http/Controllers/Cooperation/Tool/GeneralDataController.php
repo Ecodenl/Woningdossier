@@ -248,6 +248,7 @@ class GeneralDataController extends Controller
 
     	}
 
+
 	    UserEnergyHabit::updateOrCreate(
 	        [
 	            'user_id' => Auth::id()

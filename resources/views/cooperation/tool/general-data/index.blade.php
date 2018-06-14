@@ -594,10 +594,10 @@
 
 	                    <?php
 
-	                    $selectedHSF = old('heating_first_floor', null);
+	                    $selectedHSF = old('heating_second_floor', null);
 	                    if (is_null($selectedHSF)){
 		                    if(isset($energyHabit)){
-			                    $selectedHSF = $energyHabit->heating_first_floor;
+			                    $selectedHSF = $energyHabit->heating_second_floor;
 		                    }
 	                    }
 	                    if (is_null($selectedHSF)){

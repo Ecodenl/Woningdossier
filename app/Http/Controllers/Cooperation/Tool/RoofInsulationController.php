@@ -393,6 +393,7 @@ class RoofInsulationController extends Controller
                     $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : "";
 
                     $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
+                    $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
 
                     BuildingFeature::where('building_id', $building->id)->update([
                         'roof_type_id' => $request->input('building_features.roof_type_id')
@@ -413,6 +414,7 @@ class RoofInsulationController extends Controller
                                 'bitumen_replaced_date' => $extraBitumenReplacedDate,
                                 'zinc_replaced_date' => $extraZincReplacedDate,
                                 'tiles_condition' => $extraTilesCondition,
+                                'comment' => $comment
                             ]
                         ]
                     );

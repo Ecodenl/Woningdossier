@@ -9,6 +9,31 @@ return [
 		],
 	],
 	'cooperation' => [
+
+	    'admin' => [
+	        'csv-export' => [
+	            'title' => 'CSV - Export',
+                'description' => 'Download hier het actieplan per jaar of het actieplan pet maatregel.',
+
+                'download' => [
+                    'by-year' => 'Actieplan per jaar',
+                    'by-measure' => 'Actieplan per maatregel',
+                ],
+                'csv-columns' => [
+                    'first-name' => 'Voornaam',
+                    'last-name' => 'Achternaam',
+                    'email' => 'Email',
+                    'phonenumber' => 'Telefoonnummer',
+                    'mobilenumber' => 'Mobiel nummer',
+                    'street' => 'Straat',
+                    'house-number' => 'Huis nummer',
+                    'city' => 'Woonplaats',
+                    'zip-code' => 'Postcode',
+                    'country-code' => 'Landcode',
+                ],
+            ]
+        ],
+
         'radiobutton' => [
             'not-important' => 'Niet van toepassing',
             'yes' => 'Ja',

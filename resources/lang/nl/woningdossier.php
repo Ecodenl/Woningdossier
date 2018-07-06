@@ -9,11 +9,14 @@ return [
 		],
 	],
 	'cooperation' => [
-
 	    'admin' => [
+	        'navbar' => [
+	            'csv-export' => 'CSV Export\'s',
+                'example-buildings' => 'Example buildings'
+            ],
 	        'csv-export' => [
 	            'title' => 'CSV - Export',
-                'description' => 'Download hier het actieplan per jaar of het actieplan pet maatregel.',
+                'description' => 'Download hier het actieplan per jaar of het actieplan per maatregel in csv formaat.',
 
                 'download' => [
                     'by-year' => 'Actieplan per jaar',

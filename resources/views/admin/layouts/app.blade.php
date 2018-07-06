@@ -70,7 +70,8 @@
                     <!-- Authentication Links -->
                     @guest
                     @else
-                        <li><a href="{{ route('admin.example-buildings.index') }}">Example buildings</a></li>
+                        <li><a href="{{ route('admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
+                        <li><a href="{{ route('admin.csv-export.index') }}">@lang('woningdossier.cooperation.admin.navbar.csv-export')</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>

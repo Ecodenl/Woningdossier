@@ -11,12 +11,12 @@ return [
 	'cooperation' => [
 	    'admin' => [
 	        'navbar' => [
-	            'csv-export' => 'CSV Export\'s',
+	        	'reports' => 'Rapportages',
                 'example-buildings' => 'Example buildings'
             ],
-	        'csv-export' => [
-	            'title' => 'CSV - Export',
-                'description' => 'Download hier het actieplan per jaar of het actieplan per maatregel in csv formaat.',
+	        'reports' => [
+	            'title' => 'Rapportages',
+                'description' => 'Rapportage downloads',
 
                 'download' => [
                     'by-year' => 'Actieplan per jaar',

@@ -11,7 +11,10 @@
 
                         <div class="row">
                             <div class="col-sm-12">
-                                <p>@lang('woningdossier.cooperation.home.disclaimer.description')</p>
+                                <ul>
+                                    <li><a href="{{ route('admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
+                                    <li><a href="{{ route('admin.csv-export.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>

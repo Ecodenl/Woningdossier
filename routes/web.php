@@ -110,10 +110,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], fu
 	Route::group(['middleware' => 'auth'], function(){
 		Route::get('/', 'AdminController@index')->name('index');
 
-		Route::group(['prefix' => 'csv-export', 'as' => 'csv-export.'], function () {
-		    Route::get('', 'CsvExportController@index')->name('index');
-		    Route::get('by-year', 'CsvExportController@downloadByYear')->name('download.by-year');
-		    Route::get('by-measure', 'CsvExportController@downloadByMeasure')->name('download.by-measure');
+		Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+		    Route::get('', 'ReportController@index')->name('index');
+		    Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+		    Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
         });
 
 		Route::resource('example-buildings', 'ExampleBuildingController');

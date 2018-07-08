@@ -26,16 +26,16 @@ class ReportController extends Controller
 
 		// set the csv headers
 		$csvHeaders =[
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.first-name'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.last-name'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.email'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.phonenumber'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.mobilenumber'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.street'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.house-number'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.city'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.zip-code'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.country-code'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.first-name'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.last-name'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.email'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.phonenumber'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.mobilenumber'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.street'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.house-number'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.city'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.zip-code'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.country-code'),
 		];
 
 		// put the measures inside the header array
@@ -44,6 +44,7 @@ class ReportController extends Controller
 			$csvHeaders[] = $startYear;
 		}
 
+		$allUserMeasures = [];
 		// new array for the userdata
 		$rows = [];
 
@@ -106,16 +107,16 @@ class ReportController extends Controller
 
 		// set the csv headers
 		$csvHeaders =[
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.first-name'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.last-name'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.email'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.phonenumber'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.mobilenumber'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.street'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.house-number'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.city'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.zip-code'),
-			__('woningdossier.cooperation.admin.csv-export.csv-columns.country-code'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.first-name'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.last-name'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.email'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.phonenumber'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.mobilenumber'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.street'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.house-number'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.city'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.zip-code'),
+			__('woningdossier.cooperation.admin.reports.csv-columns.country-code'),
 		];
 
 		// get all the measures

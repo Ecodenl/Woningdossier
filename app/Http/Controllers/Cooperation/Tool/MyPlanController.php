@@ -6,6 +6,7 @@ use App\Helpers\Calculator;
 use App\Http\Controllers\Controller;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Services\CsvExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -25,24 +26,12 @@ class MyPlanController extends Controller
 
     public function export()
     {
-
-
-        // set the headers and stuff
-        $headers = [
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=my-plan.csv",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
-        ];
-
         // get the data
         $user = \Auth::user();
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
         // Column names
-        $titles = [
-
+        $headers = [
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.year-or-planned'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.interest'),
                 __('woningdossier.cooperation.tool.my-plan.csv-columns.measure'),
@@ -62,7 +51,7 @@ class MyPlanController extends Controller
                     // check if the planned year is set and if not use the year
                     $plannedYear = $advice->planned_year == null ? $advice->year : $advice->planned_year;
                     // check if a user is interested in the measure
-                    $isInterested = $advice->planned == 1 ? "Ja" : "Nee";
+                    $isInterested = $advice->planned == 1 ? __('default.yes') : __('default.no');
                     $costs = round($advice->costs);
                     $measure = $advice->measureApplication->measure_name;
                     $gasSavings = round($advice->savings_gas);
@@ -77,39 +66,11 @@ class MyPlanController extends Controller
             }
         }
 
-        $callback = function () use ($userPlanData, $titles)
-        {
+        ksort($userPlanData);
 
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $titles, ';');
+        $userPlanData = array_flatten($userPlanData, 1);
 
-            ksort($userPlanData);
-
-
-            foreach ($userPlanData as $myPlans) {
-
-                foreach ($myPlans as $myPlan) {
-                    fputcsv($file, $myPlan, ';');
-                }
-
-                // if the my plan is bigger then 1 it has more measures inside 1 year so we need to loop through it again.
-                // else the plandata has one measure inside 1 year so we dont need to loop through it again
-//                if (count($myPlan) > 1) {
-//                    foreach ($myPlan as $data) {
-//                        fputcsv($file, $data, ';');
-//                    }
-//                } else {
-//                    $planData = array_values($myPlan)[0];
-//                    fputcsv($file, $planData, ';');
-//                }
-
-            }
-
-            fclose($file);
-        };
-
-
-        return \Response::stream($callback, 200, $headers);
+        return CsvExportService::export($headers, $userPlanData, 'my-plan');
 	}
 
 	public function store(Request $request){

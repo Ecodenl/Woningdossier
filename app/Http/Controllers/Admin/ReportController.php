@@ -93,7 +93,7 @@ class ReportController extends Controller
 			$rows = $row;
 		}
 
-		return CsvExportService::export($csvHeaders, $rows);
+		return CsvExportService::export($csvHeaders, $rows, 'by-year');
 	}
 
 	public function downloadByMeasure()
@@ -172,6 +172,6 @@ class ReportController extends Controller
 
 		}
 
-		return CsvExportService::export($csvHeaders, $rows);
+		return CsvExportService::export($csvHeaders, $rows, 'by-measure');
 	}
 }

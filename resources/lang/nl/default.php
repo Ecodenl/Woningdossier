@@ -16,5 +16,8 @@ return [
             'comment' => 'Toelichting op de specifieke situatie'
         ],
     ],
+
+	'yes' => 'Ja',
+	'no' => 'Nee',
 ];
 

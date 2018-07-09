@@ -103,10 +103,11 @@ class Calculator {
 	 * @param float|int $costs Amount indexed on $fromYear
 	 * @param int $fromYear Previous year used for indexing
 	 * @param int $toYear New year to index
+	 * @param null|int|double|float|PriceIndexing Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
 	 *
 	 * @return float|int
 	 */
-	public static function reindexCosts($costs, $fromYear, $toYear){
+	public static function reindexCosts($costs, $fromYear, $toYear, $index = null){
 		if (is_null($fromYear)){
 			$fromYear = Carbon::now()->year;
 		}
@@ -115,11 +116,17 @@ class Calculator {
 		}
 		$yearFactor = $toYear - $fromYear;
 
-		$index = PriceIndexing::where('short', 'common')->first();
+
+		if (is_null($index)){
+			$index = PriceIndexing::where( 'short', 'common' )->first();
+		}
 		// default = 2%
 		$costIndex = 2;
 		if ($index instanceof PriceIndexing){
 			$costIndex = $index->percentage;
+		}
+		elseif (!is_null($index) && $index >= 0 && $index <= 100){
+			$costIndex = $index;
 		}
 
 		$costsIndexed = $costs * pow((1 + ($costIndex / 100)), $yearFactor);

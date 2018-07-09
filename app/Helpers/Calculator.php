@@ -106,7 +106,7 @@ class Calculator {
 	 *
 	 * @return float|int
 	 */
-	public static function reindexCosts($costs, $fromYear, $toYear){
+	public static function reindexCosts($costs, $fromYear, $toYear, $index = null){
 		if (is_null($fromYear)){
 			$fromYear = Carbon::now()->year;
 		}
@@ -115,11 +115,17 @@ class Calculator {
 		}
 		$yearFactor = $toYear - $fromYear;
 
-		$index = PriceIndexing::where('short', 'common')->first();
+
+		if (is_null($index)){
+			$index = PriceIndexing::where( 'short', 'common' )->first();
+		}
 		// default = 2%
 		$costIndex = 2;
 		if ($index instanceof PriceIndexing){
 			$costIndex = $index->percentage;
+		}
+		elseif (!is_null($index) && is_numeric($index)){
+			$costIndex = $index;
 		}
 
 		$costsIndexed = $costs * pow((1 + ($costIndex / 100)), $yearFactor);

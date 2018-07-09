@@ -13,7 +13,7 @@
                             <div class="col-sm-12">
                                 <ul>
                                     <li><a href="{{ route('admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                                    <li><a href="{{ route('admin.csv-export.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                                    <li><a href="{{ route('admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
                                 </ul>
                             </div>
                         </div>

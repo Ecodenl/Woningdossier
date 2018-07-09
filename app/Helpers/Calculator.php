@@ -103,6 +103,7 @@ class Calculator {
 	 * @param float|int $costs Amount indexed on $fromYear
 	 * @param int $fromYear Previous year used for indexing
 	 * @param int $toYear New year to index
+	 * @param null|int|double|float|PriceIndexing Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
 	 *
 	 * @return float|int
 	 */
@@ -124,7 +125,7 @@ class Calculator {
 		if ($index instanceof PriceIndexing){
 			$costIndex = $index->percentage;
 		}
-		elseif (!is_null($index) && is_numeric($index)){
+		elseif (!is_null($index) && $index >= 0 && $index <= 100){
 			$costIndex = $index;
 		}
 

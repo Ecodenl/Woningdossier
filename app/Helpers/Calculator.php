@@ -50,7 +50,9 @@ class Calculator {
 
 	public static function calculateCostIndication($surface, $measureAdvice){
 		$measureApplication = MeasureApplication::translated('measure_name', $measureAdvice, 'nl')->first(['measure_applications.*']);
-		if (!$measureApplication instanceof MeasureApplication) { return 0; }
+		if (!$measureApplication instanceof MeasureApplication) {
+			return 0;
+		}
 
 		$result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
 		self::debug("Cost indication: " . $result . " = max(" . $surface . " * " . $measureApplication->costs . ", " . $measureApplication->minimal_costs . ")");

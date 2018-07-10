@@ -92,36 +92,36 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 		});
 
+		// todo add admin middleware checking ACLs
+		Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], function(){
+
+			Route::group(['namespace' => 'Auth'], function(){
+				Route::get('login', 'LoginController@showLoginForm')->name('login');
+				Route::post('login', 'LoginController@login');
+				Route::post('logout', 'LoginController@logout')->name('logout');
+			});
+
+			// Logged In Section
+			Route::group(['middleware' => ['auth', 'is-admin']], function(){
+				Route::get('/', 'AdminController@index')->name('index');
+
+				Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+					Route::get('', 'ReportController@index')->name('index');
+					Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+					Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+				});
+
+				Route::resource('example-buildings', 'ExampleBuildingController');
+				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+			});
+		});
 
 	});
 
 });
 
-// todo add admin middleware checking ACLs
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], function(){
 
-	Route::group(['namespace' => 'Auth'], function(){
-		Route::get('login', 'LoginController@showLoginForm')->name('login');
-		Route::post('login', 'LoginController@login');
-		Route::post('logout', 'LoginController@logout')->name('logout');
-	});
-
-	// Logged In Section
-	Route::group(['middleware' => 'auth'], function(){
-		Route::get('/', 'AdminController@index')->name('index');
-
-		Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-		    Route::get('', 'ReportController@index')->name('index');
-		    Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
-		    Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-        });
-
-		Route::resource('example-buildings', 'ExampleBuildingController');
-		Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
-	});
-});
-
-Route::post('logout', 'Admin\Auth\LoginController@logout')->name('logout');
+Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('logout');
 //Route::get('password/reset/{token?}', 'Cooperation\Auth\ResetPasswordController@showResetForm')->name('password.reset');
 //Route::post('password/email', 'Cooperation\Auth\PasswordController@sendResetLinkEmail');
 //Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');

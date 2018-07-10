@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Models\MeasureApplication;
 use App\Services\CsvExportService;
@@ -12,7 +12,7 @@ class ReportController extends Controller
     //
 	public function index()
 	{
-		return view('admin.reports.index');
+		return view('cooperation.admin.reports.index');
 	}
 
 	public function downloadByYear()

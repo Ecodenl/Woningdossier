@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('cooperation.admin.layouts.app')
 
 @section('content')
     <div class="container">
@@ -18,10 +18,10 @@
                             <div class="col-sm-12">
                                 <ul>
                                     <li>
-                                        <a href="{{route('admin.reports.download.by-year')}}">@lang('woningdossier.cooperation.admin.reports.download.by-year') (CSV)</a>
+                                        <a href="{{ route('cooperation.admin.reports.download.by-year') }}">@lang('woningdossier.cooperation.admin.reports.download.by-year') (CSV)</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('admin.reports.download.by-measure')}}">@lang('woningdossier.cooperation.admin.reports.download.by-measure') (CSV)</a>
+                                        <a href="{{ route('cooperation.admin.reports.download.by-measure') }}">@lang('woningdossier.cooperation.admin.reports.download.by-measure') (CSV)</a>
                                     </li>
                                 </ul>
                             </div>

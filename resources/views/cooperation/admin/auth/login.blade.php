@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('cooperation.admin.layouts.app')
 
 @section('content')
 
@@ -9,7 +9,7 @@
                 <div class="panel-heading">@lang('auth.login.form.header')</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('admin.login') }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.admin.login') }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -57,7 +57,7 @@
                                 </button>
 
                                 {{--
-                                <a class="btn btn-link" href="{{ route('admin.password.request') }}">
+                                <a class="btn btn-link" href="{{ route('cooperation.admin.password.request') }}">
                                     @lang('auth.login.form.forgot_password')
                                 </a>
                                 --}}

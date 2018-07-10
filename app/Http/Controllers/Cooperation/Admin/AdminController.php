@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Cooperation\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -8,10 +8,8 @@ use App\Http\Controllers\Controller;
 class AdminController extends Controller
 {
 
-
-
     public function index(){
 
-    	return view('admin.admin.index');
+    	return view('cooperation.admin.admin.index');
     }
 }

@@ -232,7 +232,7 @@
                         </label>
 
                         <div class="input-group">
-                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('wall_surface', 1)) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         </div>
 

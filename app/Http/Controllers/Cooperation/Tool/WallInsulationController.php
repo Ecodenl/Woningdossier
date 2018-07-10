@@ -51,8 +51,6 @@ class WallInsulationController extends Controller
         $buildingFeature = $building->buildingFeatures;
 
         /** @var BuildingElement $houseInsulation */
-        //dd($houseInsulation->element->values);
-
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
@@ -78,7 +76,7 @@ class WallInsulationController extends Controller
         $damagedPaintwork = $request->get('facade_damaged_paintwork_id', 0);
         $wallJoints = $request->get('wall_joints', '');
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
-        $wallSurface = $request->get('wall_surface', '');
+	    $wallSurface = $request->get('wall_surface', 0);
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
@@ -90,7 +88,7 @@ class WallInsulationController extends Controller
 
         // Element id's and values
         $elementId = key($wallInsulationQualities);
-        $elemetValueId = reset($wallInsulationQualities);
+        $elementValueId = reset($wallInsulationQualities);
 
         // Save the wall insulation
         BuildingElement::updateOrCreate(
@@ -99,14 +97,12 @@ class WallInsulationController extends Controller
                 'element_id' => $elementId
             ],
             [
-                'element_value_id' => $elemetValueId,
+                'element_value_id' => $elementValueId,
             ]
         );
 
         // Update the building feature table with some fresh data
-        // todo: arrray to string convers
         $buildingFeatures->update([
-//            'element_values' => reset($wallInsulationQualities),
             'facade_plastered_surface_id' => $plasteredWallSurface,
             'wall_joints' => $wallJoints,
             'cavity_wall' => $cavityWall,
@@ -116,8 +112,6 @@ class WallInsulationController extends Controller
             'additional_info' => $additionalInfo,
             'facade_plastered_painted' => $facadePlasteredOrPainted
         ]);
-
-
 
 	    // Save progress
 	    $this->saveAdvices($request);
@@ -133,22 +127,6 @@ class WallInsulationController extends Controller
 
 		// Remove old results
 		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
-
-		/*
-	    $el = Element::where('short', 'wall-insulation')->first();
-	    if ($el instanceof Element){
-		    $userInterest = Auth::user()->getInterestedType('element', $el->id);
-		    if ($userInterest instanceof UserInterest){
-			    $interest= $userInterest->interest;
-			    if ($interest->calculate_value == 1){
-				    $results['year'] = Carbon::now()->year;
-			    }
-			    if ($interest->calculate_value == 2){
-				    $results['year'] = Carbon::now()->year + 5;
-			    }
-		    }
-	    }
-		*/
 
 	    if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0){
 		    $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
@@ -184,7 +162,7 @@ class WallInsulationController extends Controller
 
     }
 
-    public function calculate(Request $request){
+    public function calculate(WallInsulationRequest $request){
     	/**
 	     * @var Building $building
 	     */
@@ -194,7 +172,8 @@ class WallInsulationController extends Controller
 
     	$cavityWall = $request->get('cavity_wall', -1);
 		$elements = $request->get('element', []);
-		$facadeSurface = NumberFormatter::reverseFormat($request->get('wall_surface', 0));
+		//$facadeSurface = NumberFormatter::reverseFormat($request->get('wall_surface', 0));
+	    $facadeSurface = $request->get('wall_surface', 0);
 
     	$result = [
     		'savings_gas' => 0,

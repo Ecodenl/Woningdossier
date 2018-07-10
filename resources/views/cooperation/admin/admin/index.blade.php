@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('cooperation.admin.layouts.app')
 
 @section('content')
     <div class="container">
@@ -12,8 +12,8 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <ul>
-                                    <li><a href="{{ route('admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                                    <li><a href="{{ route('admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                                    <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
+                                    <li><a href="{{ route('cooperation.admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
                                 </ul>
                             </div>
                         </div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;
@@ -35,7 +35,7 @@ class ExampleBuildingController extends Controller
         $exampleBuildings = ExampleBuilding::orderBy('cooperation_id', 'asc')
                                            ->orderBy('order', 'asc')->get();
 
-        return view('admin.example-buildings.index', compact('exampleBuildings'));
+        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings'));
     }
 
     /**
@@ -50,7 +50,7 @@ class ExampleBuildingController extends Controller
 
 	    $contentStructure = $this->getContentStructure();
 
-	    return view('admin.example-buildings.create',
+	    return view('cooperation.admin.example-buildings.create',
 		    compact(
 		    	'buildingTypes', 'cooperations', 'contentStructure'
 		    )
@@ -139,7 +139,7 @@ class ExampleBuildingController extends Controller
 
         $contentStructure = $this->getContentStructure();
 
-        return view('admin.example-buildings.edit',
+        return view('cooperation.admin.example-buildings.edit',
 	        compact(
 	        	'exampleBuilding', 'buildingTypes',
 		        'cooperations', 'contentStructure'

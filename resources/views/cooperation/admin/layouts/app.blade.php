@@ -39,7 +39,7 @@
                 </button>
 
                 <!-- Branding Image -->
-                <a class="navbar-brand" href="{{ route('admin.index') }}">
+                <a class="navbar-brand" href="{{ route('cooperation.admin.index') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
             </div>
@@ -70,8 +70,8 @@
                     <!-- Authentication Links -->
                     @guest
                     @else
-                        <li><a href="{{ route('admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                        <li><a href="{{ route('admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                        <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
+                        <li><a href="{{ route('cooperation.admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
@@ -81,13 +81,13 @@
                                 <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
                                 {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
                                 <li>
-                                    <a href="{{ route('admin.logout') }}"
+                                    <a href="{{ route('cooperation.admin.logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         Logout
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                                    <form id="logout-form" action="{{ route('cooperation.admin.logout') }}" method="POST" style="display: none;">
                                         {{ csrf_field() }}
                                     </form>
                                 </li>

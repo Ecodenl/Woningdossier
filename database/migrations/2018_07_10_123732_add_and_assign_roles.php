@@ -24,6 +24,8 @@ class AddAndAssignRoles extends Migration
 	    foreach($users as $user){
 	    	$user->assignRole($superAdmin);
 	    }
+
+
     }
 
     /**

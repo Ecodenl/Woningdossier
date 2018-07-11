@@ -51,6 +51,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
+
         $building = \Auth::user()->buildings()->first();
 
         $buildingTypes = BuildingType::all();

@@ -33,13 +33,13 @@ class IsAdmin
 			// Super administrator
 			return $next($request);
 		}
+
 	    \Log::debug(__METHOD__ . " user does not have role super-admin");
-		if ($user->hasRole('cooperation-admin') && $user->cooperations()->contains($cooperation)) {
+		if ($user->hasRole('cooperation-admin') && $user->cooperations->contains($cooperation)) {
 			// Admin for cooperation
-			return next($request);
+			return $next($request);
 		}
 	    \Log::debug(__METHOD__ . " user does not have role cooperation-admin");
-
 
 	    return redirect()->route('index');
     }

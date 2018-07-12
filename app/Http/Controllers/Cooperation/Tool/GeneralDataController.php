@@ -25,6 +25,7 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
@@ -51,6 +52,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
+
         $building = \Auth::user()->buildings()->first();
 
         $buildingTypes = BuildingType::all();

@@ -35,6 +35,8 @@ class ExampleBuildingController extends Controller
         $exampleBuildings = ExampleBuilding::orderBy('cooperation_id', 'asc')
                                            ->orderBy('order', 'asc')->get();
 
+
+
         return view('cooperation.admin.example-buildings.index', compact('exampleBuildings'));
     }
 
@@ -110,7 +112,7 @@ class ExampleBuildingController extends Controller
 		    }
 	    }
 
-	    return redirect()->route('admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', 'This example building was added');
+	    return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', 'This example building was added');
     }
 
     /**
@@ -127,10 +129,11 @@ class ExampleBuildingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param  $cooperation
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Cooperation $cooperation, $id)
     {
         $exampleBuilding = ExampleBuilding::findOrFail($id);
 	    $buildingTypes = BuildingType::all();
@@ -467,10 +470,12 @@ class ExampleBuildingController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * @param  $cooperation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Cooperation $cooperation, $id)
     {
+
 	    /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
 
@@ -520,7 +525,7 @@ class ExampleBuildingController extends Controller
 		}
 		$exampleBuilding->save();
 
-		return redirect()->route('admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
+		return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
     }
 
     protected function array_undot($content)
@@ -537,18 +542,19 @@ class ExampleBuildingController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
+     * @param  $cooperation
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Cooperation $cooperation, $id)
     {
 	    /** @var ExampleBuilding $exampleBuilding */
 	    $exampleBuilding = ExampleBuilding::findOrFail($id);
 	    $exampleBuilding->delete();
 
-	    return redirect()->route('admin.example-buildings.index')->with('success', 'Example building deleted');
+	    return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building deleted');
     }
 
-    public function copy($id){
+    public function copy(Cooperation $cooperation, $id){
     	/** @var ExampleBuilding $exampleBuilding */
     	$exampleBuilding = ExampleBuilding::findOrFail($id);
     	$exampleBuildingContents = $exampleBuilding->contents;
@@ -571,6 +577,6 @@ class ExampleBuildingController extends Controller
 		           ->save();
 	    }
 
-    	return redirect()->route('admin.example-buildings.index')->with('success', 'Example building copied');
+    	return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
     }
 }

@@ -85,6 +85,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoofTypesTableSeeder::class);
         $this->call(CooperationsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
+        $this->call(ModelHasRolesTableSeeder::class);
         $this->call(BuildingsTableSeeder::class);
         $this->call(StepsTableSeeder::class);
         $this->call(MeasureCategoriesTableSeeder::class);

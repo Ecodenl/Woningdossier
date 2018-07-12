@@ -79,7 +79,7 @@ class GeneralDataController extends Controller
         $steps = Step::orderBy('order')->get();
         $step = $this->step;
 
-        return view('cooperation.tool.general-data.indexindex', compact(
+        return view('cooperation.tool.general-data.index', compact(
         	'building', 'step',
         	'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements',

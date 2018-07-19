@@ -1,0 +1,29 @@
+---
+server:
+    install: '1'
+    packages: [vim, git, fail2ban, zip, gzip]
+    timezone: Europe/Amsterdam
+    locale: nl_NL.UTF-8
+vagrant_local:
+    install: '1'
+    vm: { base_box: xenial64, hostname: woondossier.vm, ip: 192.168.10.99, memory: '1024', sharedfolder: ./, syncType: nfs }
+nginx:
+    install: '1'
+    docroot: /vagrant/public
+    servername: woondossier.vm
+mysql:
+    install: '1'
+    root_password: root
+    database: db
+    user: user
+    password: password
+    dump: ''
+php:
+    install: '1'
+    ppa: php
+    packages: [php7.1-cli, php7.1-intl, php7.1-mcrypt, php7.1-mbstring, php7.1-curl, php7.1-fpm, php7.1-gd, php7.1-xdebug, php7.1-mysql, php7.1-xml]
+xdebug:
+    install: '1'
+composer:
+    install: '1'
+

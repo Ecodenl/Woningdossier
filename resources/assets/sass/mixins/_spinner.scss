@@ -1,0 +1,4 @@
+@mixin spinner($size){
+    background: #ffffff url("/images/spinner.gif") 98% center no-repeat;
+    background-size: $size $size;
+}

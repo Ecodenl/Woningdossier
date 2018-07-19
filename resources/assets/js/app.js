@@ -7,7 +7,7 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+//window.Vue = require('vue');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,8 +15,41 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
+//Vue.component('example', require('./components/Example.vue'));
 
-const app = new Vue({
-    el: '#app'
-});
+//const app = new Vue({
+//    el: '#app'
+//});
+
+$("#register #street").focusin(
+    function(){
+        var postalCode = $("#register #postal_code");
+        var number = $("#register #number");
+        var houseNumberExtension = $("#register #house_number_extension");
+        var street = $("#register #street");
+        var city = $("#register #city");
+        var addressId = $("#register #addressid");
+
+        $.ajax({
+            method: 'get',
+            url: 'fill-address',
+            data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
+            beforeSend: function(){
+                street.addClass("loading");
+                city.addClass("loading");
+            },
+            success: function(data){
+                street.removeClass("loading");
+                city.removeClass("loading");
+                var address = data;
+                console.log(address);
+                street.val(address.street);
+                number.val(address.number);
+                houseNumberExtension.val(address.house_number_extension);
+                addressId.val(address.id);
+                city.val(address.city);
+            },
+            dataType: 'json'
+        });
+    }
+);

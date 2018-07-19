@@ -1,0 +1,36 @@
+ul.progress-list {
+
+  $borderWidth: 5px;
+  $imageSize: 50px;
+
+  li {
+    a {
+      img {
+        width: $imageSize;
+        height: $imageSize;
+        border: $borderWidth solid transparent;
+      }
+      &:hover, &:active, &:focus {
+        img {
+          border: $borderWidth solid $brand-secundairy !important;
+        }
+      }
+    }
+
+    &.active {
+      a {
+        img {
+          border: $borderWidth solid $brand-tertiary;
+        }
+      }
+
+    }
+    &.done {
+      a {
+        img {
+          border: $borderWidth solid $brand-primary;
+        }
+      }
+    }
+  }
+}

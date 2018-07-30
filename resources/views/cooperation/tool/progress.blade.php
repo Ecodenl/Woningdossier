@@ -48,23 +48,39 @@
             {{--@else--}}
             {{--@endif--}}
 
-        <li class="list-inline-item @if(Auth::user()->hasCompleted($step)) done @elseif(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index')
+        <li class="list-inline-item @if(Auth::user()->hasCompleted($step)) done @elseif(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index') @endif
 
-        @endif
-
-        @if($step->slug != "general-data")
-            @foreach ($stepInterests as $interestedInType => $interestedInNames)
-                @foreach ($interestedInNames as $interestedInName => $interestedInIds)
-                    @if ($interestedInName == $step->slug && Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds) == true)
-                      not-available
-                    @endif
+            @if($step->slug != "general-data")
+                @foreach ($stepInterests as $interestedInType => $interestedInNames)
+                    @foreach ($interestedInNames as $interestedInName => $interestedInIds)
+                        @if ($interestedInName == $step->slug && Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds) == true)
+                          not-available
+                        @endif
+                    @endforeach
                 @endforeach
-            @endforeach
-        @endif
-                ">
-                <a href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
-                        <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}" alt="{{ $step->name }}" class="img-circle"/>
-                </a>
+            @endif ">
+            <a
+                @if($step->slug == "general-data")
+                href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
+                <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}" alt="{{ $step->name }}" class="img-circle"/>
+                @else
+                    @foreach ($stepInterests as $interestedInType => $interestedInNames)
+                        @foreach ($interestedInNames as $interestedInName => $interestedInIds)
+
+                            @if ($interestedInName == $step->slug && Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds) == false)
+                                href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
+                                <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}" alt="{{ $step->name }}" class="img-circle"/>
+                            @endif
+
+                            @if ($interestedInName == $step->slug && Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds) == true)
+                                href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
+                                <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }} - @lang('default.progress.disabled')" alt="{{ $step->name }}" class="img-circle"/>
+                            @endif
+
+                        @endforeach
+                    @endforeach
+                @endif
+            </a>
         </li>
 
     @endforeach

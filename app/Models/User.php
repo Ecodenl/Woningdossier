@@ -181,12 +181,13 @@ class User extends Authenticatable
 
         // go through the elementid and get the user interest id to put them into the array
         foreach ($interestedInIds as $key => $interestedInId) {
-
-            array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
+            if ($this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+                array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
+            }
         }
 
         // check if the user wants to do something with there glazings
-        if ($interestedIds == array_intersect($interestedIds, $noInterestIds)) {
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
             return true;
         }
 

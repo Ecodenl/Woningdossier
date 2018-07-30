@@ -34,6 +34,9 @@
             'heater' => [
                 '3'
             ],
+            'ventilation-information' => [
+                '6'
+            ],
         ]
     ];
 

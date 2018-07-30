@@ -43,10 +43,6 @@ class WallInsulationController extends Controller
      */
     public function index()
     {
-
-
-
-
         // get the next page order
         $nextPage = $this->step->order + 1;
 

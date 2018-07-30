@@ -180,7 +180,8 @@ class User extends Authenticatable
         }
 
         // go through the elementid and get the user interest id to put them into the array
-        foreach ($interestedInIds as $interestedInId) {
+        foreach ($interestedInIds as $key => $interestedInId) {
+
             array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
         }
 

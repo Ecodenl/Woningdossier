@@ -8454,3 +8454,11 @@ ul.progress-list li.not-available a:focus img {
   border: 5px solid #cbb956 !important;
 }
 
+.panel .panel-heading h3 {
+  padding: 0px;
+}
+
+.panel .panel-heading button {
+  margin-top: -45px;
+}
+

@@ -39,6 +39,8 @@ class InsulatedGlazingController extends Controller
     public function __construct(Request $request) {
         $slug = str_replace('/tool/', '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
+
+//        dd($this->step->);
     }
 
     /**
@@ -48,6 +50,32 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
+
+        // get the next page order
+        $nextPage = $this->step->order + 1;
+
+        // the element ids for this page
+        $elementIds = [1, 2];
+
+        // create empty array for the interestedIds
+        $interestedIds = [];
+
+        // the interest ids that people select when they do not have any interest
+        $noInterestIds = [4, 5];
+
+        // go through the elementid and get the user interest id to put them into the array
+        foreach ($elementIds as $elementId) {
+            array_push($interestedIds, Auth::user()->getInterestedType('element', $elementId)->interest_id);
+        }
+        // check if the user wants to do something with there glazings
+
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds)) {
+
+            $nextStep = Step::where('order', $nextPage)->first();
+
+            return redirect(url('tool/'.$nextStep->slug));
+        }
+
     	/**
 	     * @var Building $building
 	     */
@@ -63,6 +91,9 @@ class InsulatedGlazingController extends Controller
 		$heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
 		$paintworkStatuses = PaintworkStatus::orderBy('order')->get();
 		$woodRotStatuses = WoodRotStatus::orderBy('order')->get();
+
+
+//        dd(Auth::user()->getInterestedType('element', $facadeInsulation->id));
 
 		$measureApplicationShorts = [
 			'glass-in-lead',
@@ -89,6 +120,7 @@ class InsulatedGlazingController extends Controller
 				                                ->where('interested_in_type', 'measure_application')
 												->where('interested_in_id', $measureApplication->id)
 				                                ->get();
+
 				if ($measureInterest instanceof UserInterest){
 					// We only have to check on the interest ID, so we don't put
 					// full objects in the array
@@ -98,7 +130,6 @@ class InsulatedGlazingController extends Controller
 				$measureApplications [] = $measureApplication;
 			}
 		}
-
 
 
         return view('cooperation.tool.insulated-glazing.index', compact(

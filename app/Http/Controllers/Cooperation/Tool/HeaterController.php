@@ -44,6 +44,13 @@ class HeaterController extends Controller
      */
     public function index()
     {
+        // check if the user is interested in a heater, if not redirect to next step
+        if (Auth::user()->getInterestedType('service', 3)->interest_id > 3) {
+            // the heater is the "last" step for now, so redirect them to the my plan
+            $cooperation = Cooperation::find(\Session::get('cooperation'));
+            return redirect()->route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]);
+        }
+
     	$user = \Auth::user();
     	/** @var Building $building */
     	$building = $user->buildings()->first();

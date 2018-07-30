@@ -32,5 +32,12 @@ ul.progress-list {
         }
       }
     }
+    &.not-available {
+      a {
+        img {
+          border: $borderWidth solid $brand-warning;
+        }
+      }
+    }
   }
 }

@@ -8442,3 +8442,7 @@ ul.progress-list li.done a img {
   border: 5px solid #30815f;
 }
 
+ul.progress-list li.not-available a img {
+  border: 5px solid #cbb956;
+}
+

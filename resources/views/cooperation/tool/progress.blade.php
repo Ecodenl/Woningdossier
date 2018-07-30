@@ -7,7 +7,7 @@
                 {{--</a>--}}
         {{--</li>--}}
         {{--@else--}}
-        <li class="list-inline-item @if(Auth::user()->hasCompleted($step)) done @elseif(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index') active @endif">
+        <li class="list-inline-item @if(Auth::user()->hasCompleted($step)) done @elseif(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index') active  @endif">
                 <a href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
                         <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}" alt="{{ $step->name }}" class="img-circle"/>
                 </a>

@@ -159,6 +159,39 @@ class User extends Authenticatable
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
 	}
 
+
+    /**
+     * @param $type
+     * @param array $interestedInIds
+     * @return bool
+     */
+    public function isNotInterestedInStep($type, $interestedInIds = [])
+    {
+
+        // the interest ids that people select when they do not have any interest
+        $noInterestIds = [4, 5];
+
+        $interestedIds = [];
+
+        if (!is_array($interestedInIds)) {
+            $interestedInIds = [$interestedInIds];
+        }
+
+        // go through the elementid and get the user interest id to put them into the array
+        foreach ($interestedInIds as $interestedInId) {
+            array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
+        }
+        // check if the user wants to do something with there glazings
+
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds)) {
+
+            return true;
+        }
+
+
+        return false;
+	}
+
 	/**
 	 * Returns whether or not a user is associated with a particular Cooperation
 	 * @param Cooperation $cooperation

@@ -47,13 +47,15 @@ class WallInsulationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in wall insulation, if not redirect to next step
-        if (Auth::user()->getInterestedType('element', 3)->interest_id > 3) {
+        if (Auth::user()->isNotInterestedInStep('element', 3)) {
 
             $nextStep = Step::where('order', $nextPage)->first();
 
             return redirect(url('tool/'.$nextStep->slug));
         }
+
+
+
 
     	$steps = Step::orderBy('order')->get();
         /** @var Building $building */

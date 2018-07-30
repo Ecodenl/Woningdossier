@@ -44,7 +44,7 @@ class FloorInsulationController extends Controller
         $nextPage = $this->step->order + 1;
 
         // check if the user is interested in floor insulation, if not redirect to next step
-        if (Auth::user()->getInterestedType('element', 4)->interest_id > 3) {
+        if (Auth::user()->isNotInterestedInStep('element', 4)) {
 
             $nextStep = Step::where('order', $nextPage)->first();
 

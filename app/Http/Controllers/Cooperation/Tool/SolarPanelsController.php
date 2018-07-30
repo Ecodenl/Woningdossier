@@ -41,7 +41,7 @@ class SolarPanelsController extends Controller
         $nextPage = $this->step->order + 1;
 
         // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->getInterestedType('service', 7)->interest_id > 3) {
+        if (Auth::user()->isNotInterestedInStep('service', 7)) {
 
             $nextStep = Step::where('order', $nextPage)->first();
 

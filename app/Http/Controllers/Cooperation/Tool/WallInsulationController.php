@@ -54,9 +54,6 @@ class WallInsulationController extends Controller
             return redirect(url('tool/'.$nextStep->slug));
         }
 
-
-
-
     	$steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();

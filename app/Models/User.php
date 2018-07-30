@@ -161,6 +161,8 @@ class User extends Authenticatable
 
 
     /**
+     * check if a user is interested in a step
+     *
      * @param $type
      * @param array $interestedInIds
      * @return bool
@@ -181,16 +183,15 @@ class User extends Authenticatable
         foreach ($interestedInIds as $interestedInId) {
             array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
         }
+
         // check if the user wants to do something with there glazings
-
         if ($interestedIds == array_intersect($interestedIds, $noInterestIds)) {
-
             return true;
         }
 
-
         return false;
 	}
+
 
 	/**
 	 * Returns whether or not a user is associated with a particular Cooperation

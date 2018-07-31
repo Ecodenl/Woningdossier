@@ -15,7 +15,6 @@
 
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        {{--}}<h4 style="margin-left: -5px;"> @lang('woningdossier.cooperation.tool.insulated-glazing.sub-title')</h4>--}}
         <div id="main-glass-questions">
             {{--@foreach ($keys as $key)--}}
             @foreach($measureApplications as $i => $measureApplication)
@@ -31,7 +30,7 @@
                             <label class=" control-label">
                                 <i data-toggle="collapse" data-target="#user_interests_{{ $measureApplication->id }}-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('woningdossier.cooperation.tool.insulated-glazing.questions.' . $measureApplication->short)
+                                @lang('woningdossier.cooperation.tool.insulated-glazing.interested-in', ['measure' => lcfirst($measureApplication->measure_name)])
                             </label>
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >

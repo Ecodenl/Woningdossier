@@ -247,24 +247,17 @@ return [
 
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',
-                'sub-title' => 'Vragen over isolatieglas',
-
-                'glass-in-lead' => [
-                    'title' => 'Glas in lood vervangen',
-
-                ],
-
-                'place-hr-with-frame' => [
-                    'title' => 'Plaatsen van HR++ glas (Inclusief kozijn)',
-                ],
-                'triple-hr-glass' => [
-                    'title' => 'Drievoudige HR beglazing inclusief kozijn',
-
-                ],
-
-                'place-hr-only-glass' => [
-                   'title' => 'Plaatsen van HR++ glas (alleen het glas)',
-                ],
+	            'subtitles' => [
+	            	'glass-in-lead' => 'Vragen over glas in lood',
+		            'place-hr-only-glass' => 'Vragen over vervangen glas',
+		            'place-hr-with-frame' => 'Vragen over vervangen kozijn',
+	            ],
+	            'questions' => [
+	                'glass-in-lead' => 'Bent u geïnteresseerd in glas in lood vervangen?',
+		            'hrpp-glass-only' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (alleen het glas)?',
+		            'hrpp-glass-frames' => 'Bent u geïnteresseerd in het plaatsen van HR++ glas (inclusief kozijn)?',
+		            'hr3p-frames' => 'Bent u geïnteresseerd in het plaatsen van drievoudige HR beglazing (inclusief kozijn)?',
+	            ],
 
                 'cracking-seal' => [
                     'title' => 'Kierdichting'

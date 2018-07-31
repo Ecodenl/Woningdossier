@@ -8442,3 +8442,23 @@ ul.progress-list li.done a img {
   border: 5px solid #30815f;
 }
 
+ul.progress-list li.not-available a img {
+  opacity: 0.5;
+  border: 5px solid #cbb956;
+}
+
+ul.progress-list li.not-available a:hover img,
+ul.progress-list li.not-available a:active img,
+ul.progress-list li.not-available a:focus img {
+  opacity: 0.5;
+  border: 5px solid #cbb956 !important;
+}
+
+.panel .panel-heading h3 {
+  padding: 0px;
+}
+
+.panel .panel-heading button {
+  margin-top: -45px;
+}
+

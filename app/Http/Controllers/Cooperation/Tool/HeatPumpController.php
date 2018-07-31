@@ -27,6 +27,32 @@ class HeatPumpController extends Controller
      */
     public function index()
     {
+
+        // get the next page order
+        $nextPage = $this->step->order + 1;
+
+        // the element ids for this page
+        $serviceIds = [1, 2];
+
+        // create empty array for the interestedIds
+        $interestedIds = [];
+
+        // the interest ids that people select when they do not have any interest
+        $noInterestIds = [4, 5];
+
+        // go through the serviceid and get the user interest id to put them into the array
+        foreach ($serviceIds as $serviceId) {
+            array_push($interestedIds, Auth::user()->getInterestedType('service', $serviceId)->interest_id);
+        }
+        // check if the user wants to do something with there glazings
+
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds)) {
+
+            $nextStep = Step::where('order', $nextPage)->first();
+
+            return redirect(url('tool/'.$nextStep->slug));
+        }
+
         $heatpumpTypes = PresentHeatPump::all();
         $buildingCurrentHeatings = BuildingCurrentHeating::all();
         $heatSources = HeatSource::all();

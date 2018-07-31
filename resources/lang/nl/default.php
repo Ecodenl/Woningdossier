@@ -19,5 +19,9 @@ return [
 
 	'yes' => 'Ja',
 	'no' => 'Nee',
+
+    'progress' => [
+        'disabled' => 'U heeft geen interesse in deze maatregel'
+    ]
 ];
 

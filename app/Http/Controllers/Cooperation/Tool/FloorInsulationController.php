@@ -39,6 +39,18 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
+
+        // get the next page order
+        $nextPage = $this->step->order + 1;
+
+        // check if the user is interested in floor insulation, if not redirect to next step
+        if (Auth::user()->isNotInterestedInStep('element', 4)) {
+
+            $nextStep = Step::where('order', $nextPage)->first();
+
+            return redirect(url('tool/'.$nextStep->slug));
+        }
+
     	/** @var Building $building */
 	    $building = \Auth::user()->buildings()->first();
 

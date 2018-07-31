@@ -39,4 +39,5 @@ class Step extends Model
 
 		static::addGlobalScope(new CooperationScope);
 	}
+
 }

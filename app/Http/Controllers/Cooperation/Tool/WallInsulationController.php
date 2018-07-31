@@ -43,12 +43,23 @@ class WallInsulationController extends Controller
      */
     public function index()
     {
+        // get the next page order
+        $nextPage = $this->step->order + 1;
+
+        if (Auth::user()->isNotInterestedInStep('element', 3)) {
+
+            $nextStep = Step::where('order', $nextPage)->first();
+
+            return redirect(url('tool/'.$nextStep->slug));
+        }
+
     	$steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();
 		// todo should use short here
         $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
         $buildingFeature = $building->buildingFeatures;
+
 
         /** @var BuildingElement $houseInsulation */
         $surfaces = FacadeSurface::orderBy('order')->get();

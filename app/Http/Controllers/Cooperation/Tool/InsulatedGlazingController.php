@@ -48,6 +48,20 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
+
+        // get the next page order
+        $nextPage = $this->step->order + 1;
+
+        // the element ids for this page
+        $interestedInIds = [1, 2];
+
+        if (Auth::user()->isNotInterestedInStep('element', $interestedInIds)) {
+
+            $nextStep = Step::where('order', $nextPage)->first();
+
+            return redirect(url('tool/'.$nextStep->slug));
+        }
+
     	/**
 	     * @var Building $building
 	     */
@@ -89,6 +103,7 @@ class InsulatedGlazingController extends Controller
 				                                ->where('interested_in_type', 'measure_application')
 												->where('interested_in_id', $measureApplication->id)
 				                                ->get();
+
 				if ($measureInterest instanceof UserInterest){
 					// We only have to check on the interest ID, so we don't put
 					// full objects in the array
@@ -98,7 +113,6 @@ class InsulatedGlazingController extends Controller
 				$measureApplications [] = $measureApplication;
 			}
 		}
-
 
 
         return view('cooperation.tool.insulated-glazing.index', compact(

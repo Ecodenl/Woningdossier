@@ -21,7 +21,7 @@ return [
 	'no' => 'Nee',
 
     'progress' => [
-        'disabled' => 'deze optie is uitgeschakeld omdat u geen intresse heeft in deze stap'
+        'disabled' => 'U heeft geen interesse in deze maatregel'
     ]
 ];
 

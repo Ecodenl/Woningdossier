@@ -186,7 +186,7 @@ class User extends Authenticatable
             }
         }
 
-        // check if the user wants to do something with there glazings
+        // check if the user wants to do something with their glazing
         if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
             return true;
         }

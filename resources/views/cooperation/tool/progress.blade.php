@@ -70,14 +70,9 @@
                     @foreach ($stepInterests as $interestedInType => $interestedInNames)
                         @foreach ($interestedInNames as $interestedInName => $interestedInIds)
 
-                            @if ($interestedInName == $step->slug && Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds) == false)
+                            @if ($interestedInName == $step->slug)
                                 href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
-                                <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}" alt="{{ $step->name }}" class="img-circle"/>
-                            @endif
-
-                            @if ($interestedInName == $step->slug && Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds) == true)
-                                href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
-                                <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }} - @lang('default.progress.disabled')" alt="{{ $step->name }}" class="img-circle"/>
+                                <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}@if(Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds)) - @lang('default.progress.disabled')@endif" alt="{{ $step->name }}" class="img-circle"/>
                             @endif
 
                         @endforeach
@@ -93,9 +88,3 @@
             </a>
         </li>
 </ul>
-
-{{--
-    @for($i = 0; $i < 9; $i++)
-    <li class="list-inline-item @if($i < 3)done @elseif($i == 3)active @endif"><a href="#"><img src="http://placekitten.com/g/50/50" class="img-circle"></a></li>
-    @endfor
---}}

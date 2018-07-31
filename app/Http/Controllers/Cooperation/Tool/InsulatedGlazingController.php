@@ -39,8 +39,6 @@ class InsulatedGlazingController extends Controller
     public function __construct(Request $request) {
         $slug = str_replace('/tool/', '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
-
-//        dd($this->step->);
     }
 
     /**
@@ -79,9 +77,6 @@ class InsulatedGlazingController extends Controller
 		$heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
 		$paintworkStatuses = PaintworkStatus::orderBy('order')->get();
 		$woodRotStatuses = WoodRotStatus::orderBy('order')->get();
-
-
-//        dd(Auth::user()->getInterestedType('element', $facadeInsulation->id));
 
 		$measureApplicationShorts = [
 			'glass-in-lead',

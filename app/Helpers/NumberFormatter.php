@@ -4,10 +4,32 @@ namespace App\Helpers;
 
 class NumberFormatter {
 
-	protected static $localeSeparators = [
+	/**
+	 * Separators for viewing (so, mostly used in the views or data for the view)
+	 * @var array
+	 */
+	protected static $formatLocaleSeparators = [
 		'nl' => [
 			'decimal' => ',',
 			'thousands' => '.',
+		],
+		'en' => [
+			'decimal' => '.',
+			'thousands' => ',',
+		],
+	];
+
+	/**
+	 * For reversing from view to controller. We could define just the differences
+	 * from the $formatLocaleSeparators, but that might be more confusing than
+	 * just duplicating.
+	 *
+	 * @var array
+	 */
+	protected static $reverseLocaleSeparators = [
+		'nl' => [
+			'decimal' => ',',
+			'thousands' => '', // different! If people fill in a dot, treat it like a comma (and so: a decimal)
 		],
 		'en' => [
 			'decimal' => '.',
@@ -23,8 +45,8 @@ class NumberFormatter {
 		return number_format(
 				$number,
 				$decimals,
-				self::$localeSeparators[ $locale ]['decimal'],
-				self::$localeSeparators[ $locale ]['thousands']
+				self::$formatLocaleSeparators[ $locale ]['decimal'],
+				self::$formatLocaleSeparators[ $locale ]['thousands']
 		);
 	}
 
@@ -35,10 +57,10 @@ class NumberFormatter {
 		}
 
 		$number = str_replace(
-			[ self::$localeSeparators[$locale]['thousands'] , " ", ],
+			[ self::$reverseLocaleSeparators[$locale]['thousands'] , " ", ],
 			[ '', '' ],
 			$number
 		);
-		return str_replace(self::$localeSeparators[$locale]['decimal'], '.', $number);
+		return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'], '.', $number);
 	}
 }

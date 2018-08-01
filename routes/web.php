@@ -37,6 +37,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
+				Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
 
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});

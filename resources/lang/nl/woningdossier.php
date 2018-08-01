@@ -331,11 +331,16 @@ return [
 					'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
 					'is-pitched-roof-insulated' => 'is het hellende dak geïsoleerd?',
 					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
+
 					'flat-roof-surface' => 'Dakoppervlak van platte dak',
+					'insulation-flat-roof-surface' => 'Te isoleren dakoppervlakte van platte dak',
+
+					'pitched-roof-surface' => 'Dakoppervlak hellend dak',
+					'insulation-pitched-roof-surface' => 'Te isoleren dakoppervlakte van hellend dak',
+
 					'pitched-roof' => 'Is het hellende dak geïsoleerd?',
 					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
 					'zinc-replaced' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
-					'pitched-roof-surface' => 'Dakoppervlak hellend dak',
 				],
 
 				'flat-roof' => [

@@ -186,7 +186,7 @@ class RoofInsulationController extends Controller
 			$extra = $request->input('building_roof_types.' . $roofCat . '.extra', []);
 			if (array_key_exists('zinc_replaced_date', $extra)) {
 				$zincReplaceYear = (int) $extra['zinc_replaced_date'];
-				$surface = $request->input('building_roof_types.' . $roofCat . '.surface', 0);
+				$surface = $request->input('building_roof_types.' . $roofCat . '.roof_surface', 0);
 				if ($zincReplaceYear > 0 && $surface > 0) {
 					$zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc')->first();
 
@@ -202,7 +202,7 @@ class RoofInsulationController extends Controller
 			}
 			if (array_key_exists('tiles_condition', $extra)){
 				$tilesCondition = (int) $extra['tiles_condition'];
-				$surface = $request->input('building_roof_types.' . $roofCat . '.surface', 0);
+				$surface = $request->input('building_roof_types.' . $roofCat . '.roof_surface', 0);
 				if ($tilesCondition > 0 && $surface > 0){
 					$replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
 					// no year here. Default is this year. It is incremented by factor * maintenance years
@@ -225,7 +225,7 @@ class RoofInsulationController extends Controller
 			}
 			if (array_key_exists('bitumen_replaced_date', $extra)){
 				$bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
-				$surface = $request->input('building_roof_types.' . $roofCat . '.surface', 0);
+				$surface = $request->input('building_roof_types.' . $roofCat . '.roof_surface', 0);
 
 				if ($bitumenReplaceYear > 0 && $surface > 0){
 					$replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
@@ -276,7 +276,7 @@ class RoofInsulationController extends Controller
 		$totalSurface = 0;
 
 	    foreach(array_keys($result) as $cat){
-		    $totalSurface += isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
+		    $totalSurface += isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
 	    }
 
 	    foreach(array_keys($result) as $cat){
@@ -294,7 +294,7 @@ class RoofInsulationController extends Controller
 			    ],
 		    ];
 
-		    $surface = $roofTypes[$cat]['surface'] ?? 0;
+		    $surface = $roofTypes[$cat]['insulation_roof_surface'] ?? 0;
 		    $heating = null;
 		    // should take the bitumen field
 		    $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year;
@@ -396,7 +396,8 @@ class RoofInsulationController extends Controller
                         'type' => $this->getRoofTypeSubCategory($roofType),
                     ];
 
-                    $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
+                    $roofSurface = isset($roofTypes[$cat]['roof_surface']) ? $roofTypes[$cat]['roof_surface'] : 0;
+                    $insulationRoofSurface = isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
                     $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
 
                     $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : "";
@@ -419,7 +420,8 @@ class RoofInsulationController extends Controller
                         ],
                         [
                             'element_value_id' => $elementValueId,
-                            'surface' => $surface,
+                            'roof_surface' => $roofSurface,
+                            'insulation_roof_surface' => $insulationRoofSurface,
                             'building_heating_id' => $buildingHeating,
                             'extra' => [
                                 'measure_application_id' => $extraMeasureApplication,

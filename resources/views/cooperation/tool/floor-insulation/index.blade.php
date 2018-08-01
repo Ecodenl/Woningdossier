@@ -184,7 +184,7 @@
                     </div>
                 </div>
                 <div class="row crawlspace-accessible">
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_features.floor_surface') ? ' has-error' : '' }}">
 
                             <label for="floor_surface" class=" control-label">
@@ -194,11 +194,30 @@
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                <input type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', $buildingFeatures->surface) }}">
+                                <input type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', $buildingFeatures->floor_surface) }}">
                             </div>
                             @if ($errors->has('building_features.floor_surface'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('building_features.floor_surface') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group add-space{{ $errors->has('building_features.insulation_floor_surface') ? ' has-error' : '' }}">
+
+                            <label for="insulation_floor_surface" class=" control-label">
+                                <i data-toggle="collapse" data-target="#floor-surface-info"
+                                   class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('woningdossier.cooperation.tool.floor-insulation.insulation-floor-surface')
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                <input type="text" name="building_features[insulation_floor_surface]" class="form-control" value="{{ old('building_features.insulation_floor_surface', $buildingFeatures->insulation_floor_surface) }}">
+                            </div>
+                            @if ($errors->has('building_features.insulation_floor_surface'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('building_features.insulation_floor_surface') }}</strong>
                             </span>
                             @endif
                         </div>

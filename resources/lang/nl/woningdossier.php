@@ -313,6 +313,7 @@ return [
 				],
 				'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
 				'floor-surface' => 'Vloeroppervlak van de woning',
+                'insulation-floor-surface' => 'Te isoleren oppervlakte',
 				'insulation-advice' => [
 					'text' => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
 					'floor' => 'Vloerisolatie',

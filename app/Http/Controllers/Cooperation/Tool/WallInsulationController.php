@@ -88,6 +88,7 @@ class WallInsulationController extends Controller
         $wallJoints = $request->get('wall_joints', '');
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
 	    $wallSurface = $request->get('wall_surface', 0);
+	    $insulationWallSurface = $request->get('insulation_wall_surface', 0);
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
@@ -119,6 +120,7 @@ class WallInsulationController extends Controller
             'cavity_wall' => $cavityWall,
             'contaminated_wall_joints' => $wallJointsContaminated,
             'wall_surface' => $wallSurface,
+            'insulation_wall_surface' => $insulationWallSurface,
             'facade_damaged_paintwork_id' => $damagedPaintwork,
             'additional_info' => $additionalInfo,
             'facade_plastered_painted' => $facadePlasteredOrPainted

@@ -53,6 +53,7 @@ class BuildingFeature extends Model
         'cavity_wall',
         'contaminated_wall_joints',
         'wall_surface',
+        'insulation_wall_surface',
         'damage_paintwork',
         'additional_info',
 	    'surface',

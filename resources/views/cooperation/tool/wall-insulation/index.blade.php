@@ -228,20 +228,20 @@
                     <div class="form-group add-space">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')
                         </label>
 
                         <div class="input-group">
-                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         </div>
 
                         <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
-                        @if ($errors->has('wall_surface'))
+                        @if ($errors->has('insulation_wall_surface'))
                         <span class="help-block">
-                            <strong>{{ $errors->first('wall_surface') }}</strong>
+                            <strong>{{ $errors->first('insulation_wall_surface') }}</strong>
                         </span>
                         @endif
                     </div>
@@ -251,11 +251,11 @@
                     <div class="form-group add-space">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
                         </label>
 
                         <div class="input-group">
-                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         </div>
 

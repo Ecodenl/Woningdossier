@@ -207,8 +207,8 @@ return [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
                     'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
                     'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
-                    'wall-surface' => 'Te isoleren oppervlakte',
-                    'insulation-wall-surface' => 'Geveloppervlakte van de woning',
+                    'wall-surface' => 'Geveloppervlakte van de woning',
+                    'insulation-wall-surface' => 'Te isoleren oppervlakte',
                 ],
 
                 'alert' => [

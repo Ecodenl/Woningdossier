@@ -186,7 +186,7 @@ class WallInsulationController extends Controller
     	$cavityWall = $request->get('cavity_wall', -1);
 		$elements = $request->get('element', []);
 		//$facadeSurface = NumberFormatter::reverseFormat($request->get('wall_surface', 0));
-	    $facadeSurface = $request->get('wall_surface', 0);
+	    $facadeSurface = $request->get('insulation_wall_surface', 0);
 
     	$result = [
     		'savings_gas' => 0,

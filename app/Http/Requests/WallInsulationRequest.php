@@ -45,10 +45,10 @@ class WallInsulationRequest extends FormRequest
             'facade_plastered_surface_id' => 'exists:facade_plastered_surfaces,id',
 
             'wall_joints' => 'exists:facade_surfaces,id',
-            'insulation_wall_joints' => 'exists:facade_surfaces,id',
 
             'contaminated_wall_joints' => 'exists:facade_surfaces,id',
             'wall_surface' => 'nullable|numeric',
+            'insulation_wall_surface' => 'nullable|numeric',
             'additional_info' => 'nullable',
         ];
     }

@@ -103,7 +103,7 @@ class FloorInsulationController extends Controller
 	    $buildingElements = $request->get('building_elements', []);
 	    $buildingFeatures = $request->get('building_features', []);
 
-	    $surface = array_key_exists('insulation_floor_surface', $buildingFeatures) ? $buildingFeatures['insulation_floor_surface'] : 0;
+	    $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 
 	    if (array_key_exists('crawlspace', $buildingElements)){
 		    // Check if crawlspace is accessible. If not: show warning!
@@ -213,8 +213,8 @@ class FloorInsulationController extends Controller
 
 
         BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([
-            'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : "",
-            'insulation_floor_surface' => isset($floorSurface['insulation_floor_surface']) ? $floorSurface['insulation_floor_surface'] : "",
+            'surface' => isset($floorSurface['surface']) ? $floorSurface['surface'] : "",
+            'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : "",
         ]);
 
         // Save progress

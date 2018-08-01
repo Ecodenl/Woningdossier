@@ -312,8 +312,8 @@ return [
 					'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
 				],
 				'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
-				'floor-surface' => 'Vloeroppervlak van de woning',
-                'insulation-floor-surface' => 'Te isoleren oppervlakte',
+				'surface' => 'Vloeroppervlak van de woning',
+                'insulation-surface' => 'Te isoleren oppervlakte',
 				'insulation-advice' => [
 					'text' => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
 					'floor' => 'Vloerisolatie',

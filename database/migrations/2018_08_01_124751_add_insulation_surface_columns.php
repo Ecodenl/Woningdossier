@@ -17,7 +17,7 @@ class AddInsulationSurfaceColumns extends Migration
             // add insulation_wall_surface to the building feature table
             $table->decimal('insulation_wall_surface')->after('wall_surface')->nullable()->default(null);
             // add insulation_floor_surface to the building feature table
-            $table->decimal('insulation_floor_surface')->after('floor_surface')->nullable()->default(null);
+            $table->decimal('insulation_surface')->after('surface')->nullable()->default(null);
         });
 
         // rename from surface to roof surface for better readability

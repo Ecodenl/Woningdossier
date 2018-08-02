@@ -35,11 +35,23 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
+
+			    Route::get('', 'MyAccountController@index')->name('index');
+
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
 
+				Route::group(['as' => 'messages.', 'prefix' => 'messages'], function () {
+				    Route::get('', 'MessagesController@index')->name('index');
+				    Route::get('edit', 'MessagesController@edit')->name('edit');
+                });
+
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
+
+			Route::group(['prefix' => 'coachgesprek-aanvragen', 'as' => 'coach-conversation-request.'], function () {
+			    Route::resource('', 'CoachConversationRequestController');
+            });
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');

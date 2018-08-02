@@ -76,6 +76,36 @@ return [
 		],
 
 		'my-account' => [
+
+		    'index' => [
+		        'header' => 'Mijn account',
+                'text' => 'U kunt vanaf hier naar uw instellingen gaan om uw account te wijzigen, voortgang te resetten of om het account te verwijderen. Of u kunt naar uw berichten gaan om deze te zien.',
+
+                'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',
+                'messages' => 'Berichten <span class="glyphicon glyphicon-envelope">',
+            ],
+
+            'messages' => [
+                'navigation' => [
+                    'inbox' => 'Inbox',
+                    'edit-coaching-conversation-request' => 'Bewerk aanvraag voor coachgesprek'
+                ],
+                'index' => [
+                    'header' => 'Mijn berichten',
+
+                ],
+
+                'edit' => [
+                    'header' => 'Berichten',
+
+                    'chat' => [
+                        'input' => 'Type uw antwoord hier...',
+                        'button' => 'Verstuur',
+                    ],
+                ],
+            ],
+
+
 			'settings' => [
 				'form' => [
 					'index' => [
@@ -98,8 +128,23 @@ return [
 				],
 
 			],
+
 		],
 
+        'coach-conversation-request' => [
+            'index' => [
+                'header' => 'Coachgesprek aanvragen',
+                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                'form' => [
+                    'message' => 'Wat wilt u uw cooperatie vragen ?',
+                    'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
+                    'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
+                ],
+            ],
+            'store' => [
+                'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+            ],
+        ],
 		'tool' => [
 
 			'unit' => [
@@ -446,6 +491,8 @@ return [
 				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
 				'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
+                'coach-conversation-request' => 'Coachgesprek aanvraag',
+                'coach-conversation-request-update' => 'Coachgesprek aanvraag bijwerken',
 
                 'csv-columns' => [
                     'year-or-planned' => 'Jaar / gepland jaar',

@@ -5,24 +5,6 @@
 @section('page_class', 'page-my-plan')
 
 @section('step_content')
-    <style>
-        .row{
-            margin-top:40px;
-            padding: 0 10px;
-        }
-        .clickable{
-            cursor: pointer;
-        }
-
-        .panel-heading div {
-            margin-top: -18px;
-            font-size: 15px;
-        }
-        .panel-heading div span{
-            margin-left:5px;
-        }
-
-    </style>
 
 
     <div class="row">
@@ -46,7 +28,7 @@
                 <table class="table table-responsive">
                     <thead>
                     <tr>
-                        <th>Meer info</th>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
@@ -91,10 +73,16 @@
                         <tr class="collapse" id="more-info-{{$advice->id}}" >
                             <td colspan="2"></td>
                             <td colspan="">
-                                @lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'): {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
+                                <br>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
                             </td>
-                            <td colspan="4">
-                                @lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'): {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                            <td>
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                                <br>
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                            </td>
+                            <td colspan="3">
                             </td>
                         </tr>
                     @endforeach
@@ -103,6 +91,7 @@
                 @endforeach
                 </tbody>
             </table>
+        </div>
         </div>
     @endforeach
     </form>

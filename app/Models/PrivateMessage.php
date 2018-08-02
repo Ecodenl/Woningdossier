@@ -37,9 +37,7 @@ class PrivateMessage extends Model
     {
         return $this
             ->where('from_user_id', \Auth::id())
-            ->where('to_user_id', null)
-            ->where('from_cooperation_id', null)
-            ->where('is_completed', false);
+            ->where('to_cooperation_id', \Session::get('cooperation'));
     }
 
     /**
@@ -56,6 +54,12 @@ class PrivateMessage extends Model
             ->where('to_cooperation_id', null);
     }
 
+    /**
+     * Return the sender information
+     *
+     * @param $messageId
+     * @return mixed|static
+     */
     public function getSender($messageId)
     {
         $senderId = $this->find($messageId)->from_user_id;
@@ -65,6 +69,11 @@ class PrivateMessage extends Model
         return $sender;
     }
 
+    /**
+     * Check if its the user his message
+     *
+     * @return bool
+     */
     public function isMyMessage()
     {
         if ($this->from_user_id == \Auth::id()) {

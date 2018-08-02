@@ -206,7 +206,7 @@
                 $(this).find('i').css("transform", "rotate(180deg)");
                 $(this).find('i').css("transition", "1s");
             } else {
-                $(this).find('i').css("transform", "rotate(360deg)");
+                $(this).find('i').css("transform", "rotate(0deg)");
                 $(this).find('i').css("transition", "1s");
             }
         })

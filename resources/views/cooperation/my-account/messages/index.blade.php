@@ -15,6 +15,22 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <ul class="chat">
+                                    @if(isset($coachConversationRequest) && $coachConversationRequest->status == "in behandeling")
+                                        <li class="left clearfix">
+
+                                            <div class="chat-body clearfix">
+                                                <div class="header">
+                                                    <strong class="primary-font">
+                                                        @lang('woningdossier.cooperation.my-account.messages.index.chat.coach-conversation-consideration.title')
+                                                    </strong>
+
+                                                </div>
+                                                <p>
+                                                    @lang('woningdossier.cooperation.my-account.messages.index.chat.coach-conversation-consideration.text')
+                                                </p>
+                                            </div>
+                                        </li>
+                                    @endif
                                     @forelse($mainMessages as $mainMessage)
 
                                         <a href="{{route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation, 'mainMessageId' => $mainMessage->id])}}">

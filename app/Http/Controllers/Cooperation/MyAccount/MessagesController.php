@@ -18,7 +18,6 @@ class MessagesController extends Controller
 
         $coachConversationRequest = PrivateMessage::myCoachConversationRequest()->first();
 
-
         return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'mainMessages', 'coachConversationRequest'));
     }
 

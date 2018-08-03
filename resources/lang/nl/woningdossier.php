@@ -96,11 +96,16 @@ return [
                     ],
 
 
+
                 ],
                 'index' => [
                     'header' => 'Mijn berichten',
 
                     'chat' => [
+                        'coach-conversation-consideration' => [
+                            'title' => 'Uw aanvraag is in behandeling',
+                            'text' => 'Uw aanvraag is in behandeling, er word op het moment voor u een coach uitgekozen die het best bij uw situatie past.',
+                        ],
                         'no-messages' => [
                             'title' => 'Geen berichten',
                             'text' => 'Er zijn nog geen berichten, deze zullen hier verschijnen nadat uw antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',

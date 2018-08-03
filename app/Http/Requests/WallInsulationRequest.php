@@ -23,6 +23,7 @@ class WallInsulationRequest extends FormRequest
 	public function getValidatorInstance()
 	{
 		$this->decimals(['wall_surface']);
+		$this->decimals(['insulation_wall_surface']);
 
 		return parent::getValidatorInstance();
 	}
@@ -42,9 +43,12 @@ class WallInsulationRequest extends FormRequest
             // inputs
             'damage_paintwork' => 'exists:facade_damaged_paintworks,id',
             'facade_plastered_surface_id' => 'exists:facade_plastered_surfaces,id',
+
             'wall_joints' => 'exists:facade_surfaces,id',
+
             'contaminated_wall_joints' => 'exists:facade_surfaces,id',
             'wall_surface' => 'nullable|numeric',
+            'insulation_wall_surface' => 'nullable|numeric',
             'additional_info' => 'nullable',
         ];
     }

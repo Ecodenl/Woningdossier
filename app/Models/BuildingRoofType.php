@@ -43,7 +43,7 @@ class BuildingRoofType extends Model
 	];
 
 	protected $fillable = [
-	    'building_id', 'roof_type_id', 'element_value_id', 'surface', 'building_heating_id', 'extra'
+	    'building_id', 'roof_type_id', 'element_value_id', 'roof_surface', 'building_heating_id', 'extra', 'insulation_roof_surface'
     ];
 
 	/**

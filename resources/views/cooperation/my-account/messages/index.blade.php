@@ -61,6 +61,7 @@
                                         </a>
 
                                     @empty
+                                        @if(isset($coachConversationRequest) != true)
                                         <li class="left clearfix">
 
                                             <div class="chat-body clearfix">
@@ -75,6 +76,7 @@
                                                 </p>
                                             </div>
                                         </li>
+                                        @endif
                                     @endforelse
 
                                 </ul>

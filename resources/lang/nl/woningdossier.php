@@ -150,14 +150,38 @@ return [
 
 		],
 
-        'coach-conversation-request' => [
-            'index' => [
-                'header' => 'Coachgesprek aanvragen',
-                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
-                'form' => [
-                    'message' => 'Wat wilt u uw cooperatie vragen ?',
-                    'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
-                    'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
+        'conversation-request' => [
+            'coach' => [
+                'index' => [
+                    'header' => 'Coachgesprek aanvragen',
+                    'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                    'form' => [
+                        'message' => 'Wat wilt u uw cooperatie vragen ?',
+                        'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
+                        'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
+                    ],
+                ],
+            ],
+            'quotation' => [
+                'index' => [
+                    'header' => 'Coachgesprek aanvragen',
+                    'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                    'form' => [
+                        'message' => 'Wat wilt u uw cooperatie vragen ?',
+                        'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
+                        'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
+                    ],
+                ],
+            ],
+            'more-information' => [
+                'index' => [
+                    'header' => 'Coachgesprek aanvragen',
+                    'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                    'form' => [
+                        'message' => 'Wat wilt u uw cooperatie vragen ?',
+                        'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
+                        'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
+                    ],
                 ],
             ],
             'store' => [
@@ -539,6 +563,8 @@ return [
 					'savings-costs' => 'Besparing in euro',
 					'advice-year' => 'Geadviseerd',
 					'planned-year' => 'Planning',
+                    'more-information' => 'Meer info',
+                    'quotation' => 'Vraag offerte aan',
 				],
 			],
 

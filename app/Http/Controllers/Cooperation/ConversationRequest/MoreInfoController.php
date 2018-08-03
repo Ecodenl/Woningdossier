@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation;
+namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class CoachConversationRequestController extends Controller
+class MoreInfoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -63,7 +63,6 @@ class CoachConversationRequestController extends Controller
                     'message' => $message,
                     'to_cooperation_id' => $cooperationId,
                     'from_user_id' => $user->id,
-                    'status' => 'in behandeling'
                 ]
             );
         }

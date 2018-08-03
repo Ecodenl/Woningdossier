@@ -50,8 +50,13 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
 
-			Route::group(['prefix' => 'coachgesprek-aanvragen', 'as' => 'coach-conversation-request.'], function () {
-			    Route::resource('', 'CoachConversationRequestController');
+			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-request.', 'namespace' => 'ConversationRequest'], function () {
+
+			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
+			        Route::resource('', 'CoachController');
+                });
+
+			    Route::resource('meer-informatie', 'MoreInfoController');
             });
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {

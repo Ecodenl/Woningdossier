@@ -9,9 +9,9 @@
         @if(App\Models\PrivateMessage::hasUserResponseToCoachConversationRequest())
 
         @elseif(isset($coachConversationRequest))
-            <li ><a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}">@lang('woningdossier.cooperation.my-account.messages.navigation.coach-conversation.update-request')</a></li>
+            <li ><a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}">@lang('woningdossier.cooperation.my-account.messages.navigation.coach-conversation.update-request')</a></li>
         @else
-            <li ><a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}">@lang('woningdossier.cooperation.my-account.messages.navigation.coach-conversation.request')</a></li>
+            <li ><a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}">@lang('woningdossier.cooperation.my-account.messages.navigation.coach-conversation.request')</a></li>
         @endif
 
     </ul>

@@ -138,9 +138,9 @@
                 @if(\App\Models\PrivateMessage::hasUserResponseToCoachConversationRequest())
                     <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.disabled')</a>
                 @elseif(isset($privateMessage))
-                    <a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.update-request')</a>
+                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.update-request')</a>
                 @else
-                    <a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.request')</a>
+                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.request')</a>
                 @endif
             </div>
 
@@ -207,6 +207,7 @@
                             var header = "<h1>" + year + "</h1>";
                             var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th></tr></thead><tbody>";
 
+                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-information')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.quotation')</th></tr></thead><tbody> " ;
                             var totalCosts = 0;
                             var totalSavingsGas = 0;
                             var totalSavingsElectricity = 0;
@@ -221,13 +222,14 @@
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
+                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td> <td><a href='{{route('cooperation.conversation-request.coach.index')}}'>@lang('woningdossier.cooperation.tool.my-plan.columns.more-information')</a></td> <td><a href='{{route('cooperation.conversation-request.coach.index')}}'>@lang('woningdossier.cooperation.tool.my-plan.columns.quotation')</a></td></tr>";
                                 });
 
                             });
 
-                            table += "<tr><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></strong></td><td><strong>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
-                            table += "<tr><td colspan=\"5\"></td></tr>";
+                            table += "<tr><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></strong></td><td><strong>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td> </tr>";
+
+                            table += "<tr><td colspan=\"8\"></td></tr>";
 
                             table += "</tbody></table>";
 

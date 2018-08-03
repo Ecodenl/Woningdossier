@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation;
+namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class CoachConversationRequestController extends Controller
+class CoachController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -63,7 +63,6 @@ class CoachConversationRequestController extends Controller
                     'message' => $message,
                     'to_cooperation_id' => $cooperationId,
                     'from_user_id' => $user->id,
-                    'status' => 'in behandeling'
                 ]
             );
         }
@@ -71,7 +70,7 @@ class CoachConversationRequestController extends Controller
 
         $cooperation = Cooperation::find($cooperationId);
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requeststore.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
+        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-request.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
     }
 
     /**

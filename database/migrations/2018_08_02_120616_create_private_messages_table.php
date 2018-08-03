@@ -16,7 +16,7 @@ class CreatePrivateMessagesTable extends Migration
         Schema::create('private_messages', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->enum('title', ['Coachgesprek aanvraag', 'offerte aanvraag']);
+            $table->string('title')->nullable()->default(null);
 
             $table->longText('message');
 

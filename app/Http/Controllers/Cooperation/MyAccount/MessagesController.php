@@ -25,7 +25,7 @@ class MessagesController extends Controller
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
 
-        $privateMessages = PrivateMessage::coachConversation($mainMessageId)->get();
+        $privateMessages = PrivateMessage::getCoachConversation($mainMessageId);
 
         // get all the user his private messages and set them as read
         $incomingMessages = PrivateMessage::myPrivateMessages()->get();
@@ -45,12 +45,14 @@ class MessagesController extends Controller
 
         $message = $request->get('message', '');
         $receiverId = $request->get('receiver_id', '');
+        $mainMessageId = $request->get('main_message_id', '');
 
         PrivateMessage::create(
             [
                 'message' => $message,
                 'from_user_id' => \Auth::id(),
-                'to_user_id' => $receiverId
+                'to_user_id' => $receiverId,
+                'main_message' => $mainMessageId
             ]
         );
 

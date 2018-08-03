@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PrivateMessage extends Model
 {
-    protected $fillable = ['message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id', 'status'];
+    protected $fillable = ['message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id', 'status', 'main_message', 'title'];
 
     const LINKED_TO_COACH = "gekoppeld aan coach";
     /**
@@ -48,14 +48,22 @@ class PrivateMessage extends Model
      *
      * @return $this
      */
-    public function scopeCoachConversation($query, $mainMessageId)
+    public static function getCoachConversation($mainMessageId)
     {
 
-        return $query->where('main_message', $mainMessageId)
+        $mainMessage = self::find($mainMessageId);
+
+        $coachConversation = self::where('main_message', $mainMessageId)
             ->where('to_user_id', \Auth::id())
             ->orWhere('from_user_id', \Auth::id())
             ->where('from_cooperation_id', null)
-            ->where('to_cooperation_id', null);
+            ->where('to_cooperation_id', null)
+            ->get();
+
+        $coachConversation->push($mainMessage);
+
+
+        return $coachConversation;
     }
 
     public function scopeMainMessages($query)

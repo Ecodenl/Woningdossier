@@ -16,13 +16,14 @@
                             <div class="col-md-12">
                                 <ul class="chat">
                                     @forelse($mainMessages as $mainMessage)
+
                                         <a href="{{route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation, 'mainMessageId' => $mainMessage->id])}}">
                                             <li class="left clearfix">
 
                                                 <div class="chat-body clearfix">
                                                     <div class="header">
                                                         <strong class="primary-font">
-                                                            {{$mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name}}
+                                                            {{$mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
                                                         </strong>
 
                                                         <small class="pull-right text-muted">

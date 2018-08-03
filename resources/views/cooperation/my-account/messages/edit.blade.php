@@ -17,7 +17,7 @@
                             <div class="col-md-12">
                                 <div class="panel-collapse " id="collapseOne">
                                     <ul class="chat">
-                                        @forelse($privateMessages as $privateMessage)
+                                        @forelse($privateMessages->sortBy('created_at') as $privateMessage)
 
                                             <?php $time = \Carbon\Carbon::parse($privateMessage->created_at) ?>
                                             <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
@@ -52,6 +52,7 @@
                             {{csrf_field()}}
                             <div class="input-group">
                                 <input type="hidden" name="receiver_id" value="{{$privateMessages->first()->from_user_id}}">
+                                <input type="hidden" name="main_message_id" value="{{$privateMessages->sortBy('created_at')->first()->id}}">
                                 <input id="btn-input" name="message" type="text" class="form-control input-md" placeholder="@lang('woningdossier.cooperation.my-account.messages.edit.chat.input')" />
                                 <span class="input-group-btn">
                                     <button type="submit" class="btn btn-primary btn-md" id="btn-chat">

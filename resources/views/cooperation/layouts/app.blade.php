@@ -27,7 +27,6 @@
 <div id="app">
 
     @include('cooperation.layouts.navbar')
-
     @include('cooperation.layouts.messages')
     @yield('content')
 

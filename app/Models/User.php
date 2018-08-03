@@ -15,53 +15,49 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @property int $id
  * @property string $first_name
- * @property int|null $last_name_prefix_id
  * @property string $last_name
  * @property string $email
  * @property string $password
  * @property string|null $remember_token
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property int|null $title_id
+ * @property string|null $confirm_token
  * @property string $phone_number
  * @property string $mobile
- * @property string $occupation
  * @property string|null $last_visit
  * @property int $visit_count
  * @property int $active
- * @property string|null $confirm_token
+ * @property bool $is_admin
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\EmailAddress[] $emailAddresses
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserEnergyHabit[] $energyHabits
- * @property-read \App\Models\LastNamePrefix|null $lastNamePrefix
+ * @property-read \App\Models\UserEnergyHabit $energyHabit
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Opportunity[] $opportunities
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Organisation[] $organisations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\People[] $people
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PhoneNumber[] $phoneNumbers
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
- * @property-read \App\Models\Title|null $title
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereConfirmToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereFirstName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastNamePrefixId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastVisit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereMobile($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereOccupation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePhoneNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereTitleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
  * @mixin \Eloquent
- * @property-read \App\Models\UserProgress $progress
  */
 class User extends Authenticatable
 {

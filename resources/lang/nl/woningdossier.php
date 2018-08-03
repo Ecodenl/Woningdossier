@@ -448,6 +448,7 @@ return [
 	                'costs-advice-year' => 'Kosten in geadviseerd jaar',
                 ],
 				'columns' => [
+					'more-info' => 'Meer info',
 					'interest' => 'Interesse',
 					'measure' => 'Maatregel',
 					'costs' => 'Kosten',

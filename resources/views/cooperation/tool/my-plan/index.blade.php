@@ -6,6 +6,7 @@
 
 @section('step_content')
 
+
     <div class="row">
         <div class="col-md-12">
             {{--<h1>@lang('woningdossier.cooperation.tool.my-plan.title')</h1>--}}
@@ -21,122 +22,76 @@
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
 
+
             <div class="col-md-12">
-                <table class="table table-condensed table-responsive">
+
+                <table class="table table-responsive">
                     <thead>
                     <tr>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th>
+{{--                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th>--}}
+{{--                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th>--}}
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
                     </tr>
                     </thead>
-                    <tbody>
+                <tbody>
 
-            @foreach($stepAdvices as $step => $advicesForStep)
-                        @foreach($advicesForStep as $advice)
-                            <tr>
-                                <td>
-                                    <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
-                                </td>
-                                <td>
-                                    {{ $advice->measureApplication->measure_name }}
-                                </td>
-                                <td>
-                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
-                                </td>
-                                <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
-                                </td>
-                                <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
-                                </td>
-                                <td>
-                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
-                                </td>
-                                <td>
-                                    {{ $advice->year }}
-                                </td>
-                                <td>
-                                    <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
-                                </td>
-                            </tr>
-                        @endforeach
-{{--
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">{{ $step }}</div>
-                    <div class="panel-body">
+                @foreach($stepAdvices as $step => $advicesForStep)
 
-                        <div class="row">
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</strong>
-                            </div>
 
-                        </div>
+                    @foreach($advicesForStep as $advice)
+                        <tr>
 
-                        @foreach($advicesForStep as $advice)
-                        <div class="row">
-                            <div class="col-md-1">
+                            <td>
+                                <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
+                            </td>
+
+                            <td>
                                 <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
-                            </div>
-                            <div class="col-md-2">
+                            </td>
+                            <td>
                                 {{ $advice->measureApplication->measure_name }}
-                            </div>
-                            <div class="col-md-1">
-                                {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
-                            </div>
-                            <div class="col-md-1">
+                            </td>
+                            <td>
+                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                            </td>
+                            <td>
+                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                            </td>
+                            <td>
                                 {{ $advice->year }}
-                            </div>
-                            <div class="col-md-1">
+                            </td>
+                            <td>
                                 <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            --}}
-            @endforeach
-                    </tbody>
-                </table>
-            </div>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="more-info-{{$advice->id}}" >
+                            <td colspan="2"></td>
+                            <td colspan="">
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
+                                <br>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
+                            </td>
+                            <td>
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                                <br>
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                            </td>
+                            <td colspan="3">
+                            </td>
+                        </tr>
+                    @endforeach
 
+
+                @endforeach
+                </tbody>
+            </table>
+        </div>
         </div>
     @endforeach
     </form>
@@ -239,6 +194,22 @@
             $('form').find('*').filter(':input:visible:first').trigger('change');
         });
 
+
+    </script>
+
+    <script>
+
+        $('a[data-target*=more]').click(function () {
+            $(this).toggleClass('clicked');
+
+            if ($(this).hasClass('clicked')) {
+                $(this).find('i').css("transform", "rotate(180deg)");
+                $(this).find('i').css("transition", "1s");
+            } else {
+                $(this).find('i').css("transform", "rotate(0deg)");
+                $(this).find('i').css("transition", "1s");
+            }
+        })
 
     </script>
 @endpush

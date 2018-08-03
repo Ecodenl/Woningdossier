@@ -12,9 +12,7 @@ class CooperationComposer {
 		$view->with('cooperation', app()->make('Cooperation'));
 		$view->with('cooperationStyle', app()->make('CooperationStyle'));
 
-		view()->composer('cooperation.my-account.messages.*', function (View $view) {
-		    $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
-        });
+        $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
 
 	}
 

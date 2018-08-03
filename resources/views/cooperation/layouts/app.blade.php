@@ -83,6 +83,7 @@
 
                             <ul class="dropdown-menu">
                                 <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
+                                <li><a href="{{ route('cooperation.my-account.messages.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.messages.index.header')         <span class="pull-right badge">{{$myUnreadMessages->count()}}</span> </a></li>
                                 {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
                                 <li>
                                     <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"

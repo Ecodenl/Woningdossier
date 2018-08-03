@@ -8,7 +8,7 @@
 
             <div class="col-md-10">
                 <div class="panel panel-default">
-                    <div class="panel-heading">@lang('woningdossier.cooperation.my-account.messages.edit.header')</div>
+                    <div class="panel-heading">@lang('woningdossier.cooperation.my-account.messages.edit.header') - {{$privateMessages->first()->title}}</div>
 
                     <div id="chat" class="panel-body panel-chat-body">
 
@@ -53,7 +53,7 @@
                             <div class="input-group">
                                 <input type="hidden" name="receiver_id" value="{{$privateMessages->first()->from_user_id}}">
                                 <input type="hidden" name="main_message_id" value="{{$privateMessages->sortBy('created_at')->first()->id}}">
-                                <input id="btn-input" name="message" type="text" class="form-control input-md" placeholder="@lang('woningdossier.cooperation.my-account.messages.edit.chat.input')" />
+                                <input id="btn-input" autofocus autocomplete="false" name="message" type="text" class="form-control input-md" placeholder="@lang('woningdossier.cooperation.my-account.messages.edit.chat.input')" />
                                 <span class="input-group-btn">
                                     <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                                         @lang('woningdossier.cooperation.my-account.messages.edit.chat.button')

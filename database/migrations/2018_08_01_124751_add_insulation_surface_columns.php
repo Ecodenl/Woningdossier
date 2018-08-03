@@ -41,6 +41,17 @@ class AddInsulationSurfaceColumns extends Migration
      */
     public function down()
     {
-        //
+	    Schema::table('building_features', function (Blueprint $table) {
+		    $table->dropColumn('insulation_wall_surface');
+		    $table->dropColumn('insulation_surface');
+	    });
+
+	    Schema::table('building_roof_types', function (Blueprint $table) {
+		    $table->renameColumn('roof_surface', 'surface');
+	    });
+
+	    Schema::table('building_roof_types', function (Blueprint $table) {
+		    $table->dropColumn('insulation_roof_surface');
+	    });
     }
 }

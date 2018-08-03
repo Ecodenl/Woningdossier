@@ -16,13 +16,17 @@ class CreatePrivateMessagesTable extends Migration
         Schema::create('private_messages', function (Blueprint $table) {
             $table->increments('id');
 
+            $table->enum('title', ['Coachgesprek aanvraag', 'offerte aanvraag']);
+
             $table->longText('message');
 
             $table->integer('from_user_id')->unsigned()->nullable()->default(null);;
             $table->foreign('from_user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->boolean('from_user_read')->default(false);
 
             $table->integer('to_user_id')->unsigned()->nullable()->default(null);
             $table->foreign('to_user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->boolean('to_user_read')->default(false);
 
             $table->integer('from_cooperation_id')->unsigned()->nullable()->default(null);
             $table->foreign('from_cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
@@ -30,9 +34,10 @@ class CreatePrivateMessagesTable extends Migration
             $table->integer('to_cooperation_id')->unsigned()->nullable()->default(null);
             $table->foreign('to_cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
 
-            $table->enum('status', ['word verwerkt', 'in behandeling']);
+            $table->enum('status', ['word verwerkt', 'in behandeling', 'gekoppeld aan coach']);
 
             $table->boolean('is_completed')->default(false);
+
             $table->integer('main_message')->nullable()->default(null);
 
             $table->timestamps();

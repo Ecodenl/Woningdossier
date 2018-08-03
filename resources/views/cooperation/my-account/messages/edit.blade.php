@@ -4,23 +4,13 @@
     <div class="container">
         <div class="row">
 
-            <div class="col-md-2">
-                <ul class="nav nav-pills nav-stacked">
-                    <li class="active">
-                        <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
-                            @lang('woningdossier.cooperation.my-account.messages.navigation.inbox')
-{{--                            <span class="pull-right badge">{{$priv>count()}}</span>--}}
-                        </a>
-                    </li>
-                    <li ><a href="#">@lang('woningdossier.cooperation.my-account.messages.navigation.edit-coaching-conversation-request')</a></li>
-                </ul>
-            </div>
+            @include('cooperation.my-account.messages.side-nav')
 
             <div class="col-md-10">
                 <div class="panel panel-default">
                     <div class="panel-heading">@lang('woningdossier.cooperation.my-account.messages.edit.header')</div>
 
-                    <div class="panel-body panel-chat-body">
+                    <div id="chat" class="panel-body panel-chat-body">
 
 
                         <div class="row">
@@ -47,9 +37,10 @@
                                                     </p>
                                                 </div>
                                             </li>
-                                    @empty
+                                        @empty
 
-                                    @endforelse
+                                        @endforelse
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -57,18 +48,49 @@
 
 
                     <div class="panel-footer">
-                        <div class="input-group">
-                            <input id="btn-input" type="text" class="form-control input-md" placeholder="@lang('woningdossier.cooperation.my-account.messages.edit.chat.input')" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary btn-md" id="btn-chat">
-                                    @lang('woningdossier.cooperation.my-account.messages.edit.chat.button')</button>
-                            </span>
-                        </div>
+                        <form action="{{route('cooperation.my-account.messages.store', ['cooperation' => $cooperation])}}" method="post">
+                            {{csrf_field()}}
+                            <div class="input-group">
+                                <input type="hidden" name="receiver_id" value="{{$privateMessages->first()->from_user_id}}">
+                                <input id="btn-input" name="message" type="text" class="form-control input-md" placeholder="@lang('woningdossier.cooperation.my-account.messages.edit.chat.input')" />
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
+                                        @lang('woningdossier.cooperation.my-account.messages.edit.chat.button')
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    </div>
 @endsection
+
+@push('js')
+    <script>
+        $(document).ready(function () {
+            // onload scroll the chat to the bottom
+            // same as code beneath but with a "animation"
+            // $('#chat').animate({ scrollTop: ($('#chat')[0].scrollHeight)}, 1000);
+            $('#chat').scrollTop($('#chat')[0].scrollHeight);
+        });
+
+        var chat = $('#chat')[0];
+
+        var chatMessages = $(chat).find('li').length;
+
+        var add = setInterval(function() {
+
+            var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
+
+            if(isScrolledToBottom) {
+                chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+            }
+
+        }, 1000);
+
+
+    </script>
+@endpush

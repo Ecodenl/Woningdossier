@@ -88,10 +88,24 @@ return [
             'messages' => [
                 'navigation' => [
                     'inbox' => 'Inbox',
-                    'edit-coaching-conversation-request' => 'Bewerk aanvraag voor coachgesprek'
+
+                    'coach-conversation' => [
+                        'request' => 'Coachgesprek aanvragen',
+                        'update-request' => 'Coachgesprek aanvraag bijwerken',
+                        'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+                    ],
+
+
                 ],
                 'index' => [
                     'header' => 'Mijn berichten',
+
+                    'chat' => [
+                        'no-messages' => [
+                            'title' => 'Geen berichten',
+                            'text' => 'Er zijn nog geen berichten, deze zullen hier verschijnen nadat uw antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                        ]
+                    ],
 
                 ],
 
@@ -491,6 +505,11 @@ return [
 				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
 				'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
+                'coach-conversation' => [
+                    'request' => 'Coachgesprek aanvragen',
+                    'update-request' => 'Coachgesprek aanvraag bijwerken',
+                    'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+                ],
                 'coach-conversation-request' => 'Coachgesprek aanvraag',
                 'coach-conversation-request-update' => 'Coachgesprek aanvraag bijwerken',
 

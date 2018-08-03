@@ -22,7 +22,13 @@
 
 .panel-chat-body {
   overflow-y: scroll;
-  min-height: 250px;
+  max-height: 250px;
+  .left {
+    margin-right: 250px;
+  }
+  .right {
+    margin-left: 250px;
+  }
 }
 
 

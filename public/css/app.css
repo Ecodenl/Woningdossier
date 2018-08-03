@@ -8486,7 +8486,15 @@ ul.progress-list li.not-available a:focus img {
 
 .panel-chat-body {
   overflow-y: scroll;
-  min-height: 250px;
+  max-height: 250px;
+}
+
+.panel-chat-body .left {
+  margin-right: 250px;
+}
+
+.panel-chat-body .right {
+  margin-left: 250px;
 }
 
 ::-webkit-scrollbar-track {

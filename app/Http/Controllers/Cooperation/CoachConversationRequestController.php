@@ -17,6 +17,10 @@ class CoachConversationRequestController extends Controller
      */
     public function index()
     {
+        if (PrivateMessage::hasUserResponseToCoachConversationRequest()) {
+            return redirect()->route('cooperation.my-account.messages.index');
+        }
+
         $privateMessage = PrivateMessage::myCoachConversationRequest()->first();
 
         return view('cooperation.coach-conversation.index', compact('privateMessage'));

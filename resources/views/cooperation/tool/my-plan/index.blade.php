@@ -135,10 +135,12 @@
             @endforeach
                     </tbody>
                 </table>
-                @if(isset($privateMessage))
-                    <a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation-request-update')</a>
+                @if(\App\Models\PrivateMessage::hasUserResponseToCoachConversationRequest())
+                    <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.disabled')</a>
+                @elseif(isset($privateMessage))
+                    <a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.update-request')</a>
                 @else
-                    <a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation-request')</a>
+                    <a href="{{route('cooperation.coach-conversation-request.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.request')</a>
                 @endif
             </div>
 

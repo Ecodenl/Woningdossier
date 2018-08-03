@@ -43,7 +43,8 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 				Route::group(['as' => 'messages.', 'prefix' => 'messages'], function () {
 				    Route::get('', 'MessagesController@index')->name('index');
-				    Route::get('edit', 'MessagesController@edit')->name('edit');
+				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
+				    Route::post('edit', 'MessagesController@store')->name('store');
                 });
 
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');

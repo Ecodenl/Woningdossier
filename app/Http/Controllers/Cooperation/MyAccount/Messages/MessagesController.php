@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\MyAccount;
+namespace App\Http\Controllers\Cooperation\MyAccount\Messages;
 
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -16,7 +16,7 @@ class MessagesController extends Controller
 
         $mainMessages = PrivateMessage::mainMessages()->get();
 
-        $coachConversationRequest = PrivateMessage::myCoachConversationRequest()->first();
+        $coachConversationRequest = PrivateMessage::myConversationRequest()->first();
 
         return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'mainMessages', 'coachConversationRequest'));
     }
@@ -24,7 +24,7 @@ class MessagesController extends Controller
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
 
-        $privateMessages = PrivateMessage::getCoachConversation($mainMessageId);
+        $privateMessages = PrivateMessage::getConversation($mainMessageId);
 
         // get all the user his private messages and set them as read
         $incomingMessages = PrivateMessage::myPrivateMessages()->get();
@@ -57,4 +57,5 @@ class MessagesController extends Controller
 
         return redirect()->back();
     }
+
 }

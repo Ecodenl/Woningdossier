@@ -18,6 +18,8 @@ class CreatePrivateMessagesTable extends Migration
 
             $table->string('title')->nullable()->default(null);
 
+            $table->enum('request_type', ['coach_conversation', 'more_information', 'quotation'])->nullable();
+
             $table->longText('message');
 
             $table->integer('from_user_id')->unsigned()->nullable()->default(null);;

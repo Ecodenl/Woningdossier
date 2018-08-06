@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
 use App\Models\Cooperation;
+use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,15 +16,17 @@ class MoreInfoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Cooperation $cooperation, $measure)
     {
-        if (PrivateMessage::hasUserResponseToCoachConversationRequest()) {
-            return redirect()->route('cooperation.my-account.messages.index');
-        }
+//        if (PrivateMessage::hasUserResponseToConversationRequest()) {
+//            return redirect()->route('cooperation.my-account.messages.index');
+//        }
 
-        $privateMessage = PrivateMessage::myCoachConversationRequest()->first();
+        $measureApplication = MeasureApplication::where('short', $measure)->first();
 
-        return view('cooperation.coach-conversation.index', compact('privateMessage'));
+        $privateMessage = PrivateMessage::myConversationRequest()->first();
+
+        return view('cooperation.conversation-requests.more-information.index', compact('privateMessage', 'measureApplication'));
     }
 
     /**
@@ -47,30 +50,22 @@ class MoreInfoController extends Controller
         $message = $request->get('message', '');
 
         $user = Auth::user();
-        $cooperationId = \Session::get('cooperation');
+        $cooperationId = session('cooperation');
 
-        $privateMessage = PrivateMessage::myCoachConversationRequest()->first();
-
-        if (isset($privateMessage)) {
-            $privateMessage->update(
-                [
-                    'message' => $message,
-                ]
-            );
-        } else {
-            PrivateMessage::create(
-                [
-                    'message' => $message,
-                    'to_cooperation_id' => $cooperationId,
-                    'from_user_id' => $user->id,
-                ]
-            );
-        }
+        PrivateMessage::create(
+            [
+                'message' => $message,
+                'to_cooperation_id' => $cooperationId,
+                'from_user_id' => $user->id,
+                'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
+                'request_type' => PrivateMessage::REQUEST_TYPE_MORE_INFORMATION,
+            ]
+        );
 
 
         $cooperation = Cooperation::find($cooperationId);
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requeststore.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
+        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-request.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
     }
 
     /**

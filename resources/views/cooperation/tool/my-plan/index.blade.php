@@ -21,6 +21,7 @@
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
 
+
             <div class="col-md-12">
                 <table class="table table-condensed table-responsive">
                     <thead>
@@ -135,12 +136,12 @@
             @endforeach
                     </tbody>
                 </table>
-                @if(\App\Models\PrivateMessage::hasUserResponseToCoachConversationRequest())
-                    <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.disabled')</a>
+                @if(\App\Models\PrivateMessage::hasUserResponseToConversationRequest())
+                    <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.disabled')</a>
                 @elseif(isset($privateMessage))
-                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.update-request')</a>
+                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</a>
                 @else
-                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.coach-conversation.request')</a>
+                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
                 @endif
             </div>
 
@@ -222,7 +223,7 @@
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td> <td><a href='{{route('cooperation.conversation-request.coach.index')}}'>@lang('woningdossier.cooperation.tool.my-plan.columns.more-information')</a></td> <td><a href='{{route('cooperation.conversation-request.coach.index')}}'>@lang('woningdossier.cooperation.tool.my-plan.columns.quotation')</a></td></tr>";
+                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td> <td><a href='{{url('aanvragen/meer-informatie')}}/"+stepData.measure_short+"'>@lang('woningdossier.cooperation.tool.my-plan.columns.more-information')</a></td> <td><a href='{{url('aanvragen/offerte')}}/"+stepData.measure_short+"'>@lang('woningdossier.cooperation.tool.my-plan.columns.quotation')</a></td></tr>";
                                 });
 
                             });

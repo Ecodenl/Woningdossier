@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
+use App\Models\Cooperation;
+use App\Models\MeasureApplication;
+use App\Models\PrivateMessage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class QuotationController extends Controller
 {
@@ -12,9 +16,14 @@ class QuotationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Cooperation $cooperation, $measure)
     {
-        //
+
+        $measureApplication = MeasureApplication::where('short', $measure)->first();
+
+        $privateMessage = PrivateMessage::myConversationRequest()->first();
+
+        return view('cooperation.conversation-requests.quotation.index', compact('privateMessage', 'measureApplication'));
     }
 
     /**
@@ -35,7 +44,27 @@ class QuotationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $message = $request->get('message', '');
+
+        $user = Auth::user();
+        $cooperationId = session('cooperation');
+
+
+
+        PrivateMessage::create(
+            [
+                'message' => $message,
+                'to_cooperation_id' => $cooperationId,
+                'from_user_id' => $user->id,
+                'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
+                'request_type' => PrivateMessage::REQUEST_TYPE_QUOTATION,
+            ]
+        );
+
+
+        $cooperation = Cooperation::find($cooperationId);
+
+        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-request.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
     }
 
     /**

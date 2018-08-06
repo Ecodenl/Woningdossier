@@ -6,9 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class PrivateMessage extends Model
 {
-    protected $fillable = ['message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id', 'status', 'main_message', 'title'];
+    protected $fillable = ['message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id', 'status', 'main_message', 'title', 'request_type'];
 
-    const LINKED_TO_COACH = "gekoppeld aan coach";
+    const STATUS_LINKED_TO_COACH = "gekoppeld aan coach";
+    const STATUS_IN_CONSIDERATION = "in behandeling";
+
+    const REQUEST_TYPE_COACH_CONVERSATION = "coach_conversation";
+    const REQUEST_TYPE_MORE_INFORMATION = "more_information";
+    const REQUEST_TYPE_QUOTATION = "quotation";
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -32,15 +38,29 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to return the current open coach conversation request
+     * Scope a query to return the current open conversation requests
      *
      * @return PrivateMessage
+     */
+    public function scopeMyConversationRequest($query)
+    {
+        return $query
+            ->where('from_user_id', \Auth::id())
+            ->where('to_cooperation_id', session('cooperation'));
+    }
+
+    /**
+     * Scope a query to return the coach conversation request
+     *
+     * @param $query
+     * @return mixed
      */
     public function scopeMyCoachConversationRequest($query)
     {
         return $query
             ->where('from_user_id', \Auth::id())
-            ->where('to_cooperation_id', \Session::get('cooperation'));
+            ->where('to_cooperation_id', session('cooperation'))
+            ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION);
     }
 
     /**
@@ -48,7 +68,7 @@ class PrivateMessage extends Model
      *
      * @return $this
      */
-    public static function getCoachConversation($mainMessageId)
+    public static function getConversation($mainMessageId)
     {
 
         $mainMessage = self::find($mainMessageId);
@@ -105,9 +125,23 @@ class PrivateMessage extends Model
      *
      * @return bool
      */
+    public static function hasUserResponseToConversationRequest()
+    {
+        if (self::myConversationRequest()->first() != null && self::myConversationRequest()->first()->status == self::STATUS_LINKED_TO_COACH) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the user has response to his coach conversation request
+     *
+     * @return bool
+     */
     public static function hasUserResponseToCoachConversationRequest()
     {
-        if (self::myCoachConversationRequest()->first() != null && self::myCoachConversationRequest()->first()->status == self::LINKED_TO_COACH) {
+        if (self::myCoachConversationRequest()->first() != null && self::myCoachConversationRequest()->first()->status == self::STATUS_LINKED_TO_COACH) {
             return true;
         }
 

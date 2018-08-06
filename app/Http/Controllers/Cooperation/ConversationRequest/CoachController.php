@@ -17,13 +17,13 @@ class CoachController extends Controller
      */
     public function index()
     {
-        if (PrivateMessage::hasUserResponseToCoachConversationRequest()) {
+        if (PrivateMessage::hasUserResponseToConversationRequest()) {
             return redirect()->route('cooperation.my-account.messages.index');
         }
 
         $privateMessage = PrivateMessage::myCoachConversationRequest()->first();
 
-        return view('cooperation.coach-conversation.index', compact('privateMessage'));
+        return view('cooperation.conversation-requests.coach.index', compact('privateMessage'));
     }
 
     /**
@@ -47,7 +47,7 @@ class CoachController extends Controller
         $message = $request->get('message', '');
 
         $user = Auth::user();
-        $cooperationId = \Session::get('cooperation');
+        $cooperationId = session('cooperation');
 
         $privateMessage = PrivateMessage::myCoachConversationRequest()->first();
 
@@ -63,6 +63,8 @@ class CoachController extends Controller
                     'message' => $message,
                     'to_cooperation_id' => $cooperationId,
                     'from_user_id' => $user->id,
+                    'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
+                    'request_type' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION,
                 ]
             );
         }

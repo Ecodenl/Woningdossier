@@ -88,21 +88,20 @@ return [
             'messages' => [
                 'navigation' => [
                     'inbox' => 'Inbox',
+                    'requests' => 'Uw aanvragen',
 
-                    'coach-conversation' => [
+                    'conversation-requests' => [
                         'request' => 'Coachgesprek aanvragen',
                         'update-request' => 'Coachgesprek aanvraag bijwerken',
                         'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
                     ],
-
-
 
                 ],
                 'index' => [
                     'header' => 'Mijn berichten',
 
                     'chat' => [
-                        'coach-conversation-consideration' => [
+                        'conversation-requests-consideration' => [
                             'title' => 'Uw aanvraag is in behandeling',
                             'text' => 'Uw aanvraag is in behandeling, er word op het moment voor u een coach uitgekozen die het best bij uw situatie past.',
                         ],
@@ -120,6 +119,27 @@ return [
                     'chat' => [
                         'input' => 'Type uw antwoord hier...',
                         'button' => 'Verstuur',
+                    ],
+                ],
+
+                'requests' => [
+                    'index' => [
+
+                        'header' => 'Mijn aanvragen',
+
+                        'chat' => [
+                            'conversation-requests-consideration' => [
+                                'title' => 'Uw aanvraag is in behandeling',
+                                'text' => 'Uw aanvraag is in behandeling, er word op het moment voor u een coach uitgekozen die het best bij uw situatie past.',
+                            ],
+                            'no-messages' => [
+                                'title' => 'Geen berichten',
+                                'text' => 'Er zijn nog geen berichten, deze zullen hier verschijnen nadat uw antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                            ]
+                        ],
+                    ],
+                    'update' => [
+                        'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
                     ],
                 ],
             ],
@@ -164,23 +184,23 @@ return [
             ],
             'quotation' => [
                 'index' => [
-                    'header' => 'Coachgesprek aanvragen',
+                    'header' => 'Offerte aanvragen voor :measure',
                     'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
                     'form' => [
-                        'message' => 'Wat wilt u uw cooperatie vragen ?',
-                        'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
-                        'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
+                        'message' => 'Ik wil een offerte aanvragen voor :measure',
+                        'submit' => 'Offerte aanvragen <span class="glyphicon glyphicon-envelope"></span>',
+                        'update' => 'Offerte aanvraag bijwerken <span class="glyphicon glyphicon-floppy-open"></span>',
                     ],
                 ],
             ],
             'more-information' => [
                 'index' => [
-                    'header' => 'Coachgesprek aanvragen',
+                    'header' => 'Meer informatie aanvragen over :measure',
                     'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
                     'form' => [
-                        'message' => 'Wat wilt u uw cooperatie vragen ?',
-                        'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
-                        'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
+                        'message' => 'Ik wil meer weten over :measure',
+                        'submit' => 'Meer informatie aanvragen <span class="glyphicon glyphicon-envelope"></span>',
+                        'update' => 'Meer informatie aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
                     ],
                 ],
             ],
@@ -534,13 +554,13 @@ return [
 				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
 				'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
-                'coach-conversation' => [
+                'conversation-requests' => [
                     'request' => 'Coachgesprek aanvragen',
                     'update-request' => 'Coachgesprek aanvraag bijwerken',
                     'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
                 ],
-                'coach-conversation-request' => 'Coachgesprek aanvraag',
-                'coach-conversation-request-update' => 'Coachgesprek aanvraag bijwerken',
+                'conversation-requests-request' => 'Coachgesprek aanvraag',
+                'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
 
                 'csv-columns' => [
                     'year-or-planned' => 'Jaar / gepland jaar',

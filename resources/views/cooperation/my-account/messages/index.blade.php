@@ -21,12 +21,12 @@
                                             <div class="chat-body clearfix">
                                                 <div class="header">
                                                     <strong class="primary-font">
-                                                        @lang('woningdossier.cooperation.my-account.messages.index.chat.coach-conversation-consideration.title')
+                                                        @lang('woningdossier.cooperation.my-account.messages.index.chat.conversation-requests-consideration.title')
                                                     </strong>
 
                                                 </div>
                                                 <p>
-                                                    @lang('woningdossier.cooperation.my-account.messages.index.chat.coach-conversation-consideration.text')
+                                                    @lang('woningdossier.cooperation.my-account.messages.index.chat.conversation-requests-consideration.text')
                                                 </p>
                                             </div>
                                         </li>

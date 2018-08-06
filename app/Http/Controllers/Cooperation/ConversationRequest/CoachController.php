@@ -17,7 +17,7 @@ class CoachController extends Controller
      */
     public function index()
     {
-        if (PrivateMessage::hasUserResponseToConversationRequest()) {
+        if (PrivateMessage::hasUserResponseToCoachConversationRequest()) {
             return redirect()->route('cooperation.my-account.messages.index');
         }
 

@@ -8,33 +8,38 @@
             <ul class="chat">
                 @forelse($conversationRequests as $conversationRequest)
 
-                    <a @if($conversationRequest->isCoachRequestConversation()) href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" @else href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}" @endif>
-                        <li class="left clearfix">
+                    @if($conversationRequest->isCoachRequestConversation() && \App\Models\PrivateMessage::hasUserResponseToCoachConversationRequest())
 
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">
-                                        {{$conversationRequest->getSender($conversationRequest->id)->first_name. ' ' .$conversationRequest->getSender($conversationRequest->id)->last_name}} - {{ $conversationRequest->title }}
-                                    </strong>
+                    @else
 
-                                    <small class="pull-right text-muted">
-                                        <?php $time = \Carbon\Carbon::parse($conversationRequest->created_at) ?>
-                                        <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
-                                    </small>
-                                </div>
-                                <p>
-                                    @if($conversationRequest->hasUserUnreadMessages() || $conversationRequest->isRead() == false)
-                                        <strong>
-                                            {{$conversationRequest->message}}
+                        <a @if($conversationRequest->isCoachRequestConversation()) href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" @else href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}" @endif>
+                            <li class="left clearfix">
+
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">
+                                            {{$conversationRequest->getSender($conversationRequest->id)->first_name. ' ' .$conversationRequest->getSender($conversationRequest->id)->last_name}} - {{ $conversationRequest->title }}
                                         </strong>
-                                    @else
-                                        {{$conversationRequest->message}}
-                                    @endif
-                                </p>
-                            </div>
-                        </li>
-                    </a>
 
+                                        <small class="pull-right text-muted">
+                                            <?php $time = \Carbon\Carbon::parse($conversationRequest->created_at) ?>
+                                            <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
+                                        </small>
+                                    </div>
+                                    <p>
+                                        @if($conversationRequest->hasUserUnreadMessages() || $conversationRequest->isRead() == false)
+                                            <strong>
+                                                {{$conversationRequest->message}}
+                                            </strong>
+                                        @else
+                                            {{$conversationRequest->message}}
+                                        @endif
+                                    </p>
+                                </div>
+                            </li>
+                        </a>
+
+                    @endif
                 @empty
                     <li class="left clearfix">
 

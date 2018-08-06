@@ -1,6 +1,7 @@
 @extends('cooperation.my-account.messages.layout')
 
 @section('messages_header', __('woningdossier.cooperation.my-account.messages.requests.index.header'))
+
 @section('messages_content')
     <div class="row">
         <div class="col-md-12">

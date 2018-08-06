@@ -11,9 +11,11 @@
 
                     </div>
 
-                    <div class="panel-body">
+                    <div id="@yield('panel_body_id', '')" class="panel-body @yield('panel_body_class', '')">
                         @yield('messages_content')
-
+                    </div>
+                    <div class="panel-footer">
+                        @yield('messages_footer')
                     </div>
                 </div>
             </div>

@@ -139,7 +139,7 @@ return [
                         ],
                     ],
                     'update' => [
-                        'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+                        'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
                     ],
                 ],
             ],

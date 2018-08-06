@@ -76,6 +76,7 @@
                         <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>
                         <li><a href="{{ url('/home') }}">@lang('woningdossier.cooperation.disclaimer.title')</a></li>
                         <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
+                        <li><a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}"><span class="glyphicon glyphicon-envelope"></span> <span class="badge">{{$myUnreadMessages->count()}}</span></a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
@@ -83,7 +84,6 @@
 
                             <ul class="dropdown-menu">
                                 <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
-                                <li><a href="{{ route('cooperation.my-account.messages.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.messages.index.header')         <span class="pull-right badge">{{$myUnreadMessages->count()}}</span> </a></li>
                                 {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
                                 <li>
                                     <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"

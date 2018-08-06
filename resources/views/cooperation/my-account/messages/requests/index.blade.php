@@ -7,7 +7,7 @@
             <ul class="chat">
                 @forelse($conversationRequests as $conversationRequest)
 
-                    <a @if($conversationRequest->hasUserResponseToConversationRequest() != true) href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}" @endif>
+                    <a @if($conversationRequest->isCoachRequestConversation()) href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" @else href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}" @endif>
                         <li class="left clearfix">
 
                             <div class="chat-body clearfix">

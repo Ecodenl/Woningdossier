@@ -187,4 +187,18 @@ class PrivateMessage extends Model
 
         return false;
     }
+
+    /**
+     * Check if the request is a coach conversation request
+     *
+     * @return bool
+     */
+    public function isCoachRequestConversation()
+    {
+        if ($this->request_type == self::REQUEST_TYPE_COACH_CONVERSATION) {
+            return true;
+        }
+
+        return false;
+    }
 }

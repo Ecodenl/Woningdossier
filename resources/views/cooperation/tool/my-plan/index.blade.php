@@ -139,9 +139,9 @@
                 @if(\App\Models\PrivateMessage::hasUserResponseToConversationRequest())
                     <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.disabled')</a>
                 @elseif(isset($privateMessage))
-                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</a>
+                    <a href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</a>
                 @else
-                    <a href="{{route('cooperation.conversation-request.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
+                    <a href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
                 @endif
             </div>
 

@@ -60,7 +60,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 			});
 
 			// conversation requests
-			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-request.', 'namespace' => 'ConversationRequest'], function () {
+			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
 
 			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
 			        Route::resource('', 'CoachController');

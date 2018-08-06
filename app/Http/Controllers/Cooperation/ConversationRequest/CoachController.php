@@ -60,6 +60,7 @@ class CoachController extends Controller
         } else {
             PrivateMessage::create(
                 [
+                    'title' => 'Coach gesprek aanvraag',
                     'message' => $message,
                     'to_cooperation_id' => $cooperationId,
                     'from_user_id' => $user->id,
@@ -72,7 +73,7 @@ class CoachController extends Controller
 
         $cooperation = Cooperation::find($cooperationId);
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-request.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
+        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
     }
 
     /**

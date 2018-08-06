@@ -170,7 +170,8 @@ return [
 
 		],
 
-        'conversation-request' => [
+        'conversation-requests' => [
+            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
             'coach' => [
                 'index' => [
                     'header' => 'Coachgesprek aanvragen',

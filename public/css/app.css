@@ -8354,6 +8354,10 @@ button.close {
   padding-top: 0;
 }
 
+.glyphicon {
+  top: 3px;
+}
+
 /**
   Helper classes for the html markup
  */

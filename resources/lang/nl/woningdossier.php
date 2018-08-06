@@ -93,7 +93,8 @@ return [
                     'conversation-requests' => [
                         'request' => 'Coachgesprek aanvragen',
                         'update-request' => 'Coachgesprek aanvraag bijwerken',
-                        'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+//                        'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+                        'disabled' => 'Niet beschikbaar'
                     ],
 
                 ],
@@ -556,9 +557,11 @@ return [
 				'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
                 'conversation-requests' => [
+                    'take-action' => 'Actie ondernemen',
                     'request' => 'Coachgesprek aanvragen',
                     'update-request' => 'Coachgesprek aanvraag bijwerken',
-                    'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+//                    'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+                    'disabled' => 'Niet beschikbaar'
                 ],
                 'conversation-requests-request' => 'Coachgesprek aanvraag',
                 'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
@@ -586,6 +589,7 @@ return [
 					'planned-year' => 'Planning',
                     'more-information' => 'Meer info',
                     'quotation' => 'Vraag offerte aan',
+                    'help-question' => 'Hulpvraag'
 				],
 			],
 

@@ -24,6 +24,7 @@ class ConversationRequestController extends Controller
     public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
 
+
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
 
         if ($option == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION && PrivateMessage::hasUserResponseToCoachConversationRequest() == false && $myOpenCoachConversationRequest != null) {
@@ -52,12 +53,14 @@ class ConversationRequestController extends Controller
      */
     public function edit(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
+
         if ($option != PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
             return redirect()->back();
         }
 
         // we get the intended message so if users wrote half a book they not lose it
         $intendedMessage = session('intendedMessage');
+
 
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
 
@@ -66,6 +69,13 @@ class ConversationRequestController extends Controller
         return view('cooperation.conversation-requests.edit', compact('myOpenCoachConversationRequest', 'selectedOption', 'intendedMessage'));
     }
 
+    /**
+     * Update a coach conversation request
+     *
+     * @param ConversationRequest $request
+     * @param Cooperation $cooperation
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(ConversationRequest $request, Cooperation $cooperation)
     {
 

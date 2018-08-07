@@ -62,8 +62,10 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 			// conversation requests
 			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+
+			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
 			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
-			    Route::get('/edit/{action?}/{measureApplicationShort?}', 'ConversationRequestController@edit')->name('edit');
+
 			    Route::post('', 'ConversationRequestController@store')->name('store');
 			    Route::post('/edit', 'ConversationRequestController@update')->name('update');
 

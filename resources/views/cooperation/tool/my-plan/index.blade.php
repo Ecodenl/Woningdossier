@@ -254,7 +254,7 @@
                     @endif
 
                     $('.take-action').click(function () {
-                        window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'action' => 'none'])}}'
+                        window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
                     })
                 }
             });

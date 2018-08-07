@@ -119,6 +119,6 @@ class LoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.help.index');
+        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
     }
 }

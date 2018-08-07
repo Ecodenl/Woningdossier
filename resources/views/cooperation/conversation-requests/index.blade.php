@@ -112,6 +112,8 @@
                 $(input).val(inputPrefix +' '+ radioLabel);
             });
 
+            $(dropdown).trigger('change');
+
             // when the form gets submited check if the user agreed with the agreement
             // if so submit, else do nuthing
             $('form').on('submit', function () {

@@ -60,6 +60,8 @@ return [
         'help' => [
             'title' => 'Help',
             'help' => [
+                'help-with-filling-tool' => 'Ik wil hulp bij het invullen',
+                'no-help-with-filling-tool' =>  'Ik ga zelf aan de slag',
                 'title' => 'Hulp met het gebruik van de tool.',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
             ],
@@ -187,9 +189,9 @@ return [
 
                     'selected-option' => 'Geselecteerde actie:',
                     'options' => [
-                        'more_information' => 'Meer informatie',
-                        'quotation' => 'Offerte aanvragen',
-                        'coach_conversation' => 'Coachgesprek aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
                     ],
                 ],
             ],

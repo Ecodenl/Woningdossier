@@ -20,7 +20,7 @@ class CreatePrivateMessagesTable extends Migration
 
             $table->enum('request_type', ['coach_conversation', 'more_information', 'quotation'])->nullable();
 
-            $table->longText('message');
+            $table->text('message');
 
             $table->integer('from_user_id')->unsigned()->nullable()->default(null);;
             $table->foreign('from_user_id')->references('id')->on('users')->onDelete('cascade');

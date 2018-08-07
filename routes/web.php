@@ -61,23 +61,23 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 			// conversation requests
 			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+			    Route::get('', 'ConversationRequestController@index')->name('index');
+			    Route::post('', 'ConversationRequestController@store')->name('store');
 
+//			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
+//			        Route::resource('', 'CoachController');
+//                });
 
-			    
-			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
-			        Route::resource('', 'CoachController');
-                });
-
-			    Route::group(['prefix' => 'meer-informatie', 'as' => 'more-information.'], function () {
-
-			        Route::get('{measure}', 'MoreInfoController@index')->name('index');
-			        Route::post('', 'MoreInfoController@store')->name('store');
-                });
-
-			    Route::group(['prefix' => 'offerte', 'as' => 'quotation.'], function () {
-                    Route::get('{measure}', 'QuotationController@index')->name('index');
-                    Route::post('', 'QuotationController@store')->name('store');
-                });
+//			    Route::group(['prefix' => 'meer-informatie', 'as' => 'more-information.'], function () {
+//
+//			        Route::get('{measure}', 'MoreInfoController@index')->name('index');
+//			        Route::post('', 'MoreInfoController@store')->name('store');
+//                });
+//
+//			    Route::group(['prefix' => 'offerte', 'as' => 'quotation.'], function () {
+//                    Route::get('{measure}', 'QuotationController@index')->name('index');
+//                    Route::post('', 'QuotationController@store')->name('store');
+//                });
             });
 
 			// the tool

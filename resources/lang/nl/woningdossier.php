@@ -224,40 +224,6 @@ return [
                 ],
             ],
 
-            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
-            'coach' => [
-                'index' => [
-                    'header' => 'Coachgesprek aanvragen',
-                    'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
-                    'form' => [
-                        'message' => 'Wat wilt u uw cooperatie vragen ? Wees zo specifiek mogenlijk.',
-                        'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
-                        'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
-                    ],
-                ],
-            ],
-            'quotation' => [
-                'index' => [
-                    'header' => 'Offerte aanvragen voor :measure',
-                    'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
-                    'form' => [
-                        'message' => 'Ik wil een offerte aanvragen voor :measure',
-                        'submit' => 'Offerte aanvragen <span class="glyphicon glyphicon-envelope"></span>',
-                        'update' => 'Offerte aanvraag bijwerken <span class="glyphicon glyphicon-floppy-open"></span>',
-                    ],
-                ],
-            ],
-            'more-information' => [
-                'index' => [
-                    'header' => 'Meer informatie aanvragen over :measure',
-                    'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
-                    'form' => [
-                        'message' => 'Ik wil meer weten over :measure',
-                        'submit' => 'Meer informatie aanvragen <span class="glyphicon glyphicon-envelope"></span>',
-                        'update' => 'Meer informatie aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
-                    ],
-                ],
-            ],
             'store' => [
                 'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
             ],
@@ -265,6 +231,9 @@ return [
                 'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.'
             ],
+
+            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
+
         ],
 		'tool' => [
 

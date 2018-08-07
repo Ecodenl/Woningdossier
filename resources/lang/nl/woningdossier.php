@@ -172,6 +172,29 @@ return [
 		],
 
         'conversation-requests' => [
+
+            'index' => [
+                'header' => 'Actie ondernemen',
+                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+
+                'form' => [
+
+                    'agreement' => 'Ik geef toesteming',
+                    'action' => 'Actie',
+                    'take-action' => 'Actie ondernemen',
+                    'message' => 'Uw bericht aan de cooperatie',
+                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
+                    'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
+
+                    'selected-option' => 'Geselecteerde actie:',
+                    'options' => [
+                        'more_information' => 'Meer informatie',
+                        'quotation' => 'Offerte aanvragen',
+                        'coach_conversation' => 'Coachgesprek aanvragen',
+                    ],
+                ],
+            ],
+
             'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
             'coach' => [
                 'index' => [

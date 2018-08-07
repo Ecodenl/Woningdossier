@@ -63,6 +63,16 @@ class PrivateMessage extends Model
             ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION);
     }
 
+    public function scopeMyOpenCoachConversationRequest($query)
+    {
+        return $query
+            ->where('from_user_id', \Auth::id())
+            ->where('to_cooperation_id', session('cooperation'))
+            ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION)
+            ->where('status', self::STATUS_IN_CONSIDERATION);
+    }
+
+
     /**
      * Scope a query to return the full conversation between a coach and a user based on the main message
      *

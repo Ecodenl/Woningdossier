@@ -63,7 +63,9 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 			// conversation requests
 			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
 			    Route::get('{action?}', 'ConversationRequestController@index')->name('index');
+			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
 			    Route::post('', 'ConversationRequestController@store')->name('store');
+			    Route::post('/edit', 'ConversationRequestController@update')->name('update');
 
 //			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
 //			        Route::resource('', 'CoachController');

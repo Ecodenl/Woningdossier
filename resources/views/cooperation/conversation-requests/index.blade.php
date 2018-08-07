@@ -51,7 +51,7 @@
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</label>
-                                    <textarea name="message" class="form-control">@if(isset($privateMessage)){{$privateMessage->message}} @else @lang('woningdossier.cooperation.conversation-requests.coach.index.form.message') @endif </textarea>
+                                    <textarea name="message" class="form-control">@lang('woningdossier.cooperation.conversation-requests.coach.index.form.message')</textarea>
                                     
                                     @if ($errors->has('message'))
                                         <span class="help-block">

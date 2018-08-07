@@ -12,7 +12,7 @@
 
                     @else
 
-                        <a @if($conversationRequest->isCoachRequestConversation()) href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" @else href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}" @endif>
+                        <a @if($conversationRequest->isCoachRequestConversation()) href="{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'action' => \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])}}" @else href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}" @endif>
                             <li class="left clearfix">
 
                                 <div class="chat-body clearfix">

@@ -196,13 +196,41 @@ return [
                 ],
             ],
 
+            'edit' => [
+                'header' => 'Bewerk uw huidige :request_type',
+                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+
+                'form' => [
+
+                    'agreement' => 'Ik geef toesteming',
+                    'action' => 'Actie',
+                    'take-action' => 'Actie ondernemen',
+                    'message' => 'Uw bericht aan de cooperatie',
+                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
+                    'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
+
+                    'selected-option' => 'Geselecteerde actie:',
+
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
+
+                    'options' => [
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+
+                    ],
+                ],
+            ],
+
             'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
             'coach' => [
                 'index' => [
                     'header' => 'Coachgesprek aanvragen',
                     'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
                     'form' => [
-                        'message' => 'Wat wilt u uw cooperatie vragen ?',
+                        'message' => 'Wat wilt u uw cooperatie vragen ? Wees zo specifiek mogenlijk.',
                         'submit' => 'Coachgesprek aanvragen <span class="glyphicon glyphicon-envelope"></span>',
                         'update' => 'Coachgesprek aanvraag bewerken <span class="glyphicon glyphicon-floppy-open"></span>',
                     ],
@@ -232,6 +260,10 @@ return [
             ],
             'store' => [
                 'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+            ],
+            'update' => [
+                'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+                'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.'
             ],
         ],
 		'tool' => [

@@ -12,7 +12,7 @@
         {{--@if(App\Models\PrivateMessage::hasUserResponseToConversationRequest())--}}
 
         {{--@elseif(isset($coachConversationRequest))--}}
-            {{--<li ><a href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}">@lang('woningdossier.cooperation.my-account.messages.navigation.conversation-requests.update-request')</a></li>--}}
+            {{--<li ><a href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}">@lang('woningdossier.cooperation.my-account.messages.navigation.ion-requests.update-request')</a></li>--}}
         {{--@else--}}
             {{--<li ><a href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}">@lang('woningdossier.cooperation.my-account.messages.navigation.conversation-requests.request')</a></li>--}}
         {{--@endif--}}

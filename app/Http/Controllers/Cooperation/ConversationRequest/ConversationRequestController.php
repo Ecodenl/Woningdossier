@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
+use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,13 +12,16 @@ use App\Http\Controllers\Controller;
 class ConversationRequestController extends Controller
 {
 
+
     /**
      * Show the form
      *
      * @param Cooperation $cooperation
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param null $option
+     * @param null $measureApplicationShort
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation, $option = null)
+    public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
 
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
@@ -27,9 +31,14 @@ class ConversationRequestController extends Controller
 
         }
 
+        $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
+
+        // set the measure application name if there is a measure application
+        $measureApplicationName = $measureApplication instanceof MeasureApplication ?  $measureApplication->measure_name : "";
+
         $selectedOption = $option;
 
-        return view('cooperation.conversation-requests.index', compact('privateMessage', 'selectedOption'));
+        return view('cooperation.conversation-requests.index', compact('privateMessage', 'selectedOption', 'measureApplicationName'));
     }
 
     /**
@@ -41,7 +50,7 @@ class ConversationRequestController extends Controller
      * @param null $option
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function edit(Cooperation $cooperation, $option = null)
+    public function edit(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
         if ($option != PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
             return redirect()->back();
@@ -93,7 +102,6 @@ class ConversationRequestController extends Controller
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
 
-
         $action = $request->get('action', '');
         $message = $request->get('message', '');
 
@@ -101,6 +109,8 @@ class ConversationRequestController extends Controller
 
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
 
+        // if the the selected request type is a conversation and the user already has a conversation request with no answer and is still open
+        // we will redirect him to the edit page for the particular conversation type, with his intended message he wanted to write
         if ($action == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION && PrivateMessage::hasUserResponseToCoachConversationRequest() == false && $myOpenCoachConversationRequest != null) {
             return redirect()
                 ->route('cooperation.conversation-requests.edit', ['cooperation' => $cooperation, 'option' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])
@@ -108,15 +118,23 @@ class ConversationRequestController extends Controller
                 ->with('intendedMessage', $message);
         }
 
+        $measureApplicationName = $request->get('measure_application_name', '');
+
+        $title = __('woningdossier.cooperation.conversation-requests.index.form.options.'.$action);
+
+        // if the measureapplication name is not empty set it as a prefix in the title
+        if ($measureApplicationName != "") {
+            $title = $measureApplicationName ." - ".  __('woningdossier.cooperation.conversation-requests.index.form.options.'.$action);
+        }
+
         $user = \Auth::user();
         $cooperationId = session('cooperation');
-
 
 
         PrivateMessage::create(
             [
                 // we get the selected option from the language file, we can do this cause the submitted value = key from localization
-                'title' => __('woningdossier.cooperation.conversation-requests.index.form.options.'.$action),
+                'title' => $title,
                 'message' => $message,
                 'to_cooperation_id' => $cooperationId,
                 'from_user_id' => $user->id,

@@ -16,7 +16,7 @@
                             {{ csrf_field() }}
 
                             <h2>@lang('woningdossier.cooperation.conversation-requests.edit.header', ['request_type' => __('woningdossier.cooperation.conversation-requests.edit.form.'.$myOpenCoachConversationRequest->request_type)])</h2>
-                            <p>@lang('woningdossier.cooperation.conversation-requests.edit.text')</p>
+
 
                             <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
@@ -72,6 +72,7 @@
                                             <strong>{{ $errors->first('agreement') }}</strong>
                                         </span>
                                     @endif
+                                    <p>@lang('woningdossier.cooperation.conversation-requests.edit.text')</p>
                                 </div>
                             </div>
 

@@ -15,8 +15,9 @@
                         <form class="form-horizontal" method="POST" action="{{ route('cooperation.conversation-requests.store', ['cooperation' => $cooperation]) }}">
                             {{ csrf_field() }}
 
-                            <h2>@lang('woningdossier.cooperation.conversation-requests.index.header')</h2>
-                            <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
+                            <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName])</h2>
+
+                            <input type="hidden" value="{{$measureApplicationName}}" name="measure_application_name">
 
                             <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
@@ -72,6 +73,7 @@
                                             <strong>{{ $errors->first('agreement') }}</strong>
                                         </span>
                                     @endif
+                                    <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
                                 </div>
                             </div>
 

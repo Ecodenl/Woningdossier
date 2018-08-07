@@ -180,6 +180,7 @@ return [
 
                 'form' => [
 
+                    'title' => 'Actie ondernemen met :measure_application_name',
                     'agreement' => 'Ik geef toesteming',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',

@@ -17,7 +17,7 @@ class ConversationRequestController extends Controller
      * @param Cooperation $cooperation
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation, $option)
+    public function index(Cooperation $cooperation, $option = null)
     {
         $privateMessage = PrivateMessage::myCoachConversationRequest()->first();
 

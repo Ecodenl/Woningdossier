@@ -99,20 +99,35 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            // put the label text from the selected option inside the input for ux
             var takeAction = $('#take-action');
             var input = $(takeAction).find('input.form-control');
             var dropdown = $(takeAction).find('input[type=radio]');
             var inputPrefix = '@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')';
 
             $(dropdown).change(function () {
-                var radioLabel = $(this).parent().text().trim().toLowerCase();
+                var radioLabel = $('input[type=radio]:checked').parent().text().trim().toLowerCase();
 
                 $(input).val();
                 $(input).val(inputPrefix +' '+ radioLabel);
-            })
+            });
 
-            $(dropdown).trigger('change');
+            // when the form gets submited check if the user agreed with the agreement
+            // if so submit, else do nuthing
+            $('form').on('submit', function () {
+
+                if ($('input[name=agreement]').is(':checked')  == false) {
+
+                    if (confirm('Weet u zeker dat u geen toesteming wilt geven ?')) {
+
+                    } else {
+                       event.preventDefault();
+
+                    }
+                }
+            })
 
         })
     </script>
-@endpush()
+
+@endpush

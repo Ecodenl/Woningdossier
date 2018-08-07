@@ -179,7 +179,7 @@ return [
                 'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
 
                 'form' => [
-
+                    'no-measure-application-name-title' => 'Gesprek aanvragen',
                     'title' => 'Actie ondernemen met :measure_application_name',
                     'agreement' => 'Ik geef toesteming',
                     'action' => 'Actie',

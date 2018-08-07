@@ -140,9 +140,9 @@
                 @if(\App\Models\PrivateMessage::hasUserResponseToConversationRequest())
                     <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.disabled')</a>
                 @elseif(isset($privateMessage))
-                    <a href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</a>
+                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => 'none'])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</a>
                 @else
-                    <a href="{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
+                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => 'none'])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
                 @endif
             </div>
 
@@ -233,7 +233,7 @@
 
 
                                 table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td>" +
-                                    " <td><div class='input-group'> <div class='input-group-btn'> <button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.take-action')</button> <button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'> <span class='caret'></span> </button> <ul class='dropdown-menu'> @if(\App\Models\PrivateMessage::hasUserResponseToConversationRequest()) <li> <a>  <span> @lang('woningdossier.cooperation.tool.my-plan.conversation-requests.disabled') </span> </a> </li>@elseif(isset($privateMessage)) <li> <a href=''{{route('cooperation.conversation-requests.coach.index', ['cooperation'=> $cooperation])}}''>  <span>@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</span> </a> </li>@else <li> <a href=''{{route('cooperation.conversation-requests.coach.index', ['cooperation'=> $cooperation])}}''>  <span>@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</span> </a> </li>@endif <li><a href='{{url('aanvragen/meer-informatie')}}/"+stepData.measure_short+"'>  <span>@lang('woningdossier.cooperation.tool.my-plan.columns.more-information') </span> </a> </li><li><a href='{{url('aanvragen/offerte')}}/"+stepData.measure_short+"'>  <span>@lang('woningdossier.cooperation.tool.my-plan.columns.quotation')</span> </a> </li></ul> </div></div></td></tr>";
+                                    "<td> <div class='input-group'> <div class='input-group-btn'> <button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button> <button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'> <span class='caret'></span> </button> <ul class='dropdown-menu'>  <li> <a href='{{url('aanvragen/coach_conversation')}}'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.coach_conversation')</span> </a> </li><li> <a href='{{url('aanvragen/more_inforation')}}'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.more_information') </span> </a> </li><li> <a href='{{url('aanvragen/quotation')}}'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.quotation')</span> </a> </li></ul> </div></div></td></tr>";
                             });
 
                         });
@@ -254,7 +254,7 @@
                     @endif
 
                     $('.take-action').click(function () {
-                        window.location.href = '{{route('cooperation.conversation-requests.coach.index', ['cooperation' => $cooperation])}}'
+                        window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'action' => 'none'])}}'
                     })
                 }
             });

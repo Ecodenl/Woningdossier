@@ -32,7 +32,7 @@
                                                 @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
                                                     <li>
                                                         <label>
-                                                            <input name="action" value="{{$value}}" type="radio">
+                                                            <input name="action" @if(isset($selectedOption) && $value == $selectedOption) checked @endif value="{{$value}}" type="radio">
                                                             {{$label}}
                                                         </label>
                                                     </li>
@@ -102,7 +102,7 @@
             var takeAction = $('#take-action');
             var input = $(takeAction).find('input.form-control');
             var dropdown = $(takeAction).find('input[type=radio]');
-            var inputPrefix = '@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')'
+            var inputPrefix = '@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')';
 
             $(dropdown).change(function () {
                 var radioLabel = $(this).parent().text().trim().toLowerCase();
@@ -110,6 +110,8 @@
                 $(input).val();
                 $(input).val(inputPrefix +' '+ radioLabel);
             })
+
+            $(dropdown).trigger('change');
 
         })
     </script>

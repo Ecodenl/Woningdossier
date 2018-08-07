@@ -10,50 +10,42 @@ use App\Http\Controllers\Controller;
 
 class ConversationRequestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        if (PrivateMessage::hasUserResponseToCoachConversationRequest()) {
-            return redirect()->route('cooperation.my-account.messages.index');
-        }
 
+    /**
+     * Show the form
+     *
+     * @param Cooperation $cooperation
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index(Cooperation $cooperation, $option)
+    {
         $privateMessage = PrivateMessage::myCoachConversationRequest()->first();
 
-        return view('cooperation.conversation-requests.index', compact('privateMessage'));
+        $selectedOption = $option;
+
+        return view('cooperation.conversation-requests.index', compact('privateMessage', 'selectedOption'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function edit(Cooperation $cooperation, $m)
     {
-        //
+
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Save the conversation request for whatever the conversation request may be
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param ConversationRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(ConversationRequest $request)
     {
 
-
-        $message = $request->get('message', '');
-        $action = $request->get('action', '');
-
-
         $user = \Auth::user();
         $cooperationId = session('cooperation');
 
-
+        $message = $request->get('message', '');
+        $action = $request->get('action', '');
 
 
         PrivateMessage::create(
@@ -73,48 +65,4 @@ class ConversationRequestController extends Controller
         return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

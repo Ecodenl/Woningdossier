@@ -170,7 +170,6 @@ return [
 			],
 
 		],
-
         'conversation-requests' => [
 
             'index' => [

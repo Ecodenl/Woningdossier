@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;
@@ -37,7 +37,7 @@ class ExampleBuildingController extends Controller
 
 
 
-        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings'));
+        return view('cooperation.admin.cooperation.cooperation-admin.example-buildings.index', compact('exampleBuildings'));
     }
 
     /**
@@ -52,7 +52,7 @@ class ExampleBuildingController extends Controller
 
 	    $contentStructure = $this->getContentStructure();
 
-	    return view('cooperation.admin.example-buildings.create',
+	    return view('cooperation.admin.cooperation.cooperation-admin.example-buildings.create',
 		    compact(
 		    	'buildingTypes', 'cooperations', 'contentStructure'
 		    )
@@ -142,7 +142,7 @@ class ExampleBuildingController extends Controller
 
         $contentStructure = $this->getContentStructure();
 
-        return view('cooperation.admin.example-buildings.edit',
+        return view('cooperation.admin.cooperation.cooperation-admin.example-buildings.edit',
 	        compact(
 	        	'exampleBuilding', 'buildingTypes',
 		        'cooperations', 'contentStructure'
@@ -551,7 +551,7 @@ class ExampleBuildingController extends Controller
 	    $exampleBuilding = ExampleBuilding::findOrFail($id);
 	    $exampleBuilding->delete();
 
-	    return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building deleted');
+	    return redirect()->route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index')->with('success', 'Example building deleted');
     }
 
     public function copy(Cooperation $cooperation, $id){
@@ -577,6 +577,6 @@ class ExampleBuildingController extends Controller
 		           ->save();
 	    }
 
-    	return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
+    	return redirect()->route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index')->with('success', 'Example building copied');
     }
 }

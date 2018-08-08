@@ -27,35 +27,41 @@ return [
                 ],
                 'cooperation-admin' => [
                     'header' => 'Welkom',
-                    'text' => 'U kunt hier verschillende dingen doen.'
+                    'text' => 'U kunt hier verschillende dingen doen.',
+
+
+                    'reports' => [
+                        'title' => 'Rapportages',
+                        'description' => 'Rapportage downloads',
+
+                        'download' => [
+                            'by-year' => 'Actieplan per jaar',
+                            'by-measure' => 'Actieplan per maatregel',
+                        ],
+                        'csv-columns' => [
+                            'first-name' => 'Voornaam',
+                            'last-name' => 'Achternaam',
+                            'email' => 'Email',
+                            'phonenumber' => 'Telefoonnummer',
+                            'mobilenumber' => 'Mobiel nummer',
+                            'street' => 'Straat',
+                            'house-number' => 'Huis nummer',
+                            'city' => 'Woonplaats',
+                            'zip-code' => 'Postcode',
+                            'country-code' => 'Landcode',
+                        ],
+                    ]
+
+
                 ]
             ],
 
 	        'navbar' => [
+	            'current-role' => 'Uw huidge rol:',
 	        	'reports' => 'Rapportages',
                 'example-buildings' => 'Example buildings'
             ],
-	        'reports' => [
-	            'title' => 'Rapportages',
-                'description' => 'Rapportage downloads',
 
-                'download' => [
-                    'by-year' => 'Actieplan per jaar',
-                    'by-measure' => 'Actieplan per maatregel',
-                ],
-                'csv-columns' => [
-                    'first-name' => 'Voornaam',
-                    'last-name' => 'Achternaam',
-                    'email' => 'Email',
-                    'phonenumber' => 'Telefoonnummer',
-                    'mobilenumber' => 'Mobiel nummer',
-                    'street' => 'Straat',
-                    'house-number' => 'Huis nummer',
-                    'city' => 'Woonplaats',
-                    'zip-code' => 'Postcode',
-                    'country-code' => 'Landcode',
-                ],
-            ]
         ],
 
         'radiobutton' => [

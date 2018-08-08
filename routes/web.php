@@ -93,18 +93,19 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		});
 
 		// todo add admin middleware checking ACLs
-		Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], function(){
+		Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
 
             Route::get('/', 'AdminController@index')->name('index');
 
 			Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
 
-                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.'], function () {
+                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'middleware' => ['role:coordinator']], function () {
+
+                    // needs to be the last route due to the param
                     Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
                 });
 
-			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.'], function () {
-                    Route::get('{role_name?}', 'CooperationController@index')->name('index');
+			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'middleware' => ['role:cooperation-admin']], function () {
 
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
@@ -115,11 +116,15 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
                     Route::resource('example-buildings', 'ExampleBuildingController');
                     Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+
+                    // needs to be the last route due to the param
+                    Route::get('{role_name?}', 'CooperationController@index')->name('index');
                 });
 
             });
 
 			Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
+                // needs to be the last route due to the param
 			    Route::get('{role_name?}', 'CoachController@index')->name('index');
             });
 
@@ -130,21 +135,6 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 				Route::post('logout', 'LoginController@logout')->name('logout');
 			});
 
-
-		    // 3 route groups
-            // restricten op role
-
-            // admin/coach
-            // admin/cooperation/ cooperation-admin & coordinator
-
-
-//
-//			// Logged In Section
-//			Route::group(['middleware' => ['auth', 'is-admin']], function(){
-////			Route::group(['middleware' => ['role:coach|super-admin']], function(){
-//
-//
-//			});
 		});
 
 	});

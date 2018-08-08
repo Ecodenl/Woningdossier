@@ -89,6 +89,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         // Handle the exception if the user is not authorized / has the right roles
+
         if ($exception instanceof SpatieUnauthorizedException) {
 
             $authorizedRole = Role::find(session('role_id'));

@@ -25,7 +25,7 @@ return [
                     'header' => 'Welkom',
                     'text' => 'U kunt hier verschillende dingen doen.'
                 ],
-                'coordination-admin' => [
+                'cooperation-admin' => [
                     'header' => 'Welkom',
                     'text' => 'U kunt hier verschillende dingen doen.'
                 ]

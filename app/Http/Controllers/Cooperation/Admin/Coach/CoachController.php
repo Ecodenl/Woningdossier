@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Admin\Coach;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Exceptions\RoleDoesNotExist;
 use Spatie\Permission\Models\Role;
 
 class CoachController extends Controller
@@ -20,6 +19,7 @@ class CoachController extends Controller
 
         $role = Role::findByName($roleName);
         session()->put('role_id', $role->id);
+
 
         return view('cooperation.admin.coach.index');
     }

@@ -95,25 +95,56 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		// todo add admin middleware checking ACLs
 		Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin'], function(){
 
+            Route::get('/', 'AdminController@index')->name('index');
+
+			Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
+
+                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.'], function () {
+                    Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
+                });
+
+			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.'], function () {
+                    Route::get('{role_name?}', 'CooperationController@index')->name('index');
+
+                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                        Route::get('', 'ReportController@index')->name('index');
+                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+
+                    });
+
+                    Route::resource('example-buildings', 'ExampleBuildingController');
+                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+                });
+
+            });
+
+			Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
+			    Route::get('{role_name?}', 'CoachController@index')->name('index');
+            });
+
+            // auth
 			Route::group(['namespace' => 'Auth'], function(){
 				Route::get('login', 'LoginController@showLoginForm')->name('login');
 				Route::post('login', 'LoginController@login');
 				Route::post('logout', 'LoginController@logout')->name('logout');
 			});
 
-			// Logged In Section
-			Route::group(['middleware' => ['auth', 'is-admin']], function(){
-				Route::get('/', 'AdminController@index')->name('index');
 
-				Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-					Route::get('', 'ReportController@index')->name('index');
-					Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
-					Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-				});
+		    // 3 route groups
+            // restricten op role
 
-				Route::resource('example-buildings', 'ExampleBuildingController');
-				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
-			});
+            // admin/coach
+            // admin/cooperation/ cooperation-admin & coordinator
+
+
+//
+//			// Logged In Section
+//			Route::group(['middleware' => ['auth', 'is-admin']], function(){
+////			Route::group(['middleware' => ['role:coach|super-admin']], function(){
+//
+//
+//			});
 		});
 
 	});

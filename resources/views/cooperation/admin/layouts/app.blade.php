@@ -24,6 +24,11 @@
     @stack('css')
 </head>
 <body class="@yield('page_class')">
+@if(App::environment() == 'local')
+    <?php
+        session('role_id') == "" ? print_r("No role has been set yet.") : print_r(session('role_id')) ;
+    ?>
+@endif
 <div id="app">
 
     <nav class="navbar navbar-default navbar-static-top">
@@ -70,8 +75,8 @@
                     <!-- Authentication Links -->
                     @guest
                     @else
-                        <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                        <li><a href="{{ route('cooperation.admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                        <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
+                        <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>

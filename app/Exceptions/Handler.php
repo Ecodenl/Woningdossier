@@ -2,10 +2,14 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\RoleHelper;
 use App\Models\Cooperation;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
+use \Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedException;
+
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\Permission\Models\Role;
 
 class Handler extends ExceptionHandler
 {
@@ -84,6 +88,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        // Handle the exception if the user is not authorized / has the right roles
+        if ($exception instanceof SpatieUnauthorizedException) {
+
+            $authorizedRole = Role::find(session('role_id'));
+
+            return redirect(url(RoleHelper::getUrlByRoleName($authorizedRole->name)))->with('warning', __('default.messages.exceptions.no-right-roles'));
+        }
+
         return parent::render($request, $exception);
     }
 }

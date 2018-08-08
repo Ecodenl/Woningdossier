@@ -230,4 +230,16 @@ class User extends Authenticatable
 	{
 		$this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
 	}
+
+    /**
+     * Get the human readable role name based on the role name
+     *
+     * @param $roleName
+     * @return mixed
+     */
+    public function getHumanReadableRoleName($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->first()->human_readable_name;
+	}
+
 }

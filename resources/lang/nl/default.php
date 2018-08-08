@@ -22,6 +22,12 @@ return [
 
     'progress' => [
         'disabled' => 'U heeft geen interesse in deze maatregel'
-    ]
+    ],
+
+    'messages' => [
+        'exceptions' => [
+            'no-right-roles' => 'U heeft niet de rechten om deze pagina te bezoeken.',
+        ],
+    ],
 ];
 

@@ -12,9 +12,61 @@ class ModelHasRolesTableSeeder extends Seeder
     public function run()
     {
         //
-        $superAdmin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'super-admin']);
-        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'cooperation-admin']);
-        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'coach']);
+        $superAdmin = \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'super-admin',
+            ],
+            [
+                'name' => 'super-admin',
+                'human_readable_name' => 'Super admin'
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'superuser',
+            ],
+            [
+                'name' => 'superuser',
+                'human_readable_name' => 'Super user'
+            ]
+        );
+
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'cooperation-admin',
+            ],
+            [
+                'name' => 'cooperation-admin',
+                'human_readable_name' => 'Coöperation admin'
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'coach',
+            ],
+            [
+                'name' => 'coach',
+                'human_readable_name' => 'coach'
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'bewoner',
+            ],
+            [
+                'name' => 'bewoner',
+                'human_readable_name' => 'bewoner',
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'coordinator',
+            ],
+            [
+                'name' => 'coordinator',
+                'human_readable_name' => 'coördinator'
+            ]
+        );
 
         // The default (admin) user is promoted to super user
 

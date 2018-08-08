@@ -9,7 +9,28 @@ return [
 		],
 	],
 	'cooperation' => [
+
 	    'admin' => [
+            'choose-roles' => [
+                'header' => 'Als welke rol wilt u doorgaan ?',
+                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
+            ],
+
+            'coach' => [
+                'header' => 'Welkom',
+                'text' => 'U kunt hier verschillende dingen doen.'
+            ],
+            'cooperation' => [
+                'coordination' => [
+                    'header' => 'Welkom',
+                    'text' => 'U kunt hier verschillende dingen doen.'
+                ],
+                'coordination-admin' => [
+                    'header' => 'Welkom',
+                    'text' => 'U kunt hier verschillende dingen doen.'
+                ]
+            ],
+
 	        'navbar' => [
 	        	'reports' => 'Rapportages',
                 'example-buildings' => 'Example buildings'

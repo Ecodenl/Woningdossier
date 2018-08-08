@@ -3,12 +3,9 @@
 namespace App\Helpers;
 
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
 
 class RoleHelper
 {
-    use HasRoles;
-
     /**
      * Get the right route / url by a role name
      *

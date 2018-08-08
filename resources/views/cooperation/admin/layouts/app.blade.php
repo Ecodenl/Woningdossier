@@ -26,7 +26,7 @@
 <body class="@yield('page_class')">
 @if(App::environment() == 'local')
     <?php
-        session('role_id') == "" ? print_r("No role has been set yet.") : print_r(session('role_id')) ;
+        session('role_id') == "" ? print_r("No role has been set yet.") : print_r("role id: ".session('role_id')) ;
     ?>
 @endif
 <div id="app">

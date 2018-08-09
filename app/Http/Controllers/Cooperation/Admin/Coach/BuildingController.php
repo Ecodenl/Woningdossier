@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
@@ -14,10 +15,27 @@ class BuildingController extends Controller
     {
 
         $buildingPermissions = \Auth::user()->buildingPermissions;
+        $buildingCoachStatuses = BuildingCoachStatus::all();
 
-        return view('cooperation.admin.coach.buildings.index', compact('buildingPermissions'));
+        return view('cooperation.admin.coach.buildings.index', compact('buildingPermissions', 'buildingCoachStatuses'));
     }
 
+
+    public function setBuildingStatus(Request $request)
+    {
+        $buildingCoachStatusId = $request->get('building_coach_status', '');
+        $buildingId = $request->get('building_id');
+
+
+        // TODO: implement hasPermission function when present
+        if (\Auth::user()->buildingPermissions()->where('building_id', $buildingId) instanceof BuildingPermission){
+            Building::find($buildingId)->update(['building_coach_status_id' => $buildingCoachStatusId]);
+        }
+
+
+
+
+    }
 
     /**
      * Set the sessions and after that redirect them to the tool

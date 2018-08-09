@@ -242,4 +242,18 @@ class User extends Authenticatable
         return $this->roles()->where('name', $roleName)->first()->human_readable_name;
 	}
 
+    public function buildingPermissions()
+    {
+        return $this->hasMany('App\Models\BuildingPermission');
+	}
+
+    public function isBuildingOwner(Building $building)
+    {
+        if ($this->buildings()->find($building->id) instanceof Building) {
+            return true;
+        }
+
+        return false;
+	}
+
 }

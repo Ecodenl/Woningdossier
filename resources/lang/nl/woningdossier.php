@@ -17,8 +17,30 @@ return [
             ],
 
             'coach' => [
-                'header' => 'Welkom',
-                'text' => 'U kunt hier verschillende dingen doen.'
+                'side-nav' => [
+                    'label' => 'Coach menu',
+                    'buildings' => 'Gebouwen',
+                    'messages' => 'Berichten',
+                ],
+
+                'index' => [
+                    'header' => 'Welkom op het coach panel',
+                    'text' => 'U kunt hier verschillende dingen doen.'
+                ],
+
+                'buildings' => [
+                    'index' => [
+                        'table' => [
+                            'columns' => [
+                                'street' => 'Straatnaam',
+                                'city' => 'Stad',
+                                'owner' => 'Eigenaar',
+                                'actions' => 'Acties',
+                            ],
+                        ],
+                    ],
+                    'header' => 'Gebouwen waar u toegangt tot heeft',
+                ]
             ],
             'cooperation' => [
                 'coordination' => [

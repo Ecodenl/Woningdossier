@@ -18,16 +18,8 @@ class AdminController extends Controller
         if ($user->getRoleNames()->count() == 1) {
 
             $roleName = $user->getRoleNames()->first();
-
-            if ($roleName == "cooperation-admin") {
-                return redirect(url(RoleHelper::getUrlByRoleName($roleName)));
-            }
-            else if ($roleName == "coordinator") {
-                return redirect(url(RoleHelper::getUrlByRoleName($roleName)));
-            }
-            else if ($roleName == "coach") {
-                return redirect(url(RoleHelper::getUrlByRoleName($roleName)));
-            }
+            
+            return redirect(url(RoleHelper::getUrlByRoleName($roleName)));
         }
     	return view('cooperation.admin.choose-roles', compact('user'));
     }

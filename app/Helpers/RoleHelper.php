@@ -14,7 +14,7 @@ class RoleHelper
      */
     public static function getUrlByRoleName(string $roleName)
     {
-        
+
         // check if the user his role exists / is his
         if (\Auth::check() && \Auth::user()->roles()->where('name', $roleName)->first() instanceof Role) {
             if ($roleName == "cooperation-admin") {
@@ -26,6 +26,13 @@ class RoleHelper
             else if ($roleName == "coach") {
                 return route('cooperation.admin.coach.index', ['role_name' => $roleName]);
             }
+            else if($roleName == "superuser") {
+//                return route('cooperation.admin.coach.index', ['role_name' => $roleName]);
+            }
+            else if($roleName == "super-admin") {
+//                return route('cooperation.admin.coach.index', ['role_name' => $roleName]);
+            }
+
         }
 
         return route('cooperation.tool.index');

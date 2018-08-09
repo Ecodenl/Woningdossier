@@ -15,12 +15,20 @@
                         </div>
                         <br>
                         <div class="row">
+                            <?php $totalUserRoles = $user->getRoleNames()->count() ?>
                             @foreach($user->getRoleNames() as $i => $roleName)
-                            <div class="col-sm-3">
+                            <div class="@if($totalUserRoles == 2) col-sm-6 @elseif($totalUserRoles == 3) col-sm-4 @else col-sm-3 @endif">
                                 <form action="">
                                     <a href="{{\App\Helpers\RoleHelper::geturlByRoleName($roleName)}}">
                                         <div class="choose-roles-panel panel panel-default">
-                                            <div class="panel-heading">{{$user->getHumanReadableRoleName($roleName)}}</div>
+                                            <div class="panel-body">
+                                                <h2 class="text-center">
+                                                    <span class="glyphicon glyphicon-user"></span>
+                                                </h2>
+                                                <h3 class="text-center">
+                                                    {{ucfirst($user->getHumanReadableRoleName($roleName))}}
+                                                </h3>
+                                            </div>
                                         </div>
                                     </a>
                                 </form>

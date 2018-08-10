@@ -13,6 +13,7 @@
         </div>
     </div>
 
+
     <form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
         {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
@@ -41,7 +42,12 @@
                         @foreach($advicesForStep as $advice)
                             <tr>
                                 <td>
-                                    <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
+                                    <input type="checkbox"
+                                           @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)
+                                                   checked
+                                           @endif
+
+                                           name="advice[{{ $advice->id }}][planned]" />
                                 </td>
                                 <td>
                                     {{ $advice->measureApplication->measure_name }}

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculator;
+use App\Helpers\MeasureApplicationHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,10 +16,12 @@ class MyPlanController extends Controller
 {
 
 	public function index(){
-		$user = \Auth::user();
+
+        $user = \Auth::user();
 		$advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
-		//$advices = $user->actionPlanAdvices()->orderBy('year', 'asc')->get();
+
 		$steps = Step::orderBy('order')->get();
+
 
 		return view('cooperation.tool.my-plan.index', compact(
 			'advices', 'steps'

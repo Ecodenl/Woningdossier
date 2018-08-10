@@ -32,21 +32,26 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                            @lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            @foreach($buildingCoachStatuses as $buildingStatus)
-                                                <form action="{{route('cooperation.admin.coach.buildings.set-building-status')}}" method="post">
-                                                    <input type="hidden" name="building_coach_status_id" value="{{$buildingStatus->id}}">
-                                                    <input type="hidden" name="building_id" value="{{$buildingPermission->building->id}}">
-                                                    <li><a href="javascript:;" onclick="parentNode().submit()" href="">{{$buildingStatus->name}}</a></li>
-                                                </form>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                    <div class="input-group" id="current-building-status">
+                                        <input disabled placeholder="@lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')" type="text" class="form-control disabled" aria-label="...">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                @lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+
+                                                @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatus)
+                                                    <form action="{{route('cooperation.admin.coach.buildings.set-building-status')}}" method="post">
+                                                        {{csrf_field()}}
+                                                        <input type="hidden" name="building_coach_status" value="{{$buildingCoachStatusKey}}">
+                                                        <input type="hidden" name="building_id" value="{{$buildingPermission->building->id}}">
+                                                        <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus) id="current" @endif onclick="parentNode.parentNode.submit()" href="">{{$buildingCoachStatus}}</a></li>
+                                                    </form>
+                                                @endforeach
+                                            </ul>
+                                        </div><!-- /btn-group -->
+                                    </div><!-- /input-group -->
                                 </td>
                             </tr>
                         @endforeach
@@ -63,30 +68,13 @@
     <script>
         $(document).ready(function () {
             // put the label text from the selected option inside the input for ux
-            var takeAction = $('#take-action');
-            var input = $(takeAction).find('input.form-control');
-            var dropdown = $(takeAction).find('input[type=radio]');
-            var inputPrefix = '@lang('woningdossier.cooperation.conversation-requests.edit.form.selected-option')';
-            $(dropdown).change(function () {
-                var radioLabel = $('input[type=radio]:checked').parent().text().trim();
-                if (coachConversationTranslation != radioLabel) {
-                    window.location = '{{url('/aanvragen')}}' + '/' + $('input[type=radio]:checked').val()
-                }
-                // we lower the case after the check is done, otherwise it would fail in any case
-                radioLabel.toLowerCase();
-                $(input).val();
-                $(input).val(inputPrefix +' '+ radioLabel);
-            });
-            $(dropdown).trigger('change');
-            // when the form gets submited check if the user agreed with the agreement
-            // if so submit, else do nuthing
-            $('form').on('submit', function () {
-                if ($('input[name=agreement]').is(':checked')  == false) {
-                    if (confirm('Weet u zeker dat u geen toesteming wilt geven ?')) {
-                    } else {
-                        event.preventDefault();
-                    }
-                }
-            })
+            var buildingCoachStatus = $('#current-building-status');
+            var input = $(buildingCoachStatus).find('input.form-control');
+            var currentStatus = $(buildingCoachStatus).find('li a[id=current]');
+
+            var inputValPrefix = '{{__('woningdossier.cooperation.admin.coach.buildings.index.table.current-status')}} ';
+
+            $(input).val(inputValPrefix + $(currentStatus).text().trim());
+        });
     </script>
 @endpush

@@ -10,6 +10,10 @@ class BuildingCoachStatus extends Model
         'coach_id', 'status', 'building_id'
     ];
 
+    const STATUS_APPOINTMENT = "appointment";
+    const STATUS_IN_CONSIDERATION = "in_consideration";
+    const STATUS_DONE = "done";
+
     /**
      * Get the building from the status
      *
@@ -29,4 +33,17 @@ class BuildingCoachStatus extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    /**
+     * Returns the current status from a coach bases on the given status
+     *
+     * @param $status
+     * @return Model|null|object|static
+     */
+    public static function scopeCurrentStatus($query, $status)
+    {
+
+        return $query->where('status', $status)->where('coach_id', \Auth::id())->first();
+    }
+
 }

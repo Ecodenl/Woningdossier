@@ -23,15 +23,25 @@ class BuildingController extends Controller
 
     public function setBuildingStatus(Request $request)
     {
-        $buildingCoachStatusId = $request->get('building_coach_status', '');
+        $buildingCoachStatus = $request->get('building_coach_status', '');
         $buildingId = $request->get('building_id');
 
 
         // TODO: implement hasPermission function when present
-        if (\Auth::user()->buildingPermissions()->where('building_id', $buildingId) instanceof BuildingPermission){
-            Building::find($buildingId)->update(['enum' => $buildingCoachStatusId]);
+        if (\Auth::user()->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
+
+            BuildingCoachStatus::updateOrCreate(
+                [
+                    'coach_id' => \Auth::id(),
+                    'building_id' => $buildingId
+                ],
+                [
+                    'status' => $buildingCoachStatus,
+                ]
+            );
         }
 
+        return redirect()->route('cooperation.admin.coach.buildings.index')->with('success', __('woningdossier.cooperation.admin.coach.buildings.set-building-status.success'));
 
     }
 

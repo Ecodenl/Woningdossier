@@ -22,7 +22,7 @@ class CreateBuildingCoachStatusesTable extends Migration
             $table->integer('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
 
-            $table->enum('status', ['afgehandeld', '', 'Coach komt langs']);
+            $table->enum('status', ['done', 'in_consideration', 'appointment']);
 
             $table->timestamps();
         });

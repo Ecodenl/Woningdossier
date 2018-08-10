@@ -29,10 +29,8 @@ class BuildingController extends Controller
 
         // TODO: implement hasPermission function when present
         if (\Auth::user()->buildingPermissions()->where('building_id', $buildingId) instanceof BuildingPermission){
-            Building::find($buildingId)->update(['building_coach_status_id' => $buildingCoachStatusId]);
+            Building::find($buildingId)->update(['enum' => $buildingCoachStatusId]);
         }
-
-
 
 
     }

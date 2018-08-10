@@ -6,6 +6,7 @@
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+        @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-12">

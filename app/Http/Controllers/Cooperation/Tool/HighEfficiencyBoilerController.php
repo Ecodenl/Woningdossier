@@ -16,6 +16,7 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -38,16 +39,8 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('service', 4)) {
-
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [4];
 
     	$user = \Auth::user();
     	$habit = $user->energyHabit;
@@ -60,6 +53,7 @@ class HighEfficiencyBoilerController extends Controller
 
         return view('cooperation.tool.hr-boiler.index', compact(
         	'habit', 'boiler', 'boilerTypes', 'installedBoiler',
+	        'typeIds',
 	        'steps'));
     }
 
@@ -123,6 +117,9 @@ class HighEfficiencyBoilerController extends Controller
         // Save the building service
         $buildingServices = $request->input('building_services', '');
         $buildingServiceId = key($buildingServices);
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
 
         $serviceValue = isset($buildingServices[$buildingServiceId]['service_value_id']) ? $buildingServices[$buildingServiceId]['service_value_id'] : "";
         $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : "";

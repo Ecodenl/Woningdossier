@@ -44,12 +44,8 @@ class HeaterController extends Controller
      */
     public function index()
     {
-        // check if the user is interested in a heater, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('service', 3)) {
-            // the heater is the "last" step for now, so redirect them to the my plan
-            $cooperation = Cooperation::find(\Session::get('cooperation'));
-            return redirect()->route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]);
-        }
+
+        $typeIds = [3];
 
     	$user = \Auth::user();
     	/** @var Building $building */
@@ -67,7 +63,7 @@ class HeaterController extends Controller
 		$currentHeater = $building->heater;
 
         return view('cooperation.tool.heater.index', compact(
-        	'comfortLevels', 'collectorOrientations',
+        	'comfortLevels', 'collectorOrientations', 'typeIds',
 	        'currentComfort', 'currentHeater', 'habits', 'steps'
         ));
     }

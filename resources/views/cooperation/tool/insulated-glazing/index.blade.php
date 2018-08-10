@@ -12,9 +12,9 @@
             9 => 'place-hr-with-frame',
         ];
     ?>
-
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+        @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div id="main-glass-questions">
             {{--@foreach ($keys as $key)--}}
             @foreach($measureApplications as $i => $measureApplication)

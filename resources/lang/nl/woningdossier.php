@@ -19,13 +19,23 @@ return [
             'coach' => [
                 'side-nav' => [
                     'label' => 'Coach menu',
+                    'index' => 'Home',
                     'buildings' => 'Gebouwen',
                     'messages' => 'Berichten',
                 ],
 
                 'index' => [
                     'header' => 'Welkom op het coach panel',
-                    'text' => 'U kunt hier verschillende dingen doen.'
+                    'text' => 'Alle gebouwen waar u toegang tot heeft, u kunt op de pagina voor gebouwen acties uitvoeren hierop.',
+
+                    'table' => [
+                        'columns' => [
+                            'street' => 'Straatnaam',
+                            'city' => 'Stad',
+                            'owner' => 'Eigenaar',
+                            'actions' => 'Acties',
+                        ],
+                    ],
                 ],
 
                 'buildings' => [

@@ -42,12 +42,11 @@
                         @foreach($advicesForStep as $advice)
                             <tr>
                                 <td>
-                                    <input type="checkbox"
+                                    <input type="checkbox" id="advice-{{$advice->id}}-planned"
                                            @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)
                                                    checked
                                            @endif
-
-                                           name="advice[{{ $advice->id }}][planned]" />
+                                    />
                                 </td>
                                 <td>
                                     {{ $advice->measureApplication->measure_name }}
@@ -68,7 +67,7 @@
                                     {{ $advice->year }}
                                 </td>
                                 <td>
-                                    <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
+                                    <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][{{$step}}][planned_year]" value="{{ $advice->planned_year }}" />
                                 </td>
                             </tr>
                         @endforeach
@@ -197,7 +196,7 @@
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
-                    type: "POST",
+                    type: "GET",
                     url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function(data){
@@ -214,6 +213,10 @@
                             $.each(steps, function(stepName, stepMeasures){
 
                                 $.each(stepMeasures, function(i, stepData){
+
+                                    if (stepData.interested) {
+                                        $("#advice-"+stepData.advice_id+"-planned").attr('checked', true)
+                                    }
 
                                     totalCosts += parseFloat(stepData.costs);
                                     totalSavingsGas += parseFloat(stepData.savings_gas);

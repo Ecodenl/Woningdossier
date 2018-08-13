@@ -95,6 +95,7 @@ class UserActionPlanAdvice extends Model
 //			if (!array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
 //                $result[$measureApplication->measure_type][$advice->step->slug] = [];
 //            }
+
 			if (!array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])){
 				$result[$measureApplication->measure_type][$advice->step->slug] = [];
 			}

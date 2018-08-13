@@ -20,6 +20,8 @@ class CoordinatorController extends Controller
         $role = Role::findByName($roleName);
         session()->put('role_id', $role->id);
 
-        return view('cooperation.admin.cooperation.coordinator.index');
+        $users = $cooperation->users;
+
+        return view('cooperation.admin.cooperation.coordinator.index', compact('users'));
     }
 }

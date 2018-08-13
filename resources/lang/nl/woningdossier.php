@@ -52,11 +52,8 @@ return [
                     'header' => 'Gebouwen waar u toegangt tot heeft',
                 ]
             ],
+
             'cooperation' => [
-                'coordination' => [
-                    'header' => 'Welkom',
-                    'text' => 'U kunt hier verschillende dingen doen.'
-                ],
                 'cooperation-admin' => [
                     'header' => 'Welkom',
                     'text' => 'U kunt hier verschillende dingen doen.',
@@ -83,9 +80,31 @@ return [
                             'country-code' => 'Landcode',
                         ],
                     ]
+                ],
 
+                'coordinator' => [
+                    'side-nav' => [
+                        'label' => 'Coördinator menu',
+                        'home' => 'Home',
+                        'assign-roles' => 'Rollen toewijzen',
+                        'add-coach' => 'Coach account aanmaken',
+                    ],
+                    'index' => [
+                        'header' => 'Coordinator hoofdpagina - overzicht van alle gebruikers voor uw cooperatie',
+                        'text' => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
 
-                ]
+                        'table' => [
+                            'columns' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'email' => 'E-mail adres',
+                                'role' => 'Huidige rollen van gebruiker',
+                                'actions' => 'Acties'
+                            ]
+
+                        ],
+                    ],
+                ],
             ],
 
 	        'navbar' => [

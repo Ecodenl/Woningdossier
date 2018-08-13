@@ -196,7 +196,7 @@
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
-                    type: "GET",
+                    type: "POST",
                     url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function(data){

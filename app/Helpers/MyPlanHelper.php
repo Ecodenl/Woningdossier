@@ -71,7 +71,7 @@ class MyPlanHelper
      * @param $step
      * @return bool
      */
-    public static function isUserInterestedInMeasure($step)
+    public static function isUserInterestedInMeasure($step) : bool
     {
 
         foreach (self::STEP_INTERESTS[$step] as $type => $interestedIn) {
@@ -85,10 +85,11 @@ class MyPlanHelper
     /**
      * Save a user his interests from the my plan page
      *
-     * @param \Request $request
+     * @param Request $request
      * @param UserActionPlanAdvice $advice
+     * @return string
      */
-    public static function saveUserInterests(Request $request, UserActionPlanAdvice $advice)
+    public static function saveUserInterests(Request $request, UserActionPlanAdvice $advice) : string
     {
         $adviceId = $advice->id;
 
@@ -99,7 +100,7 @@ class MyPlanHelper
         $requestPlannedYear = array_shift($myAdvice[$step]);
         $stepInterests = MyPlanHelper::STEP_INTERESTS[$step];
 
-
+        // update the planned year
         $updates = [
             'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null
         ];
@@ -109,9 +110,6 @@ class MyPlanHelper
         // get the planned year and current year
         $plannedYear = Carbon::create($requestPlannedYear);
         $currentYear = Carbon::now()->year(date('Y'));
-
-        // get the current step
-        $currentStep = Step::where('slug', $step)->first();
 
         // check if the user set the planned year
         if ($requestPlannedYear != null) {
@@ -127,7 +125,7 @@ class MyPlanHelper
                 $interestId = 1;
             }
 
-
+            // save the user his interests
             foreach ($stepInterests as $type => $interestInIds) {
                 foreach ($interestInIds as $interestInId) {
                     UserInterest::updateOrCreate(
@@ -143,6 +141,7 @@ class MyPlanHelper
             }
         }
 
+        // and return the step slug
         return $step;
     }
 }

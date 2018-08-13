@@ -88,67 +88,8 @@ class MyPlanController extends Controller
             $advice = UserActionPlanAdvice::find($adviceId);
             if ($advice instanceof UserActionPlanAdvice && $advice->user == \Auth::user()) {
 
-                $myAdvice = $request->input('advice.' . $adviceId);
 
-                // if the user checked the interested button
-
-                $step = key($myAdvice);
-                $requestPlannedYear = array_shift($myAdvice[$step]);
-                $stepInterests = MyPlanHelper::STEP_INTERESTS[$step];
-
-
-                $updates = [
-                    'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null
-                ];
-
-                $advice->update($updates);
-
-                // get the planned year and current year
-                $plannedYear = Carbon::create($requestPlannedYear);
-                $currentYear = Carbon::now()->year(date('Y'));
-
-                // get the current step
-                $currentStep = Step::where('slug', $step)->first();
-
-                $lowestPlannedYearForCurrentStep = UserActionPlanAdvice::where('step_id', $currentStep->id)->min('planned_year');
-                $lowestPlannedYearForCurrentStep = Carbon::create($lowestPlannedYearForCurrentStep);
-
-                // check if the user set the planned year
-                if ($requestPlannedYear != null) {
-
-                    // if the filled in year has a difference of 3 years lower then the current year
-                    // we set the interest id to 2 or ja op termijn
-                    if ($currentYear->diff($plannedYear)->y >= 3) {
-                        $interestId = 2;
-                    }
-                    // if the filled in year has a difference of 3 years higher then the current year
-                    // we set the interest id to 1 or yes in short term
-                    else if ($currentYear->diff($plannedYear)->y <= 3) {
-                        $interestId = 1;
-                    }
-
-                    // but, we will always look for the lowest year.
-                    // so if the lowest year has a difference of 3 years lower then the current year
-                    // we set the interest id to 1 or yes in short term
-                    if ($currentYear->diff($lowestPlannedYearForCurrentStep)->y <= 3) {
-                        $interestId = 1;
-                    }
-
-                    foreach ($stepInterests as $type => $interestInIds) {
-                        foreach ($interestInIds as $interestInId) {
-                            UserInterest::updateOrCreate(
-                                [
-                                    'interested_in_type' => $type,
-                                    'interested_in_id' => $interestInId
-                                ],
-                                [
-                                    'interest_id' => $interestId
-                                ]
-                            );
-                        }
-                    }
-                }
-
+                $step = MyPlanHelper::saveUserInterests($request, $advice);
 
                 if (MyPlanHelper::isUserInterestedInMeasure($step)) {
 

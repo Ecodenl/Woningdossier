@@ -3,7 +3,11 @@
 namespace App\Helpers;
 
 
+use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class MyPlanHelper
 {
@@ -59,40 +63,7 @@ class MyPlanHelper
             ]
         ],
     ];
-
-    const INTERESTED_ID_BY_STEP = [
-        // step name
-        'wall-insulation' => [
-            // interested in id (Element id, service id etc)
-            '3' => 'element',
-            '2' => 'element',
-        ],
-        'insulated-glazing' => [
-            '1' => 'element',
-        ],
-        'floor-insulation' => [
-            '4' => 'element'
-        ],
-        'roof-insulation' => [
-            '5' => 'element'
-        ],
-        'high-efficiency-boiler' => [
-            '4' => 'service'
-        ],
-        'heat-pump' => [
-            '1' => 'service',
-            '2' => 'service'
-        ],
-        'solar-panels' => [
-            '7' => 'service'
-        ],
-        'heater' => [
-            '3' => 'service'
-        ],
-        'ventilation-information' => [
-            '6' => 'service'
-        ],
-    ];
+    
 
     /**
      * Check if a user is interested in a measure
@@ -108,5 +79,70 @@ class MyPlanHelper
                 return true;
             }
         }
+    }
+
+
+    /**
+     * Save a user his interests from the my plan page
+     *
+     * @param \Request $request
+     * @param UserActionPlanAdvice $advice
+     */
+    public static function saveUserInterests(Request $request, UserActionPlanAdvice $advice)
+    {
+        $adviceId = $advice->id;
+
+        $myAdvice = $request->input('advice.' . $adviceId);
+
+        // if the user checked the interested button
+        $step = key($myAdvice);
+        $requestPlannedYear = array_shift($myAdvice[$step]);
+        $stepInterests = MyPlanHelper::STEP_INTERESTS[$step];
+
+
+        $updates = [
+            'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null
+        ];
+
+        $advice->update($updates);
+
+        // get the planned year and current year
+        $plannedYear = Carbon::create($requestPlannedYear);
+        $currentYear = Carbon::now()->year(date('Y'));
+
+        // get the current step
+        $currentStep = Step::where('slug', $step)->first();
+
+        // check if the user set the planned year
+        if ($requestPlannedYear != null) {
+
+            // if the filled in year has a difference of 3 years lower then the current year
+            // we set the interest id to 2 or ja op termijn
+            if ($currentYear->diff($plannedYear)->y >= 3) {
+                $interestId = 2;
+            }
+            // if the filled in year has a difference of 3 years higher then the current year
+            // we set the interest id to 1 or yes in short term
+            else if ($currentYear->diff($plannedYear)->y <= 3) {
+                $interestId = 1;
+            }
+
+
+            foreach ($stepInterests as $type => $interestInIds) {
+                foreach ($interestInIds as $interestInId) {
+                    UserInterest::updateOrCreate(
+                        [
+                            'interested_in_type' => $type,
+                            'interested_in_id' => $interestInId
+                        ],
+                        [
+                            'interest_id' => $interestId
+                        ]
+                    );
+                }
+            }
+        }
+
+        return $step;
     }
 }

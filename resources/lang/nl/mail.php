@@ -11,5 +11,10 @@ return [
 		'action' => 'Reset Password',
 		'not_requested' => 'If you did not request a password reset, no further action is required.',
 	],
+    'user-created' => [
+        'why' => 'U heeft deze e-mail ontvangen omdat er account voor uw is aangemaakt',
+        'action' => 'Aan de slag',
+        'signature' => '<br>Met vriendelijke groet,<br>:app_name',
+    ]
 
 ];

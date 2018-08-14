@@ -51,7 +51,7 @@
                                         <div class="panel-body">
                                             <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }} ">
                                                 <label for="password">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.label')</label>
-                                                <input  type="text" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">
+                                                <input  type="password" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">
                                                 @if ($errors->has('password'))
                                                     <span class="help-block">
                                                         <strong>{{ $errors->first('password') }}</strong>

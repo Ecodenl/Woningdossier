@@ -88,6 +88,47 @@ return [
                         'home' => 'Home',
                         'assign-roles' => 'Rollen toewijzen',
                         'coach' => 'Coaches',
+                        'add-user' => 'Voeg Coach / Bewoner toe'
+                    ],
+
+                    'assign-roles' => [
+                        'index' => [
+                            'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+                        ],
+                        'edit' => [
+                            'header' => 'Verander rollen voor :firstName :lastName',
+
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Gebruiker aanmaken',
+                            ],
+                        ],
+                        'update' => [
+                            'success' => 'Rollen zijn bijgewerkt'
+                        ],
                     ],
                     'coach' => [
                         'index' => [
@@ -128,6 +169,9 @@ return [
                         'store' => [
                             'success' => 'Gebruiker is met toevoegd',
                         ],
+                        'destroy' => [
+                            'success' => 'Gebruiker is verwijderd'
+                        ]
                     ],
                     'index' => [
                         'header' => 'Coordinator hoofdpagina - overzicht van alle gebruikers voor uw cooperatie',

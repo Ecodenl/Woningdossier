@@ -11,9 +11,9 @@
                         </h4>
                     </div>
                     <ul id="sidebar" class="list-group panel-collapse open collapse in" aria-expanded="true">
-                        <li  class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.cooperation.coordinator.index'])) active @endif"><a  href="{{route('cooperation.admin.cooperation.coordinator.index')}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.home')</a></li>
-                        <li class="list-group-item"><a href="#">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.assign-roles')</a></li>
-                        <li class="list-group-item"><a href="#">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-coach')</a></li>
+                        <li  class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.coordinator.index'])) active @endif"><a  href="{{route('cooperation.admin.cooperation.coordinator.index')}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.home')</a></li>
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.coordinator.coach.role'])) active @endif"><a href="">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.assign-roles')</a></li>
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.coordinator.coach.index', 'cooperation.admin.cooperation.coordinator.coach.create'])) active @endif"><a href="{{route('cooperation.admin.cooperation.coordinator.coach.index')}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.coach')</a></li>
                     </ul>
                 </div>
             </div>
@@ -23,6 +23,8 @@
         </div>
     </div>
 @endsection
+
+@push('css')
 
 @push('js')
     <script src="{{ asset('js/datatables.js') }}"></script>

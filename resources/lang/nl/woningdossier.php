@@ -87,7 +87,47 @@ return [
                         'label' => 'Coördinator menu',
                         'home' => 'Home',
                         'assign-roles' => 'Rollen toewijzen',
-                        'add-coach' => 'Coach account aanmaken',
+                        'coach' => 'Coaches',
+                    ],
+                    'coach' => [
+                        'index' => [
+                            'header' => 'Overzicht van alle coaches voor uw coöperatie',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'total-houses' => 'Totale woningen',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+                        ],
+
+                        'create' => [
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Gebruiker aanmaken',
+                            ]
+                        ],
+
+                        'store' => [
+                            'success' => 'Gebruiker is met toevoegd',
+                        ],
                     ],
                     'index' => [
                         'header' => 'Coordinator hoofdpagina - overzicht van alle gebruikers voor uw cooperatie',

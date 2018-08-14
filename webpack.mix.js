@@ -21,8 +21,12 @@ mix.js('resources/assets/js/app.js', 'public/js')
     .scripts(
         [
             'resources/assets/js/datatables.js'
-            ''
         ], 'public/js/datatables.js'
+    )
+    .scripts(
+        [
+            'resources/assets/js/select2.js'
+        ], 'public/js/select2.js'
     )
     .copy('resources/assets/images', 'public/images')
     .sass('resources/assets/sass/app.scss', 'public/css');

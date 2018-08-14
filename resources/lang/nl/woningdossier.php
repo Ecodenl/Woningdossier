@@ -93,7 +93,7 @@ return [
 
                     'assign-roles' => [
                         'index' => [
-                            'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
+                            'header' => 'Overzicht gebruikers - rollen toewijzen',
 
                             'table' => [
                                 'columns' => [

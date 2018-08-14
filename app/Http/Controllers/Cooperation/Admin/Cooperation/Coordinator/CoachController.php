@@ -17,7 +17,7 @@ class CoachController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->users;
+        $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.coordinator.coach.index', compact('roles', 'users'));

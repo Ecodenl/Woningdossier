@@ -29,7 +29,7 @@
                                 <td>
                                     <?php
                                         $user->roles->map(function ($role) {
-                                            echo $role->name .', ';
+                                            echo ucfirst($role->human_readable_name) .', ';
                                         })
                                     ?>
                                 </td>

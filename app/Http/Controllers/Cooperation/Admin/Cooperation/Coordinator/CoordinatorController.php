@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\RoleHelper;
 use App\Models\Cooperation;
@@ -20,6 +20,8 @@ class CoordinatorController extends Controller
         $role = Role::findByName($roleName);
         session()->put('role_id', $role->id);
 
-        return view('cooperation.admin.cooperation.coordinator.index');
+        $users = $cooperation->users;
+
+        return view('cooperation.admin.cooperation.coordinator.index', compact('users'));
     }
 }

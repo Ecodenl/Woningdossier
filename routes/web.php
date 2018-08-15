@@ -11,7 +11,6 @@
 |
 */
 
-
 Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function(){
 
 	Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function() {
@@ -144,7 +143,21 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 			Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
 
-                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'middleware' => ['role:coordinator']], function () {
+                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
+
+                    Route::group(['prefix' => 'coaches', 'as' => 'coach.'], function () {
+                        Route::get('', 'CoachController@index')->name('index');
+                        Route::get('create', 'CoachController@create')->name('create');
+                        Route::post('create', 'CoachController@store')->name('store');
+                        Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
+                    });
+
+                    Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
+                        Route::get('','AssignRoleController@index')->name('index');
+                        Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
+                        Route::post('edit/{userId}','AssignRoleController@update')->name('update');
+                    });
+
 
                     // needs to be the last route due to the param
                     Route::get('{role_name?}', 'CoordinatorController@index')->name('index');

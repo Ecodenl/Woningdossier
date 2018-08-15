@@ -39,4 +39,5 @@ class Cooperation extends Model
 	public function getRouteKeyName() {
 		return 'slug';
 	}
+
 }

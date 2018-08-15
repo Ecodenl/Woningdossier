@@ -54,7 +54,7 @@ class ModelHasRolesTableSeeder extends Seeder
                 'name' => 'bewoner',
             ],
             [
-                'name' => 'bewoner',
+                'name' => 'resident',
                 'human_readable_name' => 'bewoner',
             ]
         );

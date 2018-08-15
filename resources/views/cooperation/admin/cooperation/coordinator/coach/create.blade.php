@@ -7,7 +7,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.cooperation.coordinator.coach.store')}}" method="post" autocomplete="off">
+                    <form action="{{route('cooperation.admin.cooperation.coordinator.coach.store')}}" method="post"  >
                         {{csrf_field()}}
                         <div class="row">
                             <div class="col-sm-6">
@@ -51,7 +51,7 @@
                                         <div class="panel-body">
                                             <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }} ">
                                                 <label for="password">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.label')</label>
-                                                <input  type="password" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">
+                                                <input id="password" type="password" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">
                                                 @if ($errors->has('password'))
                                                     <span class="help-block">
                                                         <strong>{{ $errors->first('password') }}</strong>
@@ -120,7 +120,49 @@
 @push('js')
     <script src="{{asset('js/select2.js')}}"></script>
 
+
+
     <script>
+        function makeid() {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (var i = 0; i < 5; i++)
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+            return text;
+        }
+
+
+        // find all the inputs inside a form
+        var inputs = $('form').find('input');
+
+        // generate 1 new input name
+        var newInputName = makeid();
+
+        // objects for the fake and original names
+        var fakeNames = {};
+        var originalNames = {};
+
+        // loop through the inputs, collect the original name and set a fake name
+        $(inputs).each(function (index, value) {
+
+            // set original name
+            originalNames[index] = $(this).attr("name");
+            // set the fake name on the input
+            $(this).attr('name', newInputName);
+            // collect the fakename
+            fakeNames[index] = $(this).attr('name');
+
+        });
+
+        // on submit put the original names back to the inputs
+        // so we dont have a problem in the backend
+        $('form').on('submit', function () {
+            Object.keys(fakeNames).forEach(function(key) {
+                $(inputs[key]).attr('name', originalNames[key])
+            });
+        });
 
         $('.collapse').on('shown.bs.collapse', function(){
             $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
@@ -128,7 +170,12 @@
             $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
         });
 
+
+
         $(document).ready(function () {
+
+
+
             $(".roles").select2({
                 placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.select-role')",
                 maximumSelectionLength: Infinity

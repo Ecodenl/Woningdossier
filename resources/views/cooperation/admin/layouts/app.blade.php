@@ -139,6 +139,10 @@
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
 
+@stack('footer_scripts')
+{{--additional scripts will apear here--}}
+
 @stack('js')
+{{--additional js code here--}}
 </body>
 </html>

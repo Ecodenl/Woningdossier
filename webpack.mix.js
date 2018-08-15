@@ -28,6 +28,11 @@ mix.js('resources/assets/js/app.js', 'public/js')
             'resources/assets/js/select2.js'
         ], 'public/js/select2.js'
     )
+    .scripts(
+        [
+            'resources/assets/js/disable-auto-fill.js'
+        ], 'public/js/disable-auto-fill.js'
+    )
     .copy('resources/assets/images', 'public/images')
     .sass('resources/assets/sass/app.scss', 'public/css');
 

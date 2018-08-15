@@ -120,49 +120,10 @@
 @push('js')
     <script src="{{asset('js/select2.js')}}"></script>
 
-
-
     <script>
-        function makeid() {
-            var text = "";
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-            for (var i = 0; i < 5; i++)
-                text += possible.charAt(Math.floor(Math.random() * possible.length));
+        $('form').disableAutoFill();
 
-            return text;
-        }
-
-
-        // find all the inputs inside a form
-        var inputs = $('form').find('input');
-
-        // generate 1 new input name
-        var newInputName = makeid();
-
-        // objects for the fake and original names
-        var fakeNames = {};
-        var originalNames = {};
-
-        // loop through the inputs, collect the original name and set a fake name
-        $(inputs).each(function (index, value) {
-
-            // set original name
-            originalNames[index] = $(this).attr("name");
-            // set the fake name on the input
-            $(this).attr('name', newInputName);
-            // collect the fakename
-            fakeNames[index] = $(this).attr('name');
-
-        });
-
-        // on submit put the original names back to the inputs
-        // so we dont have a problem in the backend
-        $('form').on('submit', function () {
-            Object.keys(fakeNames).forEach(function(key) {
-                $(inputs[key]).attr('name', originalNames[key])
-            });
-        });
 
         $('.collapse').on('shown.bs.collapse', function(){
             $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
@@ -171,10 +132,7 @@
         });
 
 
-
         $(document).ready(function () {
-
-
 
             $(".roles").select2({
                 placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.select-role')",

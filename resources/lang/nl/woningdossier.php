@@ -96,12 +96,33 @@ return [
                 'coordinator' => [
                     'side-nav' => [
                         'label' => 'Coördinator menu',
+                        'messages' => 'Bericthen menu',
                         'home' => 'Home',
                         'assign-roles' => 'Rollen toewijzen',
                         'coach' => 'Coaches',
                         'add-user' => 'Voeg Coach / Bewoner toe'
                     ],
+                    'messages' => [
+                        'show' => [
+                            'header' => 'U bent de aanvraag van :firstName :lastName aan het bekijken'
+                        ]
+                    ],
+                    'connect-to-coach' => [
+                        'index' => [
+                            'header' => 'U bent de aanvraag van :firstName :lastName aan het koppelen met een coach',
 
+                            'form' => [
+                                'message-to-coach' => [
+                                    'label' => 'Uw bericht aan de coach',
+                                    'placeholder' => 'Bijv: De heer Jan wilde meer weten over vloerisolatie...'
+                                ],
+                                'title' => 'Titel van het bericht',
+                                'select-coach' => 'Selecteer een coach',
+                                'submit' => 'Coach koppelen',
+                                'submit-warning' => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
+                            ]
+                        ]
+                    ],
                     'assign-roles' => [
                         'index' => [
                             'header' => 'Overzicht gebruikers - rollen toewijzen',

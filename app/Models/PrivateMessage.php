@@ -28,6 +28,19 @@ class PrivateMessage extends Model
 
 
     /**
+     * Scope a query to return the open conversation requests based on the cooperation id
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeOpenCooperationConversationRequests($query)
+    {
+        $currentCooperationId = session('cooperation');
+
+        return $query->where('to_cooperation_id', $currentCooperationId)->where('status', self::STATUS_IN_CONSIDERATION);
+    }
+
+    /**
      * Scope a query to return the messages that are sent to a user / coach
      *
      * @return PrivateMessage

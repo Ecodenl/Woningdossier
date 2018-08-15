@@ -158,6 +158,16 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
+                    Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {
+                        Route::get('', 'MessagesController@index')->name('index');
+                        Route::get('/bericht/{messageId}', 'MessagesController@show')->name('show');
+                    });
+
+                    Route::group(['prefix' => 'verbind-met-coach', 'as' => 'connect-to-coach.'], function () {
+                        Route::get('{senderId}','ConnectToCoachController@index')->name('index');
+                        Route::post('', 'ConnectToCoachCotroller@store')->name('store');
+                    });
+
 
                     // needs to be the last route due to the param
                     Route::get('{role_name?}', 'CoordinatorController@index')->name('index');

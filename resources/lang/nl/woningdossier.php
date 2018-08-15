@@ -46,8 +46,19 @@ return [
                                 'city' => 'Stad',
                                 'owner' => 'Eigenaar',
                                 'actions' => 'Acties',
+                                'status' => 'Status',
+                            ],
+                            'status' =>  'Kies status',
+                            'current-status' => 'Huidige status:',
+                            'options' => [
+                                \App\Models\BuildingCoachStatus::STATUS_IN_CONSIDERATION => 'In behandeling',
+                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_DONE=> 'Afgehandeld',
                             ],
                         ],
+                    ],
+                    'set-building-status' => [
+                        'success' => 'Status is gekoppeld aan het gebouw',
                     ],
                     'header' => 'Gebouwen waar u toegangt tot heeft',
                 ]

@@ -17,9 +17,11 @@
         {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
         <div class="row">
+
             <div class="col-md-12">
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
+
 
             <div class="col-md-12">
                 <table class="table table-condensed table-responsive">
@@ -135,6 +137,13 @@
             @endforeach
                     </tbody>
                 </table>
+                @if(\App\Models\PrivateMessage::hasUserResponseToConversationRequest())
+                    <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.disabled')</a>
+                @elseif(isset($privateMessage))
+                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => 'none'])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</a>
+                @else
+                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => 'none'])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
+                @endif
             </div>
 
         </div>
@@ -173,73 +182,91 @@
             </div>
         </div>
     </div>
+
+
+
 @endsection
 
 
+
 @push('js')
-    <script>
-        $(document).ready(function(){
-            $(window).keydown(function(event){
-                if(event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+<script>
 
-            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
-
-
-                var form = $(this).closest("form").serialize();
-                $.ajax({
-                    type: "POST",
-                    url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
-                    data: form,
-                    success: function(data){
-                        $("ul#years").html("");
-                        $.each(data, function(year, steps){
-                            var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th></tr></thead><tbody>";
-
-                            var totalCosts = 0;
-                            var totalSavingsGas = 0;
-                            var totalSavingsElectricity = 0;
-                            var totalSavingsMoney = 0;
-
-                            $.each(steps, function(stepName, stepMeasures){
-
-                                $.each(stepMeasures, function(i, stepData){
-
-                                    totalCosts += parseFloat(stepData.costs);
-                                    totalSavingsGas += parseFloat(stepData.savings_gas);
-                                    totalSavingsElectricity += parseFloat(stepData.savings_electricity);
-                                    totalSavingsMoney += parseFloat(stepData.savings_money);
-
-                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
-                                });
-
-                            });
-
-                            table += "<tr><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></strong></td><td><strong>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
-                            table += "<tr><td colspan=\"5\"></td></tr>";
-
-                            table += "</tbody></table>";
-
-                            $("ul#years").append("<li>" + header + table + "</li>");
-                        });
-
-
-
-                        @if(App::environment('local'))
-                        console.log(data);
-                        @endif
-                    }
-                })
-            });
-            // Trigger the change event so it will load the data
-            $('form').find('*').filter(':input:visible:first').trigger('change');
+    $(document).ready(function(){
+        $(window).keydown(function(event){
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
         });
 
 
-    </script>
+        $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
+
+
+
+            var form = $(this).closest("form").serialize();
+            $.ajax({
+                type: "POST",
+                url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
+                data: form,
+                success: function(data){
+                    $("ul#years").html("");
+                    $.each(data, function(year, steps){
+                        var header = "<h1>" + year + "</h1>";
+                        var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th></tr></thead><tbody>";
+
+                        var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.help-question')</th></tr></thead><tbody> " ;
+                        var totalCosts = 0;
+                        var totalSavingsGas = 0;
+                        var totalSavingsElectricity = 0;
+                        var totalSavingsMoney = 0;
+
+                        $.each(steps, function(stepName, stepMeasures){
+
+                            $.each(stepMeasures, function(i, stepData){
+
+                                totalCosts += parseFloat(stepData.costs);
+                                totalSavingsGas += parseFloat(stepData.savings_gas);
+                                totalSavingsElectricity += parseFloat(stepData.savings_electricity);
+                                totalSavingsMoney += parseFloat(stepData.savings_money);
+
+
+                                table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td>" +
+                                    "<td> <div class='input-group'> <div class='input-group-btn'> <button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button> <button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'> <span class='caret'></span> </button> <ul class='dropdown-menu'>  <li> <a href='{{url('aanvragen/coach_conversation')}}'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.coach_conversation')</span> </a> </li><li> <a href='{{url('aanvragen/more_information')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.more_information') </span> </a> </li><li> <a href='{{url('aanvragen/quotation')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.quotation')</span> </a> </li></ul> </div></div></td></tr>";
+                            });
+
+                        });
+
+                        table += "<tr><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></strong></td><td><strong>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td> </tr>";
+
+                        table += "<tr><td colspan=\"8\"></td></tr>";
+
+                        table += "</tbody></table>";
+
+                        $("ul#years").append("<li>" + header + table + "</li>");
+                    });
+
+
+
+                    @if(App::environment('local'))
+                    console.log(data);
+                    @endif
+
+                    $('.take-action').click(function () {
+                        window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
+                    })
+                }
+            });
+        });
+        // Trigger the change event so it will load the data
+        $('form').find('*').filter(':input:visible:first').trigger('change');
+
+    });
+
+
+
+</script>
+
 @endpush
 

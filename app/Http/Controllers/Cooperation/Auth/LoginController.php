@@ -113,4 +113,19 @@ class LoginController extends Controller
 
 		return $this->sendFailedLoginResponse($request);
 	}
+
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendLoginResponse ($request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
+    }
 }

@@ -32,15 +32,60 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
 			Route::get('help', 'HelpController@index')->name('help.index');
+//			Route::get('help-met-invullen', '')
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 
+			// my account
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
+
+			    Route::get('', 'MyAccountController@index')->name('index');
+
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
+
+				Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+
+				    Route::get('', 'MessagesController@index')->name('index');
+				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
+				    Route::post('edit', 'MessagesController@store')->name('store');
+
+				    Route::group(['prefix' => 'aanvragen', 'as' => 'requests.'], function () {
+
+				        Route::get('', 'RequestController@index')->name('index');
+				        Route::get('{requestMessageId}', 'RequestController@edit')->name('edit');
+				        Route::post('{requestMessageId}', 'RequestController@update')->name('update');
+                    });
+                });
 
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
 
+			// conversation requests
+			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+
+			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
+			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
+
+			    Route::post('', 'ConversationRequestController@store')->name('store');
+			    Route::post('/edit', 'ConversationRequestController@update')->name('update');
+
+//			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
+//			        Route::resource('', 'CoachController');
+//                });
+
+//			    Route::group(['prefix' => 'meer-informatie', 'as' => 'more-information.'], function () {
+//
+//			        Route::get('{measure}', 'MoreInfoController@index')->name('index');
+//			        Route::post('', 'MoreInfoController@store')->name('store');
+//                });
+//
+//			    Route::group(['prefix' => 'offerte', 'as' => 'quotation.'], function () {
+//                    Route::get('{measure}', 'QuotationController@index')->name('index');
+//                    Route::post('', 'QuotationController@store')->name('store');
+//                });
+            });
+
+			// the tool
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
@@ -142,6 +187,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		});
 
 	});
+
 
 });
 

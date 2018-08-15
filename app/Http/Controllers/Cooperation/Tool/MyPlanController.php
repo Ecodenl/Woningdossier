@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculator;
 use App\Http\Controllers\Controller;
+use App\Models\PrivateMessage;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
@@ -13,14 +14,17 @@ use Illuminate\Http\Request;
 class MyPlanController extends Controller
 {
 
-	public function index(){
+	public function index()
+    {
+        $privateMessage = PrivateMessage::myConversationRequest()->first();
+
 		$user = \Auth::user();
 		$advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 		//$advices = $user->actionPlanAdvices()->orderBy('year', 'asc')->get();
 		$steps = Step::orderBy('order')->get();
 
 		return view('cooperation.tool.my-plan.index', compact(
-			'advices', 'steps'
+			'advices', 'steps', 'privateMessage'
 		));
 	}
 
@@ -112,6 +116,7 @@ class MyPlanController extends Controller
 
 					$sortedAdvices[$year][$step->name][] = [
 						'measure' => $advice->measureApplication->measure_name,
+                        'measure_short' => $advice->measureApplication->short,
 						// In the table the costs are indexed based on the advice year
 						// Now re-index costs based on user planned year in the personal plan
 						'costs' => Calculator::reindexCosts($advice->costs, $advice->year, $costYear),

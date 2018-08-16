@@ -109,9 +109,26 @@ class PrivateMessage extends Model
         return $coachConversation;
     }
 
+    /**
+     * Get the main messages for a person who will recieves messages
+     *
+     * @param $query
+     * @return mixed
+     */
     public function scopeMainMessages($query)
     {
         return $query->where('is_completed', false)->where('main_message', null)->where('to_user_id', \Auth::id());
+    }
+
+    /**
+     * Get the main messages for a person who sended / created the message
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeMyCreatedMessages($query)
+    {
+        return $query->where('is_completed', false)->where('main_message', null)->where('from_user_id', \Auth::id());
     }
 
     /**

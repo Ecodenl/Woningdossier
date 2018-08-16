@@ -5,7 +5,7 @@
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.cooperation.coordinator.messages.show.header', ['firstName' => $privateMessage->getSender($privateMessage->id)->first_name, 'lastName' => $privateMessage->getSender($privateMessage->id)->last_name])
 
-            <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.index', ['senderId' => $privateMessage->from_user_id])}}" class="pull-right btn btn-primary btn-xs">
+            <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['senderId' => $privateMessage->from_user_id])}}" class="pull-right btn btn-primary btn-xs">
                 <span class="glyphicon glyphicon-user"></span>
                 Koppelen aan coach
             </a>

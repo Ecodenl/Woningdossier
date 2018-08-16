@@ -22,6 +22,7 @@ return [
                     'index' => 'Home',
                     'buildings' => 'Gebouwen',
                     'messages' => 'Berichten',
+                    'connect-to-coach' => 'Coach verbinden aan bewoner',
                 ],
 
                 'index' => [
@@ -61,7 +62,16 @@ return [
                         'success' => 'Status is gekoppeld aan het gebouw',
                     ],
                     'header' => 'Gebouwen waar u toegangt tot heeft',
-                ]
+                ],
+                'messages' => [
+                    'index' => [
+                        'header' => 'Uw berichten / chats',
+                    ],
+                    'edit' => [
+                        'header' => 'U gesprek met :firstName :lastName',
+                        'send' => 'Verstuur'
+                    ]
+                ],
             ],
 
             'cooperation' => [
@@ -96,19 +106,30 @@ return [
                 'coordinator' => [
                     'side-nav' => [
                         'label' => 'Coördinator menu',
-                        'messages' => 'Bericthen menu',
+                        'messages' => 'Berichten menu',
                         'home' => 'Home',
                         'assign-roles' => 'Rollen toewijzen',
                         'coach' => 'Coaches',
-                        'add-user' => 'Voeg Coach / Bewoner toe'
+                        'add-user' => 'Voeg Coach / Bewoner toe',
+                        'my-messages' => 'Uw berichten',
+                        'connect-to-coach' => 'Coach verbinden met bewoner',
                     ],
                     'messages' => [
+                        'index' => [
+                            'header' => 'Uw verstuurde berichten'
+                        ],
+                    ],
+                    'conversation-requests' => [
                         'show' => [
                             'header' => 'U bent de aanvraag van :firstName :lastName aan het bekijken'
                         ]
                     ],
                     'connect-to-coach' => [
                         'index' => [
+                            'header' => 'Overzicht van coaches die u kunt koppelen',
+
+                        ],
+                        'create' => [
                             'header' => 'U bent de aanvraag van :firstName :lastName aan het koppelen met een coach',
 
                             'form' => [
@@ -121,7 +142,10 @@ return [
                                 'submit' => 'Coach koppelen',
                                 'submit-warning' => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
                             ]
-                        ]
+                        ],
+                        'store' => [
+                            'success' => 'Uw bericht is verstuurd naar de coach, de coach kan nu verdere actie ondernemen.'
+                        ],
                     ],
                     'assign-roles' => [
                         'index' => [

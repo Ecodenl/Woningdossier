@@ -8471,7 +8471,11 @@ ul.progress-list li.not-available a:focus img {
           box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 }
 
-#sidebar li.active a {
+#sidebar .panel-title {
+  font-size: 16px;
+}
+
+#sidebar .sidebar li.active a {
   color: white;
 }
 

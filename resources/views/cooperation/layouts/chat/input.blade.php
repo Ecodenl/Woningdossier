@@ -1,4 +1,4 @@
-<form action="{{route('cooperation.my-account.messages.store', ['cooperation' => $cooperation])}}" method="post">
+<form action="{{$url}}" method="post" style="margin-bottom: unset;">
     {{csrf_field()}}
     <div class="input-group">
         <input type="hidden" name="receiver_id" value="{{$privateMessages->first()->from_user_id}}">
@@ -9,3 +9,4 @@
         </span>
     </div>
 </form>
+

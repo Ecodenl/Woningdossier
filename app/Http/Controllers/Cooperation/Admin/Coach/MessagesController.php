@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
+namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Cooperation;
@@ -12,9 +12,9 @@ class MessagesController extends Controller
 {
     public function index()
     {
-        $mainMessages = PrivateMessage::myCreatedMessages()->get();
+        $mainMessages = PrivateMessage::mainMessages()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.messages.index', compact('mainMessages'));
+        return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
     }
 
     public function edit(Cooperation $cooperation, $mainMessageId)
@@ -30,7 +30,7 @@ class MessagesController extends Controller
             $incomingMessage->save();
         }
 
-        return view('cooperation.admin.cooperation.coordinator.messages.edit', compact('privateMessages'));
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages'));
     }
 
     public function store(Cooperation $cooperation, MessagesRequest $request)
@@ -40,6 +40,7 @@ class MessagesController extends Controller
         $receiverId = $request->get('receiver_id', '');
         $mainMessageId = $request->get('main_message_id', '');
 
+        // fix reciever id
         PrivateMessage::create(
             [
                 'message' => $message,

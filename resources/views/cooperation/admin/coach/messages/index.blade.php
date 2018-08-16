@@ -1,15 +1,15 @@
-@extends('cooperation.admin.cooperation.coordinator.layouts.app')
+@extends('cooperation.admin.coach.layouts.app')
 
-@section('coordinator_content')
+@section('coach_content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.messages.index.header')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.messages.index.header')</div>
 
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.admin.layouts.components.chat-messages')
                         @forelse($mainMessages as $mainMessage)
-                            <a href="{{route('cooperation.admin.cooperation.coordinator.messages.edit', ['messageId' => $mainMessage->id])}}">
+                            <a href="{{route('cooperation.admin.coach.messages.edit', ['messageId' => $mainMessage->id])}}">
                                 <li class="left clearfix">
 
                                     <div class="chat-body clearfix">

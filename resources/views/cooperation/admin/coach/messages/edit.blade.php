@@ -1,6 +1,7 @@
-@extends('cooperation.admin.cooperation.coordinator.layouts.app')
+@extends('cooperation.admin.coach.layouts.app')
 
-@section('coordinator_content')
+
+@section('coach_content')
     <div class="panel panel-default">
         <div class="panel-heading">
             {{$privateMessages->first()->title}}
@@ -38,7 +39,7 @@
         </div>
 
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'url' => route('cooperation.admin.cooperation.coordinator.messages.store')])
+            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'url' => route('cooperation.admin.coach.messages.store')])
                 <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                     @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
                 </button>

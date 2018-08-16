@@ -2,34 +2,34 @@
 
 @section('coordinator_content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.messages.index.header')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.header')</div>
 
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.admin.layouts.components.chat-messages')
-                        @forelse($mainMessages as $mainMessage)
-                            <a href="{{route('cooperation.admin.cooperation.coordinator.messages.edit', ['messageId' => $mainMessage->id])}}">
+                        @forelse($openConversationRequests as $openConversationRequest)
+                            <a href="{{route('cooperation.admin.cooperation.coordinator.conversation-requests.show', ['messageId' => $openConversationRequest->id])}}">
                                 <li class="left clearfix">
 
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{$mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
+                                                {{$openConversationRequest->getSender($openConversationRequest->id)->first_name. ' ' .$openConversationRequest->getSender($openConversationRequest->id)->last_name}} - {{ $openConversationRequest->title }}
                                             </strong>
 
                                             <small class="pull-right text-muted">
-                                                <?php $time = \Carbon\Carbon::parse($mainMessage->created_at) ?>
+                                                <?php $time = \Carbon\Carbon::parse($openConversationRequest->created_at) ?>
                                                 <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
                                             </small>
                                         </div>
                                         <p>
-                                            @if($mainMessage->hasUserUnreadMessages() || $mainMessage->isRead() == false)
+                                            @if($openConversationRequest->hasUserUnreadMessages() || $openConversationRequest->isRead() == false)
                                                 <strong>
-                                                    {{$mainMessage->message}}
+                                                    {{$openConversationRequest->message}}
                                                 </strong>
                                             @else
-                                                {{$mainMessage->message}}
+                                                {{$openConversationRequest->message}}
                                             @endif
                                         </p>
                                     </div>
@@ -43,12 +43,12 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                @lang('woningdossier.cooperation.my-account.messages.index.chat.no-messages.title')
+                                                @lang('woningdossier.cooperation.my-account.conversation-requests.index.chat.no-messages.title')
                                             </strong>
 
                                         </div>
                                         <p>
-                                            @lang('woningdossier.cooperation.my-account.messages.index.chat.no-messages.text')
+                                            @lang('woningdossier.cooperation.my-account.conversation-requests.index.chat.no-messages.text')
                                         </p>
                                     </div>
                                 </li>

@@ -109,6 +109,7 @@ return [
 			'rule-name' => 'custom-message',
 		],
 	    'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
+        'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
 	],
 
 	/*

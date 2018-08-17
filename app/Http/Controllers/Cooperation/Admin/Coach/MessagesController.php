@@ -12,7 +12,10 @@ class MessagesController extends Controller
 {
     public function index()
     {
+        $myCreatedMessages = PrivateMessage::myCreatedMessages()->get();
         $mainMessages = PrivateMessage::mainMessages()->get();
+
+        $mainMessages = collect($mainMessages)->merge($myCreatedMessages);
 
         return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
     }
@@ -20,6 +23,7 @@ class MessagesController extends Controller
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
         $privateMessages = PrivateMessage::getConversation($mainMessageId);
+
 
         // get all the user his private messages and set them as read
         $incomingMessages = PrivateMessage::myPrivateMessages()->get();
@@ -29,6 +33,7 @@ class MessagesController extends Controller
             $incomingMessage->to_user_read = true;
             $incomingMessage->save();
         }
+
 
         return view('cooperation.admin.coach.messages.edit', compact('privateMessages'));
     }
@@ -40,7 +45,6 @@ class MessagesController extends Controller
         $receiverId = $request->get('receiver_id', '');
         $mainMessageId = $request->get('main_message_id', '');
 
-        // fix reciever id
         PrivateMessage::create(
             [
                 'message' => $message,

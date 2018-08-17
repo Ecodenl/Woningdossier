@@ -72,6 +72,40 @@ return [
                         'send' => 'Verstuur'
                     ]
                 ],
+
+                'connect-to-resident' => [
+                    'index' => [
+                        'header' => 'Bewoners waarmee u een gesprek kunt beginnen',
+                        'table' => [
+                            'columns' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'email' => 'Email',
+                                'actions' => 'Acties'
+                            ]
+                        ],
+                    ],
+                    'create' => [
+                        'header' => 'Een gesprek beginnen met :firstName :lastName',
+                        'form' => [
+                            'message' => [
+                                'label' => 'Bericht aan de bewoner',
+                                'placeholder' => 'Vul hier uw bericht in voor de bewoner'
+                            ],
+                            'request-type' => [
+                                'label' => 'Waar wilde de bewoner het over hebben ?',
+                                'placeholder' => 'Selecteer optie'
+                            ],
+
+                            'options' => [
+                                \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                                \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
+                                \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+                            ],
+                            'submit' => 'Gesprek met bewoner beginnen',
+                        ]
+                    ]
+                ],
             ],
 
             'cooperation' => [

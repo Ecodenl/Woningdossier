@@ -32,6 +32,7 @@ class ConversationRequestController extends Controller
 
         }
 
+
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
         // set the measure application name if there is a measure application

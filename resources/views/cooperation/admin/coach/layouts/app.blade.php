@@ -11,7 +11,7 @@
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">@lang('woningdossier.cooperation.admin.coach.side-nav.label')</a>
-                                    <span class="glyphicon  @if(str_replace(['assign-roles', 'coach'], '', \Route::currentRouteName()) != \Route::currentRouteName()) glyphicon-chevron-up @else glyphicon-chevron-down @endif"></span>
+                                    <span class="glyphicon glyphicon-text  @if(str_replace(['assign-roles', 'coach'], '', \Route::currentRouteName()) != \Route::currentRouteName()) glyphicon-chevron-up @else glyphicon-chevron-down @endif"></span>
                                 </h4>
                             </div>
                             <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['coach'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
@@ -32,13 +32,10 @@
 
 
 
-@push('css')
-
-@push('footer_scripts')
+@prepend('js')
     <script src="{{ asset('js/datatables.js') }}"></script>
     <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
 
-@push('js')
     <script>
         $('.collapse').on('shown.bs.collapse', function(){
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
@@ -47,4 +44,4 @@
         });
 
     </script>
-@endpush
+@endprepend

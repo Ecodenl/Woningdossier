@@ -40,6 +40,11 @@ class Cooperation extends Model
 		return 'slug';
 	}
 
+    /**
+     * Return the coaches from the current cooperation
+     *
+     * @return $this
+     */
     public function getCoaches()
     {
         $query = \DB::table('cooperations')
@@ -48,8 +53,25 @@ class Cooperation extends Model
             ->join('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
             ->join('model_has_roles', 'cooperation_user.user_id', '=', 'model_has_roles.model_id')
             ->where('model_has_roles.role_id', '=', 4)
-            ->join('users', 'cooperation_user.user_id', '=', 'users.id')
-            ->get();
+            ->join('users', 'cooperation_user.user_id', '=', 'users.id');
+
+        return $query;
+	}
+
+    /**
+     * Return the residents from the current cooperation
+     *
+     * @return $this
+     */
+    public function getResidents()
+    {
+        $query = \DB::table('cooperations')
+        ->select('users.*')
+        ->where('cooperations.id', '=', $this->id)
+        ->join('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
+        ->join('model_has_roles', 'cooperation_user.user_id', '=', 'model_has_roles.model_id')
+        ->where('model_has_roles.role_id', '=', 5)
+        ->join('users', 'cooperation_user.user_id', '=', 'users.id');
 
         return $query;
 	}

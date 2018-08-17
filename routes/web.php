@@ -212,6 +212,12 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
                     Route::post('bericht', 'MessagesController@store')->name('store');
                 });
 
+                Route::group(['prefix' => 'verbinden-met-bewoner', 'as' => 'connect-to-resident.'], function () {
+                    Route::get('', 'ConnectToResidentController@index')->name('index');
+                    Route::get('{userId}', 'ConnectToResidentController@create')->name('create');
+                    Route::post('', 'ConnectToResidentController@store')->name('store');
+                });
+
 
                 // needs to be the last route due to the param
 			    Route::get('{role_name?}', 'CoachController@index')->name('index');

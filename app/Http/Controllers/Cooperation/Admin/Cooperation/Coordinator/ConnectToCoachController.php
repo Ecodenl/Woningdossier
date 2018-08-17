@@ -13,7 +13,7 @@ class ConnectToCoachController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $coaches = $cooperation->getCoaches();
+        $coaches = $cooperation->getCoaches()->get();
 
         return view('cooperation.admin.cooperation.coordinator.connect-to-coach.index', compact( 'coaches'));
     }
@@ -22,7 +22,7 @@ class ConnectToCoachController extends Controller
     {
         $privateMessage = PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->first();
 
-        $coaches = $cooperation->getCoaches();
+        $coaches = $cooperation->getCoaches()->get();
 
 
         return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches'));

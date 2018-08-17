@@ -46,13 +46,13 @@
     </div>
 @endsection
 
-@push('css')
 
-@push('footer_scripts')
+
+
+@prepend('js')
     <script src="{{ asset('js/datatables.js') }}"></script>
     <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
 
-@push('js')
     <script>
         $('.collapse').on('shown.bs.collapse', function(){
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
@@ -61,6 +61,6 @@
         });
 
     </script>
-@endpush
+@endprepend
 
 

@@ -1,6 +1,5 @@
 @extends('cooperation.admin.coach.layouts.app')
 
-
 @section('coach_content')
     <div class="panel panel-default">
         <div class="panel-heading">

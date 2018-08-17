@@ -96,17 +96,17 @@ class PrivateMessage extends Model
 
         $mainMessage = self::find($mainMessageId);
 
-        $coachConversation = self::where('main_message', $mainMessageId)
-            ->where('to_user_id', \Auth::id())
-            ->orWhere('from_user_id', \Auth::id())
+        $conversation = self::where('main_message', $mainMessageId)->get();
+
+        $conversation->where('to_user_id', \Auth::id())
             ->where('from_cooperation_id', null)
             ->where('to_cooperation_id', null)
-            ->get();
+            ->all();
 
-        $coachConversation->push($mainMessage);
+        $conversation = collect($conversation)->push($mainMessage);
 
 
-        return $coachConversation;
+        return $conversation;
     }
 
     /**

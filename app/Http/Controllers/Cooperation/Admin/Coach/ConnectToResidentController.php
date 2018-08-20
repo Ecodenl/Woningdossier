@@ -20,7 +20,7 @@ class ConnectToResidentController extends Controller
 
     public function create(Cooperation $cooperation, $userId)
     {
-        $receiver = $cooperation->getResidents()->where('users.id', '=', $userId)->first();
+        $receiver = $cooperation->getResidents()->find($userId);
 
         // a user will not be found if its not a resident of the current cooperation
         if ($receiver instanceof \stdClass) {

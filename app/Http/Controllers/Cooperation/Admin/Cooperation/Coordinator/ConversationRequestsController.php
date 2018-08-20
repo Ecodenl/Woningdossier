@@ -17,7 +17,7 @@ class ConversationRequestsController extends Controller
     }
 
     /**
-     * Show the coordinator a message
+     * Show the coordinator a message and set it as read
      *
      * @param Cooperation $cooperation
      * @param $messageId
@@ -26,6 +26,8 @@ class ConversationRequestsController extends Controller
     public function show(Cooperation $cooperation, $messageId)
     {
         $privateMessage = PrivateMessage::openCooperationConversationRequests()->find($messageId);
+        $privateMessage->to_user_read = true;
+        $privateMessage->save();
 
         return view('cooperation.admin.cooperation.coordinator.conversation-requests.show', compact('privateMessage'));
     }

@@ -21,7 +21,9 @@ return [
                     'label' => 'Coach menu',
                     'index' => 'Home',
                     'buildings' => 'Gebouwen',
-                    'messages' => 'Berichten',
+                    'messages-menu' => 'Berichten menu',
+                    'connect-to-resident' => 'Contact maken met bewoners',
+                    'messages' => 'Uw berichten',
                     'connect-to-coach' => 'Coach verbinden aan bewoner',
                 ],
 
@@ -81,7 +83,8 @@ return [
                                 'first-name' => 'Voornaam',
                                 'last-name' => 'Achternaam',
                                 'email' => 'Email',
-                                'actions' => 'Acties'
+                                'actions' => 'Acties',
+                                'start-conversation' => 'Start gesprek met bewoner',
                             ]
                         ],
                     ],
@@ -146,7 +149,7 @@ return [
                         'coach' => 'Coaches',
                         'add-user' => 'Voeg Coach / Bewoner toe',
                         'my-messages' => 'Uw berichten',
-                        'connect-to-coach' => 'Coach verbinden met bewoner',
+                        'connect-to-coach' => 'Openstaande aanvragen',
                     ],
                     'messages' => [
                         'index' => [
@@ -160,7 +163,27 @@ return [
                     ],
                     'connect-to-coach' => [
                         'index' => [
-                            'header' => 'Overzicht van coaches die u kunt koppelen',
+                            'header' => 'Overzicht van openstaande gespreks aanvragen',
+
+                            'table' => [
+                                'columns' => [
+                                    'see-message' => 'Bekijk bericht',
+                                    'connect-to-coach' => 'Verbind met coach',
+                                    'type-request' => 'Type aanvraag',
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+
+                            \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                            \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
+                            \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
+
+
 
                         ],
                         'create' => [
@@ -264,7 +287,7 @@ return [
                         ]
                     ],
                     'index' => [
-                        'header' => 'Coordinator hoofdpagina - overzicht van alle gebruikers voor uw cooperatie',
+                        'header' => 'Berichten - openstaande aanvragen',
                         'text' => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
 
                         'table' => [
@@ -472,7 +495,6 @@ return [
                         \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
                         \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
                         \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
-
                     ],
                 ],
             ],

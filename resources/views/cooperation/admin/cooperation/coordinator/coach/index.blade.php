@@ -51,8 +51,6 @@
 @endsection
 
 
-@push('css')
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/datatables.min.css')}}">
 @push('js')
     <script>
         $(document).ready(function () {

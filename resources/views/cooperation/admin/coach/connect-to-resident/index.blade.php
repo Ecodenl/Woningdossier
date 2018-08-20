@@ -10,7 +10,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-responsive ">
+                    <table id="table" class="table table-striped table-bordered compact nowrap">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.coach.connect-to-resident.index.table.columns.first-name')</th>
@@ -26,7 +26,7 @@
                                     <td>{{$user->last_name}}</td>
                                     <td>{{$user->email}}</td>
                                     <td>
-                                        <a href="{{route('cooperation.admin.coach.connect-to-resident.create', ['userId' => $user->id])}}" class="btn btn-success"><span class="glyphicon glyphicon-envelope"></span></button>
+                                        <a href="{{route('cooperation.admin.coach.connect-to-resident.create', ['userId' => $user->id])}}" class="btn btn-success">@lang('woningdossier.cooperation.admin.coach.connect-to-resident.index.table.columns.start-conversation')<span class="glyphicon glyphicon-envelope"></span></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -40,41 +40,19 @@
 
 
 
-@push('css')
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/datatables.min.css')}}">
 @push('js')
         <script>
             $(document).ready(function () {
-                $('table').DataTable(
-                    {
-                        language: {
-                            "sProcessing": "Bezig...",
-                            "sLengthMenu": "_MENU_ resultaten weergeven",
-                            "sZeroRecords": "Geen resultaten gevonden",
-                            "sInfo": "_START_ tot _END_ van _TOTAL_ resultaten",
-                            "sInfoEmpty": "Geen resultaten om weer te geven",
-                            "sInfoFiltered": " (gefilterd uit _MAX_ resultaten)",
-                            "sInfoPostFix": "",
-                            "sSearch": "Zoeken:",
-                            "sEmptyTable": "Geen resultaten aanwezig in de tabel",
-                            "sInfoThousands": ".",
-                            "sLoadingRecords": "Een moment geduld aub - bezig met laden...",
-                            "oPaginate": {
-                                "sFirst": "Eerste",
-                                "sLast": "Laatste",
-                                "sNext": "Volgende",
-                                "sPrevious": "Vorige"
-                            },
-                            "oAria": {
-                                "sSortAscending":  ": activeer om kolom oplopend te sorteren",
-                                "sSortDescending": ": activeer om kolom aflopend te sorteren"
-                            }
-                        },
+                $('#table').DataTable({
+                    responsive: true,
+                    columnDefs: [
+                        {responsivePriority: 5, targets: 3},
+                        {responsivePriority: 3, targets: 2},
+                        {responsivePriority: 2, targets: 1},
+                        {responsivePriority: 1, targets: 0}
+                    ],
+                });
 
-                    }
-                );
-
-                $
             })
         </script>
-    @endpush
+@endpush

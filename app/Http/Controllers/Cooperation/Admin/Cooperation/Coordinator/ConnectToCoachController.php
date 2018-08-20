@@ -11,23 +11,43 @@ use App\Http\Controllers\Controller;
 
 class ConnectToCoachController extends Controller
 {
+    /**
+     * Show the coordinator all open conversation requests
+     *
+     * @param Cooperation $cooperation
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Cooperation $cooperation)
     {
-        $coaches = $cooperation->getCoaches()->get();
+        $openConversations = PrivateMessage::openCooperationConversationRequests()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.index', compact( 'coaches'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.index', compact( 'openConversations'));
     }
 
+    /**
+     * Show the coordinator the form to connect a coach to a resident that has an open request
+     *
+     * @param Cooperation $cooperation
+     * @param $senderId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create(Cooperation $cooperation, $senderId)
     {
         $privateMessage = PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->first();
 
         $coaches = $cooperation->getCoaches()->get();
 
-
         return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches'));
     }
 
+
+    /**
+     * Send a message to the selected coach
+     *
+     * @param Cooperation $cooperation
+     * @param ConnectToCoachRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Cooperation $cooperation, ConnectToCoachRequest $request)
     {
         $coach = $request->get('coach', '');
@@ -38,7 +58,7 @@ class ConnectToCoachController extends Controller
 
         PrivateMessage::create(
             [
-                'title' => \Auth::user()->first_name ." ". \Auth::user()->last_name. " " .$title,
+                'title' => $title,
                 'request_type' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION,
                 'message' => $message,
                 'from_cooperation_id' => $cooperation->id,

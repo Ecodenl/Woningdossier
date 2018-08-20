@@ -23,7 +23,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Cooperation extends Model
 {
-    public $fillable = ['name', 'slug', ];
+    public $fillable = [
+        'name',
+        'slug',
+    ];
 
 	/**
 	 * The users associated with this cooperation
@@ -65,15 +68,18 @@ class Cooperation extends Model
      */
     public function getResidents()
     {
-        $query = \DB::table('cooperations')
-        ->select('users.*')
-        ->where('cooperations.id', '=', $this->id)
-        ->join('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
-        ->join('model_has_roles', 'cooperation_user.user_id', '=', 'model_has_roles.model_id')
-        ->where('model_has_roles.role_id', '=', 5)
-        ->join('users', 'cooperation_user.user_id', '=', 'users.id');
+        $users = $this->users()->role('resident');
 
-        return $query;
+        return $users;
+
+//        $query = \DB::table('cooperations')
+//        ->select('users.*')
+//        ->where('cooperations.id', '=', $this->id)
+//        ->leftJoin('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
+//        ->leftJoin('model_has_roles', 'cooperation_user.user_id', '=', 'model_has_roles.model_id')
+//        ->where('model_has_roles.role_id', '=', 5)
+//        ->leftJoin('users', 'cooperation_user.user_id', '=', 'users.id');
+
 	}
 
 }

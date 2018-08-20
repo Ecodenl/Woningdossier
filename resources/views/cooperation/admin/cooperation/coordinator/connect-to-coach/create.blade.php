@@ -1,6 +1,5 @@
 
-
-    @extends('cooperation.admin.cooperation.coordinator.layouts.app')
+@extends('cooperation.admin.cooperation.coordinator.layouts.app')
 
 @section('coordinator_content')
     <div class="panel panel-default">

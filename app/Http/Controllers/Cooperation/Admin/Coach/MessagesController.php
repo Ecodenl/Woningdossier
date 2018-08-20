@@ -17,6 +17,7 @@ class MessagesController extends Controller
 
         $mainMessages = collect($mainMessages)->merge($myCreatedMessages);
 
+
         return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
     }
 
@@ -24,14 +25,10 @@ class MessagesController extends Controller
     {
         $privateMessages = PrivateMessage::getConversation($mainMessageId);
 
-
-        // get all the user his private messages and set them as read
-        $incomingMessages = PrivateMessage::myPrivateMessages()->get();
-
-        foreach ($incomingMessages as $incomingMessage) {
-            $incomingMessage = PrivateMessage::find($incomingMessage->id);
-            $incomingMessage->to_user_read = true;
-            $incomingMessage->save();
+        foreach ($privateMessages as $privateMessage) {
+            $privateMessage = PrivateMessage::find($privateMessage->id);
+            $privateMessage->to_user_read = true;
+            $privateMessage->save();
         }
 
 

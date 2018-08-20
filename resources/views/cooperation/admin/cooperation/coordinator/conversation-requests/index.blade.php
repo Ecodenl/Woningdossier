@@ -24,7 +24,7 @@
                                             </small>
                                         </div>
                                         <p>
-                                            @if($openConversationRequest->hasUserUnreadMessages() || $openConversationRequest->isRead() == false)
+                                            @if($openConversationRequest->hasUserUnreadMessages() || $openConversationRequest->isConversationRequestRead() == false)
                                                 <strong>
                                                     {{$openConversationRequest->message}}
                                                 </strong>

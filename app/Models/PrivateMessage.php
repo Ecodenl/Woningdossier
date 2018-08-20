@@ -147,6 +147,21 @@ class PrivateMessage extends Model
     }
 
     /**
+     * Return info about the receiver of the message
+     *
+     * @param $messageId
+     * @return mixed|static
+     */
+    public function getReceiver($messageId)
+    {
+        $receiverId = $this->find($messageId)->to_user_id;
+
+        $receiver = User::find($receiverId);
+
+        return $receiver;
+    }
+
+    /**
      * Check if its the user his message
      *
      * @return bool
@@ -222,6 +237,21 @@ class PrivateMessage extends Model
     public function isRead()
     {
         if ($this->to_user_id == \Auth::id() && $this->to_user_read == true) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check wheter a conversation request has been read, this can only be used on conversation requests
+     * Cause we search on cooperation id and not on user id
+     *
+     * @return bool
+     */
+    public function isConversationRequestRead()
+    {
+        if ($this->to_cooperation_id == session('cooperation') && $this->to_user_read == true) {
             return true;
         }
 

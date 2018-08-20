@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.admin.layouts.components.chat-messages')
-                        @forelse($mainMessages as $mainMessage)
+                        @forelse($mainMessages->sortByDesc('created_at') as $mainMessage)
                             <a href="{{route('cooperation.admin.coach.messages.edit', ['messageId' => $mainMessage->id])}}">
                                 <li class="left clearfix">
                                     <div class="chat-body clearfix">
@@ -26,7 +26,7 @@
                                             </small>
                                         </div>
                                         <p>
-                                            @if($mainMessage->hasUserUnreadMessages() || $mainMessage->isRead() == false)
+                                            @if($mainMessage->isRead() == false)
                                                 <strong>
                                                     {{$mainMessage->message}}
                                                 </strong>

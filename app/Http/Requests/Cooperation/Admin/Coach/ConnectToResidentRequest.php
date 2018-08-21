@@ -15,7 +15,7 @@ class ConnectToResidentRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasRole('coach');
+        return \Auth::user();
     }
 
     /**

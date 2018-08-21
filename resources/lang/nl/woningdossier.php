@@ -154,7 +154,7 @@ return [
                         'messages' => 'Berichten menu',
                         'home' => 'Home',
                         'assign-roles' => 'Rollen toewijzen',
-                        'coach' => 'Coaches',
+                        'coach' => 'Gebruikers van uw coöperatie',
                         'add-user' => 'Voeg Coach / Bewoner toe',
                         'my-messages' => 'Uw berichten',
                         'connect-to-coach' => 'Openstaande aanvragen',
@@ -259,7 +259,7 @@ return [
                     ],
                     'coach' => [
                         'index' => [
-                            'header' => 'Overzicht van alle coaches voor uw coöperatie',
+                            'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
 
                             'table' => [
                                 'columns' => [

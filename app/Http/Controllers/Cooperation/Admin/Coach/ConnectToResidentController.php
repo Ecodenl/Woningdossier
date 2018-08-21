@@ -22,12 +22,12 @@ class ConnectToResidentController extends Controller
     {
         $receiver = $cooperation->getResidents()->find($userId);
 
-        // a user will not be found if its not a resident of the current cooperation
-        if ($receiver instanceof \stdClass) {
+
+        if ($receiver instanceof User) {
             return view('cooperation.admin.coach.connect-to-resident.create', compact('cooperation', 'receiver', 'typeId'));
         }
 
-        return redirect(back());
+        return redirect()->route('cooperation.admin.coach.connect-to-resident.index');
     }
 
     public function store(Cooperation $cooperation, ConnectToResidentRequest $request)
@@ -38,6 +38,29 @@ class ConnectToResidentController extends Controller
 
         $title = __('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.options.'.$requestType);
 
+        // get the open request from the resident
+        $residentRequest = PrivateMessage::where('from_user_id', $receiverId)
+            ->where('to_cooperation_id', $cooperation->id)
+            ->where('request_type', $requestType)
+            ->where('status', PrivateMessage::STATUS_IN_CONSIDERATION)
+            ->first();
+
+        // if the there is no record found, don't send the resident a message cause he does not want any help
+        // instead redirect the coach with a message
+        if (!$residentRequest instanceof PrivateMessage) {
+            return redirect()
+                ->route('cooperation.admin.coach.connect-to-resident.index')
+                ->with('warning', __('woningdossier.cooperation.admin.coach.connect-to-resident.store.warning'));
+        }
+
+        // then we update it and set it linked to coach
+        $residentRequest->update(
+            [
+                'status' => PrivateMessage::STATUS_LINKED_TO_COACH
+            ]
+        );
+
+        // we create a new message to send to the resident
         $newMessage = PrivateMessage::create(
             [
                 'title' => $title,

@@ -1,7 +1,17 @@
 <?php
-    $receiverId = $privateMessages->where('from_user_id', '==', Auth::id())->first()->to_user_id;
-    if($receiverId == Auth::id()) {
-        $receiverId = $privateMessages->where('from_user_id', '==', Auth::id())->first()->from_user_id;
+    $receiver = $privateMessages->where('from_user_id', '==', Auth::id())->first();
+    if ($receiver instanceof \App\Models\PrivateMessage) {
+        $receiverId = $receiver->to_user_id;
+        if ($receiverId == Auth::id()) {
+            $receiverId = $receiver->from_user_id;
+        }
+    } else {
+        $receiver = $privateMessages->where('to_user_id', '==', Auth::id())->first();
+
+        $receiverId = $receiver->to_user_id;
+        if ($receiverId == Auth::id()) {
+            $receiverId = $receiver->from_user_id;
+        }
     }
 ?>
 

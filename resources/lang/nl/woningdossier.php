@@ -107,7 +107,10 @@ return [
                             ],
                             'submit' => 'Gesprek met bewoner beginnen',
                         ]
-                    ]
+                    ],
+                    'store' => [
+                        'warning' => 'De bewoner is op dit moment niet geïnteresseerd',
+                    ],
                 ],
             ],
 

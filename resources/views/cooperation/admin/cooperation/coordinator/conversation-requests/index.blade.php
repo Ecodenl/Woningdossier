@@ -2,7 +2,7 @@
 
 @section('coordinator_content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.header')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.conversation-requests.index.header')</div>
 
         <div class="panel-body">
             <div class="row">
@@ -43,12 +43,12 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                @lang('woningdossier.cooperation.my-account.conversation-requests.index.chat.no-messages.title')
+                                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.conversation-requests.index.no-messages.title')
                                             </strong>
 
                                         </div>
                                         <p>
-                                            @lang('woningdossier.cooperation.my-account.conversation-requests.index.chat.no-messages.text')
+                                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.conversation-requests.index.no-messages.text')
                                         </p>
                                     </div>
                                 </li>

@@ -52,8 +52,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
-        Auth::user()->cooperations()->attach(session('cooperation'));
-
+        
         $building = \Auth::user()->buildings()->first();
 
         $buildingTypes = BuildingType::all();

@@ -91,22 +91,9 @@ class PrivateMessage extends Model
      *
      * @return $this
      */
-    public static function getConversation($mainMessageId)
+    public static function scopeConversation($query, $mainMessageId)
     {
-
-        $mainMessage = self::find($mainMessageId);
-
-        $conversation = self::where('main_message', $mainMessageId)->get();
-
-        $conversation->where('to_user_id', \Auth::id())
-            ->where('from_cooperation_id', null)
-            ->where('to_cooperation_id', null)
-            ->all();
-
-        $conversation = collect($conversation)->push($mainMessage);
-
-
-        return $conversation;
+        return $query->where('id', $mainMessageId)->orWhere('main_message', $mainMessageId);
     }
 
     /**

@@ -17,7 +17,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('title') ? ' has-error' : '' }}>
                                     <label for="title">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.title')</label>
-                                    <input type="text" class="form-control" name="title" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.title')">
+                                    <input type="text" value="{{old('title')}}" class="form-control" name="title" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.title')">
                                     @if ($errors->has('title'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('title') }}</strong>
@@ -30,7 +30,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('message') ? ' has-error' : '' }}>
                                     <label for="message">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.message-to-coach.label')</label>
-                                    <textarea name="message" id="" class="form-control">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.message-to-coach.placeholder')</textarea>
+                                    <textarea name="message" id="" class="form-control">{{old('message', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.message-to-coach.placeholder'))}}</textarea>
                                     @if ($errors->has('message'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('message') }}</strong>

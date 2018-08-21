@@ -5,53 +5,35 @@ namespace App\Http\Controllers\Cooperation\Admin\Coach;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Services\InboxService;
+use App\Services\MessageService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class MessagesController extends Controller
 {
-    public function index()
+    public function index(Cooperation $cooperation)
     {
         $myCreatedMessages = PrivateMessage::myCreatedMessages()->get();
         $mainMessages = PrivateMessage::mainMessages()->get();
 
         $mainMessages = collect($mainMessages)->merge($myCreatedMessages);
 
-
         return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
     }
 
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
-        $privateMessages = PrivateMessage::getConversation($mainMessageId);
+        $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
 
-        $incomingMessages = $privateMessages->where('to_user_id', \Auth::id())->all();
-
-        foreach ($incomingMessages as $incomingMessage) {
-            $incomingMessage = PrivateMessage::find($incomingMessage->id);
-            $incomingMessage->to_user_read = true;
-            $incomingMessage->save();
-        }
-
+        InboxService::setRead($mainMessageId);
 
         return view('cooperation.admin.coach.messages.edit', compact('privateMessages'));
     }
 
     public function store(Cooperation $cooperation, MessagesRequest $request)
     {
-
-        $message = $request->get('message', '');
-        $receiverId = $request->get('receiver_id', '');
-        $mainMessageId = $request->get('main_message_id', '');
-
-        PrivateMessage::create(
-            [
-                'message' => $message,
-                'from_user_id' => \Auth::id(),
-                'to_user_id' => $receiverId,
-                'main_message' => $mainMessageId
-            ]
-        );
+        MessageService::create($request);
 
         return redirect()->back();
     }

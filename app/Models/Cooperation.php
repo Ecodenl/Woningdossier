@@ -72,7 +72,7 @@ class Cooperation extends Model
 
         return $users;
 
-//        $query = \DB::table('cooperations')
+//        return $query = \DB::table('cooperations')
 //        ->select('users.*')
 //        ->where('cooperations.id', '=', $this->id)
 //        ->leftJoin('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')

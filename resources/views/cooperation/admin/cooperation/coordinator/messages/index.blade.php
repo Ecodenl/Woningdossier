@@ -15,11 +15,13 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{$mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
+                                                {{$mainMessage->getReceiver($mainMessage->id)->first_name. ' ' .$mainMessage->getReceiver($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
                                             </strong>
 
                                             <small class="pull-right text-muted">
-                                                <span class="label label-primary">@lang('default.new-message')</span>
+                                                @if($mainMessage->hasUserUnreadMessages())
+                                                    <span class="label label-primary">@lang('default.new-message')</span>
+                                                @endif
                                                 <?php $time = \Carbon\Carbon::parse($mainMessage->created_at) ?>
                                                 <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
                                             </small>

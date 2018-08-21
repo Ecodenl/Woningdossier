@@ -21,7 +21,9 @@
                                             </strong>
 
                                             <small class="pull-right text-muted">
-                                                <span class="label label-primary">@lang('default.new-message')</span>
+                                                @if($mainMessage->hasUserUnreadMessages())
+                                                    <span class="label label-primary">@lang('default.new-message')</span>
+                                                @endif
                                                 <?php $time = \Carbon\Carbon::parse($mainMessage->created_at) ?>
                                                 <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
                                             </small>
@@ -61,6 +63,14 @@
                 </div>
             </div>
         </div>
+        {{--<div class="panel-footer">--}}
+            {{--<div class="btn-group btn-group-justified">--}}
+                {{--<a href="#" class="btn btn-success">@lang('woningdossier.cooperation.admin.coach.messages.index.filter.residents')</a>--}}
+                {{--<a href="#" class="btn btn-primary">@lang('woningdossier.cooperation.admin.coach.messages.index.filter.coordinators')</a>--}}
+            {{--</div>--}}
+
+        {{--</div>--}}
+
     </div>
 @endsection
 

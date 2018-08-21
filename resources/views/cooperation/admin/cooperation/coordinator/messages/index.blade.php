@@ -19,12 +19,13 @@
                                             </strong>
 
                                             <small class="pull-right text-muted">
+                                                <span class="label label-primary">@lang('default.new-message')</span>
                                                 <?php $time = \Carbon\Carbon::parse($mainMessage->created_at) ?>
                                                 <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
                                             </small>
                                         </div>
                                         <p>
-                                            @if($mainMessage->hasUserUnreadMessages() || $mainMessage->isRead() == false)
+                                            @if($mainMessage->hasUserUnreadMessages())
                                                 <strong>
                                                     {{$mainMessage->message}}
                                                 </strong>

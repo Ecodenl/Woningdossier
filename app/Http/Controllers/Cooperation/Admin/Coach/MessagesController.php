@@ -25,10 +25,12 @@ class MessagesController extends Controller
     {
         $privateMessages = PrivateMessage::getConversation($mainMessageId);
 
-        foreach ($privateMessages as $privateMessage) {
-            $privateMessage = PrivateMessage::find($privateMessage->id);
-            $privateMessage->to_user_read = true;
-            $privateMessage->save();
+        $incomingMessages = $privateMessages->where('to_user_id', \Auth::id())->all();
+
+        foreach ($incomingMessages as $incomingMessage) {
+            $incomingMessage = PrivateMessage::find($incomingMessage->id);
+            $incomingMessage->to_user_read = true;
+            $incomingMessage->save();
         }
 
 

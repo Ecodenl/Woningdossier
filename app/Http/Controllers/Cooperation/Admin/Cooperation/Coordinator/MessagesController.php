@@ -22,18 +22,15 @@ class MessagesController extends Controller
 
         $privateMessages = PrivateMessage::getConversation($mainMessageId);
 
-        // probleem atm:
-        // als een coordinator nu een bericht toevoegt word deze direct op gelezen gezet
-        // maar ook voor de gene die hem ontvangt
-        // oftewel, fix it
-        // met from_user_read
-        // dus meer functies
-        // enzo
-//        foreach ($incomingMessages as $incomingMessage) {
-//            $incomingMessage = PrivateMessage::find($incomingMessage->id);
-//            $incomingMessage->to_user_read = true;
-//            $incomingMessage->save();
-//        }
+
+        $incomingMessages = $privateMessages->where('to_user_id', \Auth::id())->all();
+
+        foreach ($incomingMessages as $incomingMessage) {
+            $incomingMessage = PrivateMessage::find($incomingMessage->id);
+            $incomingMessage->to_user_read = true;
+            $incomingMessage->save();
+        }
+
 
         return view('cooperation.admin.cooperation.coordinator.messages.edit', compact('privateMessages'));
     }

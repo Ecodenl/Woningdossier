@@ -17,7 +17,7 @@ class MessagesController extends Controller
         $myCreatedMessages = PrivateMessage::myCreatedMessages()->get();
         $mainMessages = PrivateMessage::mainMessages()->get();
 
-        $mainMessages = collect($mainMessages)->merge($myCreatedMessages);
+        $mainMessages = collect($mainMessages)->merge($myCreatedMessages)->unique('id');
 
         return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
     }

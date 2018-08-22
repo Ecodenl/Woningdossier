@@ -10,7 +10,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-bordered compact nowrap">
+                    <table id="table" class="table table-striped table-repsonsive table-bordered compact nowrap">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.type-request')</th>

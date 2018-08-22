@@ -10,7 +10,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-responsive ">
+                    <table class="table table-striped table-bordered compact nowrap table-responsive">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.first-name')</th>
@@ -54,34 +54,7 @@
 @push('js')
     <script>
         $(document).ready(function () {
-            $('table').DataTable(
-                {
-                    language: {
-                        "sProcessing": "Bezig...",
-                        "sLengthMenu": "_MENU_ resultaten weergeven",
-                        "sZeroRecords": "Geen resultaten gevonden",
-                        "sInfo": "_START_ tot _END_ van _TOTAL_ resultaten",
-                        "sInfoEmpty": "Geen resultaten om weer te geven",
-                        "sInfoFiltered": " (gefilterd uit _MAX_ resultaten)",
-                        "sInfoPostFix": "",
-                        "sSearch": "Zoeken:",
-                        "sEmptyTable": "Geen resultaten aanwezig in de tabel",
-                        "sInfoThousands": ".",
-                        "sLoadingRecords": "Een moment geduld aub - bezig met laden...",
-                        "oPaginate": {
-                            "sFirst": "Eerste",
-                            "sLast": "Laatste",
-                            "sNext": "Volgende",
-                            "sPrevious": "Vorige"
-                        },
-                        "oAria": {
-                            "sSortAscending":  ": activeer om kolom oplopend te sorteren",
-                            "sSortDescending": ": activeer om kolom aflopend te sorteren"
-                        }
-                    },
-
-                }
-            );
+            $('table').DataTable():
 
             $('.remove').click(function () {
                 if (confirm("Weet u zeker dat u de gebruiker wilt verwijderen")) {

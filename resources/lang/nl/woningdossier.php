@@ -161,12 +161,12 @@ return [
                     ],
                     'messages' => [
                         'index' => [
-                            'header' => 'Uw verstuurde berichten'
+                            'header' => 'Uw berichten'
                         ],
                     ],
                     'conversation-requests' => [
                         'index' => [
-                            'header' => 'Openstaande aanvragen van bewoners',
+                            'header' => 'Overzicht van openstaande gespreks aanvragen',
                             'no-messages' => [
                                 'title' => 'Geen openstaande aanvragen',
                                 'text' => 'Er zijn op het moment geen openstaande aanvragen'

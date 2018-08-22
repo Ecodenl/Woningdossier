@@ -1,4 +1,4 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.layouts.app')
 
 @section('content')
 

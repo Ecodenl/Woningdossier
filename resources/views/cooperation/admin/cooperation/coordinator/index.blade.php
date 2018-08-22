@@ -7,7 +7,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-responsive table-condensed">
+                    <table id="table" class="table table-responsive table-striped table-bordered compact nowrap">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.table.columns.first-name')</th>
@@ -40,3 +40,10 @@
     </div>
 @endsection
 
+@push('js')
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        })
+    </script>
+@endpush

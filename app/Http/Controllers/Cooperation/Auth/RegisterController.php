@@ -47,7 +47,8 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        // middle ware on auth routes instead on controller
+//        $this->middleware('guest');
     }
 
 	/**
@@ -124,6 +125,7 @@ class RegisterController extends Controller
 		    'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
 	    ]);
 
+
     	$address = new Building($data);
     	$address->user()->associate($user)->save();
 
@@ -163,7 +165,9 @@ class RegisterController extends Controller
 		}
 	}
 
-	public function fillAddress(Request $request){
+	public function fillAddress(Request $request)
+    {
+
     	$postalCode = trim(strip_tags($request->get('postal_code', '')));
     	$number = trim(strip_tags($request->get('number', '')));
     	$extension = trim(strip_tags($request->get('house_number_extension', '')));

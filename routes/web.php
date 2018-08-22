@@ -24,7 +24,9 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 		Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
 		// Login, forgot password etc.
-		Auth::routes();
+        Route::group(['middleware' => 'guest'], function () {
+		    Auth::routes();
+        });
 
 
 		// Logged In Section

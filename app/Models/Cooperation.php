@@ -82,4 +82,11 @@ class Cooperation extends Model
 
 	}
 
+    public function getCoordinators()
+    {
+        $users = $this->users()->role('coordinator');
+
+        return $users;
+	}
+
 }

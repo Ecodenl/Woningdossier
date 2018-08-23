@@ -1,5 +1,9 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
-    "/js/are-you-sure.js": "/js/are-you-sure.js"
+    "/css/datatables/responsive.bootstrap.min.css": "/css/datatables/responsive.bootstrap.min.css",
+    "/css/datatables/responsive.dataTables.min.css": "/css/datatables/responsive.dataTables.min.css",
+    "/css/datatables/dataTables.bootstrap.min.css": "/css/datatables/dataTables.bootstrap.min.css",
+    "/js/are-you-sure.js": "/js/are-you-sure.js",
+    "/js/datatables.js": "/js/datatables.js"
 }

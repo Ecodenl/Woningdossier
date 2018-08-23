@@ -1,5 +1,4 @@
 @extends('cooperation.admin.cooperation.coordinator.layouts.app')
-<?php dump(old()) ?>
 @section('coordinator_content')
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.header')</div>

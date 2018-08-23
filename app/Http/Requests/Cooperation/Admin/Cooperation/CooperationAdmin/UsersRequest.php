@@ -4,7 +4,7 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CoordinatorRequest extends FormRequest
+class UsersRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,6 +28,7 @@ class CoordinatorRequest extends FormRequest
             'last_name' => 'required|alpha',
             'password' => 'nullable|min:6',
             'email' => 'required|email|unique:users,email',
+            'roles' => 'required|exists:roles,id'
         ];
     }
 }

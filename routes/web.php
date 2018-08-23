@@ -188,10 +188,10 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
-			        Route::group(['prefix' => 'coordinatoren', 'as' => 'coordinator.'], function () {
-			            Route::get('', 'CoordinatorController@index')->name('index');
-			            Route::get('create', 'CoordinatorController@create')->name('create');
-			            Route::post('', 'CoordinatorController@store')->name('store');
+			        Route::group(['prefix' => 'gebruikers', 'as' => 'users.'], function () {
+			            Route::get('', 'UserController@index')->name('index');
+			            Route::get('create', 'UserController@create')->name('create');
+			            Route::post('', 'UserController@store')->name('store');
                     });
 
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {

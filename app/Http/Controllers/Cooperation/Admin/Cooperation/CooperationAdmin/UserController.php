@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\Str;
-use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CoordinatorRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\UsersRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Cooperation;
 use App\Models\User;
@@ -11,21 +11,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 
-class CoordinatorController extends Controller
+class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
         $users = $cooperation->getCoordinators()->get();
 
-        return view('cooperation.admin.cooperation.cooperation-admin.coordinator.index', compact('users'));
+        return view('cooperation.admin.cooperation.cooperation-admin.users.index', compact('users'));
     }
 
     public function create()
     {
-        return view('cooperation.admin.cooperation.cooperation-admin.coordinator.create');
+        $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->orWhere('name', 'coordinator')->get();
+        return view('cooperation.admin.cooperation.cooperation-admin.users.create', compact('roles'));
     }
 
-    public function store(Cooperation $cooperation, CoordinatorRequest $request)
+    public function store(Cooperation $cooperation, UsersRequest $request)
     {
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');
@@ -42,13 +43,23 @@ class CoordinatorController extends Controller
             ]
         );
 
-        $user->assignRole('coordinator');
+        $roleIds = $request->get('roles', '');
+
+        $roles = [];
+        foreach ($roleIds as $roleId) {
+            $role = Role::find($roleId);
+            array_push($roles, $role->name);
+        }
+
+        // assign the roles to the user
+        $user->assignRole($roles);
+
 
         // send a mail to the user
         \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation));
 
         return redirect()
-            ->route('cooperation.admin.cooperation.cooperation-admin.coordinator.index')
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.cooperation-admin.coordinator.store.success'));
+            ->route('cooperation.admin.cooperation.cooperation-admin.users.index')
+            ->with('success', __('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.store.success'));
     }
 }

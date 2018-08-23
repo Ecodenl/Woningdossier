@@ -125,7 +125,7 @@ return [
                     'side-nav' => [
                         'label' => 'Coöperatie admin menu',
                         'home' => 'Home',
-                        'coordinator' => 'Coordinatoren van uw coöperatie',
+                        'users' => 'Gebruikers van uw coöperatie',
                         'create-user' => 'Voeg een gebruiker toe',
                         'assign-role' => 'Rollen toewijzen',
                     ],
@@ -145,9 +145,9 @@ return [
                         ],
                     ],
 
-                    'coordinator' => [
+                    'users' => [
                         'index' => [
-                            'header' => 'Overzicht van alle coordinatoren binnen uw coöperatie',
+                            'header' => 'Overzicht van alle gebruikers binnen uw coöperatie',
 
                             'table' => [
                                 'columns' => [
@@ -160,7 +160,7 @@ return [
                             ],
                         ],
                         'create' => [
-                            'header' => 'Coordinator toevoegen aan uw coöperatie',
+                            'header' => 'Gebruiker toevoegen aan uw coöperatie',
 
                             'form' => [
                                 'first-name' => 'Voornaam',
@@ -176,7 +176,7 @@ return [
                                     'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
                                 ],
 
-                                'submit' => 'Coordinator aanmaken',
+                                'submit' => 'Gebruiker aanmaken',
                             ]
                         ],
 

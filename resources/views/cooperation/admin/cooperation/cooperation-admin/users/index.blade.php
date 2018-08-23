@@ -3,8 +3,8 @@
 @section('cooperation_admin_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.coordinator.index.header')
-            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.coordinator.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+            @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.header')
+            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.users.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
 
         <div class="panel-body">
@@ -13,10 +13,10 @@
                     <table class="table table-striped table-bordered compact nowrap table-responsive">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.coordinator.index.table.columns.first-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.coordinator.index.table.columns.last-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.coordinator.index.table.columns.email')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.coordinator.index.table.columns.role')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.first-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.last-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.email')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.role')</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -25,6 +25,8 @@ class DropColumnFloorSurface extends Migration
      */
     public function down()
     {
-        //
+	    Schema::table('building_features', function (Blueprint $table) {
+		    $table->decimal('floor_surface')->nullable()->default(null);
+	    });
     }
 }

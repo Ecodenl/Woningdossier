@@ -20,7 +20,6 @@ class CoachController extends Controller
     {
         $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
 
-        dd($users);
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.coordinator.coach.index', compact('roles', 'users'));

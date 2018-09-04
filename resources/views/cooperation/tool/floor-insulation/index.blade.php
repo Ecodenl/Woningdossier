@@ -214,7 +214,7 @@
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                <input type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', $buildingFeatures->insulation_surface == null ? "0.0" : $buildingFeatures->insulation_surface) }}">
+                                <input type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', $buildingFeatures->insulation_surface == null ? $buildingFeatures->surface : $buildingFeatures->insulation_surface) }}">
                             </div>
                             @if ($errors->has('building_features.insulation_surface'))
                                 <span class="help-block">

@@ -42,6 +42,10 @@
                         @foreach($advicesForStep as $advice)
                             <tr>
                                 <td>
+                                    <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
+                                </td>
+
+                                <td>
                                     <input type="checkbox" id="advice-{{$advice->id}}-planned"
                                            @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)
                                                    checked

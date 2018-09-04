@@ -232,7 +232,7 @@
                         </label>
 
                         <div class="input-group">
-                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         </div>
 
@@ -254,7 +254,7 @@
                         </label>
 
                         <div class="input-group">
-                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         </div>
 
@@ -422,17 +422,17 @@
                     <div class="panel-heading">@lang('default.buttons.download')</div>
                     <div class="panel-body">
                         <ol>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')))))}}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a></li>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Gevelisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+                            <li><a download="" href="{{ asset($helpFile) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
                         </ol>
                     </div>
                 </div>
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
-                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
                         <button type="submit" class="btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>

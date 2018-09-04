@@ -25,6 +25,7 @@
                 <table class="table table-condensed table-responsive">
                     <thead>
                     <tr>
+                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
                         <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
@@ -202,7 +203,7 @@
                         $("ul#years").html("");
                         $.each(data, function(year, steps){
                             var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th></tr></thead><tbody>";
+                            var table = "<table class=\"table table-condensed table-responsive table-striped\"> <thead> <tr> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
 
                             var totalCosts = 0;
                             var totalSavingsGas = 0;
@@ -222,13 +223,18 @@
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
+                                    table += "<tr> <td> <a type=\"#\" data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-"+stepName+"-"+i+"\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
+                                    table += " <tr class='collapse' id='more-personal-plan-info-"+stepName+"-"+i+"' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>"
                                 });
 
                             });
 
-                            table += "<tr><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></strong></td><td><strong>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
-                            table += "<tr><td colspan=\"5\"></td></tr>";
+
+                            // total calculation
+                            table += "<tr><td><a type='#' data-toggle='collapse' data-target='#total-costs-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
+                            table += "<tr><td colspan=\"4\"></td></tr>";
+                            table += "<tr class='collapse' id='total-costs-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}')+" m<sup>3</sup> <br>"+Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>";
+
 
                             table += "</tbody></table>";
 
@@ -238,7 +244,7 @@
 
 
                         @if(App::environment('local'))
-                        console.log(data);
+                            console.log(data);
                         @endif
                     }
                 })
@@ -247,6 +253,22 @@
             $('form').find('*').filter(':input:visible:first').trigger('change');
         });
 
+
+    </script>
+
+    <script>
+
+        $('a[data-target*=more]').click(function () {
+            $(this).toggleClass('clicked');
+
+            if ($(this).hasClass('clicked')) {
+                $(this).find('i').css("transform", "rotate(180deg)");
+                $(this).find('i').css("transition", "1s");
+            } else {
+                $(this).find('i').css("transform", "rotate(0deg)");
+                $(this).find('i').css("transition", "1s");
+            }
+        })
 
     </script>
 @endpush

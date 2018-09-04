@@ -52,16 +52,7 @@ class InsulatedGlazingController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // the element ids for this page
-        $interestedInIds = [1, 2];
-
-        if (Auth::user()->isNotInterestedInStep('element', $interestedInIds)) {
-
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
-
+        $typeIds = [1, 2];
     	/**
 	     * @var Building $building
 	     */
@@ -119,7 +110,7 @@ class InsulatedGlazingController extends Controller
         	'building', 'steps', 'interests',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
 	        'userInterests', 'crackSealing', 'frames', 'woodElements',
-	        'paintworkStatuses', 'woodRotStatuses'
+	        'paintworkStatuses', 'woodRotStatuses', 'typeIds'
         ));
     }
 
@@ -315,6 +306,9 @@ class InsulatedGlazingController extends Controller
 
         $building = Auth::user()->buildings()->first();
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
 
         // Saving the insulate glazings
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {

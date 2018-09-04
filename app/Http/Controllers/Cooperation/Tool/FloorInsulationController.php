@@ -17,6 +17,7 @@ use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -43,15 +44,8 @@ class FloorInsulationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in floor insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('element', 4)) {
-
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
-
-    	/** @var Building $building */
+    	$typeIds = [4];
+        /** @var Building $building */
 	    $building = \Auth::user()->buildings()->first();
 
 	    $buildingInsulation = $building->getBuildingElement('floor-insulation');
@@ -78,7 +72,7 @@ class FloorInsulationController extends Controller
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
-            'crawlspace', 'buildingCrawlspace',
+            'crawlspace', 'buildingCrawlspace', 'typeIds',
             'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement'
         ));
     }
@@ -186,6 +180,10 @@ class FloorInsulationController extends Controller
                 ]
             );
         }
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
 
         $buildingElements = $request->input('building_elements', '');
         $buildingElementId = array_keys($buildingElements)[1];

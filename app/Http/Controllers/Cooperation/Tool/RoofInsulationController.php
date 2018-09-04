@@ -20,6 +20,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -374,6 +375,10 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
+
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
 
         // Get the user his building / house
         $building = Auth::user()->buildings()->first();

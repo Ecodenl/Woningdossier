@@ -2,6 +2,7 @@
 
 namespace App\Http\ViewComposers;
 
+use App\Models\Interest;
 use Illuminate\View\View;
 
 class CooperationComposer {
@@ -10,6 +11,7 @@ class CooperationComposer {
 		//\Log::debug(__METHOD__);
 		$view->with('cooperation', app()->make('Cooperation'));
 		$view->with('cooperationStyle', app()->make('CooperationStyle'));
+
 	}
 
 }

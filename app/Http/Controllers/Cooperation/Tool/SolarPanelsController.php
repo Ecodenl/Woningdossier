@@ -17,6 +17,7 @@ use App\Models\PvPanelYield;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -40,15 +41,11 @@ class SolarPanelsController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('service', 7)) {
 
-            $nextStep = Step::where('order', $nextPage)->first();
+        $typeIds = [7];
 
-            return redirect(url('tool/'.$nextStep->slug));
-        }
 
-	    $steps = Step::orderBy('order')->get();
+        $steps = Step::orderBy('order')->get();
         $user = \Auth::user();
 	    /**
 	     * @var Building $building
@@ -64,7 +61,7 @@ class SolarPanelsController extends Controller
 	    return view('cooperation.tool.solar-panels.index',
 		    compact(
 		    	'pvPanelOrientations', 'amountElectricity',
-			    'buildingPvPanels', 'steps'
+			    'buildingPvPanels', 'steps', 'typeIds'
 		    )
 	    );
     }
@@ -147,6 +144,10 @@ class SolarPanelsController extends Controller
     {
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : "0";
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
 
         UserEnergyHabit::where('user_id', Auth::id())->update([
             'amount_electricity' => $habitAmountElectricity,

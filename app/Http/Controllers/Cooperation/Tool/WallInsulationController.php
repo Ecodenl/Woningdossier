@@ -16,6 +16,7 @@ use App\Models\ElementValue;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
@@ -43,15 +44,7 @@ class WallInsulationController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
-        if (Auth::user()->isNotInterestedInStep('element', 3)) {
-
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [3];
 
     	$steps = Step::orderBy('order')->get();
         /** @var Building $building */
@@ -61,14 +54,17 @@ class WallInsulationController extends Controller
         $buildingFeature = $building->buildingFeatures;
 
 
+
         /** @var BuildingElement $houseInsulation */
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
+        $interests = Interest::orderBy('order')->get();
+
         return view('cooperation.tool.wall-insulation.index', compact(
         	'steps', 'building', 'facadeInsulation',
-	        'surfaces', 'buildingFeature',
+	        'surfaces', 'buildingFeature', 'interests', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages'
         ));
     }
@@ -81,6 +77,12 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
+
+
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
         $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');

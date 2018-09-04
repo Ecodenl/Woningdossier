@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Cooperation;
+use App\Models\Interest;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider
@@ -18,6 +19,12 @@ class WoningdossierServiceProvider extends ServiceProvider
     {
 	    //view()->composer('cooperation.layouts.app',  CooperationComposer::class);
 	    //view()->composer('*',  CooperationComposer::class);
+
+
+        \View::composer('cooperation.tool.includes.interested', function ($view) {
+            $view->with('interests', Interest::orderBy('order')->get());
+        });
+
 	    \View::creator('*', CooperationComposer::class);
     }
 

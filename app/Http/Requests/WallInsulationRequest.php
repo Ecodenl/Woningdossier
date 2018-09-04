@@ -22,8 +22,7 @@ class WallInsulationRequest extends FormRequest
 
 	public function getValidatorInstance()
 	{
-		$this->decimals(['wall_surface']);
-		$this->decimals(['insulation_wall_surface']);
+		$this->decimals(['wall_surface', 'insulation_wall_surface']);
 
 		return parent::getValidatorInstance();
 	}

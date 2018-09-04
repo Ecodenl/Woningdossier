@@ -11,14 +11,25 @@ use Illuminate\Support\Collection;
  * App\Models\ExampleBuilding
  *
  * @property int $id
- * @property string $translation_key
+ * @property string $name
+ * @property int|null $building_type_id
+ * @property int|null $cooperation_id
  * @property int|null $order
+ * @property bool $is_default
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property-read \App\Models\Cooperation|null $cooperation
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereBuildingTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereIsDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereTranslationKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */

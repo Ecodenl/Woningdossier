@@ -9,20 +9,21 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int|null $building_id
- * @property int|null $measure_id
- * @property int|null $service_type_id
+ * @property int $service_id
+ * @property int|null $service_value_id
+ * @property array $extra
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Appliance[] $appliances
  * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\Measure|null $measure
- * @property-read \App\Models\ServiceType|null $serviceType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingServiceValue[] $values
+ * @property-read \App\Models\Service $service
+ * @property-read \App\Models\ServiceType $serviceType
+ * @property-read \App\Models\ServiceValue|null $serviceValue
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereExtra($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereMeasureId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereServiceTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereServiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereServiceValueId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereUpdatedAt($value)
  * @mixin \Eloquent
  */

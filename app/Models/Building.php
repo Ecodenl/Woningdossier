@@ -9,27 +9,36 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $user_id
- * @property string|null $type_id
  * @property string $street
  * @property string $number
  * @property string $extension
  * @property string $city
  * @property string $postal_code
+ * @property string $country_code
  * @property int|null $owner
  * @property int $primary
  * @property string $bag_addressid
+ * @property int|null $example_building_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ * @property-read \App\Models\BuildingFeature $buildingFeatures
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property-read \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
+ * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property-read \App\Models\BuildingHeater $heater
+ * @property-read \App\Models\BuildingPvPanel $pvPanels
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
  * @property-read \App\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereBagAddressid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCountryCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereExampleBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereExtension($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereNumber($value)
@@ -37,7 +46,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePrimary($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUserId($value)
  * @mixin \Eloquent

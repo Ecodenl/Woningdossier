@@ -9,19 +9,20 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int|null $building_id
- * @property int|null $measure_id
- * @property int|null $service_type_id
+ * @property int $element_id
+ * @property int|null $element_value_id
+ * @property array $extra
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\Measure|null $measure
- * @property-read \App\Models\ServiceType|null $serviceType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElementValue[] $values
+ * @property-read \App\Models\Element $element
+ * @property-read \App\Models\ElementValue|null $elementValue
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereElementId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereElementValueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereExtra($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereMeasureId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereServiceTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement whereUpdatedAt($value)
  * @mixin \Eloquent
  */

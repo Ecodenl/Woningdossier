@@ -90,6 +90,7 @@ return [
                         'description' => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
                         'label' => 'Reset mijn dossier',
                         'submit' => 'Reset',
+                        'are-you-sure' => "Letop, dit verwijderd alle gegevens die zijn ingevuld bij de veschillende stappen. Weet u zeker dat u wilt doorgaan ?",
                         'success' => 'Uw gegevens zijn succesvol verwijderd van uw account',
                     ],
 					'destroy' => [

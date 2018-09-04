@@ -29,7 +29,7 @@ return [
                     'phonenumber' => 'Telefoonnummer',
                     'mobilenumber' => 'Mobiel nummer',
                     'street' => 'Straat',
-                    'house-number' => 'Huis nummer',
+                    'house-number' => 'Huisnummer',
                     'city' => 'Woonplaats',
                     'zip-code' => 'Postcode',
                     'country-code' => 'Landcode',

@@ -131,9 +131,9 @@
                             <div class="form-group">
                                 <label for="reset-file" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.form.reset-file.label')</label>
                                 <div class="col-md-8">
-                                    <button type="submit" id="reset-account" class="btn btn-danger">
+                                    <a id="reset-account" class="btn btn-danger">
                                         @lang('woningdossier.cooperation.my-account.settings.form.reset-file.submit')
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </form>
@@ -176,8 +176,9 @@
         var areYouSure = '@lang('woningdossier.cooperation.my-account.settings.form.reset-file.are-you-sure')';
         $('#reset-account').click(function () {
             if (confirm(areYouSure)) {
-
+                $(this).closest('form').submit();
             } else {
+                return false;
                 event.preventDefault();
             }
         })

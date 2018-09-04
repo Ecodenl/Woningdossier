@@ -87,7 +87,7 @@ return [
 					],
                     'reset-file' => [
                         'header' => 'Uw dossier verwijderen',
-                        'description' => '<b>Letop</b>, dit verwijderd alle gegevens die zijn ingevuld bij de veschillende stappen.',
+                        'description' => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
                         'label' => 'Reset mijn dossier',
                         'submit' => 'Reset',
                         'success' => 'Uw gegevens zijn succesvol verwijderd van uw account',

@@ -4,6 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\BuildingRoofType
+ *
+ * @property int $id
+ * @property int $building_id
+ * @property int $roof_type_id
+ * @property int|null $element_value_id
+ * @property int|null $surface
+ * @property int|null $building_heating_id
+ * @property array $extra
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\ElementValue|null $elementValue
+ * @property-read \App\Models\BuildingHeating $heating
+ * @property-read \App\Models\RoofType $roofType
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingHeatingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereElementValueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereRoofTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereSurface($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class BuildingRoofType extends Model
 {
 	/**

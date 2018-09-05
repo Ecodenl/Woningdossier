@@ -44,7 +44,6 @@
 
                     @foreach($advicesForStep as $advice)
                         <tr>
-
                             <td>
                                 <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
                             </td>
@@ -168,17 +167,17 @@
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                    table += "<tr> <td> <a type=\"#\" data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-"+stepName+"-"+i+"\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
-                                    table += " <tr class='collapse' id='more-personal-plan-info-"+stepName+"-"+i+"' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>"
+                                    table += "<tr> <td> <a type=\"#\" data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + stepName + "-" + i + "-" + year + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
+                                    table += " <tr class='collapse' id='more-personal-plan-info-" + stepName + "-" + i + "-" + year + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>"
                                 });
 
                             });
 
 
                             // total calculation
-                            table += "<tr><td><a type='#' data-toggle='collapse' data-target='#total-costs-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
+                            table += "<tr><td><a type='#' data-toggle='collapse' data-target='#total-costs-" + year + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
                             table += "<tr><td colspan=\"4\"></td></tr>";
-                            table += "<tr class='collapse' id='total-costs-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}')+" m<sup>3</sup> <br>"+Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>";
+                            table += "<tr class='collapse' id='total-costs-" + year + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}')+" m<sup>3</sup> <br>"+Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>";
 
 
                             table += "</tbody></table>";
@@ -196,25 +195,21 @@
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
+
+            // Toggle chevron op open / close
+            $('a[data-target*=more]').on('click', function () {
+                $(this).toggleClass('clicked');
+
+                if ($(this).hasClass('clicked')) {
+                    $(this).find('i').css("transform", "rotate(180deg)");
+                    $(this).find('i').css("transition", "1s");
+                } else {
+                    $(this).find('i').css("transform", "rotate(0deg)");
+                    $(this).find('i').css("transition", "1s");
+                }
+            });
         });
-
-
     </script>
 
-    <script>
-
-        $('a[data-target*=more]').click(function () {
-            $(this).toggleClass('clicked');
-
-            if ($(this).hasClass('clicked')) {
-                $(this).find('i').css("transform", "rotate(180deg)");
-                $(this).find('i').css("transition", "1s");
-            } else {
-                $(this).find('i').css("transform", "rotate(0deg)");
-                $(this).find('i').css("transition", "1s");
-            }
-        })
-
-    </script>
 @endpush
 

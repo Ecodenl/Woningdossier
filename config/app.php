@@ -15,6 +15,18 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+	/*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "version" your application is currently at.
+    | You may set this in your ".env" file.
+    |
+    */
+
+    'version' => env('APP_VERSION', '1.0.0'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

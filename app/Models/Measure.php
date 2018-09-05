@@ -10,19 +10,17 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
- * @property int|null $service_type_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \App\Models\BuildingElement $buildingElements
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Opportunity[] $opportunities
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureProperty[] $properties
- * @property-read \App\Models\ServiceType|null $serviceType
+ * @property-read \App\Models\ServiceType $serviceType
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure whereServiceTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure whereUpdatedAt($value)
  * @mixin \Eloquent
  */

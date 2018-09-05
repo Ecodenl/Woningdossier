@@ -42,7 +42,7 @@
                         @foreach($advicesForStep as $advice)
                             <tr>
                                 <td>
-                                    <input type="checkbox" id="advice-{{$advice->id}}-planned"
+                                    <input name="interested" value="1" type="checkbox" id="advice-{{$advice->id}}-planned"
                                            @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)
                                                    checked
                                            @endif

@@ -6,7 +6,6 @@
 
 @section('step_content')
 
-
     <div class="row">
         <div class="col-md-12">
             {{--<h1>@lang('woningdossier.cooperation.tool.my-plan.title')</h1>--}}
@@ -21,7 +20,6 @@
             <div class="col-md-12">
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
-
 
             <div class="col-md-12">
                 <table class="table table-condensed table-responsive">
@@ -39,50 +37,48 @@
                 <tbody>
 
             @foreach($stepAdvices as $step => $advicesForStep)
-                        @foreach($advicesForStep as $advice)
-                            <tr>
-                                <td>
-                                    <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
-                                </td>
+                @foreach($advicesForStep as $advice)
+                    <tr>
+                        <td>
+                            <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
+                        </td>
 
-                            <td>
-                                <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
-                            </td>
-                            <td>
-                                {{ $advice->measureApplication->measure_name }}
-                            </td>
-                            <td>
-                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
-                            </td>
-                            <td>
-                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
-                            </td>
-                            <td>
-                                {{ $advice->year }}
-                            </td>
-                            <td>
-                                <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
-                            </td>
-                        </tr>
-                        <tr class="collapse" id="more-info-{{$advice->id}}" >
-                            <td colspan="2"></td>
-                            <td colspan="">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
-                                <br>
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
-                            </td>
-                            <td>
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
-                                <br>
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
-                            </td>
-                            <td colspan="3">
-                            </td>
-                        </tr>
-                    @endforeach
-
-
+                        <td>
+                            <input name="interested" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)checked@endif />
+                        </td>
+                        <td>
+                            {{ $advice->measureApplication->measure_name }}
+                        </td>
+                        <td>
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                        </td>
+                        <td>
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                        </td>
+                        <td>
+                            {{ $advice->year }}
+                        </td>
+                        <td>
+                            <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
+                        </td>
+                    </tr>
+                    <tr class="collapse" id="more-info-{{$advice->id}}" >
+                        <td colspan="2"></td>
+                        <td colspan="">
+                            <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
+                            <br>
+                            <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
+                        </td>
+                        <td>
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                            <br>
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                        </td>
+                        <td colspan="3">
+                        </td>
+                    </tr>
                 @endforeach
+            @endforeach
                 </tbody>
             </table>
         </div>
@@ -220,6 +216,5 @@
 
         });
     </script>
-
 @endpush
 

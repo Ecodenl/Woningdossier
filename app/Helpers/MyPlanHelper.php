@@ -113,8 +113,10 @@ class MyPlanHelper
         $plannedYear = Carbon::create($requestPlannedYear);
         $currentYear = Carbon::now()->year(date('Y'));
 
-        // check if the user set the planned year
-        if ($requestPlannedYear != null) {
+
+        // if a user is interested and the user has filled in a planned year
+        // then we change the interested value based on the year he filled in.
+        if ($requestPlannedYear != null && isset($request->interested)) {
 
             // if the filled in year has a difference of 3 years lower then the current year
             // we set the interest id to 2 or ja op termijn

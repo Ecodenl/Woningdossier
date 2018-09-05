@@ -44,7 +44,7 @@
                         </td>
 
                         <td>
-                            <input name="interested" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)checked@endif />
+                            <input name="interested" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)checked @endif />
                         </td>
                         <td>
                             {{ $advice->measureApplication->measure_name }}
@@ -59,7 +59,7 @@
                             {{ $advice->year }}
                         </td>
                         <td>
-                            <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
+                            <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][{{$step}}][planned_year]" value="{{ $advice->planned_year }}" />
                         </td>
                     </tr>
                     <tr class="collapse" id="more-info-{{$advice->id}}" >
@@ -141,7 +141,7 @@
                         $("ul#years").html("");
                         $.each(data, function(year, steps){
                             var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-condensed table-responsive table-striped\"> <thead> <tr> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
+                            var table = "<table class=\"table table-condensed table-responsive\"> <thead> <tr> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
 
                             var totalCosts = 0;
                             var totalSavingsGas = 0;

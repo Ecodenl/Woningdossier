@@ -74,7 +74,7 @@ class MyPlanHelper
     public static function isUserInterestedInMeasure(Step $step) : bool
     {
 
-        foreach (self::STEP_INTERESTS[$step] as $type => $interestedIn) {
+        foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
             if (\Auth::user()->getInterestedType($type, $interestedIn) instanceof UserInterest && \Auth::user()->isInterestedInStep($type, $interestedIn)) {
                 return true;
             }

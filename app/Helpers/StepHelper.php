@@ -77,12 +77,13 @@ class StepHelper
     public static function hasInterestInStep(Step $step) : bool
     {
 
-        foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
-            if (\Auth::user()->isInterestedInStep($type, $interestedIn)) {
-                return true;
+        if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
+            foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
+                if (\Auth::user()->isInterestedInStep($type, $interestedIn)) {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 

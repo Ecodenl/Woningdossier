@@ -1,6 +1,12 @@
 @foreach ($typeIds as $elementId)
 
-    <?php $typeName =  \App\Models\Element::find($elementId)->name ?>
+    <?php
+        if($type == "service") {
+            $typeName = \App\Models\Service::find($elementId)->name;
+        } else {
+            $typeName = \App\Models\Element::find($elementId)->name;
+        }
+    ?>
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group add-space">

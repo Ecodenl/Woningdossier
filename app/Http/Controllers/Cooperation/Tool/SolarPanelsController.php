@@ -60,8 +60,7 @@ class SolarPanelsController extends Controller
 
 
 	    return view('cooperation.tool.solar-panels.index',
-		    compact(
-		    	'pvPanelOrientations', 'amountElectricity',
+		    compact('pvPanelOrientations', 'amountElectricity',
 			    'buildingPvPanels', 'steps', 'typeIds'
 		    )
 	    );

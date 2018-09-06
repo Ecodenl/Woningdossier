@@ -51,14 +51,6 @@ class RoofInsulationController extends Controller
 
         $typeIds = [5];
 
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('element', 5)) {
-
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
-
 	    /** var Building $building */
 	    $building = \Auth::user()->buildings()->first();
 

@@ -115,10 +115,10 @@ class StepHelper
 
         // since we pulled the completed steps of the collection
         $nonCompletedSteps = $steps;
-
         // check if a user is interested
         // and if so return the route name
         foreach ($nonCompletedSteps as $nonCompletedStep) {
+
             if (self::hasInterestInStep($nonCompletedStep)) {
                 $routeName = "cooperation.tool." . $nonCompletedStep->slug . ".index";
                 return $routeName;

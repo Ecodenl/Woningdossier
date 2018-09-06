@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Requests\HeaterFormRequest;
 use App\Models\Building;
 use App\Models\BuildingHeater;
@@ -198,7 +199,7 @@ class HeaterController extends Controller
 	    $this->saveAdvices($request);
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 	protected function saveAdvices(Request $request){

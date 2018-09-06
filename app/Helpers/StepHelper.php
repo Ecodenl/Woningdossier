@@ -74,7 +74,7 @@ class StepHelper
      * @param Step $step
      * @return bool
      */
-    public static function hasInterestInStep(Step $step): bool
+    public static function hasInterestInStep(Step $step) : bool
     {
 
         foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
@@ -92,7 +92,7 @@ class StepHelper
      *
      * @return string
      */
-    public static function getNextStep(): string
+    public static function getNextStep() : string
     {
         // get all the steps
         $steps = Step::orderBy('order')->get();
@@ -123,5 +123,8 @@ class StepHelper
                 return $routeName;
             }
         }
+
+        // if the user has no steps left where they do not have any interest in, redirect them to their plan
+        return "cooperation.tool.my-plan.index";
     }
 }

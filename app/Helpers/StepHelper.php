@@ -93,15 +93,35 @@ class StepHelper
      *
      * @return string
      */
-    public static function getNextStep() : string
+    public static function getNextStep(Step $current) : string
     {
         // get all the steps
         $steps = Step::orderBy('order')->get();
         // create new collection for the completed steps
         $completedSteps = collect();
 
+        $currentFound = false;
+
         // remove the completed steps from the steps
         foreach ($steps as $step) {
+        	if ($step != $current && !$currentFound){
+		        $completedStep = $steps->search(function ($item) use ($step) {
+			        return $item->id == $step->id;
+		        });
+
+		        $completedSteps->push($steps->pull($completedStep));
+	        }
+	        elseif ($step == $current){
+        		$currentFound = true;
+
+		        $completedStep = $steps->search(function ($item) use ($step) {
+			        return $item->id == $step->id;
+		        });
+
+		        $completedSteps->push($steps->pull($completedStep));
+	        }
+
+	        /*
             if (\Auth::user()->hasCompleted($step)) {
                 // get the completed step
                 // $completedStep is the index of the collection item, so we can pull it from the steps itself
@@ -111,6 +131,7 @@ class StepHelper
 
                 $completedSteps->push($steps->pull($completedStep));
             }
+	        */
         }
 
         // since we pulled the completed steps of the collection

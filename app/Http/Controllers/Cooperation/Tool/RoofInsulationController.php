@@ -441,7 +441,7 @@ class RoofInsulationController extends Controller
 	    $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
 }

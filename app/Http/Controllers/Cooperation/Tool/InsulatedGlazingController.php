@@ -422,7 +422,7 @@ class InsulatedGlazingController extends Controller
 	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
 

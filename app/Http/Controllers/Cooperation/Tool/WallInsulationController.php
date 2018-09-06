@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -132,7 +133,7 @@ class WallInsulationController extends Controller
 	    $this->saveAdvices($request);
 	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.insulated-glazing.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request){

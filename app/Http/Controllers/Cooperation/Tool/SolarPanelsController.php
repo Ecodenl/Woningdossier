@@ -6,6 +6,7 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
 use App\Models\BuildingPvPanel;
@@ -59,8 +60,7 @@ class SolarPanelsController extends Controller
 
 
 	    return view('cooperation.tool.solar-panels.index',
-		    compact(
-		    	'pvPanelOrientations', 'amountElectricity',
+		    compact('pvPanelOrientations', 'amountElectricity',
 			    'buildingPvPanels', 'steps', 'typeIds'
 		    )
 	    );
@@ -174,7 +174,7 @@ class SolarPanelsController extends Controller
 	    $this->saveAdvices($request);
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.heater.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 	protected function saveAdvices(Request $request){

@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Requests\HeaterFormRequest;
 use App\Models\Building;
 use App\Models\BuildingHeater;
@@ -22,6 +23,7 @@ use App\Models\PvPanelYield;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -171,6 +173,10 @@ class HeaterController extends Controller
     public function store(HeaterFormRequest $request)
     {
 
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
         // Store the building heater part
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : "";
@@ -198,7 +204,7 @@ class HeaterController extends Controller
 	    $this->saveAdvices($request);
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 	protected function saveAdvices(Request $request){

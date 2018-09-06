@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\Information;
 
+use App\Helpers\StepHelper;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Illuminate\Http\Request;
@@ -53,7 +54,7 @@ class VentilationController extends Controller
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 }

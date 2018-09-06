@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\StepHelper;
 use App\Http\Requests\GeneralDataFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -276,6 +277,6 @@ class GeneralDataController extends Controller
 	    // Save progress
 	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.ventilation-information.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 }

@@ -91,11 +91,10 @@ class MyPlanController extends Controller
             if ($advice instanceof UserActionPlanAdvice && $advice->user == \Auth::user()) {
 
 
-                $stepSlug = MyPlanHelper::saveUserInterests($request, $advice);
-//                dd($stepSlug);
+                MyPlanHelper::saveUserInterests($request, $advice);
 
                 // check if a user is interested in a measure
-                if (MyPlanHelper::isUserInterestedInMeasure($stepSlug)) {
+                if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
 
                     $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
                     if (is_null($year)) {

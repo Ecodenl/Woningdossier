@@ -180,12 +180,15 @@ class KeyFigureTemperaturesTableSeeder extends Seeder
 			                         ->first(['building_heatings.*']);
 
 
+		    if (count($measureApplication) > 0) {
+
 	    	\DB::table('key_figure_temperatures')->insert([
 	    		'measure_application_id' => $measureApplication->id,
 			    'insulating_glazing_id' => $insulatedGlazing instanceof \stdClass ? $insulatedGlazing->id : null,
 			    'building_heating_id' => $buildingHeating->id,
 			    'key_figure' => $figure['key_figure'],
 		    ]);
+            }
 	    }
 
 

@@ -76,6 +76,7 @@ class BuildingFeature extends Model
         'damage_paintwork',
         'additional_info',
 	    'surface',
+        'floor_surface',
 	    'build_year',
         'facade_plastered_painted',
         'window_surface'

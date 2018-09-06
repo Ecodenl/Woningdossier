@@ -129,6 +129,8 @@ class RoofInsulationController extends Controller
 		$results = $this->calculate($request);
 		$results = $results->getData(true);
 
+		$result = [];
+
 		// Remove old results
 		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 

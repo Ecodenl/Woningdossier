@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -53,6 +54,9 @@ class InsulatedGlazingController extends Controller
         $nextPage = $this->step->order + 1;
 
         $typeIds = [1, 2];
+
+//        StepHelper::getNextStep();
+
     	/**
 	     * @var Building $building
 	     */
@@ -418,7 +422,7 @@ class InsulatedGlazingController extends Controller
 	    \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 

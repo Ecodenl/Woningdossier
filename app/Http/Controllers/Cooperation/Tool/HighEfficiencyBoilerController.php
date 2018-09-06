@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\StepHelper;
 use App\Http\Requests\HighEfficiencyBoilerFormRequest;
 use App\Models\Cooperation;
 use App\Models\Step;
@@ -155,7 +156,7 @@ class HighEfficiencyBoilerController extends Controller
 	    $this->saveAdvices($request);
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 	protected function saveAdvices(Request $request){

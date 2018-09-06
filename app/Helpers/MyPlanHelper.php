@@ -61,17 +61,17 @@ class MyPlanHelper
             'service' => [
                 '6'
             ]
-        ],
+        ]
     ];
     
 
     /**
-     * Check if a user is interested in a measure
+     * Check is a user is interested in a measure
      *
-     * @param $step
+     * @param Step $step
      * @return bool
      */
-    public static function isUserInterestedInMeasure($step) : bool
+    public static function isUserInterestedInMeasure(Step $step) : bool
     {
 
         foreach (self::STEP_INTERESTS[$step] as $type => $interestedIn) {

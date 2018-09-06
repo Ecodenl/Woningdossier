@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -218,7 +219,7 @@ class FloorInsulationController extends Controller
 	    $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 	protected function saveAdvices(Request $request){

@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\RoofInsulationCalculator;
+use App\Helpers\StepHelper;
 use App\Http\Requests\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -444,7 +445,7 @@ class RoofInsulationController extends Controller
 	    $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
-        return redirect()->route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep(), ['cooperation' => $cooperation]);
     }
 
 }

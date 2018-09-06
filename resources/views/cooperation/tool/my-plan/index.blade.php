@@ -36,8 +36,9 @@
                     </thead>
                 <tbody>
 
-            @foreach($stepAdvices as $step => $advicesForStep)
+            @foreach($stepAdvices as $stepSlug => $advicesForStep)
                 @foreach($advicesForStep as $advice)
+	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
                     <tr>
                         <td>
                             <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
@@ -59,7 +60,7 @@
                             {{ $advice->year }}
                         </td>
                         <td>
-                            <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][{{$step}}][planned_year]" value="{{ $advice->planned_year }}" />
+                            <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" value="{{ $advice->planned_year }}" />
                         </td>
                     </tr>
                     <tr class="collapse" id="more-info-{{$advice->id}}" >

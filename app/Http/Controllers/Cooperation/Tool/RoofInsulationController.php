@@ -49,6 +49,8 @@ class RoofInsulationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
+        $typeIds = [5];
+
         // check if the user is interested in roof insulation, if not redirect to next step
         if (Auth::user()->isNotInterestedInStep('element', 5)) {
 
@@ -89,7 +91,7 @@ class RoofInsulationController extends Controller
 
 
         return view('cooperation.tool.roof-insulation.index', compact(
-        	'features', 'roofTypes', 'steps',
+        	'features', 'roofTypes', 'steps', 'typeIds',
         	 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation',
 	         'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
     }

@@ -99,12 +99,24 @@ class MyPlanHelper
 
         // if the user checked the interested button
         $step = key($myAdvice);
-        $requestPlannedYear = array_shift($myAdvice[$step]);
-        $stepInterests = MyPlanHelper::STEP_INTERESTS[$step];
 
+        // the planned year input
+        $requestPlannedYear = null;
+        // the interested checkbox, which fills the planned column in the table
+        $interested = false;
+
+        if (array_key_exists('planned_year', $myAdvice[$step])) {
+            $requestPlannedYear = $myAdvice[$step]['planned_year'];
+        }
+        if (array_key_exists('interested', $myAdvice[$step])) {
+            $interested = true;
+        }
+
+        $stepInterests = MyPlanHelper::STEP_INTERESTS[$step];
         // update the planned year
         $updates = [
-            'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null
+            'planned' => $interested,
+            'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null,
         ];
 
         $advice->update($updates);
@@ -114,9 +126,8 @@ class MyPlanHelper
         $currentYear = Carbon::now()->year(date('Y'));
 
 
-        // if a user is interested and the user has filled in a planned year
-        // then we change the interested value based on the year he filled in.
-        if ($requestPlannedYear != null && isset($request->interested)) {
+        // change the value of the interested level based on the planned year
+        if ($requestPlannedYear != null) {
 
             // if the filled in year has a difference of 3 years lower then the current year
             // we set the interest id to 2 or ja op termijn

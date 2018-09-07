@@ -118,7 +118,7 @@ class MyPlanController extends Controller
                     }
 
                     $sortedAdvices[$year][$step->name][] = [
-                        'interested' => true,
+                        'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
                         // In the table the costs are indexed based on the advice year

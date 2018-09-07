@@ -43,8 +43,8 @@
                             <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
                             <tr>
                                 <td>
-                                    <input name="interested" value="1" type="checkbox" id="advice-{{$advice->id}}-planned"
-                                           @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step))
+                                    <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned"
+                                           @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) && $advice->planned == true)
                                                    checked
                                            @endif
                                     />
@@ -64,7 +64,7 @@
                                 <td>
                                     &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
                                 </td>
-                                <td>
+                                <td class="advice-year">
                                     {{ $advice->year }}
                                 </td>
                                 <td>
@@ -192,8 +192,8 @@
                 }
             });
 
-            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
 
+            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
@@ -214,7 +214,7 @@
                             $.each(steps, function(stepName, stepMeasures){
 
                                 $.each(stepMeasures, function(i, stepData){
-
+                                    console.log(stepData);
                                     if (stepData.interested) {
                                         $("#advice-"+stepData.advice_id+"-planned").attr('checked', true)
                                     }
@@ -243,12 +243,40 @@
                         console.log(data);
                         @endif
                     }
-                })
+                });
+
+
+
+
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
+
+
         });
 
+        // if a user clicks the interested check box
+        $('.interested-checker').on('click', function() {
+
+            // check if the checkbox is checked
+            // if so, so fill the
+            if ($(this).is(':checked')) {
+                var advicedYear = $(this).parent().parent().find('.advice-year').html().trim();
+                var plannedYearInput = $(this).parent().parent().find('input');
+
+                if(advicedYear == "") {
+                    advicedYear = (new Date()).getFullYear();
+                }
+
+                plannedYearInput.val(advicedYear);
+                plannedYearInput.trigger('change')
+            } else {
+                var plannedYearInput = $(this).parent().parent().find('input');
+
+                plannedYearInput.val("");
+                plannedYearInput.trigger('change')
+            }
+        })
 
     </script>
 @endpush

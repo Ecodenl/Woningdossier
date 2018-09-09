@@ -44,7 +44,7 @@
                             <tr>
                                 <td>
                                     <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned"
-                                           @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) && $advice->planned == true)
+                                           @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) && $advice->planned)
                                                    checked
                                            @endif
                                     />

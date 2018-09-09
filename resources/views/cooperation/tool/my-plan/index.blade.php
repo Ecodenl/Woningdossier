@@ -56,7 +56,7 @@
                         <td>
                             &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
                         </td>
-                        <td>
+                        <td class="advice-year">
                             {{ $advice->year }}
                         </td>
                         <td>

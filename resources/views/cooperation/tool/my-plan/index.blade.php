@@ -198,11 +198,10 @@
                 }
 
                 plannedYearInput.val(advicedYear);
-                plannedYearInput.trigger('change')
             } else {
                 plannedYearInput.val("");
-                plannedYearInput.trigger('change')
             }
+            plannedYearInput.trigger('change')
         });
 
     </script>

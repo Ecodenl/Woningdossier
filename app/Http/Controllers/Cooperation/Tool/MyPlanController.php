@@ -85,16 +85,16 @@ class MyPlanController extends Controller
 
         $myAdvices = $request->input('advice', []);
         foreach ($myAdvices as $adviceId => $data) {
+
             $advice = UserActionPlanAdvice::find($adviceId);
 
-
-            if ($advice instanceof UserActionPlanAdvice && $advice->user == \Auth::user()) {
-
+            if ($advice instanceof UserActionPlanAdvice && $advice->user->id === \Auth::user()->id) {
 
                 MyPlanHelper::saveUserInterests($request, $advice);
 
                 // check if a user is interested in a measure
-                if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
+                //if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
+	            if ($advice->planned){
 
                     $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
                     if (is_null($year)) {

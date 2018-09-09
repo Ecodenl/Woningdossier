@@ -45,7 +45,7 @@
                         </td>
 
                         <td>
-                            <input name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" class="interested-checker" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)checked @endif />
+                            <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) && $advice->planned)checked @endif />
                         </td>
                         <td>
                             {{ $advice->measureApplication->measure_name }}
@@ -216,25 +216,25 @@
                 }
             });
 
-        // if a user clicks the interested check box
-        $('.interested-checker').on('click', function() {
+            // if a user clicks the interested check box
+            $('.interested-checker').on('click', function() {
 
-            var plannedYearInput = $(this).parent().parent().find('input');
-            // check if the checkbox is checked
-            // if so, so fill the
-            if ($(this).is(':checked')) {
-                var advicedYear = $(this).parent().parent().find('.advice-year').html().trim();
+                var plannedYearInput = $(this).parent().parent().find('input');
+                // check if the checkbox is checked
+                // if so, so fill the
+                if ($(this).is(':checked')) {
+                    var advicedYear = $(this).parent().parent().find('.advice-year').html().trim();
 
-                if(advicedYear === "") {
-                    advicedYear = (new Date()).getFullYear();
+                    if(advicedYear === "") {
+                        advicedYear = (new Date()).getFullYear();
+                    }
+
+                    plannedYearInput.val(advicedYear);
+                } else {
+                    plannedYearInput.val("");
                 }
-
-                plannedYearInput.val(advicedYear);
-            } else {
-                plannedYearInput.val("");
-            }
-            plannedYearInput.trigger('change')
-        });
+                plannedYearInput.trigger('change')
+            });
 
         });
     </script>

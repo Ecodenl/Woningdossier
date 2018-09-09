@@ -2,7 +2,6 @@
 
 @section('step_title', __('woningdossier.cooperation.tool.solar-panels.title'))
 
-
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}

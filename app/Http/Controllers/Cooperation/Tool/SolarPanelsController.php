@@ -39,12 +39,7 @@ class SolarPanelsController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
-
         $typeIds = [7];
-
 
         $steps = Step::orderBy('order')->get();
         $user = \Auth::user();
@@ -57,7 +52,6 @@ class SolarPanelsController extends Controller
 
 		$pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
 		$buildingPvPanels = $building->pvPanels;
-
 
 	    return view('cooperation.tool.solar-panels.index',
 		    compact('pvPanelOrientations', 'amountElectricity',
@@ -137,7 +131,7 @@ class SolarPanelsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  SolarPanelFormRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(SolarPanelFormRequest $request)

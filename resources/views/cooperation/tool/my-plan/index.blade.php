@@ -45,7 +45,7 @@
                         </td>
 
                         <td>
-                            <input name="interested" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)checked @endif />
+                            <input name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" class="interested-checker" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) == true)checked @endif />
                         </td>
                         <td>
                             {{ $advice->measureApplication->measure_name }}
@@ -192,11 +192,13 @@
                                 $(this).find('i').css("transition", "1s");
                             }
                         });
+
                         @if(App::environment('local'))
                             console.log(data);
                         @endif
                     }
-                })
+                });
+
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
@@ -214,6 +216,25 @@
                 }
             });
 
+        // if a user clicks the interested check box
+        $('.interested-checker').on('click', function() {
+
+            var plannedYearInput = $(this).parent().parent().find('input');
+            // check if the checkbox is checked
+            // if so, so fill the
+            if ($(this).is(':checked')) {
+                var advicedYear = $(this).parent().parent().find('.advice-year').html().trim();
+
+                if(advicedYear === "") {
+                    advicedYear = (new Date()).getFullYear();
+                }
+
+                plannedYearInput.val(advicedYear);
+            } else {
+                plannedYearInput.val("");
+            }
+            plannedYearInput.trigger('change')
+        });
 
         });
     </script>

@@ -17,51 +17,51 @@ class MyPlanHelper
             // type
             'element' => [
                 // interested in id (Element id, service id etc)
-                '3',
-            ]
+                3,
+            ],
         ],
         'insulated-glazing' => [
             'element' => [
-                '1',
-                '2'
+                1,
+                2,
             ],
         ],
         'floor-insulation' => [
             'element' => [
-                '4'
-            ]
+                4,
+            ],
         ],
         'roof-insulation' => [
             'element' => [
-                '5'
-            ]
+                5,
+            ],
         ],
         'high-efficiency-boiler' => [
             'service' => [
-                '4'
-            ]
+                4,
+            ],
         ],
         'heat-pump' => [
             'service' => [
-                '1',
-                '2'
-            ]
+                1,
+                2,
+            ],
         ],
         'solar-panels' => [
             'service' => [
-                '7'
-            ]
+                7,
+            ],
         ],
         'heater' => [
             'service' => [
-                '3'
-            ]
+                3,
+            ],
         ],
         'ventilation-information' => [
             'service' => [
-                '6'
-            ]
-        ]
+                6,
+            ],
+        ],
     ];
     
 
@@ -73,7 +73,6 @@ class MyPlanHelper
      */
     public static function isUserInterestedInMeasure(Step $step) : bool
     {
-
         foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
             if (\Auth::user()->getInterestedType($type, $interestedIn) instanceof UserInterest && \Auth::user()->isInterestedInStep($type, $interestedIn)) {
                 return true;
@@ -99,12 +98,24 @@ class MyPlanHelper
 
         // if the user checked the interested button
         $step = key($myAdvice);
-        $requestPlannedYear = array_shift($myAdvice[$step]);
-        $stepInterests = MyPlanHelper::STEP_INTERESTS[$step];
 
+        // the planned year input
+        $requestPlannedYear = null;
+        // the interested checkbox, which fills the planned column in the table
+        $interested = false;
+
+        if (array_key_exists('planned_year', $myAdvice[$step])) {
+            $requestPlannedYear = $myAdvice[$step]['planned_year'];
+        }
+        if (array_key_exists('interested', $myAdvice[$step])) {
+            $interested = true;
+        }
+
+        $stepInterests = self::STEP_INTERESTS[$step];
         // update the planned year
         $updates = [
-            'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null
+            'planned' => $interested,
+            'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null,
         ];
 
         $advice->update($updates);
@@ -113,20 +124,18 @@ class MyPlanHelper
         $plannedYear = Carbon::create($requestPlannedYear);
         $currentYear = Carbon::now()->year(date('Y'));
 
+        // change the value of the interested level based on the planned year
+        if ($requestPlannedYear != null) {
 
-        // if a user is interested and the user has filled in a planned year
-        // then we change the interested value based on the year he filled in.
-        if ($requestPlannedYear != null && isset($request->interested)) {
-
-            // if the filled in year has a difference of 3 years lower then the current year
-            // we set the interest id to 2 or ja op termijn
-            if ($currentYear->diff($plannedYear)->y >= 3) {
+	        // If the filled in year has a difference of 3 years or less with
+	        // the current year, we set the interest id to 1 (Ja, op korte termijn)
+            if ($currentYear->diff($plannedYear)->y <= 3) {
+		        $interestId = 1;
+	        }
+        	else {
+                // If the filled in year has a difference of more than 3 years than
+	            // the current year, we set the interest id to 2 (Ja, op termijn)
                 $interestId = 2;
-            }
-            // if the filled in year has a difference of 3 years higher then the current year
-            // we set the interest id to 1 or yes in short term
-            else if ($currentYear->diff($plannedYear)->y <= 3) {
-                $interestId = 1;
             }
 
             // save the user his interests
@@ -135,10 +144,10 @@ class MyPlanHelper
                     UserInterest::updateOrCreate(
                         [
                             'interested_in_type' => $type,
-                            'interested_in_id' => $interestInId
+                            'interested_in_id' => $interestInId,
                         ],
                         [
-                            'interest_id' => $interestId
+                            'interest_id' => $interestId,
                         ]
                     );
                 }

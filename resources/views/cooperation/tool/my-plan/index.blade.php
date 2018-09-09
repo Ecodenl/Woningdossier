@@ -148,7 +148,6 @@
                             $.each(steps, function(stepName, stepMeasures){
 
                                 $.each(stepMeasures, function(i, stepData){
-                                    console.log(stepData);
                                     if (stepData.interested) {
                                         $("#advice-"+stepData.advice_id+"-planned").attr('checked', true)
                                     }
@@ -173,7 +172,7 @@
 
 
                         @if(App::environment('local'))
-                        console.log(data);
+                            console.log(data);
                         @endif
                     }
                 });

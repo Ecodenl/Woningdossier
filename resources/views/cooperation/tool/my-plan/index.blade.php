@@ -72,72 +72,6 @@
                                 </td>
                             </tr>
                         @endforeach
-{{--
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">{{ $step }}</div>
-                    <div class="panel-body">
-
-                        <div class="row">
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</strong>
-                            </div>
-
-                        </div>
-
-                        @foreach($advicesForStep as $advice)
-                        <div class="row">
-                            <div class="col-md-1">
-                                <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
-                            </div>
-                            <div class="col-md-2">
-                                {{ $advice->measureApplication->measure_name }}
-                            </div>
-                            <div class="col-md-1">
-                                {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
-                            </div>
-                            <div class="col-md-1">
-                                {{ $advice->year }}
-                            </div>
-                            <div class="col-md-1">
-                                <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            --}}
             @endforeach
                     </tbody>
                 </table>
@@ -238,45 +172,38 @@
                         });
 
 
-
                         @if(App::environment('local'))
                         console.log(data);
                         @endif
                     }
                 });
 
-
-
-
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
-
 
         });
 
         // if a user clicks the interested check box
         $('.interested-checker').on('click', function() {
 
+            var plannedYearInput = $(this).parent().parent().find('input');
             // check if the checkbox is checked
             // if so, so fill the
             if ($(this).is(':checked')) {
                 var advicedYear = $(this).parent().parent().find('.advice-year').html().trim();
-                var plannedYearInput = $(this).parent().parent().find('input');
 
-                if(advicedYear == "") {
+                if(advicedYear === "") {
                     advicedYear = (new Date()).getFullYear();
                 }
 
                 plannedYearInput.val(advicedYear);
                 plannedYearInput.trigger('change')
             } else {
-                var plannedYearInput = $(this).parent().parent().find('input');
-
                 plannedYearInput.val("");
                 plannedYearInput.trigger('change')
             }
-        })
+        });
 
     </script>
 @endpush

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserMotivation
+ * App\Models\UserMotivation.
  *
  * @property int $id
  * @property int $user_id
@@ -13,8 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Motivation $motivation
- * @property-read \App\Models\User $user
+ * @property \App\Models\Motivation $motivation
+ * @property \App\Models\User $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereMotivationId($value)
@@ -25,14 +26,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserMotivation extends Model
 {
-
     protected $fillable = ['user_id', 'motivation_id', 'order'];
 
-	public function user(){
-		return $this->belongsTo(User::class);
-	}
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-	public function motivation(){
-		return $this->belongsTo(Motivation::class);
-	}
+    public function motivation()
+    {
+        return $this->belongsTo(Motivation::class);
+    }
 }

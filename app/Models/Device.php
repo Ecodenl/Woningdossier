@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Address;
-use App\Models\Measure;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Device
+ * App\Models\Device.
  *
  * @property int $id
  * @property int|null $measure_id
@@ -16,9 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\DeviceType|null $deviceType
- * @property-read \App\Models\Measure|null $measure
+ * @property \App\Models\Building|null $building
+ * @property \App\Models\DeviceType|null $deviceType
+ * @property \App\Models\Measure|null $measure
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereDeviceTypeId($value)
@@ -30,15 +29,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Device extends Model
 {
-    public function measure(){
-    	return $this->belongsTo(Measure::class);
+    public function measure()
+    {
+        return $this->belongsTo(Measure::class);
     }
 
-    public function building(){
-    	return $this->belongsTo(Building::class);
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
     }
 
-    public function deviceType(){
-    	return $this->belongsTo(DeviceType::class);
+    public function deviceType()
+    {
+        return $this->belongsTo(DeviceType::class);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingService
+ * App\Models\BuildingService.
  *
  * @property int $id
  * @property int|null $building_id
@@ -14,10 +14,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $extra
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\Service $service
- * @property-read \App\Models\ServiceType $serviceType
- * @property-read \App\Models\ServiceValue|null $serviceValue
+ * @property \App\Models\Building|null $building
+ * @property \App\Models\Service $service
+ * @property \App\Models\ServiceType $serviceType
+ * @property \App\Models\ServiceValue|null $serviceValue
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereExtra($value)
@@ -40,20 +41,23 @@ class BuildingService extends Model
 
     protected $fillable = ['service_value_id', 'extra', 'building_id', 'service_id'];
 
-    public function building(){
-		return $this->belongsTo(Building::class);
-	}
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
 
-	public function serviceType(){
-		return $this->belongsTo(ServiceType::class);
-	}
+    public function serviceType()
+    {
+        return $this->belongsTo(ServiceType::class);
+    }
 
-    public function service(){
+    public function service()
+    {
         return $this->belongsTo(Service::class);
     }
 
-    public function serviceValue(){
+    public function serviceValue()
+    {
         return $this->belongsTo(ServiceValue::class);
     }
-
 }

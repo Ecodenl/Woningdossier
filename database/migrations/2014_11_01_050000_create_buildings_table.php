@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBuildingsTable extends Migration
 {
@@ -17,11 +17,11 @@ class CreateBuildingsTable extends Migration
             $table->increments('id');
 
             $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
             $table->string('street')->default('');
             $table->string('number')->default('');
-	        $table->string('extension')->default('');
+            $table->string('extension')->default('');
             $table->string('city')->default('');
             $table->string('postal_code')->default('');
             $table->string('country_code', 2)->default('nl');

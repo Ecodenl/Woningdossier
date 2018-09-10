@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Motivation;
 
 class MotivationsTableSeeder extends Seeder
 {
@@ -15,50 +14,49 @@ class MotivationsTableSeeder extends Seeder
         $motivations = [
             [
                 'names' => [
-                	'nl' => 'Comfortverbetering',
+                    'nl' => 'Comfortverbetering',
                 ],
                 'calculate_value' => null,
-	            'order' => 0,
+                'order' => 0,
             ],
             [
-	            'names' => [
-		            'nl' => 'Iets voor het milieu doen',
-	            ],
+                'names' => [
+                    'nl' => 'Iets voor het milieu doen',
+                ],
                 'calculate_value' => null,
-	            'order' => 1,
+                'order' => 1,
             ],
             [
-	            'names' => [
-		            'nl' => 'Verlaging van de maandlasten',
-	            ],
+                'names' => [
+                    'nl' => 'Verlaging van de maandlasten',
+                ],
                 'calculate_value' => null,
-	            'order' => 2,
+                'order' => 2,
             ],
             [
-	            'names' => [
-		            'nl' => 'Goed rendement op de investering',
-	            ],
+                'names' => [
+                    'nl' => 'Goed rendement op de investering',
+                ],
                 'calculate_value' => null,
-	            'order' => 3,
+                'order' => 3,
             ],
         ];
 
+        foreach ($motivations as $motivation) {
+            $uuid = \App\Helpers\Str::uuid();
+            foreach ($motivation['names'] as $locale => $name) {
+                \DB::table('translations')->insert([
+                    'key'         => $uuid,
+                    'language'    => $locale,
+                    'translation' => $name,
+                ]);
+            }
 
-	    foreach($motivations as $motivation){
-		    $uuid = \App\Helpers\Str::uuid();
-		    foreach($motivation['names'] as $locale => $name) {
-			    \DB::table( 'translations' )->insert( [
-				    'key'         => $uuid,
-				    'language'    => $locale,
-				    'translation' => $name,
-			    ] );
-		    }
-
-		    \DB::table('motivations')->insert([
-			    'name' => $uuid,
-			    'calculate_value' => $motivation['calculate_value'],
-			    'order' => $motivation['order'],
-		    ]);
-	    }
+            \DB::table('motivations')->insert([
+                'name' => $uuid,
+                'calculate_value' => $motivation['calculate_value'],
+                'order' => $motivation['order'],
+            ]);
+        }
     }
 }

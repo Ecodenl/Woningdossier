@@ -37,6 +37,7 @@ The woningdossier is based on Laravel 5.5 LTS. Our goal is to confirm as much as
 possible to the conventions by the framework (i.e. PSR-4 autoloading).
 
 ### Code conventions
-
+We follow the [Symfony coding standards](https://symfony.com/doc/current/contributing/code/standards.html).
+This is persuaded via PHP-CS-Fixer. [How to install PHP CS Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer#installation)
 
 ## Pull requests

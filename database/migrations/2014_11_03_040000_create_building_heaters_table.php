@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBuildingHeatersTable extends Migration
 {
@@ -22,7 +22,7 @@ class CreateBuildingHeatersTable extends Migration
             $table->integer('pv_panel_orientation_id')->unsigned();
             $table->foreign('pv_panel_orientation_id')->references('id')->on('pv_panel_orientations')->onDelete('restrict');
 
-	        $table->integer('angle')->unsigned()->nullable();
+            $table->integer('angle')->unsigned()->nullable();
 
             $table->timestamps();
         });

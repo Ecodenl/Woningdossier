@@ -21,7 +21,6 @@ class InsulatedGlazingFormRequest extends FormRequest
 
     public function rules()
     {
-
         $rules = [
             'user_interest.*' => 'required|exists:interests,id',
             'building_elements.*' => 'required|exists:element_values,id',
@@ -35,27 +34,25 @@ class InsulatedGlazingFormRequest extends FormRequest
         ];
 
         return $rules;
-
     }
 
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
             foreach ($this->request->get('user_interests') as $userInterestId => $userInterest) {
-
                 // Get the search field
                 $interest = Interest::find($userInterest);
 
                 // Get the field values
-                $m2 = Request::input('building_insulated_glazings.' . $userInterestId . '.m2', '');
-                $totalWindows = Request::input('building_insulated_glazings.' . $userInterestId . '.windows', '');
+                $m2 = Request::input('building_insulated_glazings.'.$userInterestId.'.m2', '');
+                $totalWindows = Request::input('building_insulated_glazings.'.$userInterestId.'.windows', '');
 
                 // Check if the interest fields are filled
-                if ($m2 == "" && ($interest->calculate_value == "1" || $interest->calculate_value == "2" || $interest->calculate_value == "3")) {
-                    $validator->errors()->add('building_insulated_glazings.' . $userInterestId . '.m2', __('validation.custom.needs-to-be-filled'));
+                if ('' == $m2 && ('1' == $interest->calculate_value || '2' == $interest->calculate_value || '3' == $interest->calculate_value)) {
+                    $validator->errors()->add('building_insulated_glazings.'.$userInterestId.'.m2', __('validation.custom.needs-to-be-filled'));
                 }
-                if ($totalWindows == "" && ($interest->calculate_value == "1" || $interest->calculate_value == "2" || $interest->calculate_value == "3")) {
-                    $validator->errors()->add('building_insulated_glazings.' . $userInterestId . '.windows', __('validation.custom.needs-to-be-filled'));
+                if ('' == $totalWindows && ('1' == $interest->calculate_value || '2' == $interest->calculate_value || '3' == $interest->calculate_value)) {
+                    $validator->errors()->add('building_insulated_glazings.'.$userInterestId.'.windows', __('validation.custom.needs-to-be-filled'));
                 }
             }
         });

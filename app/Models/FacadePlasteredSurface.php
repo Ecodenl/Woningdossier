@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\FacadePlasteredSurface
+ * App\Models\FacadePlasteredSurface.
  *
  * @property int $id
  * @property string $name
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadePlasteredSurface translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadePlasteredSurface whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadePlasteredSurface whereCreatedAt($value)

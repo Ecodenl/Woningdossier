@@ -11,14 +11,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-    	// Depending on earlier seeded data
-//	    $this->call(KeyFigureBoilerEfficienciesTableSeeder::class);
-//	    $this->call(PvPanelYieldsTableSeeder::class);
-//		$this->call(KeyFigureConsumptionTapWatersTableSeeder::class);
+        // Depending on earlier seeded data
+        //	    $this->call(KeyFigureBoilerEfficienciesTableSeeder::class);
+        //	    $this->call(PvPanelYieldsTableSeeder::class);
+        //		$this->call(KeyFigureConsumptionTapWatersTableSeeder::class);
 //
 //
-//		// New
-//		$this->call(HeatingAgesTableSeeder::class);
+        //		// New
+        //		$this->call(HeatingAgesTableSeeder::class);
 //
 //        $this->call(SolarWaterHeatersTableSeeder::class);
 //        $this->call(PresentWindowsTableSeeder::class);
@@ -33,9 +33,9 @@ class DatabaseSeeder extends Seeder
 //        $this->call(VentilationsTableSeeder::class);
 //        $this->call(ComfortLevelTapWatersTableSeeder::class);
 //        $this->call(InsulatingGlazingsTableSeeder::class);
-////        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
-////        $this->call(WoodElementsTableSeeder::class);
-////        $this->call(HouseFramesTableSeeder::class);
+        ////        $this->call(MovingPartsOfWindowAndDoorIsolatedsTableSeeder::class);
+        ////        $this->call(WoodElementsTableSeeder::class);
+        ////        $this->call(HouseFramesTableSeeder::class);
 //        $this->call(BuildingCurrentHeatingsTableSeeder::class);
 //        $this->call(HeatSourcesTableSeeder::class);
 //        $this->call(BuildingServiceTypeTableSeeder::class);
@@ -82,7 +82,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PvPanelYieldsTableSeeder::class);
         $this->call(KeyFigureConsumptionTapWatersTableSeeder::class);
 
-
         // New
         $this->call(HeatingAgesTableSeeder::class);
 
@@ -95,9 +94,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SufferFromsTableSeeder::class);
         $this->call(PresentHeatPumpsTableSeeder::class);
 
-
         $this->call(VentilationsTableSeeder::class);
-
 
         $this->call(SqlDumpSeeder::class);
     }

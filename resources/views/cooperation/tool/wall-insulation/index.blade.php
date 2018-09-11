@@ -550,8 +550,15 @@
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
+
+
         });
 
+        $('#wall_surface').on('change', function () {
+            if ($('#insulation_wall_surface').val().length == 0 || $('#insulation_wall_surface').val() == "0,0") {
+                $('#insulation_wall_surface').val($('#wall_surface').val())
+            }
+        });
 
     </script>
 @endpush

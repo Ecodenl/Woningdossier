@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 
+use App\Models\Interest;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
@@ -124,33 +125,38 @@ class MyPlanHelper
         $plannedYear = Carbon::create($requestPlannedYear);
         $currentYear = Carbon::now()->year(date('Y'));
 
-        // change the value of the interested level based on the planned year
-        if ($requestPlannedYear != null) {
+        if (!$interested){
+        	// if not interested, put the interest ID on
+	        $interest = Interest::where('calculate_value', '=', 4)->first();
+        }
+        elseif ($requestPlannedYear != null) {
+	        // change the value of the interested level based on the planned year
 
 	        // If the filled in year has a difference of 3 years or less with
 	        // the current year, we set the interest id to 1 (Ja, op korte termijn)
-            if ($currentYear->diff($plannedYear)->y <= 3) {
-		        $interestId = 1;
+	        if ( $currentYear->diff( $plannedYear )->y <= 3 ) {
+		        $interest = Interest::where('calculate_value', '=', 1)->first();
+	        } else {
+		        // If the filled in year has a difference of more than 3 years than
+		        // the current year, we set the interest id to 2 (Ja, op termijn)
+		        $interest = Interest::where('calculate_value', '=', 2)->first();
 	        }
-        	else {
-                // If the filled in year has a difference of more than 3 years than
-	            // the current year, we set the interest id to 2 (Ja, op termijn)
-                $interestId = 2;
-            }
-
-            // save the user his interests
-            foreach ($stepInterests as $type => $interestInIds) {
-                foreach ($interestInIds as $interestInId) {
-                    UserInterest::updateOrCreate(
-                        [
-                            'interested_in_type' => $type,
-                            'interested_in_id' => $interestInId,
-                        ],
-                        [
-                            'interest_id' => $interestId,
-                        ]
-                    );
-                }
+        }
+        else {
+        	$interest = Interest::where('calculate_value', '=', 3)->first();
+        }
+        // save the user his interests
+        foreach ($stepInterests as $type => $interestInIds) {
+            foreach ($interestInIds as $interestInId) {
+                UserInterest::updateOrCreate(
+                    [
+                        'interested_in_type' => $type,
+                        'interested_in_id' => $interestInId,
+                    ],
+                    [
+                        'interest_id' => $interest->id,
+                    ]
+                );
             }
         }
 

@@ -2,16 +2,13 @@
 
 namespace App\Models;
 
-use App\Events\UserCreated;
 use App\Notifications\ResetPasswordNotification;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Collection;
+use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * App\Models\User
+ * App\Models\User.
  *
  * @property int $id
  * @property string $first_name
@@ -28,18 +25,19 @@ use Spatie\Permission\Traits\HasRoles;
  * @property bool $is_admin
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
- * @property-read \App\Models\UserEnergyHabit $energyHabit
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property \App\Models\UserEnergyHabit $energyHabit
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
+ * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
@@ -71,7 +69,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'phone_number',
-	    'confirm_token',
+        'confirm_token',
     ];
 
     /**
@@ -83,95 +81,102 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-	/**
-	 * The attributes that should be cast to native types.
-	 *
-	 * @var array
-	 */
-	protected $casts = [
-		'is_admin' => 'boolean',
-	];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_admin' => 'boolean',
+    ];
 
-
-    public function buildings(){
-    	return $this->hasMany(Building::class);
+    public function buildings()
+    {
+        return $this->hasMany(Building::class);
     }
 
-    public function buildingUsage(){
-    	return $this->hasMany(BuildingUserUsage::class);
+    public function buildingUsage()
+    {
+        return $this->hasMany(BuildingUserUsage::class);
     }
 
-    public function energyHabit(){
-    	return $this->hasOne(UserEnergyHabit::class);
+    public function energyHabit()
+    {
+        return $this->hasOne(UserEnergyHabit::class);
     }
 
-	public function progress(){
-    	return $this->hasMany(UserProgress::class);
-	}
+    public function progress()
+    {
+        return $this->hasMany(UserProgress::class);
+    }
 
-	public function motivations(){
-    	return $this->hasMany(UserMotivation::class);
-	}
+    public function motivations()
+    {
+        return $this->hasMany(UserMotivation::class);
+    }
 
-	public function actionPlanAdvices(){
-    	return $this->hasMany(UserActionPlanAdvice::class);
-	}
-
-	/**
-	 * Returns the user progress.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function completedSteps(){
-    	return $this->hasMany(UserProgress::class);
-	}
-
-	/**
-	 * The cooperations the user is associated with
-	 */
-	public function cooperations(){
-    	return $this->belongsToMany(Cooperation::class);
-	}
+    public function actionPlanAdvices()
+    {
+        return $this->hasMany(UserActionPlanAdvice::class);
+    }
 
     /**
-     * Returns the interests off a user
+     * Returns the user progress.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function completedSteps()
+    {
+        return $this->hasMany(UserProgress::class);
+    }
+
+    /**
+     * The cooperations the user is associated with.
+     */
+    public function cooperations()
+    {
+        return $this->belongsToMany(Cooperation::class);
+    }
+
+    /**
+     * Returns the interests off a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function interests()
     {
         return $this->hasMany(UserInterest::class);
-	}
+    }
 
     /**
-     * Returns a specific interested row for a specific type
+     * Returns a specific interested row for a specific type.
      *
      * @param $type
      * @param $interestedInId
+     *
      * @return \Illuminate\Database\Eloquent\Model|null|object|static
      */
-	public function getInterestedType($type, $interestedInId)
+    public function getInterestedType($type, $interestedInId)
     {
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
-	}
-
+    }
 
     /**
-     * check if a user is interested in a step
+     * check if a user is interested in a step.
      *
      * @param $type
      * @param array $interestedInIds
+     *
      * @return bool
      */
     public function isNotInterestedInStep($type, $interestedInIds = [])
     {
-
         // the interest ids that people select when they do not have any interest
         $noInterestIds = [4, 5];
 
         $interestedIds = [];
 
-        if (!is_array($interestedInIds)) {
+        if (! is_array($interestedInIds)) {
             $interestedInIds = [$interestedInIds];
         }
 
@@ -188,7 +193,7 @@ class User extends Authenticatable
         }
 
         return false;
-	}
+    }
 
     public function isInterestedInStep($type, $interestedInIds = [])
     {
@@ -218,42 +223,48 @@ class User extends Authenticatable
 
 
 	/**
-	 * Returns whether or not a user is associated with a particular Cooperation
-	 * @param Cooperation $cooperation
-	 *
-	 * @return bool
-	 */
-	public function isAssociatedWith(Cooperation $cooperation){
-		return $this->cooperations()
-		            ->where('id', $cooperation->id)
-		            ->count() > 0;
-	}
+	 * Returns whether or not a user is associated with a particular Cooperation.
+     *
+     * @param Cooperation $cooperation
+     *
+     * @return bool
+     */
+    public function isAssociatedWith(Cooperation $cooperation)
+    {
+        return $this->cooperations()
+                    ->where('id', $cooperation->id)
+                    ->count() > 0;
+    }
 
-	public function complete(Step $step){
-		return UserProgress::firstOrCreate([
-			'step_id' => $step->id,
-			'user_id' => \Auth::user()->id,
-		]);
-	}
+    public function complete(Step $step)
+    {
+        return UserProgress::firstOrCreate([
+            'step_id' => $step->id,
+            'user_id' => \Auth::user()->id,
+        ]);
+    }
 
-	/**
-	 * Returns whether or not a user has completed a particular step
-	 * @param Step $step
-	 *
-	 * @return bool
-	 */
-	public function hasCompleted(Step $step){
-		return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
-	}
+    /**
+     * Returns whether or not a user has completed a particular step.
+     *
+     * @param Step $step
+     *
+     * @return bool
+     */
+    public function hasCompleted(Step $step)
+    {
+        return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
+    }
 
-	/**
-	 * Send the password reset notification.
-	 *
-	 * @param  string  $token
-	 * @return void
-	 */
-	public function sendPasswordResetNotification($token)
-	{
-		$this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
-	}
+    /**
+     * Send the password reset notification.
+     *
+     * @param string $token
+     *
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
+    }
 }

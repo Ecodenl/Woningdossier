@@ -3,22 +3,21 @@
 namespace App\Http\Controllers\Cooperation\Tool\Information;
 
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class VentilationController extends Controller
 {
-
     protected $step;
 
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         $slug = str_replace('/tool/', '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
     }
-
 
     /**
      * Display a listing of the resource.
@@ -38,7 +37,8 @@ class VentilationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -49,5 +49,4 @@ class VentilationController extends Controller
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
-
 }

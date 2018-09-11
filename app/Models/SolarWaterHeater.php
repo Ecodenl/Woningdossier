@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\SolarWaterHeater
+ * App\Models\SolarWaterHeater.
  *
  * @property int $id
  * @property string $name
  * @property int $calculate_value
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SolarWaterHeater whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SolarWaterHeater whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SolarWaterHeater whereId($value)
@@ -21,5 +22,4 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SolarWaterHeater extends Model
 {
-    //
 }

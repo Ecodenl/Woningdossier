@@ -11,19 +11,18 @@ class CooperationsTableSeeder extends Seeder
      */
     public function run()
     {
-
         $cooperations = [
             [
                 'name' => 'Hoom',
-                'slug' => 'hoom'
+                'slug' => 'hoom',
             ],
             [
                 'name' => 'Het Nieuwe Wonen Rivierenland',
-                'slug' => 'hnwr'
+                'slug' => 'hnwr',
             ],
             [
                 'name' => 'BRED Breda',
-                'slug' => 'bresbreda'
+                'slug' => 'bresbreda',
             ],
             [
                 'name' => 'Duurzaam Garenkokerskwartier',
@@ -31,15 +30,15 @@ class CooperationsTableSeeder extends Seeder
             ],
             [
                 'name' => 'DE Ramplaan',
-                'slug' => 'deramplaan'
-            ]
+                'slug' => 'deramplaan',
+            ],
         ];
 
-    	foreach($cooperations as $cooperation) {
-		    DB::table( 'cooperations' )->insert([
-		    	'name' => $cooperation['name'],
-			    'slug' => $cooperation['slug'],
-		    ]);
-	    }
+        foreach ($cooperations as $cooperation) {
+            DB::table('cooperations')->insert([
+                'name' => $cooperation['name'],
+                'slug' => $cooperation['slug'],
+            ]);
+        }
     }
 }

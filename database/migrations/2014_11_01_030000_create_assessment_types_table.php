@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateAssessmentTypesTable extends Migration
 {
@@ -15,12 +15,10 @@ class CreateAssessmentTypesTable extends Migration
     {
         Schema::create('assessment_types', function (Blueprint $table) {
             $table->increments('id');
-	        $table->string('type');
-	        $table->uuid('name');
+            $table->string('type');
+            $table->uuid('name');
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -30,6 +28,6 @@ class CreateAssessmentTypesTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('assessment_types');
+        Schema::dropIfExists('assessment_types');
     }
 }

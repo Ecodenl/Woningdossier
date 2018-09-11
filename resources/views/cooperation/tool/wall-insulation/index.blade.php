@@ -555,7 +555,7 @@
         });
 
         $('#wall_surface').on('change', function () {
-            if ($('#insulation_wall_surface').val().length == 0 || $('#insulation_wall_surface').val() == "0,0") {
+            if ($('#insulation_wall_surface').val().length == 0 || $('#insulation_wall_surface').val() == "0,0" || $('#insulation_wall_surface').val() == "0.00") {
                 $('#insulation_wall_surface').val($('#wall_surface').val())
             }
         });

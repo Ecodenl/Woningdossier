@@ -185,7 +185,7 @@ class RoofInsulationController extends Controller
             $extra = $request->input('building_roof_types.'.$roofCat.'.extra', []);
             if (array_key_exists('zinc_replaced_date', $extra)) {
                 $zincReplaceYear = (int) $extra['zinc_replaced_date'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.roof_surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
                 if ($zincReplaceYear > 0 && $surface > 0) {
                     $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc')->first();
 
@@ -201,7 +201,7 @@ class RoofInsulationController extends Controller
             }
             if (array_key_exists('tiles_condition', $extra)) {
                 $tilesCondition = (int) $extra['tiles_condition'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.roof_surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
                 if ($tilesCondition > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
                     // no year here. Default is this year. It is incremented by factor * maintenance years
@@ -224,7 +224,7 @@ class RoofInsulationController extends Controller
             }
             if (array_key_exists('bitumen_replaced_date', $extra)) {
                 $bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.roof_surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
 
                 if ($bitumenReplaceYear > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
@@ -368,8 +368,6 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
-
-
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($interests);
 

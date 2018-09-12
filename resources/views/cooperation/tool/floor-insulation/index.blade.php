@@ -26,7 +26,7 @@
                             <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
                                 @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
                                     <option
-                                            @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->element->id . ''))
+                                            @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
                                             selected="selected"
                                             @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
                                             selected="selected"
@@ -195,7 +195,7 @@
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                <input type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.surface', $buildingFeatures->floor_surface) }}">
+                                <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.surface', $buildingFeatures->floor_surface) }}">
                             </div>
                             @if ($errors->has('building_features.surface'))
                                 <span class="help-block">
@@ -214,7 +214,7 @@
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                <input type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', $buildingFeatures->insulation_surface == null ? $buildingFeatures->surface : $buildingFeatures->insulation_surface) }}">
+                                <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', $buildingFeatures->insulation_surface) }}">
                             </div>
                             @if ($errors->has('building_features.insulation_surface'))
                                 <span class="help-block">
@@ -365,7 +365,9 @@
 
 @push('js')
     <script>
+
         $(document).ready(function() {
+
 
             $(window).keydown(function(event){
                 if(event.keyCode == 13) {
@@ -397,6 +399,7 @@
                     url: '{{ route('cooperation.tool.floor-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function(data){
+
                         if (data.insulation_advice){
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
                         }
@@ -450,12 +453,20 @@
                         }
                     }
                 });
+
             }
 
             $('form').find('*').filter(':input:visible:first').trigger('change');
 
 
         });
+
+        $('#floor_surface').on('change', function () {
+            if ($('#insulation_floor_surface').val().length == 0 || $('#insulation_floor_surface').val() == "0,0" || $('#insulation_floor_surface').val() == "0.00") {
+                $('#insulation_floor_surface').val($('#floor_surface').val())
+            }
+        });
+
     </script>
 @endpush
 

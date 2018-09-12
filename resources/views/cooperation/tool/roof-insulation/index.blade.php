@@ -547,7 +547,8 @@
 
         });
 
-        $('input[name*=roof_surface]').on('change', function () {
+
+        $('input[name^=roof_surface]').on('change', function () {
             var insulationRoofSurface = $(this).parent().parent().parent().next().find('input');
             
             if ($(insulationRoofSurface).val().length == 0 || $(insulationRoofSurface).val() == "0,0" || $(insulationRoofSurface).val() == "0.00") {

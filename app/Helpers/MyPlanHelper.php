@@ -143,21 +143,21 @@ class MyPlanHelper
 	        }
         }
         else {
-        	// So the planned year is empty. Let's look for the advised year.
-	        if (is_null($advice->year)) {
-		        $advice->year = $advice->getAdviceYear();
-	        }
-	        if (!is_null($advice->year) && $currentYear->diff( Carbon::create($advice->year))->y <= 3) {
-	        	// If there's an adviced year and it's between now and three years, set it to 1 (Ja, op korte termijn)
-		        $interest = Interest::where('calculate_value', '=', 1)->first();
-	        }
-	        // last resort
-	        if (!isset($interest)) {
-	        	// interested, but we know NOTHING about years, set to 2 (Ja, op termijn)
-		        $interest = Interest::where( 'calculate_value',
-			        '=',
-			        2 )->first();
-	        }
+            // So the planned year is empty. Let's look for the advised year.
+            if (is_null($advice->year)) {
+                $advice->year = $advice->getAdviceYear();
+            }
+            if (!is_null($advice->year) && $currentYear->diff( Carbon::create($advice->year))->y <= 3) {
+                // If there's an adviced year and it's between now and three years, set it to 1 (Ja, op korte termijn)
+                $interest = Interest::where('calculate_value', '=', 1)->first();
+            }
+            // last resort
+            if (!isset($interest)) {
+                // interested, but we know NOTHING about years, set to 2 (Ja, op termijn)
+                $interest = Interest::where( 'calculate_value',
+                    '=',
+                    2 )->first();
+            }
         }
 
         // Finally save the user's interests

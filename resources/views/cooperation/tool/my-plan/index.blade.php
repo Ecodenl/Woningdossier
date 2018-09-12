@@ -222,7 +222,8 @@
             // if a user clicks the interested check box
             $('.interested-checker').on('click', function() {
 
-                var plannedYearInput = $(this).parent().parent().find('input');
+                // get the planned year input
+                var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
                 // check if the checkbox is checked
                 // if so, so fill the
                 if ($(this).is(':checked')) {

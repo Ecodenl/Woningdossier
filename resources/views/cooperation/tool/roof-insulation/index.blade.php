@@ -484,8 +484,8 @@
                                 if (data.flat.replace.hasOwnProperty('year')){
                                     $("input#flat_replace_year").val(data.flat.replace.year);
                                 }
-                                if (data.flat.replace.hasOwnProperty('cost')){
-                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.cost).toLocaleString('{{ app()->getLocale() }}'));
+                                if (data.flat.replace.hasOwnProperty('costs')){
+                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.costs).toLocaleString('{{ app()->getLocale() }}'));
                                 }
                             }
                         }
@@ -527,8 +527,8 @@
                                 if (data.pitched.replace.hasOwnProperty('year')){
                                     $("input#pitched_replace_year").val(data.pitched.replace.year);
                                 }
-                                if (data.pitched.replace.hasOwnProperty('cost')){
-                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.cost).toLocaleString('{{ app()->getLocale() }}'));
+                                if (data.pitched.replace.hasOwnProperty('costs')){
+                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.costs).toLocaleString('{{ app()->getLocale() }}'));
                                 }
                             }
                         }

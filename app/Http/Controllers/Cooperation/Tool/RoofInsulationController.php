@@ -161,18 +161,20 @@ class RoofInsulationController extends Controller
                     // The measure type determines which array keys to take
                     // as the replace array will always be present due to
                     // how calculate() works in this step
-                    if ('replace' == $measureApplication->application) {
+                    /*if ('replace' == $measureApplication->application) {
                         if (isset($results[$roofCat]['replace']['costs']) && $results[$roofCat]['replace']['costs'] > 0) {
                             // take the replace array
                             $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]['replace']);
+                            $actionPlanAdvice->savings_gas = $results[$roofCat]['savings_gas'];
+	                        $actionPlanAdvice->savings_money = $results[$roofCat]['savings_money'];
                         }
-                    } else {
+                    } else {*/
                         if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
                             // take the array $roofCat array
                             $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
                             $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
                         }
-                    }
+                    //}
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
                         $actionPlanAdvice->user()->associate(Auth::user());
@@ -285,7 +287,7 @@ class RoofInsulationController extends Controller
                 'cost_indication' => 0,
                 'interest_comparable' => 0,
                 'replace' => [
-                    'cost' => 0,
+                    'costs' => 0,
                     'year' => null,
                 ],
             ];
@@ -351,7 +353,7 @@ class RoofInsulationController extends Controller
 
             if (isset($replaceMeasure)) {
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                $catData['replace']['cost'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year']);
+                $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year']);
             }
 
             $result[$cat] = array_merge($result[$cat], $catData);

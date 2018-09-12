@@ -165,7 +165,7 @@ class MyPlanHelper
             foreach ($interestInIds as $interestInId) {
                 UserInterest::updateOrCreate(
                     [
-                    	'user_id' => $advice->user()->id,
+                    	'user_id' => $advice->user->id,
                         'interested_in_type' => $type,
                         'interested_in_id' => $interestInId,
                     ],

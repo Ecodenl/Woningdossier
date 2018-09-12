@@ -25,16 +25,16 @@
 
             <div class="col-md-12">
 
-                <table class="table table-responsive ">
+                <table class="table">
                     <thead>
                     <tr>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
+                        <th style="width: 8%">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
+                        <th style="width: 10%">@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
+                        <th style="width: 35%">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
+                        <th style="width: 8%">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
+                        <th style="width: 14%">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
+                        <th style="width: 10%">@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
+                        <th style="width: 15%">@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
                     </tr>
                     </thead>
                 <tbody>
@@ -44,23 +44,23 @@
 
                     @foreach($advicesForStep as $advice)
                         <tr>
-                            <td>
+                            <td >
                                 <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
                             </td>
 
-                            <td>
+                            <td >
                                 <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
                             </td>
-                            <td>
+                            <td >
                                 {{ $advice->measureApplication->measure_name }}
                             </td>
-                            <td>
+                            <td >
                                 &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
                             </td>
-                            <td>
+                            <td >
                                 &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
                             </td>
-                            <td>
+                            <td >
                                 {{ $advice->year }}
                             </td>
                             <td>
@@ -149,7 +149,7 @@
                         $("ul#years").html("");
                         $.each(data, function(year, steps){
                             var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-responsive\"> <thead> <tr> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
+                            var table = "<table class=\"table\"> <thead> <tr> <th style=\"width: 3%\">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th style=\"width: 30%\">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
 
                             var totalCosts = 0;
                             var totalSavingsGas = 0;

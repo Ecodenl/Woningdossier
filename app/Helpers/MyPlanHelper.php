@@ -133,19 +133,34 @@ class MyPlanHelper
 	        // change the value of the interested level based on the planned year
 
 	        // If the filled in year has a difference of 3 years or less with
-	        // the current year, we set the interest id to 1 (Ja, op korte termijn)
+	        // the current year, we set the interest to 1 (Ja, op korte termijn)
 	        if ( $currentYear->diff( $plannedYear )->y <= 3 ) {
 		        $interest = Interest::where('calculate_value', '=', 1)->first();
 	        } else {
 		        // If the filled in year has a difference of more than 3 years than
-		        // the current year, we set the interest id to 2 (Ja, op termijn)
+		        // the current year, we set the interest  to 2 (Ja, op termijn)
 		        $interest = Interest::where('calculate_value', '=', 2)->first();
 	        }
         }
         else {
-        	$interest = Interest::where('calculate_value', '=', 3)->first();
+        	// So the planned year is empty. Let's look for the advised year.
+	        if (is_null($advice->year)) {
+		        $advice->year = $advice->getAdviceYear();
+	        }
+	        if (!is_null($advice->year) && $currentYear->diff( Carbon::create($advice->year) ) <= 3) {
+	        	// If there's an adviced year and it's between now and three years, set it to 1 (Ja, op korte termijn)
+		        $interest = Interest::where('calculate_value', '=', 1)->first();
+	        }
+	        // last resort
+	        if (!isset($interested)) {
+	        	// interested, but we know NOTHING about years, set to 2 (Ja, op termijn)
+		        $interest = Interest::where( 'calculate_value',
+			        '=',
+			        2 )->first();
+	        }
         }
-        // save the user his interests
+
+        // Finally save the user's interests
         foreach ($stepInterests as $type => $interestInIds) {
             foreach ($interestInIds as $interestInId) {
                 UserInterest::updateOrCreate(

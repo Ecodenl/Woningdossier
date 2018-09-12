@@ -78,9 +78,6 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-
-
-
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($interests);
 

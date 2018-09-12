@@ -26,12 +26,12 @@
                     <thead>
                     <tr>
                         <th style="width: 8%">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
-                        <th style="width: 10%">@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
-                        <th style="width: 35%">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
-                        <th style="width: 8%">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
-                        <th style="width: 14%">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
-                        <th style="width: 10%">@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
-                        <th style="width: 15%">@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
+                        <th style="width: 5%">@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
+                        <th style="width: 45%">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
+                        <th style="width: 12%">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
+                        <th style="width: 12%">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
+                        <th style="width: 9%">@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
+                        <th style="width: 9%">@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
                     </tr>
                     </thead>
                 <tbody>
@@ -142,7 +142,10 @@
                         $("ul#years").html("");
                         $.each(data, function(year, steps){
                             var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-condensed table-responsive\"> <thead> <tr> <th style=\"width: 3%\">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th style=\"width: 30%\">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
+
+                            var slugYear = year.replace( /\s+/g, '');
+
+                            var table = "<table class=\"table table-condensed table-responsive\"> <thead> <tr> <th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th style=\"width: 62%\">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
 
                             var totalCosts = 0;
                             var totalSavingsGas = 0;
@@ -163,16 +166,16 @@
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
                                     var slug = stepName.replace( /\s+/g, '');
-                                    table += "<tr> <td> <a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + year + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
-                                    table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + year + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>"
+
+                                    table += "<tr> <td> <a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
+                                    table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>"
                                 });
 
                             });
 
-
                             // total calculation
-                            table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + year + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
-                            table += "<tr class='collapse' id='total-costs-" + year + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}')+" m<sup>3</sup> <br>"+Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>";
+                            table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + slugYear + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
+                            table += "<tr class='collapse' id='total-costs-" + slugYear + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}')+" m<sup>3</sup> <br>"+Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>";
 
 
                             table += "</tbody></table>";

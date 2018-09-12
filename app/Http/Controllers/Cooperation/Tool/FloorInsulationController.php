@@ -75,7 +75,7 @@ class FloorInsulationController extends Controller
         ));
     }
 
-    public function calculate(Request $request)
+    public function calculate(FloorInsulationFormRequest $request)
     {
         /**
          * @var Building

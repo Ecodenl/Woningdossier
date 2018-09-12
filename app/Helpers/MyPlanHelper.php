@@ -172,6 +172,8 @@ class MyPlanHelper
                         'interest_id' => $interest->id,
                     ]
                 );
+
+                \Log::debug("Save user interest: " . json_encode(['interested_in_type' => $type, 'interested_in_id' => $interestInId, 'interest_id' => $interest->id]));
             }
         }
 

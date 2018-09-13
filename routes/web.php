@@ -82,7 +82,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
-                Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
+                Route::get('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
                 Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
         });
@@ -118,5 +118,6 @@ Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('lo
 //Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');
 
 Route::get('/', function () {
+
     return view('welcome');
 })->name('index');

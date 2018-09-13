@@ -136,16 +136,16 @@ class SolarPanelsController extends Controller
      */
     public function store(SolarPanelFormRequest $request)
     {
+    	$user = Auth::user();
+
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
 
         $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($interests);
+        UserInterest::saveUserInterests($user, $interests);
 
+		$user->energyHabit()->update(['amount_electricity' => $habitAmountElectricity]);
 
-        UserEnergyHabit::where('user_id', Auth::id())->update([
-            'amount_electricity' => $habitAmountElectricity,
-        ]);
         $pvPanels = $request->input('building_pv_panels', '');
         $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : '';
         $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
@@ -154,7 +154,7 @@ class SolarPanelsController extends Controller
 
         BuildingPvPanel::updateOrCreate(
             [
-                'building_id' => Auth::user()->buildings()->first()->id,
+                'building_id' => $user->buildings()->first()->id,
             ],
             [
                 'peak_power' => $peakPower,
@@ -166,7 +166,7 @@ class SolarPanelsController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        Auth::user()->complete($this->step);
+        $user->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);

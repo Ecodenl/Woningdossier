@@ -46,7 +46,6 @@ class HeaterController extends Controller
      */
     public function index()
     {
-
         $typeIds = [3];
 
         $user = \Auth::user();
@@ -167,10 +166,10 @@ class HeaterController extends Controller
      */
     public function store(HeaterFormRequest $request)
     {
-
+		$user = Auth::user();
 
         $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($interests);
+        UserInterest::saveUserInterests($user, $interests);
 
         // Store the building heater part
         $buildingHeaters = $request->input('building_heaters', '');
@@ -179,7 +178,7 @@ class HeaterController extends Controller
 
         BuildingHeater::updateOrCreate(
             [
-                'building_id' => Auth::user()->buildings()->first()->id,
+                'building_id' => $user->buildings()->first()->id,
             ],
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
@@ -191,13 +190,11 @@ class HeaterController extends Controller
         $habits = $request->input('user_energy_habits', '');
         $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
 
-        UserEnergyHabit::where('user_id', Auth::id())->update([
-            'water_comfort_id' => $waterComFortId,
-        ]);
+	    $user->energyHabit()->update(['water_comfort_id' => $waterComFortId]);
 
         // Save progress
         $this->saveAdvices($request);
-        Auth::user()->complete($this->step);
+        $user->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);

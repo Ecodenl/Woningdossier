@@ -548,11 +548,12 @@
         });
 
 
-        $('input[name^=roof_surface]').on('change', function () {
+        $('input[name*=roof_surface]').on('change', function () {
             var insulationRoofSurface = $(this).parent().parent().parent().next().find('input');
-            
-            if ($(insulationRoofSurface).val().length == 0 || $(insulationRoofSurface).val() == "0,0" || $(insulationRoofSurface).val() == "0.00") {
-                $(insulationRoofSurface).val($(this).val())
+            if (insulationRoofSurface.length > 0) {
+                if ($(insulationRoofSurface).val().length == 0 || $(insulationRoofSurface).val() == "0,0" || $(insulationRoofSurface).val() == "0.00") {
+                    $(insulationRoofSurface).val($(this).val())
+                }
             }
         });
     </script>

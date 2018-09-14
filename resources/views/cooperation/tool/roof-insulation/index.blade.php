@@ -505,6 +505,7 @@ if ($errors->any()) {
 
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')){
+
                                 if(data.pitched.type === 'tiles'){
                                     $(".cover-tiles").show();
                                     $(".pitched-roof .cover-bitumen").hide();

@@ -84,6 +84,8 @@ class MyPlanController extends Controller
         $sortedAdvices = [];
 
         $myAdvices = $request->input('advice', []);
+
+
         foreach ($myAdvices as $adviceId => $data) {
 
             $advice = UserActionPlanAdvice::find($adviceId);

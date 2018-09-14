@@ -90,9 +90,9 @@ class MyPlanHelper
      *
      * @param Request $request
      * @param UserActionPlanAdvice $advice
-     * @return string
+     * @return array
      */
-    public static function saveUserInterests(Request $request, UserActionPlanAdvice $advice) : string
+    public static function saveUserInterests(Request $request, UserActionPlanAdvice $advice)
     {
         $adviceId = $advice->id;
 
@@ -132,16 +132,23 @@ class MyPlanHelper
         // update the advices
         $advice->update($updates);
 
+
+        $plannedYearsForCurrentStep = collect();
         // check if the current step has more then 1 interest question
         if ($totalInterestInIds > 1) {
             // get one specific advice for this current step
             foreach ($fullRequestForUserHisAdvicesOnCurrentStep as $fullRequestForUserHisAdviceOnCurrentStep) {
                 // check if it is a array
                 if (is_array($fullRequestForUserHisAdviceOnCurrentStep)) {
-                    // if the array key interested exists in one off the advice and the measure type is energy saving, set the interested level to true
-                    // so even if there is only one checkbox checked, the interested level is true.
-                    if (array_key_exists('interested', $fullRequestForUserHisAdviceOnCurrentStep) && $fullRequestForUserHisAdviceOnCurrentStep['measure_type'] == "energy_saving") {
-                        $interested = true;
+
+                    if ($fullRequestForUserHisAdviceOnCurrentStep['measure_type'] == "energy_saving") {
+                        $plannedYearsForCurrentStep->push($fullRequestForUserHisAdviceOnCurrentStep['planned_year']);
+
+                        // if the array key interested exists in one off the advice and the measure type is energy saving, set the interested level to true
+                        // so even if there is only one checkbox checked, the interested level is true.
+                        if (array_key_exists('interested', $fullRequestForUserHisAdviceOnCurrentStep) && $fullRequestForUserHisAdviceOnCurrentStep['measure_type'] == "energy_saving") {
+                            $interested = true;
+                        }
                     }
                 }
             }
@@ -161,6 +168,11 @@ class MyPlanHelper
             // for those, we DONT want to change the interested level based on the planned year if the interest box is not checked
             // but if the interest box is checked and the planned year is null, we change the interest level
             if ($totalInterestInIds > 1) {
+
+                // we collected all the planned years for the current step / stepmeasures
+                // we always want to calculate with the lowest year possible.
+                $plannedYear = Carbon::create($plannedYearsForCurrentStep->min());
+
                 // if the user has no checkboxes checked
                 if (!$interested ) {
                     // if not interested, put the interest ID on
@@ -246,7 +258,6 @@ class MyPlanHelper
             }
         }
 
-        // and return the step slug
         return $step;
     }
 }

@@ -51,7 +51,7 @@ class RoofInsulationFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request)
+    public function rules()
     {
 //        $roofTypes = $this->request->get('building_roof_types', []);
 //

@@ -3,6 +3,11 @@
 {{--{{dd($errors)}}--}}
 @section('step_title', __('woningdossier.cooperation.tool.roof-insulation.title'))
 
+<?php
+if ($errors->any()) {
+    dump($errors);
+}
+?>
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
         {{csrf_field()}}
@@ -105,7 +110,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.surface')}}">
+                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">
                                         </div>
 
                                         <div id="{{ $roofCat }}-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

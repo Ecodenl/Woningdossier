@@ -103,12 +103,15 @@ return [
     */
 
     'custom' => [
+        'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
         'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
     ],
+
+    'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
 
     /*
     |--------------------------------------------------------------------------

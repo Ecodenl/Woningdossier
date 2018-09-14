@@ -195,7 +195,7 @@
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">
+                                <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">
                             </div>
                             @if ($errors->has('building_features.surface'))
                                 <span class="help-block">

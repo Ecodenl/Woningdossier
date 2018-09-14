@@ -193,6 +193,7 @@ class MyPlanHelper
                     }
                 }
             } else {
+                // for the advices where users can only select 1 interest for a step
                 if (!$interested) {
                     // if not interested, put the interest ID on
                     $interest = Interest::where('calculate_value', '=', 4)->first();

@@ -38,6 +38,7 @@ class FloorInsulationFormRequest extends FormRequest
             'element.*.extra' => 'nullable|alpha',
             'element.*.element_value_id' => 'exists:element_values,id',
             'element.crawlspace' => 'nullable|alpha',
+            'building_features.insulation_surface' => ['numeric', 'needs_to_be_lower_or_same_as:building_features.floor_surface'],
 
             'building_features.*' => 'nullable|numeric',
         ];

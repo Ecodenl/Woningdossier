@@ -40,12 +40,13 @@
                 @foreach($advicesForStep as $advice)
 	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
                     <tr>
+                        <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]" value="{{$measureType}}">
                         <td >
                             <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
                         </td>
 
                         <td>
-                            <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\StepHelper::hasInterestInStep($step) && $advice->planned)checked @endif />
+                            <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\StepHelper::hasInterestInStep($step) || $advice->planned)checked @endif />
                         </td>
                         <td>
                             {{ $advice->measureApplication->measure_name }}

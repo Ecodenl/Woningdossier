@@ -105,9 +105,19 @@ class MyPlanHelper
         // the interested checkbox, which fills the planned column in the table
         $interested = false;
 
+
+        // get the type off the step
+        $type = key(self::STEP_INTERESTS[$step]);
+        // count the total interestedInIds
+        $totalInterestInIds = count(self::STEP_INTERESTS[$step][$type]);
+
+        $fullRequestForUserHisAdvicesOnCurrentStep = $request->input('advice.*.'.$step);
+
+
         if (array_key_exists('planned_year', $myAdvice[$step])) {
             $requestPlannedYear = $myAdvice[$step]['planned_year'];
         }
+
 
         if (array_key_exists('interested', $myAdvice[$step])) {
             $interested = true;
@@ -123,21 +133,11 @@ class MyPlanHelper
 
         $advice->update($updates);
 
-
-        // get the type off the step
-        $type = key(self::STEP_INTERESTS[$step]);
-        // count the total interestedInIds
-        $totalInterestInIds = count(self::STEP_INTERESTS[$step][$type]);
-
-        $fullRequestForUserHisAdvicesOnCurrentStep = $request->input('advice.*.'.$step);
-
-
         if ($totalInterestInIds > 1) {
-
 
             foreach ($fullRequestForUserHisAdvicesOnCurrentStep as $fullRequestForUserHisAdviceOnCurrentStep) {
                 if (is_array($fullRequestForUserHisAdviceOnCurrentStep)) {
-                    if (self::STEP_INTERESTS[$step] && array_key_exists('interested', $fullRequestForUserHisAdviceOnCurrentStep) && $fullRequestForUserHisAdviceOnCurrentStep['measure_type'] == "energy_saving") {
+                    if (array_key_exists('interested', $fullRequestForUserHisAdviceOnCurrentStep) && $fullRequestForUserHisAdviceOnCurrentStep['measure_type'] == "energy_saving") {
                         $interested = true;
                     }
                 }

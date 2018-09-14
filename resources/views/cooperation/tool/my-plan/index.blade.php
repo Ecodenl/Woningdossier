@@ -140,7 +140,7 @@
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
                 var form = $(this).closest("form").serialize();
                 $.ajax({
-                    type: "GET",
+                    type: "POST",
                     url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function(data){

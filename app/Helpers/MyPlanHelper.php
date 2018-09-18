@@ -2,9 +2,7 @@
 
 namespace App\Helpers;
 
-
 use App\Models\Interest;
-use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
@@ -25,7 +23,6 @@ class MyPlanHelper
         'insulated-glazing' => [
             'element' => [
                 1,
-                2,
             ],
         ],
         'floor-insulation' => [
@@ -86,7 +83,7 @@ class MyPlanHelper
 
 
     /**
-     * Save a user his interests from the my plan page
+     * Save a user's interests from the my plan page
      *
      * @param Request $request
      * @param UserActionPlanAdvice $advice
@@ -105,8 +102,7 @@ class MyPlanHelper
         // the interested checkbox, which fills the planned column in the table
         $interested = false;
 
-
-        // get the type off the step
+        // get the type of the step
         $type = key(self::STEP_INTERESTS[$step]);
         // count the total interestedInIds
         $totalInterestInIds = count(self::STEP_INTERESTS[$step][$type]);
@@ -144,7 +140,7 @@ class MyPlanHelper
                     if ($fullRequestForUserHisAdviceOnCurrentStep['measure_type'] == "energy_saving") {
                         $plannedYearsForCurrentStep->push($fullRequestForUserHisAdviceOnCurrentStep['planned_year']);
 
-                        // if the array key interested exists in one off the advice and the measure type is energy saving, set the interested level to true
+                        // if the array key interested exists in one of the advice and the measure type is energy saving, set the interested level to true
                         // so even if there is only one checkbox checked, the interested level is true.
                         if (array_key_exists('interested', $fullRequestForUserHisAdviceOnCurrentStep) && $fullRequestForUserHisAdviceOnCurrentStep['measure_type'] == "energy_saving") {
                             $interested = true;
@@ -154,7 +150,7 @@ class MyPlanHelper
             }
         }
 
-        // get all the user his input for a specific advice
+        // Get all the user's inputs for a specific advice
         $currentUserInputForHisAdvice = $request->input('advice.'.$adviceId.'.'.$step);
         // we only want to update the interest level if the measure type = energy saving and
         // if the user checked the interested box
@@ -165,7 +161,7 @@ class MyPlanHelper
             $currentYear = Carbon::now()->year(date('Y'));
 
             // check if the current step has more then 1 interest question
-            // for those, we DONT want to change the interested level based on the planned year if the interest box is not checked
+            // for those, we DON'T want to change the interested level based on the planned year if the interest box is not checked
             // but if the interest box is checked and the planned year is null, we change the interest level
             if ($totalInterestInIds > 1) {
 
@@ -240,7 +236,7 @@ class MyPlanHelper
 
 
             if (isset($interest)) {
-                // Finally save the user's interests
+                // Finally save the user's interests for the element or service
                 foreach ($stepInterests as $type => $interestInIds) {
                     foreach ($interestInIds as $interestInId) {
                         UserInterest::updateOrCreate(
@@ -256,6 +252,24 @@ class MyPlanHelper
                     }
                 }
             }
+
+            // Now insulated glazing is a different case than the others:
+	        // We do have an invisible interested field for the step itself,
+	        // but we also have to set the indvidual measure application
+	        // interests
+	        if ($advice->step->slug == 'insulated-glazing'){
+	        	\Log::debug("Updating the interest of measure application " . $advice->measureApplication->measure_name . " to " . $interest->name);
+		        UserInterest::updateOrCreate(
+			        [
+				        'user_id' => $advice->user->id,
+				        'interested_in_type' => 'measure_application',
+				        'interested_in_id' => $advice->measureApplication->id,
+			        ],
+			        [
+				        'interest_id' => $interest->id,
+			        ]
+		        );
+	        }
         }
 
         return $step;

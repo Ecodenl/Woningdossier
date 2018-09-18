@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Interest;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,8 @@ class InsulatedGlazingFormRequest extends FormRequest
 
     public function rules()
     {
+    	$max = Carbon::now()->year;
+
         $rules = [
             'building_elements.*' => 'required|exists:element_values,id',
             'building_elements.*.*' => 'exists:element_values,id',
@@ -29,7 +32,7 @@ class InsulatedGlazingFormRequest extends FormRequest
 
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
-            'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|digits_between:4,4',
+            'building_paintwork_statuses.last_painted_year' => 'required|numeric|between:1900,' . $max,
         ];
 
         return $rules;

@@ -13,6 +13,7 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
      */
     public function up()
     {
+
         // so we can get the id and remove it later on
         $sleepingRoomWindow = DB::table('elements')->where('short', 'sleeping-rooms-windows');
         // remove the building elements
@@ -21,6 +22,11 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
         DB::table('building_type_element_max_savings')->where('element_id', $sleepingRoomWindow->first()->id)->delete();
         // remove the translation from the element itself
         DB::table('element_values')->where('element_id', $sleepingRoomWindow->first()->id)->delete();
+        // remove the user interests for the sleeping rooms windows
+        DB::table('user_interests')
+            ->where('interested_in_type', 'element')
+            ->where('interested_in_id', $sleepingRoomWindow->first()->id)
+            ->delete();
         // remove the element
         $sleepingRoomWindow->delete();
 

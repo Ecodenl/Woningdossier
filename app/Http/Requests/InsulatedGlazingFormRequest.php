@@ -22,7 +22,6 @@ class InsulatedGlazingFormRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'user_interest.*' => 'required|exists:interests,id',
             'building_elements.*' => 'required|exists:element_values,id',
             'building_elements.*.*' => 'exists:element_values,id',
             'building_insulated_glazings.*.m2' => 'nullable|numeric',

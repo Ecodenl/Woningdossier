@@ -242,7 +242,6 @@
                 } else {
                     plannedYearInput.val("");
                 }
-                plannedYearInput.trigger('change')
             });
 
         });

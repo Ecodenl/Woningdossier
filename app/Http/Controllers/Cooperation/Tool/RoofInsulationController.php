@@ -16,6 +16,7 @@ use App\Models\BuildingRoofType;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
@@ -152,12 +153,29 @@ class RoofInsulationController extends Controller
         }
 
         foreach (array_keys($result) as $roofCat) {
+
+
+
             $measureApplicationId = $request->input('building_roof_types.'.$roofCat.'.measure_application_id', 0);
             if ($measureApplicationId > 0) {
                 // results in an advice
                 $measureApplication = MeasureApplication::find($measureApplicationId);
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
+                    $advicedYear = "";
+
+                    $interests = $request->input('interest', '');
+                    foreach ($interests as $type => $interestTypes) {
+                        foreach ($interestTypes as $typeId => $interestId) {
+                            $interest = Interest::find($interestId);
+
+                            if ($interest->calculate_value == 1) {
+                                $advicedYear = date('Y');
+                            } else {
+                                $advicedYear = $results[$roofCat]['replace']['year'];
+                            }
+                        }
+                    }
                     // The measure type determines which array keys to take
                     // as the replace array will always be present due to
                     // how calculate() works in this step
@@ -172,6 +190,7 @@ class RoofInsulationController extends Controller
                         if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
                             // take the array $roofCat array
                             $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
+                            $actionPlanAdvice->year = $advicedYear;
                             $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
                         }
                     //}
@@ -370,6 +389,7 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
+
     	$user = Auth::user();
 
         $interests = $request->input('interest', '');

@@ -11,7 +11,6 @@
             ],
             'insulated-glazing' => [
                 '1',
-                '2'
             ],
             'floor-insulation' => [
                 '4'

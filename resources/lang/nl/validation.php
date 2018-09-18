@@ -109,6 +109,13 @@ return [
             'rule-name' => 'custom-message',
         ],
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
+
+	    'building_paintwork_statuses' => [
+	    	'last_painted_year' => [
+	    		'required' => 'Wanneer is uw schilderwerk voor het laatst gedaan?',
+			    'between' => 'Wanneer het schilderwerk voor het laatst gedaan is moet een geldig jaartal bevatten',
+		    ],
+	    ],
     ],
 
     'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',

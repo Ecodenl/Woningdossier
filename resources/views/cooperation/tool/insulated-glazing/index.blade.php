@@ -480,7 +480,7 @@
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')))))}}</a></li>
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')))))}}</a></li>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Glasisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+                            <li><a download="" href="{{asset($helpFile)}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
 
                         </ol>
                     </div>
@@ -505,7 +505,7 @@
         $(document).ready(function() {
 
             $(window).keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }

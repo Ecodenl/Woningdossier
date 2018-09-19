@@ -4,9 +4,10 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
+    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+        @include('cooperation.tool.includes.interested', ['type' => 'element'])
+
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
@@ -25,7 +26,7 @@
                             <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
                                 @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
                                     <option
-                                            @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->element->id . ''))
+                                            @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
                                             selected="selected"
                                             @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
                                             selected="selected"
@@ -184,21 +185,40 @@
                     </div>
                 </div>
                 <div class="row crawlspace-accessible">
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_features.floor_surface') ? ' has-error' : '' }}">
 
-                            <label for="floor_surface" class=" control-label">
+                            <label for="surface" class=" control-label">
                                 <i data-toggle="collapse" data-target="#floor-surface-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('woningdossier.cooperation.tool.floor-insulation.floor-surface')
+                                @lang('woningdossier.cooperation.tool.floor-insulation.surface')
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                <input type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', $buildingFeatures->surface) }}">
+                                <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.surface', $buildingFeatures->floor_surface) }}">
                             </div>
-                            @if ($errors->has('building_features.floor_surface'))
+                            @if ($errors->has('building_features.surface'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('building_features.floor_surface') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group add-space{{ $errors->has('building_features.insulation_surface') ? ' has-error' : '' }}">
+
+                            <label for="insulation_floor_surface" class=" control-label">
+                                <i data-toggle="collapse" data-target="#floor-surface-info"
+                                   class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('woningdossier.cooperation.tool.floor-insulation.insulation-surface')
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', $buildingFeatures->insulation_surface) }}">
+                            </div>
+                            @if ($errors->has('building_features.insulation_surface'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('building_features.insulation_surface') }}</strong>
                             </span>
                             @endif
                         </div>
@@ -345,7 +365,9 @@
 
 @push('js')
     <script>
+
         $(document).ready(function() {
+
 
             $(window).keydown(function(event){
                 if(event.keyCode == 13) {
@@ -377,6 +399,7 @@
                     url: '{{ route('cooperation.tool.floor-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function(data){
+
                         if (data.insulation_advice){
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
                         }
@@ -430,12 +453,20 @@
                         }
                     }
                 });
+
             }
 
             $('form').find('*').filter(':input:visible:first').trigger('change');
 
 
         });
+
+        $('#floor_surface').on('change', function () {
+            if ($('#insulation_floor_surface').val().length == 0 || $('#insulation_floor_surface').val() == "0,0" || $('#insulation_floor_surface').val() == "0.00") {
+                $('#insulation_floor_surface').val($('#floor_surface').val())
+            }
+        });
+
     </script>
 @endpush
 

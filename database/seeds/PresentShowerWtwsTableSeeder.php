@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\PresentShowerWtw;
 
 class PresentShowerWtwsTableSeeder extends Seeder
 {
@@ -13,7 +12,6 @@ class PresentShowerWtwsTableSeeder extends Seeder
     public function run()
     {
         $presentShowerWtws = [
-
             [
                 'name' => 'Geen',
                 'calculate_value' => 1,
@@ -25,7 +23,7 @@ class PresentShowerWtwsTableSeeder extends Seeder
         ];
 
         foreach ($presentShowerWtws as $presentShowerWtw) {
-        	DB::table('present_shower_wtws')->insert($presentShowerWtw);
+            DB::table('present_shower_wtws')->insert($presentShowerWtw);
         }
     }
 }

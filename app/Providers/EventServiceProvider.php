@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Listeners\UserEventSubscriber;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,13 +15,13 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [];
 
-	/**
-	 * The subscriber classes to register.
-	 *
-	 * @var array
-	 */
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
     protected $subscribe = [
-    	UserEventSubscriber::class,
+        UserEventSubscriber::class,
     ];
 
     /**
@@ -32,7 +32,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

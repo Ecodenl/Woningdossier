@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingHeater
+ * App\Models\BuildingHeater.
  *
  * @property int $id
  * @property int $building_id
@@ -13,7 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $angle
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
+ * @property \App\Models\Building $building
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater whereAngle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater whereCreatedAt($value)
@@ -24,11 +25,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingHeater extends Model
 {
-
     protected $fillable = [
         'building_id', 'pv_panel_orientation_id', 'angle',
     ];
-	public function building(){
-		return $this->belongsTo(Building::class);
-	}
+
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMeasureCategoriesTable extends Migration
 {
@@ -13,14 +13,11 @@ class CreateMeasureCategoriesTable extends Migration
      */
     public function up()
     {
-
         Schema::create('measure_categories', function (Blueprint $table) {
-	        $table->increments('id');
-	        $table->uuid('name');
+            $table->increments('id');
+            $table->uuid('name');
             $table->timestamps();
         });
-
-
     }
 
     /**

@@ -187,22 +187,20 @@ class KeyFigureTemperaturesTableSeeder extends Seeder
 	    foreach($figures as $figure){
 
 	    	$measureApplication = \DB::table('measure_applications')
-		                             ->where('translations.language', '=', 'nl')
-                                     ->where('short', $figure['short'])
-		                             ->join('translations', 'measure_applications.measure_name', '=', 'translations.key')
-		                             ->first(['measure_applications.*']);
 
-		    $insulatedGlazing = \DB::table('insulating_glazings')
-		                             ->where('translations.language', '=', 'nl')
-		                             ->where('translations.translation', '=', $figure['insulating_glazing'])
-		                             ->join('translations', 'insulating_glazings.name', '=', 'translations.key')
-		                             ->first(['insulating_glazings.*']);
+                                     ->where('short', $figure['short'])->first();
 
-		    $buildingHeating = \DB::table('building_heatings')
-		                             ->where('translations.language', '=', 'nl')
-		                             ->where('translations.translation', '=', $figure['building_heating'])
-		                             ->join('translations', 'building_heatings.name', '=', 'translations.key')
-			                         ->first(['building_heatings.*']);
+            $insulatedGlazing = \DB::table('insulating_glazings')
+                                     ->where('translations.language', '=', 'nl')
+                                     ->where('translations.translation', '=', $figure['insulating_glazing'])
+                                     ->join('translations', 'insulating_glazings.name', '=', 'translations.key')
+                                     ->first(['insulating_glazings.*']);
+
+            $buildingHeating = \DB::table('building_heatings')
+                                     ->where('translations.language', '=', 'nl')
+                                     ->where('translations.translation', '=', $figure['building_heating'])
+                                     ->join('translations', 'building_heatings.name', '=', 'translations.key')
+                                     ->first(['building_heatings.*']);
 
 
             \DB::table('key_figure_temperatures')->insert([
@@ -212,7 +210,6 @@ class KeyFigureTemperaturesTableSeeder extends Seeder
                 'key_figure' => $figure['key_figure'],
             ]);
 	    }
-
 
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\KeyFigureTemperature
+ * App\Models\KeyFigureTemperature.
  *
  * @property int $id
  * @property int $measure_application_id
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $key_figure
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereBuildingHeatingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereId($value)
@@ -25,5 +26,4 @@ use Illuminate\Database\Eloquent\Model;
  */
 class KeyFigureTemperature extends Model
 {
-    //
 }

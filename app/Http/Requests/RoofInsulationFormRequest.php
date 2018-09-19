@@ -19,28 +19,33 @@ class RoofInsulationFormRequest extends FormRequest
         return Auth::check();
     }
 
-    protected function getRoofTypeCategory(RoofType $roofType){
-        if ($roofType->calculate_value <= 2){
+    protected function getRoofTypeCategory(RoofType $roofType)
+    {
+        if ($roofType->calculate_value <= 2) {
             return 'pitched';
         }
-        if ($roofType->calculate_value <= 4){
+        if ($roofType->calculate_value <= 4) {
             return 'flat';
         }
+
         return '';
     }
 
-    protected function getRoofTypeSubCategory(RoofType $roofType){
-        if ($roofType->calculate_value == 1){
+    protected function getRoofTypeSubCategory(RoofType $roofType)
+    {
+        if (1 == $roofType->calculate_value) {
             return 'tiles';
         }
-        if ($roofType->calculate_value == 2){
+        if (2 == $roofType->calculate_value) {
             return 'bitumen';
         }
-        if ($roofType->calculate_value == 4){
+        if (4 == $roofType->calculate_value) {
             return 'zinc';
         }
+
         return '';
     }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -54,83 +59,67 @@ class RoofInsulationFormRequest extends FormRequest
         $roofTypeRules = [];
         $roofTypeValueRules = [];
 
+        foreach ($roofTypes as $i => $details) {
+            // Validate the roof type values
+            if (is_numeric($i) && is_numeric($details)) {
+                $roofType = RoofType::find($details);
 
-
-            foreach ($roofTypes as $i => $details) {
-                // Validate the roof type values
-                if (is_numeric($i) && is_numeric($details)) {
-
-
-
-                    $roofType = RoofType::find($details);
-
-                    $cat = $this->getRoofTypeCategory($roofType);
-                    if ($cat != "") {
-
-                        $roofTypeRules['building_roof_types.'.$i] = 'exists:roof_types,id';
-                        // add as key to result array
-                        $result[$cat] = [
+                $cat = $this->getRoofTypeCategory($roofType);
+                if ('' != $cat) {
+                    $roofTypeRules['building_roof_types.'.$i] = 'exists:roof_types,id';
+                    // add as key to result array
+                    $result[$cat] = [
                             'type' => $this->getRoofTypeSubCategory($roofType),
                         ];
 
-
-
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.roof_surface'] = 'number';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.roof_surface'] = 'number';
                         $roofTypeValueRules['building_roof_types.'.$cat.'.insulation_roof_surface'] = 'number';
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.element_value_id'] = 'exists:element_values,id';
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.building_heating_id'] = 'exists:building_heatings,id';
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.extra.bitumen_replaced_date'] = 'number';
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.extra.zinc_replaced_date'] = 'number';
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.extra.tiles_condition'] = 'number|exists:roof_tile_statuses,id';
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.extra.measure_application_id'] = 'exists:measure_applications,id';
-                        $roofTypeValueRules['building_roof_types.roof_type_id'] = 'exists:roof_types,id';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.element_value_id'] = 'exists:element_values,id';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.building_heating_id'] = 'exists:building_heatings,id';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.extra.bitumen_replaced_date'] = 'number';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.extra.zinc_replaced_date'] = 'number';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.extra.tiles_condition'] = 'number|exists:roof_tile_statuses,id';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.extra.measure_application_id'] = 'exists:measure_applications,id';
+                    $roofTypeValueRules['building_roof_types.roof_type_id'] = 'exists:roof_types,id';
 
-
-
-                        $rules = array_merge($roofTypeValueRules, $roofTypeRules);
-                    }
-
+                    $rules = array_merge($roofTypeValueRules, $roofTypeRules);
                 }
             }
+        }
 
         return [
-            $rules
+            $rules,
         ];
     }
 
     public function withValidator($validator)
     {
-
         // get the rooftypes
         $roofTypes = $this->request->get('building_roof_types', []);
 
-
         foreach ($roofTypes as $i => $details) {
-
             // Validate the roof type values
             if (is_numeric($i) && is_numeric($details)) {
-
                 $roofType = RoofType::find($details);
 
                 $cat = $this->getRoofTypeCategory($roofType);
-                if ($cat != "") {
+                if ('' != $cat) {
                     // add as key to result array
                     $result[$cat] = [
                         'type' => $this->getRoofTypeSubCategory($roofType),
                     ];
 
-
                     // If the roof_surface is empty but the roof type is set, throw a error
                     $validator->after(function ($validator) use ($cat, $i, $result) {
-                        if (Request::input('building_roof_types.' . $cat . '.roof_surface') == "" && Request::input('building_roof_types.' . $i) != "") {
-                            $validator->errors()->add('building_roof_types.' . $cat . '.roof_surface', __('validation.custom.surface'));
+                        if ('' == Request::input('building_roof_types.'.$cat.'.roof_surface') && '' != Request::input('building_roof_types.'.$i)) {
+                            $validator->errors()->add('building_roof_types.'.$cat.'.roof_surface', __('validation.custom.surface'));
                         }
 
                         // get the zinc category
-                        $zincCat = isset($result['flat']['type']) ? $result['flat']['type'] : "";
+                        $zincCat = isset($result['flat']['type']) ? $result['flat']['type'] : '';
 
-                        if (Request::input('building_roof_types.' . $cat . '.extra.zinc_replaced_date') == "" && $zincCat == "zinc") {
-                            $validator->errors()->add('building_roof_types.' . $cat . '.extra.zinc_replaced_date', __('validation.custom.surface'));
+                        if ('' == Request::input('building_roof_types.'.$cat.'.extra.zinc_replaced_date') && 'zinc' == $zincCat) {
+                            $validator->errors()->add('building_roof_types.'.$cat.'.extra.zinc_replaced_date', __('validation.custom.surface'));
                         }
 
                         if (Request::input('building_roof_types.' . $cat . '.insulation_roof_surface') == "" && Request::input('building_roof_types.' . $i) != "") {
@@ -141,6 +130,5 @@ class RoofInsulationFormRequest extends FormRequest
                 }
             }
         }
-
     }
 }

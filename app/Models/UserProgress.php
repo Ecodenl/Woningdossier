@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserProgress
+ * App\Models\UserProgress.
  *
  * @property int $id
  * @property int $user_id
  * @property int $step_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress whereStepId($value)
@@ -21,5 +22,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserProgress extends Model
 {
-    public $fillable = ['user_id', 'step_id', ];
+    public $fillable = ['user_id', 'step_id'];
+
+    public function steps()
+    {
+        return $this->hasMany('App\Models\Steps');
+    }
 }

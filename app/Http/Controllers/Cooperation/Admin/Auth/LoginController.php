@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Cooperation\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -40,27 +38,28 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-	/**
-	 * Show the application's login form.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function showLoginForm()
-	{
-		return view('cooperation.admin.auth.login');
-	}
+    /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showLoginForm()
+    {
+        return view('cooperation.admin.auth.login');
+    }
 
-	/**
-	 * Get the needed authorization credentials from the request.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return array
-	 */
-	protected function credentials(Request $request)
-	{
-		return array_merge(
-			$request->only($this->username(), 'password'),
-			['active' => 1, 'is_admin' => 1]
-		);
-	}
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return array_merge(
+            $request->only($this->username(), 'password'),
+            ['active' => 1, 'is_admin' => 1]
+        );
+    }
 }

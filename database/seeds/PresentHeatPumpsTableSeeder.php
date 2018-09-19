@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\PresentHeatPump;
+use Illuminate\Database\Seeder;
 
 class PresentHeatPumpsTableSeeder extends Seeder
 {
@@ -19,22 +19,22 @@ class PresentHeatPumpsTableSeeder extends Seeder
             ],
             [
                 'name' => 'Hybride warmtepomp met buitenlucht als warmtebron',
-                'calculate_value' => 2
+                'calculate_value' => 2,
             ],
             [
                 'name' => 'Volledige warmtepomp met buitenlucht als warmtebron',
-                'calculate_value' => 2
+                'calculate_value' => 2,
             ],
             [
                 'name' => 'Volledige warmtepomp met bodemenergie als warmtebron',
-                'calculate_value' => 3
+                'calculate_value' => 3,
             ],
         ];
 
         foreach ($presentHeatPumps as $presentHeatPump) {
             PresentHeatPump::create([
                 'name' => $presentHeatPump['name'],
-                'calculate_value' => $presentHeatPump['calculate_value']
+                'calculate_value' => $presentHeatPump['calculate_value'],
             ]);
         }
     }

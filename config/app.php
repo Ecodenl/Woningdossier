@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -15,7 +14,7 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
-	/*
+    /*
     |--------------------------------------------------------------------------
     | Application Version
     |--------------------------------------------------------------------------
@@ -149,7 +148,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -189,9 +187,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-	    App\Providers\WoningdossierServiceProvider::class,
-	    //\Ecodenl\PicoWrapper\PicoServiceProvider::class,
-
+        App\Providers\WoningdossierServiceProvider::class,
+        //\Ecodenl\PicoWrapper\PicoServiceProvider::class,
     ],
 
     /*
@@ -206,7 +203,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -227,7 +223,7 @@ return [
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
-	    //'Pico' => \Ecodenl\PicoWrapper\Facade::class,
+        //'Pico' => \Ecodenl\PicoWrapper\Facade::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
@@ -241,7 +237,5 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
     ],
-
 ];

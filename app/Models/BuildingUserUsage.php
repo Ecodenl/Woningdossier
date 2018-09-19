@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingUserUsage
+ * App\Models\BuildingUserUsage.
  *
  * @property int $id
  * @property int|null $building_id
@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $end_date
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\User|null $user
+ * @property \App\Models\Building|null $building
+ * @property \App\Models\User|null $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingUserUsage whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingUserUsage whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingUserUsage whereEndDate($value)
@@ -29,12 +30,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingUserUsage extends Model
 {
-    public function building(){
-    	return $this->belongsTo(Building::class);
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
     }
 
-    public function user(){
-    	return $this->belongsTo(User::class);
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
-
 }

@@ -60,6 +60,7 @@ class GeneralDataController extends Controller
         $exampleBuildings = ExampleBuilding::forMyCooperation()->orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
+            'sleeping-rooms-windows', 'living-rooms-windows',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
             ])->orderBy('order')->get();
         $services = Service::orderBy('order')->get();

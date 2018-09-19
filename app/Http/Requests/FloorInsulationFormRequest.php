@@ -30,7 +30,7 @@ class FloorInsulationFormRequest extends FormRequest
             'element.*.element_value_id' => 'exists:element_values,id',
             'element.crawlspace' => 'nullable|alpha',
 
-            'building_features.surface' => 'nullable|numeric',
+            'building_features.*' => 'nullable|numeric',
         ];
     }
 }

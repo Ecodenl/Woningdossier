@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class WallInsulationRequest extends FormRequest
 {
-
-	use DecimalReplacementTrait;
+    use DecimalReplacementTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -20,12 +19,12 @@ class WallInsulationRequest extends FormRequest
         return Auth::check();
     }
 
-	public function getValidatorInstance()
-	{
-		$this->decimals(['wall_surface']);
+    public function getValidatorInstance()
+    {
+        $this->decimals(['wall_surface', 'insulation_wall_surface']);
 
-		return parent::getValidatorInstance();
-	}
+        return parent::getValidatorInstance();
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -42,9 +41,12 @@ class WallInsulationRequest extends FormRequest
             // inputs
             'damage_paintwork' => 'exists:facade_damaged_paintworks,id',
             'facade_plastered_surface_id' => 'exists:facade_plastered_surfaces,id',
+
             'wall_joints' => 'exists:facade_surfaces,id',
+
             'contaminated_wall_joints' => 'exists:facade_surfaces,id',
             'wall_surface' => 'nullable|numeric',
+            'insulation_wall_surface' => 'nullable|numeric',
             'additional_info' => 'nullable',
         ];
     }

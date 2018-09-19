@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPvPanel
+ * App\Models\BuildingPvPanel.
  *
  * @property int $id
  * @property int $building_id
@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $angle
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\PvPanelOrientation $orientation
+ * @property \App\Models\Building $building
+ * @property \App\Models\PvPanelOrientation $orientation
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereAngle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereCreatedAt($value)
@@ -29,19 +30,21 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingPvPanel extends Model
 {
-
     protected $fillable = ['building_id', 'peak_power', 'number', 'pv_panel_orientation_id', 'angle'];
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function building(){
-		return $this->belongsTo(Building::class);
-	}
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function orientation(){
-		return $this->belongsTo(PvPanelOrientation::class);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function orientation()
+    {
+        return $this->belongsTo(PvPanelOrientation::class);
+    }
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateApplicationTypesTable extends Migration
 {
@@ -19,8 +19,6 @@ class CreateApplicationTypesTable extends Migration
             $table->string('description');
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -30,6 +28,6 @@ class CreateApplicationTypesTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('application_types');
+        Schema::dropIfExists('application_types');
     }
 }

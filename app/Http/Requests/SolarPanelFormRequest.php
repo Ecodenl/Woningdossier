@@ -30,7 +30,7 @@ class SolarPanelFormRequest extends FormRequest
             'building_pv_panels.angle' => 'required|numeric',
             'building_pv_panels.pv_panel_orientation_id' => 'required|exists:pv_panel_orientations,id',
 
-            'user_energy_habits.amount_electricity' => 'required|numeric'
+            'user_energy_habits.amount_electricity' => 'required|numeric',
         ];
     }
 }

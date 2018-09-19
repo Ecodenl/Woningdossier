@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddAndAssignRoles extends Migration
@@ -13,19 +11,16 @@ class AddAndAssignRoles extends Migration
      */
     public function up()
     {
-        //
-	    $superAdmin = \Spatie\Permission\Models\Role::create(['name' => 'super-admin']);
-	    \Spatie\Permission\Models\Role::create(['name' => 'cooperation-admin']);
-	    \Spatie\Permission\Models\Role::create(['name' => 'coach']);
+        $superAdmin = \Spatie\Permission\Models\Role::create(['name' => 'super-admin']);
+        \Spatie\Permission\Models\Role::create(['name' => 'cooperation-admin']);
+        \Spatie\Permission\Models\Role::create(['name' => 'coach']);
 
-	    // The default (admin) user is promoted to super user
+        // The default (admin) user is promoted to super user
 
-	    $users = \App\Models\User::where('is_admin', 1)->get();
-	    foreach($users as $user){
-	    	$user->assignRole($superAdmin);
-	    }
-
-
+        $users = \App\Models\User::where('is_admin', 1)->get();
+        foreach ($users as $user) {
+            $user->assignRole($superAdmin);
+        }
     }
 
     /**
@@ -35,6 +30,5 @@ class AddAndAssignRoles extends Migration
      */
     public function down()
     {
-        //
     }
 }

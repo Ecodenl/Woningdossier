@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\BuildingHeating;
 
 class BuildingHeatingsTableSeeder extends Seeder
 {
@@ -15,15 +14,15 @@ class BuildingHeatingsTableSeeder extends Seeder
         $buildingHeatings = [
             [
                 'names' => [
-                	'nl' => 'Verwarmd, de meeste radiatoren staan aan',
-	            ],
+                    'nl' => 'Verwarmd, de meeste radiatoren staan aan',
+                ],
                 'degree' => 18,
                 'calculate_value' => 2,
-	            'is_default' => false,
+                'is_default' => false,
             ],
             [
                 'names' => [
-                	'nl' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                    'nl' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
                 ],
                 'degree' => 13,
                 'calculate_value' => 3,
@@ -31,7 +30,7 @@ class BuildingHeatingsTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                	'nl' => 'Onverwarmd, de radiatoren staan op * of uit',
+                    'nl' => 'Onverwarmd, de radiatoren staan op * of uit',
                 ],
                 'degree' => 10,
                 'calculate_value' => 4,
@@ -39,7 +38,7 @@ class BuildingHeatingsTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                	'nl' => 'Niet van toepassing',
+                    'nl' => 'Niet van toepassing',
                 ],
                 'degree' => 18,
                 'calculate_value' => 5,
@@ -47,22 +46,22 @@ class BuildingHeatingsTableSeeder extends Seeder
             ],
         ];
 
-	    foreach ($buildingHeatings as $buildingHeating) {
-		    $uuid = \App\Helpers\Str::uuid();
-		    foreach($buildingHeating['names'] as $locale => $name) {
-			    \DB::table( 'translations' )->insert( [
-				    'key'         => $uuid,
-				    'language'    => $locale,
-				    'translation' => $name,
-			    ] );
-		    }
+        foreach ($buildingHeatings as $buildingHeating) {
+            $uuid = \App\Helpers\Str::uuid();
+            foreach ($buildingHeating['names'] as $locale => $name) {
+                \DB::table('translations')->insert([
+                    'key'         => $uuid,
+                    'language'    => $locale,
+                    'translation' => $name,
+                ]);
+            }
 
-		    \DB::table('building_heatings')->insert([
-			    'name' => $uuid,
-			    'degree' => $buildingHeating['degree'],
-			    'calculate_value' => $buildingHeating['calculate_value'],
-			    'is_default' => $buildingHeating['is_default'],
-		    ]);
-	    }
+            \DB::table('building_heatings')->insert([
+                'name' => $uuid,
+                'degree' => $buildingHeating['degree'],
+                'calculate_value' => $buildingHeating['calculate_value'],
+                'is_default' => $buildingHeating['is_default'],
+            ]);
+        }
     }
 }

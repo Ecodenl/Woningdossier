@@ -11,36 +11,38 @@ class IsAdmin
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-    	/** @var User $user */
-    	$user = \Auth::user();
+        /** @var User $user */
+        $user = \Auth::user();
 
-		if (!$user){
-			\Log::debug(__METHOD__ . " !user");
-			return redirect()->route('index');
-		}
+        if (! $user) {
+            \Log::debug(__METHOD__.' !user');
 
-		// Pull cooperation
-	    $cooperationId = \Session::get('cooperation');
-		$cooperation = Cooperation::find($cooperationId);
+            return redirect()->route('index');
+        }
 
-		if ($user->hasRole('super-admin')){
-			// Super administrator
-			return $next($request);
-		}
+        // Pull cooperation
+        $cooperationId = \Session::get('cooperation');
+        $cooperation = Cooperation::find($cooperationId);
 
-	    \Log::debug(__METHOD__ . " user does not have role super-admin");
-		if ($user->hasRole('cooperation-admin') && $user->cooperations->contains($cooperation)) {
-			// Admin for cooperation
-			return $next($request);
-		}
-	    \Log::debug(__METHOD__ . " user does not have role cooperation-admin");
+        if ($user->hasRole('super-admin')) {
+            // Super administrator
+            return $next($request);
+        }
 
-	    return redirect()->route('index');
+        \Log::debug(__METHOD__.' user does not have role super-admin');
+        if ($user->hasRole('cooperation-admin') && $user->cooperations->contains($cooperation)) {
+            // Admin for cooperation
+            return $next($request);
+        }
+        \Log::debug(__METHOD__.' user does not have role cooperation-admin');
+
+        return redirect()->route('index');
     }
 }

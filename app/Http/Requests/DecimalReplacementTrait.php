@@ -4,14 +4,15 @@ namespace App\Http\Requests;
 
 use App\Helpers\NumberFormatter;
 
-trait DecimalReplacementTrait {
+trait DecimalReplacementTrait
+{
+    protected function decimals(array $keys)
+    {foreach($keys as $key){
 
-	protected function decimals(array $keys){
-		foreach($keys as $key){
 			$dec = $this->get($key);
 
-			$dec = NumberFormatter::reverseFormat($dec);
-			$this->merge([$key => $dec]);
-		}
-	}
+            $dec = NumberFormatter::reverseFormat($dec);
+            $this->merge([$key => $dec]);
+        }
+    }
 }

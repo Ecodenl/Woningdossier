@@ -6,6 +6,7 @@
 
 @section('step_content')
 
+
     <div class="row">
         <div class="col-md-12">
             {{--<h1>@lang('woningdossier.cooperation.tool.my-plan.title')</h1>--}}
@@ -21,122 +22,73 @@
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
 
+
             <div class="col-md-12">
-                <table class="table table-condensed table-responsive">
+
+                <table class="table">
                     <thead>
                     <tr>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
-                        <th>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
+                        <th style="width: 8%">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
+                        <th style="width: 10%">@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
+                        <th style="width: 35%">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
+                        <th style="width: 8%">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
+                        <th style="width: 14%">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
+                        <th style="width: 10%">@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
+                        <th style="width: 15%">@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
                     </tr>
                     </thead>
-                    <tbody>
+                <tbody>
 
-            @foreach($stepAdvices as $step => $advicesForStep)
-                        @foreach($advicesForStep as $advice)
-                            <tr>
-                                <td>
-                                    <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
-                                </td>
-                                <td>
-                                    {{ $advice->measureApplication->measure_name }}
-                                </td>
-                                <td>
-                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
-                                </td>
-                                <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
-                                </td>
-                                <td>
-                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
-                                </td>
-                                <td>
-                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
-                                </td>
-                                <td>
-                                    {{ $advice->year }}
-                                </td>
-                                <td>
-                                    <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
-                                </td>
-                            </tr>
-                        @endforeach
-{{--
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">{{ $step }}</div>
-                    <div class="panel-body">
+                @foreach($stepAdvices as $step => $advicesForStep)
 
-                        <div class="row">
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</strong>
-                            </div>
-                            <div class="col-md-2">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</strong>
-                            </div>
-                            <div class="col-md-1">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</strong>
-                            </div>
 
-                        </div>
+                    @foreach($advicesForStep as $advice)
+                        <tr>
+                            <td >
+                                <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
+                            </td>
 
-                        @foreach($advicesForStep as $advice)
-                        <div class="row">
-                            <div class="col-md-1">
+                            <td >
                                 <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
-                            </div>
-                            <div class="col-md-2">
+                            </td>
+                            <td >
                                 {{ $advice->measureApplication->measure_name }}
-                            </div>
-                            <div class="col-md-1">
-                                {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }}
-                            </div>
-                            <div class="col-md-2">
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
-                            </div>
-                            <div class="col-md-1">
+                            </td>
+                            <td >
+                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                            </td>
+                            <td >
+                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                            </td>
+                            <td >
                                 {{ $advice->year }}
-                            </div>
-                            <div class="col-md-1">
+                            </td>
+                            <td>
                                 <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            --}}
-            @endforeach
-                    </tbody>
-                </table>
-            </div>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="more-info-{{$advice->id}}" >
+                            <td colspan="2"></td>
+                            <td colspan="">
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
+                                <br>
+                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
+                            </td>
+                            <td>
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                                <br>
+                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                            </td>
+                            <td colspan="3">
+                            </td>
+                        </tr>
+                    @endforeach
 
+
+                @endforeach
+                </tbody>
+            </table>
+        </div>
         </div>
     @endforeach
     </form>
@@ -176,6 +128,7 @@
 @endsection
 
 
+
 @push('js')
     <script>
         $(document).ready(function(){
@@ -187,8 +140,6 @@
             });
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
-
-
                 var form = $(this).closest("form").serialize();
                 $.ajax({
                     type: "POST",
@@ -198,7 +149,7 @@
                         $("ul#years").html("");
                         $.each(data, function(year, steps){
                             var header = "<h1>" + year + "</h1>";
-                            var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th></tr></thead><tbody>";
+                            var table = "<table class=\"table\"> <thead> <tr> <th style=\"width: 3%\">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th> <th style=\"width: 30%\">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th> <th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th> <th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th> </tr></thead> <tbody>";
 
                             var totalCosts = 0;
                             var totalSavingsGas = 0;
@@ -214,32 +165,61 @@
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                    table += "<tr><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></td><td>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
+                                    var slug = stepName.replace( /\s+/g, '');
+                                    table += "<tr> <td> <a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + year + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
+                                    table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + year + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>"
                                 });
 
                             });
 
-                            table += "<tr><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup></strong></td><td><strong>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
-                            table += "<tr><td colspan=\"5\"></td></tr>";
+
+                            // total calculation
+                            table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + year + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
+                            table += "<tr class='collapse' id='total-costs-" + year + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}')+" m<sup>3</sup> <br>"+Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>";
+
 
                             table += "</tbody></table>";
 
                             $("ul#years").append("<li>" + header + table + "</li>");
                         });
 
+                        // toogle cheveron for the personal plan
+                        $('.turn-on-click').on('click', function () {
+                            $(this).toggleClass('clicked');
 
-
+                            if ($(this).hasClass('clicked')) {
+                                $(this).find('i').css("transform", "rotate(-180deg)");
+                                $(this).find('i').css("transition", "1s");
+                            } else {
+                                $(this).find('i').css("transform", "rotate(0deg)");
+                                $(this).find('i').css("transition", "1s");
+                            }
+                        });
                         @if(App::environment('local'))
-                        console.log(data);
+                            console.log(data);
                         @endif
                     }
                 })
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
+
+            // Toggle chevron op open / close
+            $('a[data-target*=more]').on('click', function () {
+                $(this).toggleClass('clicked');
+
+                if ($(this).hasClass('clicked')) {
+                    $(this).find('i').css("transform", "rotate(-180deg)");
+                    $(this).find('i').css("transition", "1s");
+                } else {
+                    $(this).find('i').css("transform", "rotate(0deg)");
+                    $(this).find('i').css("transition", "1s");
+                }
+            });
+
+
         });
-
-
     </script>
+
 @endpush
 

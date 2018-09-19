@@ -25,14 +25,12 @@ class FloorInsulationFormRequest extends FormRequest
     public function rules()
     {
         return [
-
             'element.*' => 'exists:element_values,id',
             'element.*.extra' => 'nullable|alpha',
             'element.*.element_value_id' => 'exists:element_values,id',
             'element.crawlspace' => 'nullable|alpha',
 
             'building_features.surface' => 'nullable|numeric',
-
         ];
     }
 }

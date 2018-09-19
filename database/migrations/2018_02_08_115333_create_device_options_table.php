@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateDeviceOptionsTable extends Migration
 {
@@ -15,7 +15,7 @@ class CreateDeviceOptionsTable extends Migration
     {
         Schema::create('device_options', function (Blueprint $table) {
             $table->increments('id');
-			$table->string('name');
+            $table->string('name');
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -19,19 +20,18 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 class FloorInsulationController extends Controller
 {
-
     protected $step;
 
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         $slug = str_replace('/tool/', '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -39,41 +39,37 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
-
         // get the next page order
         $nextPage = $this->step->order + 1;
 
         // check if the user is interested in floor insulation, if not redirect to next step
         if (Auth::user()->isNotInterestedInStep('element', 4)) {
-
             $nextStep = Step::where('order', $nextPage)->first();
 
             return redirect(url('tool/'.$nextStep->slug));
         }
 
-    	/** @var Building $building */
-	    $building = \Auth::user()->buildings()->first();
+        /** @var Building $building */
+        $building = \Auth::user()->buildings()->first();
 
-	    $buildingInsulation = $building->getBuildingElement('floor-insulation');
-		$floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
+        $buildingInsulation = $building->getBuildingElement('floor-insulation');
+        $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
 
-		$crawlspace = Element::where('short', 'crawlspace')->first();
-		$buildingCrawlspace = $building->getBuildingElement($crawlspace->short);
+        $crawlspace = Element::where('short', 'crawlspace')->first();
+        $buildingCrawlspace = $building->getBuildingElement($crawlspace->short);
 
-		$crawlspacePresent = 2; // unknown
-		if ($buildingCrawlspace instanceof \App\Models\BuildingElement){
-			if ($buildingCrawlspace->elementValue instanceof \App\Models\ElementValue){
-				$crawlspacePresent = 0; // yes
-			}
-		}
-		else {
-			$crawlspacePresent = 1; // now
-		}
+        $crawlspacePresent = 2; // unknown
+        if ($buildingCrawlspace instanceof \App\Models\BuildingElement) {
+            if ($buildingCrawlspace->elementValue instanceof \App\Models\ElementValue) {
+                $crawlspacePresent = 0; // yes
+            }
+        } else {
+            $crawlspacePresent = 1; // now
+        }
 
-		$buildingElement = Auth::user()->buildings()->first()->buildingElements;
+        $buildingElement = Auth::user()->buildings()->first()->buildingElements;
 
-
-	    $buildingFeatures = $building->buildingFeatures;
+        $buildingFeatures = $building->buildingFeatures;
         $steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.floor-insulation.index', compact(
@@ -83,96 +79,91 @@ class FloorInsulationController extends Controller
         ));
     }
 
-    public function calculate(Request $request){
-	    /**
-	     * @var Building $building
-	     */
-	    $user     = \Auth::user();
-	    $building = $user->buildings()->first();
+    public function calculate(Request $request)
+    {
+        /**
+         * @var Building
+         */
+        $user = \Auth::user();
+        $building = $user->buildings()->first();
 
-	    $result = [
-		    'savings_gas' => 0,
-		    'savings_co2' => 0,
-		    'savings_money' => 0,
-		    'cost_indication' => 0,
-	    ];
+        $result = [
+            'savings_gas' => 0,
+            'savings_co2' => 0,
+            'savings_money' => 0,
+            'cost_indication' => 0,
+        ];
 
-	    $crawlspace = Element::where('short', 'crawlspace')->first();
+        $crawlspace = Element::where('short', 'crawlspace')->first();
 
-	    $elements = $request->get('element', []);
-	    $buildingElements = $request->get('building_elements', []);
-	    $buildingFeatures = $request->get('building_features', []);
+        $elements = $request->get('element', []);
+        $buildingElements = $request->get('building_elements', []);
+        $buildingFeatures = $request->get('building_features', []);
 
-	    $surface = array_key_exists('floor_surface', $buildingFeatures) ? $buildingFeatures['floor_surface'] : 0;
+        $surface = array_key_exists('floor_surface', $buildingFeatures) ? $buildingFeatures['floor_surface'] : 0;
 
-	    if (array_key_exists('crawlspace', $buildingElements)){
-		    // Check if crawlspace is accessible. If not: show warning!
-		    if (in_array($buildingElements['crawlspace'], ["unknown"])) {
-			    $result['crawlspace'] = "warning";
-		    }
-	    }
+        if (array_key_exists('crawlspace', $buildingElements)) {
+            // Check if crawlspace is accessible. If not: show warning!
+            if (in_array($buildingElements['crawlspace'], ['unknown'])) {
+                $result['crawlspace'] = 'warning';
+            }
+        }
 
-	    $crawlspaceValue = null;
-	    if (array_key_exists($crawlspace->id, $buildingElements)){
-	    	if (array_key_exists('element_value_id', $buildingElements[$crawlspace->id])){
-	    		$crawlspaceValue = ElementValue::where('element_id', $crawlspace->id)
-				    ->where('id', $buildingElements[$crawlspace->id]['element_value_id'])
-				    ->first();
-		    }
-		    if (array_key_exists('extra', $buildingElements[$crawlspace->id])){
-	    		// Check if crawlspace is accessible. If not: show warning!
-	    		if (in_array($buildingElements[$crawlspace->id]['extra'], ["no", "unknown"])) {
-				    $result['crawlspace_access'] = "warning";
-			    }
-		    }
-	    }
-	    else {
-	    	// first page request
-		    $crawlspaceValue = $crawlspace->values()->orderBy('order')->first();
-	    }
+        $crawlspaceValue = null;
+        if (array_key_exists($crawlspace->id, $buildingElements)) {
+            if (array_key_exists('element_value_id', $buildingElements[$crawlspace->id])) {
+                $crawlspaceValue = ElementValue::where('element_id', $crawlspace->id)
+                    ->where('id', $buildingElements[$crawlspace->id]['element_value_id'])
+                    ->first();
+            }
+            if (array_key_exists('extra', $buildingElements[$crawlspace->id])) {
+                // Check if crawlspace is accessible. If not: show warning!
+                if (in_array($buildingElements[$crawlspace->id]['extra'], ['no', 'unknown'])) {
+                    $result['crawlspace_access'] = 'warning';
+                }
+            }
+        } else {
+            // first page request
+            $crawlspaceValue = $crawlspace->values()->orderBy('order')->first();
+        }
 
-	    if ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 45){
-		    $advice = Temperature::FLOOR_INSULATION_FLOOR;
-		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.floor');
-	    }
-	    elseif ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 30){
-		    $advice = Temperature::FLOOR_INSULATION_BOTTOM;
-		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.bottom');
-	    }
-	    else {
-		    $advice = Temperature::FLOOR_INSULATION_RESEARCH;
-		    $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.research');
-	    }
+        if ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 45) {
+            $advice = Temperature::FLOOR_INSULATION_FLOOR;
+            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.floor');
+        } elseif ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 30) {
+            $advice = Temperature::FLOOR_INSULATION_BOTTOM;
+            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.bottom');
+        } else {
+            $advice = Temperature::FLOOR_INSULATION_RESEARCH;
+            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.research');
+        }
 
-	    $floorInsulation = Element::where('short', 'floor-insulation')->first();
-	    if (array_key_exists($floorInsulation->id, $elements)){
-	    	$floorInsulationValue = ElementValue::where('element_id', $floorInsulation->id)->where('id', $elements[$floorInsulation->id])->first();
-			if ($floorInsulationValue instanceof ElementValue){
-				$result['savings_gas'] = FloorInsulationCalculator::calculateGasSavings($building, $floorInsulationValue, $user->energyHabit, $surface, $advice);
-			}
+        $floorInsulation = Element::where('short', 'floor-insulation')->first();
+        if (array_key_exists($floorInsulation->id, $elements)) {
+            $floorInsulationValue = ElementValue::where('element_id', $floorInsulation->id)->where('id', $elements[$floorInsulation->id])->first();
+            if ($floorInsulationValue instanceof ElementValue) {
+                $result['savings_gas'] = FloorInsulationCalculator::calculateGasSavings($building, $floorInsulationValue, $user->energyHabit, $surface, $advice);
+            }
 
-		    $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-		    $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-		    $result['cost_indication'] = Calculator::calculateCostIndication($surface, $result['insulation_advice']);
-		    $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
-	    }
+            $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
+            $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
+            $result['cost_indication'] = Calculator::calculateCostIndication($surface, $result['insulation_advice']);
+            $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+        }
 
-
-
-
-	    return response()->json($result);
+        return response()->json($result);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param FloorInsulationFormRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(FloorInsulationFormRequest $request)
     {
-
-    	// Get the value's from the input's
+        // Get the value's from the input's
         $elements = $request->input('element', '');
 
         foreach ($elements as $elementId => $elementValueId) {
@@ -190,9 +181,9 @@ class FloorInsulationController extends Controller
         $buildingElements = $request->input('building_elements', '');
         $buildingElementId = array_keys($buildingElements)[1];
 
-        $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : "";
-        $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : "";
-        $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : "";
+        $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : '';
+        $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : '';
+        $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : '';
         $comment = $request->input('comment', '');
 
         BuildingElement::updateOrCreate(
@@ -205,57 +196,55 @@ class FloorInsulationController extends Controller
                 'extra' => [
                     'has_crawlspace' => $hasCrawlspace,
                     'access' => $crawlspaceHasAccess,
-                    'comment' => $comment
-                ]
+                    'comment' => $comment,
+                ],
             ]
         );
         $floorSurface = $request->input('building_features', '');
 
-
         BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([
-            'surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : "",
+            'surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '',
         ]);
 
         // Save progress
-	    $this->saveAdvices($request);
+        $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
+
         return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]);
     }
 
-	protected function saveAdvices(Request $request){
-		// Remove old results
-		UserActionPlanAdvice::forMe()->forStep( $this->step )->delete();
+    protected function saveAdvices(Request $request)
+    {
+        // Remove old results
+        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 
-		$floorInsulation = Element::where('short', 'floor-insulation')->first();
-		$elements = $request->input('element');
-		if (array_key_exists($floorInsulation->id, $elements)) {
-			$floorInsulationValue = ElementValue::where( 'element_id',
-				$floorInsulation->id )->where( 'id',
-				$elements[ $floorInsulation->id ] )->first();
-			// don't save if not applicable
-			if ( $floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5 ) {
+        $floorInsulation = Element::where('short', 'floor-insulation')->first();
+        $elements = $request->input('element');
+        if (array_key_exists($floorInsulation->id, $elements)) {
+            $floorInsulationValue = ElementValue::where('element_id',
+                $floorInsulation->id)->where('id',
+                $elements[$floorInsulation->id])->first();
+            // don't save if not applicable
+            if ($floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5) {
+                /** @var JsonResponse $results */
+                $results = $this->calculate($request);
+                $results = $results->getData(true);
 
-				/** @var JsonResponse $results */
-				$results = $this->calculate( $request );
-				$results = $results->getData( true );
-
-				if ( isset( $results['insulation_advice'] ) && isset( $results['cost_indication'] ) && $results['cost_indication'] > 0 ) {
-					$measureApplication = MeasureApplication::translated( 'measure_name',
-						$results['insulation_advice'],
-						'nl' )->first( [ 'measure_applications.*' ] );
-					if ( $measureApplication instanceof MeasureApplication ) {
-						$actionPlanAdvice = new UserActionPlanAdvice( $results );
-						$actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-						$actionPlanAdvice->user()->associate( Auth::user() );
-						$actionPlanAdvice->measureApplication()->associate( $measureApplication );
-						$actionPlanAdvice->step()->associate( $this->step );
-						$actionPlanAdvice->save();
-					}
-				}
-			}
-		}
-
-	}
-
+                if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+                    $measureApplication = MeasureApplication::translated('measure_name',
+                        $results['insulation_advice'],
+                        'nl')->first(['measure_applications.*']);
+                    if ($measureApplication instanceof MeasureApplication) {
+                        $actionPlanAdvice = new UserActionPlanAdvice($results);
+                        $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                        $actionPlanAdvice->step()->associate($this->step);
+                        $actionPlanAdvice->save();
+                    }
+                }
+            }
+        }
+    }
 }

@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PriceIndexing
+ * App\Models\PriceIndexing.
  *
  * @property int $id
  * @property string $short
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $percentage
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing whereId($value)
@@ -25,6 +26,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PriceIndexing extends Model
 {
-
-	use TranslatableTrait;
+    use TranslatableTrait;
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\EnergyLabel
+ * App\Models\EnergyLabel.
  *
  * @property int $id
  * @property string $name
@@ -13,7 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $calculate_value
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\EnergyLabel whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\EnergyLabel whereCountryCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\EnergyLabel whereCreatedAt($value)
@@ -24,7 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EnergyLabel extends Model
 {
-    public function buildingFeatures(){
-    	return $this->hasMany(BuildingFeature::class);
+    public function buildingFeatures()
+    {
+        return $this->hasMany(BuildingFeature::class);
     }
 }

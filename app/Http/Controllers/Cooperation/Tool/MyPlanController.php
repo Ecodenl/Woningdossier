@@ -55,9 +55,9 @@ class MyPlanController extends Controller
             foreach ($stepAdvices as $step => $advicesForStep) {
                 foreach ($advicesForStep as $advice) {
                     // check if the planned year is set and if not use the year
-                    $plannedYear = $advice->planned_year == null ? $advice->year : $advice->planned_year;
+                    $plannedYear = null == $advice->planned_year ? $advice->year : $advice->planned_year;
                     // check if a user is interested in the measure
-                    $isInterested = $advice->planned == 1 ? __('default.yes') : __('default.no');
+                    $isInterested = 1 == $advice->planned ? __('default.yes') : __('default.no');
                     $costs = round($advice->costs);
                     $measure = $advice->measureApplication->measure_name;
                     $gasSavings = round($advice->savings_gas);

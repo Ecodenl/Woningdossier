@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\HeaterSpecification
+ * App\Models\HeaterSpecification.
  *
  * @property int $id
  * @property int $liters
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $collector
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification whereBoiler($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification whereCollector($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification whereCreatedAt($value)
@@ -25,5 +26,4 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HeaterSpecification extends Model
 {
-    //
 }

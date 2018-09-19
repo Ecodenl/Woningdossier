@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMeasureServiceTypeTable extends Migration
 {
@@ -14,10 +14,10 @@ class CreateMeasureServiceTypeTable extends Migration
     public function up()
     {
         Schema::create('measure_service_type', function (Blueprint $table) {
-	        $table->integer('measure_id')->unsigned()->nullable()->default(null);
-	        $table->foreign('measure_id')->references('id')->on('measures') ->onDelete('restrict');
-	        $table->integer('service_type_id')->unsigned()->nullable()->default(null);
-	        $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('restrict');
+            $table->integer('measure_id')->unsigned()->nullable()->default(null);
+            $table->foreign('measure_id')->references('id')->on('measures')->onDelete('restrict');
+            $table->integer('service_type_id')->unsigned()->nullable()->default(null);
+            $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('restrict');
         });
     }
 

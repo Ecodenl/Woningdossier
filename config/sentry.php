@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'dsn' => env('SENTRY_LARAVEL_DSN'),
 
     // capture release as git sha
@@ -12,4 +12,4 @@ return array(
 
     // Capture default user context
     'user_context' => true,
-);
+];

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -27,5 +25,4 @@ class HomeController extends Controller
     {
         return view('cooperation.home');
     }
-
 }

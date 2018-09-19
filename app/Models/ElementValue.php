@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ElementValue
+ * App\Models\ElementValue.
  *
  * @property int $id
  * @property int $element_id
@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Element $element
+ * @property \App\Models\Element $element
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ElementValue translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ElementValue whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ElementValue whereCreatedAt($value)
@@ -30,7 +31,8 @@ class ElementValue extends Model
 {
     use TranslatableTrait;
 
-    public function element(){
-    	return $this->belongsTo(Element::class);
+    public function element()
+    {
+        return $this->belongsTo(Element::class);
     }
 }

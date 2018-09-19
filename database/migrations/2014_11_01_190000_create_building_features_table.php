@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBuildingFeaturesTable extends Migration
 {
@@ -48,12 +48,12 @@ class CreateBuildingFeaturesTable extends Migration
             $table->integer('facade_plastered_surface_id')->unsigned()->nullable()->default(null);
             $table->foreign('facade_plastered_surface_id')->references('id')->on('facade_plastered_surfaces')->onDelete('restrict');
 
-			$table->integer('facade_damaged_paintwork_id')->unsigned()->nullable()->default(null);
-			$table->foreign('facade_damaged_paintwork_id')->references('id')->on('facade_damaged_paintworks')->onDelete('restrict');
+            $table->integer('facade_damaged_paintwork_id')->unsigned()->nullable()->default(null);
+            $table->foreign('facade_damaged_paintwork_id')->references('id')->on('facade_damaged_paintworks')->onDelete('restrict');
 
             $table->decimal('surface')->nullable()->default(null);
             $table->decimal('window_surface')->nullable()->default(null);
-	        $table->decimal('floor_surface')->nullable()->default(null);
+            $table->decimal('floor_surface')->nullable()->default(null);
 
             $table->integer('volume')->nullable()->default(null);
             $table->integer('build_year')->nullable()->default(null);

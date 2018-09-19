@@ -19,28 +19,11 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
 
         if ($sleepingRoomWindow->first() instanceof stdClass) {
 
-            // remove the building elements
-            // TODO: do not run on live
-            DB::table('building_elements')->where('element_id', $sleepingRoomWindow->first()->id)->delete();
-            // remove the max savings
-            // TODO: do not run on live
-            DB::table('building_type_element_max_savings')->where('element_id', $sleepingRoomWindow->first()->id)->delete();
-            // remove the translation from the element itself
-            // TODO: do not run on live
-            DB::table('element_values')->where('element_id', $sleepingRoomWindow->first()->id)->delete();
-
-
-
             // remove the user interests for the sleeping rooms windows
-            // TODO: run on live
             DB::table('user_interests')
                 ->where('interested_in_type', 'element')
                 ->where('interested_in_id', $sleepingRoomWindow->first()->id)
                 ->delete();
-
-            // remove the element
-            // TODO: do not run on live
-            $sleepingRoomWindow->delete();
         }
 
     }

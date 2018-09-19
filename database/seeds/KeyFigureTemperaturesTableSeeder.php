@@ -183,12 +183,10 @@ class KeyFigureTemperaturesTableSeeder extends Seeder
 		    ],
 	    ];
 
-
 	    foreach($figures as $figure){
-
 	    	$measureApplication = \DB::table('measure_applications')
-
-                                     ->where('short', $figure['short'])->first();
+                                     ->where('short', $figure['short'])
+                                     ->first();
 
             $insulatedGlazing = \DB::table('insulating_glazings')
                                      ->where('translations.language', '=', 'nl')
@@ -202,13 +200,14 @@ class KeyFigureTemperaturesTableSeeder extends Seeder
                                      ->join('translations', 'building_heatings.name', '=', 'translations.key')
                                      ->first(['building_heatings.*']);
 
-
-            \DB::table('key_figure_temperatures')->insert([
-                'measure_application_id' => $measureApplication->id,
-                'insulating_glazing_id' => $insulatedGlazing instanceof \stdClass ? $insulatedGlazing->id : null,
-                'building_heating_id' => $buildingHeating->id,
-                'key_figure' => $figure['key_figure'],
-            ]);
+			if (!is_null($measureApplication) && $buildingHeating instanceof \stdClass) {
+				\DB::table( 'key_figure_temperatures' )->insert( [
+					'measure_application_id' => $measureApplication->id,
+					'insulating_glazing_id'  => $insulatedGlazing instanceof \stdClass ? $insulatedGlazing->id : null,
+					'building_heating_id'    => $buildingHeating->id,
+					'key_figure'             => $figure['key_figure'],
+				] );
+			}
 	    }
 
     }

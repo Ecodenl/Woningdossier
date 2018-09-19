@@ -28,7 +28,7 @@ class ExampleBuildingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index()
     {
@@ -41,7 +41,7 @@ class ExampleBuildingController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
     public function create()
     {
@@ -62,7 +62,7 @@ class ExampleBuildingController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -130,7 +130,7 @@ class ExampleBuildingController extends Controller
      * @param  $cooperation
      * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit(Cooperation $cooperation, $id)
     {
@@ -148,6 +148,12 @@ class ExampleBuildingController extends Controller
         );
     }
 
+    /**
+     * Returns the content structure as nested array for the ExampleBuilding
+     * configuration (form and data structure for storage).
+     *
+     * @return array
+     */
     protected function getContentStructure()
     {
         // Wall insulation
@@ -470,7 +476,7 @@ class ExampleBuildingController extends Controller
      * @param int                      $id
      * @param  $cooperation
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Cooperation $cooperation, $id)
     {
@@ -543,17 +549,29 @@ class ExampleBuildingController extends Controller
      * @param int $id
      * @param  $cooperation
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function destroy(Cooperation $cooperation, $id)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
-        $exampleBuilding->delete();
+        try {
+            $exampleBuilding->delete();
+        } catch (\Exception $e) {
+            // do nothing
+        }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building deleted');
     }
 
+    /**
+     * Copies over a specific example building configuration (content / structure).
+     *
+     * @param Cooperation $cooperation
+     * @param int         $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function copy(Cooperation $cooperation, $id)
     {
         /** @var ExampleBuilding $exampleBuilding */

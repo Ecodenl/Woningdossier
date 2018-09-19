@@ -6,6 +6,7 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
@@ -18,6 +19,7 @@ use App\Models\PvPanelYield;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,15 +41,7 @@ class SolarPanelsController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('service', 7)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [7];
 
         $steps = Step::orderBy('order')->get();
         $user = \Auth::user();
@@ -61,10 +55,9 @@ class SolarPanelsController extends Controller
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
         $buildingPvPanels = $building->pvPanels;
 
-        return view('cooperation.tool.solar-panels.index',
-            compact(
-                'pvPanelOrientations', 'amountElectricity',
-                'buildingPvPanels', 'steps'
+	    return view('cooperation.tool.solar-panels.index',
+		    compact('pvPanelOrientations', 'amountElectricity',
+			    'buildingPvPanels', 'steps', 'typeIds'
             )
         );
     }
@@ -138,14 +131,17 @@ class SolarPanelsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param SolarPanelFormRequest $request*
      * @return \Illuminate\Http\Response
      */
     public function store(SolarPanelFormRequest $request)
     {
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
 
         UserEnergyHabit::where('user_id', Auth::id())->update([
             'amount_electricity' => $habitAmountElectricity,
@@ -173,7 +169,7 @@ class SolarPanelsController extends Controller
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.heater.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)

@@ -5,6 +5,7 @@
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
         {{csrf_field()}}
+        @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div class="row">
             <div id="current-situation" class="col-md-12">
                 <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.title')</h4>

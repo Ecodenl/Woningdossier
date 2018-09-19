@@ -5,7 +5,10 @@
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+
+        @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div id="intro">
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">

@@ -14,6 +14,7 @@
         </div>
     </div>
 
+
     <form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
         {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
@@ -39,56 +40,56 @@
                     </thead>
                 <tbody>
 
-                @foreach($stepAdvices as $step => $advicesForStep)
-
-
-                    @foreach($advicesForStep as $advice)
-                        <tr>
-                            <td >
-                                <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
-                            </td>
-
-                            <td >
-                                <input type="checkbox" @if($advice->planned)checked="checked"@endif name="advice[{{ $advice->id }}][planned]" />
-                            </td>
-                            <td >
-                                {{ $advice->measureApplication->measure_name }}
-                            </td>
-                            <td >
-                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
-                            </td>
-                            <td >
-                                &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
-                            </td>
-                            <td >
-                                {{ $advice->year }}
-                            </td>
-                            <td>
-                                <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
-                            </td>
-                        </tr>
-                        <tr class="collapse" id="more-info-{{$advice->id}}" >
-                            <td colspan="2"></td>
-                            <td colspan="">
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
-                                <br>
-                                <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
-                            </td>
-                            <td>
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
-                                <br>
-                                {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
-                            </td>
-                            <td colspan="3">
-                            </td>
-                        </tr>
-                    @endforeach
-
-
-                @endforeach
-                </tbody>
-            </table>
-        </div>
+            @foreach($stepAdvices as $stepSlug => $advicesForStep)
+                        @foreach($advicesForStep as $advice)
+	                        <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
+                            <tr>
+                                <td>
+                                    <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
+                                </td>
+                                <td>
+                                    <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned"
+                                           @if(\App\Helpers\MyPlanHelper::isUserInterestedInMeasure($step) && $advice->planned)
+                                           checked
+                                            @endif
+                                    />
+                                </td>
+                                <td>
+                                    {{ $advice->measureApplication->measure_name }}
+                                </td>
+                                <td>
+                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                                </td>
+                                <td>
+                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                                </td>
+                                <td class="advice-year">
+                                    {{ $advice->year }}
+                                </td>
+                                <td>
+                                    <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][planned_year]" value="{{ $advice->planned_year }}" />
+                                </td>
+                            </tr>
+                            <tr class="collapse" id="more-info-{{$advice->id}}" >
+                                <td colspan="2"></td>
+                                <td colspan="">
+                                    <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
+                                    <br>
+                                    <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
+                                </td>
+                                <td>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                                    <br>
+                                    {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                                </td>
+                                <td colspan="3">
+                                </td>
+                            </tr>
+                        @endforeach
+            @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     @endforeach
     </form>
@@ -139,7 +140,9 @@
                 }
             });
 
+
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
+
                 var form = $(this).closest("form").serialize();
                 $.ajax({
                     type: "POST",
@@ -159,6 +162,9 @@
                             $.each(steps, function(stepName, stepMeasures){
 
                                 $.each(stepMeasures, function(i, stepData){
+                                    if (stepData.interested) {
+                                        $("#advice-"+stepData.advice_id+"-planned").attr('checked', true)
+                                    }
 
                                     totalCosts += parseFloat(stepData.costs);
                                     totalSavingsGas += parseFloat(stepData.savings_gas);
@@ -199,10 +205,13 @@
                             console.log(data);
                         @endif
                     }
-                })
+                });
+
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
+
+        });
 
             // Toggle chevron op open / close
             $('a[data-target*=more]').on('click', function () {
@@ -217,6 +226,27 @@
                 }
             });
 
+        // if a user clicks the interested check box
+        $('.interested-checker').on('click', function() {
+
+            // get the planned year input
+            var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
+
+            // check if the checkbox is checked
+            // if so, so fill the
+            if ($(this).is(':checked')) {
+                var advicedYear = $(this).parent().parent().find('.advice-year').html().trim();
+
+                if(advicedYear === "") {
+                    advicedYear = (new Date()).getFullYear();
+                }
+
+                plannedYearInput.val(advicedYear);
+            } else {
+                plannedYearInput.val("");
+            }
+            plannedYearInput.trigger('change')
+        });
 
         });
     </script>

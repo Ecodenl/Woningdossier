@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\RoofInsulationCalculator;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoofInsulationFormRequest;
 use App\Models\Building;
@@ -21,6 +22,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -47,12 +49,7 @@ class RoofInsulationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('element', 5)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [5];
 
         /** var Building $building */
         $building = \Auth::user()->buildings()->first();
@@ -83,7 +80,7 @@ class RoofInsulationController extends Controller
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps',
+            'features', 'roofTypes', 'steps', 'typeIds',
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation',
              'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
     }
@@ -369,6 +366,11 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
+
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
         // Get the user his building / house
         $building = Auth::user()->buildings()->first();
         // the selected roof types for the current situation
@@ -432,6 +434,6 @@ class RoofInsulationController extends Controller
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 }

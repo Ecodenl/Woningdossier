@@ -106,8 +106,11 @@ return [
             ],
         ],
 
-        'tool' => [
-            'unit' => [
+		'tool' => [
+
+		    'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
+
+			'unit' => [
                 'year' => 'jaar',
                 'liter' => 'liter',
                 'day' => 'dag',

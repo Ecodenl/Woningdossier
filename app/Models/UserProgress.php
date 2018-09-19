@@ -28,5 +28,5 @@ class UserProgress extends Model
     {
         return $this->hasMany('App\Models\Steps');
     }
->>>>>>>>> Temporary merge branch 2
+
 }

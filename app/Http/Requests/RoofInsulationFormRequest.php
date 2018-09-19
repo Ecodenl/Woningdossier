@@ -72,7 +72,8 @@ class RoofInsulationFormRequest extends FormRequest
                             'type' => $this->getRoofTypeSubCategory($roofType),
                         ];
 
-                    $roofTypeValueRules['building_roof_types.'.$cat.'.surface'] = 'number';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.roof_surface'] = 'number';
+                        $roofTypeValueRules['building_roof_types.'.$cat.'.insulation_roof_surface'] = 'number';
                     $roofTypeValueRules['building_roof_types.'.$cat.'.element_value_id'] = 'exists:element_values,id';
                     $roofTypeValueRules['building_roof_types.'.$cat.'.building_heating_id'] = 'exists:building_heatings,id';
                     $roofTypeValueRules['building_roof_types.'.$cat.'.extra.bitumen_replaced_date'] = 'number';
@@ -108,10 +109,10 @@ class RoofInsulationFormRequest extends FormRequest
                         'type' => $this->getRoofTypeSubCategory($roofType),
                     ];
 
-                    // If the surface is empty but the roof type is set, throw a error
+                    // If the roof_surface is empty but the roof type is set, throw a error
                     $validator->after(function ($validator) use ($cat, $i, $result) {
-                        if ('' == Request::input('building_roof_types.'.$cat.'.surface') && '' != Request::input('building_roof_types.'.$i)) {
-                            $validator->errors()->add('building_roof_types.'.$cat.'.surface', __('validation.custom.surface'));
+                        if ('' == Request::input('building_roof_types.'.$cat.'.roof_surface') && '' != Request::input('building_roof_types.'.$i)) {
+                            $validator->errors()->add('building_roof_types.'.$cat.'.roof_surface', __('validation.custom.surface'));
                         }
 
                         // get the zinc category
@@ -121,10 +122,10 @@ class RoofInsulationFormRequest extends FormRequest
                             $validator->errors()->add('building_roof_types.'.$cat.'.extra.zinc_replaced_date', __('validation.custom.surface'));
                         }
 
-                        // if the roof is pitched and the replaced date is empty throw a error
-                        //if (Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') == "" && (isset($result['pitched'])) == true) {
-                        //    $validator->errors()->add('building_roof_types.'.$cat.'.extra.bitumen_replaced_date', __('validation.custom.surface'));
-                        //}
+                        if (Request::input('building_roof_types.' . $cat . '.insulation_roof_surface') == "" && Request::input('building_roof_types.' . $i) != "") {
+                            $validator->errors()->add('building_roof_types.' . $cat . '.insulation_roof_surface', __('validation.custom.surface'));
+                        }
+
                     });
                 }
             }

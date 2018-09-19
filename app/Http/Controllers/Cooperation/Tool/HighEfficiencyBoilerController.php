@@ -17,6 +17,7 @@ use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,15 +39,8 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('service', 4)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [4];
 
         $user = \Auth::user();
         $habit = $user->energyHabit;
@@ -59,7 +53,8 @@ class HighEfficiencyBoilerController extends Controller
 
         return view('cooperation.tool.hr-boiler.index', compact(
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
-            'steps'));
+            'typeIds',
+	        'steps'));
     }
 
     public function calculate(Request $request)
@@ -124,6 +119,9 @@ class HighEfficiencyBoilerController extends Controller
         $buildingServices = $request->input('building_services', '');
         $buildingServiceId = key($buildingServices);
 
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
         $serviceValue = isset($buildingServices[$buildingServiceId]['service_value_id']) ? $buildingServices[$buildingServiceId]['service_value_id'] : '';
         $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : '';
         $comment = $request->input('comment', '');
@@ -159,7 +157,7 @@ class HighEfficiencyBoilerController extends Controller
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)

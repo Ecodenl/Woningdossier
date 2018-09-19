@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\Building;
@@ -18,6 +19,7 @@ use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,15 +44,9 @@ class FloorInsulationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in floor insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('element', 4)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
-
+    	$typeIds = [4];
         /** @var Building $building */
-        $building = \Auth::user()->buildings()->first();
+	    $building = \Auth::user()->buildings()->first();
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
         $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
@@ -74,7 +70,7 @@ class FloorInsulationController extends Controller
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
-            'crawlspace', 'buildingCrawlspace',
+            'crawlspace', 'buildingCrawlspace', 'typeIds',
             'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement'
         ));
     }
@@ -100,7 +96,7 @@ class FloorInsulationController extends Controller
         $buildingElements = $request->get('building_elements', []);
         $buildingFeatures = $request->get('building_features', []);
 
-        $surface = array_key_exists('floor_surface', $buildingFeatures) ? $buildingFeatures['floor_surface'] : 0;
+        $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 
         if (array_key_exists('crawlspace', $buildingElements)) {
             // Check if crawlspace is accessible. If not: show warning!
@@ -178,6 +174,10 @@ class FloorInsulationController extends Controller
             );
         }
 
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($interests);
+
+
         $buildingElements = $request->input('building_elements', '');
         $buildingElementId = array_keys($buildingElements)[1];
 
@@ -203,7 +203,8 @@ class FloorInsulationController extends Controller
         $floorSurface = $request->input('building_features', '');
 
         BuildingFeature::where('building_id', Auth::user()->buildings()->first()->id)->update([
-            'surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '',
+            'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : "0.0",
+            'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : "0.0",
         ]);
 
         // Save progress
@@ -211,7 +212,7 @@ class FloorInsulationController extends Controller
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)

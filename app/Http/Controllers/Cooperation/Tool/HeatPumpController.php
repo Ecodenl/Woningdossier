@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingCurrentHeating;
 use App\Models\Cooperation;
@@ -81,7 +82,7 @@ class HeatPumpController extends Controller
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     /**

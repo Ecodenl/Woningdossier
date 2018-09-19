@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
         $this->call(FacadeDamagedPaintworksTableSeeder::class);
         $this->call(FacadePlasteredSurfacesTableSeeder::class);
         $this->call(PriceIndexingsTableSeeder::class);
-        $this->call(KeyFigureTemperaturesTableSeeder::class);
+//        $this->call(KeyFigureTemperaturesTableSeeder::class);
         $this->call(PaintworkStatusesTableSeeder::class);
         $this->call(WoodRotStatusesTableSeeder::class);
         $this->call(CrawlspaceAccessesTableSeeder::class);

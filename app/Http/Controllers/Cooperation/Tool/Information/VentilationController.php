@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\Information;
 
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
@@ -28,12 +29,6 @@ class VentilationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        if (Auth::user()->isNotInterestedInStep('element', 3)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
-
         $steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.ventilation-information.index', compact('steps'));
@@ -52,6 +47,6 @@ class VentilationController extends Controller
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingFeature
+ * App\Models\BuildingFeature.
  *
  * @property int $id
  * @property int|null $building_id
@@ -31,11 +31,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $additional_info
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\BuildingCategory|null $buildingCategory
- * @property-read \App\Models\BuildingType|null $buildingType
- * @property-read \App\Models\EnergyLabel|null $energyLabel
- * @property-read \App\Models\RoofType|null $roofType
+ * @property \App\Models\Building|null $building
+ * @property \App\Models\BuildingCategory|null $buildingCategory
+ * @property \App\Models\BuildingType|null $buildingType
+ * @property \App\Models\EnergyLabel|null $energyLabel
+ * @property \App\Models\RoofType|null $roofType
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereAdditionalInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildingCategoryId($value)
@@ -64,7 +65,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingFeature extends Model
 {
-
     protected $fillable = [
         'element_values',
         'plastered_wall_surface',
@@ -72,32 +72,38 @@ class BuildingFeature extends Model
         'cavity_wall',
         'contaminated_wall_joints',
         'wall_surface',
+        'insulation_wall_surface',
         'damage_paintwork',
         'additional_info',
 	    'surface',
 	    'floor_surface',
 	    'build_year',
         'facade_plastered_painted',
-        'window_surface'
+        'window_surface',
     ];
 
-    public function building(){
-    	return $this->belongsTo(Building::class);
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
     }
 
-    public function buildingCategory(){
-    	return $this->belongsTo(BuildingCategory::class);
+    public function buildingCategory()
+    {
+        return $this->belongsTo(BuildingCategory::class);
     }
 
-    public function buildingType(){
-    	return $this->belongsTo(BuildingType::class);
+    public function buildingType()
+    {
+        return $this->belongsTo(BuildingType::class);
     }
 
-    public function roofType(){
-    	return $this->belongsTo(RoofType::class);
+    public function roofType()
+    {
+        return $this->belongsTo(RoofType::class);
     }
 
-    public function energyLabel(){
-    	return $this->belongsTo(EnergyLabel::class);
+    public function energyLabel()
+    {
+        return $this->belongsTo(EnergyLabel::class);
     }
 }

@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Service
+ * App\Models\Service.
  *
  * @property int $id
  * @property string $name
@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $info
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\ServiceType $serviceType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ServiceValue[] $values
+ * @property \App\Models\ServiceType $serviceType
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ServiceValue[] $values
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service whereId($value)
@@ -31,14 +32,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Service extends Model
 {
-	use TranslatableTrait;
+    use TranslatableTrait;
 
-	public function serviceType(){
-		return $this->belongsTo(ServiceType::class);
-	}
+    public function serviceType()
+    {
+        return $this->belongsTo(ServiceType::class);
+    }
 
-	public function values(){
-		return $this->hasMany(ServiceValue::class);
-	}
-
+    public function values()
+    {
+        return $this->hasMany(ServiceValue::class);
+    }
 }

@@ -38,7 +38,6 @@ class ServiceValuesTableSeeder extends Seeder
                         'calculate_value' => 2,
                     ],
                 ],
-
             ],
             [
                 'names' => [
@@ -163,59 +162,59 @@ class ServiceValuesTableSeeder extends Seeder
                     ],
                 ],
             ],
-	        [
-		        'names' => [
-			        'nl' => 'Type ketel',
-		        ],
-		        'short' => 'boiler',
-		        'service_type' => 'Heating',
-		        'order' => 0,
-		        'info' => [
-			        'nl' => 'Info hier.',
-		        ],
-		        'service_values' => [
-			        [
-				        'values' => [
-					        'nl' => 'conventioneel rendement ketel',
-				        ],
-				        'order' => 1,
-				        'calculate_value' => 1,
-				        'is_default' => false,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => 'verbeterd rendement ketel',
-				        ],
-				        'order' => 2,
-				        'calculate_value' => 2,
-				        'is_default' => false,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => 'HR100 ketel',
-				        ],
-				        'order' => 3,
-				        'calculate_value' => 3,
-				        'is_default' => false,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => 'HR104 ketel',
-				        ],
-				        'order' => 4,
-				        'calculate_value' => 4,
-				        'is_default' => false,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => 'HR107 ketel',
-				        ],
-				        'order' => 5,
-				        'calculate_value' => 5,
-				        'is_default' => true,
-			        ],
-		        ],
-	        ],
+            [
+                'names' => [
+                    'nl' => 'Type ketel',
+                ],
+                'short' => 'boiler',
+                'service_type' => 'Heating',
+                'order' => 0,
+                'info' => [
+                    'nl' => 'Info hier.',
+                ],
+                'service_values' => [
+                    [
+                        'values' => [
+                            'nl' => 'conventioneel rendement ketel',
+                        ],
+                        'order' => 1,
+                        'calculate_value' => 1,
+                        'is_default' => false,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => 'verbeterd rendement ketel',
+                        ],
+                        'order' => 2,
+                        'calculate_value' => 2,
+                        'is_default' => false,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => 'HR100 ketel',
+                        ],
+                        'order' => 3,
+                        'calculate_value' => 3,
+                        'is_default' => false,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => 'HR104 ketel',
+                        ],
+                        'order' => 4,
+                        'calculate_value' => 4,
+                        'is_default' => false,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => 'HR107 ketel',
+                        ],
+                        'order' => 5,
+                        'calculate_value' => 5,
+                        'is_default' => true,
+                    ],
+                ],
+            ],
 //            [
 //                'names' => [
 //                    'nl' => 'Douche wtw',
@@ -302,104 +301,103 @@ class ServiceValuesTableSeeder extends Seeder
                 ],
                 'service_values' => [], // no values
             ],
-	        /*
-	        [
-	        	'names' => [
-	        		'nl' => 'PV panelen',
-		        ],
-		        'short' => 'pv-panels',
-		        'service_type' => 'PV-wind',
-		        'order' => 0,
-		        'info' => [
-		        	'nl' => 'Infotext hier',
-		        ],
-		        'service_values' => [
-			        // the peak powers
-			        [
-				        'values' => [
-					        'nl' => '260'
-				        ],
-				        'order' => 0,
-				        'calculate_value' => 260,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '265'
-				        ],
-				        'order' => 1,
-				        'calculate_value' => 265,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '270'
-				        ],
-				        'order' => 2,
-				        'calculate_value' => 270,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '275'
-				        ],
-				        'order' => 3,
-				        'calculate_value' => 275,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '280'
-				        ],
-				        'order' => 4,
-				        'calculate_value' => 280,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '285'
-				        ],
-				        'order' => 5,
-				        'calculate_value' => 285,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '290'
-				        ],
-				        'order' => 6,
-				        'calculate_value' => 290,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '295'
-				        ],
-				        'order' => 7,
-				        'calculate_value' => 295,
-			        ],
-			        [
-				        'values' => [
-					        'nl' => '300'
-				        ],
-				        'order' => 8,
-				        'calculate_value' => 300,
-			        ],
-		        ],
-	        ],*/
-
+            /*
+            [
+                'names' => [
+                    'nl' => 'PV panelen',
+                ],
+                'short' => 'pv-panels',
+                'service_type' => 'PV-wind',
+                'order' => 0,
+                'info' => [
+                    'nl' => 'Infotext hier',
+                ],
+                'service_values' => [
+                    // the peak powers
+                    [
+                        'values' => [
+                            'nl' => '260'
+                        ],
+                        'order' => 0,
+                        'calculate_value' => 260,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '265'
+                        ],
+                        'order' => 1,
+                        'calculate_value' => 265,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '270'
+                        ],
+                        'order' => 2,
+                        'calculate_value' => 270,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '275'
+                        ],
+                        'order' => 3,
+                        'calculate_value' => 275,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '280'
+                        ],
+                        'order' => 4,
+                        'calculate_value' => 280,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '285'
+                        ],
+                        'order' => 5,
+                        'calculate_value' => 285,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '290'
+                        ],
+                        'order' => 6,
+                        'calculate_value' => 290,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '295'
+                        ],
+                        'order' => 7,
+                        'calculate_value' => 295,
+                    ],
+                    [
+                        'values' => [
+                            'nl' => '300'
+                        ],
+                        'order' => 8,
+                        'calculate_value' => 300,
+                    ],
+                ],
+            ],*/
         ];
 
-        foreach($services as $service){
+        foreach ($services as $service) {
             $uuid = \App\Helpers\Str::uuid();
-            foreach($service['names'] as $locale => $name) {
-                \DB::table( 'translations' )->insert( [
+            foreach ($service['names'] as $locale => $name) {
+                \DB::table('translations')->insert([
                     'key'         => $uuid,
                     'language'    => $locale,
                     'translation' => $name,
-                ] );
+                ]);
             }
 
             $infoUuid = \App\Helpers\Str::uuid();
-            foreach($service['info'] as $locale => $name) {
-                \DB::table( 'translations' )->insert( [
+            foreach ($service['info'] as $locale => $name) {
+                \DB::table('translations')->insert([
                     'key'         => $infoUuid,
                     'language'    => $locale,
                     'translation' => $name,
-                ] );
+                ]);
             }
 
             $nameUuid = \DB::table('translations')
@@ -411,22 +409,22 @@ class ServiceValuesTableSeeder extends Seeder
             $serviceType = \DB::table('service_types')->where('name', $nameUuid->key)->first();
 
             if ($serviceType instanceof \stdClass) {
-                $serviceId = \DB::table( 'services' )->insertGetId( [
+                $serviceId = \DB::table('services')->insertGetId([
                     'name'            => $uuid,
                     'short' => $service['short'],
                     'service_type_id' => $serviceType->id,
                     'order' => $service['order'],
                     'info' => $infoUuid,
-                ] );
+                ]);
 
-                foreach($service['service_values'] as $serviceValue){
+                foreach ($service['service_values'] as $serviceValue) {
                     $uuid = \App\Helpers\Str::uuid();
-                    foreach($serviceValue['values'] as $locale => $name){
-                        \DB::table( 'translations' )->insert( [
+                    foreach ($serviceValue['values'] as $locale => $name) {
+                        \DB::table('translations')->insert([
                             'key'         => $uuid,
                             'language'    => $locale,
                             'translation' => $name,
-                        ] );
+                        ]);
                     }
 
                     \DB::table('service_values')->insert([
@@ -434,7 +432,7 @@ class ServiceValuesTableSeeder extends Seeder
                         'value' => $uuid,
                         'order' => $serviceValue['order'],
                         'calculate_value' => isset($serviceValue['calculate_value']) ? $serviceValue['calculate_value'] : null,
-	                    'is_default' => $serviceValue['is_default'] ?? false,
+                        'is_default' => $serviceValue['is_default'] ?? false,
                     ]);
                 }
             }

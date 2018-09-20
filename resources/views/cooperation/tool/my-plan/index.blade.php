@@ -41,6 +41,7 @@
 	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
                     <tr>
                         <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]" value="{{$measureType}}">
+                        <input type="hidden" class="measure_short" value="{{$advice->measureApplication->short}}">
                         <td >
                             <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
                         </td>
@@ -130,6 +131,9 @@
 @push('js')
     <script>
         $(document).ready(function(){
+            const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
+            const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
+
             $(window).keydown(function(event){
                 if(event.keyCode == 13) {
                     event.preventDefault();
@@ -227,6 +231,7 @@
             // if a user clicks the interested check box
             $('.interested-checker').on('click', function() {
 
+                /* Fill the year input with the adviced year, and else with the current year */
                 // get the planned year input
                 var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
                 // check if the checkbox is checked
@@ -242,6 +247,41 @@
                 } else {
                     plannedYearInput.val("");
                 }
+
+                /* Warnings for certain cases */
+                // get the measure application short for the checked box
+
+                var measureApplicationShort = $(this).parent().parent().find('.measure_short').val();
+
+                // this will be excecuted when the energy measure checkbox get checked
+                if (measureApplicationShort === ROOF_INSULATION_FLAT_REPLACE_CURRENT && $(this).is(':checked')) {
+                    if ($('input[value='+REPLACE_ROOF_INSULATION+']').length) {
+                        var maintenanceCheckbox = $('input[value='+REPLACE_ROOF_INSULATION+']').next().next().children();
+                        var maintenancePlannedYearInput = $(maintenanceCheckbox).parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(maintenanceCheckbox).is(':not(:checked)')) {
+                            alert('Hey, je probeert je istolatie plat dak met vervanging van de dakbedding te doen terwijl vervangen dakbedding uitstaat')
+                        }
+                        else if ($(maintenanceCheckbox).is(':checked') && (maintenancePlannedYearInput.val() !== plannedYearInput.val())) {
+                            alert('Hey, Mooi dat je t allebij checkt, maar je jaren zijn nu niet gelijk')
+                        }
+                    }
+
+                } // this will be excecuted when the maintance checkbox get checked
+                else if (measureApplicationShort === REPLACE_ROOF_INSULATION  && $(this).is(':checked')) {
+                    if ($('input[value='+ROOF_INSULATION_FLAT_REPLACE_CURRENT+']').length) {
+
+                        var energySavingCheckbox = $('input[value='+ROOF_INSULATION_FLAT_REPLACE_CURRENT+']').next().next().children();
+                        var energySavingPlannedYearInput = $(energySavingCheckbox).parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(energySavingCheckbox).is(':checked') && (energySavingPlannedYearInput.val() !== plannedYearInput.val())) {
+                            alert('Hey, Mooi dat je t allebij checkt, maar je jaren zijn nu niet gelijk')
+                        }
+                    }
+                }
+
             });
 
         });

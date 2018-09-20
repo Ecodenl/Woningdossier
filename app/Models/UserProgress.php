@@ -26,7 +26,7 @@ class UserProgress extends Model
 
     public function steps()
     {
-        return $this->hasMany('App\Models\Steps');
+        return $this->hasMany(Step::class);
     }
 
 }

@@ -16,15 +16,14 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-	    //view()->composer('cooperation.layouts.app',  CooperationComposer::class);
-	    //view()->composer('*',  CooperationComposer::class);
-
+        //view()->composer('cooperation.layouts.app',  CooperationComposer::class);
+        //view()->composer('*',  CooperationComposer::class);
 
         \View::composer('cooperation.tool.includes.interested', function ($view) {
             $view->with('interests', Interest::orderBy('order')->get());
         });
 
-	    \View::creator('*', CooperationComposer::class);
+        \View::creator('*', CooperationComposer::class);
     }
 
     /**

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Models\BuildingCurrentHeating;
 use App\Models\Cooperation;
 use App\Models\HeatSource;
 use App\Models\PresentHeatPump;
 use App\Models\Step;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class HeatPumpController extends Controller
@@ -31,7 +31,6 @@ class HeatPumpController extends Controller
     {
         // get the next page order
         $nextPage = $this->step->order + 1;
-
 
         $heatpumpTypes = PresentHeatPump::all();
         $buildingCurrentHeatings = BuildingCurrentHeating::all();

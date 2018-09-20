@@ -202,7 +202,7 @@ class User extends Authenticatable
 
         $interestedIds = [];
 
-        if (!is_array($interestedInIds)) {
+        if (! is_array($interestedInIds)) {
             $interestedInIds = [$interestedInIds];
         }
 
@@ -219,11 +219,10 @@ class User extends Authenticatable
         }
 
         return true;
-	}
+    }
 
-
-	/**
-	 * Returns whether or not a user is associated with a particular Cooperation.
+    /**
+     * Returns whether or not a user is associated with a particular Cooperation.
      *
      * @param Cooperation $cooperation
      *

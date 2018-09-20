@@ -53,8 +53,6 @@ class WallInsulationController extends Controller
         $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
         $buildingFeature = $building->buildingFeatures;
 
-
-
         /** @var BuildingElement $houseInsulation */
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
@@ -78,7 +76,7 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-	    $user = Auth::user();
+        $user = Auth::user();
 
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
@@ -90,7 +88,7 @@ class WallInsulationController extends Controller
         $wallJoints = $request->get('wall_joints', '');
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
         $wallSurface = $request->get('wall_surface', 0);
-	    $insulationWallSurface = $request->get('insulation_wall_surface', 0);
+        $insulationWallSurface = $request->get('insulation_wall_surface', 0);
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');

@@ -20,7 +20,6 @@ class AppServiceProvider extends ServiceProvider
             $formData = array_dot($validator->getData());
             $compareFieldValue = $formData[$parameters[0]];
 
-
             if ($value > $compareFieldValue) {
                 return false;
             } else {
@@ -28,8 +27,9 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        \Validator::replacer('needs_to_be_lower_or_same_as', function($message, $attribute, $rule, $parameters){
+        \Validator::replacer('needs_to_be_lower_or_same_as', function ($message, $attribute, $rule, $parameters) {
             $compareFieldName = $parameters[0];
+
             return __('validation.custom.needs_to_be_lower_or_same_as', ['otherfield' => $compareFieldName]);
         });
     }

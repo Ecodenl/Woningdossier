@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class DeleteSleepingRoomWindowsFromElementsTable extends Migration
@@ -13,19 +11,16 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
      */
     public function up()
     {
-
         // so we can get the id and remove it later on
         $sleepingRoomWindow = DB::table('elements')->where('short', 'sleeping-rooms-windows');
 
         if ($sleepingRoomWindow->first() instanceof stdClass) {
-
             // remove the user interests for the sleeping rooms windows
             DB::table('user_interests')
                 ->where('interested_in_type', 'element')
                 ->where('interested_in_id', $sleepingRoomWindow->first()->id)
                 ->delete();
         }
-
     }
 
     /**
@@ -69,7 +64,6 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
             ],
         ];
 
-        //
         $elements = [
             [
                 'names' => [
@@ -166,7 +160,6 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
             }
         }
 
-
         foreach ($maxSavings as $buildingType => $elements) {
             $bt = \DB::table('building_types')->leftJoin('translations', 'building_types.name', '=', 'translations.key')
                 ->where('language', 'nl')
@@ -190,7 +183,5 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
                 ]);
             }
         }
-
-
     }
 }

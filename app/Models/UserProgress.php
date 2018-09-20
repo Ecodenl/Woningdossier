@@ -28,5 +28,4 @@ class UserProgress extends Model
     {
         return $this->hasMany(Step::class);
     }
-
 }

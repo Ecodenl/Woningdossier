@@ -93,14 +93,14 @@ class UserActionPlanAdvice extends Model
                 $advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
             }
 
-			if (!array_key_exists($measureApplication->measure_type, $result)){
-				$result[$measureApplication->measure_type] = [];
-			}
-//			if (!array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
+            if (! array_key_exists($measureApplication->measure_type, $result)) {
+                $result[$measureApplication->measure_type] = [];
+            }
+            //			if (!array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
 //                $result[$measureApplication->measure_type][$advice->step->slug] = [];
 //            }
 
-			if (!array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
+            if (! array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
                 $result[$measureApplication->measure_type][$advice->step->slug] = [];
             }
 

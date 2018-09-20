@@ -8,6 +8,7 @@ use App\Helpers\FloorInsulationCalculator;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -21,7 +22,6 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class FloorInsulationController extends Controller
@@ -44,9 +44,9 @@ class FloorInsulationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-    	$typeIds = [4];
+        $typeIds = [4];
         /** @var Building $building */
-	    $building = \Auth::user()->buildings()->first();
+        $building = \Auth::user()->buildings()->first();
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
         $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
@@ -159,7 +159,7 @@ class FloorInsulationController extends Controller
      */
     public function store(FloorInsulationFormRequest $request)
     {
-    	$user = Auth::user();
+        $user = Auth::user();
 
         // Get the value's from the input's
         $elements = $request->input('element', '');
@@ -178,7 +178,6 @@ class FloorInsulationController extends Controller
 
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
-
 
         $buildingElements = $request->input('building_elements', '');
         $buildingElementId = array_keys($buildingElements)[1];
@@ -205,8 +204,8 @@ class FloorInsulationController extends Controller
         $floorSurface = $request->input('building_features', '');
 
         BuildingFeature::where('building_id', $user->buildings()->first()->id)->update([
-            'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : "0.0",
-            'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : "0.0",
+            'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '0.0',
+            'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : '0.0',
         ]);
 
         // Save progress

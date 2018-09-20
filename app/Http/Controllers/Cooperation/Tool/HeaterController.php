@@ -8,6 +8,7 @@ use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\HeaterFormRequest;
 use App\Models\Building;
 use App\Models\BuildingHeater;
@@ -26,7 +27,6 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class HeaterController extends Controller
@@ -166,7 +166,7 @@ class HeaterController extends Controller
      */
     public function store(HeaterFormRequest $request)
     {
-		$user = Auth::user();
+        $user = Auth::user();
 
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
@@ -190,7 +190,7 @@ class HeaterController extends Controller
         $habits = $request->input('user_energy_habits', '');
         $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
 
-	    $user->energyHabit()->update(['water_comfort_id' => $waterComFortId]);
+        $user->energyHabit()->update(['water_comfort_id' => $waterComFortId]);
 
         // Save progress
         $this->saveAdvices($request);

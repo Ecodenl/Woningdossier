@@ -111,7 +111,7 @@ class LoginController extends Controller
 				$role = $user->roles()->orderBy('level', 'DESC')->first();
 			}
 
-			$this->redirectTo = RoleHelper::getUrlByRoleName($role);
+			$this->redirectTo = RoleHelper::getUrlByRole($role);
 
 			return $this->sendLoginResponse($request);
 		}

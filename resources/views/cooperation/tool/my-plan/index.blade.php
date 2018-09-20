@@ -49,7 +49,7 @@
                             @if($measureType == "energy_saving")
                                 <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\StepHelper::hasInterestInStep($step) && $advice->planned) checked @endif />
                             @else
-                                <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned == 1) checked @elseif(\App\Helpers\StepHelper::hasInterestInStep($step) || $advice->planned) checked @endif />
+                                <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned) checked @endif />
                             @endif
                         </td>
                         <td>

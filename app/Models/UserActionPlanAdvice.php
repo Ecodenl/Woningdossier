@@ -107,6 +107,7 @@ class UserActionPlanAdvice extends Model
             $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
         }
 
+        ksort($result);
         return $result;
     }
 

@@ -11,15 +11,75 @@ class ModelHasRolesTableSeeder extends Seeder
      */
     public function run()
     {
-        $superAdmin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'super-admin']);
-        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'cooperation-admin']);
-        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'coach']);
+        $superAdmin = \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'super-admin',
+            ],
+            [
+                'name' => 'super-admin',
+                'human_readable_name' => 'Super admin',
+	            'level' => 100,
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'superuser',
+            ],
+            [
+                'name' => 'superuser',
+                'human_readable_name' => 'Super user',
+	            'level' => 90,
+            ]
+        );
+
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'cooperation-admin',
+            ],
+            [
+                'name' => 'cooperation-admin',
+                'human_readable_name' => 'Coöperatie admin',
+	            'level' => 20,
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'coach',
+            ],
+            [
+                'name' => 'coach',
+                'human_readable_name' => 'Coach',
+	            'level' => 5,
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'bewoner',
+            ],
+            [
+                'name' => 'bewoner',
+                'human_readable_name' => 'Bewoner',
+	            'level' => 1,
+            ]
+        );
+        \Spatie\Permission\Models\Role::updateOrCreate(
+            [
+                'name' => 'coordinator',
+            ],
+            [
+                'name' => 'coordinator',
+                'human_readable_name' => 'Coördinator',
+	            'level' => 15,
+            ]
+        );
 
         // The default (admin) user is promoted to super user
 
         $users = \App\Models\User::where('is_admin', 1)->get();
         foreach ($users as $user) {
-            $user->assignRole($superAdmin);
+        	if (!$user->hasRole($superAdmin)) {
+		        $user->assignRole( $superAdmin );
+	        }
         }
     }
 }

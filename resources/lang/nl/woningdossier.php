@@ -1,40 +1,97 @@
 <?php
 
 return [
-    'navbar' => [
-        'language' => 'Taal',
-        'languages' => [
-            'nl' => 'Nederlands',
-            'en' => 'Engels',
-        ],
-    ],
-    'cooperation' => [
-        'admin' => [
-            'navbar' => [
-                'reports' => 'Rapportages',
-                'example-buildings' => 'Example buildings',
-            ],
-            'reports' => [
-                'title' => 'Rapportages',
-                'description' => 'Rapportage downloads',
+	'navbar' => [
+		'language' => 'Taal',
+		'languages' => [
+			'nl' => 'Nederlands',
+			'en' => 'Engels',
+		],
+	],
+	'cooperation' => [
 
-                'download' => [
-                    'by-year' => 'Actieplan per jaar',
-                    'by-measure' => 'Actieplan per maatregel',
+	    'admin' => [
+            'choose-roles' => [
+                'header' => 'Als welke rol wilt u doorgaan ?',
+                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
+            ],
+
+            'coach' => [
+                'side-nav' => [
+                    'label' => 'Coach menu',
+                    'index' => 'Home',
+                    'buildings' => 'Gebouwen',
+                    'messages' => 'Berichten',
                 ],
-                'csv-columns' => [
-                    'first-name' => 'Voornaam',
-                    'last-name' => 'Achternaam',
-                    'email' => 'Email',
-                    'phonenumber' => 'Telefoonnummer',
-                    'mobilenumber' => 'Mobiel nummer',
-                    'street' => 'Straat',
-                    'house-number' => 'Huisnummer',
-                    'city' => 'Woonplaats',
-                    'zip-code' => 'Postcode',
-                    'country-code' => 'Landcode',
+
+                'index' => [
+                    'header' => 'Welkom op het coach panel',
+                    'text' => 'Alle gebouwen waar u toegang tot heeft, u kunt op de pagina voor gebouwen acties uitvoeren hierop.',
+
+                    'table' => [
+                        'columns' => [
+                            'street' => 'Straatnaam',
+                            'city' => 'Stad',
+                            'owner' => 'Eigenaar',
+                            'actions' => 'Acties',
+                        ],
+                    ],
+                ],
+
+                'buildings' => [
+                    'index' => [
+                        'table' => [
+                            'columns' => [
+                                'street' => 'Straatnaam',
+                                'city' => 'Stad',
+                                'owner' => 'Eigenaar',
+                                'actions' => 'Acties',
+                            ],
+                        ],
+                    ],
+                    'header' => 'Gebouwen waar u toegangt tot heeft',
+                ]
+            ],
+            'cooperation' => [
+                'coordination' => [
+                    'header' => 'Welkom',
+                    'text' => 'U kunt hier verschillende dingen doen.'
+                ],
+                'cooperation-admin' => [
+                    'header' => 'Welkom',
+                    'text' => 'U kunt hier verschillende dingen doen.',
+
+
+                    'reports' => [
+                        'title' => 'Rapportages',
+                        'description' => 'Rapportage downloads',
+
+                        'download' => [
+                            'by-year' => 'Actieplan per jaar',
+                            'by-measure' => 'Actieplan per maatregel',
+                        ],
+                        'csv-columns' => [
+                            'first-name' => 'Voornaam',
+                            'last-name' => 'Achternaam',
+                            'email' => 'Email',
+                            'phonenumber' => 'Telefoonnummer',
+                            'mobilenumber' => 'Mobiel nummer',
+                            'street' => 'Straat',
+                            'house-number' => 'Huis nummer',
+                            'city' => 'Woonplaats',
+                            'zip-code' => 'Postcode',
+                            'country-code' => 'Landcode',
+                        ],
+                    ],
                 ],
             ],
+
+	        'navbar' => [
+	            'current-role' => 'Uw huidge rol:',
+	        	'reports' => 'Rapportages',
+                'example-buildings' => 'Example buildings'
+            ],
+
         ],
 
         'radiobutton' => [

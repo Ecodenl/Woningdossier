@@ -34,9 +34,16 @@ class CooperationMiddleware
         if ($request->session()->has('cooperation')) {
             //$cooperation = Cooperation::find($request->session()->get('cooperation'));
             if ($cooperation instanceof Cooperation) {
-                \Log::debug('Default cooperation -> '.$cooperation->id.' ('.$cooperation->slug.')');
+                \Log::debug('Setting default cooperation for URL -> '.$cooperation->id.' ('.$cooperation->slug.')');
                 URL::defaults(['cooperation' => $cooperation->slug]);
             }
+        }
+
+        if ($request->session()->has('role_id') && !empty($request->session()->get('role_id'))){
+	        \Log::debug("Session: role -> " . $request->session()->get('role_id'));
+        }
+        else {
+        	\Log::debug("Session: no user role set.");
         }
 
         return $next($request);

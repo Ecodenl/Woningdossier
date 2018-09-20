@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\InterestedToExecuteMeasure;
+use Illuminate\Database\Seeder;
 
 class InterestedToExecuteMeasuresTableSeeder extends Seeder
 {

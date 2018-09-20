@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMotivationsTable extends Migration
 {
@@ -15,7 +15,7 @@ class CreateMotivationsTable extends Migration
     {
         Schema::create('motivations', function (Blueprint $table) {
             $table->increments('id');
-	        $table->uuid('name');
+            $table->uuid('name');
             $table->integer('calculate_value')->nullable();
             $table->integer('order');
             $table->timestamps();

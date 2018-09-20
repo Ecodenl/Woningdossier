@@ -28,7 +28,7 @@ class HeaterFormRequest extends FormRequest
             'building_heaters.pv_panel_orientation_id' => 'required|numeric|exists:pv_panel_orientations,id',
             'building_heaters.angle' => 'required|numeric|between:20,90',
 
-            'user_energy_habits.water_comfort_id' => 'required|numeric|exists:comfort_level_tap_waters,id'
+            'user_energy_habits.water_comfort_id' => 'required|numeric|exists:comfort_level_tap_waters,id',
         ];
     }
 }

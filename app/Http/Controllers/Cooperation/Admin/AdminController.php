@@ -9,7 +9,6 @@ use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
-
     public function index()
     {
         $user = \Auth::user();
@@ -18,7 +17,7 @@ class AdminController extends Controller
         if ($user->getRoleNames()->count() == 1) {
 
             $roleName = $user->getRoleNames()->first();
-            
+
             return redirect(url(RoleHelper::getUrlByRoleName($roleName)));
         }
     	return view('cooperation.admin.choose-roles', compact('user'));

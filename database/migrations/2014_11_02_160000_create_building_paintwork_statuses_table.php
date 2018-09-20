@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBuildingPaintworkStatusesTable extends Migration
 {
@@ -24,8 +24,8 @@ class CreateBuildingPaintworkStatusesTable extends Migration
             $table->integer('paintwork_status_id')->unsigned();
             $table->foreign('paintwork_status_id')->references('id')->on('paintwork_statuses')->onDelete('restrict');
 
-	        $table->integer('wood_rot_status_id')->unsigned();
-	        $table->foreign('wood_rot_status_id')->references('id')->on('wood_rot_statuses')->onDelete('restrict');
+            $table->integer('wood_rot_status_id')->unsigned();
+            $table->foreign('wood_rot_status_id')->references('id')->on('wood_rot_statuses')->onDelete('restrict');
 
             $table->timestamps();
         });

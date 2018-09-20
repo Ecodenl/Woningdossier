@@ -51,6 +51,7 @@
     </div>
 @endsection
 
+
 @push('js')
     <script>
         $('#submit-form-top-right').click(function () {

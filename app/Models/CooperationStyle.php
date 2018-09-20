@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\CooperationStyle
+ * App\Models\CooperationStyle.
  *
  * @property int $id
  * @property int $cooperation_id
@@ -17,7 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $css_url
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Cooperation $cooperation
+ * @property \App\Models\Cooperation $cooperation
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle whereCssUrl($value)
@@ -32,9 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CooperationStyle extends Model
 {
-
-	public function cooperation(){
-		return $this->belongsTo(Cooperation::class);
-	}
-
+    public function cooperation()
+    {
+        return $this->belongsTo(Cooperation::class);
+    }
 }

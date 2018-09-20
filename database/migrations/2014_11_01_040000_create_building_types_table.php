@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBuildingTypesTable extends Migration
 {
@@ -19,8 +19,6 @@ class CreateBuildingTypesTable extends Migration
             $table->integer('calculate_value');
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -30,6 +28,6 @@ class CreateBuildingTypesTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('building_types');
+        Schema::dropIfExists('building_types');
     }
 }

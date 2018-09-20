@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingHeating
+ * App\Models\BuildingHeating.
  *
  * @property int $id
  * @property string $name
@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_default
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeating translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeating whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeating whereCreatedAt($value)
@@ -29,12 +30,12 @@ class BuildingHeating extends Model
 {
     use TranslatableTrait;
 
-	/**
-	 * The attributes that should be cast to native types.
-	 *
-	 * @var array
-	 */
-	protected $casts = [
-		'is_default' => 'boolean',
-	];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_default' => 'boolean',
+    ];
 }

@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\CrawlspaceAccess
+ * App\Models\CrawlspaceAccess.
  *
  * @property int $id
  * @property string $name
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CrawlspaceAccess translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CrawlspaceAccess whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CrawlspaceAccess whereCreatedAt($value)
@@ -26,6 +27,4 @@ use Illuminate\Database\Eloquent\Model;
 class CrawlspaceAccess extends Model
 {
     use TranslatableTrait;
-
-
 }

@@ -11,7 +11,6 @@ class ModelHasRolesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
         $superAdmin = \Spatie\Permission\Models\Role::updateOrCreate(
             [
                 'name' => 'super-admin',
@@ -71,7 +70,7 @@ class ModelHasRolesTableSeeder extends Seeder
         // The default (admin) user is promoted to super user
 
         $users = \App\Models\User::where('is_admin', 1)->get();
-        foreach($users as $user){
+        foreach ($users as $user) {
             $user->assignRole($superAdmin);
         }
     }

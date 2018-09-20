@@ -188,7 +188,7 @@
                             $("ul#years").append("<li>" + header + table + "</li>");
                         });
 
-                        // toogle cheveron for the personal plan
+                        // toggle cheveron for the personal plan
                         $('.turn-on-click').on('click', function () {
                             $(this).toggleClass('clicked');
 

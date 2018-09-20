@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingFeature
+ * App\Models\BuildingFeature.
  *
  * @property int $id
  * @property int|null $building_id

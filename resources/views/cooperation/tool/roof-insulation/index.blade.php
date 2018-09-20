@@ -3,6 +3,11 @@
 {{--{{dd($errors)}}--}}
 @section('step_title', __('woningdossier.cooperation.tool.roof-insulation.title'))
 
+<?php
+if ($errors->any()) {
+    dump($errors);
+}
+?>
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
 
@@ -84,7 +89,7 @@
                                         <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][element_value_id]" >
                                             @foreach($roofInsulation->values as $insulation)
                                                 @if($insulation->calculate_value < 6)
-                                                <option @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
+                                                    <option @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
@@ -106,7 +111,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.surface')}}">
+                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">
                                         </div>
 
                                         <div id="{{ $roofCat }}-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -430,7 +435,7 @@
         $(document).ready(function() {
 
             $(window).keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
@@ -501,6 +506,7 @@
 
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')){
+
                                 if(data.pitched.type === 'tiles'){
                                     $(".cover-tiles").show();
                                     $(".pitched-roof .cover-bitumen").hide();

@@ -203,7 +203,7 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
                         <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty')</label>
 
                         <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
@@ -228,7 +228,7 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group add-space">
+                    <div class="form-group add-space @if ($errors->has('wall_surface')) has-error @endif">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
@@ -242,15 +242,15 @@
                         <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
                         </div>
-                        @if ($errors->has('insulation_wall_surface'))
+                        @if ($errors->has('wall_surface'))
                         <span class="help-block">
-                            <strong>{{ $errors->first('insulation_wall_surface') }}</strong>
+                            <strong>{{ $errors->first('wall_surface') }}</strong>
                         </span>
                         @endif
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group add-space">
+                    <div class="form-group add-space @if ($errors->has('insulation_wall_surface')) has-error @endif">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')

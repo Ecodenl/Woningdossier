@@ -131,7 +131,7 @@ class SolarPanelsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param SolarPanelFormRequest $request*
+     * @param SolarPanelFormRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(SolarPanelFormRequest $request)

@@ -382,7 +382,7 @@ return [
             ],
             'solar-panels' => [
                 'title' => 'Zonnepanelen',
-
+                'amount' => 'Stuks',
                 'peak-power' => 'Piekvermogen per paneel',
                 'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
                 'number' => 'Hoeveel zonnepanelen moeten er komen?',

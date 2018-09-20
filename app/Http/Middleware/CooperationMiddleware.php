@@ -39,6 +39,13 @@ class CooperationMiddleware
             }
         }
 
+        if ($request->session()->has('role_id') && !empty($request->session()->get('role_id'))){
+	        \Log::debug("Session: role -> " . $request->session()->get('role_id'));
+        }
+        else {
+        	\Log::debug("Session: no user role set.");
+        }
+
         return $next($request);
     }
 }

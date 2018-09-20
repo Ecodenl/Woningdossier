@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -105,6 +106,13 @@ class LoginController extends Controller
 
                 session()->put('role_id', $role->id);
             }
+			else {
+				// get highest role and redirect to the corresponding route / url
+				$role = $user->roles()->orderBy('level', 'DESC')->first();
+			}
+
+			$this->redirectTo = RoleHelper::getUrlByRoleName($role);
+
 			return $this->sendLoginResponse($request);
 		}
 

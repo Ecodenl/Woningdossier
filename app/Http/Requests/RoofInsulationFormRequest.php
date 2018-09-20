@@ -73,7 +73,7 @@ class RoofInsulationFormRequest extends FormRequest
                         ];
 
                     $roofTypeValueRules['building_roof_types.'.$cat.'.roof_surface'] = 'number';
-                        $roofTypeValueRules['building_roof_types.'.$cat.'.insulation_roof_surface'] = 'number';
+                    $roofTypeValueRules['building_roof_types.'.$cat.'.insulation_roof_surface'] = 'number';
                     $roofTypeValueRules['building_roof_types.'.$cat.'.element_value_id'] = 'exists:element_values,id';
                     $roofTypeValueRules['building_roof_types.'.$cat.'.building_heating_id'] = 'exists:building_heatings,id';
                     $roofTypeValueRules['building_roof_types.'.$cat.'.extra.bitumen_replaced_date'] = 'number';

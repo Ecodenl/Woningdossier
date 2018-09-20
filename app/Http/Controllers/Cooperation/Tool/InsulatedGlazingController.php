@@ -8,7 +8,6 @@ use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -30,6 +29,7 @@ use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
@@ -301,11 +301,13 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-        $building = Auth::user()->buildings()->first();
+    	$user = Auth::user();
+
+        $building = $user->buildings()->first();
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
         $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($interests);
+        UserInterest::saveUserInterests($user, $interests);
 
         // Saving the insulate glazings
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
@@ -333,7 +335,7 @@ class InsulatedGlazingController extends Controller
             // We'll create the user interests for the measures or update it
             UserInterest::updateOrCreate(
                 [
-                    'user_id' => Auth::id(),
+                    'user_id' => $user->id,
                     'interested_in_type' => 'measure_application',
                     'interested_in_id' => $measureApplicationId,
                 ],
@@ -407,7 +409,7 @@ class InsulatedGlazingController extends Controller
 
         $this->saveAdvices($request);
         // Save progress
-        \Auth::user()->complete($this->step);
+        $user->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);

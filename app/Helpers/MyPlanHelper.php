@@ -126,20 +126,21 @@ class MyPlanHelper
         $currentYear = Carbon::now()->year(date('Y'));
 
         if (!$interested){
-            // if not interested, put the interest ID on
-            $interest = Interest::where('calculate_value', '=', 4)->first();
+        	// if not interested, put the interest ID on
+	        $interest = Interest::where('calculate_value', '=', 4)->first();
         }
         elseif ($requestPlannedYear != null) {
-            // change the value of the interested level based on the planned year
-            // If the filled in year has a difference of 3 years or less with
-            // the current year, we set the interest to 1 (Ja, op korte termijn)
-            if ( $currentYear->diff( $plannedYear )->y <= 3 ) {
-                $interest = Interest::where('calculate_value', '=', 1)->first();
-            } else {
-                // If the filled in year has a difference of more than 3 years than
-                // the current year, we set the interest  to 2 (Ja, op termijn)
-                $interest = Interest::where('calculate_value', '=', 2)->first();
-            }
+	        // change the value of the interested level based on the planned year
+
+	        // If the filled in year has a difference of 3 years or less with
+	        // the current year, we set the interest to 1 (Ja, op korte termijn)
+	        if ( $currentYear->diff( $plannedYear )->y <= 3 ) {
+		        $interest = Interest::where('calculate_value', '=', 1)->first();
+	        } else {
+		        // If the filled in year has a difference of more than 3 years than
+		        // the current year, we set the interest  to 2 (Ja, op termijn)
+		        $interest = Interest::where('calculate_value', '=', 2)->first();
+	        }
         }
         else {
             // So the planned year is empty. Let's look for the advised year.
@@ -164,6 +165,7 @@ class MyPlanHelper
             foreach ($interestInIds as $interestInId) {
                 UserInterest::updateOrCreate(
                     [
+                    	'user_id' => $advice->user->id,
                         'interested_in_type' => $type,
                         'interested_in_id' => $interestInId,
                     ],

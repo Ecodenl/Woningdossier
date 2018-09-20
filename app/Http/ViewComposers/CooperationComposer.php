@@ -5,7 +5,7 @@ namespace App\Http\ViewComposers;
 use App\Models\Interest;
 use Illuminate\View\View;
 
-class CooperationComposer {
+class CooperationComposer{
 
 	public function create(View $view){
 		//\Log::debug(__METHOD__);

@@ -102,27 +102,28 @@ class UserInterest extends Model
         return $interests;
     }
 
-    public function getInterests()
-    {
-        return [
-            'service' => $this->getInterestsInServices(),
-            'element' => $this->getInterestsInElements(),
-            'measure_application' => $this->getInterestInMeasureApplications(),
-            'roof_type' => $this->getInterestsInRoofTypes(),
-        ];
-    }
+	public function getInterests(){
+		return [
+			'service' => $this->getInterestsInServices(),
+			'element' => $this->getInterestsInElements(),
+			'measure_application' => $this->getInterestInMeasureApplications(),
+			'roof_type' => $this->getInterestsInRoofTypes(),
+		];
+	}
 
     /**
      * Function to update or create the user interests
      *
      * @param array $interests
+     * @param User $user
      */
-    public static function saveUserInterests(array $interests)
+    public static function saveUserInterests(User $user, array $interests)
     {
         foreach ($interests as $type => $interestTypes) {
             foreach ($interestTypes as $typeId => $interestId) {
                 self::updateOrCreate(
                     [
+                    	'user_id' => $user->id,
                         'interested_in_type' => $type,
                         'interested_in_id' => $typeId
                     ],

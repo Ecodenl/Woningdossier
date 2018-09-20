@@ -78,11 +78,10 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-
-
+	    $user = Auth::user();
 
         $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($interests);
+        UserInterest::saveUserInterests($user, $interests);
 
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
@@ -97,7 +96,6 @@ class WallInsulationController extends Controller
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
 
         // get the user buildingfeature
-        $user = Auth::user();
         $building = $user->buildings()->first();
         $buildingFeatures = $building->buildingFeatures();
 

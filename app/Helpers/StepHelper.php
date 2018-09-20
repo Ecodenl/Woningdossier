@@ -17,53 +17,53 @@ class StepHelper
     const STEP_INTERESTS = [
         'ventilation-information' => [
             'service' => [
-                '6'
-            ]
+                6
+            ],
         ],
         // step name
         'wall-insulation' => [
             // type
             'element' => [
                 // interested in id (Element id, service id etc)
-                '3',
-            ]
+                3,
+            ],
         ],
         'insulated-glazing' => [
             'element' => [
-                '1',
-                '2'
+                1,
+                2,
             ],
         ],
         'floor-insulation' => [
             'element' => [
-                '4'
-            ]
+                4,
+            ],
         ],
         'roof-insulation' => [
             'element' => [
-                '5'
-            ]
+                5,
+            ],
         ],
         'high-efficiency-boiler' => [
             'service' => [
-                '4'
-            ]
+                4,
+            ],
         ],
         'heat-pump' => [
             'service' => [
-                '1',
-                '2'
-            ]
+                1,
+                2,
+            ],
         ],
         'solar-panels' => [
             'service' => [
-                '7'
-            ]
+                7,
+            ],
         ],
         'heater' => [
             'service' => [
-                '3'
-            ]
+                3,
+            ],
         ],
     ];
 

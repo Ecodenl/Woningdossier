@@ -261,10 +261,10 @@
 
                         // if the checkbox is not checked, throw error
                         if ($(maintenanceCheckbox).is(':not(:checked)')) {
-                            alert('Hey, je probeert je istolatie plat dak met vervanging van de dakbedding te doen terwijl vervangen dakbedding uitstaat')
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')')
                         }
                         else if ($(maintenanceCheckbox).is(':checked') && (maintenancePlannedYearInput.val() !== plannedYearInput.val())) {
-                            alert('Hey, Mooi dat je t allebij checkt, maar je jaren zijn nu niet gelijk')
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
                         }
                     }
 
@@ -277,7 +277,7 @@
 
                         // if the checkbox is not checked, throw error
                         if ($(energySavingCheckbox).is(':checked') && (energySavingPlannedYearInput.val() !== plannedYearInput.val())) {
-                            alert('Hey, Mooi dat je t allebij checkt, maar je jaren zijn nu niet gelijk')
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
                         }
                     }
                 }

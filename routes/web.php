@@ -91,6 +91,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
 
             Route::get('/', 'AdminController@index')->name('index');
+            Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
 			Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
 

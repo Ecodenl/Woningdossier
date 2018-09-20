@@ -89,10 +89,10 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    @foreach(Auth::user()->roles as $role)
+                                    @foreach(Auth::user()->roles()->orderBy('level', 'DESC')->get() as $role)
                                         <li>
-                                            <a href="{{\App\Helpers\RoleHelper::getUrlByRoleName($role->name)}}">
-                                                {{$role->human_readable_name}}
+                                            <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}">
+                                                {{ $role->human_readable_name }}
                                             </a>
                                         </li>
                                     @endforeach

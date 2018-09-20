@@ -2,10 +2,11 @@
 
 namespace App\Helpers;
 
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 
 class RoleHelper
 {
+
     /**
      * Get the right route / url by a role name
      *
@@ -41,5 +42,9 @@ class RoleHelper
 	        }
         }
 	    return route('cooperation.tool.index');
+    }
+
+    public static function getUrlByRole(Role $role){
+    	return self::getUrlByRoleName($role->name);
     }
 }

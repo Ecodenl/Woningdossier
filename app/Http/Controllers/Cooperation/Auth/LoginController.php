@@ -105,17 +105,19 @@ class LoginController extends Controller
                 $role = $user->roles()->first();
 
                 session()->put('role_id', $role->id);
+
+			    $this->redirectTo = RoleHelper::getUrlByRole( $role );
             }
 			else {
 				// get highest role and redirect to the corresponding route / url
 				$role = $user->roles()->orderBy('level', 'DESC')->first();
-			}
 
-			if ($role->level >= 5){
-				$this->redirectTo = '/admin';
-			}
-			else {
-				$this->redirectTo = RoleHelper::getUrlByRole( $role );
+				if ($role->level >= 5){
+					$this->redirectTo = '/admin';
+				}
+				else {
+					$this->redirectTo = RoleHelper::getUrlByRole( $role );
+				}
 			}
 
 			return $this->sendLoginResponse($request);

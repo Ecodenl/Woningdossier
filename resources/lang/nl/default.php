@@ -13,11 +13,14 @@ return [
 
     'form' => [
         'input' => [
-            'comment' => 'Toelichting op de specifieke situatie'
+            'comment' => 'Toelichting op de specifieke situatie',
         ],
     ],
 
-	'yes' => 'Ja',
-	'no' => 'Nee',
-];
+    'yes' => 'Ja',
+    'no' => 'Nee',
 
+    'progress' => [
+        'disabled' => 'U heeft geen interesse in deze maatregel',
+    ],
+];

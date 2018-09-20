@@ -39,3 +39,4 @@ ubuntu-xenial-16.04-cloudimg-console.log
 _ide_helper_models.php
 .phpstorm.meta.php
 _ide_helper.php
+.php_cs.cache

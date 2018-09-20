@@ -12,31 +12,31 @@ class InsulatingGlazingsTableSeeder extends Seeder
     public function run()
     {
         $insulatings = [
-        	[
-        	    'names' => [
-        		    'nl' => 'Enkelglas',
-	            ],
-	        ],
-			[
-				'names' => [
-					'nl' => 'Dubbelglas / voorzetraam',
-				],
-			],
+            [
+                'names' => [
+                    'nl' => 'Enkelglas',
+                ],
+            ],
+            [
+                'names' => [
+                    'nl' => 'Dubbelglas / voorzetraam',
+                ],
+            ],
         ];
 
-	    foreach($insulatings as $insulating){
-		    $uuid = \App\Helpers\Str::uuid();
-		    foreach($insulating['names'] as $locale => $name) {
-			    \DB::table( 'translations' )->insert( [
-				    'key'         => $uuid,
-				    'language'    => $locale,
-				    'translation' => $name,
-			    ] );
-		    }
+        foreach ($insulatings as $insulating) {
+            $uuid = \App\Helpers\Str::uuid();
+            foreach ($insulating['names'] as $locale => $name) {
+                \DB::table('translations')->insert([
+                    'key'         => $uuid,
+                    'language'    => $locale,
+                    'translation' => $name,
+                ]);
+            }
 
-		    \DB::table('insulating_glazings')->insert([
-			    'name' => $uuid,
-		    ]);
-	    }
+            \DB::table('insulating_glazings')->insert([
+                'name' => $uuid,
+            ]);
+        }
     }
 }

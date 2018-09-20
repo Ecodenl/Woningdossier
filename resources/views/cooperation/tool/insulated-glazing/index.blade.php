@@ -5,20 +5,32 @@
 
 @section('step_content')
 
+    <?php
+        $titles = [
+            7 => 'glass-in-lead',
+            8 => 'place-hr-only-glass',
+            9 => 'place-hr-with-frame',
+        ];
+    ?>
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        <h4 style="margin-left: -5px;"> @lang('woningdossier.cooperation.tool.insulated-glazing.sub-title')</h4>
+        @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div id="main-glass-questions">
             {{--@foreach ($keys as $key)--}}
-            @foreach($measureApplications as $measureApplication)
+            @foreach($measureApplications as $i => $measureApplication)
+                @if($i > 0 && array_key_exists($measureApplication->id, $titles))
+                    <hr>
+                @endif
                 <div class="row">
                     <div class="col-sm-12">
+                        @if(array_key_exists($measureApplication->id, $titles))
+                        <h4>@lang('woningdossier.cooperation.tool.insulated-glazing.subtitles.' . $titles[$measureApplication->id])</h4>
+                        @endif
                         <div class="form-group add-space {{ $errors->has('user_interests.' . $measureApplication->id) ? ' has-error' : '' }}">
                             <label class=" control-label">
                                 <i data-toggle="collapse" data-target="#user_interests_{{ $measureApplication->id }}-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                {{--@lang('woningdossier.cooperation.tool.insulated-glazing.'.$key.'.title')--}}
-                                {{ $measureApplication->measure_name }}
+                                @lang('woningdossier.cooperation.tool.insulated-glazing.interested-in', ['measure' => lcfirst($measureApplication->measure_name)])
                             </label>
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
@@ -140,11 +152,11 @@
                         </div>
                     </div>
                 </div>
-                <hr>
             @endforeach
 
         </div>
 
+        <hr>
         <div id="remaining-questions">
             <div class="row">
                 <div class="col-sm-12">
@@ -468,7 +480,7 @@
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')))))}}</a></li>
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')))))}}</a></li>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Glasisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+                            <li><a download="" href="{{asset($helpFile)}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
 
                         </ol>
                     </div>
@@ -493,7 +505,7 @@
         $(document).ready(function() {
 
             $(window).keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }

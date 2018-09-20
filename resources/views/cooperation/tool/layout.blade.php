@@ -11,7 +11,9 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        @yield('step_title', '')
+                        <h3>
+                            @yield('step_title', '')
+                        </h3>
 
                         @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']))
                             <button id="submit-form-top-right" class="pull-right btn btn-primary">
@@ -39,6 +41,7 @@
         </div>
     </div>
 @endsection
+
 
 @push('js')
     <script>

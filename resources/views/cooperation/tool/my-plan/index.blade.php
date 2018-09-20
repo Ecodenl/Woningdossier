@@ -134,6 +134,9 @@
             const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
             const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
 
+            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles"
+            const REPLACE_TILES = "replace-tiles";
+
             $(window).keydown(function(event){
                 if(event.keyCode == 13) {
                     event.preventDefault();
@@ -273,7 +276,7 @@
                     if ($('input[value='+ROOF_INSULATION_FLAT_REPLACE_CURRENT+']').length) {
 
                         var energySavingCheckbox = $('input[value='+ROOF_INSULATION_FLAT_REPLACE_CURRENT+']').next().next().children();
-                        var energySavingPlannedYearInput = $(energySavingCheckbox).parent().find('input[name*=planned_year]');
+                        var energySavingPlannedYearInput = $(energySavingCheckbox).parent().parent().find('input[name*=planned_year]');
 
                         // if the checkbox is not checked, throw error
                         if ($(energySavingCheckbox).is(':checked') && (energySavingPlannedYearInput.val() !== plannedYearInput.val())) {
@@ -281,6 +284,38 @@
                         }
                     }
                 }
+
+
+                if (measureApplicationShort === ROOF_INSULATION_PITCHED_REPLACE_TILES && $(this).is(':checked')) {
+                    if ($('input[value='+REPLACE_TILES+']').length) {
+
+                        console.log($('input[value='+REPLACE_TILES+']'));
+                        var maintenanceCheckbox = $('input[value='+REPLACE_TILES+']').next().next().children();
+                        var maintenancePlannedYearInput = $(maintenanceCheckbox).parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(maintenanceCheckbox).is(':not(:checked)')) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')')
+                        }
+                        else if ($(maintenanceCheckbox).is(':checked') && (maintenancePlannedYearInput.val() !== advicedYear)) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
+                        }
+                    }
+
+                } // this will be excecuted when the maintance checkbox get checked
+                else if (measureApplicationShort === REPLACE_TILES && $(this).is(':checked')) {
+                    if ($('input[value='+ROOF_INSULATION_PITCHED_REPLACE_TILES+']').length) {
+
+                        var energySavingCheckbox = $('input[value='+ROOF_INSULATION_PITCHED_REPLACE_TILES+']').next().next().children();
+                        var energySavingPlannedYearInput = $(energySavingCheckbox).parent().parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(energySavingCheckbox).is(':checked') && (energySavingPlannedYearInput.val() !== advicedYear)) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
+                        }
+                    }
+                }
+
 
             });
 

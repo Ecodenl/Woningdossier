@@ -256,7 +256,7 @@
 
                 var measureApplicationShort = $(this).parent().parent().find('.measure_short').val();
 
-                // this will be excecuted when the energy measure checkbox get checked
+                /* Warning for the FLAT roof measures */
                 if (measureApplicationShort === ROOF_INSULATION_FLAT_REPLACE_CURRENT && $(this).is(':checked')) {
                     if ($('input[value='+REPLACE_ROOF_INSULATION+']').length) {
                         var maintenanceCheckbox = $('input[value='+REPLACE_ROOF_INSULATION+']').next().next().children();
@@ -285,7 +285,7 @@
                     }
                 }
 
-
+                /* Warning for the PITCHED roof measures */
                 if (measureApplicationShort === ROOF_INSULATION_PITCHED_REPLACE_TILES && $(this).is(':checked')) {
                     if ($('input[value='+REPLACE_TILES+']').length) {
 

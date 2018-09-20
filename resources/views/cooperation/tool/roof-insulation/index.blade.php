@@ -1,13 +1,7 @@
 @extends('cooperation.tool.layout')
 
-{{--{{dd($errors)}}--}}
 @section('step_title', __('woningdossier.cooperation.tool.roof-insulation.title'))
 
-<?php
-if ($errors->any()) {
-    dump($errors);
-}
-?>
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
 
@@ -53,9 +47,9 @@ if ($errors->any()) {
                         <div class="col-md-12">
                             <div class="form-group add-space {{$errors->has('building_features.roof_type_id') ? ' has-error' : ''}}">
 
-                                <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof')</label>
+                                <label for="main_roof" class="control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof')</label>
 
-                                <select id="main_roof" class="form-control" name="building_features[roof_type_id]" >
+                                <select id="main_roof" class="form-control" name="building_features[roof_type_id]">
                                     @foreach($roofTypes as $roofType)
                                         @if($roofType->calculate_value < 5)
                                         <option @if($roofType->id == old('building_features.roof_type_id') || ($features->roof_type_id == $roofType->id)) selected @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
@@ -89,7 +83,7 @@ if ($errors->any()) {
                                         <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][element_value_id]" >
                                             @foreach($roofInsulation->values as $insulation)
                                                 @if($insulation->calculate_value < 6)
-                                                <option @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
+                                                    <option @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
                                                 @endif
                                             @endforeach
                                         </select>

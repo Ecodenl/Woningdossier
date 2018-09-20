@@ -133,7 +133,7 @@ class GeneralDataController extends Controller
 
         // the user has not an option / dropdown to set an interest foor the living room windows
         // we will always set the interest level to 1 so the user can still go to the step.
-        $livingRoomWindowsElement = Element::where('short', "living-rooms-windows")->first();
+        $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
         $yesOnShortTermInterest = Interest::where('calculate_value', 1)->first();
         UserInterest::updateOrCreate(
             [

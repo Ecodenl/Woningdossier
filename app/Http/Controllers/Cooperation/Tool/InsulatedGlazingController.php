@@ -8,6 +8,7 @@ use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -29,7 +30,6 @@ use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
@@ -302,7 +302,7 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-    	$user = Auth::user();
+        $user = Auth::user();
 
         $building = $user->buildings()->first();
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingFeature
+ * App\Models\BuildingFeature.
  *
  * @property int $id
  * @property int|null $building_id
@@ -77,7 +77,7 @@ class BuildingFeature extends Model
         'additional_info',
         'surface',
         'floor_surface',
-	    'build_year',
+        'build_year',
         'facade_plastered_painted',
         'window_surface',
     ];

@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Helpers\StepHelper;
-use App\Http\Requests\HighEfficiencyBoilerFormRequest;
-use App\Models\Cooperation;
-use App\Models\Step;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\HighEfficiencyBoilerFormRequest;
 use App\Models\Building;
 use App\Models\BuildingService;
+use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class HighEfficiencyBoilerController extends Controller
@@ -54,7 +54,7 @@ class HighEfficiencyBoilerController extends Controller
         return view('cooperation.tool.hr-boiler.index', compact(
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
             'typeIds',
-	        'steps'));
+            'steps'));
     }
 
     public function calculate(Request $request)
@@ -115,7 +115,7 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {
-    	$user = Auth::user();
+        $user = Auth::user();
 
         // Save the building service
         $buildingServices = $request->input('building_services', '');

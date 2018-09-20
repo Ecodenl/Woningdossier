@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddInsulationSurfaceColumns extends Migration
 {
@@ -29,9 +29,6 @@ class AddInsulationSurfaceColumns extends Migration
         Schema::table('building_roof_types', function (Blueprint $table) {
             $table->integer('insulation_roof_surface')->after('roof_surface')->nullable()->default(null);
         });
-
-
-
     }
 
     /**
@@ -41,17 +38,17 @@ class AddInsulationSurfaceColumns extends Migration
      */
     public function down()
     {
-	    Schema::table('building_features', function (Blueprint $table) {
-		    $table->dropColumn('insulation_wall_surface');
-		    $table->dropColumn('insulation_surface');
-	    });
+        Schema::table('building_features', function (Blueprint $table) {
+            $table->dropColumn('insulation_wall_surface');
+            $table->dropColumn('insulation_surface');
+        });
 
-	    Schema::table('building_roof_types', function (Blueprint $table) {
-		    $table->renameColumn('roof_surface', 'surface');
-	    });
+        Schema::table('building_roof_types', function (Blueprint $table) {
+            $table->renameColumn('roof_surface', 'surface');
+        });
 
-	    Schema::table('building_roof_types', function (Blueprint $table) {
-		    $table->dropColumn('insulation_roof_surface');
-	    });
+        Schema::table('building_roof_types', function (Blueprint $table) {
+            $table->dropColumn('insulation_roof_surface');
+        });
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class DropColumnFloorSurface extends Migration
 {
@@ -25,8 +25,8 @@ class DropColumnFloorSurface extends Migration
      */
     public function down()
     {
-	    Schema::table('building_features', function (Blueprint $table) {
-		    $table->decimal('floor_surface')->nullable()->default(null);
-	    });
+        Schema::table('building_features', function (Blueprint $table) {
+            $table->decimal('floor_surface')->nullable()->default(null);
+        });
     }
 }

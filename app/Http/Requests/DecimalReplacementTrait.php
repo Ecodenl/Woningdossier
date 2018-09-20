@@ -9,7 +9,7 @@ trait DecimalReplacementTrait
 {
     protected function decimals(array $keys)
     {
-    	$merges = [];
+        $merges = [];
         foreach ($keys as $key) {
             $dec = $this->input($key);
             $dec = NumberFormatter::reverseFormat($dec);

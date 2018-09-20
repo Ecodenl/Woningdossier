@@ -118,6 +118,5 @@ Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('lo
 //Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');
 
 Route::get('/', function () {
-
     return view('welcome');
 })->name('index');

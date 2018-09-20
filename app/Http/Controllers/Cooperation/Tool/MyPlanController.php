@@ -3,27 +3,22 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculator;
-use App\Helpers\MeasureApplicationHelper;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
 {
-
     public function index()
     {
-
         $user = \Auth::user();
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
         $steps = Step::orderBy('order')->get();
-
 
         return view('cooperation.tool.my-plan.index', compact(
             'advices', 'steps'
@@ -86,17 +81,14 @@ class MyPlanController extends Controller
         $myAdvices = $request->input('advice', []);
 
         foreach ($myAdvices as $adviceId => $data) {
-
             $advice = UserActionPlanAdvice::find($adviceId);
 
             if ($advice instanceof UserActionPlanAdvice && $advice->user->id === \Auth::user()->id) {
-
                 MyPlanHelper::saveUserInterests($request, $advice);
 
                 // check if a user is interested in a measure
                 //if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
-	            if ($advice->planned){
-
+                if ($advice->planned) {
                     $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
                     if (is_null($year)) {
                         $year = $advice->getAdviceYear();
@@ -107,14 +99,14 @@ class MyPlanController extends Controller
                     } else {
                         $costYear = $year;
                     }
-                    if (!array_key_exists($year, $sortedAdvices)) {
+                    if (! array_key_exists($year, $sortedAdvices)) {
                         $sortedAdvices[$year] = [];
                     }
 
                     // get step from advice
                     $step = $advice->step;
 
-                    if (!array_key_exists($step->name, $sortedAdvices[$year])) {
+                    if (! array_key_exists($step->name, $sortedAdvices[$year])) {
                         $sortedAdvices[$year][$step->name] = [];
                     }
 
@@ -129,7 +121,6 @@ class MyPlanController extends Controller
                         'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
                         'savings_money' => is_null($advice->savings_money) ? 0 : $advice->savings_money,
                     ];
-
                 }
             }
         }

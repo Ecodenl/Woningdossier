@@ -102,20 +102,21 @@ class UserInterest extends Model
         return $interests;
     }
 
-	public function getInterests(){
-		return [
-			'service' => $this->getInterestsInServices(),
-			'element' => $this->getInterestsInElements(),
-			'measure_application' => $this->getInterestInMeasureApplications(),
-			'roof_type' => $this->getInterestsInRoofTypes(),
-		];
-	}
+    public function getInterests()
+    {
+        return [
+            'service' => $this->getInterestsInServices(),
+            'element' => $this->getInterestsInElements(),
+            'measure_application' => $this->getInterestInMeasureApplications(),
+            'roof_type' => $this->getInterestsInRoofTypes(),
+        ];
+    }
 
     /**
-     * Function to update or create the user interests
+     * Function to update or create the user interests.
      *
      * @param array $interests
-     * @param User $user
+     * @param User  $user
      */
     public static function saveUserInterests(User $user, array $interests)
     {
@@ -123,15 +124,15 @@ class UserInterest extends Model
             foreach ($interestTypes as $typeId => $interestId) {
                 self::updateOrCreate(
                     [
-                    	'user_id' => $user->id,
+                        'user_id' => $user->id,
                         'interested_in_type' => $type,
-                        'interested_in_id' => $typeId
+                        'interested_in_id' => $typeId,
                     ],
                     [
-                        'interest_id' => $interestId
+                        'interest_id' => $interestId,
                     ]
                 );
             }
         }
-	}
+    }
 }

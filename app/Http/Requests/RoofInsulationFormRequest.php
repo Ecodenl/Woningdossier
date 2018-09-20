@@ -87,8 +87,6 @@ class RoofInsulationFormRequest extends FormRequest
 //            }
 //        }
 
-
-
         return [
 //            'building_roof_types.*' => 'exists:roof_types,id',
             'building_roof_types.*.roof_surface' => 'nullable|numeric',
@@ -134,14 +132,13 @@ class RoofInsulationFormRequest extends FormRequest
                             $validator->errors()->add('building_roof_types.'.$cat.'.extra.zinc_replaced_date', __('validation.custom.surface'));
                         }
 
-                        if (Request::input('building_roof_types.' . $cat . '.insulation_roof_surface') == "" && Request::input('building_roof_types.' . $i) != "") {
-                            $validator->errors()->add('building_roof_types.' . $cat . '.insulation_roof_surface', __('validation.custom.surface'));
+                        if ('' == Request::input('building_roof_types.'.$cat.'.insulation_roof_surface') && '' != Request::input('building_roof_types.'.$i)) {
+                            $validator->errors()->add('building_roof_types.'.$cat.'.insulation_roof_surface', __('validation.custom.surface'));
                         }
 
                         if ('' == Request::input('building_roof_types.'.$cat.'.extra.bitumen_replaced_date') && 'bitumen' == $zincCat) {
                             $validator->errors()->add('building_roof_types.'.$cat.'.extra.bitumen_replaced_date', __('validation.custom.surface'));
                         }
-
                     });
                 }
             }

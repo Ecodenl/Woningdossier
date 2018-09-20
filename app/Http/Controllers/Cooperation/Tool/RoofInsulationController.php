@@ -8,6 +8,7 @@ use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\RoofInsulationCalculator;
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -26,7 +27,6 @@ use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -135,8 +135,8 @@ class RoofInsulationController extends Controller
 
         $result = [];
 
-		// Remove old results
-		UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        // Remove old results
+        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 
         $roofTypes = $request->input('building_roof_types', []);
         foreach ($roofTypes as $i => $details) {
@@ -153,23 +153,20 @@ class RoofInsulationController extends Controller
         }
 
         foreach (array_keys($result) as $roofCat) {
-
-
-
             $measureApplicationId = $request->input('building_roof_types.'.$roofCat.'.measure_application_id', 0);
             if ($measureApplicationId > 0) {
                 // results in an advice
                 $measureApplication = MeasureApplication::find($measureApplicationId);
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
-                    $advicedYear = "";
+                    $advicedYear = '';
 
                     $interests = $request->input('interest', '');
                     foreach ($interests as $type => $interestTypes) {
                         foreach ($interestTypes as $typeId => $interestId) {
                             $interest = Interest::find($interestId);
 
-                            if ($interest->calculate_value == 1) {
+                            if (1 == $interest->calculate_value) {
                                 $advicedYear = date('Y');
                             } else {
                                 $advicedYear = $results[$roofCat]['replace']['year'];
@@ -184,15 +181,15 @@ class RoofInsulationController extends Controller
                             // take the replace array
                             $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]['replace']);
                             $actionPlanAdvice->savings_gas = $results[$roofCat]['savings_gas'];
-	                        $actionPlanAdvice->savings_money = $results[$roofCat]['savings_money'];
+                            $actionPlanAdvice->savings_money = $results[$roofCat]['savings_money'];
                         }
                     } else {*/
-                        if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
-                            // take the array $roofCat array
-                            $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
-                            $actionPlanAdvice->year = $advicedYear;
-                            $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
-                        }
+                    if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
+                        // take the array $roofCat array
+                        $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
+                        $actionPlanAdvice->year = $advicedYear;
+                        $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
+                    }
                     //}
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
@@ -389,8 +386,7 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
-
-    	$user = Auth::user();
+        $user = Auth::user();
 
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NeedsToBeLowerThen;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +45,7 @@ class WallInsulationRequest extends FormRequest
             'wall_joints' => 'exists:facade_surfaces,id',
             'contaminated_wall_joints' => 'exists:facade_surfaces,id',
             'wall_surface' => 'nullable|numeric',
-            'insulation_wall_surface' => 'nullable|numeric',
+            'insulation_wall_surface' => ['nullable', 'numeric', 'needs_to_be_lower_or_same_as:wall_surface'],
             'additional_info' => 'nullable',
         ];
     }

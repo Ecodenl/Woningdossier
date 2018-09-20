@@ -52,7 +52,8 @@ class InsulatedGlazingController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        $typeIds = [1, 2];
+        // we do not want the user to set his interests for this step
+//        $typeIds = [1, 2];
 
 //        StepHelper::getNextStep();
 
@@ -111,7 +112,7 @@ class InsulatedGlazingController extends Controller
             'building', 'steps', 'interests',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements',
-            'paintworkStatuses', 'woodRotStatuses', 'typeIds'
+            'paintworkStatuses', 'woodRotStatuses'
         ));
     }
 
@@ -306,10 +307,8 @@ class InsulatedGlazingController extends Controller
         $building = $user->buildings()->first();
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
-        $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($user, $interests);
-
         // Saving the insulate glazings
+        $interests = collect();
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
             $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
             $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
@@ -343,7 +342,24 @@ class InsulatedGlazingController extends Controller
                     'interest_id' => $userInterestId,
                 ]
             );
+            // collect all the selected interests
+            $interests->push(Interest::find($userInterestId));
         }
+
+        // get the highest interest level (which is the lowst calculate value.)
+        $highestInterestLevel = $interests->unique('id')->min('calculate_value');
+        // update the livingroomwindow interest level based of the highest interest level for the measure.
+        $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
+        UserInterest::updateOrCreate(
+            [
+                'user_id'            => Auth::id(),
+                'interested_in_type' => 'element',
+                'interested_in_id'   => $livingRoomWindowsElement->id,
+            ],
+            [
+                'interest_id'        => $highestInterestLevel,
+            ]
+        );
 
         // saving the main building elements
         $elements = $request->input('building_elements', []);

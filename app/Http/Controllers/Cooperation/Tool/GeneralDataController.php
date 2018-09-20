@@ -60,7 +60,7 @@ class GeneralDataController extends Controller
         $exampleBuildings = ExampleBuilding::forMyCooperation()->orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
-            'living-rooms-windows', 'sleeping-rooms-windows',
+            'sleeping-rooms-windows', 'living-rooms-windows',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
             ])->orderBy('order')->get();
         $services = Service::orderBy('order')->get();
@@ -130,6 +130,24 @@ class GeneralDataController extends Controller
         $building->buildingFeatures()->save($features);
 
         $elements = $request->get('element', []);
+
+        // the user has not an option / dropdown to set an interest foor the living room windows
+        // we will always set the interest level to 1 so the user can still go to the step.
+        $livingRoomWindowsElement = Element::where('short', "living-rooms-windows")->first();
+        $yesOnShortTermInterest = Interest::where('calculate_value', 1)->first();
+        UserInterest::updateOrCreate(
+            [
+                'user_id'            => Auth::id(),
+                'interested_in_type' => 'element',
+                'interested_in_id'   => $livingRoomWindowsElement->id,
+            ],
+            [
+                'user_id'            => Auth::id(),
+                'interested_in_type' => 'element',
+                'interested_in_id'   => $livingRoomWindowsElement->id,
+                'interest_id'        => $yesOnShortTermInterest->id,
+            ]
+        );
 
         foreach ($elements as $elementId => $elementValueId) {
             $element = Element::find($elementId);

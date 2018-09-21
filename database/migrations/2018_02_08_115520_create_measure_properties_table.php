@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMeasurePropertiesTable extends Migration
 {
@@ -17,7 +17,7 @@ class CreateMeasurePropertiesTable extends Migration
             $table->increments('id');
 
             $table->integer('measure_id')->unsigned()->nullable()->default(null);
-            $table->foreign('measure_id')->references('id')->on('measures') ->onDelete('restrict');
+            $table->foreign('measure_id')->references('id')->on('measures')->onDelete('restrict');
 
             $table->string('name')->default('');
             $table->string('value')->default('');

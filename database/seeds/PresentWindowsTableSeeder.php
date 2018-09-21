@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\PresentWindow;
+use Illuminate\Database\Seeder;
 
 class PresentWindowsTableSeeder extends Seeder
 {

@@ -14,11 +14,11 @@ class BuildingServiceTypeTableSeeder extends Seeder
         $heatings = [
             [
                 'names' => [
-                    'nl' => 'Hoe word de woning nu verwarmd'
+                    'nl' => 'Hoe word de woning nu verwarmd',
                 ],
                 'service_type' => 'Heating',
                 'info' => [
-                    'nl' => 'Info hier'
+                    'nl' => 'Info hier',
                 ],
                 'service_values' => [
                     [
@@ -62,16 +62,16 @@ class BuildingServiceTypeTableSeeder extends Seeder
                 \App\Models\Translation::create([
                     'key' => $uuid,
                     'language' => $locale,
-                    'translation' => $name
+                    'translation' => $name,
                 ]);
             }
 
-            foreach ($heating['service_values'] as $heatingValue)
+            foreach ($heating['service_values'] as $heatingValue) {
                 \DB::table('building_service_values')->insert([
                     'name' => $uuid,
                     'calculate_value' => isset($heatingValue['calculate_value']) ? $heatingValue['calculate_value'] : null,
             ]);
-
+            }
         }
     }
 }

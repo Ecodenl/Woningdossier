@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBuildingUserUsageTable extends Migration
 {
@@ -17,10 +17,10 @@ class CreateBuildingUserUsageTable extends Migration
             $table->increments('id');
 
             $table->integer('building_id')->unsigned()->nullable()->default(null);
-            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
+            $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
             $table->integer('user_id')->unsigned()->nullable()->default(null);
-            $table->foreign('user_id')->references('id')->on('users') ->onDelete('restrict');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
 
             $table->integer('usage_percentage')->nullable()->default(null);
 

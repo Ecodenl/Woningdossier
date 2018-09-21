@@ -13,7 +13,7 @@ class CoachRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasPermissionTo('assign role coach and resident');
+        return \Auth::check();
     }
 
     /**

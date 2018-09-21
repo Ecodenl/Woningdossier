@@ -12,13 +12,13 @@ class BuildingsTableSeeder extends Seeder
     public function run()
     {
         \DB::table('buildings')->insert([
-        	'user_id' => 1,
-	        'street' => 'Hoekzijdsestraatweg',
-	        'number' => 1,
-	        'city' => 'Lutjebroek',
-	        'postal_code' => '1821 AB',
-	        'country_code' => 'nl',
-	        'bag_addressid' => '0580010000253148',
+            'user_id' => 1,
+            'street' => 'Hoekzijdsestraatweg',
+            'number' => 1,
+            'city' => 'Lutjebroek',
+            'postal_code' => '1821 AB',
+            'country_code' => 'nl',
+            'bag_addressid' => '0580010000253148',
         ]);
     }
 }

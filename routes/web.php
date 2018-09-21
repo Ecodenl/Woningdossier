@@ -11,12 +11,12 @@
 |
 */
 
-Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function(){
-
-	Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function() {
-		Route::get('/', function() {
-			return view( 'cooperation.welcome' ); }
-		)->name('welcome');
+Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function () {
+    Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
+        Route::get('/', function () {
+            return view('cooperation.welcome');
+        }
+        )->name('welcome');
 
 		Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 		Route::get( 'confirm',
@@ -33,9 +33,10 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 			Route::get('help', 'HelpController@index')->name('help.index');
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 
-			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
-				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
-				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
+            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function () {
+                Route::resource('settings', 'SettingsController', ['only' => ['index', 'store']]);
+                Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
+                Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
 
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
@@ -88,13 +89,13 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 				Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
 				Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
+        });
 
-		});
-
-		// todo add admin middleware checking ACLs
-		Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
+        // todo add admin middleware checking ACLs
+        Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
 
             Route::get('/', 'AdminController@index')->name('index');
+            Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
 			Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
 
@@ -155,9 +156,7 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		});
 
 	});
-
 });
-
 
 Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('logout');
 //Route::get('password/reset/{token?}', 'Cooperation\Auth\ResetPasswordController@showResetForm')->name('password.reset');
@@ -165,5 +164,5 @@ Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('lo
 //Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');
 
 Route::get('/', function () {
-	return view('welcome');
+    return view('welcome');
 })->name('index');

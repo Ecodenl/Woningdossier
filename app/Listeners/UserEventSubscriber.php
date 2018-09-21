@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Jobs\SendRequestAccountConfirmationEmail;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UserEventSubscriber
 {
@@ -16,24 +14,25 @@ class UserEventSubscriber
      */
     public function __construct()
     {
-        //
     }
 
-    public function subscribe($events){
-    	$events->listen(
-    		Registered::class,
-		    self::class . '@onUserRegistration'
-	    );
+    public function subscribe($events)
+    {
+        $events->listen(
+            Registered::class,
+            self::class.'@onUserRegistration'
+        );
     }
 
     /**
      * Handle the event.
      *
-     * @param  Registered  $event
+     * @param Registered $event
+     *
      * @return void
      */
     public function onUserRegistration(Registered $event)
     {
-	    SendRequestAccountConfirmationEmail::dispatch($event->user);
+        SendRequestAccountConfirmationEmail::dispatch($event->user);
     }
 }

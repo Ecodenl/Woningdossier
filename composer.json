@@ -2,7 +2,7 @@
     "name": "ecodenl/woningdossier",
     "description": "Woningdossier",
     "keywords": ["woningdossier", "besparing", "woning", "econobis"],
-    "license": "MIT",
+    "license": "OSL-3.0",
     "type": "project",
     "require": {
         "php": ">=7.0.0",

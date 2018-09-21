@@ -129,8 +129,8 @@
                     if (confirm('Weet u zeker dat u geen toesteming wilt geven ?')) {
 
                     } else {
-                       event.preventDefault();
-
+                        return false;
+                        event.preventDefault();
                     }
                 }
             })

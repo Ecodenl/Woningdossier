@@ -25,6 +25,7 @@ class ConversationRequestController extends Controller
     {
 
 
+
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
 
         if ($option == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION && PrivateMessage::hasUserResponseToCoachConversationRequest() == false && $myOpenCoachConversationRequest != null) {
@@ -155,7 +156,7 @@ class ConversationRequestController extends Controller
 
         $cooperation = Cooperation::find($cooperationId);
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
+        return redirect()->route('cooperation.tool.my-plan.index')->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
     }
 
 }

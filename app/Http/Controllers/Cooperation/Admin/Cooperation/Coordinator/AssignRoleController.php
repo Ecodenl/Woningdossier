@@ -25,6 +25,8 @@ class AssignRoleController extends Controller
         $user = $cooperation->users()->findOrFail($userId);
 
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident');
+        // if the user has the role coordinator add it to the collection
+        // otherwise the syncing would go wrong
         if ($user->hasRole('coordinator')) {
             $roles->orWhere('name', 'coordinator');
         }

@@ -13,7 +13,7 @@ class AssignRoleController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
+        $users = $cooperation->users()->get();
 
         return view('cooperation.admin.cooperation.coordinator.assign-role.index', compact('users'));
     }

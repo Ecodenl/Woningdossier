@@ -48,7 +48,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
 				    Route::post('edit', 'MessagesController@store')->name('store');
 
-				    Route::group(['prefix' => 'aanvragen', 'as' => 'requests.'], function () {
+				    Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
 
 				        Route::get('', 'RequestController@index')->name('index');
 				        Route::get('{requestMessageId}', 'RequestController@edit')->name('edit');
@@ -60,7 +60,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			});
 
 			// conversation requests
-			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+			Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
 
 			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
 			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');

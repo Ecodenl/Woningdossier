@@ -2,18 +2,22 @@
 
 @section('coordinator_content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.header')</div>
+        <div class="panel-heading">
+            @lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.header')
+            <a href="{{route('cooperation.admin.cooperation.coordinator.coach.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
 
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-responsive table-condensed">
+                    <table class="table table-responsive ">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.table.columns.first-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.table.columns.last-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.table.columns.email')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.table.columns.role')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.first-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.last-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.email')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.role')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -25,9 +29,15 @@
                                 <td>
                                     <?php
                                         $user->roles->map(function ($role) {
-                                            echo ucfirst($role->human_readable_name).', ';
+                                            echo ucfirst($role->human_readable_name) .', ';
                                         })
                                     ?>
+                                </td>
+                                <td>
+                                    <form action="{{route('cooperation.admin.cooperation.coordinator.coach.destroy', ['userId' => $user->id])}}" method="post">
+                                        {{csrf_field()}}
+                                        <button type="submit" class="btn remove btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -74,6 +84,15 @@
 
                 }
             );
+
+            $('.remove').click(function () {
+                if (confirm("Weet u zeker dat u de gebruiker wilt verwijderen")) {
+
+                } else {
+                    event.preventDefault();
+                }
+            })
         })
     </script>
 @endpush
+

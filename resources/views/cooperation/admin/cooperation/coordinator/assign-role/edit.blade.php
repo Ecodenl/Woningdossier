@@ -55,7 +55,7 @@
 
                         <div class="row">
                             <div class="col-sm-6">
-                                <button class="btn btn-primary btn-block" type="submit">@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.edit.form.submit') <span class="glyphicon glyphicon-plus"></span></button>
+                                <button class="btn btn-primary btn-block" type="submit">@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.edit.form.submit') <span class="glyphicon glyphicon-pencil"></span></button>
                             </div>
                         </div>
                     </form>

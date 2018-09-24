@@ -13,7 +13,7 @@ class AssignRoleController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
+        $users = $cooperation->users()->get();
 
         return view('cooperation.admin.cooperation.coordinator.assign-role.index', compact('users'));
     }
@@ -24,7 +24,13 @@ class AssignRoleController extends Controller
         // find the user by id, we will always start from the cooperation.
         $user = $cooperation->users()->findOrFail($userId);
 
-        $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
+        $roles = Role::where('name', 'coach')->orWhere('name', 'resident');
+        // if the user has the role coordinator add it to the collection
+        // otherwise the syncing would go wrong
+        if ($user->hasRole('coordinator')) {
+            $roles->orWhere('name', 'coordinator');
+        }
+        $roles = $roles->get();
 
         return view('cooperation.admin.cooperation.coordinator.assign-role.edit', compact('user', 'roles'));
     }

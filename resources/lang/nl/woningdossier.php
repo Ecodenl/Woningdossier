@@ -127,7 +127,7 @@ return [
                                     'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
                                 ],
 
-                                'submit' => 'Gebruiker aanmaken',
+                                'submit' => 'Rollen wijzigen',
                             ],
                         ],
                         'update' => [

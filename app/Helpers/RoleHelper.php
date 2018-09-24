@@ -42,7 +42,7 @@ class RoleHelper
 			        break;
 	        }
         }
-        dd($roleName);
+
 	    return route('cooperation.tool.index');
     }
 

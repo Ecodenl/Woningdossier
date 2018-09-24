@@ -24,7 +24,11 @@ class AssignRoleController extends Controller
         // find the user by id, we will always start from the cooperation.
         $user = $cooperation->users()->findOrFail($userId);
 
-        $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
+        $roles = Role::where('name', 'coach')->orWhere('name', 'resident');
+        if ($user->hasRole('coordinator')) {
+            $roles->orWhere('name', 'coordinator');
+        }
+        $roles = $roles->get();
 
         return view('cooperation.admin.cooperation.coordinator.assign-role.edit', compact('user', 'roles'));
     }

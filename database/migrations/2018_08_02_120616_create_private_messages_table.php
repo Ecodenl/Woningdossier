@@ -18,7 +18,7 @@ class CreatePrivateMessagesTable extends Migration
 
             $table->string('title')->nullable()->default(null);
 
-            $table->enum('request_type', ['coach_conversation', 'more_information', 'quotation'])->nullable();
+            $table->enum('request_type', ['coach-conversation', 'more-information', 'quotation'])->nullable();
 
             $table->text('message');
 
@@ -36,7 +36,7 @@ class CreatePrivateMessagesTable extends Migration
             $table->integer('to_cooperation_id')->unsigned()->nullable()->default(null);
             $table->foreign('to_cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
 
-            $table->enum('status', ['word verwerkt', 'in behandeling', 'gekoppeld aan coach']);
+            $table->enum('status', ['wordt verwerkt', 'in behandeling', 'gekoppeld aan coach'])->nullable();
 
             $table->boolean('is_completed')->default(false);
 

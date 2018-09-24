@@ -2,7 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\Role;
+
+use Spatie\Permission\Models\Role;
 
 class RoleHelper
 {
@@ -41,6 +42,7 @@ class RoleHelper
 			        break;
 	        }
         }
+
 	    return route('cooperation.tool.index');
     }
 

@@ -103,6 +103,7 @@ return [
     */
 
     'custom' => [
+        'alpha_space' => 'Het veld :attribute mag alleen letters en spaties bevatten.',
         'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
         'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
         'attribute-name' => [

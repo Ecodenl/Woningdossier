@@ -54,10 +54,10 @@ class ModelHasRolesTableSeeder extends Seeder
         );
         \Spatie\Permission\Models\Role::updateOrCreate(
             [
-                'name' => 'bewoner',
+                'name' => 'resident',
             ],
             [
-                'name' => 'bewoner',
+                'name' => 'resident',
                 'human_readable_name' => 'Bewoner',
 	            'level' => 1,
             ]

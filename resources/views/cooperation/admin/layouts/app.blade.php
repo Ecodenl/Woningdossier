@@ -69,9 +69,36 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @guest
+
                     @else
-                        <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                        <li><a href="{{ route('cooperation.admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                        @hasrole('cooperation-admin|super-admin|superuser')
+                            <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
+                            <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                        @endhasrole
+                        @if(Auth::user()->getRoleNames()->count() == 1)
+                            <li>
+                                <a>
+                                    @lang('woningdossier.cooperation.admin.navbar.current-role') {{ Auth::user()->getHumanReadableRoleName(Auth::user()->getRoleNames()->first()) }}
+                                </a>
+                            </li>
+
+                        @else
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                                    @if(session()->exists('role_id'))@lang('woningdossier.cooperation.admin.navbar.current-role') {{\Spatie\Permission\Models\Role::find(session('role_id'))->human_readable_name}}<span class="caret"></span>@endif
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    @foreach(Auth::user()->roles()->orderBy('level', 'DESC')->get() as $role)
+                                        <li>
+                                            <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}">
+                                                {{ $role->human_readable_name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endif
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>

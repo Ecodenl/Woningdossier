@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\RoofInsulationCalculator;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoofInsulationFormRequest;
 use App\Models\Building;
@@ -16,11 +17,13 @@ use App\Models\BuildingRoofType;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -47,12 +50,7 @@ class RoofInsulationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('element', 5)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [5];
 
         /** var Building $building */
         $building = \Auth::user()->buildings()->first();
@@ -83,7 +81,7 @@ class RoofInsulationController extends Controller
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps',
+            'features', 'roofTypes', 'steps', 'typeIds',
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation',
              'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
     }
@@ -135,6 +133,8 @@ class RoofInsulationController extends Controller
         $results = $this->calculate($request);
         $results = $results->getData(true);
 
+        $result = [];
+
         // Remove old results
         UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 
@@ -159,21 +159,38 @@ class RoofInsulationController extends Controller
                 $measureApplication = MeasureApplication::find($measureApplicationId);
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
+                    $advicedYear = '';
+
+                    $interests = $request->input('interest', '');
+                    foreach ($interests as $type => $interestTypes) {
+                        foreach ($interestTypes as $typeId => $interestId) {
+                            $interest = Interest::find($interestId);
+
+                            if (1 == $interest->calculate_value) {
+                                $advicedYear = date('Y');
+                            } else {
+                                $advicedYear = $results[$roofCat]['replace']['year'];
+                            }
+                        }
+                    }
                     // The measure type determines which array keys to take
                     // as the replace array will always be present due to
                     // how calculate() works in this step
-                    if ('replace' == $measureApplication->application) {
+                    /*if ('replace' == $measureApplication->application) {
                         if (isset($results[$roofCat]['replace']['costs']) && $results[$roofCat]['replace']['costs'] > 0) {
                             // take the replace array
                             $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]['replace']);
+                            $actionPlanAdvice->savings_gas = $results[$roofCat]['savings_gas'];
+                            $actionPlanAdvice->savings_money = $results[$roofCat]['savings_money'];
                         }
-                    } else {
-                        if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
-                            // take the array $roofCat array
-                            $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
-                            $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
-                        }
+                    } else {*/
+                    if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
+                        // take the array $roofCat array
+                        $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
+                        $actionPlanAdvice->year = $advicedYear;
+                        $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
                     }
+                    //}
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
                         $actionPlanAdvice->user()->associate(Auth::user());
@@ -186,7 +203,7 @@ class RoofInsulationController extends Controller
             $extra = $request->input('building_roof_types.'.$roofCat.'.extra', []);
             if (array_key_exists('zinc_replaced_date', $extra)) {
                 $zincReplaceYear = (int) $extra['zinc_replaced_date'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
                 if ($zincReplaceYear > 0 && $surface > 0) {
                     $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc')->first();
 
@@ -202,7 +219,7 @@ class RoofInsulationController extends Controller
             }
             if (array_key_exists('tiles_condition', $extra)) {
                 $tilesCondition = (int) $extra['tiles_condition'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
                 if ($tilesCondition > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
                     // no year here. Default is this year. It is incremented by factor * maintenance years
@@ -225,7 +242,7 @@ class RoofInsulationController extends Controller
             }
             if (array_key_exists('bitumen_replaced_date', $extra)) {
                 $bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
 
                 if ($bitumenReplaceYear > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
@@ -274,7 +291,7 @@ class RoofInsulationController extends Controller
         $totalSurface = 0;
 
         foreach (array_keys($result) as $cat) {
-            $totalSurface += isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
+            $totalSurface += isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
         }
 
         foreach (array_keys($result) as $cat) {
@@ -286,12 +303,12 @@ class RoofInsulationController extends Controller
                 'cost_indication' => 0,
                 'interest_comparable' => 0,
                 'replace' => [
-                    'cost' => 0,
+                    'costs' => 0,
                     'year' => null,
                 ],
             ];
 
-            $surface = $roofTypes[$cat]['surface'] ?? 0;
+            $surface = $roofTypes[$cat]['insulation_roof_surface'] ?? 0;
             $heating = null;
             // should take the bitumen field
             $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year;
@@ -352,7 +369,7 @@ class RoofInsulationController extends Controller
 
             if (isset($replaceMeasure)) {
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                $catData['replace']['cost'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year']);
+                $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year']);
             }
 
             $result[$cat] = array_merge($result[$cat], $catData);
@@ -369,8 +386,13 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
+        $user = Auth::user();
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($user, $interests);
+
         // Get the user his building / house
-        $building = Auth::user()->buildings()->first();
+        $building = $user->buildings()->first();
         // the selected roof types for the current situation
         $roofTypes = $request->input('building_roof_types', []);
 
@@ -389,7 +411,8 @@ class RoofInsulationController extends Controller
                         'type' => $this->getRoofTypeSubCategory($roofType),
                     ];
 
-                    $surface = isset($roofTypes[$cat]['surface']) ? $roofTypes[$cat]['surface'] : 0;
+                    $roofSurface = isset($roofTypes[$cat]['roof_surface']) ? $roofTypes[$cat]['roof_surface'] : 0;
+                    $insulationRoofSurface = isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
                     $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
 
                     $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : '';
@@ -412,7 +435,8 @@ class RoofInsulationController extends Controller
                         ],
                         [
                             'element_value_id' => $elementValueId,
-                            'surface' => $surface,
+                            'roof_surface' => $roofSurface,
+                            'insulation_roof_surface' => $insulationRoofSurface,
                             'building_heating_id' => $buildingHeating,
                             'extra' => [
                                 'measure_application_id' => $extraMeasureApplication,
@@ -429,9 +453,9 @@ class RoofInsulationController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        \Auth::user()->complete($this->step);
+        $user->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 
 class FloorInsulationFormRequest extends FormRequest
 {
+    use DecimalReplacementTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -15,6 +17,13 @@ class FloorInsulationFormRequest extends FormRequest
     public function authorize()
     {
         return Auth::check();
+    }
+
+    public function getValidatorInstance()
+    {
+        $this->decimals(['building_features.floor_surface', 'building_features.insulation_surface']);
+
+        return parent::getValidatorInstance();
     }
 
     /**
@@ -29,8 +38,9 @@ class FloorInsulationFormRequest extends FormRequest
             'element.*.extra' => 'nullable|alpha',
             'element.*.element_value_id' => 'exists:element_values,id',
             'element.crawlspace' => 'nullable|alpha',
+            'building_features.insulation_surface' => ['numeric', 'needs_to_be_lower_or_same_as:building_features.floor_surface'],
 
-            'building_features.surface' => 'nullable|numeric',
+            'building_features.*' => 'nullable|numeric',
         ];
     }
 }

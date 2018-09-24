@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
@@ -51,14 +52,10 @@ class InsulatedGlazingController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        // the element ids for this page
-        $interestedInIds = [1, 2];
+        // we do not want the user to set his interests for this step
+//        $typeIds = [1, 2];
 
-        if (Auth::user()->isNotInterestedInStep('element', $interestedInIds)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+//        StepHelper::getNextStep();
 
         /**
          * @var Building
@@ -305,10 +302,13 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-        $building = Auth::user()->buildings()->first();
+        $user = Auth::user();
+
+        $building = $user->buildings()->first();
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
         // Saving the insulate glazings
+        $interests = collect();
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
             $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
             $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
@@ -334,7 +334,7 @@ class InsulatedGlazingController extends Controller
             // We'll create the user interests for the measures or update it
             UserInterest::updateOrCreate(
                 [
-                    'user_id' => Auth::id(),
+                    'user_id' => $user->id,
                     'interested_in_type' => 'measure_application',
                     'interested_in_id' => $measureApplicationId,
                 ],
@@ -342,7 +342,24 @@ class InsulatedGlazingController extends Controller
                     'interest_id' => $userInterestId,
                 ]
             );
+            // collect all the selected interests
+            $interests->push(Interest::find($userInterestId));
         }
+
+        // get the highest interest level (which is the lowst calculate value.)
+        $highestInterestLevel = $interests->unique('id')->min('calculate_value');
+        // update the livingroomwindow interest level based of the highest interest level for the measure.
+        $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
+        UserInterest::updateOrCreate(
+            [
+                'user_id'            => Auth::id(),
+                'interested_in_type' => 'element',
+                'interested_in_id'   => $livingRoomWindowsElement->id,
+            ],
+            [
+                'interest_id'        => $highestInterestLevel,
+            ]
+        );
 
         // saving the main building elements
         $elements = $request->input('building_elements', []);
@@ -408,9 +425,9 @@ class InsulatedGlazingController extends Controller
 
         $this->saveAdvices($request);
         // Save progress
-        \Auth::user()->complete($this->step);
+        $user->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 }

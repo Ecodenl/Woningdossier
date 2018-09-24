@@ -10,16 +10,16 @@
         <div class="row">
             <div class="col-md-12">
 
-                <form action="{{ route('cooperation.admin.example-buildings.update', ['id' => $exampleBuilding->id]) }}" method="post">
+                <form action="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.update', ['id' => $exampleBuilding->id]) }}" method="post">
                     {{ csrf_field() }}
                     {{ method_field("PUT") }}
 
-                    @include('cooperation.admin.example-buildings.components.names')
-                    @include('cooperation.admin.example-buildings.components.building-type')
-                    @include('cooperation.admin.example-buildings.components.cooperation')
-                    @include('cooperation.admin.example-buildings.components.order')
-                    @include('cooperation.admin.example-buildings.components.is_default')
-                    @include('cooperation.admin.example-buildings.components.contents')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.names')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.building-type')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.cooperation')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.order')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.is_default')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.contents')
 
 
                     <div class="form-group" style="margin-top: 5em;">

@@ -10,15 +10,15 @@
         <div class="row">
             <div class="col-md-12">
 
-                <form action="{{ route('cooperation.admin.example-buildings.store') }}" method="post">
+                <form action="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.store') }}" method="post">
                     {{ csrf_field() }}
 
-                    @include('cooperation.admin.example-buildings.components.names')
-                    @include('cooperation.admin.example-buildings.components.building-type')
-                    @include('cooperation.admin.example-buildings.components.cooperation')
-                    @include('cooperation.admin.example-buildings.components.order')
-                    @include('cooperation.admin.example-buildings.components.is_default')
-                    @include('cooperation.admin.example-buildings.components.contents')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.names')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.building-type')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.cooperation')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.order')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.is_default')
+                    @include('cooperation.admin.cooperation.cooperation-admin.example-buildings.components.contents')
 
                     <div class="form-group" style="margin-top: 5em;">
                         <input type="hidden" name="new" value="1">

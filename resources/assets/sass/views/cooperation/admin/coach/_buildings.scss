@@ -1,0 +1,9 @@
+#sidebar {
+  li {
+    &.active {
+      a {
+        color: white;
+      }
+    }
+  }
+}

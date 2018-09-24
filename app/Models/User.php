@@ -195,6 +195,32 @@ class User extends Authenticatable
         return false;
     }
 
+    public function isInterestedInStep($type, $interestedInIds = [])
+    {
+        // the interest ids that people select when they do not have any interest
+        $noInterestIds = [4, 5];
+
+        $interestedIds = [];
+
+        if (! is_array($interestedInIds)) {
+            $interestedInIds = [$interestedInIds];
+        }
+
+        // go through the elementid and get the user interest id to put them into the array
+        foreach ($interestedInIds as $key => $interestedInId) {
+            if ($this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+                array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
+            }
+        }
+
+        // check if the user wants to do something with their glazing
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Returns whether or not a user is associated with a particular Cooperation.
      *
@@ -240,4 +266,29 @@ class User extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
     }
+
+    /**
+     * Get the human readable role name based on the role name
+     *
+     * @param $roleName
+     * @return mixed
+     */
+    public function getHumanReadableRoleName($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->first()->human_readable_name;
+	}
+
+    public function buildingPermissions()
+    {
+        return $this->hasMany('App\Models\BuildingPermission');
+	}
+
+    public function isBuildingOwner(Building $building)
+    {
+        if ($this->buildings()->find($building->id) instanceof Building) {
+            return true;
+        }
+
+        return false;
+	}
 }

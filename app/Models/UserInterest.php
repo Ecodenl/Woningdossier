@@ -111,4 +111,28 @@ class UserInterest extends Model
             'roof_type' => $this->getInterestsInRoofTypes(),
         ];
     }
+
+    /**
+     * Function to update or create the user interests.
+     *
+     * @param array $interests
+     * @param User  $user
+     */
+    public static function saveUserInterests(User $user, array $interests)
+    {
+        foreach ($interests as $type => $interestTypes) {
+            foreach ($interestTypes as $typeId => $interestId) {
+                self::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'interested_in_type' => $type,
+                        'interested_in_id' => $typeId,
+                    ],
+                    [
+                        'interest_id' => $interestId,
+                    ]
+                );
+            }
+        }
+    }
 }

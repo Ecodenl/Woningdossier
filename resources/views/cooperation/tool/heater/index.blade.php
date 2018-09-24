@@ -7,6 +7,7 @@
     <form class="form-horizontal" method="POST"
           action="{{ route('cooperation.tool.heater.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+        @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="heater">
             <div class="row">
                 <div class="col-sm-12">

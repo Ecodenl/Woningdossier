@@ -6,6 +6,7 @@
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+        @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="start-information">
             <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.boiler.title')</h4>
             <div class="row">

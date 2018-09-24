@@ -1,9 +1,18 @@
 @extends('cooperation.layouts.app')
 
+
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
+                @if (session('coaching'))
+                    <div class="alert alert-success alert-dismissible show" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        je bent nu voor {{\App\Models\User::find(session('user_id'))->first_name}} zijn tool aant invullen
+                    </div>
+                @endif
                 @include('cooperation.tool.progress')
             </div>
         </div>
@@ -41,6 +50,7 @@
         </div>
     </div>
 @endsection
+
 
 @push('js')
     <script>

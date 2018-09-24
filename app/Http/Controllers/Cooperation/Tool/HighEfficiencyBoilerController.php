@@ -6,6 +6,7 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HighEfficiencyBoilerFormRequest;
 use App\Models\Building;
@@ -17,6 +18,7 @@ use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,15 +40,7 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
-        // check if the user is interested in roof insulation, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('service', 4)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [4];
 
         $user = \Auth::user();
         $habit = $user->energyHabit;
@@ -59,6 +53,7 @@ class HighEfficiencyBoilerController extends Controller
 
         return view('cooperation.tool.hr-boiler.index', compact(
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
+            'typeIds',
             'steps'));
     }
 
@@ -120,9 +115,14 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {
+        $user = Auth::user();
+
         // Save the building service
         $buildingServices = $request->input('building_services', '');
         $buildingServiceId = key($buildingServices);
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($user, $interests);
 
         $serviceValue = isset($buildingServices[$buildingServiceId]['service_value_id']) ? $buildingServices[$buildingServiceId]['service_value_id'] : '';
         $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : '';
@@ -130,7 +130,7 @@ class HighEfficiencyBoilerController extends Controller
 
         BuildingService::updateOrCreate(
             [
-                'building_id' => Auth::user()->buildings()->first()->id,
+                'building_id' => $user->buildings()->first()->id,
                 'service_id' => $buildingServiceId,
             ],
             [
@@ -146,7 +146,7 @@ class HighEfficiencyBoilerController extends Controller
 
         UserEnergyHabit::updateOrCreate(
             [
-                'user_id' => Auth::id(),
+                'user_id' => $user->id,
             ],
             [
                 'resident_count' => $residentCount,
@@ -156,10 +156,10 @@ class HighEfficiencyBoilerController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        Auth::user()->complete($this->step);
+        $user->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)

@@ -18,6 +18,7 @@ return [
 
     'register' => [
         'form' => [
+            'connected-address'     => 'Adres:',
             'header'                => 'Registreren',
             'e-mail'                => 'E-mailadres',
             'first_name'            => 'Voornaam',

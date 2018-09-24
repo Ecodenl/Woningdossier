@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -96,9 +97,31 @@ class LoginController extends Controller
             }
         }
 
-        if ($this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
-        }
+		if ($this->attemptLogin($request)) {
+		    $user = \Auth::user();
+
+		    // if the user only has one role we can set the session with his role id on the login
+		    if ($user->roles->count() == 1) {
+                $role = $user->roles()->first();
+
+                session()->put('role_id', $role->id);
+
+			    $this->redirectTo = RoleHelper::getUrlByRole( $role );
+            }
+			else {
+				// get highest role and redirect to the corresponding route / url
+				$role = $user->roles()->orderBy('level', 'DESC')->first();
+
+				if ($role->level >= 5){
+					$this->redirectTo = '/admin';
+				}
+				else {
+					$this->redirectTo = RoleHelper::getUrlByRole( $role );
+				}
+			}
+
+			return $this->sendLoginResponse($request);
+		}
 
 		// If the login attempt was unsuccessful we will increment the number of attempts
 		// to login and redirect the user back to the login form. Of course, when this

@@ -9,14 +9,12 @@ return [
 		],
 	],
 	'cooperation' => [
-
 	    'admin' => [
-            'choose-roles' => [
-                'header' => 'Als welke rol wilt u doorgaan ?',
-                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
+	        'choose-roles' => [
+	        	'header' => 'Als welke rol wilt u doorgaan ?',
+                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
             ],
-
-            'coach' => [
+	'coach' => [
                 'side-nav' => [
                     'label' => 'Coach menu',
                     'index' => 'Home',
@@ -227,6 +225,8 @@ return [
         'help' => [
             'title' => 'Help',
             'help' => [
+                'help-with-filling-tool' => 'Ik wil hulp bij het invullen',
+                'no-help-with-filling-tool' =>  'Ik ga zelf aan de slag',
                 'title' => 'Hulp met het gebruik van de tool.',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
             ],
@@ -242,7 +242,77 @@ return [
             'title' => 'Disclaimer',
         ],
 
-        'my-account' => [
+		'my-account' => [
+
+		    'index' => [
+		        'header' => 'Mijn account',
+                'text' => 'U kunt vanaf hier naar uw instellingen gaan om uw account te wijzigen, voortgang te resetten of om het account te verwijderen. Of u kunt naar uw berichten gaan om deze te zien.',
+
+                'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',
+                'messages' => 'Berichten <span class="glyphicon glyphicon-envelope">',
+            ],
+
+            'messages' => [
+                'navigation' => [
+                    'inbox' => 'Inbox',
+                    'requests' => 'Uw aanvragen',
+
+                    'conversation-requests' => [
+                        'request' => 'Coachgesprek aanvragen',
+                        'update-request' => 'Coachgesprek aanvraag bijwerken',
+//                        'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+                        'disabled' => 'Niet beschikbaar'
+                    ],
+
+                ],
+                'index' => [
+                    'header' => 'Mijn berichten',
+
+                    'chat' => [
+                        'conversation-requests-consideration' => [
+                            'title' => 'Uw aanvraag is in behandeling',
+                            'text' => 'Uw aanvraag is in behandeling, er word op het moment voor u een coach uitgekozen die het best bij uw situatie past.',
+                        ],
+                        'no-messages' => [
+                            'title' => 'Geen berichten',
+                            'text' => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                        ]
+                    ],
+
+                ],
+
+                'edit' => [
+                    'header' => 'Berichten',
+
+                    'chat' => [
+                        'input' => 'Type uw antwoord hier...',
+                        'button' => 'Verstuur',
+                    ],
+                ],
+
+                'requests' => [
+                    'index' => [
+
+                        'header' => 'Mijn aanvragen',
+
+                        'chat' => [
+                            'conversation-requests-consideration' => [
+                                'title' => 'Uw aanvraag is in behandeling',
+                                'text' => 'Uw aanvraag is in behandeling, er wordt een coach voor u uitgekozen die het best bij uw situatie past.',
+                            ],
+                            'no-messages' => [
+                                'title' => 'Geen berichten',
+                                'text' => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                            ]
+                        ],
+                    ],
+                    'update' => [
+                        'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url">hier uw berichten bekijken</a> </strong> ',
+                    ],
+                ],
+            ],
+
+
             'settings' => [
                 'form' => [
                     'index' => [
@@ -267,15 +337,80 @@ return [
                     ],
                 ],
             ],
-            'cooperations' => [
+			'cooperations' => [
+				'form' => [
+					'header' => 'Mijn coöperaties',
+				],
+
+			],
+
+		],
+        'conversation-requests' => [
+
+            'index' => [
+                'header' => 'Actie ondernemen',
+                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+
                 'form' => [
-                    'header' => 'Mijn coöperaties',
+                    'no-measure-application-name-title' => 'Gesprek aanvragen',
+                    'title' => 'Actie ondernemen met :measure_application_name',
+                    'allow_access' => 'Ik geef toesteming',
+                    'are-you-sure' => 'Weet u zeker dat u geen toesteming wilt geven ?',
+                    'action' => 'Actie',
+                    'take-action' => 'Actie ondernemen',
+                    'message' => 'Uw bericht aan de cooperatie',
+                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
+                    'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
+
+                    'selected-option' => 'Geselecteerde actie:',
+                    'options' => [
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+                    ],
                 ],
             ],
-        ],
 
-        'tool' => [
-            'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
+            'edit' => [
+                'header' => 'Bewerk uw huidige :request_type',
+                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+
+                'form' => [
+
+                    'allow_access' => 'Ik geef toesteming',
+                    'action' => 'Actie',
+                    'take-action' => 'Actie ondernemen',
+                    'message' => 'Uw bericht aan de cooperatie',
+                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
+                    'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
+
+                    'selected-option' => 'Geselecteerde actie:',
+
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
+
+                    'options' => [
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+
+                    ],
+                ],
+            ],
+
+		'store' => [
+                'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
+            ],
+            'update' => [
+                'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
+                'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.'
+            ],
+
+            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
+
+        ],
+		'tool' => ['change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
 
 			'unit' => [
 				'year' => 'jaar',
@@ -610,6 +745,16 @@ return [
 				'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
 
+                'conversation-requests' => [
+                    'take-action' => 'Actie ondernemen',
+                    'request' => 'Coachgesprek aanvragen',
+                    'update-request' => 'Coachgesprek aanvraag bijwerken',
+//                    'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
+                    'disabled' => 'Niet beschikbaar'
+                ],
+                'conversation-requests-request' => 'Coachgesprek aanvraag',
+                'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
+
                 'csv-columns' => [
                     'year-or-planned' => 'Jaar / gepland jaar',
                     'interest' => 'Interesse',
@@ -625,15 +770,19 @@ return [
 				'columns' => [
 					'more-info' => 'Meer info',
 					'interest' => 'Interesse',
-					'measure' => 'Maatregel',
-					'costs' => 'Kosten',
-					'savings-gas' => 'Besparing m<sup>3</sup> gas',
-					'savings-electricity' => 'Besparing kWh elektra',
-					'savings-costs' => 'Besparing in euro',
-					'advice-year' => 'Geadviseerd',
-					'planned-year' => 'Planning',
-				],
-			],
+                    'measure' => 'Maatregel',
+                    'costs' => 'Kosten',
+                    'savings-gas' => 'Besparing m<sup>3</sup> gas',
+                    'savings-electricity' => 'Besparing kWh elektra',
+                    'savings-costs' => 'Besparing in euro',
+                    'advice-year' => 'Geadviseerd',
+                    'planned-year' => 'Planning',
+                    'take-action' => 'Actie',
+                    'more-information' => 'Meer info',
+                    'quotation' => 'Vraag offerte aan',
+                    'help-question' => 'Hulpvraag'
+                ],
+            ],
 
             'ventilation-information' => [
                 'title' => 'Informatie pagina over ventilatie.',

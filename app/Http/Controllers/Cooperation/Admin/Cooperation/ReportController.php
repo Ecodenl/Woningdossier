@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Http\Controllers\Controller;
 use App\Models\MeasureApplication;
@@ -11,7 +11,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        return view('cooperation.admin.reports.index');
+        return view('cooperation.admin.cooperation.cooperation-admin.reports.index');
     }
 
     public function downloadByYear()

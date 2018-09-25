@@ -8426,6 +8426,14 @@ body i.glyphicon-info-sign {
   padding-left: 0;
 }
 
+.page-my-plan table tbody tr.collapse td {
+  border-top: 1px solid transparent !important;
+}
+
+.page-my-plan table tbody tr.collapsing td {
+  border-top: 1px solid transparent !important;
+}
+
 ul.progress-list li a img {
   width: 50px;
   height: 50px;

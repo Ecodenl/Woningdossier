@@ -443,6 +443,9 @@ return [
                     'update' => [
                         'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
                     ],
+                    'edit' => [
+                        'is-connected-to-coach' => 'Deze aanvraag is al gekoppeld aan een coach, u kunt deze dus niet meer bijwerken.'
+                    ]
                 ],
             ],
 
@@ -903,6 +906,9 @@ return [
                     'quotation' => 'Vraag offerte aan',
                     'help-question' => 'Hulpvraag'
                 ],
+                'conversation-requests' => [
+                    'update-request' => 'Aanvraag bijwerken'
+                ]
             ],
 
             'ventilation-information' => [

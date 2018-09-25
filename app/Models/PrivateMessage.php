@@ -11,8 +11,8 @@ class PrivateMessage extends Model
     const STATUS_LINKED_TO_COACH = "gekoppeld aan coach";
     const STATUS_IN_CONSIDERATION = "in behandeling";
 
-    const REQUEST_TYPE_COACH_CONVERSATION = "coach_conversation";
-    const REQUEST_TYPE_MORE_INFORMATION = "more_information";
+    const REQUEST_TYPE_COACH_CONVERSATION = "coach-conversation";
+    const REQUEST_TYPE_MORE_INFORMATION = "more-information";
     const REQUEST_TYPE_QUOTATION = "quotation";
 
     /**
@@ -26,6 +26,14 @@ class PrivateMessage extends Model
         'to_user_read' => 'boolean',
     ];
 
+    public static function isConversationRequestConnectedToCoach($conversationRequest)
+    {
+        if ($conversationRequest->status == self::STATUS_LINKED_TO_COACH) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Scope a query to return the open conversation requests based on the cooperation id

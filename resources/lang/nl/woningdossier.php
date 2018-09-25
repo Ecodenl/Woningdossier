@@ -350,6 +350,7 @@ return [
                     'no-measure-application-name-title' => 'Gesprek aanvragen',
                     'title' => 'Actie ondernemen met :measure_application_name',
                     'allow_access' => 'Ik geef toesteming',
+                    'are-you-sure' => 'Weet u zeker dat u geen toesteming wilt geven ?',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',
                     'message' => 'Uw bericht aan de cooperatie',

@@ -67,8 +67,8 @@
 
                             <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
-                                    <label for="">
-                                        <input name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
+                                    <label for="allow_access">
+                                        <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
                                         @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access')
                                     </label>
                                     @if ($errors->has('allow_access'))
@@ -125,7 +125,7 @@
 
                 if ($('input[name=allow_access]').is(':checked')  == false) {
 
-                    if (confirm('Weet u zeker dat u geen toesteming wilt geven ?')) {
+                    if (confirm('@lang('woningdossier.cooperation.conversation-requests.index.form.are-you-sure')')) {
 
                     } else {
                         return false;

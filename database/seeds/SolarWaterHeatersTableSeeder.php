@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\SolarWaterHeater;
 
 class SolarWaterHeatersTableSeeder extends Seeder
 {
@@ -13,7 +12,6 @@ class SolarWaterHeatersTableSeeder extends Seeder
     public function run()
     {
         $solarWaterHeaters = [
-
             [
                 'name' => 'Geen',
                 'calculate_value' => 1,
@@ -32,8 +30,8 @@ class SolarWaterHeatersTableSeeder extends Seeder
             ],
         ];
 
-        foreach ($solarWaterHeaters as $solarWaterHeater ){
-        	DB::table('solar_water_heaters')->insert($solarWaterHeater);
+        foreach ($solarWaterHeaters as $solarWaterHeater) {
+            DB::table('solar_water_heaters')->insert($solarWaterHeater);
         }
     }
 }

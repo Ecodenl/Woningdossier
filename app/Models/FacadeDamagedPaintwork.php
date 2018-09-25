@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\FacadeDamagedPaintwork
+ * App\Models\FacadeDamagedPaintwork.
  *
  * @property int $id
  * @property string $name
@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $term_years
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeDamagedPaintwork translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeDamagedPaintwork whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeDamagedPaintwork whereCreatedAt($value)

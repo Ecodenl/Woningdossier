@@ -4,7 +4,9 @@
 
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
+
         {{csrf_field()}}
+        @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div class="row">
             <div id="current-situation" class="col-md-12">
                 <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.title')</h4>
@@ -45,9 +47,9 @@
                         <div class="col-md-12">
                             <div class="form-group add-space {{$errors->has('building_features.roof_type_id') ? ' has-error' : ''}}">
 
-                                <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof')</label>
+                                <label for="main_roof" class="control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof')</label>
 
-                                <select id="main_roof" class="form-control" name="building_features[roof_type_id]" >
+                                <select id="main_roof" class="form-control" name="building_features[roof_type_id]">
                                     @foreach($roofTypes as $roofType)
                                         @if($roofType->calculate_value < 5)
                                         <option @if($roofType->id == old('building_features.roof_type_id') || ($features->roof_type_id == $roofType->id)) selected @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
@@ -73,7 +75,7 @@
 
                             <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title')</h4>
                             <div class="row">
-                                <div class="col-sm-12 col-md-6">
+                                <div class="col-sm-12 col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.element_value_id') ? ' has-error' : '' }}">
 
                                         <label for="flat_roof_insulation" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.is-' . $roofCat . '-roof-insulated')</label>
@@ -81,7 +83,7 @@
                                         <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][element_value_id]" >
                                             @foreach($roofInsulation->values as $insulation)
                                                 @if($insulation->calculate_value < 6)
-                                                <option @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
+                                                    <option @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
@@ -96,23 +98,45 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.surface') ? ' has-error' : '' }}">
+                                <div class="col-sm-12 col-md-6 roof-surface-inputs">
+                                    <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.roof_surface') ? ' has-error' : '' }}">
 
                                         <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.' . $roofCat . '-roof-surface')</label> <span> *</span>
 
                                         <div class="input-group">
                                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                            <input  type="number" min="0" class="form-control" name="building_roof_types[{{ $roofCat }}][surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['surface']) ? $currentCategorizedRoofTypes[$roofCat]['surface'] : old('building_roof_types.' . $roofCat . '.surface')}}">
+                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">
                                         </div>
 
                                         <div id="{{ $roofCat }}-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             And I would like to have it too...
                                         </div>
 
-                                        @if ($errors->has('building_roof_types.' . $roofCat . '.surface'))
+                                        @if ($errors->has('building_roof_types.' . $roofCat . '.roof_surface'))
                                             <span class="help-block">
-                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.surface') }}</strong>
+                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.roof_surface') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.insulation_roof_surface') ? ' has-error' : '' }}">
+
+                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-insulation_roof_surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            @lang('woningdossier.cooperation.tool.roof-insulation.current-situation.insulation-' . $roofCat . '-roof-surface')</label> <span> *</span>
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                            <input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">
+                                        </div>
+
+                                        <div id="{{ $roofCat }}-insulation_roof_surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                            And I would like to have it too...
+                                        </div>
+
+                                        @if ($errors->has('building_roof_types.' . $roofCat . '.insulation_roof_surface'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.insulation_roof_surface') }}</strong>
                                             </span>
                                         @endif
                                     </div>
@@ -152,7 +176,7 @@
 
                                         <div class="input-group">
                                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
-                                            <input  type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
+                                            <input type="number" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
                                                 value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', $default) }}">
                                         </div>
 
@@ -405,7 +429,7 @@
         $(document).ready(function() {
 
             $(window).keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
@@ -460,8 +484,8 @@
                                 if (data.flat.replace.hasOwnProperty('year')){
                                     $("input#flat_replace_year").val(data.flat.replace.year);
                                 }
-                                if (data.flat.replace.hasOwnProperty('cost')){
-                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.cost).toLocaleString('{{ app()->getLocale() }}'));
+                                if (data.flat.replace.hasOwnProperty('costs')){
+                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.costs).toLocaleString('{{ app()->getLocale() }}'));
                                 }
                             }
                         }
@@ -476,6 +500,7 @@
 
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')){
+
                                 if(data.pitched.type === 'tiles'){
                                     $(".cover-tiles").show();
                                     $(".pitched-roof .cover-bitumen").hide();
@@ -503,8 +528,8 @@
                                 if (data.pitched.replace.hasOwnProperty('year')){
                                     $("input#pitched_replace_year").val(data.pitched.replace.year);
                                 }
-                                if (data.pitched.replace.hasOwnProperty('cost')){
-                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.cost).toLocaleString('{{ app()->getLocale() }}'));
+                                if (data.pitched.replace.hasOwnProperty('costs')){
+                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.costs).toLocaleString('{{ app()->getLocale() }}'));
                                 }
                             }
                         }
@@ -521,6 +546,16 @@
 
             $('form').find('*').filter(':input:visible:first').trigger('change');
 
+        });
+
+
+        $('input[name*=roof_surface]').on('change', function () {
+            var insulationRoofSurface = $(this).parent().parent().parent().next().find('input');
+            if (insulationRoofSurface.length > 0) {
+                if ($(insulationRoofSurface).val().length == 0 || $(insulationRoofSurface).val() == "0,0" || $(insulationRoofSurface).val() == "0.00") {
+                    $(insulationRoofSurface).val($(this).val())
+                }
+            }
         });
     </script>
 @endpush

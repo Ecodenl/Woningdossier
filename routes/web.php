@@ -11,12 +11,12 @@
 |
 */
 
-Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function(){
-
-	Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function() {
-		Route::get('/', function() {
-			return view( 'cooperation.welcome' ); }
-		)->name('welcome');
+Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function () {
+    Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
+        Route::get('/', function () {
+            return view('cooperation.welcome');
+        }
+        )->name('welcome');
 
 		Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 		Route::get( 'confirm',
@@ -31,7 +31,6 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
 			Route::get('help', 'HelpController@index')->name('help.index');
-//			Route::get('help-met-invullen', '')
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 
 			// my account
@@ -41,8 +40,10 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
+                Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
 
-				Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+
+                Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
 
 				    Route::get('', 'MessagesController@index')->name('index');
 				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
@@ -133,13 +134,13 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 				Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
 				Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
+        });
 
-		});
-
-		// todo add admin middleware checking ACLs
-		Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
+        // todo add admin middleware checking ACLs
+        Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
 
             Route::get('/', 'AdminController@index')->name('index');
+            Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
 			Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
 
@@ -233,8 +234,6 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 		});
 
 	});
-
-
 });
 
 

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUserMotivationsTable extends Migration
 {
@@ -17,9 +17,9 @@ class CreateUserMotivationsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
-	        $table->integer('motivation_id')->unsigned();
-	        $table->foreign('motivation_id')->references('id')->on('motivations')->onDelete('restrict');
-	        $table->integer('order');
+            $table->integer('motivation_id')->unsigned();
+            $table->foreign('motivation_id')->references('id')->on('motivations')->onDelete('restrict');
+            $table->integer('order');
             $table->timestamps();
         });
     }

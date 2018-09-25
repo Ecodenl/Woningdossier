@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserEnergyHabit
+ * App\Models\UserEnergyHabit.
  *
  * @property int $id
  * @property int|null $user_id
@@ -27,10 +27,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $end_date
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
- * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
- * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
- * @property-read \App\Models\User|null $user
+ * @property \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
+ * @property \App\Models\BuildingHeating|null $heatingFirstFloor
+ * @property \App\Models\BuildingHeating|null $heatingSecondFloor
+ * @property \App\Models\User|null $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountElectricity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountGas($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountWater($value)
@@ -69,9 +70,8 @@ class UserEnergyHabit extends Model
         'amount_gas',
         'amount_water',
         'living_situation_extra',
-        'motivation_extra'
+        'motivation_extra',
     ];
-
 
     /**
      * Get the user that belongsTo this habit.
@@ -83,24 +83,27 @@ class UserEnergyHabit extends Model
         return $this->belongsTo(User::class);
     }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-    public function heatingFirstFloor(){
-    	return $this->belongsTo(BuildingHeating::class, 'heating_first_floor');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function heatingFirstFloor()
+    {
+        return $this->belongsTo(BuildingHeating::class, 'heating_first_floor');
     }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-    public function heatingSecondFloor(){
-    	return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function heatingSecondFloor()
+    {
+        return $this->belongsTo(BuildingHeating::class, 'heating_second_floor');
     }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-    public function comfortLevelTapWater(){
-    	return $this->belongsTo(ComfortLevelTapWater::class, 'water_comfort_id');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function comfortLevelTapWater()
+    {
+        return $this->belongsTo(ComfortLevelTapWater::class, 'water_comfort_id');
     }
 }

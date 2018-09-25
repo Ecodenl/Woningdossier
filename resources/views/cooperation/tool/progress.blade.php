@@ -11,7 +11,6 @@
             ],
             'insulated-glazing' => [
                 '1',
-                '2'
             ],
             'floor-insulation' => [
                 '4'
@@ -51,9 +50,9 @@
             {{--@else--}}
             {{--@endif--}}
 
-        <li class="list-inline-item @if(Auth::user()->hasCompleted($step)) done @elseif(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index') active @endif
+        <li class="list-inline-item @if(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index') active @elseif(Auth::user()->hasCompleted($step)) done @endif
 
-            @if($step->slug != "general-data")
+            @if($step->slug != "general-data" && Route::currentRouteName() != 'cooperation.tool.' . $step->slug . '.index')
                 @foreach ($stepInterests as $interestedInType => $interestedInNames)
                     @foreach ($interestedInNames as $interestedInName => $interestedInIds)
                         @if ($interestedInName == $step->slug && Auth::user()->isNotInterestedInStep($interestedInType, $interestedInIds) == true)

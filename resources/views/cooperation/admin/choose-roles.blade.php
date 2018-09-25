@@ -15,18 +15,21 @@
                         </div>
                         <br>
                         <div class="row">
-                            <?php $totalUserRoles = $user->getRoleNames()->count() ?>
-                            @foreach($user->getRoleNames() as $i => $roleName)
+                            <?php
+                                // todo make this better maintainable (especially the col classes)
+                                $totalUserRoles = Auth::user()->roles()->count();
+                            ?>
+                            @foreach($user->roles as $i => $role)
                             <div class="@if($totalUserRoles == 2) col-sm-6 @elseif($totalUserRoles == 3) col-sm-4 @else col-sm-3 @endif">
                                 <form action="">
-                                    <a href="{{\App\Helpers\RoleHelper::geturlByRoleName($roleName)}}">
+                                    <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}">
                                         <div class="choose-roles-panel panel panel-default">
                                             <div class="panel-body">
                                                 <h2 class="text-center">
                                                     <span class="glyphicon glyphicon-user"></span>
                                                 </h2>
                                                 <h3 class="text-center">
-                                                    {{ucfirst($user->getHumanReadableRoleName($roleName))}}
+                                                    {{ ucfirst($user->getHumanReadableRoleName($role->name)) }}
                                                 </h3>
                                             </div>
                                         </div>

@@ -84,27 +84,30 @@ class UserActionPlanAdvice extends Model
                        ->get();
         /** @var UserActionPlanAdvice $advice */
         foreach ($advices as $advice) {
-            /** @var MeasureApplication $measureApplication */
-            $measureApplication = $advice->measureApplication;
+            if ($advice->step instanceof Step) {
 
-            if (is_null($advice->year)) {
-                $advice->year = $advice->getAdviceYear();
-                // re-index costs
-                $advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
+                /** @var MeasureApplication $measureApplication */
+                $measureApplication = $advice->measureApplication;
+
+                if (is_null($advice->year)) {
+                    $advice->year = $advice->getAdviceYear();
+                    // re-index costs
+                    $advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
+                }
+
+                if (! array_key_exists($measureApplication->measure_type, $result)) {
+                    $result[$measureApplication->measure_type] = [];
+                }
+                //			if (!array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
+    //                $result[$measureApplication->measure_type][$advice->step->slug] = [];
+    //            }
+
+                if (! array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
+                    $result[$measureApplication->measure_type][$advice->step->slug] = [];
+                }
+
+                $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
             }
-
-            if (! array_key_exists($measureApplication->measure_type, $result)) {
-                $result[$measureApplication->measure_type] = [];
-            }
-            //			if (!array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
-//                $result[$measureApplication->measure_type][$advice->step->slug] = [];
-//            }
-
-            if (! array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
-                $result[$measureApplication->measure_type][$advice->step->slug] = [];
-            }
-
-            $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
         }
 
         ksort($result);

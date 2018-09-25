@@ -12,7 +12,6 @@ use App\Http\Controllers\Controller;
 class ConversationRequestController extends Controller
 {
 
-
     /**
      * Show the form
      *
@@ -23,14 +22,10 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
-
-
-
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
 
         if ($option == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION && PrivateMessage::hasUserResponseToCoachConversationRequest() == false && $myOpenCoachConversationRequest != null) {
             return redirect()->route('cooperation.conversation-requests.edit', ['cooperation' => $cooperation, 'option' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION]);
-
         }
 
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
@@ -62,7 +57,6 @@ class ConversationRequestController extends Controller
         // we get the intended message so if users wrote half a book they not lose it
         $intendedMessage = session('intendedMessage');
 
-
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
 
         $selectedOption = $option;
@@ -79,13 +73,12 @@ class ConversationRequestController extends Controller
      */
     public function update(ConversationRequest $request, Cooperation $cooperation)
     {
-
         $user = \Auth::user();
         $cooperationId = session('cooperation');
 
         $message = $request->get('message', '');
         $action = $request->get('action', '');
-
+	    $allowAccess = $request->get('allow_access', '') == 'on';
 
         PrivateMessage::myOpenCoachConversationRequest()->update(
             [
@@ -95,12 +88,12 @@ class ConversationRequestController extends Controller
                 'to_cooperation_id' => $cooperationId,
                 'from_user_id' => $user->id,
                 'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
-                'request_type' => $action
+                'request_type' => $action,
+	            'allow_access' => $allowAccess,
             ]
         );
 
         return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.update.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
-
     }
 
 
@@ -112,9 +105,9 @@ class ConversationRequestController extends Controller
      */
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
-
         $action = $request->get('action', '');
         $message = $request->get('message', '');
+	    $allowAccess = $request->get('allow_access', '') == 'on';
 
         $selectedOption = __('woningdossier.cooperation.conversation-requests.edit.form.'.$action);
 
@@ -141,7 +134,6 @@ class ConversationRequestController extends Controller
         $user = \Auth::user();
         $cooperationId = session('cooperation');
 
-
         PrivateMessage::create(
             [
                 // we get the selected option from the language file, we can do this cause the submitted value = key from localization
@@ -150,7 +142,8 @@ class ConversationRequestController extends Controller
                 'to_cooperation_id' => $cooperationId,
                 'from_user_id' => $user->id,
                 'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
-                'request_type' => $action
+                'request_type' => $action,
+	            'allow_access' => $allowAccess,
             ]
         );
 

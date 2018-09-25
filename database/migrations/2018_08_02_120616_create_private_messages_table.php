@@ -38,6 +38,8 @@ class CreatePrivateMessagesTable extends Migration
 
             $table->enum('status', ['wordt verwerkt', 'in behandeling', 'gekoppeld aan coach'])->nullable();
 
+            $table->boolean('allow_access')->default(false);
+
             $table->boolean('is_completed')->default(false);
 
             $table->integer('main_message')->nullable()->default(null);

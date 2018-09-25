@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class PrivateMessage extends Model
 {
-    protected $fillable = ['message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id', 'status', 'main_message', 'title', 'request_type'];
+    protected $fillable = [
+    	'message', 'from_user_id', 'to_user_id', 'from_cooperation_id',
+	    'to_cooperation_id', 'status', 'main_message', 'title',
+	    'request_type', 'allow_access',
+    ];
 
     const STATUS_LINKED_TO_COACH = "gekoppeld aan coach";
     const STATUS_IN_CONSIDERATION = "in behandeling";
@@ -24,6 +28,7 @@ class PrivateMessage extends Model
         'is_completed' => 'boolean',
         'from_user_read' => 'boolean',
         'to_user_read' => 'boolean',
+	    'allow_access' => 'boolean',
     ];
 
 

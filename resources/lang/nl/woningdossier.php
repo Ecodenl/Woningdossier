@@ -302,7 +302,7 @@ return [
                         ],
                     ],
                     'update' => [
-                        'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+                        'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url">hier uw berichten bekijken</a> </strong> ',
                     ],
                 ],
             ],
@@ -349,7 +349,7 @@ return [
                 'form' => [
                     'no-measure-application-name-title' => 'Gesprek aanvragen',
                     'title' => 'Actie ondernemen met :measure_application_name',
-                    'agreement' => 'Ik geef toesteming',
+                    'allow_access' => 'Ik geef toesteming',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',
                     'message' => 'Uw bericht aan de cooperatie',
@@ -371,7 +371,7 @@ return [
 
                 'form' => [
 
-                    'agreement' => 'Ik geef toesteming',
+                    'allow_access' => 'Ik geef toesteming',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',
                     'message' => 'Uw bericht aan de cooperatie',
@@ -394,10 +394,10 @@ return [
             ],
 
 		'store' => [
-                'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+                'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
             ],
             'update' => [
-                'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+                'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.'
             ],
 

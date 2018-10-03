@@ -1,27 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Seeder;
 
-class AddInputSourceIdToRolesTable extends Migration
+class RoleTableSeeder extends Seeder
 {
     /**
-     * Run the migrations.
+     * Run the database seeds.
      *
      * @return void
      */
-    public function up()
+    public function run()
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->integer('input_source_id')->unsigned()->nullable()->after('guard_name');
-            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete("set null");
-        });
-
-
         $coachInputSource = \App\Models\InputSource::where('short', 'coach')->first();
         DB::table('roles')->where('name', 'coach')->update(['input_source_id' => $coachInputSource->id]);
-        
+
         $residentInputSource = \App\Models\InputSource::where('short', 'resident')->first();
         DB::table('roles')->where('name', 'resident')->update(['input_source_id' => $residentInputSource->id]);
 
@@ -29,16 +21,5 @@ class AddInputSourceIdToRolesTable extends Migration
         DB::table('roles')->where('name', 'coordinator')->update(['input_source_id' => $cooperationInputSource->id]);
         DB::table('roles')->where('name', 'cooperation-admin')->update(['input_source_id' => $cooperationInputSource->id]);
 
-
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        //
     }
 }

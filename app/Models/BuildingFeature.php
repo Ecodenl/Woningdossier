@@ -78,6 +78,7 @@ class BuildingFeature extends Model
         'surface',
         'floor_surface',
         'build_year',
+        'input_source_id',
         'facade_plastered_painted',
         'window_surface',
     ];

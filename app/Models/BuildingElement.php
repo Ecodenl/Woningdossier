@@ -38,7 +38,7 @@ class BuildingElement extends Model
         'extra' => 'array',
     ];
 
-    protected $fillable = ['building_id', 'element_id', 'element_value_id', 'extra'];
+    protected $fillable = ['building_id', 'input_source_id', 'element_id', 'element_value_id', 'extra'];
 
     public function building()
     {

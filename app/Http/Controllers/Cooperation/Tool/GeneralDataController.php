@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneralDataFormRequest;
@@ -18,6 +19,7 @@ use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\PresentHeatPump;

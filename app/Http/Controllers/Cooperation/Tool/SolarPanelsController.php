@@ -17,7 +17,9 @@ use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\Role;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
@@ -45,12 +47,17 @@ class SolarPanelsController extends Controller
         $typeIds = [7];
 
         $steps = Step::orderBy('order')->get();
-        $user = \Auth::user();
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+//        dd($building->pvPanels);
+
+//        $buildingId = $building->id;
         /**
          * @var Building
          */
-        $building = $user->buildings()->first();
-        $user->energyHabit;
+//        $building = $user->buildings()->first();
+//        $user->energyHabit;
         $amountElectricity = ($user->energyHabit instanceof UserEnergyHabit) ? $user->energyHabit->amount_electricity : 0;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();

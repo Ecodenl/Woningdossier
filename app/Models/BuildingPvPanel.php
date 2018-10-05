@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -30,6 +31,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingPvPanel extends Model
 {
+
+    use GetValueTrait;
+
     protected $fillable = ['building_id', 'input_source_id', 'peak_power', 'number', 'pv_panel_orientation_id', 'angle'];
 
     /**

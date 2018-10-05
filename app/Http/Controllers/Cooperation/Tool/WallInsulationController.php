@@ -50,6 +50,12 @@ class WallInsulationController extends Controller
         $steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();
+
+//        $building = Building::find(HoomdossierSession::getBuilding());
+//        $user = $building->user;
+//        $buildingId = $building->id;
+//        $inputSourceId = HoomdossierSession::getInputSource();
+
         // todo should use short here
         $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
         $buildingFeature = $building->buildingFeatures;

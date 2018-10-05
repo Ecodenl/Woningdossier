@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

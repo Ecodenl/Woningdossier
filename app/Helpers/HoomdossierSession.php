@@ -73,6 +73,17 @@ class HoomdossierSession extends Session {
     }
 
     /**
+     * Set the input source value id
+     * @NOTE: this is not the same as the input source, this input source will be used to get the righ values for the form.
+     *
+     * @param InputSource $inputSource
+     */
+    public static function setInputSourceValue(InputSource $inputSource)
+    {
+        self::setHoomdossierSession('input_source_value_id', $inputSource->id);
+    }
+
+    /**
      * Set the input source id
      *
      * @param InputSource $inputSource
@@ -109,6 +120,16 @@ class HoomdossierSession extends Session {
     }
 
     /**
+     * Get the input source value id
+     * Read the NOTE @setInputSourceValue
+     * @return int
+     */
+    public static function getInputSourceValue(): int
+    {
+        return self::getHoomdossierSession('input_source_value_id');
+    }
+
+    /**
      * Get the building id
      *
      * @return int
@@ -116,5 +137,15 @@ class HoomdossierSession extends Session {
     public static function getBuilding(): int
     {
         return self::getHoomdossierSession('building_id');
+    }
+
+    /**
+     * Return the hoomdossier sessions
+     *
+     * @return array
+     */
+    public static function getAll(): array
+    {
+        return self::get('hoomdossier_session');
     }
 }

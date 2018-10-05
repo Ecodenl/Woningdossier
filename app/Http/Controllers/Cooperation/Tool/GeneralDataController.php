@@ -36,6 +36,7 @@ use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class GeneralDataController extends Controller
@@ -55,13 +56,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
-        $building = \Auth::user()->buildings()->first();
-
-
-        $role = Role::findByName('coach');
-//        HoomdossierSession::setRole($role);
-//        HoomdossierSession::setInputSource($role->inputSource);
-//        HoomdossierSession::setBuilding($building);
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();

@@ -32,7 +32,8 @@ class GetValueScope implements Scope
             // get the input sources from the current
             $builder->leftJoin('input_sources', 'input_sources.id', '=', $model->getTable() . '.input_source_id')
                 ->orderBy('input_sources.order')
-                ->where($model->getTable() . '.building_id', '=', HoomdossierSession::getBuilding())
+                // TODO: ->where('building_id') still needed ?
+//                ->where($model->getTable() . '.building_id', '=', HoomdossierSession::getBuilding())
                 ->select('input_sources.id as input_source_id', 'input_sources.name as input_source_name', 'input_sources.short as input_source_short', 'input_sources.order as input_source_order', $model->getTable() . '.*');
 
         }

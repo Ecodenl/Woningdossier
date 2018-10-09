@@ -18,6 +18,7 @@ class PrivateMessage extends Model
     const REQUEST_TYPE_COACH_CONVERSATION = "coach-conversation";
     const REQUEST_TYPE_MORE_INFORMATION = "more-information";
     const REQUEST_TYPE_QUOTATION = "quotation";
+    const REQUEST_TYPE_OTHER = "other";
 
     /**
      * The attributes that should be cast to native types.

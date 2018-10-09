@@ -27,7 +27,6 @@ class BuildingController extends Controller
         $buildingId = $request->get('building_id');
 
 
-        // TODO: implement hasPermission function when present
         if (\Auth::user()->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
 
             BuildingCoachStatus::updateOrCreate(
@@ -55,6 +54,8 @@ class BuildingController extends Controller
     public function fillForUser(Cooperation $cooperation, $buildingId)
     {
         $building = Building::find($buildingId);
+
+        // makes no sense at all, rewrite when input_sources branch is merged
         session(
             [
                 'user_id' => \Auth::id(),

@@ -129,6 +129,11 @@ Route::domain('{cooperation}.' . config('woningdossier.domain'))->group(function
 			        Route::get('', 'BuildingController@index')->name('index');
 			        Route::get('{id}', 'BuildingController@fillForUser')->name('fill-for-user');
 			        Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
+
+			        Route::group(['prefix' => 'details', 'as' => 'details.'], function () {
+			            Route::get('{building_id}', 'BuildingDetailsController@index')->name('index');
+			            Route::post('', 'BuildingDetailsController@store')->name('store');
+                    });
                 });
 
                 // needs to be the last route due to the param

@@ -13,8 +13,8 @@
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.city')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.street')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.owner')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.actions')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
+                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -23,14 +23,6 @@
                                 <td>{{ $buildingPermission->building->city }}</td>
                                 <td>{{ $buildingPermission->building->city }}</td>
                                 <td>{{ $buildingPermission->building->user->first_name .' '. $buildingPermission->building->user->last_name}}</td>
-                                <td>
-                                    <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $buildingPermission->building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
-                                    <form style="display:inline;" action="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.destroy', ['id' => $buildingPermission->building->id]) }}" method="post">
-                                        {{ method_field("DELETE") }}
-                                        {{ csrf_field() }}
-                                        <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
-                                    </form>
-                                </td>
                                 <td>
                                     <div class="input-group" id="current-building-status">
                                         <input disabled placeholder="@lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')" type="text" class="form-control disabled" aria-label="...">
@@ -52,6 +44,10 @@
                                             </ul>
                                         </div><!-- /btn-group -->
                                     </div><!-- /input-group -->
+                                </td>
+                                <td>
+                                    <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $buildingPermission->building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                    <a href="{{ route('cooperation.admin.coach.buildings.details.index', ['id' => $buildingPermission->building->id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-eye-open"></i></a>
                                 </td>
                             </tr>
                         @endforeach

@@ -51,7 +51,16 @@ return [
                         'success' => 'Status is gekoppeld aan het gebouw',
                     ],
                     'header' => 'Gebouwen waar u toegangt tot heeft',
-                ]
+                    
+                    'details' => [
+                        'index' => [
+                            'header' => 'Details van het gebouw',
+                            'form' => [
+                                'submit' => 'Toevoegen',
+                            ]
+                        ]
+                    ],
+                ],
             ],
             'cooperation' => [
                 'coordination' => [

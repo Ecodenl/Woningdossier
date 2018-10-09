@@ -24,7 +24,7 @@ class CreateBuildingNotesTable extends Migration
             $table->string('country_code', 2)->default('nl');
             $table->string('bag_addressid')->default('');
 
-            $table->longText('notes');
+            $table->longText('note');
 
             $table->integer('building_id')->unsigned()->nullable();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');

@@ -54,9 +54,13 @@ use Illuminate\Database\Eloquent\Model;
 class Building extends Model
 {
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid',
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id',
     ];
 
+    public function buildingNotes()
+    {
+        return $this->hasMany('App\Models\BuildingNotes');
+	}
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

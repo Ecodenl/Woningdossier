@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBuildingPermissionsTable extends Migration
+class CreateBuildingCoachStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,21 @@ class CreateBuildingPermissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('building_permissions', function (Blueprint $table) {
+        Schema::create('building_coach_statuses', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('coach_id')->unsigned();
+            $table->foreign('coach_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->integer('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
 
+            $table->enum('status', ['done', 'in_consideration', 'appointment']);
+
             $table->timestamps();
         });
+
+
     }
 
     /**
@@ -33,6 +37,6 @@ class CreateBuildingPermissionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('building_permissions');
+        Schema::dropIfExists('building_coach_statuses');
     }
 }

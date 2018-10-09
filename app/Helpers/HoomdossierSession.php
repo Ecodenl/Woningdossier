@@ -12,6 +12,20 @@ class HoomdossierSession extends Session {
 
 
     /**
+     * Set all the required values.
+     *
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param InputSource $inputSourceValue
+     */
+    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue)
+    {
+        self::setBuilding($building);
+        self::setInputSource($inputSource);
+        self::setInputSourceValue($inputSourceValue);
+    }
+
+    /**
      * Set the Cooperation id
      *
      * @param Cooperation $cooperation

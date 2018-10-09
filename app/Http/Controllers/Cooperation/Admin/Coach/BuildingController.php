@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
+use App\Models\InputSource;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -53,20 +57,22 @@ class BuildingController extends Controller
      */
     public function fillForUser(Cooperation $cooperation, $buildingId)
     {
+        // The building the coach wants to edit
         $building = Building::find($buildingId);
+        // get the owner of the building
+        $user = User::find($building->user_id);;
+        // we cant query on the Spatie\Role model so we first get the result on the "original model"
+        $role = Role::findByName($user->roles->first()->name);
+        // get the input source
+        $inputSourceValue = $role->inputSource;
 
-        // makes no sense at all, rewrite when input_sources branch is merged
-        session(
-            [
-                'user_id' => \Auth::id(),
-                'source_id' => 1, // TODO: get from table, if table is present
-                'building_id' => $buildingId,
-                'coaching' => [
-                    'user_id' => $building->user->id,
-                    'source_id' => 1, // same TODO as the one as above
-                ],
-            ]
-        );
+        $inputSource = InputSource::find(HoomdossierSession::getInputSource());
+
+
+        // We set the building to the building the coach wants to "edit"
+        // The inputSource is just the coach one
+        // But the input source value is from the building owner so the coach can see the input, the coach can switch this in the tool itself.
+        HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue);
 
         return redirect()->route('cooperation.tool.index');
     }

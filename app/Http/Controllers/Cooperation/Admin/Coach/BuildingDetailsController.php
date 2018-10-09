@@ -20,7 +20,7 @@ class BuildingDetailsController extends Controller
 
     public function store(Request $request)
     {
-        $note = $request->get('note');
+        $note = strip_tags($request->get('note'));
         $buildingId = $request->get('building_id');
 
         $building = Building::find($buildingId);

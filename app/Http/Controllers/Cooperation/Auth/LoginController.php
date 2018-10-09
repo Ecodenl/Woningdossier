@@ -100,6 +100,7 @@ class LoginController extends Controller
         }
 
 		if ($this->attemptLogin($request)) {
+
 		    $user = \Auth::user();
 		    // if the user only has one role we can set the session with his role id on the login
 		    if ($user->roles->count() == 1) {
@@ -111,6 +112,7 @@ class LoginController extends Controller
 		        if (!$role->inputSource instanceof InputSource) {
 		            $inputSource = InputSource::findByShort('resident');
                 }
+
                 // set the Auth user sessions
                 HoomdossierSession::setRole($role);
                 HoomdossierSession::setInputSource($inputSource);
@@ -119,20 +121,11 @@ class LoginController extends Controller
                 HoomdossierSession::setInputSourceValue($inputSource);
                 HoomdossierSession::setBuilding($building);
 
-                session()->put('role_id', $role->id);
-
 			    $this->redirectTo = RoleHelper::getUrlByRole( $role );
             }
 			else {
-				// get highest role and redirect to the corresponding route / url
-				$role = $user->roles()->orderBy('level', 'DESC')->first();
-
-				if ($role->level >= 5){
-					$this->redirectTo = '/admin';
-				}
-				else {
-					$this->redirectTo = RoleHelper::getUrlByRole( $role );
-				}
+				// if the user has multiple roles, always redirect them to the switch role.
+                $this->redirectTo = '/admin';
 			}
 
 

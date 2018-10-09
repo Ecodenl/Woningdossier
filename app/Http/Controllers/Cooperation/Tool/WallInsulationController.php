@@ -89,7 +89,7 @@ class WallInsulationController extends Controller
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
 
-        $interests = $request->input('interest', '');
+        $interests = $request->input('interest', []);
         UserInterest::saveUserInterests($user, $interests);
 
         // Get all the values from the form

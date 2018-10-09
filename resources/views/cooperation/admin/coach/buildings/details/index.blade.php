@@ -19,6 +19,7 @@
             <div class="row">
                 <div class="col-sm-8">
                     @forelse($buildingNotes as $buildingNote)
+                        <p class="pull-right">{{$buildingNote->created_at->format('Y-m-d H:i')}}</p>
                         <p>{{$buildingNote->note}}</p>
                         <hr>
                     @empty

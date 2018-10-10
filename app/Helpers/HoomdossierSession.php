@@ -5,8 +5,8 @@ namespace App\Helpers;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Role;
 use Illuminate\Support\Facades\Session;
-use Spatie\Permission\Models\Role;
 
 class HoomdossierSession extends Session {
 
@@ -17,12 +17,14 @@ class HoomdossierSession extends Session {
      * @param Building $building
      * @param InputSource $inputSource
      * @param InputSource $inputSourceValue
+     * @param Role $role
      */
-    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue)
+    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
     {
         self::setBuilding($building);
         self::setInputSource($inputSource);
         self::setInputSourceValue($inputSourceValue);
+        self::setRole($role);
     }
 
     /**

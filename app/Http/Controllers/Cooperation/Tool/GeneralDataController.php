@@ -57,6 +57,7 @@ class GeneralDataController extends Controller
     public function index()
     {
         $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
@@ -77,7 +78,7 @@ class GeneralDataController extends Controller
         $heatPumps = PresentHeatPump::all();
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
         $motivations = Motivation::orderBy('order')->get();
-        $energyHabit = Auth::user()->energyHabit;
+        $energyHabit = $buildingOwner->energyHabit;
         $steps = Step::orderBy('order')->get();
         $step = $this->step;
 
@@ -114,21 +115,20 @@ class GeneralDataController extends Controller
                 $building->save();
             }
         }
-        
+
         $features = BuildingFeature::updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
                 'build_year' => $request->get('build_year'),
                 'surface' => $request->get('surface'),
                 'monument' => $request->get('monument', 0),
                 'building_layers' => $request->get('building_layers'),
             ]
         );
+
 
 
         $energyLabel = EnergyLabel::find($request->get('energy_label_id'));

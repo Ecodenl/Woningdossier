@@ -10,7 +10,9 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        je bent nu voor {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}} zijn tool aant invullen
+                        Je bent nu voor {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}} zijn tool aant invullen
+                        <br>
+                        Je ziet de data die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld
                     </div>
                 @endif
                 @include('cooperation.tool.progress')

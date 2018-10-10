@@ -68,11 +68,10 @@ class BuildingController extends Controller
 
         $inputSource = InputSource::find(HoomdossierSession::getInputSource());
 
-
         // We set the building to the building the coach wants to "edit"
         // The inputSource is just the coach one
         // But the input source value is from the building owner so the coach can see the input, the coach can switch this in the tool itself.
-        HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue);
+        HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue, $role);
 
         return redirect()->route('cooperation.tool.index');
     }

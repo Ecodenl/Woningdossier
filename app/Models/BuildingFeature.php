@@ -78,6 +78,7 @@ class BuildingFeature extends Model
         'insulation_wall_surface',
         'damage_paintwork',
         'additional_info',
+        'building_layers',
         'surface',
         'floor_surface',
         'build_year',

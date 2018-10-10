@@ -104,6 +104,7 @@ class GeneralDataController extends Controller
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingId = $building->id;
+        $user = $building->user;
         $inputSourceId = HoomdossierSession::getInputSource();
         
         $exampleBuildingId = $request->get('example_building_id', null);
@@ -259,9 +260,9 @@ class GeneralDataController extends Controller
         }
 
         // Check if the user already has a motivation
-        if (UserMotivation::where('user_id', Auth::id())->count() > 0) {
+        if (UserMotivation::where('user_id', $user->id)->count() > 0) {
             // if so drop the old ones
-            UserMotivation::where('user_id', Auth::id())->delete();
+            UserMotivation::where('user_id', $user->id)->delete();
         }
         // get the motivations
         foreach ($request->get('motivation', []) as $key => $motivationId) {

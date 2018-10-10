@@ -22,7 +22,6 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -43,14 +42,16 @@ class HighEfficiencyBoilerController extends Controller
     {
         $typeIds = [4];
 
-        $user = \Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
         $habit = $user->energyHabit;
+
         $steps = Step::orderBy('order')->get();
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
-        $installedBoiler = BuildingService::where('service_id', $boiler->id)->where('building_id', Auth::user()->buildings()->first()->id)->first();
+        $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
 
         return view('cooperation.tool.hr-boiler.index', compact(
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
@@ -60,7 +61,9 @@ class HighEfficiencyBoilerController extends Controller
 
     public function calculate(Request $request)
     {
-        $user = \Auth::user();
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $result = [
             'savings_gas' => 0,
@@ -169,6 +172,9 @@ class HighEfficiencyBoilerController extends Controller
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -182,7 +188,7 @@ class HighEfficiencyBoilerController extends Controller
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->year = $results['replace_year'];
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

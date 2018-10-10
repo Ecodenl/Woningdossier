@@ -61,7 +61,9 @@ class InsulatedGlazingController extends Controller
         /**
          * @var Building
          */
-        $building = \Auth::user()->buildings->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        
         $steps = Step::orderBy('order')->get();
 
         $interests = Interest::orderBy('order')->get();
@@ -94,7 +96,7 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
-                $measureInterest = \Auth::user()->interests()
+                $measureInterest = $user->interests()
                                                 ->where('interested_in_type', 'measure_application')
                                                 ->where('interested_in_id', $measureApplication->id)
                                                 ->get();
@@ -119,6 +121,7 @@ class InsulatedGlazingController extends Controller
 
     protected function saveAdvices(Request $request)
     {
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -133,7 +136,7 @@ class InsulatedGlazingController extends Controller
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -151,7 +154,7 @@ class InsulatedGlazingController extends Controller
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -162,6 +165,9 @@ class InsulatedGlazingController extends Controller
 
     public function calculate(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -275,7 +281,7 @@ class InsulatedGlazingController extends Controller
         $crackSealingId = $request->get('building_elements.crack-sealing', 0);
         $crackSealingElement = ElementValue::find($crackSealingId);
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
-            $energyHabit = \Auth::user()->energyHabits;
+            $energyHabit = $user->energyHabits;
             $gas = 0;
             if ($energyHabit instanceof UserEnergyHabit) {
                 $gas = $energyHabit->amount_gas;

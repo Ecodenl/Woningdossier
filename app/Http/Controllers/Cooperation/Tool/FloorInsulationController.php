@@ -23,7 +23,6 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class FloorInsulationController extends Controller
 {
@@ -45,7 +44,7 @@ class FloorInsulationController extends Controller
 
         $typeIds = [4];
         /** @var Building $building */
-        $building = \Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
         $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
@@ -62,7 +61,7 @@ class FloorInsulationController extends Controller
             $crawlspacePresent = 1; // now
         }
 
-        $buildingElement = Auth::user()->buildings()->first()->buildingElements;
+        $buildingElement = $building->buildingElements;
 
         $buildingFeatures = $building->buildingFeatures;
         $steps = Step::orderBy('order')->get();
@@ -79,8 +78,8 @@ class FloorInsulationController extends Controller
         /**
          * @var Building
          */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $result = [
             'savings_gas' => 0,
@@ -230,7 +229,7 @@ class FloorInsulationController extends Controller
     {
         // Remove old results
         UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
-
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         $elements = $request->input('element');
         if (array_key_exists($floorInsulation->id, $elements)) {
@@ -250,7 +249,7 @@ class FloorInsulationController extends Controller
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();

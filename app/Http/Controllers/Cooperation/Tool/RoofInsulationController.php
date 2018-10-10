@@ -51,7 +51,7 @@ class RoofInsulationController extends Controller
         $typeIds = [5];
 
         /** var Building $building */
-        $building = \Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         /** var BuildingFeature $features */
         $features = $building->buildingFeatures;
@@ -133,6 +133,8 @@ class RoofInsulationController extends Controller
 
         $result = [];
 
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
+
         // Remove old results
         UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 
@@ -191,7 +193,7 @@ class RoofInsulationController extends Controller
                     //}
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();
@@ -209,7 +211,7 @@ class RoofInsulationController extends Controller
                     $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $surface, $year);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -231,7 +233,7 @@ class RoofInsulationController extends Controller
                         $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year);
 
                         $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();
@@ -252,7 +254,7 @@ class RoofInsulationController extends Controller
                     $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -263,12 +265,12 @@ class RoofInsulationController extends Controller
 
     public function calculate(Request $request)
     {
+
         $result = [];
-        /**
-         * var Building $building.
-         */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+
+        /** @var Building $building */
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $roofTypes = $request->input('building_roof_types', []);
         foreach ($roofTypes as $i => $details) {

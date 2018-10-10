@@ -49,9 +49,9 @@ class HeaterController extends Controller
     {
         $typeIds = [3];
 
-        $user = \Auth::user();
-        /** @var Building $building */
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         $steps = Step::orderBy('order')->get();
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
@@ -93,9 +93,8 @@ class HeaterController extends Controller
         $comfortLevelId = $request->input('user_energy_habits.water_comfort_id', 0);
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
 
-        $user = \Auth::user();
-        /** @var Building $building */
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
         $habit = $user->energyHabit;
 
         if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
@@ -209,6 +208,9 @@ class HeaterController extends Controller
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -221,7 +223,7 @@ class HeaterController extends Controller
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

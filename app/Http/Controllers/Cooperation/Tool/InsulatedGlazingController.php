@@ -91,11 +91,12 @@ class InsulatedGlazingController extends Controller
 
             if ($measureApplication instanceof MeasureApplication) {
                 // get current situation
-                $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
+                $currentInsulatedGlazing = $building->currentInsulatedGlazing()
+                    ->where('measure_application_id', $measureApplication->id)->first();
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
-                // get interests for the measure
+                // get interests fo3r the measure
                 $measureInterest = $user->interests()
                                                 ->where('interested_in_type', 'measure_application')
                                                 ->where('interested_in_id', $measureApplication->id)
@@ -110,7 +111,6 @@ class InsulatedGlazingController extends Controller
                 $measureApplications[] = $measureApplication;
             }
         }
-
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'steps', 'interests',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
@@ -334,8 +334,6 @@ class InsulatedGlazingController extends Controller
                     'measure_application_id' => $measureApplicationId,
                 ],
                 [
-                    'building_id' => $buildingId,
-                    'input_source_id' => $inputSourceId,
                     'insulating_glazing_id' => $insulatedGlazingId,
                     'building_heating_id' => $buildingHeatingId,
                     'm2' => $m2,
@@ -438,9 +436,15 @@ class InsulatedGlazingController extends Controller
 
         // Save the window surface to the building feature
         $windowSurface = $request->get('window_surface', '');
-        BuildingFeature::where('building_id', $building->id)->first()->update([
-            'window_surface' => $windowSurface,
-        ]);
+        BuildingFeature::updateOrCreate(
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId
+            ],
+            [
+                'window_surface' => $windowSurface
+            ]
+        );
 
         $this->saveAdvices($request);
         // Save progress

@@ -27,7 +27,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -425,7 +425,7 @@ class RoofInsulationController extends Controller
                     $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
                     $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
 
-                    BuildingFeature::updateOrCreate(
+                    BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'building_id' => $buildingId,
                             'input_source_id' => $inputSourceId,
@@ -436,7 +436,7 @@ class RoofInsulationController extends Controller
                     );
 
                     // insert the new ones
-                    BuildingRoofType::updateOrCreate(
+                    BuildingRoofType::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'building_id' => $buildingId,
                             'input_source_id' => $inputSourceId,

@@ -66,7 +66,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingFeature extends Model
 {
-    use GetValueTrait;
+//    use GetValueTrait;
 
     protected $fillable = [
         'element_values',

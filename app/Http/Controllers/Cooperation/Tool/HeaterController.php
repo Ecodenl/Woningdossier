@@ -27,7 +27,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class HeaterController extends Controller
@@ -181,7 +181,7 @@ class HeaterController extends Controller
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
 
-        BuildingHeater::updateOrCreate(
+        BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId

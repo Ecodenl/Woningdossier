@@ -21,7 +21,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -135,7 +135,7 @@ class HighEfficiencyBoilerController extends Controller
         $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : '';
         $comment = $request->input('comment', '');
 
-        BuildingService::updateOrCreate(
+        BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'service_id' => $buildingServiceId,
@@ -152,7 +152,7 @@ class HighEfficiencyBoilerController extends Controller
         $gasUsage = isset($habits['gas_usage']) ? $habits['gas_usage'] : '';
         $residentCount = isset($habits['resident_count']) ? $habits['resident_count'] : '';
 
-        UserEnergyHabit::updateOrCreate(
+        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id' => $user->id,
             ],

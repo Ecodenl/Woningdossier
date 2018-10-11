@@ -61,6 +61,9 @@ return [
                     'set-building-status' => [
                         'success' => 'Status is gekoppeld aan het gebouw',
                     ],
+                    'fill-for-user' => [
+                        'warning' => 'Er is iets fout gegaan, probeer het later opnieuw'
+                    ],
                     'header' => 'Gebouwen waar u toegangt tot heeft',
                     
                     'details' => [

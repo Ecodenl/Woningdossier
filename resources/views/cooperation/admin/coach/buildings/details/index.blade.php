@@ -12,7 +12,11 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        {{$mostRecentBuildingNote->city}} {{$mostRecentBuildingNote->postal_code}}, {{$mostRecentBuildingNote->street}} {{$mostRecentBuildingNote->number}} {{$mostRecentBuildingNote->extension}}
+                        @if($mostRecentBuildingNote instanceof \App\Models\BuildingNotes)
+                            {{$mostRecentBuildingNote->city}} {{$mostRecentBuildingNote->postal_code}}, {{$mostRecentBuildingNote->street}} {{$mostRecentBuildingNote->number}} {{$mostRecentBuildingNote->extension}}
+                        @else
+                            {{$building->city}} {{$building->postal_code}}, {{$building->street}} {{$building->number}} {{$building->extension}}
+                        @endif
                     </div>
                 </div>
             </div>

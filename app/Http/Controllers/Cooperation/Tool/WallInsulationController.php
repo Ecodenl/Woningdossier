@@ -24,6 +24,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -102,7 +103,7 @@ class WallInsulationController extends Controller
         $elementValueId = reset($wallInsulationQualities);
 
         // Save the wall insulation
-        BuildingElement::updateOrCreate(
+        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -114,7 +115,7 @@ class WallInsulationController extends Controller
             ]
         );
 
-        BuildingFeature::updateOrCreate(
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,

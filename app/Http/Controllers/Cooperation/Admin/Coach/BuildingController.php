@@ -12,12 +12,12 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 
 class BuildingController extends Controller
 {
     public function index()
     {
-
         $buildingPermissions = \Auth::user()->buildingPermissions;
         $buildingCoachStatuses = BuildingCoachStatus::all();
 
@@ -67,6 +67,12 @@ class BuildingController extends Controller
         $inputSourceValue = $role->inputSource;
 
         $inputSource = InputSource::find(HoomdossierSession::getInputSource());
+
+        // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
+        // note: this will not occur much
+        if (!$inputSourceValue instanceof InputSource || !$inputSource instanceof InputSource) {
+            return redirect()->back()->with('warning', __('woningdossier.cooperation.admin.coach.buildings.fill-for-user.warning'));
+        }
 
         // We set the building to the building the coach wants to "edit"
         // The inputSource is just the coach one

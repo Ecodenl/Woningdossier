@@ -9,7 +9,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class MyPlanController extends Controller
 {

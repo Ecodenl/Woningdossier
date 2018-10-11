@@ -60,11 +60,22 @@
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                                 </label>
 
-                                <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
-                                    @foreach($insulatedGlazings as $insulateGlazing)
-                                        <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulated_glazing_id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Action</a></li>
+                                            <li><a href="#">Another action</a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#">Separated link</a></li>
+                                        </ul>
+                                    </div>
+                                    <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
+                                        @foreach($insulatedGlazings as $insulateGlazing)
+                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulated_glazing_id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulated_glazing_id-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">

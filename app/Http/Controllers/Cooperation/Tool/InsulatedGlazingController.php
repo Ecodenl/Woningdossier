@@ -30,7 +30,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
@@ -327,7 +327,7 @@ class InsulatedGlazingController extends Controller
             // The interest for a measure
             $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
             // Update or Create the buildingInsulatedGlazing
-            BuildingInsulatedGlazing::updateOrCreate(
+            BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
                     'building_id' => $buildingId,
                     'input_source_id' => $inputSourceId,
@@ -342,7 +342,7 @@ class InsulatedGlazingController extends Controller
                 ]
             );
             // We'll create the user interests for the measures or update it
-            UserInterest::updateOrCreate(
+            UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
                     'user_id' => $user->id,
                     'interested_in_type' => 'measure_application',
@@ -360,7 +360,7 @@ class InsulatedGlazingController extends Controller
         $highestInterestLevel = $interests->unique('id')->min('calculate_value');
         // update the livingroomwindow interest level based of the highest interest level for the measure.
         $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
-        UserInterest::updateOrCreate(
+        UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id'            => $user->id,
                 'interested_in_type' => 'element',
@@ -378,7 +378,7 @@ class InsulatedGlazingController extends Controller
             $elementValue = ElementValue::find(reset($elementValueId));
 
             if ($element instanceof Element && $elementValue instanceof ElementValue) {
-                BuildingElement::updateOrCreate(
+                BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [
                         'element_id' => $element->id,
                         'input_source_id' => $inputSourceId,
@@ -422,7 +422,7 @@ class InsulatedGlazingController extends Controller
 
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
-        BuildingPaintworkStatus::updateOrCreate(
+        BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId
@@ -436,7 +436,7 @@ class InsulatedGlazingController extends Controller
 
         // Save the window surface to the building feature
         $windowSurface = $request->get('window_surface', '');
-        BuildingFeature::updateOrCreate(
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId

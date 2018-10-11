@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuildingPermission extends Model
 {
-    use GetValueTrait;
-
-    protected $fillable = ['user_id', 'role_id', 'step_id', 'building_id', 'permissions'];
+    protected $fillable = ['user_id', 'building_id'];
 
     /**
      * The attributes that should be cast to native types.
@@ -29,5 +27,4 @@ class BuildingPermission extends Model
     {
         return $this->belongsTo('App\Models\Building');
     }
-
 }

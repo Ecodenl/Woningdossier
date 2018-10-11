@@ -22,7 +22,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class FloorInsulationController extends Controller
 {
@@ -166,7 +166,7 @@ class FloorInsulationController extends Controller
         $elements = $request->input('element', '');
 
         foreach ($elements as $elementId => $elementValueId) {
-            BuildingElement::updateOrCreate(
+            BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
                     'building_id' => $buildingId,
                     'element_id' => $elementId,
@@ -189,7 +189,7 @@ class FloorInsulationController extends Controller
         $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : '';
         $comment = $request->input('comment', '');
 
-        BuildingElement::updateOrCreate(
+        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'element_id' => $buildingElementId,
@@ -206,7 +206,7 @@ class FloorInsulationController extends Controller
         );
         $floorSurface = $request->input('building_features', '');
 
-        BuildingFeature::updateOrCreate(
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,

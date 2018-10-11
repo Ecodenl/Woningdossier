@@ -76,6 +76,7 @@ class InsulatedGlazingController extends Controller
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
+
         $measureApplicationShorts = [
             'glass-in-lead',
             'hrpp-glass-only',
@@ -84,6 +85,8 @@ class InsulatedGlazingController extends Controller
         ];
 
         $buildingInsulatedGlazings = [];
+        $buildingInsulatedGlazingsForMe = [];
+
         $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
@@ -115,7 +118,7 @@ class InsulatedGlazingController extends Controller
             'building', 'steps', 'interests',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements',
-            'paintworkStatuses', 'woodRotStatuses'
+            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
         ));
     }
 

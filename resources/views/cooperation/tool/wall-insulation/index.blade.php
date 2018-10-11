@@ -149,11 +149,13 @@
                         <div class="form-group add-space{{ $errors->has('facade_damaged_paintwork_id') ? ' has-error' : '' }}">
                             <label for="facade_damaged_paintwork_id" class=" control-label"><i data-toggle="collapse" data-target="#damage-paintwork-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.damage-paintwork')</label>
 
-                            <select id="facade_damaged_paintwork_id" class="form-control" name="facade_damaged_paintwork_id">
-                                @foreach($facadeDamages as $facadeDamage)
-                                    <option @if(old('facade_damaged_paintwork_id') == $facadeDamage->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_damaged_paintwork_id == $facadeDamage->id ) selected  @endif value="{{ $facadeDamage->id }}">{{ $facadeDamage->name }}</option>
-                                @endforeach
-                            </select>
+                            @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $facadeDamages, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'facade_damaged_paintwork_id'])
+                                <select id="facade_damaged_paintwork_id" class="form-control" name="facade_damaged_paintwork_id">
+                                    @foreach($facadeDamages as $facadeDamage)
+                                        <option @if(old('facade_damaged_paintwork_id') == $facadeDamage->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_damaged_paintwork_id == $facadeDamage->id ) selected  @endif value="{{ $facadeDamage->id }}">{{ $facadeDamage->name }}</option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
 
                             <div id="damage-paintwork-surface" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
@@ -182,11 +184,14 @@
                     <div class="form-group add-space{{ $errors->has('wall_joints') ? ' has-error' : '' }}">
                         <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')</label>
 
-                        <select id="wall_joints" class="form-control" name="wall_joints">
-                            @foreach($surfaces as $surface)
-                                <option @if(old('wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_joints'])
+                            <select id="wall_joints" class="form-control" name="wall_joints">
+                                @foreach($surfaces as $surface)
+                                    <option @if(old('wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="wall-joints-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
@@ -194,8 +199,8 @@
 
                         @if ($errors->has('wall_joints'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('wall_joints') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('wall_joints') }}</strong>
+                            </span>
                         @endif
                     </div>
 
@@ -206,11 +211,14 @@
                     <div class="form-group add-space {{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
                         <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty')</label>
 
-                        <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
-                            @foreach($surfaces as $surface)
-                                <option @if(old('contaminated_wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'contaminated_wall_joints'])
+                            <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
+                                @foreach($surfaces as $surface)
+                                    <option @if(old('contaminated_wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="wall-joints-surface" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
@@ -234,10 +242,12 @@
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
                         </label>
 
-                        <div class="input-group">
+
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface'])
                             <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                        </div>
+                        @endcomponent
 
                         <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!
@@ -256,10 +266,11 @@
                             @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')
                         </label>
 
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface'])
                             <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                        </div>
+                        @endcomponent
 
                         <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             I would like to have some helpful information right here!

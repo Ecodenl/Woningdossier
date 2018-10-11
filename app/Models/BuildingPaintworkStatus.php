@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingPaintworkStatus extends Model
 {
     use GetValueTrait;
+    use GetMyValuesTrait;
 
     protected $fillable = ['building_id', 'input_source_id', 'last_painted_year', 'paintwork_status_id', 'wood_rot_status_id'];
 

@@ -24,8 +24,8 @@
                                 <td>{{ $buildingPermission->building->city }}</td>
                                 <td>{{ $buildingPermission->building->user->first_name .' '. $buildingPermission->building->user->last_name}}</td>
                                 <td>
-                                    <div class="input-group" id="current-building-status">
-                                        <input disabled placeholder="@lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')" type="text" class="form-control disabled" aria-label="...">
+                                    <div class="input-group current-building-status" >
+                                        <input disabled placeholder="@lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')" type="text" value="@lang('woningdossier.cooperation.admin.coach.buildings.index.table.options.'.$buildingPermission->buildingCoachStatus->status)" class="form-control disabled" aria-label="...">
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 @lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')
@@ -59,18 +59,3 @@
     </div>
 @endsection
 
-
-@push('js')
-    <script>
-        $(document).ready(function () {
-            // put the label text from the selected option inside the input for ux
-            var buildingCoachStatus = $('#current-building-status');
-            var input = $(buildingCoachStatus).find('input.form-control');
-            var currentStatus = $(buildingCoachStatus).find('li a[id=current]');
-
-            var inputValPrefix = '{{__('woningdossier.cooperation.admin.coach.buildings.index.table.current-status')}} ';
-
-            $(input).val(inputValPrefix + $(currentStatus).text().trim());
-        });
-    </script>
-@endpush

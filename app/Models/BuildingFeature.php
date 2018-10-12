@@ -98,15 +98,6 @@ class BuildingFeature extends Model
         return $this->belongsTo(Building::class);
     }
 
-    /**
-     * Get a input source name
-     *
-     * @return InputSource
-     */
-    public function getInputSourceName()
-    {
-        return $this->inputSource()->first()->name;
-    }
 
     public function buildingCategory()
     {

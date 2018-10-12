@@ -94,8 +94,13 @@ class InsulatedGlazingController extends Controller
 
             if ($measureApplication instanceof MeasureApplication) {
                 // get current situation
-                $currentInsulatedGlazing = $building->currentInsulatedGlazing()
-                    ->where('measure_application_id', $measureApplication->id)->first();
+                $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
+
+                $currentInsulatedGlazingInput = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
+
+                if (!$currentInsulatedGlazingInput->isEmpty()) {
+                    $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInput;
+                }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
@@ -114,6 +119,7 @@ class InsulatedGlazingController extends Controller
                 $measureApplications[] = $measureApplication;
             }
         }
+
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'steps', 'interests',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',

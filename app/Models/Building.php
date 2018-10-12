@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 
 /**

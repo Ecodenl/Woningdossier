@@ -343,7 +343,10 @@
                                 @endforeach
                             </select>
                         @else
-                            <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            <div class="input-group">
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
+                                <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            </div>
                         @endif
 
                         <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -531,9 +534,9 @@
                             <span class="input-group-addon">Uren</span>
                             <select id="hours_high" class="form-control" name="hours_high">
                                 @for($hour = 0; $hour < 25; $hour++)
-                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @elseif($hour == 12) selected @endif value="{{ $hour }}">{{ $hour }}</option>
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @elseif(isset($energyHabit) && $energyHabit->hours_high === null)  @if($hour == 12) selected @endif @endif value="{{ $hour }}">{{ $hour }}</option>
                                 @endfor
-                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high === 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
                             </select>
                         </div>
 
@@ -653,7 +656,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('amount_electricity') ? ' has-error' : '' }}">
-                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
+                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year') <span>*</span></label>
 
 
                         <div class="input-group">

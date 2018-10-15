@@ -54,7 +54,7 @@
                             @endif
                         </td>
                         <td>
-                            {{ $advice->measureApplication->measure_name }}
+                            {{ $advice->measureApplication->measure_name }} <i class="glyphicon glyphicon-warning-sign bg-danger measure-warning" title="" style="display:none;"></i>
                         </td>
                         <td>
                             &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
@@ -66,7 +66,7 @@
                             {{ $advice->year }}
                         </td>
                         <td>
-                            <input type="text" maxlength="4" size="4" class="form-control" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" value="{{ $advice->planned_year }}" />
+                            <input type="text" maxlength="4" size="4" class="form-control planned-year" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" value="{{ $advice->planned_year }}" />
                         </td>
                     </tr>
                     <tr class="collapse" id="more-info-{{$advice->id}}" >
@@ -134,7 +134,7 @@
             const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
             const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
 
-            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles"
+            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
             const REPLACE_TILES = "replace-tiles";
 
             $(window).keydown(function(event){
@@ -195,7 +195,7 @@
                             $("ul#years").append("<li>" + header + table + "</li>");
                         });
 
-                        // toggle cheveron for the personal plan
+                        // toggle chevron for the personal plan
                         $('.turn-on-click').on('click', function () {
                             $(this).toggleClass('clicked');
 
@@ -211,6 +211,7 @@
                         @if(App::environment('local'))
                             console.log(data);
                         @endif
+
                     }
                 });
 
@@ -251,6 +252,8 @@
                     plannedYearInput.val("");
                 }
 
+                // This logic should be simplified and put in the change method.
+
                 /* Warnings for certain cases */
                 // get the measure application short for the checked box
 
@@ -289,7 +292,6 @@
                 if (measureApplicationShort === ROOF_INSULATION_PITCHED_REPLACE_TILES && $(this).is(':checked')) {
                     if ($('input[value='+REPLACE_TILES+']').length) {
 
-                        console.log($('input[value='+REPLACE_TILES+']'));
                         var maintenanceCheckbox = $('input[value='+REPLACE_TILES+']').next().next().children();
                         var maintenancePlannedYearInput = $(maintenanceCheckbox).parent().find('input[name*=planned_year]');
 
@@ -318,6 +320,47 @@
 
 
             });
+
+
+            // Return if the measure is planned (checked) or not.
+            function getPlanned(maShort){
+                var row = getMeasureRow(maShort);
+                if (row !== null){
+                    return row.find('input.interested-checker').is(':checked');
+                }
+                return false;
+            }
+
+            // Returns the planned year for the measure. Either the user-defined
+            // year or the advised year
+            function getPlannedYear(maShort){
+                var row = getMeasureRow(maShort);
+                if (row !== null){
+                    var planned = row.find('input.planned-year').val();
+                    if (planned === ''){
+                        planned = parseInt(row.find('.advice-year').text().trim());
+                    }
+                    return planned;
+                }
+                return null;
+            }
+
+            // Returns the <tr> (holding) element for a particular measure
+            function getMeasureRow(maShort){
+                var element = $("input.measure_short[value=" + maShort + "]");
+                if (element.length){
+                    return element.parent();
+                }
+                return null;
+            }
+
+            // Set a warning for a measure application
+            function setWarning(maShort, warning){
+                var row = getMeasureRow(maShort);
+                var icon = row.find('i.measure-warning');
+                icon.attr('title', warning);
+                icon.show();
+            }
 
         });
     </script>

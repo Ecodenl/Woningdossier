@@ -253,11 +253,16 @@
                                     <i data-toggle="collapse" data-target="#element_{{ $element->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                     {{ $element->name }}
                                 </label>
-                                <select id="element_{{ $element->id }}" class="form-control" name="element[{{ $element->id }}]">
-                                    @foreach($element->values()->orderBy('order')->get() as $elementValue)
-                                        <option @if($elementValue->id == old('element.'.$element->id.'')) selected="selected" @elseif($building->buildingElements()->where('element_id', $element->id)->first() && $building->buildingElements()->where('element_id', $element->id)->first()->element_value_id == $elementValue->id) selected @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
-                                    @endforeach
-                                </select>
+                                </label>
+
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => $element->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingElements()->forMe()->where('element_id', $element->id)->get(), 'userInputColumn' => 'element_value_id'])
+                                    <select id="element_{{ $element->id }}" class="form-control" name="element[{{ $element->id }}]">
+                                        @foreach($element->values()->orderBy('order')->get() as $elementValue)
+                                            <option @if($elementValue->id == old('element.'.$element->id.'')) selected="selected" @elseif($building->buildingElements()->where('element_id', $element->id)->first() && $building->buildingElements()->where('element_id', $element->id)->first()->element_value_id == $elementValue->id) selected @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
 
                                 <div id="element_{{ $element->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                     {{ $element->info }}

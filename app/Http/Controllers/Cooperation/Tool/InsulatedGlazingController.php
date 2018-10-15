@@ -120,7 +120,6 @@ class InsulatedGlazingController extends Controller
             }
         }
 
-
 //        $inputValues = $woodElements;
 //
 //        $x = $building;

@@ -14,6 +14,8 @@
                         @endforeach
                     @endforeach
                     @break
+                @case('select-extended')
+
                 @case('input')
                     @foreach($userInputValues as $userInputValue)
                         <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$userInputValue->$userInputColumn}}</a></li>

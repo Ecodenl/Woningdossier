@@ -280,6 +280,10 @@
                     <div class="form-group add-space">
 
 
+                        <?php
+                            // TODO: should do something with a component
+                            // the current problem is there are only 2 places where checkboxes are used and those are used in a different way
+                        ?>
                         <div class="input-group input-source-group">
                             @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
                                 <label for="building_elements.wood-elements.{{ $woodElement->id }}" class="checkbox-inline">
@@ -319,10 +323,11 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
                         </label> <span>*</span>
 
-                        <div class="input-group">
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
-                            <input required type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
-                        </div>
+                        @component('cooperation.tool.components.input-group',
+                               ['inputType' => 'input', 'userInputValues' => $building->currentPaintworkStatus->forMe()->get() ,'userInputColumn' => 'last_painted_year'])
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                <input required type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
+                        @endcomponent
 
                         <div id="building_paintwork_statuses.last_painted_year" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -342,11 +347,14 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.paint-damage-visible')
                         </label>
 
-                        <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
-                            @foreach($paintworkStatuses as $paintworkStatus)
-                                <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->paintwork_status_id == $paintworkStatus->id) ) selected @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $paintworkStatuses, 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get(), 'userInputColumn' => 'paintwork_status_id'])
+                            <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
+                                @foreach($paintworkStatuses as $paintworkStatus)
+                                    <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->paintwork_status_id == $paintworkStatus->id) ) selected @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="building_paintwork_statuses.paintwork_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -369,11 +377,14 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.wood-rot-visible')
                         </label>
 
-                        <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
-                            @foreach($woodRotStatuses as $woodRotStatus)
-                                <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $woodRotStatuses, 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get(), 'userInputColumn' => 'wood_rot_status_id'])
+                            <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
+                                @foreach($woodRotStatuses as $woodRotStatus)
+                                    <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="building_paintwork_statuses.wood_rot_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...

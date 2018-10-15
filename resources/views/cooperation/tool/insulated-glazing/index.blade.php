@@ -278,27 +278,35 @@
                         @endif
                     </div>
                     <div class="form-group add-space">
-                        @component('cooperation.tool.components.input-group',
-                        [
-                        'inputType' => 'checkbox',
-                        'inputValues' => $woodElements->values()->orderBy('order')->get(),
-                        'userInputValues' => $building->buildingElements()->forMe()->get(),
-                        'userInputColumn' => 'element_value_id'])
+
+
+                        <div class="input-group input-source-group">
                             @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
                                 <label for="building_elements.wood-elements.{{ $woodElement->id }}" class="checkbox-inline">
                                     <input
-
                                             @if(old('building_elements.wood-elements.'.$woodElements->id.''.$woodElement->id.''))
-                                                checked
+                                            checked
                                             @elseif($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null
                                             && $building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
-                                                checked
+                                            checked
                                             @endif
                                             type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" value="{{$woodElement->id}}" name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">
                                     {{ $woodElement->value }}
                                 </label>
                             @endforeach
-                        @endcomponent
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
+                                        <?php $notNull = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null; ?>
+                                        @if ($notNull && $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
+                                            <li><a href="#">{{$myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->getInputSourceName()}}: {{$woodElement->value}}</a></li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

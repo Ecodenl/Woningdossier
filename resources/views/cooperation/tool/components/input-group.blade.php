@@ -1,3 +1,4 @@
+
 <div class="input-group input-source-group">
     {{ $slot }}
     <div class="input-group-btn">
@@ -18,19 +19,6 @@
                         <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$userInputValue->$userInputColumn}}</a></li>
                     @endforeach
                     @break
-                @case('checkbox')
-                    @foreach($inputValues as $inputValue)
-{{--                        @foreach($userInputValues->where('element_id', $inputValue->id)->where('element_value_id', $inputValue->id) as $userInputValue)--}}
-
-                @if($userInputValues->where('element_id', $inputValue->id)->where('element_value_id', $inputValue->id)->first() instanceof \App\Models\BuildingElement)
-                            @if($inputValue->id == $userInputValues->where('element_id', $inputValue->id)->where('element_value_id', $inputValue->id)->first()->element_value_id)
-                                <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{array_key_exists('value', $inputValue->attributesToArray()) ? $inputValue->value : $inputValue->name}}</a></li>
-                            @endif
-                    @endif
-                        {{--@endforeach--}}
-                    @endforeach
-                    @break
-
                 @default
             @endswitch
         </ul>

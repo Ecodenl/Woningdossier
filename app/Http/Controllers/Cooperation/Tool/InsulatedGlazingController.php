@@ -63,7 +63,7 @@ class InsulatedGlazingController extends Controller
          */
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
-        
+
         $steps = Step::orderBy('order')->get();
 
         $interests = Interest::orderBy('order')->get();
@@ -106,9 +106,9 @@ class InsulatedGlazingController extends Controller
                 }
                 // get interests fo3r the measure
                 $measureInterest = $user->interests()
-                                                ->where('interested_in_type', 'measure_application')
-                                                ->where('interested_in_id', $measureApplication->id)
-                                                ->get();
+                    ->where('interested_in_type', 'measure_application')
+                    ->where('interested_in_id', $measureApplication->id)
+                    ->get();
 
                 if ($measureInterest instanceof UserInterest) {
                     // We only have to check on the interest ID, so we don't put
@@ -120,13 +120,30 @@ class InsulatedGlazingController extends Controller
             }
         }
 
+
+//        $inputValues = $woodElements;
+//
+//        $x = $building;
+//        $z = $building->buildingElements()->forMe();
+//
+//        foreach ($inputValues->values()->orderBy('order')->get() as $i => $inputValue) {
+//            // returned 1 instance 2 null
+//            dump($z->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
+//            // returned 3 instances 0 null
+//            dump($x->buildingElements()->forMe()->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
+//        }
+
+
+        $myBuildingElements = BuildingElement::forMe()->get();
+
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'steps', 'interests',
+            'building', 'steps', 'interests', 'myBuildingElements',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
         ));
     }
+
 
     protected function saveAdvices(Request $request)
     {

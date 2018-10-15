@@ -287,7 +287,7 @@
                         <label for="" class="control-label">
                             <i data-toggle="collapse" data-target="#building_paintwork_statuses.last_painted_year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
-                        </label> <span>*</span>
+                        </label>
 
                         <div class="input-group">
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>

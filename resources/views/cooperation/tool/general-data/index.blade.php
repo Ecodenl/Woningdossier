@@ -534,9 +534,9 @@
                             <span class="input-group-addon">Uren</span>
                             <select id="hours_high" class="form-control" name="hours_high">
                                 @for($hour = 0; $hour < 25; $hour++)
-                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @elseif($hour == 12) selected @endif value="{{ $hour }}">{{ $hour }}</option>
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @elseif(isset($energyHabit) && $energyHabit->hours_high === null)  @if($hour == 12) selected @endif @endif value="{{ $hour }}">{{ $hour }}</option>
                                 @endfor
-                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
+                                    <option @if($hour == old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high === 0) selected @endif value="0">@lang('woningdossier.cooperation.radiobutton.not-important')</option>
                             </select>
                         </div>
 

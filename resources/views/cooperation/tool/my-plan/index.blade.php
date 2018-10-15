@@ -17,11 +17,9 @@
         {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
         <div class="row">
-
             <div class="col-md-12">
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
-
 
             <div class="col-md-12">
                 <table class="table table-condensed table-responsive">
@@ -43,6 +41,7 @@
 	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
                     <tr>
                         <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]" value="{{$measureType}}">
+                        <input type="hidden" class="measure_short" value="{{$advice->measureApplication->short}}">
                         <td >
                             <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
                         </td>
@@ -134,18 +133,18 @@
             </div>
         </div>
     </div>
-
-
-
 @endsection
-
 
 
 @push('js')
 <script>
 
     $(document).ready(function() {
-        $(window).keydown(function (event) {
+        const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
+            const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
+
+            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles"
+            const REPLACE_TILES = "replace-tiles";$(window).keydown(function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
                 return false;
@@ -180,10 +179,10 @@
                                     $("#advice-" + stepData.advice_id + "-planned").attr('checked', true)
                                 }
 
-                                totalCosts += parseFloat(stepData.costs);
-                                totalSavingsGas += parseFloat(stepData.savings_gas);
-                                totalSavingsElectricity += parseFloat(stepData.savings_electricity);
-                                totalSavingsMoney += parseFloat(stepData.savings_money);
+                                    totalCosts += parseFloat(stepData.costs);
+                                    totalSavingsGas += parseFloat(stepData.savings_gas);
+                                    totalSavingsElectricity += parseFloat(stepData.savings_electricity);
+                                    totalSavingsMoney += parseFloat(stepData.savings_money);
 
                                 var slug = stepName.replace(/\s+/g, '');
 
@@ -249,7 +248,8 @@
         // if a user clicks the interested check box
         $('.interested-checker').on('click', function () {
 
-            // get the planned year input
+            /* Fill the year input with the adviced year, and else with the current year */
+                // get the planned year input
             var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
             // check if the checkbox is checked
             // if so, so fill the
@@ -260,13 +260,80 @@
                     advicedYear = (new Date()).getFullYear();
                 }
 
-                plannedYearInput.val(advicedYear);
-            } else {
-                plannedYearInput.val("");
-            }
-        });
-    });
+                    plannedYearInput.val(advicedYear);
+                } else {
+                    plannedYearInput.val("");
+                }
 
+                /* Warnings for certain cases */
+                // get the measure application short for the checked box
+
+                var measureApplicationShort = $(this).parent().parent().find('.measure_short').val();
+
+                /* Warning for the FLAT roof measures */
+                if (measureApplicationShort === ROOF_INSULATION_FLAT_REPLACE_CURRENT && $(this).is(':checked')) {
+                    if ($('input[value='+REPLACE_ROOF_INSULATION+']').length) {
+                        var maintenanceCheckbox = $('input[value='+REPLACE_ROOF_INSULATION+']').next().next().children();
+                        var maintenancePlannedYearInput = $(maintenanceCheckbox).parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(maintenanceCheckbox).is(':not(:checked)')) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')')
+                        }
+                        else if ($(maintenanceCheckbox).is(':checked') && (maintenancePlannedYearInput.val() !== plannedYearInput.val())) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
+                        }
+                    }
+
+                } // this will be excecuted when the maintance checkbox get checked
+                else if (measureApplicationShort === REPLACE_ROOF_INSULATION  && $(this).is(':checked')) {
+                    if ($('input[value='+ROOF_INSULATION_FLAT_REPLACE_CURRENT+']').length) {
+
+                        var energySavingCheckbox = $('input[value='+ROOF_INSULATION_FLAT_REPLACE_CURRENT+']').next().next().children();
+                        var energySavingPlannedYearInput = $(energySavingCheckbox).parent().parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(energySavingCheckbox).is(':checked') && (energySavingPlannedYearInput.val() !== plannedYearInput.val())) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
+                        }
+                    }
+                }
+
+                /* Warning for the PITCHED roof measures */
+                if (measureApplicationShort === ROOF_INSULATION_PITCHED_REPLACE_TILES && $(this).is(':checked')) {
+                    if ($('input[value='+REPLACE_TILES+']').length) {
+
+                        console.log($('input[value='+REPLACE_TILES+']'));
+                        var maintenanceCheckbox = $('input[value='+REPLACE_TILES+']').next().next().children();
+                        var maintenancePlannedYearInput = $(maintenanceCheckbox).parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(maintenanceCheckbox).is(':not(:checked)')) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')')
+                        }
+                        else if ($(maintenanceCheckbox).is(':checked') && (maintenancePlannedYearInput.val() !== advicedYear)) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
+                        }
+                    }
+
+                } // this will be excecuted when the maintance checkbox get checked
+                else if (measureApplicationShort === REPLACE_TILES && $(this).is(':checked')) {
+                    if ($('input[value='+ROOF_INSULATION_PITCHED_REPLACE_TILES+']').length) {
+
+                        var energySavingCheckbox = $('input[value='+ROOF_INSULATION_PITCHED_REPLACE_TILES+']').next().next().children();
+                        var energySavingPlannedYearInput = $(energySavingCheckbox).parent().parent().find('input[name*=planned_year]');
+
+                        // if the checkbox is not checked, throw error
+                        if ($(energySavingCheckbox).is(':checked') && (energySavingPlannedYearInput.val() !== advicedYear)) {
+                            alert('@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')')
+                        }
+                    }
+                }
+
+
+            });
+
+        });
     </script>
 @endpush
 

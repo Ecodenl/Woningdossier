@@ -28,17 +28,21 @@
 
                         <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation')</label>
 
-                        <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
-                            @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
-                                <option
-                                        @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
-                                        selected="selected"
-                                        @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
-                                            selected="selected"
-                                        @endif
-                                value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
+                            <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
+                                @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
+                                    <option
+                                            @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
+                                                selected="selected"
+                                            @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
+                                                selected="selected"
+                                            @endif
+                                            value="{{ $elementValue->id }}">{{ $elementValue->value }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         @if ($errors->has('house_has_insulation'))
                             <span class="help-block">
@@ -61,17 +65,20 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
 
-                        <label class="radio-inline">
-                            <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "2") checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "0") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "0") checked @endif value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
-                        </label>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
+                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
+                            <label class="radio-inline">
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "2") checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "0") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "0") checked @endif value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
+                            </label>
+                        @endcomponent
                         <br>
 
                         <div id="cavity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -92,17 +99,20 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
 
-                        <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted')</label> <span> *</span>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'radio', 'inputValues' => [1, 2, 3], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
+                            <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted')</label> <span> *</span>
 
-                        <label class="radio-inline">
-                            <input class="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
-                        </label>
-                        <label class="radio-inline">
-                            <input @if(old('facade_plastered_painted') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "2") checked @endif type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
-                        </label>
-                        <label class="radio-inline">
-                            <input class="is-painted" @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
-                        </label>
+                            <label class="radio-inline">
+                                <input class="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            </label>
+                            <label class="radio-inline">
+                                <input @if(old('facade_plastered_painted') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "2") checked @endif type="radio" name="facade_plastered_painted" value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            </label>
+                            <label class="radio-inline">
+                                <input class="is-painted" @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">@lang('woningdossier.cooperation.radiobutton.mostly')
+                            </label>
+                        @endcomponent
                         <br>
 
                         <div id="wall-painted" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -124,12 +134,14 @@
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('facade_plastered_surface_id') ? ' has-error' : '' }}">
                             <label for="facade_plastered_surface_id" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.surface-paintwork') </label>
-
-                            <select id="facade_plastered_surface_id" class="form-control" name="facade_plastered_surface_id">
-                                @foreach($facadePlasteredSurfaces as $facadePlasteredSurface)
-                                    <option @if(old('facade_plastered_surface_id') == $facadePlasteredSurface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_surface_id == $facadePlasteredSurface->id ) selected @endif value="{{ $facadePlasteredSurface->id }}">{{ $facadePlasteredSurface->name }}</option>
-                                @endforeach
-                            </select>
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $facadePlasteredSurfaces, 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_surface_id'])
+                                <select id="facade_plastered_surface_id" class="form-control" name="facade_plastered_surface_id">
+                                    @foreach($facadePlasteredSurfaces as $facadePlasteredSurface)
+                                        <option @if(old('facade_plastered_surface_id') == $facadePlasteredSurface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_surface_id == $facadePlasteredSurface->id ) selected @endif value="{{ $facadePlasteredSurface->id }}">{{ $facadePlasteredSurface->name }}</option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
 
                             <div id="facade-painted-surface" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...

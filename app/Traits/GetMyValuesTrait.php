@@ -38,18 +38,19 @@ trait GetMyValuesTrait {
     {
         return $this->inputSource()->first()->name;
     }
+//
+//    /**
+//     * Almost the same as getBuildingElement($short) except this returns all the input
+//     *
+//     * @param $query
+//     * @param $short
+//     * @return mixed
+//     */
+//    public function scopeBuildingElementsForMe($query, $short)
+//    {
+//        return $query->forMe()->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+//            ->where('e.short', $short)->select(['building_elements.*']);
+//    }
 
-    /**
-     * Almost the same as getBuildingElement($short) except this returns all the input
-     *
-     * @param $query
-     * @param $short
-     * @return mixed
-     */
-    public function scopeBuildingElementsForMe($query, $short)
-    {
-        return $query->forMe()->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-            ->where('e.short', $short)->select(['building_elements.*']);
-    }
 
 }

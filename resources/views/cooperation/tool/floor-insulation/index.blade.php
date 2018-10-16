@@ -22,21 +22,25 @@
                             <i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> @lang('woningdossier.cooperation.tool.floor-insulation.floor-insulation')
                         </label>
 
-                        <div id="floor-insulation-options">
-                            <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
-                                @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
-                                    <option
-                                            @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
-                                            selected="selected"
-                                            @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
-                                            selected="selected"
-                                            @elseif(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
-                                            selected="selected"
-                                            @endif
-                                            value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $floorInsulation->values()->orderBy('order')->get(), 'userInputValues' => $buildingInsulationForMe ,'userInputColumn' => 'element_value_id'])
+                            <div id="floor-insulation-options">
+                                <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
+                                    @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
+                                        <option
+                                                @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
+                                                selected="selected"
+                                                {{-- TODO: Remove the element_values ? --}}
+                                                @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
+                                                selected="selected"
+                                                @elseif(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
+                                                selected="selected" pisdfsdf
+                                                @endif
+                                                value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endcomponent
 
                         @if ($errors->has('element.' . $floorInsulation->id))
                             <span class="help-block">
@@ -67,16 +71,19 @@
                                 @lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.title')
                             </label>
 
-                            <select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
-                                @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                    <option @if(old('building_elements.crawlspace') == $i) selected
-                                            @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                        && is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                        && array_key_exists('has_crawlspace', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                        && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['has_crawlspace'] == $i ) selected
-                                            @endif value="{{ $i }}">{{ $option }}</option>
-                                @endforeach
-                            </select>
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra["has_crawlspace"]'])
+                                <select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
+                                    @foreach(__('woningdossier.cooperation.option') as $i => $option)
+                                        <option @if(old('building_elements.crawlspace') == $i) selected
+                                                @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                            && is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                            && array_key_exists('has_crawlspace', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                            && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['has_crawlspace'] == $i ) selected
+                                                @endif value="{{ $i }}">{{ $option }}</option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
 
                             <div class="col-sm-12">
                                 <div class="form-group add-space">

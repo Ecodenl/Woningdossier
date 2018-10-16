@@ -341,14 +341,21 @@
                                 }
                             ?>
 
-                            <select id="{{$service->short}}" class="form-control" name="service[{{ $service->id }}]">
-                                @foreach($service->values()->orderBy('order')->get() as $serviceValue)
-                                    <option @if($serviceValue->id == $selectedSV) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $service->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
+                                <select id="{{$service->short}}" class="form-control" name="service[{{ $service->id }}]">
+                                    @foreach($service->values()->orderBy('order')->get() as $serviceValue)
+                                        <option @if($serviceValue->id == $selectedSV) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                                     {{--<option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>--}}
-                                @endforeach
-                            </select>
+                                    @endforeach
+                                </select>
+                            @endcomponent
                         @else
-                            <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra["value"]'])
+                                <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            @endcomponent
                         @endif
 
                         <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -396,16 +403,19 @@
                                 @endif
 
                             </label>
+
                             <?php
                                 if(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['year'])) {
                                     $year = $building->buildingServices()->where('service_id', $service->id)->first()->extra['year'];
                                 }
                             ?>
 
-                            <div class="input-group">
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra["year"]'])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
                                 <input type="text" class="form-control" name="{{ $service->id }}[extra][year]" value="@if(old($service->id.'.extra.year')){{ old($service->id.'.extra.year') }}@elseif(isset($year)){{ $year }}@endif">
-                            </div>
+                            @endcomponent
+
                             <div id="service_{{ $service->id }}-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
                             </div>
@@ -444,6 +454,7 @@
                 <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
                     <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
+
                     <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
 
                     <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -452,8 +463,8 @@
 
                     @if ($errors->has('resident_count'))
                         <span class="help-block">
-                    <strong>{{ $errors->first('resident_count') }}</strong>
-                </span>
+                            <strong>{{ $errors->first('resident_count') }}</strong>
+                        </span>
                     @endif
                 </div>
             </div>
@@ -483,49 +494,49 @@
             </div>
 
             <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group add-space{{ $errors->has('thermostat_high') ? ' has-error' : '' }}">
-                    <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
+                <div class="col-sm-6">
+                    <div class="form-group add-space{{ $errors->has('thermostat_high') ? ' has-error' : '' }}">
+                        <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-highest')</label>
 
-                    <div class="input-group">
-                        <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
-                        <input type="text" id="thermostat_high" class="form-control" value="@if(!empty(old('thermostat_high'))){{ old('thermostat_high', 20) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_high, 1) }}@else{{ \App\Helpers\NumberFormatter::format(20, 1) }}@endif" name="thermostat_high">
+                        <div class="input-group">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
+                            <input type="text" id="thermostat_high" class="form-control" value="@if(!empty(old('thermostat_high'))){{ old('thermostat_high', 20) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_high, 1) }}@else{{ \App\Helpers\NumberFormatter::format(20, 1) }}@endif" name="thermostat_high">
+                        </div>
+
+
+                        <div id="thermostat-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And I would like to have it too...
+                        </div>
+
+                        @if ($errors->has('thermostat_high'))
+                            <span class="help-block">
+                        <strong>{{ $errors->first('thermostat_high') }}</strong>
+                    </span>
+                        @endif
                     </div>
-
-
-                    <div id="thermostat-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                        And I would like to have it too...
-                    </div>
-
-                    @if ($errors->has('thermostat_high'))
-                        <span class="help-block">
-                    <strong>{{ $errors->first('thermostat_high') }}</strong>
-                </span>
-                    @endif
                 </div>
-            </div>
 
 
-            <div class="col-sm-6">
-                <div class="form-group add-space{{ $errors->has('thermostat_low') ? ' has-error' : '' }}">
-                    <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
+                <div class="col-sm-6">
+                    <div class="form-group add-space{{ $errors->has('thermostat_low') ? ' has-error' : '' }}">
+                        <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.thermostat-lowest')</label>
 
-                    <div class="input-group">
-                        <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
-                        <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(!empty(old('thermostat_low'))){{ old('thermostat_low', 16) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_low, 1) }}@else{{ \App\Helpers\NumberFormatter::format(16, 1) }}@endif">
+                        <div class="input-group">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
+                            <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(!empty(old('thermostat_low'))){{ old('thermostat_low', 16) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_low, 1) }}@else{{ \App\Helpers\NumberFormatter::format(16, 1) }}@endif">
+                        </div>
+
+                        <div id="thermostat-low-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And I would like to have it too...
+                        </div>
+
+                        @if ($errors->has('thermostat_low'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('thermostat_low') }}</strong>
+                            </span>
+                        @endif
                     </div>
-
-                    <div id="thermostat-low-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                        And I would like to have it too...
-                    </div>
-
-                    @if ($errors->has('thermostat_low'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('thermostat_low') }}</strong>
-                        </span>
-                    @endif
                 </div>
-            </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -574,11 +585,10 @@
 
                         ?>
 
-                        <select id="heating_first_floor" class="form-control" name="heating_first_floor" >
+                        <select id="heating_first_floor" class="form-control" name="heating_first_floor">
                             @foreach($buildingHeatings as $buildingHeating)
                                 <option @if(!is_null($selectedHFF) && $buildingHeating->id == $selectedHFF) selected="selected" @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
                             @endforeach
-
                         </select>
 
                         <div id="heating-first-floor-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -633,7 +643,7 @@
                         @endif
                     </div>
                 </div>
-         
+
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('water_comfort') ? ' has-error' : '' }}">
                         <label for="water_comfort" class=" control-label"><i data-toggle="collapse" data-target="#comfortniveau-warm-tapwater-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.comfortniveau-warm-tapwater')</label>

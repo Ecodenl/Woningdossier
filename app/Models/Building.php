@@ -169,6 +169,22 @@ class Building extends Model
     }
 
     /**
+     * Almost the same as getBuildingElement($short) except this returns all the input
+     *
+     * @param $query
+     * @param $short
+     * @return mixed
+     */
+    public function getBuildingElementsForMe($short)
+    {
+        return $this->buildingElements()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->select(['building_elements.*'])->get();
+    }
+
+
+    /**
      * @param string $short
      *
      * @return BuildingService|null

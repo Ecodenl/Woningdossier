@@ -6,13 +6,27 @@
         <ul class="dropdown-menu">
             @switch($inputType)
                 @case('select')
-                    @foreach($inputValues as $inputValue)
-                        @foreach($userInputValues as $userInputValue)
-                            @if($inputValue->id == $userInputValue->$userInputColumn)
-                                <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{array_key_exists('value', $inputValue->attributesToArray()) ? $inputValue->value : $inputValue->name}}</a></li>
-                            @endif
+                    @if(is_array($inputValues))
+                        @foreach($inputValues as $i => $inputValue)
+                            @foreach($userInputValues as $userInputValue)
+                                {{dump($userInputColumn)}}
+                                {{dump($userInputValue->extra["has_crawlspace"])}}
+                                {{dump($userInputValue->getAttribute($userInputColumn))}}
+                                    <li class="change-input-value" data-input-value="{{$i}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
+                                @if($i == $userInputValue->$userInputColumn)
+                                @endif
+                            @endforeach
+                            {{dd()}}
                         @endforeach
-                    @endforeach
+                    @else
+                        @foreach($inputValues as $inputValue)
+                            @foreach($userInputValues as $userInputValue)
+                                @if($inputValue->id == $userInputValue->$userInputColumn)
+                                    <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{array_key_exists('value', $inputValue->attributesToArray()) ? $inputValue->value : $inputValue->name}}</a></li>
+                                @endif
+                            @endforeach
+                        @endforeach
+                    @endif
                     @break
                 @case('select-extended')
 
@@ -22,6 +36,18 @@
                     @endforeach
                     @break
                 @default
+
+                @case('radio')
+                    @if(is_array($inputValues))
+                        @foreach($inputValues as $inputValue)
+                            @foreach($userInputValues as $userInputValue)
+                                @if($inputValue == $userInputValue->$userInputColumn)
+                                    <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$userInputValue->$userInputColumn}}</a></li>
+                                @endif
+                            @endforeach
+                        @endforeach
+                    @endif
+
             @endswitch
         </ul>
     </div>

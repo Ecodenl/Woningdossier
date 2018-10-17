@@ -29,10 +29,14 @@
                         @foreach($inputValues as $inputValue)
                             @foreach($userInputValues as $userInputValue)
                                 <?php
-                                    if (strpos($userInputColumn, ".") !== false) {
-                                        $value = array_get($userInputValue, $userInputColumn);
+                                    if (isset($userInputModel)) {
+                                        $value = $userInputValue->$userInputModel->$userInputColumn;
                                     } else {
-                                        $value = $userInputValue->$userInputColumn;
+                                        if (strpos($userInputColumn, ".") !== false) {
+                                            $value = array_get($userInputValue, $userInputColumn);
+                                        } else {
+                                            $value = $userInputValue->$userInputColumn;
+                                        }
                                     }
 
                                     if (isset($customInputValueColumn)) {
@@ -42,6 +46,7 @@
                                     } else {
                                         $inputName = $inputValue->name;
                                     }
+
                                 ?>
                                 @if($inputValue->id == $value)
                                     <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputName}}</a></li>

@@ -90,7 +90,7 @@ class HoomdossierSession extends Session {
 
     /**
      * Set the input source value id
-     * @NOTE: this is not the same as the input source, this input source will be used to get the righ values for the form.
+     * @NOTE: this is not the same as the input source, this input source will be used to get the right values for the form.
      *
      * @param InputSource $inputSource
      */

@@ -349,52 +349,53 @@ return [
 
             'index' => [
                 'header' => 'Actie ondernemen',
-                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                'text' => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
 
                 'form' => [
                     'no-measure-application-name-title' => 'Gesprek aanvragen',
                     'title' => 'Actie ondernemen met :measure_application_name',
-                    'allow_access' => 'Ik geef toesteming',
-                    'are-you-sure' => 'Weet u zeker dat u geen toesteming wilt geven ?',
+                    'allow_access' => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
+                    'are-you-sure' => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',
-                    'message' => 'Uw bericht aan de cooperatie',
-                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
-                    'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
+                    'message' => 'Nadere toelichting op uw vraag',
+                    'submit' => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
 
-                    'selected-option' => 'Geselecteerde actie:',
+                    'selected-option' => 'Waar kunnen we u bij helpen?:',
                     'options' => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => '(Hulp bij) het aanvragen van offertes;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer'
                     ],
                 ],
             ],
 
             'edit' => [
                 'header' => 'Bewerk uw huidige :request_type',
-                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                'text' => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
 
                 'form' => [
 
-                    'allow_access' => 'Ik geef toesteming',
+                    'allow_access' => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
+                    'are-you-sure' => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',
                     'message' => 'Uw bericht aan de cooperatie',
-                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
                     'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
 
-                    'selected-option' => 'Geselecteerde actie:',
+                    'selected-option' => 'Waar kunnen we u bij helpen?:',
 
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Hulp bij het aanvragen van offertes;',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer',
 
                     'options' => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
-
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Hulp bij het aanvragen van offertes;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer'
                     ],
                 ],
             ],
@@ -410,7 +411,9 @@ return [
             'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
 
         ],
-		'tool' => ['change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
+		'tool' => [
+
+		    'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
 
 			'unit' => [
 				'year' => 'jaar',
@@ -737,6 +740,12 @@ return [
 			],
 
 			'my-plan' => [
+
+			    'options' => [
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Specialistisch advies gewenst',
+                ],
 				'warnings' => [
                     'check-order' => 'Let op: u probeert dakisolatie met vervanging van de dakbedekking te doen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit!',
                     'planned-year' => 'Let op: de uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk!',

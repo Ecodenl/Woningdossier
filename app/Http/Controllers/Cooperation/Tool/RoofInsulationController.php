@@ -25,6 +25,7 @@ use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -397,8 +398,8 @@ class RoofInsulationController extends Controller
         $roofTypes = $request->input('building_roof_types', []);
 
         // remove the old answers
-        if (BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', $inputSourceId)->count() > 0) {
-            BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', $inputSourceId)->delete();
+        if (BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', HoomdossierSession::getInputSource())->count() > 0) {
+            BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', HoomdossierSession::getInputSource())->delete();
         }
 
         foreach ($roofTypes as $i => $details) {

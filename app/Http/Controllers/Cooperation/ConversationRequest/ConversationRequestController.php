@@ -58,6 +58,9 @@ class ConversationRequestController extends Controller
         $intendedMessage = session('intendedMessage');
 
         $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
+        if (!$myOpenCoachConversationRequest instanceof PrivateMessage){
+        	return redirect()->route('cooperation.conversation-requests.index');
+        }
 
         $selectedOption = $option;
 

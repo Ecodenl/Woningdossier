@@ -439,8 +439,8 @@ return [
 
             'my-plan' => [
                 'warnings' => [
-                    'check-order' => 'Letop!, je probeert Isolatie plat dak met vervanging van de dakbedekking te doen, maar vervangen dakbedekking staat uit.',
-                    'planned-year' => 'Letop!, de uitvoerings jaren zijn niet gelijk'
+                    'check-order' => 'Let op: u probeert dakisolatie met vervanging van de dakbedekking te doen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit!',
+                    'planned-year' => 'Let op: de uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk!',
                 ],
 
                 'title' => 'Actieplan',

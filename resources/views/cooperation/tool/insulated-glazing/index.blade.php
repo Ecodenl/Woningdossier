@@ -176,7 +176,7 @@
                         </label>
 
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $crackSealing->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingElements()->buildingElementsForMe('crack-sealing')->get(), 'userInputColumn' => 'element_value_id'])
+                        ['inputType' => 'select', 'inputValues' => $crackSealing->values()->orderBy('order')->get(), 'userInputValues' => $building->getBuildingElementsForMe('crack-sealing'), 'userInputColumn' => 'element_value_id'])
                         <select class="form-control" name="building_elements[{{$crackSealing->id}}][crack-sealing]">
                             @foreach($crackSealing->values()->orderBy('order')->get() as $sealingValue)
                                 <option @if($sealingValue->id == old('building_elements.crack-sealing') || ($building->getBuildingElement('crack-sealing') instanceof \App\Models\BuildingElement && $building->getBuildingElement('crack-sealing')->element_value_id == $sealingValue->id)) selected @endif value="{{ $sealingValue->id }}">{{ $sealingValue->value }}</option>
@@ -239,7 +239,7 @@
                         </label>
 
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $frames->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingElements()->buildingElementsForMe('frames')->get(), 'userInputColumn' => 'element_value_id'])
+                        ['inputType' => 'select', 'inputValues' => $frames->values()->orderBy('order')->get(), 'userInputValues' => $building->getBuildingElementsForMe('frames'), 'userInputColumn' => 'element_value_id'])
                         <select class="form-control" name="building_elements[{{$frames->id}}][frames]">
                             @foreach($frames->values()->orderBy('order')->get() as $frameValue)
                                 <option @if($frameValue->id == old('building_elements.frames')  || ($building->getBuildingElement('frames') instanceof \App\Models\BuildingElement && $building->getBuildingElement('frames')->element_value_id == $frameValue->id)) selected @endif value="{{ $frameValue->id }}">{{ $frameValue->value }}</option>

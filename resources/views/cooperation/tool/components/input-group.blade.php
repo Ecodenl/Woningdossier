@@ -6,7 +6,7 @@
         <ul class="dropdown-menu">
             @switch($inputType)
                 @case('select')
-                    @if(is_array($inputValues))
+                    @if(is_array($inputValues) && is_int(key($inputValues)))
                         @foreach($inputValues as $i => $inputValue)
                             @foreach($userInputValues as $userInputValue)
                                 {{--we use array get, we cant use it like $userInputValue->$userInputColumn--}}
@@ -18,21 +18,43 @@
                     @else
                         @foreach($inputValues as $inputValue)
                             @foreach($userInputValues as $userInputValue)
-                                @if($inputValue->id == $userInputValue->$userInputColumn)
-                                    <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{array_key_exists('value', $inputValue->attributesToArray()) ? $inputValue->value : $inputValue->name}}</a></li>
+                                <?php
+                                    if (strpos($userInputColumn, ".") !== false) {
+                                        $value = array_get($userInputValue, $userInputColumn);
+                                    } else {
+                                        $value = $userInputValue->$userInputColumn;
+                                    }
+
+                                    if (isset($customInputValueColumn)) {
+                                        $inputName = $inputValue->$customInputValueColumn;
+                                    } else if (array_key_exists('value', $inputValue->attributesToArray())) {
+                                        $inputName = $inputValue->value;
+                                    } else {
+                                        $inputName = $inputValue->name;
+                                    }
+                                ?>
+                                @if($inputValue->id == $value)
+                                    <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputName}}</a></li>
                                 @endif
                             @endforeach
                         @endforeach
                     @endif
                     @break
-                @case('select-extended')
 
                 @case('input')
                     @foreach($userInputValues as $userInputValue)
+                        <?php
+                            // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
+                            if (strpos($userInputColumn, ".") !== false) {
+                                $value = array_get($userInputValue, $userInputColumn);
+                            } else {
+                                $value = $userInputValue->$userInputColumn;
+                            }
+                        ?>
                         @if(isset($needsFormat))
-                            <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($userInputValue->$userInputColumn, 1)}}</a></li>
+                            <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, 1)}}</a></li>
                         @else
-                            <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$userInputValue->$userInputColumn}}</a></li>
+                            <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$value}}</a></li>
                         @endif
                     @endforeach
                     @break

@@ -15,13 +15,16 @@
                         <div class="form-group add-space {{ $errors->has('building_roof_types') ? ' has-error' : '' }}">
                             <label for="building_roof_types" class="control-label"><i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.roof-types')</label>
                             <br>
-                            @foreach($roofTypes as $roofType)
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" name="building_roof_types[]" value="{{ $roofType->id }}"
-                                    @if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) || ($currentRoofTypes->contains('roof_type_id', $roofType->id))) checked @endif>
-                                    {{ $roofType->name }}
-                                </label>
-                            @endforeach
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'])
+                                @foreach($roofTypes as $roofType)
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="building_roof_types[]" value="{{ $roofType->id }}"
+                                        @if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) || ($currentRoofTypes->contains('roof_type_id', $roofType->id))) checked @endif>
+                                        {{ $roofType->name }}
+                                    </label>
+                                @endforeach
+                            @endcomponent
 
                             @if ($errors->has('building_roof_types'))
                                 <span class="help-block">
@@ -49,13 +52,16 @@
 
                                 <label for="main_roof" class="control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof')</label>
 
-                                <select id="main_roof" class="form-control" name="building_features[roof_type_id]">
-                                    @foreach($roofTypes as $roofType)
-                                        @if($roofType->calculate_value < 5)
-                                        <option @if($roofType->id == old('building_features.roof_type_id') || ($features->roof_type_id == $roofType->id)) selected @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id', 'additionalConditionColumn' => true])
+                                    <select id="main_roof" class="form-control" name="building_features[roof_type_id]">
+                                        @foreach($roofTypes as $roofType)
+                                            @if($roofType->calculate_value < 5)
+                                            <option @if($roofType->id == old('building_features.roof_type_id') || ($features->roof_type_id == $roofType->id)) selected @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                @endcomponent
 
                                 <div id="main-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                     And I would like to have it too...

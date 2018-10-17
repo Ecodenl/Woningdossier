@@ -198,7 +198,7 @@ class FloorInsulationController extends Controller
             [
                 'building_id' => $buildingId,
                 'element_id' => $buildingElementId,
-                'input_source_id' => $buildingId
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'element_value_id' => $heightCrawlspace,

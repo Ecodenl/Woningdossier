@@ -33,6 +33,7 @@ class BuildingElement extends Model
 {
     use GetValueTrait;
     use GetMyValuesTrait;
+
     /**
      * The attributes that should be cast to native types.
      *

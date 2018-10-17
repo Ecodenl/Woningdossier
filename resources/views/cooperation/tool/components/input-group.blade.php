@@ -9,14 +9,11 @@
                     @if(is_array($inputValues))
                         @foreach($inputValues as $i => $inputValue)
                             @foreach($userInputValues as $userInputValue)
-                                {{dump($userInputColumn)}}
-                                {{dump($userInputValue->extra["has_crawlspace"])}}
-                                {{dump($userInputValue->getAttribute($userInputColumn))}}
+                                {{--we use array get, we cant use it like $userInputValue->$userInputColumn--}}
+                                @if($i == array_get($userInputValue, $userInputColumn))
                                     <li class="change-input-value" data-input-value="{{$i}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
-                                @if($i == $userInputValue->$userInputColumn)
                                 @endif
                             @endforeach
-                            {{dd()}}
                         @endforeach
                     @else
                         @foreach($inputValues as $inputValue)
@@ -32,10 +29,26 @@
 
                 @case('input')
                     @foreach($userInputValues as $userInputValue)
-                        <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$userInputValue->$userInputColumn}}</a></li>
+                        @if(isset($needsFormat))
+                            <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($userInputValue->$userInputColumn, 1)}}</a></li>
+                        @else
+                            <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$userInputValue->$userInputColumn}}</a></li>
+                        @endif
                     @endforeach
                     @break
                 @default
+
+                {{--
+                    TODO: Create a way so this can always be used, currently this is only used on the roof insulation.
+                --}}
+                @case('checkbox')
+                    @foreach($inputValues as $inputValue)
+                        @foreach($userInputValues as $userInputValue)
+                            @if($inputValue->id == $userInputValue->$userInputColumn)
+                                <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{array_key_exists('value', $inputValue->attributesToArray()) ? $inputValue->value : $inputValue->name}}</a></li>
+                            @endif
+                        @endforeach
+                    @endforeach
 
                 @case('radio')
                     @if(is_array($inputValues))

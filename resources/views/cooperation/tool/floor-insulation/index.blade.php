@@ -72,7 +72,7 @@
                             </label>
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra["has_crawlspace"]'])
+                            ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.has_crawlspace'])
                                 <select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
                                     @foreach(__('woningdossier.cooperation.option') as $i => $option)
                                         <option @if(old('building_elements.crawlspace') == $i) selected
@@ -120,16 +120,19 @@
                                     @lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.title')
                                 </label>
 
-                            <select id="crawlspace_access" class="form-control" name="building_elements[{{ $crawlspace->id }}][extra]">
-                                @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                    <option @if(old('building_elements.crawlspace_access') == $option) selected
-                                            @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                            &&is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                            && array_key_exists('access', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                            && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['access'] == $i) selected
-                                            @endif value="{{ $i }}">{{ $option }}</option>
-                                @endforeach
-                            </select>
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.access'])
+                                    <select id="crawlspace_access" class="form-control" name="building_elements[{{ $crawlspace->id }}][extra]">
+                                        @foreach(__('woningdossier.cooperation.option') as $i => $option)
+                                            <option @if(old('building_elements.crawlspace_access') == $option) selected
+                                                    @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                                    &&is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                                    && array_key_exists('access', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                                    && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['access'] == $i) selected
+                                                    @endif value="{{ $i }}">{{ $option }}</option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
 
                                 <div class="col-sm-12">
                                     <div class="form-group add-space">
@@ -163,16 +166,18 @@
                                     @lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-height')
                                 </label>
 
-                                <select id="crawlspace_height" class="form-control" name="building_elements[{{ $crawlspace->id }}][element_value_id]">
-                                    @foreach($crawlspace->values as $crawlHeight)
-                                        <option @if(old('crawlspace_height') == $crawlHeight->id) selected
-                                                @elseif(
-                                            isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                            && $buildingElement->where('element_id', $crawlspace->id)->first()->element_value_id == $crawlHeight->id)
-                                                selected
-                                            @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
-                                    @endforeach
-                                </select>
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'element_value_id'])
+                                    <select id="crawlspace_height" class="form-control" name="building_elements[{{ $crawlspace->id }}][element_value_id]">
+                                        @foreach($crawlspace->values as $crawlHeight)
+                                            <option @if(old('crawlspace_height') == $crawlHeight->id) selected
+                                                    @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
+                                                    && $buildingElement->where('element_id', $crawlspace->id)->first()->element_value_id == $crawlHeight->id)
+                                                    selected
+                                                @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
 
                                 @if ($errors->has('building_elements.' . $crawlspace->id .'.element_value_id'))
                                     <span class="help-block">
@@ -200,10 +205,11 @@
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('woningdossier.cooperation.tool.floor-insulation.surface')
                             </label>
-                            <div class="input-group">
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat'])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                                 <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">
-                            </div>
+                            @endcomponent
                             @if ($errors->has('building_features.surface'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('building_features.floor_surface') }}</strong>
@@ -219,10 +225,11 @@
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('woningdossier.cooperation.tool.floor-insulation.insulation-surface')
                             </label>
-                            <div class="input-group">
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                                 <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">
-                            </div>
+                            @endcomponent
                             @if ($errors->has('building_features.insulation_surface'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('building_features.insulation_surface') }}</strong>

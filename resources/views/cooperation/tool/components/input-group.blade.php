@@ -6,11 +6,21 @@
         <ul class="dropdown-menu">
             @switch($inputType)
                 @case('select')
+                    {{-- TODO: could use some improvement, do not know how atm--}}
                     @if(is_array($inputValues) && is_int(key($inputValues)))
                         @foreach($inputValues as $i => $inputValue)
                             @foreach($userInputValues as $userInputValue)
                                 {{--we use array get, we cant use it like $userInputValue->$userInputColumn--}}
-                                @if($i == array_get($userInputValue, $userInputColumn))
+                                <?php
+                                    // check if the input column has dots, ifso we need to use the array get function
+                                    // else its a property that we can access
+                                    if (strpos($userInputColumn, '.') !== false) {
+                                        $compareValue = array_get($userInputValue, $userInputColumn);
+                                    } else {
+                                        $compareValue = $userInputValue->$userInputColumn;
+                                    }
+                                ?>
+                                @if($i == $compareValue)
                                     <li class="change-input-value" data-input-value="{{$i}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
                                 @endif
                             @endforeach

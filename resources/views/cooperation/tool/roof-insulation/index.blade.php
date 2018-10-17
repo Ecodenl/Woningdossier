@@ -249,13 +249,13 @@
                                         ?>
 
                                         @component('cooperation.tool.components.input-group',
-                                            ['inputType' => 'select', 'inputValues' => $measureApplications[$roofCat], 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'extra.measure_application_id', 'customInputValueColumn' => 'measure_name'])
-                                        <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][measure_application_id]">
+                                        ['inputType' => 'select', 'inputValues' => $measureApplications[$roofCat], 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'extra.measure_application_id', 'customInputValueColumn' => 'measure_name'])
+                                            <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][measure_application_id]">
                                                 <option value="0" @if($default == 0) selected @endif>@lang('woningdossier.cooperation.tool.roof-insulation.measure-application.no')</option>
-                                            @foreach($measureApplications[$roofCat] as $measureApplication)
-                                                <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
-                                            @endforeach
-                                        </select>
+                                                @foreach($measureApplications[$roofCat] as $measureApplication)
+                                                    <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
+                                                @endforeach
+                                            </select>
                                         @endcomponent
 
                                         <div id="{{ $roofCat }}-interested-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

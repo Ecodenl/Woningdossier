@@ -8,6 +8,7 @@
                 @case('select')
                     {{-- TODO: could use some improvement, do not know how atm--}}
                     @if(is_array($inputValues) && is_int(key($inputValues)))
+
                         @foreach($inputValues as $i => $inputValue)
                             @foreach($userInputValues as $userInputValue)
                                 {{--we use array get, we cant use it like $userInputValue->$userInputColumn--}}
@@ -37,6 +38,9 @@
                                         }
                                     }
 
+                                    if (is_string($inputValue)) {
+                                        dd($inputValue);
+                                    }
                                     if (isset($customInputValueColumn)) {
                                         $inputName = $inputValue->$customInputValueColumn;
                                     } else if (array_key_exists('value', $inputValue->attributesToArray())) {

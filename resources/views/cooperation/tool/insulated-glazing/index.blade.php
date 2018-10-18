@@ -21,6 +21,13 @@
                 @if($i > 0 && array_key_exists($measureApplication->id, $titles))
                     <hr>
                 @endif
+                <?php
+                    if(array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
+                        $currentMeasureBuildingInsulatedGlazingForMe = $buildingInsulatedGlazingsForMe[$measureApplication->id];
+                    } else {
+                        $currentMeasureBuildingInsulatedGlazingForMe = [];
+                    }
+                ?>
                 <div class="row">
                     <div class="col-sm-12">
                         @if(array_key_exists($measureApplication->id, $titles))
@@ -60,7 +67,7 @@
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                                 </label>
                                 @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $buildingInsulatedGlazingsForMe[$measureApplication->id] ,'userInputColumn' => 'insulating_glazing_id'])
+                                ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
                                     <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
                                         @foreach($insulatedGlazings as $insulateGlazing)
                                             <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
@@ -89,7 +96,7 @@
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'select', 'inputValues' => $heatings, 'userInputValues' => $buildingInsulatedGlazingsForMe[$measureApplication->id] ,'userInputColumn' => 'building_heating_id'])
+                                ['inputType' => 'select', 'inputValues' => $heatings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'building_heating_id'])
                                 <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][building_heating_id]">
                                     @foreach($heatings as $heating)
                                         <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id == $heating->id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
@@ -118,7 +125,7 @@
                                 </label> <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'input', 'userInputValues' => $buildingInsulatedGlazingsForMe[$measureApplication->id] ,'userInputColumn' => 'm2'])
+                                ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'm2'])
                                     <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">
                                 @endcomponent
 
@@ -143,7 +150,7 @@
                                 </label> <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'input', 'userInputValues' => $buildingInsulatedGlazingsForMe[$measureApplication->id] ,'userInputColumn' => 'windows'])
+                                ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'windows'])
                                     <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}" class="form-control">
                                 @endcomponent
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
@@ -214,7 +221,7 @@
                         </label>
 
                         @component('cooperation.tool.components.input-group',
-                       ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures->forMe()->get(), 'userInputColumn' => 'window_surface'])
+                       ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'window_surface'])
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                             <input type="text" name="window_surface"  value="{{ old('window_surface') || isset($building->buildingFeatures->window_surface) ? $building->buildingFeatures->window_surface : '' }}" class="form-control">
                         @endcomponent
@@ -323,7 +330,7 @@
                         </label> <span>*</span>
 
                         @component('cooperation.tool.components.input-group',
-                               ['inputType' => 'input', 'userInputValues' => $building->currentPaintworkStatus->forMe()->get() ,'userInputColumn' => 'last_painted_year'])
+                               ['inputType' => 'input', 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get() ,'userInputColumn' => 'last_painted_year'])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
                                 <input required type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
                         @endcomponent

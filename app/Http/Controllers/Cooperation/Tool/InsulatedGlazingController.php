@@ -87,6 +87,7 @@ class InsulatedGlazingController extends Controller
         $buildingInsulatedGlazings = [];
         $buildingInsulatedGlazingsForMe = [];
 
+        $buildingFeaturesForMe = $building->buildingFeatures->forMe()->get();
         $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
@@ -138,7 +139,7 @@ class InsulatedGlazingController extends Controller
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'steps', 'interests', 'myBuildingElements',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'userInterests', 'crackSealing', 'frames', 'woodElements',
+            'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
         ));
     }

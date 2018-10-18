@@ -284,7 +284,9 @@ return [
 				'cubic-meters' => 'm<sup>3</sup>',
 				'co2' => 'CO<sub>2</sub>',
                 'kilograms' => 'kg',
-                'degrees' => 'graden'
+                'degrees' => 'graden',
+				'kwh' => 'kWh',
+				'hours' => 'uren',
 			],
 
 			'title' => 'Basisadvies',

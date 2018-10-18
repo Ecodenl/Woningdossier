@@ -54,7 +54,8 @@
                             @endif
                         </td>
                         <td>
-                            {{ $advice->measureApplication->measure_name }} <i class="glyphicon glyphicon-warning-sign measure-warning" title="" style="display:none; color: #ffc107"></i>
+                            {{--<a href="#myModal" role="button" class="btn btn-large btn-primary" data-toggle="modal">Launch Demo Modal</a>--}}
+                            {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                         </td>
                         <td>
                             &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
@@ -130,6 +131,23 @@
         <div class="col-md-12">
             <div class="form-group">
                 <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.download')</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="warning-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">@lang('woningdossier.cooperation.tool.my-plan.warnings.title')</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -233,6 +251,12 @@
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
+
+            $('#warning-modal').on('shown.bs.modal', function (e) {
+                var clicked = $(e.relatedTarget);
+                var icon = clicked.find('i.glyphicon');
+                $(this).find('.modal-body').html('<p>' + icon.attr('title') + '</p>');
+            });
 
             // Toggle chevron op open / close
             $('a[data-target*=more]').on('click', function () {
@@ -342,13 +366,14 @@
             // Set a warning for a measure application
             function setWarning(maShort, warning){
                 var row = getMeasureRow(maShort);
-                var icon = row.find('i.measure-warning');
+                var link = row.find('a.measure-warning');
+                var icon = link.find('i');
                 icon.attr('title', warning);
-                icon.show();
+                link.show();
             }
 
             function removeWarnings(){
-                $("i.measure-warning").hide();
+                $("a.measure-warning").hide();
             }
 
         });

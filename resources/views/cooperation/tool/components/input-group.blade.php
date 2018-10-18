@@ -6,74 +6,20 @@
         <ul class="dropdown-menu">
             @switch($inputType)
                 @case('select')
-                    {{-- TODO: could use some improvement, do not know how atm--}}
-                    @if(is_array($inputValues) && is_int(key($inputValues)))
-
-                        @foreach($inputValues as $i => $inputValue)
-                            @foreach($userInputValues as $userInputValue)
-                                {{--we use array get, we cant use it like $userInputValue->$userInputColumn--}}
-                                <?php
-                                    // check if the input column has dots, ifso we need to use the array get function
-                                    // else its a property that we can access
-                                    if (strpos($userInputColumn, '.') !== false) {
-                                        $compareValue = array_get($userInputValue, $userInputColumn);
-                                    }
-                                ?>
-                                @if($i == $compareValue)
-                                    <li class="change-input-value" data-input-value="{{$i}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
-                                @endif
-                            @endforeach
-                        @endforeach
-                    @else
-                        @foreach($inputValues as $inputValue)
-                            @foreach($userInputValues as $userInputValue)
-                                <?php
-                                    if (isset($userInputModel)) {
-                                        $value = $userInputValue->$userInputModel->$userInputColumn;
-                                    } else {
-                                        if (strpos($userInputColumn, ".") !== false) {
-                                            $value = array_get($userInputValue, $userInputColumn);
-                                        } else {
-                                            $value = $userInputValue->$userInputColumn;
-                                        }
-                                    }
-
-                                    if (is_string($inputValue)) {
-                                        dd($inputValue);
-                                    }
-                                    if (isset($customInputValueColumn)) {
-                                        $inputName = $inputValue->$customInputValueColumn;
-                                    } else if (array_key_exists('value', $inputValue->attributesToArray())) {
-                                        $inputName = $inputValue->value;
-                                    } else {
-                                        $inputName = $inputValue->name;
-                                    }
-
-                                ?>
-                                @if($inputValue->id == $value)
-                                    <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputName}}</a></li>
-                                @endif
-                            @endforeach
-                        @endforeach
-                    @endif
+                    @include('cooperation.tool.components.select', [
+                        'customInputValueColumn' => isset($customInputValueColumn)  ? $customInputValueColumn : "",
+                        'userInputValues' => $userInputValues,
+                        'userInputColumn' => $userInputColumn,
+                        'userInputModel' => isset($userInputModel) ? $userInputModel : "",
+                        'inputValues' => $inputValues,
+                    ])
                     @break
-
                 @case('input')
-                    @foreach($userInputValues as $userInputValue)
-                        <?php
-                            // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
-                            if (strpos($userInputColumn, ".") !== false) {
-                                $value = array_get($userInputValue, $userInputColumn);
-                            } else {
-                                $value = $userInputValue->$userInputColumn;
-                            }
-                        ?>
-                        @if(isset($needsFormat))
-                            <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, 1)}}</a></li>
-                        @else
-                            <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$value}}</a></li>
-                        @endif
-                    @endforeach
+                    @include('cooperation.tool.components.input', [
+                        'userInputValues' => $userInputValues,
+                        'userInputColumn' => $userInputColumn,
+                        'needsFormat' => isset($needsFormat) ? true : false
+                    ])
                     @break
                 @default
 
@@ -81,41 +27,19 @@
                     TODO: Create a way so this can always be used, currently this is only used on the roof insulation.
                 --}}
                 @case('checkbox')
-                    @foreach($inputValues as $inputValue)
-                        @foreach($userInputValues as $userInputValue)
-                            <?php
-                                // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
-                                if (strpos($userInputColumn, ".") !== false) {
-                                    $value = array_get($userInputValue, $userInputColumn);
-                                } else {
-                                    $value = $userInputValue->$userInputColumn;
-                                }
-                            ?>
-                            @if($inputValue->id == $value)
-                                <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{array_key_exists('value', $inputValue->attributesToArray()) ? $inputValue->value : $inputValue->name}}</a></li>
-                            @endif
-                        @endforeach
-                    @endforeach
-
+                    @include('cooperation.tool.components.checkbox', [
+                         'userInputValues' => $userInputValues,
+                         'userInputColumn' => $userInputColumn,
+                         'inputValues' => $inputValues,
+                    ])
+                    @break
                 @case('radio')
-                    @if(is_array($inputValues))
-                        @foreach($inputValues as $inputValue)
-                            @foreach($userInputValues as $userInputValue)
-                                <?php
-                                    // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
-                                    if (strpos($userInputColumn, ".") !== false) {
-                                        $value = array_get($userInputValue, $userInputColumn);
-                                    } else {
-                                        $value = $userInputValue->$userInputColumn;
-                                    }
-                                ?>
-                                @if($inputValue == $value)
-                                    <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
-                                @endif
-                            @endforeach
-                        @endforeach
-                    @endif
-
+                    @include('cooperation.tool.components.radio', [
+                      'userInputValues' => $userInputValues,
+                      'userInputColumn' => $userInputColumn,
+                      'inputValues' => $inputValues,
+                    ])
+                    @break
             @endswitch
         </ul>
     </div>

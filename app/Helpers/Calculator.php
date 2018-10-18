@@ -78,10 +78,11 @@ class Calculator
      * @param MeasureApplication $measure         The measure to apply
      * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
      * @param null|int           $applicationYear
+     * @param bool               $applyIndexing           Whether or not to apply indexing
      *
      * @return float|int
      */
-    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null)
+    public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null, $applyIndexing = true)
     {
         if ($number <= 0) {
             return 0;
@@ -99,12 +100,17 @@ class Calculator
         self::debug(__METHOD__.' Non indexed costs: '.$total.' = max('.$number.' * '.$measure->costs.', '.$measure->minimal_costs.')');
         // Apply indexing (general indexing which applies for measures)
 
-        $index = PriceIndexing::where('short', 'common')->first();
-        // default = 2%
-        $costIndex = 2;
-        if ($index instanceof PriceIndexing) {
-            $costIndex = $index->percentage;
-        }
+		if ($applyIndexing) {
+			$index = PriceIndexing::where( 'short', 'common' )->first();
+			// default = 2%
+			$costIndex = 2;
+			if ( $index instanceof PriceIndexing ) {
+				$costIndex = $index->percentage;
+			}
+		}
+		else {
+			$costIndex = 0;
+		}
 
         $totalIndexed = $total * pow((1 + ($costIndex / 100)), $yearFactor);
 
@@ -117,7 +123,7 @@ class Calculator
      * @param float|int $costs    Amount indexed on $fromYear
      * @param int       $fromYear Previous year used for indexing
      * @param int       $toYear   New year to index
-     * @param null|int|float|float|PriceIndexing Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
+     * @param null|int|float|PriceIndexing Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
      *
      * @return float|int
      */

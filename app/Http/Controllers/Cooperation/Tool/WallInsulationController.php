@@ -220,7 +220,8 @@ class WallInsulationController extends Controller
         $result['cost_indication'] = Calculator::calculateCostIndication($facadeSurface, $advice);
         $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-        $measureApplication = MeasureApplication::translated('measure_name', 'Reparatie voegwerk', 'nl')->first(['measure_applications.*']);
+        $measureApplication = MeasureApplication::where('short', '=', 'repair-joint')->first();
+        //$measureApplication = MeasureApplication::translated('measure_name', 'Reparatie voegwerk', 'nl')->first(['measure_applications.*']);
         $surfaceId = $request->get('wall_joints', 1);
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -229,10 +230,11 @@ class WallInsulationController extends Controller
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
+        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['repair_joint'] = compact('costs', 'year');
 
-        $measureApplication = MeasureApplication::translated('measure_name', 'Reinigen metselwerk', 'nl')->first(['measure_applications.*']);
+        $measureApplication = MeasureApplication::where('short', '=', 'clean-brickwork')->first();
+        //$measureApplication = MeasureApplication::translated('measure_name', 'Reinigen metselwerk', 'nl')->first(['measure_applications.*']);
         $surfaceId = $request->get('contaminated_wall_joints', 1);
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -241,10 +243,11 @@ class WallInsulationController extends Controller
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
+        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['clean_brickwork'] = compact('costs', 'year');
 
-        $measureApplication = MeasureApplication::translated('measure_name', 'Impregneren gevel', 'nl')->first(['measure_applications.*']);
+        $measureApplication = MeasureApplication::where('short', '=', 'impregnate-wall')->first();
+        //$measureApplication = MeasureApplication::translated('measure_name', 'Impregneren gevel', 'nl')->first(['measure_applications.*']);
         $surfaceId = $request->get('contaminated_wall_joints', 1);
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -253,16 +256,16 @@ class WallInsulationController extends Controller
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
+        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['impregnate_wall'] = compact('costs', 'year');
 
-        // Note: this answer options are harcoded in template
+        // Note: these answer options are hardcoded in template
         $isPlastered = 2 != (int) $request->get('facade_plastered_painted', 2);
 
         if ($isPlastered) {
-            $measureApplication = MeasureApplication::translated('measure_name',
-                'Gevelschilderwerk op stuk- of metselwerk',
-                'nl')->first(['measure_applications.*']);
+
+        	$measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();
+            //$measureApplication = MeasureApplication::translated('measure_name', 'Gevelschilderwerk op stuk- of metselwerk', 'nl')->first(['measure_applications.*']);
             $surfaceId = $request->get('facade_plastered_surface_id');
             $facadePlasteredSurface = FacadePlasteredSurface::find($surfaceId);
             $damageId = $request->get('facade_damaged_paintwork_id');
@@ -276,7 +279,7 @@ class WallInsulationController extends Controller
             }
             $costs = Calculator::calculateMeasureApplicationCosts($measureApplication,
                 $number,
-                $year);
+                $year, false);
             $result['paint_wall'] = compact('costs', 'year');
         }
 

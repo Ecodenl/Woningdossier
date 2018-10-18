@@ -302,7 +302,7 @@
 
 
         @foreach($services as $i => $service)
-            @if ( ($i % 2 == 0 && $service->short != "boiler") || stripos($service->name, 'zonnepanelen'))
+            @if ( ($i % 2 == 0 && $service->short != "boiler") || $service->short == 'total-sun-panels')
                 <div class="row" id="service_row_{{$service->id}}">
             @elseif(strpos($service->name, 'geventileerd'))
                 </div><div class="row">
@@ -381,7 +381,7 @@
                 </div>
                 @endif
 
-                @if(strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
+                @if(strpos($service->name, 'geventileerd') || $service->short == "total-sun-panels")
                     <div class="col-sm-6 {{ $errors->has(''.$service->id.'.extra') ? ' show' : '' }}">
 
                         <div id="{{$service->id.'-extra'}}" class="form-group add-space{{ $errors->has(''.$service->id.'.extra') ? ' has-error' : '' }}">
@@ -389,7 +389,7 @@
                                 <i data-toggle="collapse" data-target="#service_{{ $service->id }}-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 @if(strpos($service->name, 'geventileerd'))
                                     @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')
-                                @elseif(strpos($service->name, 'zonnepanelen'))
+                                @elseif($service->short == 'total-sun-panels')
                                     @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes')
                                 @endif
 
@@ -418,7 +418,7 @@
                 @endif
 
 
-                @if (( $i % 2 == 1 && $service->short != "hr-boiler")  || strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen') || $service->short == "sun-boiler")
+                @if (( $i % 2 == 1 && $service->short != "hr-boiler")  || strpos($service->name, 'geventileerd') || $service->short == "sun-boiler")
                     </div>
                 @endif
         @endforeach
@@ -437,47 +437,48 @@
 
             <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.title')</h4>
             <div class="row">
-            <div class="col-sm-6">
+                <div class="col-sm-6">
 
-                <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
-                    <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
+                    <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
+                        <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.total-citizens')</label> <span>*</span>
 
-                    <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
+                        <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
 
-                    <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                        And I would like to have it too...
+                        <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And I would like to have it too...
+                        </div>
+
+                        @if ($errors->has('resident_count'))
+                            <span class="help-block">
+                        <strong>{{ $errors->first('resident_count') }}</strong>
+                    </span>
+                        @endif
                     </div>
-
-                    @if ($errors->has('resident_count'))
-                        <span class="help-block">
-                    <strong>{{ $errors->first('resident_count') }}</strong>
-                </span>
-                    @endif
                 </div>
-            </div>
 
-            <div class="col-sm-6">
+                <div class="col-sm-6">
 
-                <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
-                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label> <span>*</span>
-                    <label class="radio-inline">
-                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 2 ) checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
-                    </label>
+                    <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
+                        <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')</label> <span>*</span>
+                        <br>
+                        <label class="radio-inline">
+                            <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 2 ) checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                        </label>
 
-                    <div id="cooked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                        And I would like to have it too...
+                        <div id="cooked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            And I would like to have it too...
+                        </div>
+
+                        @if ($errors->has('cook_gas'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('cook_gas') }}</strong>
+                            </span>
+                        @endif
                     </div>
-
-                    @if ($errors->has('cook_gas'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('cook_gas') }}</strong>
-                        </span>
-                    @endif
                 </div>
-            </div>
             </div>
 
             <div class="row">
@@ -793,7 +794,7 @@
                     <div class="panel-body">
                         <ol>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Algemene_gegevens.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+                            <li><a download="" href="{{ asset($helpFile) }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
                         </ol>
                     </div>
                 </div>
@@ -817,8 +818,6 @@
 @endsection
 
 @push('js')
-    {{--<script src="{{asset('js/datepicker/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('js/datepicker/bootstrap-datepicker.nl.min.js')}}"></script>--}}
     <script>
 
         $(document).ready(function () {
@@ -830,14 +829,6 @@
                 }
             });
 
-
-            {{--
-            // Load the datepicker
-            $('.input-group.date').datepicker({
-                language: "nl"
-            });
-            --}}
-
             // Check if the house ventialtion is mechanic
             $(document).change('#house-ventilation', function () {
 
@@ -845,7 +836,7 @@
                 var houseVentilation = $('#house-ventilation option:selected').text();
 
                 // text wont change, id's will
-                if (houseVentilation == "Mechanisch" || houseVentilation == "Decentraal mechanisch") {
+                if (houseVentilation === "Mechanisch" || houseVentilation === "Decentraal mechanisch") {
                     $('#house-ventilation').parent().parent().next().next().show();
                 } else {
                     $('#house-ventilation').parent().parent().next().next().hide();
@@ -855,15 +846,15 @@
 
             // check if a user is interested in a sun panel
             $(document).change('#total-sun-panels', function() {
-                var totalSunPanels = $('#total-sun-panels').val();
-                // var extraFieldSunPanel =  $('#total-sun-panels').parent().parent().next().next();
+                var input = $("#total-sun-panels");
+                var totalSunPanels = input.val();
+                var extraField =  input.parent().parent().parent().next().next();
 
                 if(totalSunPanels > 0) {
-                    $('#total-sun-panels').parent().parent().next().next().show();
+                    extraField.show();
                 } else {
-                    $('#total-sun-panels').parent().parent().next().next().hide();
-                    // Clear the value off the date
-                    $('#total-sun-panels').parent().parent().next().next().find('input').val("");
+                    extraField.hide();
+                    extraField.find('input').val("");
                 }
 
             });
@@ -882,7 +873,7 @@
                 }
             });
 
-            //$('#house-ventilation, #total-sun-panels').trigger('change')
+            $("#total-sun-panels").trigger('change');
         });
     </script>
 @endpush

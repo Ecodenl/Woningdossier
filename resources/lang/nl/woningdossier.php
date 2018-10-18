@@ -331,7 +331,7 @@ return [
 					'monovalent-heatpump' => 'Monovalente warmtepomp',
 					'sun-panel' => [
 						'title' => 'Aantal zonnepanelen',
-                        'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
+                        'if-yes' => 'Wanneer zijn de huidige panelen geplaatst?',
 					],
 					'sun-boiler' => 'Zonneboiler',
 					'house-ventilation' => [

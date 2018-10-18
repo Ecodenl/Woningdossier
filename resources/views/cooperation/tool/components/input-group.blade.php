@@ -16,8 +16,6 @@
                                     // else its a property that we can access
                                     if (strpos($userInputColumn, '.') !== false) {
                                         $compareValue = array_get($userInputValue, $userInputColumn);
-                                    } else {
-                                        $compareValue = $userInputValue->$userInputColumn;
                                     }
                                 ?>
                                 @if($i == $compareValue)
@@ -81,7 +79,15 @@
                 @case('checkbox')
                     @foreach($inputValues as $inputValue)
                         @foreach($userInputValues as $userInputValue)
-                            @if($inputValue->id == $userInputValue->$userInputColumn)
+                            <?php
+                                // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
+                                if (strpos($userInputColumn, ".") !== false) {
+                                    $value = array_get($userInputValue, $userInputColumn);
+                                } else {
+                                    $value = $userInputValue->$userInputColumn;
+                                }
+                            ?>
+                            @if($inputValue->id == $value)
                                 <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{array_key_exists('value', $inputValue->attributesToArray()) ? $inputValue->value : $inputValue->name}}</a></li>
                             @endif
                         @endforeach
@@ -91,8 +97,16 @@
                     @if(is_array($inputValues))
                         @foreach($inputValues as $inputValue)
                             @foreach($userInputValues as $userInputValue)
-                                @if($inputValue == $userInputValue->$userInputColumn)
-                                    <li class="change-input-value" data-input-value="{{$userInputValue->$userInputColumn}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$userInputValue->$userInputColumn}}</a></li>
+                                <?php
+                                    // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
+                                    if (strpos($userInputColumn, ".") !== false) {
+                                        $value = array_get($userInputValue, $userInputColumn);
+                                    } else {
+                                        $value = $userInputValue->$userInputColumn;
+                                    }
+                                ?>
+                                @if($inputValue == $value)
+                                    <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
                                 @endif
                             @endforeach
                         @endforeach

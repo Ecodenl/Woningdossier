@@ -368,7 +368,7 @@
                             @endcomponent
                         @else
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra["value"]'])
+                            ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra.value'])
                                 <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
                             @endcomponent
                         @endif
@@ -426,7 +426,7 @@
                             ?>
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra["year"]'])
+                            ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.year'])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
                                 <input type="text" class="form-control" name="{{ $service->id }}[extra][year]" value="@if(old($service->id.'.extra.year')){{ old($service->id.'.extra.year') }}@elseif(isset($year)){{ $year }}@endif">
                             @endcomponent

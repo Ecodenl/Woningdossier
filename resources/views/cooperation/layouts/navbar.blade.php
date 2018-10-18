@@ -49,7 +49,9 @@
                     </ul>
                 </li>
             </ul>
-            @if (Auth::user()->buildings->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
+
+
+            @if (Auth::check() && Auth::user()->buildings()->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
                 <a href="{{route('cooperation.admin.index')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
             @endif
         @endif

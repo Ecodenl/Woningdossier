@@ -33,6 +33,7 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
+
                                                 @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
                                                     <li>
                                                         <label>
@@ -56,7 +57,7 @@
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</label>
                                     <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')"></textarea>
-                                    
+
                                     @if ($errors->has('message'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('message') }}</strong>
@@ -68,7 +69,7 @@
                             <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="allow_access">
-                                        <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
+                                        <input id="allow_access" checked name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
                                         @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(session('cooperation'))->name])
                                     </label>
                                     @if ($errors->has('allow_access'))

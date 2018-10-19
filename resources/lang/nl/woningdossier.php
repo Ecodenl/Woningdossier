@@ -358,10 +358,9 @@ return [
 
                     'selected-option' => 'Waar kunnen we u bij helpen?:',
                     'options' => [
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
                         \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => '(Hulp bij) het aanvragen van offertes;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer'
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
                     ],
                 ],
             ],
@@ -381,16 +380,14 @@ return [
 
                     'selected-option' => 'Waar kunnen we u bij helpen?:',
 
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
                     \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Hulp bij het aanvragen van offertes;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
 
                     'options' => [
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
                         \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Hulp bij het aanvragen van offertes;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer'
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
                     ],
                 ],
             ],
@@ -736,9 +733,9 @@ return [
 			'my-plan' => [
 
 			    'options' => [
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
                     \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Specialistisch advies gewenst',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
                 ],
 				'title' => 'Actieplan',
 				'description' => 'Op deze pagina ziet u een samenvatting van alle maatregelen die u in het hoomdossier volledig hebt ingevuld. Per maatregel ziet u wat de indicatieve kosten en besparingen zijn.<br><br>Op basis van deze uitkomsten kunt u uw persoonlijke stappenplan voor de komende jaren samenstellen. Hiervoor selecteert u een maatregel in de eerste kolom (“Interesse”) en voert in de laatste kolom (“Planning”) het jaartal in wanneer u deze maatregel uit zou willen voeren.<br><br>Onder aan de pagina wordt dan uw stappenplan weergegeven. Per jaar kunt u zien hoe veel geld u voor onderhoud en energiebesparende maatregelen zou moeten reserveren en wat u aan besparing op uw energierekening in dit jaar zou kunnen verwachten.',

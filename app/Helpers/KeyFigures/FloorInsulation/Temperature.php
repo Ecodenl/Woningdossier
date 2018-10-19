@@ -4,9 +4,9 @@ namespace App\Helpers\KeyFigures\FloorInsulation;
 
 class Temperature
 {
-    const FLOOR_INSULATION_FLOOR = 'Vloerisolatie';
-    const FLOOR_INSULATION_BOTTOM = 'Bodemisolatie';
-    const FLOOR_INSULATION_RESEARCH = 'Nader onderzoek nodig';
+    const FLOOR_INSULATION_FLOOR = 'floor-insulation';
+    const FLOOR_INSULATION_BOTTOM = 'bottom-insulation';
+    const FLOOR_INSULATION_RESEARCH = 'floor-insulation-research';
 
     protected static $calculationValues = [
         self::FLOOR_INSULATION_FLOOR => 4.04, // D27

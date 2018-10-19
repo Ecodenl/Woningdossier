@@ -41,4 +41,13 @@ use Illuminate\Database\Eloquent\Model;
 class MeasureApplication extends Model
 {
     use TranslatableTrait;
+
+	/**
+	 * @param string $short
+	 *
+	 * @return MeasureApplication|Model|null|object
+	 */
+    public static function byShort($short){
+    	return self::where('short', '=', $short)->first();
+    }
 }

@@ -53,9 +53,8 @@ class Calculator
         return $result;
     }
 
-    public static function calculateCostIndication($surface, $measureAdvice)
+    public static function calculateCostIndication($surface, MeasureApplication $measureApplication)
     {
-        $measureApplication = MeasureApplication::translated('measure_name', $measureAdvice, 'nl')->first(['measure_applications.*']);
         if (! $measureApplication instanceof MeasureApplication) {
             return 0;
         }
@@ -152,6 +151,19 @@ class Calculator
         self::debug(__METHOD__.' Re-indexed costs: '.$costsIndexed.' = '.$costs.' * '.(1 + ($costIndex / 100)).'^'.$yearFactor);
 
         return $costsIndexed;
+    }
+
+	/**
+	 * Index costs. Basically this is 'reindexing' where the costs were indexed
+	 * for this year.
+	 *
+	 * @param float|int $costs
+	 * @param int $toYear
+	 *
+	 * @return float|int
+	 */
+    public static function indexCosts($costs, $toYear){
+    	return self::reindexCosts($costs, null, $toYear);
     }
 
     // in m3 per year

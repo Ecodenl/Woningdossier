@@ -34,7 +34,10 @@ class KeyFigures
     }
 
     /**
+     * Get the key figure for the current water consumption.
+     *
      * @param UserEnergyHabit $habit
+     * @param ComfortLevelTapWater $comfortLevel
      *
      * @return KeyFigureConsumptionTapWater|null
      */
@@ -47,11 +50,38 @@ class KeyFigures
 
     /**
      * @param int $waterConsumption
+     * @param float $helpFactor
      *
      * @return HeaterSpecification|null
      */
-    public static function getSystemSpecifications($waterConsumption)
+    public static function getSystemSpecifications($waterConsumption, $helpFactor)
     {
-        return HeaterSpecification::where('liters', $waterConsumption)->first();
+        $initialHeater = HeaterSpecification::where('liters', $waterConsumption)->first();
+
+	    $relativeCollectorSize = $initialHeater->collector * (1/$helpFactor);
+	    \Log::debug("Heater: Relative collector size: " . $relativeCollectorSize);
+
+	    $advisedSize = self::getAdvisedCollectorSize($relativeCollectorSize);
+	    \Log::debug("Heater: Advised collector size: " . $advisedSize);
+
+	    return HeaterSpecification::where('liters', $waterConsumption)
+	                              ->where('collector', '=', $advisedSize)
+	                              ->first();
+    }
+
+    public static function getAdvisedCollectorSize($relativeCollectorSize){
+		if ($relativeCollectorSize <= 2){
+			return 1.6;
+		}
+		if ($relativeCollectorSize < 2.9){
+			return 2.5;
+		}
+		if ($relativeCollectorSize < 4.1){
+			return 3.2;
+		}
+		if ($relativeCollectorSize < 5.6){
+			return 4.8;
+		}
+		return 6.4;
     }
 }

@@ -24,7 +24,7 @@ class Calculator
         $averageHouseTemperature = $roomTempCalculator->getAverageHouseTemperature();
         self::debug('Average house temperature = '.$averageHouseTemperature);
         $kengetalEnergySaving = Temperature::energySavingFigureWallInsulation($measureAdvice, $averageHouseTemperature);
-        self::debug('Kengetal energebesparing = '.$kengetalEnergySaving);
+        self::debug('Kengetal energiebesparing = '.$kengetalEnergySaving);
 
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(

@@ -39,10 +39,6 @@ class Temperature
         if (! array_key_exists($measure, self::$calculationValues)) {
             return null;
         }
-        if ($avgHouseTemp < self::AVERAGE_TEMPERATURE_NORM) {
-        	\Log::debug("Average house temperature is below norm (" . $avgHouseTemp . " vs. " . self::AVERAGE_TEMPERATURE_NORM . "). Using the norm..");
-            $avgHouseTemp = self::AVERAGE_TEMPERATURE_NORM;
-        }
 
         $calcValues = self::$calculationValues[$measure];
 

@@ -33,6 +33,7 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
+
                                                 @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
                                                     <li>
                                                         <label>
@@ -56,7 +57,7 @@
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</label>
                                     <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')"></textarea>
-                                    
+
                                     @if ($errors->has('message'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('message') }}</strong>

@@ -363,10 +363,9 @@ return [
 
                     'selected-option' => 'Waar kunnen we u bij helpen?:',
                     'options' => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => '(Hulp bij) het aanvragen van offertes;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer'
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
                     ],
                 ],
             ],
@@ -386,16 +385,14 @@ return [
 
                     'selected-option' => 'Waar kunnen we u bij helpen?:',
 
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Hulp bij het aanvragen van offertes;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
 
                     'options' => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Hulp bij het aanvragen van offertes;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Hulp bij het invullen van het dossier;',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Een andere vraag: Vrije tekst invoer'
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
                     ],
                 ],
             ],
@@ -748,9 +745,9 @@ return [
 			'my-plan' => [
 
 			    'options' => [
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Specialistisch advies gewenst',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
                 ],
 				'warnings' => [
                 	'title' => 'Let op!',

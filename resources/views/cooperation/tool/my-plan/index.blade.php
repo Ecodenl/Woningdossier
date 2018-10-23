@@ -17,9 +17,11 @@
         {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
         <div class="row">
+
             <div class="col-md-12">
                 <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
             </div>
+
 
             <div class="col-md-12">
                 <table class="table table-condensed table-responsive">
@@ -54,7 +56,6 @@
                             @endif
                         </td>
                         <td>
-                            {{--<a href="#myModal" role="button" class="btn btn-large btn-primary" data-toggle="modal">Launch Demo Modal</a>--}}
                             {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                         </td>
                         <td>
@@ -206,7 +207,7 @@
 
                                 var slug = stepName.replace(/\s+/g, '');
 
-                                table += "<tr> <td> <a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td><div class='input-group'> <div class='input-group-btn'> <button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button> <button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'> <span class='caret'></span> </button> <ul class='dropdown-menu'>  <li> <a href='{{url('aanvragen/coach_conversation')}}'> <span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION)</span> </a> </li><li> <a href='{{url('aanvragen/more_information')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION) </span> </a> </li><li> <a href='{{url('aanvragen/quotation')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION)</span> </a> </li></ul> </div></div></td></tr>";
+                                table += "<tr> <td> <a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td><div class='input-group'> <div class='input-group-btn'> <button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button> <button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'> <span class='caret'></span> </button> <ul class='dropdown-menu'>  <li> <a href='{{url('request/coach-conversation')}}'> <span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION)</span> </a> </li><li> <a href='{{url('request/more-information')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION) </span> </a> </li><li> <a href='{{url('request/other')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_OTHER)</span> </a> </li></ul> </div></div></td></tr>";
                                 table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>"
                             });
 

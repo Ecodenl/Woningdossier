@@ -26,7 +26,7 @@ class ConversationRequest extends FormRequest
     public function rules()
     {
         return [
-            'action' => 'required', Rule::in(['more-information', 'quotation', 'coach-conversation']),
+            'action' => 'required', Rule::in(['more-information', 'coach', 'coach-conversation']),
             'message' => 'required',
         ];
     }

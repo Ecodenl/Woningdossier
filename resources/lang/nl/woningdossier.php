@@ -575,7 +575,7 @@ return [
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
                 'm2' => 'Hoeveel m<sup>2</sup> glas wilt u vervangen?',
-                'total-windows' => 'Wat is het aantal ruiten dat u wilt vervangen',
+                'total-windows' => 'Aantal te vervangen ruiten',
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 

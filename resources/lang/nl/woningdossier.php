@@ -359,7 +359,7 @@ return [
                     'selected-option' => 'Waar kunnen we u bij helpen?:',
                     'options' => [
                         \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
                         \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
                     ],
                 ],
@@ -381,12 +381,12 @@ return [
                     'selected-option' => 'Waar kunnen we u bij helpen?:',
 
                     \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
                     \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
 
                     'options' => [
                         \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
                         \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
                     ],
                 ],
@@ -734,7 +734,7 @@ return [
 
 			    'options' => [
                     \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst;',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
                     \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
                 ],
 				'title' => 'Actieplan',

@@ -23,7 +23,7 @@ class BuildingDetailsController extends Controller
         $note = strip_tags($request->get('note'));
         $buildingId = $request->get('building_id');
 
-        $building = Building::find($buildingId);
+        $building = Building::withTrashed()->find($buildingId);
 
         $street = $building->street;
         $number = $building->number;

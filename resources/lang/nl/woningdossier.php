@@ -48,6 +48,7 @@ return [
                                 'owner' => 'Eigenaar',
                                 'actions' => 'Acties',
                                 'status' => 'Status',
+                                'appointment' => 'Datum van afspraak'
                             ],
                             'status' =>  'Kies status',
                             'current-status' => 'Huidige status:',
@@ -56,6 +57,14 @@ return [
                                 \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
                                 \App\Models\BuildingCoachStatus::STATUS_DONE=> 'Afgehandeld',
                             ],
+                        ],
+                    ],
+                    'edit' => [
+                        'header' => 'Bewerk de status van het gebouw',
+                        'form' => [
+                            'status' => 'Status',
+                            'appointment-date' => 'Tijdstip van afspraak',
+                            'submit' => 'Opslaan'
                         ],
                     ],
                     'set-building-status' => [

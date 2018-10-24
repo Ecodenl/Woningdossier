@@ -1,7 +1,6 @@
 @extends('cooperation.admin.coach.layouts.app')
 
 @section('coach_content')
-    <?php $mostRecentBuildingNote = $buildingNotes->last() ?>
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.details.index.header')</div>
 
@@ -12,11 +11,7 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        @if($mostRecentBuildingNote instanceof \App\Models\BuildingNotes)
-                            {{$mostRecentBuildingNote->city}} {{$mostRecentBuildingNote->postal_code}}, {{$mostRecentBuildingNote->street}} {{$mostRecentBuildingNote->number}} {{$mostRecentBuildingNote->extension}}
-                        @else
-                            {{$building->city}} {{$building->postal_code}}, {{$building->street}} {{$building->number}} {{$building->extension}}
-                        @endif
+                        {{$building->city}} {{$building->postal_code}}, {{$building->street}} {{$building->number}} {{$building->extension}}
                     </div>
                 </div>
             </div>

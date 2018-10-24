@@ -47,6 +47,7 @@ return [
                                 'owner' => 'Eigenaar',
                                 'actions' => 'Acties',
                                 'status' => 'Status',
+                                'appointment' => 'Datum van afspraak'
                             ],
                             'status' =>  'Kies status',
                             'current-status' => 'Huidige status:',
@@ -58,6 +59,7 @@ return [
                         ],
                     ],
                     'edit' => [
+                        'header' => 'Bewerk de status van het gebouw',
                         'form' => [
                             'status' => 'Status',
                             'appointment-date' => 'Tijdstip van afspraak',

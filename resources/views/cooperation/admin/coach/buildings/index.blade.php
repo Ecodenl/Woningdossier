@@ -14,6 +14,7 @@
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.street')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.owner')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
+                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.appointment')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.actions')</th>
                         </tr>
                         </thead>
@@ -34,6 +35,7 @@
                                         @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus) {{$buildingCoachStatusName}}@endif
                                     @endforeach
                                 </td>
+                                <td>{{$buildingCoachStatuses->where('building_id', $building->id)->first()->appointment_date}}</td>
                                 <td>
                                     @if(!$building->trashed())
                                     <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>

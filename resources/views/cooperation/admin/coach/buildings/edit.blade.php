@@ -2,7 +2,7 @@
 
 @section('coach_content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.header')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.edit.header')</div>
 
         <div class="panel-body">
             <div class="row">
@@ -49,8 +49,14 @@
 
 @push('js')
     <script>
+        // not needed with the format option
+        // just to be sure.
+        var defaultDate = moment('{{$buildingCoachStatus->appointment_date}}').format("YYYY-MM-DD HH:mm:ss");
+        console.log(defaultDate);
         $('#appointmentdate').datetimepicker({
-            locale: 'nl',
+            format: "YYYY-MM-DD HH:mm:ss",
+            locale: '{{app()->getLocale()}}',
+            defaultDate: defaultDate
 
         });
 
@@ -70,7 +76,7 @@
 
                 $('input[name=building_coach_status]').val(buildingCoachStatus);
                 $(input).val(inputValPrefix + $(this).text().trim());
-            })
+            });
 
             $(status).trigger('click');
 

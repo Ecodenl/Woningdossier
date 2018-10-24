@@ -63,7 +63,7 @@ class InsulatedGlazingController extends Controller
          */
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
-        
+
         $steps = Step::orderBy('order')->get();
 
         $interests = Interest::orderBy('order')->get();

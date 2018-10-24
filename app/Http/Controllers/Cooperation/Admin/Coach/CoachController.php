@@ -20,8 +20,6 @@ class CoachController extends Controller
         $role = Role::findByName($roleName);
         session()->put('role_id', $role->id);
 
-        $buildingPermissions = \Auth::user()->buildingPermissions;
-
-        return view('cooperation.admin.coach.index', compact('buildingPermissions'));
+        return redirect()->route('cooperation.admin.coach.buildings.index');
     }
 }

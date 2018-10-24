@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Building.
@@ -53,10 +54,57 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Building extends Model
 {
+    use SoftDeletes;
+
+    protected $dates = [
+        'deleted_at'
+    ];
+
     public $fillable = [
         'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id',
     ];
 
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($building) {
+            $building->user_id = null;
+            $building->country_code = 'nl';
+            $building->example_building_id = null;
+            $building->primary = false;
+            $building->save();
+
+            // delete the services from a building
+            $building->buildingServices()->delete();
+            // delete the elements from a building
+            $building->buildingElements()->delete();
+            // remove the features from a building
+            $building->buildingFeatures()->delete();
+            // remove the roof types from a building
+            $building->roofTypes()->delete();
+            // remove the heater from a building
+            $building->heater()->delete();
+            // remove the solar panels from a building
+            $building->pvPanels()->delete();
+            // remove the insulated glazings from a building
+            $building->currentInsulatedGlazing()->delete();
+            // remove the paintwork from a building
+            $building->currentPaintworkStatus()->delete();
+            // remove the user usage from a building
+            $building->userUsage()->delete();
+        });
+    }
+
+    public function buildingNotes()
+    {
+        return $this->hasMany('App\Models\BuildingNotes');
+	}
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user(){
+		return $this->belongsTo(User::class);
+	}
     public function buildingNotes()
     {
         return $this->hasMany('App\Models\BuildingNotes');

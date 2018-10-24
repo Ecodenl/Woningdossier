@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingCoachStatus extends Model
 {
     protected $fillable = [
-        'coach_id', 'status', 'building_id'
+        'coach_id', 'status', 'building_id', 'appointment_date'
+    ];
+
+    protected $dates = [
+        'appointment_date'
     ];
 
     const STATUS_APPOINTMENT = "appointment";

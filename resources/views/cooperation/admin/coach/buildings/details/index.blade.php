@@ -1,10 +1,18 @@
 @extends('cooperation.admin.coach.layouts.app')
 
 @section('coach_content')
-    <?php $mostRecentBuildingNote = $buildingNotes->last() ?>
+    <?php
+        if ($buildingNotes->last() instanceof \App\Models\BuildingNotes) {
+            $mostRecentBuildingNote = $buildingNotes->last();
+        } else {
+            $mostRecentBuildingNote = $building;
+        }
+    ?>
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.details.index.header')</div>
 
+        <div class="container">
+        </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">

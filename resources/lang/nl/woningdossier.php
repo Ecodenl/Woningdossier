@@ -47,6 +47,12 @@ return [
                             ],
                         ],
                     ],
+                    'edit' => [
+                        'form' => [
+                            'status' => 'Status',
+                            'appointment-date' => 'Tijdstip van afspraak'
+                        ],
+                    ],
                     'set-building-status' => [
                         'success' => 'Status is gekoppeld aan het gebouw',
                     ],

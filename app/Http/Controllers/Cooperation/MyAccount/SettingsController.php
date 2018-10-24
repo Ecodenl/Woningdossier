@@ -92,5 +92,30 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
+        $user = \Auth::user();
+
+        $building = $user->buildings()->first();
+
+        $building->delete();
+
+        // remove the building usages from the user
+        $user->buildingUsage()->delete();
+        // remove the action plan advices from the user
+        $user->actionPlanAdvices()->delete();
+        // remove the user interests
+        $user->interests()->delete();
+        // remove the energy habits from a user
+        $user->energyHabit()->delete();
+        // remove the motivations from a user
+        $user->motivations()->delete();
+        // remove the progress from a user
+        $user->progress()->delete();
+        // delete the cooperation from the user, belongsToMany so no deleting here.
+        $user->cooperations()->detach();
+
+        // finally remove the user itself :(
+        $user->delete();
+
+        return redirect(url(''));
     }
 }

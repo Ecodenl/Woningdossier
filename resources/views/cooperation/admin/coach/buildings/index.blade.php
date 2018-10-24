@@ -24,6 +24,11 @@
                                 <td>{{ $buildingPermission->building->city }}</td>
                                 <td>{{ $buildingPermission->building->user->first_name .' '. $buildingPermission->building->user->last_name}}</td>
                                 <td>
+                                    @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
+                                        @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus){{$buildingCoachStatusName}}@endif
+                                    @endforeach
+                                </td>
+                                <td>
                                     <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $buildingPermission->building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
                                     <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $buildingPermission->building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
                                     <a href="{{ route('cooperation.admin.coach.buildings.details.index', ['id' => $buildingPermission->building->id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-eye-open"></i></a>

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateFacadeDamagedPaintworksTable extends Migration
 {
@@ -15,10 +15,10 @@ class CreateFacadeDamagedPaintworksTable extends Migration
     {
         Schema::create('facade_damaged_paintworks', function (Blueprint $table) {
             $table->increments('id');
-	        $table->uuid('name');
-	        $table->integer('calculate_value')->nullable();
-	        $table->integer('order');
-	        $table->integer('term_years')->nullable();
+            $table->uuid('name');
+            $table->integer('calculate_value')->nullable();
+            $table->integer('order');
+            $table->integer('term_years')->nullable();
             $table->timestamps();
         });
     }

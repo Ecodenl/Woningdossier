@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\ExperienceAirQualityInHome;
+use Illuminate\Database\Seeder;
 
 class ExperienceAirQualityInHomesTableSeeder extends Seeder
 {
@@ -17,7 +17,7 @@ class ExperienceAirQualityInHomesTableSeeder extends Seeder
             'Matig',
             'Slecht',
             'Geen mening',
-            'Anders: uitleg'
+            'Anders: uitleg',
         ];
 
         foreach ($airQualities as $airQuality) {

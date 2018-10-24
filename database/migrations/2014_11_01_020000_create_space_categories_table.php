@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSpaceCategoriesTable extends Migration
 {
@@ -15,12 +15,10 @@ class CreateSpaceCategoriesTable extends Migration
     {
         Schema::create('space_categories', function (Blueprint $table) {
             $table->increments('id');
-	        $table->string('type');
-	        $table->uuid('name');
+            $table->string('type');
+            $table->uuid('name');
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -30,6 +28,6 @@ class CreateSpaceCategoriesTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('space_categories');
+        Schema::dropIfExists('space_categories');
     }
 }

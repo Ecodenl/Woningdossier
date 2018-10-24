@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateEnergyLabelsTable extends Migration
 {
@@ -20,8 +20,6 @@ class CreateEnergyLabelsTable extends Migration
             $table->integer('calculate_value')->nullable();
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -31,6 +29,6 @@ class CreateEnergyLabelsTable extends Migration
      */
     public function down()
     {
-    	Schema::dropIfExists('energy_labels');
+        Schema::dropIfExists('energy_labels');
     }
 }

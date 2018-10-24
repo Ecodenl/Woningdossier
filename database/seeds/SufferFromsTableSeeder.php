@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\SufferFrom;
+use Illuminate\Database\Seeder;
 
 class SufferFromsTableSeeder extends Seeder
 {
@@ -21,7 +21,7 @@ class SufferFromsTableSeeder extends Seeder
 
         foreach ($suffersFrom as $sufferFrom) {
             SufferFrom::create([
-                'name' => $sufferFrom
+                'name' => $sufferFrom,
             ]);
         }
     }

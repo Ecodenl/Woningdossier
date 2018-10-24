@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Building
+ * App\Models\Building.
  *
  * @property int $id
  * @property int $user_id
@@ -23,17 +23,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
- * @property-read \App\Models\BuildingFeature $buildingFeatures
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
- * @property-read \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
- * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
- * @property-read \App\Models\BuildingHeater $heater
- * @property-read \App\Models\BuildingPvPanel $pvPanels
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
- * @property-read \App\Models\User $user
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property \App\Models\BuildingFeature $buildingFeatures
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
+ * @property \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property \App\Models\BuildingHeater $heater
+ * @property \App\Models\BuildingPvPanel $pvPanels
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property \App\Models\User $user
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereBagAddressid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCountryCode($value)
@@ -59,9 +60,9 @@ class Building extends Model
         'deleted_at'
     ];
 
-	public $fillable = [
-		'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id',
-	];
+    public $fillable = [
+        'street', 'number', 'city', 'postal_code', 'bag_addressid',
+    ];
 
     public function buildingNotes()
     {
@@ -74,170 +75,190 @@ class Building extends Model
 		return $this->belongsTo(User::class);
 	}
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function userUsage(){
-		return $this->hasMany(BuildingUserUsage::class);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userUsage()
+    {
+        return $this->hasMany(BuildingUserUsage::class);
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function buildingFeatures(){
-		return $this->hasOne(BuildingFeature::class);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function buildingFeatures()
+    {
+        return $this->hasOne(BuildingFeature::class);
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function buildingElements(){
-		return $this->hasMany(BuildingElement::class);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingElements()
+    {
+        return $this->hasMany(BuildingElement::class);
+    }
 
-	public function exampleBuilding(){
-		return $this->belongsTo(ExampleBuilding::class);
-	}
+    public function exampleBuilding()
+    {
+        return $this->belongsTo(ExampleBuilding::class);
+    }
 
-	/**
-	 *
-	 * @return null|ExampleBuilding
-	 */
-	public function getExampleBuilding(){
-		$example = $this->exampleBuilding;
-		if ($example instanceof ExampleBuilding){
-			return $example;
-		}
-		return $this->getFittingExampleBuilding();
-	}
+    /**
+     * @return null|ExampleBuilding
+     */
+    public function getExampleBuilding()
+    {
+        $example = $this->exampleBuilding;
+        if ($example instanceof ExampleBuilding) {
+            return $example;
+        }
 
-	/**
-	 *
-	 * @return ExampleBuilding|null
-	 */
-	public function getFittingExampleBuilding(){
-		// determine fitting example building based on year + house type
-		$features = $this->buildingFeatures;
-		if (!$features instanceof BuildingFeature){
-			return null;
-		}
-		if (!$features->buildingType instanceof BuildingType) {
-			return null;
-		}
-		$example = ExampleBuilding::whereNull('cooperation_id')
-		               ->where('buiding_type_id', $features->buildingType->id)
-						->first();
+        return $this->getFittingExampleBuilding();
+    }
 
-		return $example;
-	}
+    /**
+     * @return ExampleBuilding|null
+     */
+    public function getFittingExampleBuilding()
+    {
+        // determine fitting example building based on year + house type
+        $features = $this->buildingFeatures;
+        if (! $features instanceof BuildingFeature) {
+            return null;
+        }
+        if (! $features->buildingType instanceof BuildingType) {
+            return null;
+        }
+        $example = ExampleBuilding::whereNull('cooperation_id')
+                       ->where('buiding_type_id', $features->buildingType->id)
+                        ->first();
 
-	public function getExampleValueForStep(Step $step, $formKey){
-		return $this->getExampleValue($step->slug . '.'. $formKey);
-	}
+        return $example;
+    }
 
-	public function getExampleValue($key){
-		$example = $this->getExampleBuilding();
-		if (!$example instanceof ExampleBuilding){
-			return null;
-		}
-		return $example->getExampleValueForYear($this->getBuildYear(), $key);
-	}
+    public function getExampleValueForStep(Step $step, $formKey)
+    {
+        return $this->getExampleValue($step->slug.'.'.$formKey);
+    }
 
-	public function getBuildYear(){
-		if (!$this->buildingFeatures instanceof BuildingFeature){
-			return null;
-		}
-		return $this->buildingFeatures->build_year;
-	}
+    public function getExampleValue($key)
+    {
+        $example = $this->getExampleBuilding();
+        if (! $example instanceof ExampleBuilding) {
+            return null;
+        }
 
+        return $example->getExampleValueForYear($this->getBuildYear(), $key);
+    }
 
-	/**
-	 * @param $short
-	 *
-	 * @return BuildingElement|null
-	 */
-	public function getBuildingElement($short){
-		return $this->buildingElements()
-			->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-			->where('e.short', $short)->first(['building_elements.*']);
-	}
+    public function getBuildYear()
+    {
+        if (! $this->buildingFeatures instanceof BuildingFeature) {
+            return null;
+        }
 
-	/**
-	 * @param string $short
-	 *
-	 * @return BuildingService|null
-	 */
-	public function getBuildingService($short){
-		return $this->buildingServices()
-			->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
-			->where('s.short', $short)->first(['building_services.*']);
-	}
+        return $this->buildingFeatures->build_year;
+    }
 
-	/**
-	 * @param string $short
-	 *
-	 * @return ServiceValue|null
-	 */
-	public function getServiceValue($short){
-		/** @var BuildingService $buildingService */
-		$buildingService = $this->getBuildingService($short);
-		$serviceValue = $buildingService->serviceValue;
+    /**
+     * @param $short
+     *
+     * @return BuildingElement|null
+     */
+    public function getBuildingElement($short)
+    {
+        return $this->buildingElements()
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->first(['building_elements.*']);
+    }
 
-		return $serviceValue;
-	}
+    /**
+     * @param string $short
+     *
+     * @return BuildingService|null
+     */
+    public function getBuildingService($short)
+    {
+        return $this->buildingServices()
+            ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+            ->where('s.short', $short)->first(['building_services.*']);
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function buildingServices(){
-		return $this->hasMany(BuildingService::class);
-	}
+    /**
+     * @param string $short
+     *
+     * @return ServiceValue|null
+     */
+    public function getServiceValue($short)
+    {
+        /** @var BuildingService $buildingService */
+        $buildingService = $this->getBuildingService($short);
+        $serviceValue = $buildingService->serviceValue;
 
-	/**
-	 * @return BuildingType|null
-	 */
-	public function getBuildingType(){
-		if ($this->buildingFeatures instanceof BuildingFeature){
-			return $this->buildingFeatures->buildingType;
-		}
-		return null;
-	}
+        return $serviceValue;
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function currentInsulatedGlazing(){
-		return $this->hasMany(BuildingInsulatedGlazing::class);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingServices()
+    {
+        return $this->hasMany(BuildingService::class);
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function currentPaintworkStatus(){
-		return $this->hasOne(BuildingPaintworkStatus::class);
-	}
+    /**
+     * @return BuildingType|null
+     */
+    public function getBuildingType()
+    {
+        if ($this->buildingFeatures instanceof BuildingFeature) {
+            return $this->buildingFeatures->buildingType;
+        }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function pvPanels(){
-		return $this->hasOne(BuildingPvPanel::class);
-	}
+        return null;
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function heater(){
-		return $this->hasOne(BuildingHeater::class);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function currentInsulatedGlazing()
+    {
+        return $this->hasMany(BuildingInsulatedGlazing::class);
+    }
 
-	/**
-	 * Returns all roof types of this building. Get the primary via the
-	 * building features.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function roofTypes(){
-		return $this->hasMany(BuildingRoofType::class);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function currentPaintworkStatus()
+    {
+        return $this->hasOne(BuildingPaintworkStatus::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function pvPanels()
+    {
+        return $this->hasOne(BuildingPvPanel::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function heater()
+    {
+        return $this->hasOne(BuildingHeater::class);
+    }
+
+    /**
+     * Returns all roof types of this building. Get the primary via the
+     * building features.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function roofTypes()
+    {
+        return $this->hasMany(BuildingRoofType::class);
+    }
 }

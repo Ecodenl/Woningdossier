@@ -19,13 +19,23 @@ return [
             'coach' => [
                 'side-nav' => [
                     'label' => 'Coach menu',
+                    'index' => 'Home',
                     'buildings' => 'Gebouwen',
                     'messages' => 'Berichten',
                 ],
 
                 'index' => [
                     'header' => 'Welkom op het coach panel',
-                    'text' => 'U kunt hier verschillende dingen doen.'
+                    'text' => 'Alle gebouwen waar u toegang tot heeft, u kunt op de pagina voor gebouwen acties uitvoeren hierop.',
+
+                    'table' => [
+                        'columns' => [
+                            'street' => 'Straatnaam',
+                            'city' => 'Stad',
+                            'owner' => 'Eigenaar',
+                            'actions' => 'Acties',
+                        ],
+                    ],
                 ],
 
                 'buildings' => [
@@ -69,6 +79,7 @@ return [
                     ],
                 ],
             ],
+
             'cooperation' => [
                 'coordination' => [
                     'header' => 'Welkom',
@@ -100,9 +111,115 @@ return [
                             'country-code' => 'Landcode',
                         ],
                     ]
+                ],
 
+                'coordinator' => [
+                    'side-nav' => [
+                        'label' => 'Coördinator menu',
+                        'home' => 'Home',
+                        'assign-roles' => 'Rollen toewijzen',
+                        'coach' => 'Coaches',
+                        'add-user' => 'Voeg Coach / Bewoner toe'
+                    ],
 
-                ]
+                    'assign-roles' => [
+                        'index' => [
+                            'header' => 'Overzicht gebruikers - rollen toewijzen',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+                        ],
+                        'edit' => [
+                            'header' => 'Verander rollen voor :firstName :lastName',
+
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Rollen wijzigen',
+                            ],
+                        ],
+                        'update' => [
+                            'success' => 'Rollen zijn bijgewerkt'
+                        ],
+                    ],
+                    'coach' => [
+                        'index' => [
+                            'header' => 'Overzicht van alle coaches voor uw coöperatie',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'total-houses' => 'Totale woningen',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+                        ],
+
+                        'create' => [
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Gebruiker aanmaken',
+                            ]
+                        ],
+
+                        'store' => [
+                            'success' => 'Gebruiker is met toevoegd',
+                        ],
+                        'destroy' => [
+                            'success' => 'Gebruiker is verwijderd'
+                        ]
+                    ],
+                    'index' => [
+                        'header' => 'Coordinator hoofdpagina - overzicht van alle gebruikers voor uw cooperatie',
+                        'text' => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
+
+                        'table' => [
+                            'columns' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'email' => 'E-mail adres',
+                                'role' => 'Huidige rollen van gebruiker',
+                                'actions' => 'Acties'
+                            ]
+
+                        ],
+                    ],
+                ],
             ],
 
 	        'navbar' => [
@@ -129,8 +246,7 @@ return [
             'disclaimer' => [
                 'title' => 'Disclaimer voor het gebruik van de tool.',
                 'panel-title' => 'Disclaimer',
-                'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>'
-
+                'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>',
             ],
         ],
         'help' => [
@@ -147,36 +263,44 @@ return [
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
             ],
         ],
-		'disclaimer' => [
-			'title' => 'Disclaimer',
-		],
+        'disclaimer' => [
+            'title' => 'Disclaimer',
+        ],
 
-		'my-account' => [
-			'settings' => [
-				'form' => [
-					'index' => [
-						'header' => 'Mijn account',
-						'submit' => 'Update',
-					],
-					'store' => [
-						'success' => 'Gegevens succesvol gewijzigd',
-					],
-					'destroy' => [
-						'header' => 'Account verwijderen',
-						'label' => 'Mijn account verwijderen',
-						'submit' => 'Verwijderen',
-					]
-				],
-			],
-			'cooperations' => [
-				'form' => [
-					'header' => 'Mijn coöperaties',
-				],
+        'my-account' => [
+            'settings' => [
+                'form' => [
+                    'index' => [
+                        'header' => 'Mijn account',
+                        'submit' => 'Update',
+                    ],
+                    'store' => [
+                        'success' => 'Gegevens succesvol gewijzigd',
+                    ],
+                    'reset-file' => [
+                        'header' => 'Uw dossier verwijderen',
+                        'description' => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
+                        'label' => 'Reset mijn dossier',
+                        'submit' => 'Reset',
+                        'are-you-sure' => 'Letop, dit verwijderd alle gegevens die zijn ingevuld bij de veschillende stappen. Weet u zeker dat u wilt doorgaan ?',
+                        'success' => 'Uw gegevens zijn succesvol verwijderd van uw account',
+                    ],
+                    'destroy' => [
+                        'header' => 'Account verwijderen',
+                        'label' => 'Mijn account verwijderen',
+                        'submit' => 'Verwijderen',
+                    ],
+                ],
+            ],
+            'cooperations' => [
+                'form' => [
+                    'header' => 'Mijn coöperaties',
+                ],
+            ],
+        ],
 
-			],
-		],
-
-		'tool' => [
+        'tool' => [
+            'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
 
 			'unit' => [
 				'year' => 'jaar',
@@ -524,6 +648,7 @@ return [
 	                'costs-advice-year' => 'Kosten in geadviseerd jaar',
                 ],
 				'columns' => [
+					'more-info' => 'Meer info',
 					'interest' => 'Interesse',
 					'measure' => 'Maatregel',
 					'costs' => 'Kosten',
@@ -589,7 +714,7 @@ return [
                     'wanted-heat-source' => 'Welke soort warmtebron is gewenst?',
                     'heat-usage' => [
                         'heater' => 'Warmtegebruik voor verwarming',
-                        'warm-tapwater' => 'Warmtegebruik voor warm tapwater'
+                        'warm-tapwater' => 'Warmtegebruik voor warm tapwater',
                     ],
                     'indication-for-costs' => [
                         'title' => 'Indicatie voor kosten en baten voor deze maatregel',
@@ -605,6 +730,6 @@ return [
                     ],
                 ],
             ],
-		],
+        ],
     ],
 ];

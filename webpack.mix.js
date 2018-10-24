@@ -12,9 +12,21 @@ let mix = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/app.js', 'public/js')
-    .scripts([
-        'resources/assets/js/ays-beforeunload-shim.js',
-        'resources/assets/js/jquery.are-you-sure.js'
-    ], 'public/js/are-you-sure.js')
+    .scripts(
+        [
+            'resources/assets/js/ays-beforeunload-shim.js',
+            'resources/assets/js/jquery.are-you-sure.js',
+
+        ], 'public/js/are-you-sure.js')
+    .scripts(
+        [
+            'resources/assets/js/datatables.js'
+        ], 'public/js/datatables.js'
+    )
+    .scripts(
+        [
+            'resources/assets/js/select2.js'
+        ], 'public/js/select2.js'
+    )
     .copy('resources/assets/images', 'public/images')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+    .sass('resources/assets/sass/app.scss', 'public/css');

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class ForgotPasswordController extends Controller
 {
@@ -32,14 +31,13 @@ class ForgotPasswordController extends Controller
         $this->middleware('guest');
     }
 
-	/**
-	 * Display the form to request a password reset link.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function showLinkRequestForm()
-	{
-		return view('cooperation.auth.passwords.email');
-	}
-
+    /**
+     * Display the form to request a password reset link.
+     *
+     * @return \Illuminate\Http\Response|\Illuminate\View\View
+     */
+    public function showLinkRequestForm()
+    {
+        return view('cooperation.auth.passwords.email');
+    }
 }

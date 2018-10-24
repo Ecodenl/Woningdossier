@@ -25,11 +25,6 @@
     @stack('css')
 </head>
 <body class="@yield('page_class')">
-@if(App::environment() == 'local')
-    <?php
-        session('role_id') == "" ? print_r("No role has been set yet.") : print_r("role id: ".session('role_id')) ;
-    ?>
-@endif
 <div id="app">
 
     <nav class="navbar navbar-default navbar-static-top">
@@ -95,10 +90,10 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    @foreach(Auth::user()->roles as $role)
+                                    @foreach(Auth::user()->roles()->orderBy('level', 'DESC')->get() as $role)
                                         <li>
-                                            <a href="{{\App\Helpers\RoleHelper::getUrlByRoleName($role->name)}}">
-                                                {{$role->human_readable_name}}
+                                            <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}">
+                                                {{ $role->human_readable_name }}
                                             </a>
                                         </li>
                                     @endforeach

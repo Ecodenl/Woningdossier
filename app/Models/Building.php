@@ -99,16 +99,6 @@ class Building extends Model
     {
         return $this->hasMany('App\Models\BuildingNotes');
 	}
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function user(){
-		return $this->belongsTo(User::class);
-	}
-    public function buildingNotes()
-    {
-        return $this->hasMany('App\Models\BuildingNotes');
-	}
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

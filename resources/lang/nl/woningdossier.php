@@ -50,7 +50,8 @@ return [
                     'edit' => [
                         'form' => [
                             'status' => 'Status',
-                            'appointment-date' => 'Tijdstip van afspraak'
+                            'appointment-date' => 'Tijdstip van afspraak',
+                            'submit' => 'Opslaan'
                         ],
                     ],
                     'set-building-status' => [

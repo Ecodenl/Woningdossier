@@ -1,13 +1,7 @@
 @extends('cooperation.admin.coach.layouts.app')
 
+
 @section('coach_content')
-    <?php
-        if ($buildingNotes->last() instanceof \App\Models\BuildingNotes) {
-            $mostRecentBuildingNote = $buildingNotes->last();
-        } else {
-            $mostRecentBuildingNote = $building;
-        }
-    ?>
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.details.index.header')</div>
 
@@ -16,11 +10,11 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="alert alert-success alert-dismissible show" role="alert">
+                    <div class="alert alert-success aler$t-dismissible show" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        {{$mostRecentBuildingNote->city}} {{$mostRecentBuildingNote->postal_code}}, {{$mostRecentBuildingNote->street}} {{$mostRecentBuildingNote->number}} {{$mostRecentBuildingNote->extension}}
+                        {{$building->city}} {{$building->postal_code}}, {{$building->street}} {{$building->number}} {{$building->extension}}
                     </div>
                 </div>
             </div>

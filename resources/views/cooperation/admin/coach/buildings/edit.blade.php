@@ -38,7 +38,7 @@
                                 </span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success">Opslaan die handel</button>
+                        <button type="submit" class="btn btn-success">@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.submit')</button>
                     </form>
                 </div>
             </div>

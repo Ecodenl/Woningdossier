@@ -19,19 +19,27 @@
                         </thead>
                         <tbody>
                         @foreach($buildingPermissions as $buildingPermission)
+                            <?php $building =  $buildingPermission->building()->withTrashed()->first()?>
+
                             <tr>
-                                <td>{{ $buildingPermission->building->city }}</td>
-                                <td>{{ $buildingPermission->building->city }}</td>
-                                <td>{{ $buildingPermission->building->user->first_name .' '. $buildingPermission->building->user->last_name}}</td>
+                                <td>{{ $building->city }}</td>
+                                <td>{{ $building->city }}</td>
+                                @if(!$building->trashed())
+                                    <td>{{ $building->user->first_name .' '. $building->user->last_name}}</td>
+                                @else
+                                    <td>-</td>
+                                @endif
                                 <td>
                                     @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                        @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus){{$buildingCoachStatusName}}@endif
+                                        @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus) {{$buildingCoachStatusName}}@endif
                                     @endforeach
                                 </td>
                                 <td>
-                                    <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $buildingPermission->building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $buildingPermission->building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
-                                    <a href="{{ route('cooperation.admin.coach.buildings.details.index', ['id' => $buildingPermission->building->id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                    @if(!$building->trashed())
+                                    <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+                                    <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                    @endif
+                                    <a href="{{ route('cooperation.admin.coach.buildings.details.index', ['id' => $building->id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-eye-open"></i></a>
                                 </td>
                             </tr>
                         @endforeach

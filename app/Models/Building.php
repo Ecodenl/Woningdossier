@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Building
@@ -52,6 +53,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Building extends Model
 {
+    use SoftDeletes;
+
+    protected $dates = [
+        'deleted_at'
+    ];
 
 	public $fillable = [
 		'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id',

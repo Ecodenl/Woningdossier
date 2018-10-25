@@ -270,8 +270,11 @@
                         </div>
                     </div>
                     <div class="col-sm-12">
-                        <?php $coachInput =  $buildingElementsForMe->where('element_id', $crawlspace->id)->coachInput()->first() ?>
-                        @if(isset($buildingElementsForMe) && $coachInput->hasCoachInputSource() && array_key_exists('comment', $coachInput->extra))
+                        <?php
+                            $coachInputSource = App\Models\InputSource::findByShort('coach');
+                            $coachInput = $buildingElementsForMe->where('input_source_id', $coachInputSource->id)->where('element_id', $crawlspace->id)->first()
+                        ?>
+                        @if(!is_null($coachInput) && $coachInput->hasCoachInputSource() && array_key_exists('comment', $coachInput->extra))
                             @component('cooperation.tool.components.alert')
                                 {{$coachInput->extra['comment']}}
                             @endcomponent

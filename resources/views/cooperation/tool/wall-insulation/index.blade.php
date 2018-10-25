@@ -440,9 +440,12 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    @if(isset($buildingFeature) && $buildingFeature->hasCoachInputSource())
+                    <?php
+                        $coachInputSource = App\Models\InputSource::findByShort('coach');
+                    ?>
+                    @if(isset($buildingFeaturesForMe) && $buildingFeaturesForMe->first()->hasCoachInputSource() && !is_null($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info))
                         @component('cooperation.tool.components.alert')
-                            {{$buildingFeature->coachInput()->first()->additional_info}}
+                            {{$buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info}}
                         @endcomponent
                     @endif
                 </div>

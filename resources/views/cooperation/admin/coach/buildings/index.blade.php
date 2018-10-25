@@ -20,7 +20,7 @@
                         </thead>
                         <tbody>
                         @foreach($buildingPermissions as $buildingPermission)
-                            <?php $building =  $buildingPermission->building()->withTrashed()->first()?>
+                            <?php $building =  $buildingPermission->building()->withTrashed()->first() ?>
 
                             <tr>
                                 <td>{{ $building->city }}</td>

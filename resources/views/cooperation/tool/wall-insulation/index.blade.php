@@ -419,6 +419,7 @@
                 </div>
             </div>
 
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
@@ -436,8 +437,14 @@
                             </span>
                         @endif
 
-
                     </div>
+                </div>
+                <div class="col-sm-12">
+                    @if(isset($buildingFeature) && $buildingFeature->hasCoachInputSource())
+                        @component('cooperation.tool.components.alert')
+                            {{$buildingFeature->coachInput()->first()->additional_info}}
+                        @endcomponent
+                    @endif
                 </div>
             </div>
         </div>

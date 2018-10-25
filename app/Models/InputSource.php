@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class InputSource extends Model
 {
+
     public static function findByShort($short)
     {
         return self::where('short', $short)->first();

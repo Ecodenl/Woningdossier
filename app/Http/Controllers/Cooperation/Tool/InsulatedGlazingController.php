@@ -97,10 +97,10 @@ class InsulatedGlazingController extends Controller
                 // get current situation
                 $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
 
-                $currentInsulatedGlazingInput = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
+                $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (!$currentInsulatedGlazingInput->isEmpty()) {
-                    $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInput;
+                if (!$currentInsulatedGlazingInputs->isEmpty()) {
+                    $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;

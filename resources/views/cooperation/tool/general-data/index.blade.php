@@ -743,6 +743,13 @@
                         @endif
                     </div>
                 </div>
+                <div class="col-sm-12">
+                    @if(isset($energyHabit) && $energyHabit->hasCoachInputSource())
+                        @component('cooperation.tool.components.alert')
+                            {{$energyHabit->coachInput()->first()->living_situation_extra}}
+                        @endcomponent
+                    @endif
+                </div>
             </div>
 
             <div class="row">

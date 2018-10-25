@@ -322,10 +322,22 @@
 
                                         @if ($errors->has('building_roof_types.'.$roofCat.'.extra.comment'))
                                             <span class="help-block">
-                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
-                            </span>
+                                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
+                                            </span>
                                         @endif
                                     </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    {{--loop through all the insulated glazings with ALL the input sources--}}
+                                    @foreach ($currentCategorizedRoofTypesForMe[$roofCat] as $currentRoofTypeForMe)
+                                        <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
+                                        @if($currentRoofTypeForMe->input_source_id == $coachInputSource->id && array_key_exists('comment', $currentRoofTypeForMe->extra))
+                                            @component('cooperation.tool.components.alert')
+                                                {{$currentRoofTypeForMe->extra['comment']}}
+                                            @endcomponent
+                                            @break
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
 

@@ -64,7 +64,7 @@ class FloorInsulationController extends Controller
         }
 
         $buildingElement = $building->buildingElements;
-        $buildingElementsForMe = BuildingElement::forMe()->get();
+        $buildingElementsForMe = BuildingElement::forMe();
 
         $buildingFeatures = $building->buildingFeatures;
         $buildingFeaturesForMe = BuildingFeature::forMe()->get();

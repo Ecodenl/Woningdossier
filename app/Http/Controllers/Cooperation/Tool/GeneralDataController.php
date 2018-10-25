@@ -279,9 +279,9 @@ class GeneralDataController extends Controller
         UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id' => $buildingOwner->id,
+                'input_source_id' => $inputSourceId,
             ],
             [
-                'user_id' => $buildingOwner->id,
                 'resident_count' => $request->get('resident_count'),
                 'thermostat_high' => $request->get('thermostat_high', 20),
                 'thermostat_low' => $request->get('thermostat_low', 15),

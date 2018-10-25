@@ -98,6 +98,7 @@ class HeaterController extends Controller
         $user = $building->user;
         $habit = $user->energyHabit;
 
+
         if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
             if ($consumption instanceof KeyFigureConsumptionTapWater) {
@@ -197,7 +198,7 @@ class HeaterController extends Controller
         $habits = $request->input('user_energy_habits', '');
         $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
 
-        $user->energyHabit()->update(['water_comfort_id' => $waterComFortId]);
+        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['water_comfort_id' => $waterComFortId]);
 
         // Save progress
         $this->saveAdvices($request);

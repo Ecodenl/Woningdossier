@@ -147,7 +147,7 @@ class SolarPanelsController extends Controller
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
 
-        $user->energyHabit()->update(['amount_electricity' => $habitAmountElectricity]);
+        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['amount_electricity' => $habitAmountElectricity]);
 
         $pvPanels = $request->input('building_pv_panels', '');
         $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : '';

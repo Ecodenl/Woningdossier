@@ -55,7 +55,7 @@ class BuildingCoachStatus extends Model
      *
      * @return string
      */
-    public static function getCurrentStatus($buildingId): string
+    public static function getCurrentStatusName($buildingId): string
     {
         $currentStatus = self::where('coach_id', \Auth::id())->where('building_id', $buildingId)->get()->last();
 

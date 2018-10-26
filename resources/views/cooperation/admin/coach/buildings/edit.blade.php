@@ -23,7 +23,7 @@
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
                                             <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
-                                            <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatus($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
+                                            <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
                                         @endforeach
                                     </ul>
                                 </div><!-- /btn-group -->

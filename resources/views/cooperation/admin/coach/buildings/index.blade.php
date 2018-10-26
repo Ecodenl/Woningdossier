@@ -29,7 +29,7 @@
                                     <td>-</td>
                                 @endif
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatus($building->id)}}
+                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id)}}
                                 </td>
                                 <td>@if(!$buildingCoachStatuses->isEmpty() && $buildingCoachStatuses->where('building_id', $building->id)->first() instanceof \App\Models\BuildingCoachStatus)
                                         {{$buildingCoachStatuses->where('building_id', $building->id)->first()->appointment_date}}

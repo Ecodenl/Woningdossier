@@ -19,25 +19,22 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($buildingPermissions as $buildingPermission)
-                            <?php $building =  $buildingPermission->building()->withTrashed()->first() ?>
+                        @foreach($buildings as $building)
 
                             <tr>
                                 <td>{{ $building->city }}</td>
-                                <td>{{ $building->city }}</td>
-                                @if(!$building->trashed())
-                                    <td>{{ $building->user->first_name .' '. $building->user->last_name}}</td>
+                                <td>{{ $building->street }}</td>
+                                @if(!is_null($building->deleted_at))
+                                    <td>{{ str_limit($building->first_name .' '. $building->last_name, 40)}}</td>
                                 @else
                                     <td>-</td>
                                 @endif
                                 <td>
-                                    @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                        @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus) {{$buildingCoachStatusName}}@endif
-                                    @endforeach
+                                    {{\App\Models\BuildingCoachStatus::getCurrentStatus()}}
                                 </td>
-                                <td>{{$buildingCoachStatuses->where('building_id', $building->id)->first()->appointment_date}}</td>
+                                <td>{{!$buildingCoachStatuses->isEmpty() ? $buildingCoachStatuses->where('building_id', $building->id)->first()->appointment_date : ""}}</td>
                                 <td>
-                                    @if(!$building->trashed())
+                                    @if(!is_null($building->deleted_at))
                                     <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
                                     <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
                                     @endif

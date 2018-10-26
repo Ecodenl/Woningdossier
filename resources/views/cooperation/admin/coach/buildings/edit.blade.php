@@ -32,7 +32,7 @@
                         <div class="form-group">
                             <label>@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.appointment-date')</label>
                             <div class='input-group date' id="appointmentdate">
-                                <input name="appointment_date" type='text' class="form-control" value="{{$buildingCoachStatus->appointment_date}}" />
+                                <input name="appointment_date" type='text' class="form-control" value="{{isset($buildingCoachStatus) ? $buildingCoachStatus->appointment_date : ""}}" />
                                 <span class="input-group-addon">
                                    <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -51,12 +51,9 @@
     <script>
         // not needed with the format option
         // just to be sure.
-        var defaultDate = moment('{{$buildingCoachStatus->appointment_date}}').format("YYYY-MM-DD HH:mm:ss");
-        console.log(defaultDate);
         $('#appointmentdate').datetimepicker({
             format: "YYYY-MM-DD HH:mm:ss",
             locale: '{{app()->getLocale()}}',
-            defaultDate: defaultDate
 
         });
 

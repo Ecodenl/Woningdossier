@@ -76,14 +76,14 @@ class BuildingController extends Controller
         $user = User::find($building->user_id);;
         // we cant query on the Spatie\Role model so we first get the result on the "original model"
         $role = Role::findByName($user->roles->first()->name);
-        // get the input source
-        $inputSourceValue = $role->inputSource;
+        // set the input source value to the coach itself
+        $inputSourceValue = InputSource::find(HoomdossierSession::getInputSource());
 
         $inputSource = InputSource::find(HoomdossierSession::getInputSource());
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
-        // note: this will not occur much
-        if (!$inputSourceValue instanceof InputSource || !$inputSource instanceof InputSource) {
+        // or if the role is not a resident, we gonna throw them back.
+        if (!$inputSourceValue instanceof InputSource || !$inputSource instanceof InputSource && $inputSource->isResident()) {
             return redirect()->back()->with('warning', __('woningdossier.cooperation.admin.coach.buildings.fill-for-user.warning'));
         }
 

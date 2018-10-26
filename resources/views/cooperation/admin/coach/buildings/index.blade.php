@@ -19,22 +19,25 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($buildings as $building)
-
+                        @foreach($buildings as $i => $building)
                             <tr>
                                 <td>{{ $building->city }}</td>
                                 <td>{{ $building->street }}</td>
-                                @if(!is_null($building->deleted_at))
+                                @if(is_null($building->deleted_at))
                                     <td>{{ str_limit($building->first_name .' '. $building->last_name, 40)}}</td>
                                 @else
                                     <td>-</td>
                                 @endif
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatus()}}
+                                    {{\App\Models\BuildingCoachStatus::getCurrentStatus($building->id)}}
                                 </td>
-                                <td>{{!$buildingCoachStatuses->isEmpty() ? $buildingCoachStatuses->where('building_id', $building->id)->first()->appointment_date : ""}}</td>
+                                <td>@if(!$buildingCoachStatuses->isEmpty() && $buildingCoachStatuses->where('building_id', $building->id)->first() instanceof \App\Models\BuildingCoachStatus)
+                                        {{$buildingCoachStatuses->where('building_id', $building->id)->first()->appointment_date}}
+                                    @else
+                                    @endif
+                                </td>
                                 <td>
-                                    @if(!is_null($building->deleted_at))
+                                    @if(is_null($building->deleted_at))
                                     <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
                                     <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
                                     @endif

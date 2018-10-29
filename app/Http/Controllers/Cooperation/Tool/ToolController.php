@@ -28,4 +28,42 @@ class ToolController extends Controller
 
         return redirect(route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]));
     }
+
+    public function csvToArray($file = '', $delimiter = ',')
+    {
+
+        $header = null;
+        $data = [];
+
+        if (($handle = fopen($file, 'r')) !== false)
+        {
+            while (($row = fgetcsv($handle, 0, $delimiter)) !== false)
+            {
+                if(!$header) {
+                    $header = $row;
+                } else {
+                    $data[] = array_combine($header, $row);
+                }
+            }
+            fclose($handle);
+        }
+
+        return $data;
+    }
+
+    public function import()
+    {
+        $importFile = asset('translations-import.csv');
+
+        $csvData = $this->csvToArray($importFile);
+
+        foreach ($csvData as $data) {
+            if ($data['short'] == "") {
+                dd($data);
+            }
+        }
+
+        dd($csvData);
+
+    }
 }

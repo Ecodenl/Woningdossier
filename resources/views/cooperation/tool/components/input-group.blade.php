@@ -45,11 +45,16 @@
     </div>
 </div>
 
+<div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+    And I would like to have it too... dslfhsdi
+</div>
+
 @push('js')
     <script>
         $(document).ready(function () {
 
             //TODO: could use some tweaks, event fires 16 times more as needed ?
+            //TODO: duhu, this files gets loaded around 16 times, should be in the master blade or separate js file
             $('.input-source-group').on('click', 'li.change-input-value', function (event) {
 
                 // so it will not jump to the top of the page.

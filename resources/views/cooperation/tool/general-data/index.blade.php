@@ -55,8 +55,13 @@
                         <div class="form-group add-space{{ $errors->has('building_type_id') ? ' has-error' : '' }}">
                             <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-type') </label>
 
-                            @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $buildingTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'buildingType', 'userInputColumn' => 'id'])
+                            @component('cooperation.tool.components.input-group', [
+                                'inputType' => 'select',
+                                'inputValues' => $buildingTypes,
+                                'userInputValues' => $building->buildingFeatures()->forMe()->get(),
+                                'userInputModel' => 'buildingType',
+                                'userInputColumn' => 'id'
+                            ])
                                 <select id="building_type_id" class="form-control" name="building_type_id">
                                     @foreach($buildingTypes as $buildingType)
                                         <option @if(old('building_type_id') && $buildingType->id == old('building_type_id'))
@@ -81,15 +86,17 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('build_year') ? ' has-error' : '' }}">
-                            <label for="build_year" class=" control-label">@lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')</label> <span>*</span>
+                            <label for="build_year" class=" control-label">
+                                <i data-toggle="collapse" data-target="#what-building-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('woningdossier.cooperation.tool.general-data.building-type.what-building-year')
+                                <span>*</span>
+                            </label>
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'build_year'])
-                            <input id="build_year" type="text" class="form-control" name="build_year" value="@if(isset($building->buildingFeatures->build_year)){{ old('build_year', $building->buildingFeatures->build_year) }}@else{{ old('build_year') }}@endif" required autofocus>
+                                <input id="build_year" type="text" class="form-control" name="build_year" value="@if(isset($building->buildingFeatures->build_year)){{ old('build_year', $building->buildingFeatures->build_year) }}@else{{ old('build_year') }}@endif" required autofocus>
+
                             @endcomponent
-                            <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                And I would like to have it too...
-                            </div>
                             @if ($errors->has('build_year'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('build_year') }}</strong>

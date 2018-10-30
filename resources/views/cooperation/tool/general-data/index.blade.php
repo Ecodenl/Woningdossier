@@ -10,13 +10,13 @@
 
 @section('step_content')
 
-
+    @uuidlang('uuid.general-data.building-type.what-building-year.title')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
             <div id="example-building" class="col-sm-12">
                 <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                    <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.building-type.example-building-type.title')</label>
+                    <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.building-type.example-building-type.title')</label>
                     <select id="example_building_id" class="form-control" name="example_building_id" >
                         @foreach($exampleBuildings as $exampleBuilding)
                             <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
@@ -53,7 +53,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('building_type_id') ? ' has-error' : '' }}">
-                            <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.building-type.what-type.title') </label>
+                            <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.building-type.what-type.title') </label>
 
                             @component('cooperation.tool.components.input-group', [
                                 'inputType' => 'select',
@@ -88,7 +88,7 @@
                         <div class="form-group add-space{{ $errors->has('build_year') ? ' has-error' : '' }}">
                             <label for="build_year" class=" control-label">
                                 <i data-toggle="collapse" data-target="#what-building-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('uuid.general-data.building-type.what-building-year.title')
+                                @uuidlang('uuid.general-data.building-type.what-building-year.title')
                                 <span>*</span>
                             </label>
 
@@ -109,7 +109,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('surface') ? ' has-error' : '' }}">
-                            <label for="surface" class=" control-label"><i data-toggle="collapse" data-target="#user-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.building-type.what-user-surface.title')</label> <span>*</span>
+                            <label for="surface" class=" control-label"><i data-toggle="collapse" data-target="#user-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.building-type.what-user-surface.title')</label> <span>*</span>
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'surface', 'needsFormat' => true])
@@ -130,7 +130,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('building_layers') ? ' has-error' : '' }}">
-                            <label for="building_layers" class=" control-label"><i data-toggle="collapse" data-target="#roof-layers-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.building-type.how-much-building-layers.title')</label>
+                            <label for="building_layers" class=" control-label"><i data-toggle="collapse" data-target="#roof-layers-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.building-type.how-much-building-layers.title')</label>
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'building_layers', 'needsFormat' => true])
@@ -153,7 +153,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('roof_type_id') ? ' has-error' : '' }}">
-                            <label for="roof_type_id" class=" control-label"><i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.building-type.type-roof.title')</label>
+                            <label for="roof_type_id" class=" control-label"><i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.building-type.type-roof.title')</label>
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
@@ -183,7 +183,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('energy_label_id') ? ' has-error' : '' }}">
-                            <label for="energy_label_id" class=" control-label"><i data-toggle="collapse" data-target="#current-energy-label-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.building-type.current-energy-label.title')</label>
+                            <label for="energy_label_id" class=" control-label"><i data-toggle="collapse" data-target="#current-energy-label-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.building-type.current-energy-label.title')</label>
 
                             <?php
 
@@ -234,7 +234,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group add-space{{ $errors->has('monument') ? ' has-error' : '' }}">
-                            <label for="monument" class=" control-label"><i data-toggle="collapse" data-target="#is-monument-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.building-type.is-monument.title')</label>
+                            <label for="monument" class=" control-label"><i data-toggle="collapse" data-target="#is-monument-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.building-type.is-monument.title')</label>
 
                             <label class="radio-inline">
                                 <input type="radio" name="monument" value="1" @if(isset($building->buildingFeatures->monument) && $building->buildingFeatures->monument == 1) checked @elseif(old('monument') == 1) checked @endif>@lang('woningdossier.cooperation.radiobutton.yes')
@@ -474,7 +474,7 @@
             <div class="col-sm-6">
 
                 <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
-                    <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.total-citizens.title')</label> <span>*</span>
+                    <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.total-citizens.title')</label> <span>*</span>
 
 
                     <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
@@ -494,7 +494,7 @@
             <div class="col-sm-6">
 
                 <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
-                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.cooked-on-gas.title')</label> <span>*</span>
+                    <label for="cook_gas" class=" control-label"><i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.cooked-on-gas.title')</label> <span>*</span>
                     <label class="radio-inline">
                         <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                     </label>
@@ -518,7 +518,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('thermostat_high') ? ' has-error' : '' }}">
-                        <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.thermostat-highest.title')</label>
+                        <label for="thermostat_high" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.thermostat-highest.title')</label>
 
                         <div class="input-group">
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
@@ -541,7 +541,7 @@
 
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('thermostat_low') ? ' has-error' : '' }}">
-                        <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.thermostat-lowest.title')</label>
+                        <label for="thermostat_low" class=" control-label"><i data-toggle="collapse" data-target="#thermostat-low-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.thermostat-lowest.title')</label>
 
                         <div class="input-group">
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.degrees')</span>
@@ -563,7 +563,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('hours_high') ? ' has-error' : '' }}">
-                        <label for="hours_high" class=" control-label"><i data-toggle="collapse" data-target="#hours-hight-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.max-hours-thermostat-highest.title')</label>
+                        <label for="hours_high" class=" control-label"><i data-toggle="collapse" data-target="#hours-hight-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.max-hours-thermostat-highest.title')</label>
 
                         <div class="input-group">
                             <span class="input-group-addon">Uren</span>
@@ -588,7 +588,7 @@
 
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('heating_first_floor') ? ' has-error' : '' }}">
-                        <label for="heating_first_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-first-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.situation-first-floor.title')</label>
+                        <label for="heating_first_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-first-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.situation-first-floor.title')</label>
 
                         <?php
 
@@ -629,7 +629,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('heating_second_floor') ? ' has-error' : '' }}">
-                        <label for="heating_second_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-second-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.situation-second-floor.title')</label>
+                        <label for="heating_second_floor" class=" control-label"><i data-toggle="collapse" data-target="#heating-second-floor-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.situation-second-floor.title')</label>
 
 	                    <?php
 
@@ -668,7 +668,7 @@
 
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('water_comfort') ? ' has-error' : '' }}">
-                        <label for="water_comfort" class=" control-label"><i data-toggle="collapse" data-target="#comfortniveau-warm-tapwater-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.comfortniveau-warm-tapwater.title')</label>
+                        <label for="water_comfort" class=" control-label"><i data-toggle="collapse" data-target="#comfortniveau-warm-tapwater-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.comfortniveau-warm-tapwater.title')</label>
 
                         <select id="water_comfort" class="form-control" name="water_comfort" >
                             @foreach($comfortLevelsTapWater as $comfortLevelTapWater)
@@ -690,7 +690,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('amount_electricity') ? ' has-error' : '' }}">
-                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.electricity-consumption-past-year.title')</label>
+                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.electricity-consumption-past-year.title')</label>
 
 
                         <div class="input-group">
@@ -711,7 +711,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('amount_gas') ? ' has-error' : '' }}">
-                        <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.gas-usage-past-year.title') <span>*</span></label>
+                        <label for="amount_gas" class=" control-label"><i data-toggle="collapse" data-target="#amount-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.gas-usage-past-year.title') <span>*</span></label>
 
                         <div class="input-group">
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters')</span>
@@ -735,7 +735,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('living_situation_extra') ? ' has-error' : '' }}">
-                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#living-situation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.additional-info.title')</label>
+                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#living-situation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.additional-info.title')</label>
 
                         <textarea id="additional-info" class="form-control" name="living_situation_extra">@if(old('living_situation_extra') != ""){{old('living_situation_extra')}}@elseif(isset($energyHabit)){{ $energyHabit->living_situation_extra }}@endif</textarea>
 
@@ -761,7 +761,7 @@
                 @for($i = 1; $i < 5; $i++)
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('motivation.'.$i) ? ' has-error' : '' }}">
-                            <label for="motivation[{{ $i }}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{ $i }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
+                            <label for="motivation[{{ $i }}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{ $i }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
 
                             <select id="motivation[{{ $i }}]" class="form-control" name="motivation[{{ $i }}]" >
 
@@ -801,7 +801,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('motivation_extra') ? ' has-error' : '' }}">
-                        <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('uuid.general-data.data-about-usage.motivation-extra.title')</label>
+                        <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('uuid.general-data.data-about-usage.motivation-extra.title')</label>
 
                         <textarea id="motivation-extra" class="form-control" name="motivation_extra">@if(old('motivation_extra') != ""){{old('motivation_extra')}}@elseif(isset($energyHabit)){{$energyHabit->motivation_extra}}@endif</textarea>
 

@@ -27,4 +27,15 @@ class Translation extends Model
     public $fillable = [
         'key', 'translation', 'language',
     ];
+
+    /**
+     * Return the translation from a key / uuid
+     *
+     * @param $key
+     * @return mixed|string
+     */
+    public static function getTranslationFromKey($key): string
+    {
+        return (string) self::where('key', $key)->first()->translation;
+    }
 }

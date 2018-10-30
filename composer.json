@@ -23,6 +23,9 @@
         "laravel/dusk": "~2.0"
     },
     "autoload": {
+        "files": [
+          "app/Helpers/helpers.php"
+        ],
         "classmap": [
             "database/seeds",
             "database/factories"

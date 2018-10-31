@@ -62,9 +62,11 @@ class WoningdossierServiceProvider extends ServiceProvider
                 }
             }
             // get the uuid key from the uuid translation file
+            $translationFileKey = "uuid.".str_replace("'", '', $translationString[0]);
+//            return  $translationFileKey;
             $translationUuidKey = __("uuid.".str_replace("'", '', $translationString[0]));
             // if it is a valid uuid get the translation else we will return the translation key.
-            if (Str::isValidUuid($translationUuidKey)) {
+//            if (Str::isValidUuid($translationUuidKey)) {
                 $translation = Translation::getTranslationFromKey($translationUuidKey);
 
                 if (empty($replaceArray)) {
@@ -84,9 +86,9 @@ class WoningdossierServiceProvider extends ServiceProvider
                 }
 
                 return $translation;
-            } else {
-                return $translationUuidKey;
-            }
+//            } else {
+//                return $translationUuidKey."biudsfgdsuyfiv";
+//            }/**/
         });
     }
 

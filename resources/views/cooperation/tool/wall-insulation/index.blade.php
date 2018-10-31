@@ -15,18 +15,18 @@
 
                         @if(isset($building->buildingFeatures->build_year))
                         <label for="house_has_insulation" class=" control-label">
-                            @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year', ['year' => $building->buildingFeatures->build_year])
+                            @uuidlang('wall-insulation.intro.build-year.title', ['year' => {{$building->buildingFeatures->build_year}}])
                             @if($building->buildingFeatures->build_year >= 1985)
-                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1985')
+                                @uuidlang('wall-insulation.intro.build-year-post-1985.title')
                             @elseif($building->buildingFeatures->build_year >= 1930)
-                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1930')
+                                @uuidlang('wall-insulation.intro.build-year-post-1930.title')
                             @else
-                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-pre-1930')
+                                @uuidlang('wall-insulation.intro.build-year-pre-1930.title')
                             @endif
                         </label>
                         @endif
 
-                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation')</label>
+                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@uuidlang('wall-insulation.intro.filled-insulation.title') </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
@@ -68,15 +68,15 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
+                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@uuidlang('wall-insulation.intro.has-cavity-wall.title') </label><span> *</span>
                             <label class="radio-inline">
-                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@uuidlang('woningdossier.cooperation.radiobutton.yes')
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "2") checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "2") checked @endif value="2">@uuidlang('woningdossier.cooperation.radiobutton.no')
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "0") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "0") checked @endif value="0">@lang('woningdossier.cooperation.radiobutton.unknown')
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "0") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "0") checked @endif value="0">@uuidlang('woningdossier.cooperation.radiobutton.unknown')
                             </label>
                         @endcomponent
                         <br>
@@ -101,7 +101,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 3], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
-                            <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted')</label> <span> *</span>
+                            <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@uuidlang('wall-insulation.intro.is-facade-plastered-painted.title') </label> <span> *</span>
 
                             <label class="radio-inline">
                                 <input class="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">@lang('woningdossier.cooperation.radiobutton.yes')
@@ -133,7 +133,7 @@
                 <div id="painted-options" style="display: none;">
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('facade_plastered_surface_id') ? ' has-error' : '' }}">
-                            <label for="facade_plastered_surface_id" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.surface-paintwork') </label>
+                            <label for="facade_plastered_surface_id" class=" control-label"><i data-toggle="collapse" data-target="#facade-painted-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@uuidlang('wall-insulation.intro.surface-paintwork.title') </label>
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $facadePlasteredSurfaces, 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_surface_id'])
                                 <select id="facade_plastered_surface_id" class="form-control" name="facade_plastered_surface_id">
@@ -159,7 +159,7 @@
 
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('facade_damaged_paintwork_id') ? ' has-error' : '' }}">
-                            <label for="facade_damaged_paintwork_id" class=" control-label"><i data-toggle="collapse" data-target="#damage-paintwork-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.damage-paintwork')</label>
+                            <label for="facade_damaged_paintwork_id" class=" control-label"><i data-toggle="collapse" data-target="#damage-paintwork-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@uuidlang('wall-insulation.intro.damage-paintwork.title') </label>
 
                             @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $facadeDamages, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'facade_damaged_paintwork_id'])
                                 <select id="facade_damaged_paintwork_id" class="form-control" name="facade_damaged_paintwork_id">
@@ -189,12 +189,12 @@
 
         <div id="options">
             <hr>
-            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.wall-insulation.optional.title')</h4>
+            <h4 style="margin-left: -5px;">@uuidlang('wall-insulation.optional.title')</h4>
 
             <div id="wall-joints" class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('wall_joints') ? ' has-error' : '' }}">
-                        <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')</label>
+                        <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@uuidlang('wall-insulation.optional.flushing.title') </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_joints'])
@@ -221,7 +221,7 @@
 
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
-                        <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty')</label>
+                        <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@uuidlang('wall-insulation.optional.if-facade-dirty.title') </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'contaminated_wall_joints'])
@@ -251,14 +251,14 @@
                     <div class="form-group add-space @if ($errors->has('wall_surface')) has-error @endif">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
+                            @uuidlang('wall-insulation.optional.wall-surface.title')
                         </label>
 
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface'])
                             <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                            <span class="input-group-addon">@uuidlang('unit.square-meters.title')</span>
                         @endcomponent
 
                         <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -275,13 +275,13 @@
                     <div class="form-group add-space @if ($errors->has('insulation_wall_surface')) has-error @endif">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')
+                            @uuidlang('wall-insulation.optional.insulation-wall-surface.title')
                         </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface'])
                             <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                            <span class="input-group-addon">@uuidlang('unit.square-meters.title')</span>
                         @endcomponent
 
                         <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -300,7 +300,7 @@
             <div class="row" id="advice-help">
                 <div class="col-sm-12 col-md-8 col-md-offset-2">
                     <div class="alert alert-info" role="alert">
-                        <p>@lang('woningdossier.cooperation.tool.wall-insulation.insulation-advice.text')</p>
+                        <p>@uuidlang('wall-insulation.insulation-advice.text.title')</p>
                         <p id="insulation-advice"></p>
                     </div>
                 </div>
@@ -308,7 +308,7 @@
             <div class="row" id="cavity-wall-alert" style="display: none;">
                 <div class="col-sm-12 col-md-8 col-md-offset-2">
                     <div class="alert alert-warning" role="alert">
-                        <b><p>@lang('woningdossier.cooperation.tool.wall-insulation.alert.description')</p></b>
+                        <b><p>@uuidlang('wall-insulation.alert.description.title')</p></b>
                     </div>
                 </div>
             </div>
@@ -319,32 +319,32 @@
 
         <div id="indication-for-costs">
             <hr>
-            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.title')</h4>
+            <h4 style="margin-left: -5px">@uuidlang('wall-insulation.indication-for-costs.title')</h4>
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.gas-savings')</label>
+                        <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.gas-savings.title') </label>
                         <div class="input-group">
-                            <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <span class="input-group-addon">m<sup>3</sup> / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
                             <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.co2-savings')</label>
+                        <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.co2-savings.title') </label>
                         <div class="input-group">
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <span class="input-group-addon">@uuidlang('unit.kilograms') / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
                             <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.savings-in-euro')</label>
+                        <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.savings-in-euro.title') </label>
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
                             <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
                         </div>
                     </div>
@@ -353,7 +353,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.indicative-costs')</label>
+                        <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.indicative-costs.title') </label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                             <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
@@ -363,9 +363,9 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
+                        <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.comparable-rate.title') </label>
                         <div class="input-group">
-                            <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                            <span class="input-group-addon">% / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
                             <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
                         </div>
                     </div>
@@ -377,13 +377,13 @@
 
         <div id="taking-into-account">
             <hr>
-            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.title')</h4>
-            <h6 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.sub-title')</h6>
+            <h4 style="margin-left: -5px;">@uuidlang('wall-insulation.taking-into-account.title.title')</h4>
+            <h6 style="margin-left: -5px;">@uuidlang('wall-insulation.taking-into-account.sub-title')</h6>
 
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.repair-joint') <span id="repair_joint_year">(in 2018)</span></label>
+                        <label class="control-label">@uuidlang('wall-insulation.taking-into-account.repair-joint.title') <span id="repair_joint_year">(in 2018)</span></label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                             <input type="text" id="repair_joint" class="form-control disabled" disabled="" value="0">
@@ -392,7 +392,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.clean-brickwork') <span id="clean_brickwork_year"></span></label>
+                        <label class="control-label">@uuidlang('wall-insulation.taking-into-account.clean-brickwork.title') <span id="clean_brickwork_year"></span></label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                             <input type="text" id="clean_brickwork" class="form-control disabled" disabled="" value="0">
@@ -401,7 +401,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.impregnate-wall') <span id="impregnate_wall_year"></span></label>
+                        <label class="control-label">@uuidlang('wall-insulation.taking-into-account.impregnate-wall.title') <span id="impregnate_wall_year"></span></label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                             <input type="text" id="impregnate_wall" class="form-control disabled" disabled="" value="0">
@@ -410,7 +410,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.taking-into-account.wall-painting') <span id="paint_wall_year"></span></label>
+                        <label class="control-label">@uuidlang('wall-insulation.taking-into-account.wall-painting.title') <span id="paint_wall_year"></span></label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                             <input type="text" id="paint_wall" class="form-control disabled" disabled="" value="0">

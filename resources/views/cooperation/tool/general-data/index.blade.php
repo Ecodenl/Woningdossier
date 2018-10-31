@@ -47,7 +47,7 @@
 
         <div class="row">
             <div id="building-type" class="col-md-12">
-                <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.building-type.title.title') </h4>
+                <h4 style="margin-left: -5px;">@uuidlang(general-data.building-type.title.title) </h4>
 
                 <div class="row">
                     <div class="col-md-6">
@@ -262,7 +262,7 @@
         </div>
 
         <div id="energy-saving-measures">
-            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.title.title') </h4>
+            <h4 style="margin-left: -5px;">@uuidlang(general-data.energy-saving-measures.title.title) </h4>
 
             @foreach($elements as $i => $element)
                 @if ($i % 2 == 0)
@@ -299,7 +299,7 @@
                         @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
                         <div class="col-sm-2">
                             <div class="form-group add-space{{ $errors->has('user_interest.element.' . $element->id) ? ' has-error' : '' }}">
-                                <label for="user_interest_element_{{ $element->id }}" class="control-label small-text">@uuidlang(general.change-interested.title, ['item' => 'pils']) <span>*</span></label>
+                                <label for="user_interest_element_{{ $element->id }}" class="control-label small-text">@uuidlang(general.interested-in-improvement.title) <span>*</span></label>
 
                                 <select id="user_interest_element_{{ $element->id }}" class="form-control" name="user_interest[element][{{ $element->id }}]" >
                                     @foreach($interests as $interest)
@@ -394,7 +394,7 @@
                 @if($service->short != 'boiler')
                 <div class="col-sm-2">
                     <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
-                        <label for="user_interest_service_{{ $service->id }}" class="control-label small-text">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested.title')</label> <span>*</span>
+                        <label for="user_interest_service_{{ $service->id }}" class="control-label small-text">@uuidlang(general.interested-in-improvement.title)</label> <span>*</span>
 
                         <select id="user_interest_service_{{ $service->id }}" class="form-control" name="user_interest[service][{{ $service->id }}]" >
                             @foreach($interests as $interest)
@@ -418,9 +418,9 @@
                             <label for="service_{{ $service->id }}" class="control-label">
                                 <i data-toggle="collapse" data-target="#service_{{ $service->id }}-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 @if(strpos($service->name, 'geventileerd'))
-                                    @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')
+                                    @uuidlang(general-data.energy-saving-measures.house-ventilation.if-mechanic.title)
                                 @elseif(strpos($service->name, 'zonnepanelen'))
-                                    @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes')
+                                    @uuidlang(woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes)
                                 @endif
 
                             </label>
@@ -468,7 +468,7 @@
 
         <div id="data-about-usage">
 
-            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.data-about-usage.title.title') </h4>
+            <h4 style="margin-left: -5px;">@uuidlang(general-data.data-about-usage.title.title) </h4>
             <div class="row">
             <div class="col-sm-6">
 
@@ -760,7 +760,7 @@
                 @for($i = 1; $i < 5; $i++)
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('motivation.'.$i) ? ' has-error' : '' }}">
-                            <label for="motivation[{{ $i }}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{ $i }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('general-data.data-about-usage.motivation.priority', ['prio' => $i])</label>
+                            <label for="motivation[{{ $i }}]" class=" control-label"><i data-toggle="collapse" data-target="#motivation-{{ $i }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('general-data.motivation.priority.title', ['prio' => {{$i}}])</label>
 
                             <select id="motivation[{{ $i }}]" class="form-control" name="motivation[{{ $i }}]" >
 
@@ -800,12 +800,13 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('motivation_extra') ? ' has-error' : '' }}">
-                        <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@uuidlang('general-data.data-about-usage.motivation-extra.title')</label>
+                        <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            @uuidlang('general-data.motivation-extra.title')</label>
 
                         <textarea id="motivation-extra" class="form-control" name="motivation_extra">@if(old('motivation_extra') != ""){{old('motivation_extra')}}@elseif(isset($energyHabit)){{$energyHabit->motivation_extra}}@endif</textarea>
 
                         <div id="motivation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And I would like to have it too...
+                            @uuidlang('general-data.motivation-extra.help')
                         </div>
 
                         @if ($errors->has('motivation_extra'))
@@ -822,7 +823,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-heading">@uuidlang('general.download.title')</div>
                     <div class="panel-body">
                         <ol>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Algemene_gegevens.pdf"; ?>

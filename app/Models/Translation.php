@@ -36,6 +36,10 @@ class Translation extends Model
      */
     public static function getTranslationFromKey($key): string
     {
-        return (string) self::where('key', $key)->first()->translation;
+        if (self::where('key', $key)->first() instanceof Translation) {
+            return (string) self::where('key', $key)->first()->translation;
+        }
+//            dd($key, "2ca4b60e-1d48-42b7-8e4e-8393ace4fabd");
+        return (string) $key;
     }
 }

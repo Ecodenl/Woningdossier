@@ -1,6 +1,15 @@
 <?php
 
-function csv_to_array($file = '', $delimiter = ',')
+/**
+ * Convert a csv to a associative array with the header / first row of the csv as array keys.
+ * when $csvHeaderAsArrayKeys is set to false it will use normal array indexes
+ *
+ * @param string $file
+ * @param string $delimiter
+ * @param bool $csvHeaderAsArrayKeys
+ * @return array
+ */
+function csv_to_array($file = '', $delimiter = ',', $csvHeaderAsArrayKeys = true): array
 {
     $header = null;
     $updatedHeader = null;
@@ -10,14 +19,24 @@ function csv_to_array($file = '', $delimiter = ',')
     {
         while (($row = fgetcsv($handle, 0, $delimiter)) !== false)
         {
-            if(!$header) {
-                $header = $row;
-                foreach ($header as $key) {
-                    $trimmedKey = strtolower(trim($key));
-                    $updatedHeader[] = $trimmedKey;
+            if ($csvHeaderAsArrayKeys) {
+                if(!$header) {
+                    $header = $row;
+                    foreach ($header as $key) {
+                        $trimmedKey = strtolower(trim($key));
+                        $updatedHeader[] = $trimmedKey;
+                    }
+                } else {
+                    $data[] = array_combine($updatedHeader, $row);
                 }
             } else {
-                $data[] = array_combine($updatedHeader, $row);
+                // we will still set the header, otherwise the header would be in the $data
+                if ($header == null) {
+                    $header = $row;
+                } else {
+                    $data[] = $row;
+                }
+
             }
 
 

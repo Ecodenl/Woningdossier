@@ -6,8 +6,10 @@ use App\Helpers\Str;
 use App\Helpers\TranslatableTrait;
 use App\Models\Translation;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Translation\Translator;
 use Laravel\Dusk\DuskServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -36,15 +38,6 @@ class AppServiceProvider extends ServiceProvider
             return __('validation.custom.needs_to_be_lower_or_same_as', ['otherfield' => $compareFieldName]);
         });
 
-        \Blade::directive('uuidlang', function ($key, $replacement = []) {
-            $translation = __(str_replace("'", '', $key));
-
-            if (Str::isValidUuid($translation)) {
-                return Translation::getTranslationFromKey($translation);
-            } else {
-                return $translation;
-            }
-        });
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Str;
 use App\Models\Translation;
 use Illuminate\Console\Command;
 use Ramsey\Uuid\Uuid;
@@ -20,7 +21,7 @@ class importTranslations extends Command
      *
      * @var string
      */
-    protected $description = 'Import the translations from the translations import csv file';
+    protected $description = 'Import the translations from the translations import csv file located under storage/app/public/';
 
     /**
      * Create a new command instance.
@@ -42,7 +43,7 @@ class importTranslations extends Command
         $importFile = storage_path('app/public/translations-import.csv');
 
         // csv to associative array
-        $csvRows = csv_to_array($importFile);
+        $csvRows = csv_to_array($importFile, ',', false);
 
         // the update array for the db
         $updateData = [];
@@ -54,41 +55,51 @@ class importTranslations extends Command
         $translationUuidTitleKey = "";
 
         // fill the update array
+        /*
+         * Array key indexes
+         *
+         * 0 = tabblad
+         * 1 = veldnaam
+         * 2 = uitleg
+         * 3 = short
+         * 4 = help-uuid
+         * 5 = title-uuid
+         */
         foreach ($csvRows as $csvKey => $csvRow) {
             // check if the short is empty
-            if ($csvRow['short'] != "") {
-                $short = $csvRow['short'];
+            if ($csvRow[3] != "") {
+                $short = $csvRow[3];
                 foreach ($csvRow as $key => $row) {
 
                     // if the uuid key does not exist or the uuid is empty create a new one
                     if ((!array_key_exists('help-uuid', $csvRow) || $csvRow['help-uuid'] == "") || (!array_key_exists('title-uuid', $csvRow) || $csvRow['title-uuid'] == "")) {
-                        $translationUuidHelpKey = Uuid::uuid4()->toString();
-                        $translationUuidTitleKey = Uuid::uuid4()->toString();
-                        $this->line('The title:'.$csvRow['veldnaam']. 'does not have a uuid');
+                        $translationUuidHelpKey = Str::uuid();
+                        $translationUuidTitleKey = Str::uuid();
+                        $this->line('The title: '.$csvRow[0]. 'does not have a uuid');
                     } else {
-                        $translationUuidHelpKey = $csvRow['help-uuid'];
-                        $translationUuidTitleKey = $csvRow['title-uuid'];
+                        $translationUuidHelpKey = $csvRow[4];
+                        $translationUuidTitleKey = $csvRow[5];
                     }
 
-                    $updateData[$csvRow['veldnaam']] = [
+                    $updateData[$csvRow[1]] = [
                         $short . ".help" => [
                             'key' => $translationUuidHelpKey,
                             'language' => 'nl',
-                            'translation' => $csvRow['uitleg']
+                            'translation' => $csvRow[2]
                         ],
                         $short . ".title" => [
                             'language' => 'nl',
                             'key' => $translationUuidTitleKey,
-                            'translation' => $csvRow['veldnaam']
+                            'translation' => $csvRow[1]
                         ]
                     ];
                 }
 
                 $csvData[] = [
-                    $csvRow['tabblad'],
-                    $csvRow['veldnaam'],
-                    $csvRow['uitleg'],
-                    $csvRow['short'],
+                    $csvRow[0],
+                    $csvRow[1],
+                    $csvRow[2],
+                    $csvRow[3],
                     $translationUuidHelpKey,
                     $translationUuidTitleKey,
                 ];
@@ -117,6 +128,7 @@ class importTranslations extends Command
 
         fclose($file);
 
+
         foreach ($updateData as $translations) {
             foreach ($translations as $translationKey => $translationArray) {
                 $translation = Translation::updateOrCreate(
@@ -127,9 +139,9 @@ class importTranslations extends Command
                 );
 
                 if ($translation->wasChanged()) {
-                    $this->line('The '. $translation->translation. ' has been updated');
+                    $this->line('The translation with id: '. $translation->id. ' has been updated');
                 } elseif ($translation->wasRecentlyCreated) {
-                    $this->line('The '. $translation->translation. ' is nieuw aangemaakt');
+                    $this->line('The translation with id: '. $translation->id. ' is nieuw aangemaakt');
                 } else {
                     $this->line('Nothing has been updated or created.');
                 }

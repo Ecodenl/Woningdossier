@@ -41,6 +41,7 @@ class WoningdossierServiceProvider extends ServiceProvider
          */
         \Blade::directive('uuidlang', function ($key) {
 
+
             $translationString = explode(',', $key, 2);
 
             $replaceArray = [];
@@ -61,12 +62,16 @@ class WoningdossierServiceProvider extends ServiceProvider
 
                 }
             }
-            // get the uuid key from the uuid translation file
+
+
+            // Key to the uuid.php translatable file.
             $translationFileKey = "uuid.".str_replace("'", '', $translationString[0]);
-//            return  $translationFileKey;
-            $translationUuidKey = __("uuid.".str_replace("'", '', $translationString[0]));
+
+            // Get the uuid from the translation file key
+            $translationUuidKey = __($translationFileKey);
+
             // if it is a valid uuid get the translation else we will return the translation key.
-//            if (Str::isValidUuid($translationUuidKey)) {
+            if (Str::isValidUuid($translationUuidKey)) {
                 $translation = Translation::getTranslationFromKey($translationUuidKey);
 
                 if (empty($replaceArray)) {
@@ -86,9 +91,9 @@ class WoningdossierServiceProvider extends ServiceProvider
                 }
 
                 return $translation;
-//            } else {
-//                return $translationUuidKey."biudsfgdsuyfiv";
-//            }/**/
+            } else {
+                return $translationUuidKey;
+            }/**/
         });
     }
 

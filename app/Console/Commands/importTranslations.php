@@ -45,14 +45,13 @@ class importTranslations extends Command
         // csv to associative array
         $csvRows = csv_to_array($importFile, ',', false);
 
-        // the update array for the db
-        $updateData = [];
+        // update for the translatable uuid.php file
+        $uuidTranslatableData = [];
         // to create a new csv with updated data
         $csvData = [];
 
-        // the uuids
-        $translationUuidHelpKey = "";
-        $translationUuidTitleKey = "";
+        $updateHelpTranslations = [];
+        $updateTitleTranslations = [];
 
         // fill the update array
         /*
@@ -66,34 +65,48 @@ class importTranslations extends Command
          * 5 = title-uuid
          */
         foreach ($csvRows as $csvKey => $csvRow) {
+
             // check if the short is empty
             if ($csvRow[3] != "") {
                 $short = $csvRow[3];
-                foreach ($csvRow as $key => $row) {
 
-                    // if the uuid key does not exist or the uuid is empty create a new one
-                    if ((!array_key_exists('help-uuid', $csvRow) || $csvRow['help-uuid'] == "") || (!array_key_exists('title-uuid', $csvRow) || $csvRow['title-uuid'] == "")) {
-                        $translationUuidHelpKey = Str::uuid();
-                        $translationUuidTitleKey = Str::uuid();
-                        $this->line('The title: '.$csvRow[0]. 'does not have a uuid');
-                    } else {
-                        $translationUuidHelpKey = $csvRow[4];
-                        $translationUuidTitleKey = $csvRow[5];
-                    }
-
-                    $updateData[$csvRow[1]] = [
-                        $short . ".help" => [
-                            'key' => $translationUuidHelpKey,
-                            'language' => 'nl',
-                            'translation' => $csvRow[2]
-                        ],
-                        $short . ".title" => [
-                            'language' => 'nl',
-                            'key' => $translationUuidTitleKey,
-                            'translation' => $csvRow[1]
-                        ]
-                    ];
+                // if the uuid key does not exist or the uuid is empty create a new one
+                if ($csvRow[4] == "" || $csvRow[5] == "") {
+                    $translationUuidHelpKey = Str::uuid();
+                    $translationUuidTitleKey = Str::uuid();
+                } else {
+                    $translationUuidHelpKey = $csvRow[4];
+                    $translationUuidTitleKey = $csvRow[5];
                 }
+
+                // update for the help translations
+                $updateHelpTranslations[] = [
+                    'key' => $translationUuidHelpKey,
+                    'language' => 'nl',
+                    'translation' => $csvRow[2]
+                ];
+
+                // update for the title translations
+                $updateTitleTranslations[] = [
+                    'language' => 'nl',
+                    'key' => $translationUuidTitleKey,
+                    'translation' => $csvRow[1]
+                ];
+
+                // update for the translatable uuid.php file
+                $uuidTranslatableData[] = [
+                    $short . ".help" => [
+                        'key' => $translationUuidHelpKey,
+                        'language' => 'nl',
+                        'translation' => $csvRow[2]
+                    ],
+                    $short . ".title" => [
+                        'language' => 'nl',
+                        'key' => $translationUuidTitleKey,
+                        'translation' => $csvRow[1]
+                    ]
+                ];
+
 
                 $csvData[] = [
                     $csvRow[0],
@@ -128,29 +141,50 @@ class importTranslations extends Command
 
         fclose($file);
 
+        $updateCounter = 0;
+        $createCounter = 0;
+        foreach ($updateHelpTranslations as $updateHelpTranslation) {
+            $updateHelpTrans = Translation::updateOrCreate(
+                [
+                    'key' => $updateHelpTranslation['key']
+                ],
+                $updateHelpTranslation
+            );
 
-        foreach ($updateData as $translations) {
-            foreach ($translations as $translationKey => $translationArray) {
-                $translation = Translation::updateOrCreate(
-                    [
-                        'translation' => $translationArray['translation']
-                    ],
-                    $translationArray
-                );
+            if ($updateHelpTrans->wasChanged()) {
+                $updateCounter++;
+                $this->line('The translation with id:'. $updateHelpTrans->id. ' has been updated');
+            } elseif ($updateHelpTrans->wasRecentlyCreated) {
+                $createCounter++;
+                $this->line('The translation with id: '. $updateHelpTrans->id. ' is nieuw aangemaakt');
+            } else {
+                $this->line('Nothing has been updated or created.');
+            }
+        }
+        foreach ($updateTitleTranslations as $updateTitleTranslation) {
+            $updateTitleTrans = Translation::updateOrCreate(
+                [
+                    'key' => $updateTitleTranslation['key']
+                ],
+                $updateTitleTranslation
+            );
 
-                if ($translation->wasChanged()) {
-                    $this->line('The translation with id: '. $translation->id. ' has been updated');
-                } elseif ($translation->wasRecentlyCreated) {
-                    $this->line('The translation with id: '. $translation->id. ' is nieuw aangemaakt');
-                } else {
-                    $this->line('Nothing has been updated or created.');
-                }
+            if ($updateTitleTrans->wasChanged()) {
+                $updateCounter++;
+                $this->line('The translation with id:'. $updateTitleTrans->id. ' has been updated');
+            } elseif ($updateTitleTrans->wasRecentlyCreated) {
+                $createCounter++;
+                $this->line('The translation with id: '. $updateTitleTrans->id. ' is nieuw aangemaakt');
+            } else {
+                $this->line('Nothing has been updated or created.');
             }
         }
 
+
+
         // dot the array with the key as dot array and value as the translation uuid key
         $translationDottedFileArray = [];
-        foreach ($updateData as $translations) {
+        foreach ($uuidTranslatableData as $translations) {
             foreach ($translations as $translationKey => $translation) {
                 array_push($translationDottedFileArray, [$translationKey => $translation['key']]);
             }
@@ -184,6 +218,8 @@ class importTranslations extends Command
         // write and close the file
         fwrite($translationFile, $translationFileContent);
         fclose($translationFile);
+        $this->line($createCounter." translations have been created and ".$updateCounter." have been updated.");
         $this->line('Done!', "fg=green");
+
     }
 }

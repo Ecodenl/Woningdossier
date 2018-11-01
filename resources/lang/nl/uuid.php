@@ -6,50 +6,50 @@
                 [
                     "example-building-type" => 
                         [
-                            "help" => '865661c7-a98d-495f-9fa2-ca683768b68f',
-                            "title" => '79af474b-cd27-4e06-97a9-b3fe1be97a53',
+                            "help" => 'cedcf14c-0cca-494e-8653-ef65dcb7d52e',
+                            "title" => 'a15f5d9d-5159-4e3c-aa7c-9b249bd6cb9d',
                         ],
 
                     "what-type" => 
                         [
-                            "help" => 'e0881193-3c80-469e-8292-1f0964a144d8',
-                            "title" => '06acf005-ae91-407e-8d3f-794f4f0ab4d5',
+                            "help" => '889f3d3c-cc4a-4e4f-8498-9c7a97b30b21',
+                            "title" => '68a4dd03-3401-4b7f-8d44-25361bf03b51',
                         ],
 
                     "what-building-year" => 
                         [
-                            "help" => '13085e46-e29e-4084-9702-323958e962aa',
-                            "title" => 'ff0d97d4-61f3-4c0e-b888-b4c2f919123e',
+                            "help" => '8862648a-fc70-41f9-9244-8026534cc87d',
+                            "title" => '77382a0f-422a-49a4-a602-b3f8865f142b',
                         ],
 
                     "what-user-surface" => 
                         [
-                            "help" => '60d7609e-956e-4ece-b04a-cdd524577f5a',
-                            "title" => '4c4ddc55-24cf-461b-af01-d72ecdfaf30e',
+                            "help" => '5f94073b-23f8-40ec-a8d4-891d9344ea2b',
+                            "title" => 'e8a94ae2-be06-4bd4-9a66-d28d983f39b7',
                         ],
 
                     "how-much-building-layers" => 
                         [
-                            "help" => 'd08f2c4a-122b-41e8-86cf-28df39adf9d2',
-                            "title" => 'db2f79a6-48cf-426f-991a-aa370f721116',
+                            "help" => '564d98fd-0af4-4915-a26a-9eb6387218f2',
+                            "title" => 'e3c62f45-1e7e-468b-94c5-6f3b4f242e00',
                         ],
 
                     "type-roof" => 
                         [
-                            "help" => '50f69441-1636-4a5c-a6fc-f8273354d6d0',
-                            "title" => '7cdced1d-cd88-48bd-b520-32a4af2c517d',
+                            "help" => '2c32d3b7-8781-4317-8c2d-dc0f7729a791',
+                            "title" => 'a77ca226-f018-4cdb-9e56-662464903843',
                         ],
 
                     "current-energy-label" => 
                         [
-                            "help" => 'd22bbdfa-90e7-4256-a286-77faa0f64675',
-                            "title" => '108b6dce-ff75-4c06-acd4-c71e6da52a83',
+                            "help" => 'a647b002-338f-4a07-8db1-d763a65f0884',
+                            "title" => '6a17d4e6-83dc-4883-ba41-c77f28617485',
                         ],
 
                     "is-monument" => 
                         [
-                            "help" => 'bc663702-50ff-4fdb-acc2-4c83b2506ae9',
-                            "title" => '4be6e33e-4fc7-4021-9630-eb65f8da6dc5',
+                            "help" => 'eecbba56-37e4-469a-a0e0-a5783503ab92',
+                            "title" => 'b3fd398d-efa3-4161-81dd-e08ed89632b0',
                         ],
 
                 ],
@@ -58,8 +58,8 @@
                 [
                     "title" => 
                         [
-                            "help" => '024ffc54-82f2-480c-b435-cac6eb2a012d',
-                            "title" => '2dc738e9-787d-4ac8-a237-d2aebd232aea',
+                            "help" => 'f8ae5090-64dc-4f2b-b6f9-61c2f2fc9397',
+                            "title" => 'ca3606c0-de27-4f79-a4bb-931565a40b72',
                         ],
 
                 ],
@@ -68,68 +68,68 @@
                 [
                     "title" => 
                         [
-                            "help" => 'b3a3c7ed-13a9-4d50-884a-a2ff4acefead',
-                            "title" => '0beea961-dfeb-4dd1-83db-b8cc4f9b4dc1',
+                            "help" => 'f8c66b58-f653-4e1d-b78a-8bfae24612ff',
+                            "title" => 'fbdd8f57-800f-4dd3-a609-2779878fbf8c',
                         ],
 
                     "total-citizens" => 
                         [
-                            "help" => 'f2f70393-6c56-4aad-b032-f4bc3a799dbe',
-                            "title" => '2654189d-a979-4571-91a0-9a59471b1e11',
+                            "help" => 'eab2b441-82bb-443e-9225-6fbe786324a8',
+                            "title" => '566f38dc-3c85-451e-be4e-8509f90d169f',
                         ],
 
                     "thermostat-highest" => 
                         [
-                            "help" => '5e73ee1c-c772-44c3-ae03-bbc7d4389f93',
-                            "title" => 'a877f0aa-6674-41c4-8500-e5fee27ded03',
+                            "help" => 'b5372dd1-eded-4932-9035-291df0cf01a3',
+                            "title" => 'cc9ffd29-21f7-4523-8b64-3d7d068c1190',
                         ],
 
                     "thermostat-lowest" => 
                         [
-                            "help" => 'b18d203d-735c-441f-a098-7664c5175c5d',
-                            "title" => '1544c2fc-4e77-4fcb-b4c5-ee08fa71de46',
+                            "help" => '09401896-8392-4d74-a57c-bbfd85f02a02',
+                            "title" => 'fee475fd-4b75-4065-bf0e-160b74ac6f7c',
                         ],
 
                     "max-hours-thermostat-highest" => 
                         [
-                            "help" => '63168a17-48a6-4752-a53c-f23e8f1ac734',
-                            "title" => '90227c88-a868-4ff0-8120-ad2e042b0067',
+                            "help" => '92ea6760-2c25-4869-acfd-936513701d0e',
+                            "title" => '2970e5db-0154-4eb7-9e4b-90f4e8ae7658',
                         ],
 
                     "situation-first-floor" => 
                         [
-                            "help" => 'bd927595-fa56-485d-a9fe-27c179e0b0b8',
-                            "title" => '3dbe3107-7a68-4402-aac5-148e5097e155',
+                            "help" => 'de67562b-19fa-4e2c-8020-bb72d687e7b4',
+                            "title" => 'de7c630a-0226-42ec-adf4-d0b38601403f',
                         ],
 
                     "situation-second-floor" => 
                         [
-                            "help" => '3ba7d57f-a1e1-4129-9320-fe6e1e8ff5d4',
-                            "title" => '7bed0e5a-b119-465c-9e02-09079d3142a3',
+                            "help" => '534d93b5-d4ad-4d47-9d64-f163e094fa71',
+                            "title" => '1fc617b8-9f48-4253-8a93-4ef1f672e4f1',
                         ],
 
                     "comfortniveau-warm-tapwater" => 
                         [
-                            "help" => '23e0719f-6b97-400b-a775-c945f6f816f4',
-                            "title" => '81c5fc0a-046c-45d8-a92b-ba65afec99fa',
+                            "help" => '900ea4ee-0351-4080-956e-f08646e6e1d8',
+                            "title" => 'fd21748a-16e5-45e5-8f9e-cab8bf975539',
                         ],
 
                     "electricity-consumption-past-year" => 
                         [
-                            "help" => 'dd77c1c7-c5f2-4bce-9631-842a4fbd0151',
-                            "title" => 'fc0ac9ea-47b3-424e-8d2c-d41252a693b9',
+                            "help" => '2f4a42e8-3f23-4907-9d94-82b6cc8d68a9',
+                            "title" => 'f71a84f0-71cf-4447-81ac-a44be386d009',
                         ],
 
                     "gas-usage-past-year" => 
                         [
-                            "help" => '9ac32498-0117-4887-a289-a72a02810015',
-                            "title" => '455807f4-4dac-4ce9-a7c3-f5bd00996dd3',
+                            "help" => '7e6cfd2d-b4b3-47aa-b865-5280aedf796a',
+                            "title" => '93bed560-5373-433e-9621-6c7039899441',
                         ],
 
                     "additional-info" => 
                         [
-                            "help" => '59daa2ba-cf84-4b82-912b-4f0ca9166342',
-                            "title" => '1809b038-d19b-4e32-b3fe-567cdde455f2',
+                            "help" => '64d05629-af24-41be-8660-76db67a88ecd',
+                            "title" => '87350c90-d51f-47c1-8a90-5ea47ce3be84',
                         ],
 
                 ],
@@ -138,22 +138,22 @@
                 [
                     "title" => 
                         [
-                            "help" => '606e40fe-e477-42f3-9069-880b858a1c30',
-                            "title" => 'e1b68089-8657-4e43-94c2-95b7c9b8683e',
+                            "help" => '503ca217-86f1-4faf-a306-273927d347ff',
+                            "title" => '7add304f-94f2-4faf-9752-420a50fb1367',
                         ],
 
                     "priority" => 
                         [
-                            "help" => 'cf695b4b-a14f-4ad3-a770-342131951a69',
-                            "title" => '362bb4a8-f47a-47d6-a4b7-e2aee17ea8e3',
+                            "help" => 'f6d9c19a-bf8e-4934-8552-24c7e5390fb4',
+                            "title" => 'e8514c81-9d5d-4320-8f11-2bff4e04e437',
                         ],
 
                 ],
 
             "motivation-extra" => 
                 [
-                    "help" => '18f1b016-c396-4a24-bd0a-60b17c9682e1',
-                    "title" => 'dde1e100-da94-496c-8e7b-cfd4c095f5a1',
+                    "help" => 'c301e0b5-3dea-490d-9fda-f77c7afa67b0',
+                    "title" => 'dbc70a7b-95b4-44d4-8fd5-610b4f68db72',
                 ],
 
         ],
@@ -162,26 +162,66 @@
         [
             "interested-in-improvement" => 
                 [
-                    "help" => 'f05a9879-b7bb-497b-8cfe-f38f8f5e5faa',
-                    "title" => 'da2f5a9e-9c09-454a-80ac-0b6583936217',
+                    "help" => '5b50656e-2f9b-469a-843d-5a3b1941919a',
+                    "title" => '6ac6fe91-55cd-4b64-96ce-29a0e0873d10',
                 ],
 
             "change-interested" => 
                 [
-                    "help" => '05e8514a-0e3d-4c5b-8de3-c8b62eb4eab6',
-                    "title" => '2ca4b60e-1d48-42b7-8e4e-8393ace4fabd',
+                    "help" => 'ae396b99-d974-4166-9dcb-4a4dfc9d32a6',
+                    "title" => '3efa92cc-462a-4611-816f-571ae41370bf',
                 ],
 
             "download" => 
                 [
-                    "help" => '3e0973fe-9a14-496e-b8c7-41758b8d770a',
-                    "title" => '6bbdc9b1-2a9a-43ff-acc8-f7e2acf602f3',
+                    "help" => '63be4d88-5653-4a33-9680-de7a857a381e',
+                    "title" => '358e407f-ea46-4479-a000-ab3adfc32682',
                 ],
 
             "specific-situation" => 
                 [
-                    "help" => 'adb1cc1a-eead-49de-aff8-46ba59b898b2',
-                    "title" => '7f3d0aa0-bd8c-4c2e-9356-d8893fb2f53b',
+                    "help" => '781fa152-b737-46e0-a623-7de6c977b6fe',
+                    "title" => '4955a1c0-c759-4ccd-8850-c4c7f06e27b1',
+                ],
+
+            "costs" => 
+                [
+                    "title" => 
+                        [
+                            "help" => '3115cd50-b4eb-4379-83f7-5bd5cce120f5',
+                            "title" => '54913a92-ce45-4a87-9cfe-e3fa53eb7402',
+                        ],
+
+                    "gas" => 
+                        [
+                            "help" => '7110917f-9db2-4033-b36c-ec9a94c7686a',
+                            "title" => '9a5a5a61-4951-41ce-afa4-cb02060c2c91',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => '5ad81494-4658-43bf-b6ef-5bd0b92871b2',
+                            "title" => '7bf2eb0f-0a52-475b-a9ff-7582df355831',
+                        ],
+
+                    "savings-in-euro" => 
+                        [
+                            "help" => '764c67cf-b37f-44bb-93d7-d5059b01a199',
+                            "title" => '0130dddf-ed05-4ef7-b5f6-d30334455e58',
+                        ],
+
+                    "indicative-costs-insulation" => 
+                        [
+                            "help" => 'e236f27d-003e-48a4-8834-7317dc621bf8',
+                            "title" => '8ef0f216-ec05-4244-8b7e-ea94563bc4a7',
+                        ],
+
+                    "comparable-rent" => 
+                        [
+                            "help" => 'eba3cfda-fb12-4270-aebc-2689453db756',
+                            "title" => 'ef3d61a0-a492-4ca2-9c66-dd69c0b6a377',
+                        ],
+
                 ],
 
         ],
@@ -192,50 +232,50 @@
                 [
                     "build-year-post-1985" => 
                         [
-                            "help" => '8cf002ad-ae73-4aa3-8c69-7b69ea70f21e',
-                            "title" => '35ae89b3-33af-40b0-9ec5-8c40390842a7',
+                            "help" => '9a25c7c5-0f73-4d5c-869d-acc8e941549e',
+                            "title" => '77144741-53c0-49bf-bc8a-ff92c9b96ab4',
                         ],
 
                     "build-year-post-1930" => 
                         [
-                            "help" => '510d8f6c-8313-41c8-9cf3-2e93eaab1b62',
-                            "title" => '64b6a3db-be42-43f5-86f3-0c85f84fed51',
+                            "help" => '5dc56978-a9a8-406b-9cf3-e7a0ee3ac5cb',
+                            "title" => '42ff9a7d-8718-4411-abdc-800caf947f5c',
                         ],
 
                     "build-year-pre-1930" => 
                         [
-                            "help" => 'e8de43c4-6898-4686-b450-237654d2bd8e',
-                            "title" => '8af96a02-3aa4-438d-bf1c-1dc7b706a985',
+                            "help" => '7473e35a-a6a8-4b4f-ab52-ace2321c7c20',
+                            "title" => '52428494-4f96-4fe1-811f-2c4e34d75a15',
                         ],
 
                     "filled-insulation" => 
                         [
-                            "help" => '62a698f8-fc09-4c36-8598-df482bb1bd50',
-                            "title" => 'e14cf886-7d4a-47e5-abd0-39ba5b2d17a7',
+                            "help" => '965b0c11-5571-4df8-a693-51070febd9a3',
+                            "title" => 'fcca596c-6549-4b59-bb7f-91c8e0677527',
                         ],
 
                     "has-cavity-wall" => 
                         [
-                            "help" => '1e99220f-f0ab-4403-8d8c-c9c1da39a571',
-                            "title" => '27ca0753-fb9f-44f2-825c-3da3fca06674',
+                            "help" => '0d803a78-4a51-4ef5-8004-5589a40aae75',
+                            "title" => '67b27de7-5d43-4ae3-8b59-c1840ecb80d9',
                         ],
 
                     "is-facade-plastered-painted" => 
                         [
-                            "help" => '302e1f43-edf9-4009-9a7f-046706f61a5d',
-                            "title" => 'a604cc36-ded2-46e6-8e9f-e2537280c91d',
+                            "help" => '8e39893c-e9ff-4867-a5a9-61f404332ebf',
+                            "title" => '7cb761b9-a1a6-495a-9f73-6f9bf9f261eb',
                         ],
 
                     "surface-paintwork" => 
                         [
-                            "help" => '92b91f0c-4cc3-46c4-a041-0a671f26604f',
-                            "title" => '7c02d3d6-f483-451c-9b7a-6dd13f067bbf',
+                            "help" => 'a4d8d440-54ae-4586-87b3-eb3dc5e1681e',
+                            "title" => '6160ae51-0022-40aa-8ec6-0ca1d5b62124',
                         ],
 
                     "damage-paintwork" => 
                         [
-                            "help" => '08a9f449-f7b2-495c-92fd-1d74bc8fd516',
-                            "title" => '27034a9a-3dbe-4a3c-8e39-e128a8f78513',
+                            "help" => 'b68e3dba-50ab-4e07-8575-f890fa7f266e',
+                            "title" => 'ef4ebe88-73e6-4b2b-b030-56e0796c0e7e',
                         ],
 
                 ],
@@ -244,20 +284,26 @@
                 [
                     "flushing" => 
                         [
-                            "help" => 'ba9c6527-b856-4979-b62b-8f7e2b7063aa',
-                            "title" => '566e7604-98e4-443a-93cd-2b6c5cd449c0',
+                            "help" => '07a708b3-69dd-4462-8819-2c8ed2a37522',
+                            "title" => '59ba8f3e-3ee5-447c-932b-96abac6146dc',
                         ],
 
                     "is-facade-dirty" => 
                         [
-                            "help" => '183a1d18-31fd-45c7-be53-438be29284e1',
-                            "title" => '69eebb9f-d91a-47c2-858a-9226baa03914',
+                            "help" => 'b3ce28e5-f7e2-4a35-8c1e-3c933c0c18a1',
+                            "title" => '714688fe-387d-4ccf-88e6-8200cc17b9db',
                         ],
 
                     "facade-surface" => 
                         [
-                            "help" => '087a88ea-0c9e-43bf-b833-b3a0f8c3a9bc',
-                            "title" => 'f3cfe20e-dc7e-4bde-ba75-b3d3473d4ba6',
+                            "help" => 'f0ae5995-73aa-4b53-85f0-0f5d2a35a973',
+                            "title" => 'f8f4daf4-4c4c-4f22-9117-cd7ce3166d97',
+                        ],
+
+                    "insulated-surface" => 
+                        [
+                            "help" => 'c234d6e7-f167-42f2-bbde-6263921ed798',
+                            "title" => '12eb4a89-067d-4c8a-80b1-24d960358b60',
                         ],
 
                 ],
@@ -266,8 +312,18 @@
                 [
                     "text" => 
                         [
-                            "help" => '39939c70-3bad-4a36-92cb-fdcadf37974f',
-                            "title" => '56d7deb3-880d-473e-bb87-aca20c13dd80',
+                            "help" => '8d4367fe-5682-4681-a4a8-94e85876970b',
+                            "title" => 'b54ea3c7-a519-45b2-9e47-f2c2b1999f7a',
+                        ],
+
+                ],
+
+            "indication-for-costs" => 
+                [
+                    "title" => 
+                        [
+                            "help" => '4f184b65-d052-4951-9cfa-71c540dd9b91',
+                            "title" => 'a16a4d16-db3c-4e28-b2af-cd7610d3175f',
                         ],
 
                 ],
@@ -276,218 +332,40 @@
                 [
                     "title" => 
                         [
-                            "help" => 'e2299f5a-0d2f-40c6-a6dc-ec854f61ebfc',
-                            "title" => 'af3ac534-e780-41c9-bf7a-e12a8a4a63b6',
+                            "help" => '01cdff5a-3c70-4f1c-bba3-7c38f9419f7d',
+                            "title" => '445cb392-3f9e-4277-96d7-d40cac2e9620',
                         ],
 
                     "repair-joint" => 
                         [
-                            "help" => '33b27e08-4d8f-4099-a05d-91e22a7b1f75',
-                            "title" => '9be82a9d-8fb5-4d9f-9890-2edab888f561',
+                            "help" => '42dc3cbb-9fb1-4037-b255-51418944809e',
+                            "title" => 'aa0bc229-ec66-45b3-b9b8-e76665283c98',
                         ],
 
                     "clean-brickwork" => 
                         [
-                            "help" => '5774f9eb-fc06-4803-bd27-7213ae18b1f4',
-                            "title" => 'a55e6c18-bbee-4e71-821e-1cce599b63a9',
+                            "help" => 'b772a07e-2906-43c2-b8f9-c240785a8160',
+                            "title" => '1f41a26f-79f6-472b-a9cd-fdc28e82e7fc',
                         ],
 
                     "impregnate-wall" => 
                         [
-                            "help" => '97d85223-373d-481d-9324-6fbd82d25fd6',
-                            "title" => '68520cd2-1ce6-487e-8c12-de2174dcb0f6',
+                            "help" => 'b0e73ba0-c9c3-4e65-a777-25a7da9c5ae0',
+                            "title" => 'fdae582a-7484-4c3f-912c-c89326bb0473',
                         ],
 
                     "wall-painting" => 
                         [
-                            "help" => 'b8df52a5-ddb3-40b2-b648-8205e620123c',
-                            "title" => 'ca401b9a-fbab-478c-9083-d9b39f623b4c',
+                            "help" => '43fcca5e-ea13-4849-ae75-cedd3c0d5fe0',
+                            "title" => 'f6b22b25-2781-43da-ba28-ced54289e61c',
                         ],
 
                     "additional-info" => 
                         [
-                            "help" => '2de61615-2686-4a7a-a329-0febbaa8c228',
-                            "title" => '496e32c6-828f-4c5e-9884-a2d209e20557',
+                            "help" => 'd8a4de99-1b84-4f6b-a0db-515df009c638',
+                            "title" => 'f9c43367-101c-4cd9-9aab-2a14e421d3e2',
                         ],
 
-                ],
-
-        ],
-
-    "floor-insulation" => 
-        [
-            "insulation-surface" => 
-                [
-                    "help" => '5fb30ff6-c6aa-41cb-a0aa-6eba99990eaf',
-                    "title" => 'c60808b2-6187-4d03-bd45-2e9b94b229ff',
-                ],
-
-            "floor-insulation" => 
-                [
-                    "help" => 'c1b6596d-799c-4947-89f5-55021c261880',
-                    "title" => 'dd670c0a-36b5-49eb-b861-2cadc7fbdbde',
-                ],
-
-            "has-crawlspace" => 
-                [
-                    "title" => 
-                        [
-                            "help" => '5e2ba0ca-fb0e-4976-8a7a-fb8c851ee9d9',
-                            "title" => '7c3844b0-f066-4036-8f63-07ffd2e7965e',
-                        ],
-
-                ],
-
-            "crawlspace-access" => 
-                [
-                    "title" => 
-                        [
-                            "help" => '8f8af4e3-3b07-475a-8de0-f9e0c67b313c',
-                            "title" => '21109494-dd5a-4a52-b85b-2f6bef2b976c',
-                        ],
-
-                ],
-
-            "crawlspace-height" => 
-                [
-                    "help" => '9dc8ae42-4063-4553-b534-3bca8af2ce31',
-                    "title" => '7f6228b1-26f6-4773-88bd-14621d812ddc',
-                ],
-
-            "surface" => 
-                [
-                    "help" => 'f4906e33-d682-4766-835d-61055d845e85',
-                    "title" => '5dd20e5d-8435-4ad9-bdbd-d7206e4d3817',
-                ],
-
-            "insulation-advice" => 
-                [
-                    "text" => 
-                        [
-                            "help" => '34d66414-4ece-4e2c-bc83-b2ead2dbc7fc',
-                            "title" => '270122f4-8951-4917-be9b-f0b5909889a3',
-                        ],
-
-                ],
-
-        ],
-
-    "boiler" => 
-        [
-            "indication-for-costs" => 
-                [
-                    "help" => 'fb4aaa47-186d-402b-89cc-c46a5b6daf0d',
-                    "title" => '27d393d6-8f1c-4616-a795-9f8b349819ce',
-                    "gas" => 
-                        [
-                            "help" => 'afd6ce0d-6492-4bf1-8a35-ef300d2082b0',
-                            "title" => '9c7b1b39-c495-46e7-9278-be922f832368',
-                        ],
-
-                    "indicative-replacement" => 
-                        [
-                            "help" => 'b3889792-6b66-4f5a-a7f5-ec37a597e13b',
-                            "title" => '7249f9c2-00e4-4a0f-ba30-18824e04100e',
-                        ],
-
-                ],
-
-            "current-gas-usage" => 
-                [
-                    "help" => 'a98418a8-4263-4666-b103-0ecbaed6d42a',
-                    "title" => '0e4a7f47-88ad-40d5-b104-222795afa27b',
-                ],
-
-            "resident-count" => 
-                [
-                    "help" => '4181841c-979f-458e-86b5-d33ae8f0bb0c',
-                    "title" => '1d3027f5-8d0a-4c09-a610-717c2632c54d',
-                ],
-
-            "boiler-type" => 
-                [
-                    "help" => '76d878a6-b0e9-4b78-b6c8-e2997187d774',
-                    "title" => '3e88739d-2397-403f-8845-e3195650868c',
-                ],
-
-            "boiler-placed-date" => 
-                [
-                    "help" => '945bf56d-275b-4b65-8a56-08e69bd868a2',
-                    "title" => '85fab4a0-3fdf-41a8-b801-56e7c70740df',
-                ],
-
-        ],
-
-    "solar-panels" => 
-        [
-            "indication-for-costs" => 
-                [
-                    "co2-savings" => 
-                        [
-                            "help" => '40d20e6d-601b-4c31-8357-978efb28a273',
-                            "title" => '99ee5a4c-8619-42af-935f-083d76c067d5',
-                        ],
-
-                    "savings-in-euro" => 
-                        [
-                            "help" => 'b641b6a4-919d-45ce-a4bd-20c351b15eb8',
-                            "title" => '18dfd8de-b8d4-432b-96b3-c1bc97ee632e',
-                        ],
-
-                    "title" => 
-                        [
-                            "help" => '71ed9045-0532-4c23-aa54-f467fde989dc',
-                            "title" => '736af235-4f11-4d34-b654-3e991bc574e1',
-                        ],
-
-                    "comparable-rate" => 
-                        [
-                            "help" => '54332b76-7603-4aef-977e-82157025c06e',
-                            "title" => 'd32a3374-045b-4b75-a16e-2fbf7fa5c8c4',
-                        ],
-
-                    "yield-electricity" => 
-                        [
-                            "help" => '61a3220a-ee47-4dd5-9c2e-560b1c331c2f',
-                            "title" => '14f0bef8-d283-498e-9f76-5a02c8399bbb',
-                        ],
-
-                    "raise-own-consumption" => 
-                        [
-                            "help" => '396dce5e-a1aa-4dd9-b86f-a5c55defed2d',
-                            "title" => '7eeeb805-f69b-490c-b3cc-9411d48c7478',
-                        ],
-
-                ],
-
-            "" => 
-                [
-                    "help" => '5c76cda7-e081-410b-a07f-b2377ba87e8f',
-                    "title" => '4f4fa11e-70d5-4804-9ce3-b82fc6d0cb68',
-                ],
-
-            "peak-power" => 
-                [
-                    "help" => '51128b47-48be-47c6-966e-cf053d63f8df',
-                    "title" => 'bc078e5c-85b3-42d9-8ba7-d74653e230da',
-                ],
-
-            "number" => 
-                [
-                    "help" => 'a6bcaa2d-e8c0-4639-b4e4-f99036f8ee58',
-                    "title" => 'df29c864-a5e3-462e-a15c-f154085a1d94',
-                ],
-
-            "pv-panel-orientation-id" => 
-                [
-                    "help" => '534d0897-633f-4275-a8c8-986d8a781b8f',
-                    "title" => '14294bf7-67db-4926-bba5-ff20d8996b92',
-                ],
-
-            "angle" => 
-                [
-                    "help" => 'c4b24c88-a737-4351-9111-9b850ceb443a',
-                    "title" => '378fec15-fc19-46c6-8e49-eba638bdffbc',
                 ],
 
         ],
@@ -496,34 +374,34 @@
         [
             "current-glass" => 
                 [
-                    "help" => '6107c386-a906-42c1-b5a5-1024fa04a9ab',
-                    "title" => 'eb71cf77-094a-4ad3-be88-044241618e45',
+                    "help" => '375d213b-5684-4453-9c8e-d0d1df5006dd',
+                    "title" => 'ecf7671e-4ae0-49d3-be63-0ccb21172e33',
                 ],
 
             "heated-rooms" => 
                 [
-                    "help" => '5ebc6ae3-2c91-479e-90af-ac17ecf6d5b6',
-                    "title" => '37471362-ce0b-4b95-968f-cb38405ee2c5',
+                    "help" => '5a9ca450-ec8d-4afa-9d37-772049cf8f9a',
+                    "title" => 'e96f077b-3d6b-42b1-bc2a-40bdac736722',
                 ],
 
             "m2" => 
                 [
-                    "help" => '1ec46b91-6615-4c74-afc9-f39c7ba1babb',
-                    "title" => '773cf429-3052-4013-be24-61209da50836',
+                    "help" => 'afb78e0c-c39b-4336-a3b1-b4b3c421de60',
+                    "title" => '0a6df1d9-fba4-48ab-9a88-e8746c2a74e3',
                 ],
 
             "total-windows" => 
                 [
-                    "help" => '0fd0093e-9913-43c5-83f6-8f42e3b14e91',
-                    "title" => 'd2c9372d-2a08-4535-8bb0-8b7a566f5285',
+                    "help" => 'b07dc2c0-e335-4563-9b11-46bba20f2fbc',
+                    "title" => 'e0ac88ef-17a7-4bf6-8627-b863efcc61da',
                 ],
 
             "interested-in" => 
                 [
                     "hr-++" => 
                         [
-                            "help" => '9f479ce0-d981-4b19-b1f3-e12eb2ca5225',
-                            "title" => '33559f92-7369-4073-b22e-efed56e62bb3',
+                            "help" => 'cd676a06-88e2-4a72-b035-b725ed477db8',
+                            "title" => 'd570ac44-eedb-4cd3-ab97-ec59b001598b',
                         ],
 
                 ],
@@ -532,14 +410,14 @@
                 [
                     "other-wood-elements" => 
                         [
-                            "help" => '9654871b-8e55-4bbe-845c-87ea4c5d10ec',
-                            "title" => '1bd05e97-a3e3-4f12-a4f2-753fc89af2b3',
+                            "help" => 'd8f73608-02e0-4120-9581-e967886a59ba',
+                            "title" => 'e1c9e8e6-6009-4300-9e8d-633946bba39c',
                         ],
 
                     "last-paintjob" => 
                         [
-                            "help" => '2e84d97b-661c-41a5-9374-c5dd48aaf8e6',
-                            "title" => '301e6eea-a051-4d64-a94c-aeb4f8c27a4f',
+                            "help" => 'f849b637-6348-4214-b9cb-8071ab4b63a1',
+                            "title" => 'e2a50144-2798-4607-9b89-2258970a6771',
                         ],
 
                 ],
@@ -548,14 +426,48 @@
                 [
                     "paint-damage-visible" => 
                         [
-                            "help" => 'ed215cd9-59fe-4a61-8662-cd230de4b74d',
-                            "title" => 'd8132399-9da1-47af-99fb-9cac221ae69a',
+                            "help" => 'd3f81903-ada0-4015-b706-6a07bebc295d',
+                            "title" => '803d644d-df9d-4ccb-86b9-afad040dcdd5',
                         ],
 
                     "wood-rot-visible" => 
                         [
-                            "help" => '1a6274c0-4d46-4daf-974d-7c6a1735fc8f',
-                            "title" => 'fb5dd05e-7c48-4f4b-a5e5-8c8495de659e',
+                            "help" => 'f013ad31-3858-4ae2-8be5-c06d501df99e',
+                            "title" => 'b41f6c0c-8434-465e-9ddb-d2b8bc4eebbb',
+                        ],
+
+                ],
+
+            "indication-for-costs" => 
+                [
+                    "gas-savings" => 
+                        [
+                            "help" => '70683027-e8cc-442c-9872-1550ab7b482e',
+                            "title" => 'dd4fdd6f-0d09-4cf3-b09e-edc6e1bad7d3',
+                        ],
+
+                    "co2-savings" => 
+                        [
+                            "help" => '248e7060-d00e-47fb-b313-00a6a443e562',
+                            "title" => 'e0b213f5-8a03-4559-9c6d-0722c56a16dd',
+                        ],
+
+                    "savings-in-euro" => 
+                        [
+                            "help" => 'f7aef2d4-5a9b-45c4-8504-f337ed375497',
+                            "title" => '26829f81-261e-4c5e-8726-191ffacd1b3e',
+                        ],
+
+                    "indicative-costs" => 
+                        [
+                            "help" => 'bed5134a-aafc-47f7-b729-c596c9985289',
+                            "title" => '9277078f-49af-427d-9041-1b09c5fcf42b',
+                        ],
+
+                    "comparable-rate" => 
+                        [
+                            "help" => '7cb35f0b-097d-48bf-9f77-7d1a751a25c3',
+                            "title" => 'd399404d-1019-4dd4-9bdf-592e3ad474df',
                         ],
 
                 ],
@@ -564,14 +476,108 @@
                 [
                     "paintwork" => 
                         [
-                            "help" => 'b42d5d5b-1ac1-4108-90fe-0249cae9aa6b',
-                            "title" => 'cb6caadb-1e28-47e3-85d8-da9b399958fe',
+                            "help" => 'ae72b0e3-bf3d-451e-a1f7-a50005225347',
+                            "title" => 'cca229c7-1b9f-448b-9fa1-2e9a237bfc2c',
                         ],
 
                     "paintwork_year" => 
                         [
-                            "help" => '1d69b9e9-f64d-4900-b007-70366e27bf92',
-                            "title" => 'dc8a9e4b-d980-4c5c-93fb-7a2cacfa567a',
+                            "help" => '9b82bc22-ab48-4ede-a42f-d26642bb66d6',
+                            "title" => 'a86eea7a-4a27-42e7-8345-4c08f2b9dfe0',
+                        ],
+
+                ],
+
+        ],
+
+    "floor-insulation" => 
+        [
+            "floor-insulation" => 
+                [
+                    "help" => 'ef5bedbc-03e7-4a59-8ed2-db4cc0a55e8e',
+                    "title" => 'd7c1b9d7-4309-433e-af69-f4cb17328734',
+                ],
+
+            "has-crawlspace" => 
+                [
+                    "title" => 
+                        [
+                            "help" => '58cbe6ec-bc96-46c8-8857-73eae2c0c4c9',
+                            "title" => '705e5022-4afc-48fd-8a88-172770fa12fb',
+                        ],
+
+                ],
+
+            "crawlspace-access" => 
+                [
+                    "title" => 
+                        [
+                            "help" => 'f16aff02-45d6-49ca-9a0b-e0d5df32e024',
+                            "title" => 'b0c3b320-4a1c-49d3-b94d-e3e30344d7e8',
+                        ],
+
+                ],
+
+            "crawlspace-height" => 
+                [
+                    "help" => 'f1e09807-276f-4f3b-bf53-3ed14f3226eb',
+                    "title" => 'a2f807e6-ea69-4fbb-b594-f75333f7b515',
+                ],
+
+            "surface" => 
+                [
+                    "help" => '95c90474-8c34-4790-85aa-3fbf764fe7da',
+                    "title" => '7ccc13a8-2d75-490f-b00e-c1ca7480b57f',
+                ],
+
+            "insulation-surface" => 
+                [
+                    "help" => 'be7e3835-e35e-457d-b41a-7620e3b91ad7',
+                    "title" => '78af8f5f-0247-4c89-8eec-db20a22f4224',
+                ],
+
+            "insulation-advice" => 
+                [
+                    "text" => 
+                        [
+                            "help" => 'bb59bf0e-5cd5-4a7e-b593-feec6e09f3ab',
+                            "title" => '7b08db96-302f-4ab2-a953-24b696692408',
+                        ],
+
+                ],
+
+            "indication-for-costs" => 
+                [
+                    "help" => 'f23a8a08-5647-4eaa-b7b1-b98fb3e922c4',
+                    "title" => '92b1f443-7d99-42c9-b583-b8babaf8447f',
+                    "gas-savings" => 
+                        [
+                            "help" => '7b5af317-6d9c-4a44-91c7-9db12e081e3c',
+                            "title" => '38eb99ac-2ccc-4b28-9b3c-00fa88bc0c21',
+                        ],
+
+                    "co2-savings" => 
+                        [
+                            "help" => 'f9ac78cc-f169-4864-b410-1abbfe121e81',
+                            "title" => '87420f20-330c-4832-811e-6732e3469b06',
+                        ],
+
+                    "savings-in-euro" => 
+                        [
+                            "help" => 'add22b82-32bd-45f5-a3df-18714f3b9aa4',
+                            "title" => '4f55b42b-71b5-4549-8659-9570f3f9b81c',
+                        ],
+
+                    "indicative-costs" => 
+                        [
+                            "help" => '4de9e835-8c20-419f-a296-ee67bd2bec41',
+                            "title" => 'a67e432a-48df-4d0f-a6f2-06bd52c19736',
+                        ],
+
+                    "comparable-rent" => 
+                        [
+                            "help" => '654ffdc5-3cfa-46cf-8043-d9d2965f3bc5',
+                            "title" => 'd4f17d46-0e30-4b32-afcc-2e3d007f43fe',
                         ],
 
                 ],
@@ -584,62 +590,62 @@
                 [
                     "roof-types" => 
                         [
-                            "help" => 'd19657d0-c3d2-46a3-a9d1-07f0d649075b',
-                            "title" => '12d747e0-f7a8-4f1c-8263-671304b65ff9',
+                            "help" => '20eb7396-b357-4a20-9ff8-0f604a3c0014',
+                            "title" => 'e81a49e7-9e7e-4479-a8ad-e8297f9c08d4',
                         ],
 
                     "main-roof" => 
                         [
-                            "help" => '04a0c973-852f-4f13-8615-ce5591a523e8',
-                            "title" => '6c1b8398-e2c0-4bdf-8aca-5acdc751cb59',
+                            "help" => '59e8c8fb-ede0-414c-b2d5-87ff91fab68c',
+                            "title" => '6f0816c6-71e9-4528-990b-bd4b2d2a9ef1',
                         ],
 
                     "is-flat-roof-insulated" => 
                         [
-                            "help" => '8fdffe5e-661d-4741-bab4-63de9b4b0648',
-                            "title" => '98a3c540-e91b-42df-bc13-79aef47a24a2',
+                            "help" => 'fcb95b57-f3cd-4889-b497-287d36fe6654',
+                            "title" => 'fe62efd9-359d-4afc-b572-f9cfb0eb474f',
                         ],
 
                     "flat-roof-surface" => 
                         [
-                            "help" => '94b761e5-062f-4134-90f9-e12bbc41ac12',
-                            "title" => '9d6c23eb-5b74-4a7c-a979-e74346fcb5c8',
+                            "help" => '449f0cfc-a414-433e-b2d8-1d2cc0bc1404',
+                            "title" => 'cda1ce62-237a-4ba2-bab5-c7f34b3974a5',
                         ],
 
                     "insulation-flat-roof-surface" => 
                         [
-                            "help" => '6be0211f-3440-4bb7-acd5-34977968f2f1',
-                            "title" => 'dfd5543f-667a-4970-bc8d-236ad9d0b852',
+                            "help" => '6c052b8e-b3d8-4621-a21c-e06b019fef37',
+                            "title" => 'cf08ad27-72b4-409c-b4e8-86e6bb717e01',
                         ],
 
                     "zinc-replaced" => 
                         [
-                            "help" => 'c8f054da-5e66-4a19-a1e8-85d70c3d31df',
-                            "title" => '552c983a-add0-44d8-8b00-9d030233f48b',
+                            "help" => 'dd9923ea-0796-4fff-a87b-176f4e67b182',
+                            "title" => '343fcd75-8baa-42aa-b755-937763fcc5ed',
                         ],
 
                     "bitumen-insulated" => 
                         [
-                            "help" => 'e17df770-158c-4a3c-802a-d0bec78f20f0',
-                            "title" => 'ca1dabfd-e401-4ca2-8c15-bf4ba142e262',
+                            "help" => '63c1cbea-5c6b-415e-aa0a-5a36d045eec1',
+                            "title" => '4d39093f-e70e-4142-b368-2b738b1749d7',
                         ],
 
                     "is-pitched-roof-insulated" => 
                         [
-                            "help" => 'c7335251-badb-4a72-bb7e-e6c48d3877b9',
-                            "title" => 'cee2d6bb-8ba2-48d3-9d6a-7669b5366803',
+                            "help" => 'fde54937-4c34-4793-83f1-23762c6db96e',
+                            "title" => 'd5042753-7688-49a0-8ade-ee08f18765a4',
                         ],
 
                     "pitched-roof-surface" => 
                         [
-                            "help" => 'a7c10105-2a23-49ba-a1e5-cdc0b1076865',
-                            "title" => 'af501885-2441-49ff-a0da-9713fe8296e6',
+                            "help" => '3e02a617-b569-4a3a-a17f-7b2e56095257',
+                            "title" => 'd9f4e598-4ab3-468b-88bf-7af00c52e38a',
                         ],
 
                     "insulation-pitched-roof-surface" => 
                         [
-                            "help" => '713a13c8-a19b-4edc-b6f9-0c3a8b147007',
-                            "title" => '5e293aad-fc8e-4408-afce-65658e55910b',
+                            "help" => '62276147-dec4-47bf-93e7-e074f1c684f3',
+                            "title" => '236d28cf-98fa-426c-ab83-df6f0252c1c9',
                         ],
 
                 ],
@@ -648,14 +654,14 @@
                 [
                     "insulate-roof" => 
                         [
-                            "help" => '234877a7-5088-44e9-aa3d-50016251c961',
-                            "title" => '7cd0d850-ad47-43bf-a6a4-e921b27d2c0c',
+                            "help" => '7fe360c7-2dcb-4e6c-8411-81cef6077520',
+                            "title" => 'c7fbd3f7-1714-406f-904d-561896bde6b0',
                         ],
 
                     "situation" => 
                         [
-                            "help" => '1aec2ddf-5b8f-4e06-ad0b-520ba1760bab',
-                            "title" => '106b9737-eb9a-4cb1-bf88-cc405b509217',
+                            "help" => 'a4154666-fb5a-45d3-a7f7-5254637d1bd0',
+                            "title" => 'e14a6373-e1f5-45e1-8783-32f9f61f6ded',
                         ],
 
                 ],
@@ -664,34 +670,32 @@
                 [
                     "insulate-roof" => 
                         [
-                            "help" => '61688fb1-710a-4154-ab20-ddb4458f718a',
-                            "title" => 'fa9cc1b0-f331-405a-9791-a8e89098435e',
+                            "help" => '612cf61d-a462-4ae9-804b-087dce02751f',
+                            "title" => '13497c98-fd60-48d6-b8fa-9b1763589abe',
                         ],
 
                     "situation" => 
                         [
-                            "help" => '4364f32f-48c0-4e85-89e1-81591532e3a0',
-                            "title" => '768386f9-ff98-4990-bc9a-34d41c95963c',
+                            "help" => '9f0425e9-167e-434f-9b28-b3efd481983a',
+                            "title" => 'bdd1c459-75ba-4e2a-b1af-9393334c99f4',
                         ],
 
                 ],
 
             "flat" => 
                 [
-                    "help" => 'd213ef52-ce4e-4bd1-8cc9-310c814a3dfb',
-                    "title" => 'a36c87c8-ddc0-4a3b-bec7-4388b3dd5263',
                     "indicative-costs-replacement" => 
                         [
-                            "help" => 'e25e4e32-5d17-42b1-8f5e-bfb6c7da7f2c',
-                            "title" => '66aab20d-b60c-4e9f-84c7-efab8c1751cf',
+                            "help" => '771cec94-a23d-47fc-98a3-5df43bfb1cec',
+                            "title" => '0a685172-f33d-416a-8c4b-9fb5e96abd42',
                         ],
 
                     "indicative-replacement" => 
                         [
                             "year" => 
                                 [
-                                    "help" => '82d11afc-0cc6-44c5-a24c-b22cc1822d74',
-                                    "title" => 'b76b5cdb-aaf6-447e-b3af-0227b85eae77',
+                                    "help" => '7129b959-4d62-41bd-a998-d9a04c3bd811',
+                                    "title" => '68184828-f354-4f96-a8c2-59975a46cfe4',
                                 ],
 
                         ],
@@ -700,22 +704,136 @@
 
             "pitched" => 
                 [
-                    "help" => '976b4c3e-64c0-4dd9-bbd5-8fc32c1631a1',
-                    "title" => '3deb96ac-cb3b-4282-b953-73cc49993536',
+                    "help" => '9c52cb13-3494-4299-85e7-df405324c8d5',
+                    "title" => '9dbde08a-15b0-4ab1-b460-c06e203b0a8d',
                     "indicative-costs-replacement" => 
                         [
-                            "help" => 'b149008b-1dbe-440f-89f5-bd7d8866de52',
-                            "title" => '77677643-8be0-46d8-8ae4-a3b7a08e63aa',
+                            "help" => 'e3f1ea79-fe7c-4e4e-abee-f076b9f880db',
+                            "title" => '4ecbca5f-7fb1-43a3-8d16-9b82cba6d247',
                         ],
 
                     "indicative-replacement" => 
                         [
                             "year" => 
                                 [
-                                    "help" => 'fdcc036b-4615-4a85-8562-fd7a62618f6a',
-                                    "title" => '8e206077-c216-40d5-b700-e58f98dc40e3',
+                                    "help" => '1cd3da26-666c-4735-8fdc-fa4fe50bd784',
+                                    "title" => 'fbe4513f-b3e9-499e-899a-7edf2741dc7e',
                                 ],
 
+                        ],
+
+                ],
+
+        ],
+
+    "boiler" => 
+        [
+            "current-gas-usage" => 
+                [
+                    "help" => 'd25932f1-c657-4aba-931f-8c41d12f317d',
+                    "title" => 'c93657b0-3163-4692-a8b4-160a83ae9c3f',
+                ],
+
+            "resident-count" => 
+                [
+                    "help" => '5ac3d951-9679-44ac-8be4-8e5ee3aa1ff9',
+                    "title" => '2158af23-7065-414c-8e52-acda82fe968e',
+                ],
+
+            "boiler-type" => 
+                [
+                    "help" => 'dbe16321-469e-4210-8ab6-c1c7111d7b6d',
+                    "title" => '5fe326ec-46b2-4161-81f4-2dc6928193cc',
+                ],
+
+            "boiler-placed-date" => 
+                [
+                    "help" => '723b6457-fd00-401f-b7d3-8dccd4d8c089',
+                    "title" => 'd7c533f2-8488-4761-a7f7-52df80a13336',
+                ],
+
+            "indication-for-costs" => 
+                [
+                    "help" => '483e3a50-049a-4c0f-941d-d10ab30fb49a',
+                    "title" => 'eb703bf7-579b-4542-a671-77e3d2e21f60',
+                    "indicative-costs-insulation" => 
+                        [
+                            "help" => 'f129e1ed-756e-4766-8a8c-0988e9535fc7',
+                            "title" => 'eb869aa4-8955-48bc-b4c3-e1522c766cbe',
+                        ],
+
+                    "indicative-replacement" => 
+                        [
+                            "help" => 'baf93a08-a96c-4d6e-ae20-069870cc14dc',
+                            "title" => '48b5a8f5-5bf8-4050-bb7a-b55faf9faec3',
+                        ],
+
+                    "comparable-rate" => 
+                        [
+                            "help" => '87369df5-c805-4ea8-aebb-6c96ff1897d0',
+                            "title" => 'd8072072-a11c-4d1e-b9ba-6b4a2abf8c04',
+                        ],
+
+                ],
+
+        ],
+
+    "solar-panels" => 
+        [
+            "electra-usage" => 
+                [
+                    "help" => 'b12a378b-c45d-4a41-a488-d94e59a5b585',
+                    "title" => '55900f76-0313-481c-9618-1f6a61304997',
+                ],
+
+            "peak-power" => 
+                [
+                    "help" => '79bfbfa3-5b17-4b57-b3e1-4d9a9044591b',
+                    "title" => '1a2062cc-0df1-426d-b32f-f7532a3882a3',
+                ],
+
+            "number" => 
+                [
+                    "help" => 'ea346412-da96-4fae-b08a-78524eb2061d',
+                    "title" => '788ceb32-bd49-4a18-bda6-e2f0d06f5e72',
+                ],
+
+            "pv-panel-orientation-id" => 
+                [
+                    "help" => 'a1dc49b4-c28c-433e-9b71-9827dd7d49e1',
+                    "title" => 'c3853042-e252-4380-ae23-845c28a6b062',
+                ],
+
+            "angle" => 
+                [
+                    "help" => '44b6e35b-c9d9-4f86-be68-b8da44dece49',
+                    "title" => '064f07a0-5411-4bc1-b7a9-b105dcfca00f',
+                ],
+
+            "indication-for-costs" => 
+                [
+                    "yield-electricity" => 
+                        [
+                            "help" => '00722aad-59b8-4185-a542-d9c9672ee2e2',
+                            "title" => '0e5b15fb-63f0-4b0e-bab8-7b332b708884',
+                        ],
+
+                    "raise-own-consumption" => 
+                        [
+                            "help" => '33bd777a-9966-465a-8f44-46394d4252f7',
+                            "title" => '5ab96402-cb38-42a2-b909-07a6d5eefa67',
+                        ],
+
+                    "title" => 
+                        [
+                            "help" => '184dff01-1938-4289-b0f2-cef8031f9d88',
+                            "title" => '17721595-614d-4f09-9418-9e13c266df27',
+                        ],
+
+                    "comparable-rate" => 
+                        [
+                            "help" => 'de2d0c0a-57d4-48fe-a9dd-a89b7c88ff96',
+                            "title" => '8c5e0986-37fc-4b17-80a8-c50ddefff7c2',
                         ],
 
                 ],
@@ -726,64 +844,64 @@
         [
             "comfort-level-warm-tap-water" => 
                 [
-                    "help" => '171de6d0-1105-42e8-a9fb-1f61bb142781',
-                    "title" => 'a1fb9570-40ba-43f2-abee-c0c492ef3fe8',
+                    "help" => 'c16480af-a96f-4b54-acf2-89dce003975f',
+                    "title" => '46ad0694-a476-43d8-af4f-fc07e2d39ca4',
                 ],
 
             "pv-panel-orientation-id" => 
                 [
-                    "help" => 'ec2f3b3f-f66f-43d5-92e7-4999a4b37b8d',
-                    "title" => '3ee60354-099d-4f97-b986-4bf69932f7b0',
+                    "help" => '834f02c5-3b0a-4fb0-a3ee-bc946e26bea0',
+                    "title" => 'e47498d8-e672-41a7-a745-d185eaea4ee6',
                 ],
 
             "angle" => 
                 [
-                    "help" => '0dd96fd0-4415-4b2a-907b-bd9419d63173',
-                    "title" => '09a6defd-7b78-4923-b121-2186fdc81b26',
+                    "help" => 'd0a29952-f80d-4106-9421-fd87c29f817c',
+                    "title" => '1af6e16d-61b1-4efc-b784-d3d451aaf9bf',
                 ],
 
             "consumption-water" => 
                 [
-                    "help" => '893e7289-c35c-4310-a809-3b9b84e879a6',
-                    "title" => 'cc83612a-530a-4f5b-a5e8-887d86035208',
+                    "help" => '5f6e1b91-ad3f-4496-8b98-747e02744252',
+                    "title" => 'e9d41a1b-d218-484d-9b2a-dd83149568ad',
                 ],
 
             "consumption-gas" => 
                 [
-                    "help" => '5b929544-3408-4f0a-b92a-3d5574274ac3',
-                    "title" => '880ea2c8-e84c-472d-8ee4-41658f5b112b',
+                    "help" => '2dd73820-8125-491c-9ba5-2131486d6649',
+                    "title" => 'e73fe55b-02a4-478f-a6c2-fbd9eb976ebf',
                 ],
 
             "size-boiler" => 
                 [
-                    "help" => 'c217c583-e502-4327-bbfa-463e2316d3ed',
-                    "title" => 'ac96c9c7-57d6-41f0-b45f-7580c9a11ec5',
+                    "help" => '279aa89a-c8da-4d23-b4e3-9b05402e6660',
+                    "title" => '714001ad-5dc5-426b-8f87-d65148446616',
                 ],
 
             "size-collector" => 
                 [
-                    "help" => '6cba59c3-87df-414d-818e-60b6786aa244',
-                    "title" => 'a7478bbb-12d9-4b05-8d3d-c6b41e40f6d0',
+                    "help" => 'eac3102d-710f-4855-b2e9-9980766a168c',
+                    "title" => '999c4814-9dd6-45ca-a1fc-8e490094f017',
                 ],
 
             "indication-for-costs" => 
                 [
                     "title" => 
                         [
-                            "help" => '9de1544c-e293-4789-b98e-330b9cf52a4c',
-                            "title" => 'a5580f89-7030-424f-86bc-74a00821284a',
+                            "help" => '204b81b2-7919-4bf4-a400-287f07fe2cc2',
+                            "title" => '6265f5ed-1bb8-4a0e-8cee-416e2c252257',
                         ],
 
                     "production-heat" => 
                         [
-                            "help" => 'f1ccae2c-b02a-410a-9a4b-321c49225c5b',
-                            "title" => '1a69cc96-7366-4874-973f-32a3e2ea788a',
+                            "help" => '7d96e5f3-934d-47a1-b4b4-253a345ad6f8',
+                            "title" => 'a098b0f5-77ee-4a4f-8434-77b46dd22965',
                         ],
 
                     "percentage-consumption" => 
                         [
-                            "help" => '673f6730-9cd9-4201-ad15-acef00057ac1',
-                            "title" => 'e3294383-3f2a-4b8d-bd8a-6a01d3390b86',
+                            "help" => '5d498f51-c173-4c3a-82df-127747146f05',
+                            "title" => 'ca9521fb-4c29-4e25-9085-4a4c76fe2a5c',
                         ],
 
                 ],

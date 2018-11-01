@@ -77,5 +77,6 @@ class Str {
 
         return true;
     }
+
 }
 

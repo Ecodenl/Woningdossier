@@ -58,7 +58,7 @@ class Translation  {
 
             return $translation;
         } else {
-            return "mongolen beffer";
+            return $translationFileKey;
         }
     }
 }

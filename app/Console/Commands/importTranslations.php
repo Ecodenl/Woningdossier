@@ -71,12 +71,15 @@ class importTranslations extends Command
                 $short = $csvRow[3];
 
                 // if the uuid key does not exist or the uuid is empty create a new one
-                if ($csvRow[4] == "" || $csvRow[5] == "") {
-                    $translationUuidHelpKey = Str::uuid();
-                    $translationUuidTitleKey = Str::uuid();
-                } else {
+                if (array_key_exists(4, $csvRow) && $csvRow != "") {
                     $translationUuidHelpKey = $csvRow[4];
+                } else {
+                    $translationUuidHelpKey = Str::uuid();
+                }
+                if (array_key_exists(5, $csvRow) && $csvRow[5] != "") {
                     $translationUuidTitleKey = $csvRow[5];
+                } else {
+                    $translationUuidTitleKey = Str::uuid();
                 }
 
                 // update for the help translations
@@ -194,7 +197,7 @@ class importTranslations extends Command
         $translationFileArray = [];
         foreach ($translationDottedFileArray as $values) {
             foreach ($values as $key => $value) {
-                array_set($translationFileArray, $key, "'".$value."',");
+                array_set($translationFileArray, trim($key), "'".$value."',");
             }
         }
 

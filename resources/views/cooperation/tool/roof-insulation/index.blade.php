@@ -9,7 +9,7 @@
         @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div class="row">
             <div id="current-situation" class="col-md-12">
-                <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.current-situation.title')}}</h4>
+                <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.title.title')}}</h4>
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -80,7 +80,7 @@
 
                         <div class="{{ $roofCat }}-roof">
 
-                            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.title')}}</h4>
+                            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.situation-title.title')}}</h4>
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.element_value_id') ? ' has-error' : '' }}">
@@ -108,7 +108,7 @@
                                 <div class="col-sm-12 col-md-6 roof-surface-inputs">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.roof_surface') ? ' has-error' : '' }}">
 
-                                        {{--<label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.{{$roofCat}}-roof-surface.title')}}</label> <span> *</span>--}}
+                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.'.$roofCat.'-roof-surface.title')}}</label> <span> *</span>
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'roof_surface'])
@@ -256,7 +256,7 @@
                                         ['inputType' => 'select', 'inputValues' => $measureApplications[$roofCat], 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'extra.measure_application_id', 'customInputValueColumn' => 'measure_name'])
                                             <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][measure_application_id]">
                                                 <option value="0" @if($default == 0) selected @endif>
-                                                    {{\App\Helpers\Translation::translate('roof-insulation.measure-application.no')}}
+                                                    {{\App\Helpers\Translation::translate('roof-insulation.measure-application.no.title')}}
                                                 </option>
                                                 @foreach($measureApplications[$roofCat] as $measureApplication)
                                                     <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
@@ -358,7 +358,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.unit.year')</span>
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                             <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>
@@ -377,7 +377,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group add-space">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('roof-insulation.indicative-costs-insulation.title')}}</label>
+                                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs-insulation.title')}}</label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                             <input type="text" id="{{ $roofCat }}_cost_indication" class="form-control disabled" disabled="" value="0">
@@ -408,9 +408,9 @@
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group add-space">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('wall-insulation.indication-for-costs.comparable-rate.title')}}</label>
+                                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('wall-insulation.indication-for-costs.year.title')}}</span>
+                                            <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                             <input type="text" id="{{ $roofCat }}_interest_comparable" class="form-control disabled" disabled="" value="0,0">
                                         </div>
                                     </div>

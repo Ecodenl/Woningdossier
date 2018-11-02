@@ -15,7 +15,10 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.amount_electricity') ? ' has-error' : '' }}">
-                        <label for="user_energy_habits_amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('solar-panels.electra-usage.title')}}</label>
+                        <label for="user_energy_habits_amount_electricity" class=" control-label">
+                            <i data-toggle="collapse" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.electra-usage.title')}}
+                        </label>
 
                         <div class="input-group">
                             <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
@@ -23,7 +26,7 @@
                         </div>
 
                         <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.electra-usage.help')}}
                         </div>
 
                         @if ($errors->has('user_energy_habits.amount_electricity'))
@@ -37,7 +40,10 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.peak_power') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_peak_power" class=" control-label"><i data-toggle="collapse" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('solar-panels.peak-power.title')}}</lavel>
+                        <label for="building_pv_panels_peak_power" class=" control-label">
+                            <i data-toggle="collapse" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.peak-power.title')}}
+                        </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => array_combine($range = range(260, 300, 5), $range), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'peak_power'])
@@ -50,7 +56,7 @@
                         @endcomponent
 
                         <div id="peak-power-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.peak-power.help')}}
                         </div>
 
                         @if ($errors->has('building_pv_panels.peak_power'))
@@ -76,7 +82,10 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.number') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_number" class=" control-label"><i data-toggle="collapse" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('solar-panels.number.title')}}</lavel>
+                        <label for="building_pv_panels_number" class=" control-label">
+                            <i data-toggle="collapse" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.number.title')}}
+                        </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'number'])
@@ -84,7 +93,7 @@
                         @endcomponent
 
                         <div id="number-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.number.help')}}
                         </div>
                         @if ($errors->has('building_pv_panels.number'))
                             <span class="help-block">
@@ -97,7 +106,10 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.pv_panel_orientation_id') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_pv_panel_orientation_id" class=" control-label"><i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('solar-panels.pv-panel-orientation-id.title')}}</lavel>
+                        <label for="building_pv_panels_pv_panel_orientation_id" class=" control-label">
+                            <i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.pv-panel-orientation-id.title')}}
+                        </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $pvPanelOrientations, 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'pv_panel_orientation_id'])
@@ -109,7 +121,7 @@
                         @endcomponent
 
                         <div id="orientation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.pv-panel-orientation-id.help')}}
                         </div>
 
                         @if ($errors->has('building_pv_panels.pv_panel_orientation_id'))
@@ -123,7 +135,10 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.angle') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('solar-panels.angle.title')}}</lavel>
+                        <label for="building_pv_panels_angle" class=" control-label">
+                            <i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.angle.title')}}
+                        </label>
 
                         <?php $angles = [10, 15, 20, 30, 40, 45, 50, 60, 70, 75, 90]  ?>
                         @component('cooperation.tool.components.input-group',
@@ -137,7 +152,7 @@
                         @endcomponent
 
                         <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.angle.help')}}
                         </div>
 
                         @if ($errors->has('building_pv_panels.angle'))

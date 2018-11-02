@@ -11,7 +11,7 @@
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="margin-left: -5px">@uuidlang('floor-insulation.intro.title.title')</h4>
+                    <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('floor-insulation.intro.title.title')}}</h4>
                 </div>
             </div>
             <div class="row">
@@ -19,7 +19,8 @@
                     <div class="form-group add-space{{ $errors->has('element.' . $floorInsulation->id) ? ' has-error' : '' }}">
 
                         <label for="element_{{ $floorInsulation->id }}" class="control-label">
-                            <i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> @uuidlang('floor-insulation.floor-insulation.title')
+                            <i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> 
+                            {{\App\Helpers\Translation::translate('floor-insulation.floor-insulation.title')}}
                         </label>
 
                         @component('cooperation.tool.components.input-group',
@@ -34,7 +35,7 @@
                                                 @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
                                                 selected="selected"
                                                 @elseif(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
-                                                selected="selected" pisdfsdf
+                                                selected="selected"
                                                 @endif
                                                 value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                                     @endforeach
@@ -53,8 +54,8 @@
 
                 <div class="col-sm-12">
                     <div class="form-group add-space">
-                        <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
-                            I would like to have some helpful information right here!
+                        <div id="floor-insulation-info" class="collapse alert alert-info remove-collapse-space">
+                            {{\App\Helpers\Translation::translate('floor-insulation.floor-insulation.help')}}
                         </div>
                     </div>
                 </div>
@@ -68,7 +69,7 @@
                              class="form-group add-space{{ $errors->has('building_elements.crawlspace') ? ' has-error' : '' }}">
                             <label for="has_crawlspace" class=" control-label">
                                 <i data-toggle="collapse" data-target="#building_elements-crawlspace-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @uuidlang('floor-insulation.has-crawlspace.title.title')
+                                {{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.title')}}
                             </label>
 
                             @component('cooperation.tool.components.input-group',
@@ -88,7 +89,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group add-space">
                                     <div id="building_elements-crawlspace-info" class="collapse alert alert-info remove-collapse-space">
-                                        I would like to have some help full information right here !
+                                        {{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.help')}}
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +104,7 @@
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
-                                    <p>@uuidlang('floor-insulation.has-crawlspace.unknown.title')</p>
+                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.unknown.title')}}</p>
                                 </div>
                             </div>
                         </div>
@@ -117,7 +118,7 @@
                             <div id="has-crawlspace-access" class="form-group add-space {{ $errors->has('building_elements.' . $crawlspace->id .'.extra') ? ' has-error' : '' }}">
                                 <label for="crawlspace_access" class="control-label">
                                     <i data-toggle="collapse" data-target="#crawlspace-access-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    @uuidlang('floor-insulation.crawlspace-access.title.title')
+                                    {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.title')}}
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
@@ -138,7 +139,7 @@
                                     <div class="form-group add-space">
                                         <div id="crawlspace-access-info"
                                              class="collapse alert alert-info remove-collapse-space">
-                                            I would like to have some help full information right here !
+                                            {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.help')}}
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +152,7 @@
 
                                 <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
                                     <div class="alert alert-warning show" role="alert">
-                                        <p>@uuidlang('floor-insulation.crawlspace-access.no-access.title')</p>
+                                        <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
                                     </div>
                                 </div>
 
@@ -163,7 +164,7 @@
                             <div class="form-group add-space{{ $errors->has('building_elements.' . $crawlspace->id .'.element_value_id') ? ' has-error' : '' }}">
                                 <label for="crawlspace_height" class=" control-label">
                                     <i data-toggle="collapse" data-target="#crawlspace-height-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    @uuidlang('floor-insulation.crawlspace-height.title')
+                                    {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.title')}}
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
@@ -187,13 +188,11 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-12">
                             <div class="form-group add-space">
                                 <div id="crawlspace-height-info" class="collapse alert alert-info remove-collapse-space">
-                                    I would like to have some help full information right here !
+                                    {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.help')}}
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 <div class="row crawlspace-accessible">
@@ -203,11 +202,11 @@
                             <label for="surface" class=" control-label">
                                 <i data-toggle="collapse" data-target="#floor-surface-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @uuidlang('floor-insulation.surface.title')
+                                {{\App\Helpers\Translation::translate('floor-insulation.surface.title')}}
                             </label>
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat'])
-                                <span class="input-group-addon">@uuidlang('unit.square-meters.title')</span>
+                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                                 <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">
                             @endcomponent
                             @if ($errors->has('building_features.surface'))
@@ -216,18 +215,23 @@
                             </span>
                             @endif
                         </div>
+                                <div class="form-group add-space">
+                                    <div id="floor-surface-info" class="collapse alert alert-info remove-collapse-space">
+                                        {{\App\Helpers\Translation::translate('floor-insulation.surface.help')}}
+                                    </div>
+                                </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_features.insulation_surface') ? ' has-error' : '' }}">
 
                             <label for="insulation_floor_surface" class=" control-label">
-                                <i data-toggle="collapse" data-target="#floor-surface-info"
+                                <i data-toggle="collapse" data-target="#floor-insulation-surface-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @uuidlang('floor-insulation.insulation-surface.title')
+                                {{\App\Helpers\Translation::translate('floor-insulation.insulation-surface.title')}}
                             </label>
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
-                                <span class="input-group-addon">@uuidlang('unit.square-meters.title')</span>
+                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                                 <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">
                             @endcomponent
                             @if ($errors->has('building_features.insulation_surface'))
@@ -236,12 +240,10 @@
                             </span>
                             @endif
                         </div>
-                    </div>
 
-                    <div class="col-sm-12">
                         <div class="form-group add-space">
-                            <div id="floor-surface-info" class="collapse alert alert-info remove-collapse-space">
-                                I would like to have some help full information right here !
+                            <div id="floor-insulation-surface-info" class="collapse alert alert-info remove-collapse-space">
+                                {{\App\Helpers\Translation::translate('floor-insulation.insulation-surface.help')}}
                             </div>
                         </div>
                     </div>
@@ -250,7 +252,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                            <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment')        </label>
+                            <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}        </label>
                             <?php
 
                                 $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : "";
@@ -259,7 +261,7 @@
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
 
                             <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                I would like to have some helpful information right here!
+                                {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
                             </div>
 
                             @if ($errors->has('comment'))
@@ -276,7 +278,7 @@
                 <div class="row crawlspace-accessible">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-info show" role="alert">
-                            <p>@uuidlang('floor-insulation.insulation-advice.text.title')</p>
+                            <p>{{\App\Helpers\Translation::translate('floor-insulation.insulation-advice.text.title')}}</p>
                             <p id="insulation-advice"></p>
                         </div>
                     </div>
@@ -284,32 +286,32 @@
 
                 <div id="indication-for-costs" class="crawlspace-accessible">
                     <hr>
-                    <h4 style="margin-left: -5px">@uuidlang('wall-insulation.indication-for-costs.title.title')</h4>
+                    <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('floor-insulation.indication-for-costs.title')}}</h4>
 
                     <div id="costs" class="row">
                         <div class="col-sm-4">
                             <div class="form-group add-space">
-                                <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.gas-savings.title')</label>
+                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon">m3 / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
+                                    <span class="input-group-addon">m3 / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                     <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group add-space">
-                                <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.co2-savings.title')</label>
+                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon">@uuidlang('unit.kilograms')  / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
+                                    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                     <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group add-space">
-                                <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.savings-in-euro.title')</label>
+                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                     <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
                                 </div>
                             </div>
@@ -318,7 +320,7 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group add-space">
-                                <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.indicative-costs.title')</label>
+                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                     <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
@@ -328,9 +330,9 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group add-space">
-                                <label class="control-label">@uuidlang('wall-insulation.indication-for-costs.comparable-rate.title')</label>
+                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon">% / @uuidlang('wall-insulation.indication-for-costs.year.title')</span>
+                                    <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                     <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
                                 </div>
                             </div>
@@ -342,7 +344,7 @@
             <div class="row" id="no-crawlspace-error">
                 <div class="col-md-12">
                     <div class="alert alert-danger show" role="alert">
-                        <p>@uuidlang('floor-insulation.has-crawlspace.no-crawlspace.title')</p>
+                        <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title')}}</p>
                     </div>
                 </div>
             </div>
@@ -350,7 +352,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">@lang('general.download.title')</div>
+                        <div class="panel-heading">@lang('general.download.title')}}</div>
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a></li>

@@ -12,10 +12,18 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('boiler.current-gas-usage.title')}}</label>
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#current-gas-usage" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('boiler.current-gas-usage.title')}}
+                        </label>
+
                         <div class="input-group">
                             <span class="input-group-addon">m<sup>3</sup></span>
                             <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">
+                        </div>
+
+                        <div id="current-gas-usage" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('boiler.current-gas-usage.help')}}
                         </div>
 
                         @if ($errors->has('habit.gas_usage'))
@@ -27,12 +35,18 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.resident_count') ? ' has-error' : '' }}">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('boiler.resident-count.title')}}</label>
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#resident-count" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('boiler.resident-count.title')}}
+                        </label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">
                         </div>
 
+                        <div id="resident-count" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('boiler.resident-count.help')}}
+                        </div>
                         @if ($errors->has('habit.resident_count'))
                             <span class="help-block">
                                     <strong>{{ $errors->first('habit.resident_count') }}</strong>
@@ -48,7 +62,9 @@
                 <div id="boiler-options" >
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.service_value_id') ? ' has-error' : '' }}">
-                            <label for="high_efficiency_boiler_id" class=" control-label"><i data-toggle="collapse" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('boiler.boiler-type.title')}} </label>
+                            <label for="high_efficiency_boiler_id" class=" control-label">
+                                <i data-toggle="collapse" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('boiler.boiler-type.title')}} </label>
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'service_value_id'])
@@ -60,7 +76,7 @@
                             @endcomponent
 
                             <div id="high-efficiency-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                And i would like to have it to...
+                                {{\App\Helpers\Translation::translate('boiler.boiler-type.help')}}
                             </div>
 
                             @if ($errors->has('building_services.' . $boiler->id . '.service_value_id'))
@@ -90,7 +106,7 @@
                             @endcomponent
 
                             <div id="high-efficiency-boiler-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                And i would like to have it to...
+                                {{\App\Helpers\Translation::translate('boiler.boiler-placed-date.help')}}
                             </div>
 
                             @if ($errors->has('building_services.' . $boiler->id . '.extra'))
@@ -105,7 +121,8 @@
                     
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}} </label>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('general.specific-situation.title')}} </label>
                             <?php
                                 $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
                             ?>
@@ -113,7 +130,7 @@
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
 
                             <div id="comment" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                And i would like to have it to...
+                                {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
                             </div>
 
                             @if ($errors->has('comment'))

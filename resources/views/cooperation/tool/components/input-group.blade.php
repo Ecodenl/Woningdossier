@@ -45,10 +45,6 @@
     </div>
 </div>
 
-<div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-    And I would like to have it too... dslfhsdi
-</div>
-
 @push('js')
     <script>
         $(document).ready(function () {

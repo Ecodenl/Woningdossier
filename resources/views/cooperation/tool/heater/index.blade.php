@@ -19,7 +19,10 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.water_comfort_id') ? ' has-error' : '' }}">
-                        <label for="user_energy_habits_water_comfort_id" class=" control-label"><i data-toggle="collapse" data-target="#water-comfort-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.title')}}</label>
+                        <label for="user_energy_habits_water_comfort_id" class=" control-label">
+                            <i data-toggle="collapse" data-target="#water-comfort-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.title')}}
+                        </label>
 
                             <select id="user_energy_habits_water_comfort_id" class="form-control" name="user_energy_habits[water_comfort_id]">
                                 @foreach($comfortLevels as $comfortLevel)
@@ -28,7 +31,7 @@
                             </select>
 
                         <div id="water-comfort-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.help')}}
                         </div>
                         @if ($errors->has('user_energy_habits.water_comfort_id'))
                             <span class="help-block">
@@ -40,7 +43,10 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_heaters.pv_panel_orientation_id') ? ' has-error' : '' }}">
-                        <label for="building_heaters_pv_panel_orientation_id" class=" control-label"><i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.pv-panel-orientation-id.title')}}</label>
+                        <label for="building_heaters_pv_panel_orientation_id" class=" control-label">
+                            <i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('heater.pv-panel-orientation-id.title')}}
+                        </label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $collectorOrientations, 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'pv_panel_orientation_id'])
@@ -52,7 +58,7 @@
                         @endcomponent
 
                         <div id="orientation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('heater.pv-panel-orientation-id.help')}}
                         </div>
 
                         @if ($errors->has('building_heaters.pv_panel_orientation_id'))
@@ -66,7 +72,10 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_heaters.angle') ? ' has-error' : '' }}">
-                        <label for="building_heaters_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.angle.title')}}</label>
+                        <label for="building_heaters_angle" class=" control-label">
+                            <i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('heater.angle.title')}}
+                        </label>
 
 
                         <?php $angles = [20, 30, 40, 45, 50, 60, 70, 75, 90]  ?>
@@ -81,7 +90,7 @@
                         @endcomponent
 
                         <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('heater.angle.help')}}
                         </div>
 
                         @if ($errors->has('building_heaters.angle'))

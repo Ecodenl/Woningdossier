@@ -14,7 +14,9 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group add-space {{ $errors->has('building_roof_types') ? ' has-error' : '' }}">
-                            <label for="building_roof_types" class="control-label"><i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.roof-types.title')}}</label>
+                            <label for="building_roof_types" class="control-label">
+                                <i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                {{\App\Helpers\Translation::translate('roof-insulation.current-situation.roof-types.title')}}</label>
                             <br>
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'])
@@ -38,7 +40,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group add-space">
                                     <div id="roof-type-info" class="collapse alert alert-info remove-collapse-space">
-                                        I would like to have some help full information right here!
+                                        {{\App\Helpers\Translation::translate('roof-insulation.current-situation.roof-types.help')}}
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +53,8 @@
                         <div class="col-md-12">
                             <div class="form-group add-space {{$errors->has('building_features.roof_type_id') ? ' has-error' : ''}}">
 
-                                <label for="main_roof" class="control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.main-roof.title')}}</label>
+                                <label for="main_roof" class="control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                    {{\App\Helpers\Translation::translate('roof-insulation.current-situation.main-roof.title')}}</label>
 
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id', 'additionalConditionColumn' => true])
@@ -65,7 +68,7 @@
                                 @endcomponent
 
                                 <div id="main-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    And I would like to have it too...
+                                    {{\App\Helpers\Translation::translate('roof-insulation.current-situation.main-roof.help')}}
                                 </div>
                                 @if ($errors->has('building_features.roof_type_id'))
                                     <span class="help-block">
@@ -85,7 +88,9 @@
                                 <div class="col-sm-12 col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.element_value_id') ? ' has-error' : '' }}">
 
-                                        <label for="flat_roof_insulation" class="control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated.title')}}</label>
+                                        <label for="flat_roof_insulation" class="control-label">
+                                            <i data-toggle="collapse" data-target="#{{ $roofCat }}-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated.title')}}</label>
 
                                         <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][element_value_id]" >
                                             @foreach($roofInsulation->values as $insulation)
@@ -96,7 +101,7 @@
                                         </select>
 
                                         <div id="{{ $roofCat }}-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And I would like to have it too...
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated.title')}}
                                         </div>
                                         @if ($errors->has('building_roof_types.' . $roofCat . '.element_value_id'))
                                             <span class="help-block">
@@ -108,7 +113,9 @@
                                 <div class="col-sm-12 col-md-6 roof-surface-inputs">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.roof_surface') ? ' has-error' : '' }}">
 
-                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.'.$roofCat.'-roof-surface.title')}}</label> <span> *</span>
+                                        <label for="flat-roof-surfaces" class=" control-label">
+                                            <i data-toggle="collapse" data-target="#{{ $roofCat }}-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.'.$roofCat.'-roof-surface.title')}}</label> <span> *</span>
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'roof_surface'])
@@ -117,7 +124,7 @@
                                         @endcomponent
 
                                         <div id="{{ $roofCat }}-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And I would like to have it too...
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.'.$roofCat.'-roof-surface.help')}}
                                         </div>
 
                                         @if ($errors->has('building_roof_types.' . $roofCat . '.roof_surface'))
@@ -143,7 +150,7 @@
                                         @endcomponent
 
                                         <div id="{{ $roofCat }}-insulation_roof_surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And I would like to have it too...
+                                            {{\App\Helpers\Translation::translate("roof-insulation.current-situation.insulation-".$roofCat."-roof-surface.help")}}
                                         </div>
 
                                         @if ($errors->has('building_roof_types.' . $roofCat . '.insulation_roof_surface'))
@@ -158,7 +165,9 @@
                             <div class="row cover-zinc">
                                 <div class="col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
-                                        <label for="zinc-replaced" class="control-label"><i data-toggle="collapse" data-target="#zinc-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.zinc-replaced.title')}}</label> <span> *</span>
+                                        <label for="zinc-replaced" class="control-label">
+                                            <i data-toggle="collapse" data-target="#zinc-replaced-date" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.zinc-replaced.title')}}</label> <span> *</span>
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.zinc_replaced_date'])
@@ -166,11 +175,13 @@
                                             <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ isset($currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date'] : old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}">
                                         @endcomponent
 
-                                        <div id="zinc-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And I would like to have it too...
+
+                                        <div id="zinc-replaced-date" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                            {{\App\Helpers\Translation::translate("roof-insulation.current-situation.zinc-replaced.help")}}
                                         </div>
 
-                                        @if ($errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date'))
+
+                                    @if ($errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date'))
                                             <span class="help-block">
                                                     <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}</strong>
                                                 </span>
@@ -181,7 +192,9 @@
                             <div class="row cover-bitumen">
                                 <div class="col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date') ? ' has-error' : '' }}">
-                                        <label for="bitumen-replaced" class=" control-label"><i data-toggle="collapse" data-target="#bitumen-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.bitumen-insulated.title')}}</label> <span> *</span>
+                                        <label for="bitumen-replaced" class=" control-label">
+                                            <i data-toggle="collapse" data-target="#bitumen-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.bitumen-insulated.title')}}</label> <span> *</span>
 
 				                        <?php
 				                            $default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date']) && $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] : '';
@@ -194,7 +207,7 @@
                                         @endcomponent
 
                                         <div id="bitumen-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And I would like to have it too...
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.bitumen-insulated.help')}}
                                         </div>
 
                                         @if ($errors->has('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date'))
@@ -212,7 +225,9 @@
                                     <div class="col-md-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.tiles_condition') ? ' has-error' : '' }}">
 
-                                            <label for="tiles_condition" class=" control-label"><i data-toggle="collapse" data-target="#tiles-condition-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.in-which-condition-tiles.title')}}</label>
+                                            <label for="tiles_condition" class=" control-label">
+                                                <i data-toggle="collapse" data-target="#tiles-condition-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                                {{\App\Helpers\Translation::translate('roof-insulation.current-situation.in-which-condition-tiles.title')}}</label>
 
                                             <?php
                                                 $default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition']) && $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] : '';
@@ -228,7 +243,7 @@
                                             @endcomponent
 
                                             <div id="tiles-condition-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                                And I would like to have it too...
+                                                {{\App\Helpers\Translation::translate('roof-insulation.current-situation.in-which-condition-tiles.help')}}
                                             </div>
 
                                             @if ($errors->has('building_roof_types.' . $roofCat . '.extra.tiles_condition'))
@@ -246,7 +261,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group add-space {{$errors->has('building_roof_types.' . $roofCat . '.extra.measure_application_id') ? ' has-error' : ''}}">
 
-                                        <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-interested-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.insulate-roof.title')}}</label>
+                                        <label for="building_type_id" class=" control-label">
+                                            <i data-toggle="collapse" data-target="#{{ $roofCat }}-interested-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.insulate-roof.title')}}</label>
 
                                         <?php
                                             $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id'] : 0;
@@ -265,7 +282,7 @@
                                         @endcomponent
 
                                         <div id="{{ $roofCat }}-interested-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And I would like to have it too...
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.insulate-roof.help')}}
                                         </div>
                                         @if ($errors->has('building_roof_types.' . $roofCat . '.extra.measure_application_id'))
                                             <span class="help-block">
@@ -277,7 +294,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group add-space {{$errors->has('building_roof_types.' . $roofCat . '.building_heating_id') ? ' has-error' : ''}}">
 
-                                        <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-heating-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.situation.title')}}</label>
+                                        <label for="building_type_id" class=" control-label">
+                                            <i data-toggle="collapse" data-target="#{{ $roofCat }}-heating-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.situation.title')}}</label>
 
                                         <?php
 	                                    $default = isset($currentCategorizedRoofTypes[$roofCat]['building_heating_id']) ? $currentCategorizedRoofTypes[$roofCat]['building_heating_id'] : 0;
@@ -295,7 +314,7 @@
                                         @endcomponent
 
                                         <div id="{{ $roofCat }}-heating-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And I would like to have it too...
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.situation.help')}}
                                         </div>
                                         @if ($errors->has('building_roof_types.' . $roofCat . '.building_heating_id'))
                                             <span class="help-block">
@@ -311,7 +330,7 @@
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.'.$roofCat.'.extra.comment') ? ' has-error' : '' }}">
                                         <label for="" class="control-label">
                                             <i data-toggle="collapse" data-target="#comments-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                            @lang('default.form.input.comment')
+                                            {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
                                         </label>
 
 	                                    <?php
@@ -323,7 +342,7 @@
                                         <textarea name="building_roof_types[{{ $roofCat }}][extra][comment]" id="" class="form-control">{{ $default }}</textarea>
 
                                         <div id="comments-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            And i would like to have it to...
+                                            {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
                                         </div>
 
                                         @if ($errors->has('building_roof_types.'.$roofCat.'.extra.comment'))
@@ -342,7 +361,7 @@
 
                     @foreach(['flat', 'pitched'] as $roofCat)
                         <div class="costs {{ $roofCat }}-roof">
-                            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.title.title')}}</h4>
+                            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.costs.title.title')}}</h4>
                             <div class="row">
 
                                 <div class="col-md-4">
@@ -358,7 +377,7 @@
                                     <div class="form-group add-space">
                                         <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
+                                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                             <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
                                         </div>
                                     </div>

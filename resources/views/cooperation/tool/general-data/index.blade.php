@@ -672,7 +672,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('hours_high') ? ' has-error' : '' }}">
                                 <label for="hours_high" class=" control-label">
-                                    <i data-toggle="collapse" data-target="#hours-hight-info"
+                                    <i data-toggle="collapse" data-target="#hours-high-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.max-hours-thermostat-highest.title')}}

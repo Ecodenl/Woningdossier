@@ -137,7 +137,8 @@
                                 <div class="col-sm-12 col-md-6">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.insulation_roof_surface') ? ' has-error' : '' }}">
 
-                                        <label for="flat-roof-surfaces" class=" control-label"><i data-toggle="collapse" data-target="#{{ $roofCat }}-insulation_roof_surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                        <label for="flat-roof-surfaces" class=" control-label">
+                                            <i data-toggle="collapse" data-target="#{{ $roofCat }}-insulation_roof_surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                             {{ \App\Helpers\Translation::translate("roof-insulation.current-situation.insulation-".$roofCat."-roof-surface.title") }}
                                         </label> <span> *</span>
 
@@ -162,12 +163,13 @@
                                 </div>
                             </div>
 
-                            <div class="row cover-zinc">
+                            <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
                                         <label for="zinc-replaced" class="control-label">
                                             <i data-toggle="collapse" data-target="#zinc-replaced-date" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.zinc-replaced.title')}}</label> <span> *</span>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.zinc-replaced.title')}}
+                                        </label> <span> *</span>
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.zinc_replaced_date'])

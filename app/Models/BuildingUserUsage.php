@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingUserUsage extends Model
 {
     use GetValueTrait;
+    use GetMyValuesTrait;
 
     public function building()
     {

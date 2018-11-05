@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingCategory extends Model
 {
-    use TranslatableTrait, GetValueTrait;
+    use TranslatableTrait;
 
     public function buildingFeatures()
     {

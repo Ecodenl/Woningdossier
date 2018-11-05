@@ -56,9 +56,13 @@ class RoofInsulationController extends Controller
 
         /** var BuildingFeature $features */
         $features = $building->buildingFeatures;
+        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
+
         $roofTypes = RoofType::all();
         $steps = Step::orderBy('order')->get();
         $currentRoofTypes = $building->roofTypes;
+        $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
+
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $heatings = BuildingHeating::all();
@@ -67,8 +71,13 @@ class RoofInsulationController extends Controller
         $currentCategorizedRoofTypes = [
             'flat' => [],
             'pitched' => [],
-//            'no' => [],
         ];
+
+        $currentCategorizedRoofTypesForMe = [
+            'flat' => [],
+            'pitched' => [],
+        ];
+
         if ($currentRoofTypes instanceof Collection) {
             /** var BuildingRoofType $currentRoofType */
             foreach ($currentRoofTypes as $currentRoofType) {
@@ -77,12 +86,20 @@ class RoofInsulationController extends Controller
                     $currentCategorizedRoofTypes[$cat] = $currentRoofType->toArray();
                 }
             }
+
+            foreach ($currentRoofTypesForMe as $currentRoofTypeForMe) {
+                $cat = $this->getRoofTypeCategory($currentRoofTypeForMe->roofType);
+                if (! empty($cat)) {
+                    // we do not want this to be an array, otherwise we would have to add additional functionality to the input group component.
+                    $currentCategorizedRoofTypesForMe[$cat][] = $currentRoofTypeForMe;
+                }
+            }
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps', 'typeIds',
-             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation',
-             'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
+            'features', 'roofTypes', 'steps', 'typeIds', 'buildingFeaturesForMe',
+             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
+             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
 
     protected function getRoofTypeCategory(RoofType $roofType)

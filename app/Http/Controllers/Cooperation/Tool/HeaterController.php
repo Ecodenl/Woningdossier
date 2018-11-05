@@ -63,10 +63,11 @@ class HeaterController extends Controller
             $currentComfort = $habits->comfortLevelTapWater;
         }
         $currentHeater = $building->heater;
+        $currentHeatersForMe = $building->heater()->forMe()->get();
 
         return view('cooperation.tool.heater.index', compact(
             'comfortLevels', 'collectorOrientations', 'typeIds',
-            'currentComfort', 'currentHeater', 'habits', 'steps'
+            'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
         ));
     }
 

@@ -110,7 +110,7 @@ class ExampleBuildingController extends Controller
             }
         }
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', 'This example building was added');
+        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', 'This example building was added');
     }
 
     /**
@@ -528,7 +528,7 @@ class ExampleBuildingController extends Controller
         }
         $exampleBuilding->save();
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
+        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
     }
 
     protected function array_undot($content)

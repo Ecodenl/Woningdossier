@@ -30,7 +30,8 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
+use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
@@ -63,7 +64,7 @@ class InsulatedGlazingController extends Controller
          */
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
-        
+
         $steps = Step::orderBy('order')->get();
 
         $interests = Interest::orderBy('order')->get();
@@ -96,7 +97,7 @@ class InsulatedGlazingController extends Controller
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
-                // get interests fo3r the measure
+                // get interests for the measure
                 $measureInterest = $user->interests()
                                                 ->where('interested_in_type', 'measure_application')
                                                 ->where('interested_in_id', $measureApplication->id)
@@ -278,7 +279,8 @@ class InsulatedGlazingController extends Controller
             'savings' => 0,
         ];
 
-        $crackSealingId = $request->get('building_elements.crack-sealing', 0);
+        // take the first array element since its the id
+        $crackSealingId = $request->input('building_elements.*.crack-sealing', 0)[0];
         $crackSealingElement = ElementValue::find($crackSealingId);
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
             $energyHabit = $user->energyHabits;

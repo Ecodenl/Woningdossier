@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
+use Carbon\Carbon;
 use App\Models\InputSource;
 use App\Models\Role;
 use App\Models\User;
@@ -24,27 +25,39 @@ class BuildingController extends Controller
         return view('cooperation.admin.coach.buildings.index', compact('buildingPermissions', 'buildingCoachStatuses'));
     }
 
-
-    public function setBuildingStatus(Request $request)
+    public function edit(Cooperation $cooperation, $buildingId)
     {
-        $buildingCoachStatus = $request->get('building_coach_status', '');
-        $buildingId = $request->get('building_id');
-
-
+        $building = Building::find($buildingId);
+        // do a check if the user has access to this building
         if (\Auth::user()->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
-
-            BuildingCoachStatus::updateOrCreate(
-                [
-                    'coach_id' => \Auth::id(),
-                    'building_id' => $buildingId
-                ],
-                [
-                    'status' => $buildingCoachStatus,
-                ]
-            );
+            $buildingCoachStatus = BuildingCoachStatus::where('building_id', $buildingId)->first();
         }
 
+        return view('cooperation.admin.coach.buildings.edit', compact('building', 'buildingCoachStatus'));
+    }
+
+
+    public function update(Request $request)
+    {
+
+        $buildingCoachStatus = $request->get('building_coach_status', '');
+        $appointmentDate = $request->get('appointment_date', null);
+        $appointmentDateFormated = Carbon::parse($appointmentDate)->format('Y-m-d H:i:s');
+        $buildingId = $request->get('building_id');
+
+        BuildingCoachStatus::updateOrCreate(
+            [
+                'coach_id' => \Auth::id(),
+                'building_id' => $buildingId
+            ],
+            [
+                'appointment_date' => $appointmentDateFormated,
+                'status' => $buildingCoachStatus,
+            ]
+        );
+
         return redirect()->route('cooperation.admin.coach.buildings.index')->with('success', __('woningdossier.cooperation.admin.coach.buildings.set-building-status.success'));
+
 
     }
 
@@ -63,14 +76,14 @@ class BuildingController extends Controller
         $user = User::find($building->user_id);;
         // we cant query on the Spatie\Role model so we first get the result on the "original model"
         $role = Role::findByName($user->roles->first()->name);
-        // get the input source
-        $inputSourceValue = $role->inputSource;
+        // set the input source value to the coach itself
+        $inputSourceValue = InputSource::find(HoomdossierSession::getInputSource());
 
         $inputSource = InputSource::find(HoomdossierSession::getInputSource());
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
-        // note: this will not occur much
-        if (!$inputSourceValue instanceof InputSource || !$inputSource instanceof InputSource) {
+        // or if the role is not a resident, we gonna throw them back.
+        if (!$inputSourceValue instanceof InputSource || !$inputSource instanceof InputSource && $inputSource->isResident()) {
             return redirect()->back()->with('warning', __('woningdossier.cooperation.admin.coach.buildings.fill-for-user.warning'));
         }
 

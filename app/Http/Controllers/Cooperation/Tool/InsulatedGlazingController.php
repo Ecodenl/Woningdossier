@@ -279,8 +279,7 @@ class InsulatedGlazingController extends Controller
             'savings' => 0,
         ];
 
-        // take the first array element since its the id
-        $crackSealingId = $request->input('building_elements.*.crack-sealing', 0)[0];
+        $crackSealingId = $request->get('building_elements.crack-sealing', 0);
         $crackSealingElement = ElementValue::find($crackSealingId);
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
             $energyHabit = $user->energyHabits;

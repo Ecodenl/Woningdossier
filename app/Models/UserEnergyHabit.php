@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -56,8 +57,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserEnergyHabit extends Model
 {
+    use GetValueTrait;
+
     protected $fillable = [
         'user_id',
+        'input_source_id',
         'resident_count',
         'thermostat_high',
         'thermostat_low',

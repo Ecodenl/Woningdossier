@@ -142,6 +142,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 			    Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
 			        Route::get('', 'BuildingController@index')->name('index');
+			        Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
+			        Route::post('edit', 'BuildingController@update')->name('update');
 			        Route::get('{id}', 'BuildingController@fillForUser')->name('fill-for-user');
 			        Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
 

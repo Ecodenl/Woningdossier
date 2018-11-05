@@ -44,10 +44,40 @@ class BuildingCoachStatus extends Model
      * @param $status
      * @return Model|null|object|static
      */
-    public static function scopeCurrentStatus($query, $status)
+    public function scopeCurrentStatus($query, $status)
     {
 
-        return $query->where('status', $status)->where('coach_id', \Auth::id())->first();
+        return $query->where('status', $status)->where('coach_id', \Auth::id());
+    }
+
+    /**
+     * Returns the translated status.
+     *
+     * @return string
+     */
+    public static function getCurrentStatusName($buildingId): string
+    {
+        $currentStatus = self::where('coach_id', \Auth::id())->where('building_id', $buildingId)->get()->last();
+
+        if ($currentStatus instanceof BuildingCoachStatus) {
+            return __('woningdossier.cooperation.admin.coach.buildings.index.table.options.'.$currentStatus->status);
+        }
+        return "";
+    }
+
+    /**
+     * Returns the key of the status
+     *
+     * @return string
+     */
+    public static function getCurrentStatusKey($buildingId): string
+    {
+        $currentStatus = self::where('coach_id', \Auth::id())->where('building_id', $buildingId)->get()->last();
+
+        if ($currentStatus instanceof BuildingCoachStatus) {
+            return $currentStatus->status;
+        }
+        return "";
     }
 
 }

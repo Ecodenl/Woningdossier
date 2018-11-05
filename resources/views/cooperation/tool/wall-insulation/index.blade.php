@@ -56,7 +56,6 @@
                     <div class="form-group add-space">
                         <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
                             I would like to have some helpful information right here!
-                            I would like to have some helpful information right here!
                         </div>
                     </div>
                 </div>

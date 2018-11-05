@@ -8364,9 +8364,8 @@ body #app .glyphicon-padding {
   color: #8eb4cb;
 }
 
-body #app .remove-collapse-space {
-  margin: 0px;
-  max-height: 55px;
+body #app .collapse.in {
+  height: auto !important;
 }
 
 body #app .alert-top-space {
@@ -8420,6 +8419,14 @@ body i.glyphicon-info-sign {
 .page-my-plan ul#years {
   list-style: none;
   padding-left: 0;
+}
+
+.page-my-plan table tbody tr.collapse td {
+  border-top: 1px solid transparent !important;
+}
+
+.page-my-plan table tbody tr.collapsing td {
+  border-top: 1px solid transparent !important;
 }
 
 ul.progress-list li a img {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingInsulatedGlazing extends Model
 {
+    use GetValueTrait;
     /**
      * The attributes that should be cast to native types.
      *
@@ -44,7 +46,7 @@ class BuildingInsulatedGlazing extends Model
         'extra' => 'array',
     ];
 
-    protected $fillable = ['building_id', 'measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows', 'extra'];
+    protected $fillable = ['building_id', 'input_source_id', 'measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows', 'extra'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

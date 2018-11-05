@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
@@ -304,9 +305,11 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-        $user = Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
-        $building = $user->buildings()->first();
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
         // Saving the insulate glazings
@@ -322,10 +325,13 @@ class InsulatedGlazingController extends Controller
             // Update or Create the buildingInsulatedGlazing
             BuildingInsulatedGlazing::updateOrCreate(
                 [
-                    'building_id' => $building->id,
+                    'building_id' => $buildingId,
+                    'input_source_id' => $inputSourceId,
                     'measure_application_id' => $measureApplicationId,
                 ],
                 [
+                    'building_id' => $buildingId,
+                    'input_source_id' => $inputSourceId,
                     'insulating_glazing_id' => $insulatedGlazingId,
                     'building_heating_id' => $buildingHeatingId,
                     'm2' => $m2,
@@ -354,7 +360,7 @@ class InsulatedGlazingController extends Controller
         $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
         UserInterest::updateOrCreate(
             [
-                'user_id'            => Auth::id(),
+                'user_id'            => $user->id,
                 'interested_in_type' => 'element',
                 'interested_in_id'   => $livingRoomWindowsElement->id,
             ],
@@ -370,14 +376,16 @@ class InsulatedGlazingController extends Controller
             $elementValue = ElementValue::find(reset($elementValueId));
 
             if ($element instanceof Element && $elementValue instanceof ElementValue) {
-                $buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
-                if (! $buildingElement instanceof BuildingElement) {
-                    $buildingElement = new BuildingElement();
-                }
-                $buildingElement->elementValue()->associate($elementValue);
-                $buildingElement->element()->associate($element);
-                $buildingElement->building()->associate($building);
-                $buildingElement->save();
+                BuildingElement::updateOrCreate(
+                    [
+                        'element_id' => $element->id,
+                        'input_source_id' => $inputSourceId,
+                        'building_id' => $buildingId
+                    ],
+                    [
+                        'element_value_id' => $elementValue->id,
+                    ]
+                );
             }
         }
 
@@ -390,15 +398,19 @@ class InsulatedGlazingController extends Controller
             $woodElementId = key($request->input('building_elements.wood-elements'));
 
             // Check if there are wood elements drop them
-            if (BuildingElement::where('element_id', $woodElementId)->count() > 0) {
-                BuildingElement::where('element_id', $woodElementId)->delete();
+            if (BuildingElement::where('element_id', $woodElementId)->where('building_id', $buildingId)->where('input_source_id', $inputSourceId)->count() > 0) {
+                BuildingElement::where('element_id', $woodElementId)
+                    ->where('building_id', $buildingId)
+                    ->where('input_source_id', $inputSourceId)
+                    ->delete();
             }
 
             // Save the woodElements
             foreach ($woodElements as $woodElementValueId) {
                 BuildingElement::create(
                     [
-                        'building_id' => $building->id,
+                        'building_id' => $buildingId,
+                        'input_source_id' => $inputSourceId,
                         'element_id' => $woodElementId,
                         'element_value_id' => $woodElementValueId,
                     ]
@@ -410,7 +422,8 @@ class InsulatedGlazingController extends Controller
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
         BuildingPaintworkStatus::updateOrCreate(
             [
-                'building_id' => $building->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId
             ],
             [
                 'last_painted_year' => $paintWorkStatuses['last_painted_year'],
@@ -428,7 +441,7 @@ class InsulatedGlazingController extends Controller
         $this->saveAdvices($request);
         // Save progress
         $user->complete($this->step);
-        $cooperation = Cooperation::find($request->session()->get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }

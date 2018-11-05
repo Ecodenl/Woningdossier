@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class BuildingPermission extends Model
 {
+    use GetValueTrait;
+
     protected $fillable = ['user_id', 'role_id', 'step_id', 'building_id', 'permissions'];
 
     /**

@@ -124,14 +124,15 @@ class HeaterController extends Controller
 	        \Log::debug("Heater: helpfactor: " . $helpFactor);
 
             $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water'], $helpFactor);
-            if ($systemSpecs instanceof HeaterSpecification) {
+
+	        if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists('collector', $systemSpecs)){
                 $result['specs'] = [
-                    'size_boiler' => $systemSpecs->boiler,
-                    'size_collector' => $systemSpecs->collector,
+                    'size_boiler' => $systemSpecs['boiler'],
+                    'size_collector' => $systemSpecs['collector'],
                 ];
 
                 \Log::debug("Heater: For this water consumption you need this heater: " . json_encode($systemSpecs));
-                $result['production_heat'] = $systemSpecs->savings;
+                $result['production_heat'] = $systemSpecs['production_heat'];
                 $result['savings_gas'] = $result['production_heat'] / Kengetallen::gasKwhPerM3();
                 $result['percentage_consumption'] = isset($result['consumption']['gas']) ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
                 $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
@@ -142,7 +143,6 @@ class HeaterController extends Controller
                 $result['cost_indication'] = $componentCostBoiler->cost + $componentCostCollector->cost;
 
                 $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
-
 
                 if ($helpFactor >= 0.84) {
                     $result['performance'] = [

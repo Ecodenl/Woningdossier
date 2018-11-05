@@ -12,6 +12,10 @@ use App\Models\UserEnergyHabit;
 
 class KeyFigures
 {
+
+	const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
+
+
     /**
      * @param $zipcode
      *
@@ -52,7 +56,7 @@ class KeyFigures
      * @param int $waterConsumption
      * @param float $helpFactor
      *
-     * @return HeaterSpecification|null
+     * @return array
      */
     public static function getSystemSpecifications($waterConsumption, $helpFactor)
     {
@@ -64,11 +68,19 @@ class KeyFigures
 	    $advisedSize = self::getAdvisedCollectorSize($relativeCollectorSize);
 	    \Log::debug("Heater: Advised collector size: " . $advisedSize);
 
-	    return HeaterSpecification::where('liters', $waterConsumption)
-	                              ->where('collector', '=', $advisedSize)
-	                              ->first();
+	    return [
+	    	'boiler' => $initialHeater->boiler,
+		    'collector' => $advisedSize,
+		    'production_heat' => $initialHeater->savings,
+	    ];
     }
 
+	/**
+	 * Return the advised collector size based on the relative collector size
+	 * @param float $relativeCollectorSize
+	 *
+	 * @return float
+	 */
     public static function getAdvisedCollectorSize($relativeCollectorSize){
 		if ($relativeCollectorSize <= 2){
 			return 1.6;

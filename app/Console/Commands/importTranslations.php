@@ -146,42 +146,65 @@ class importTranslations extends Command
 
         $updateCounter = 0;
         $createCounter = 0;
-        foreach ($updateHelpTranslations as $updateHelpTranslation) {
-            $updateHelpTrans = Translation::updateOrCreate(
-                [
-                    'key' => $updateHelpTranslation['key']
-                ],
-                $updateHelpTranslation
-            );
 
-            if ($updateHelpTrans->wasChanged()) {
-                $updateCounter++;
-                $this->line('The translation with id:'. $updateHelpTrans->id. ' has been updated');
-            } elseif ($updateHelpTrans->wasRecentlyCreated) {
-                $createCounter++;
-                $this->line('The translation with id: '. $updateHelpTrans->id. ' is nieuw aangemaakt');
+        foreach ($updateHelpTranslations as $updateHelpTranslation) {
+            $helpTranslation = Translation::where('key', $updateHelpTranslation['key'])->first();
+
+            // check if the translation exists.
+            // if so, we can see if it needs a update
+            // else create a new one.
+            if ($helpTranslation instanceof Translation) {
+                // check if the translation from the csv differs from the translation in the database
+                // ifso update it
+                if ($updateHelpTranslation['translation'] != $helpTranslation->translation) {
+                    $updateCounter++;
+                    Translation::where('key', $updateHelpTranslation['key'])->update([
+                        'key' => $updateHelpTranslation['key'],
+                        'language' => $updateHelpTranslation['language'],
+                        'translation' => $updateHelpTranslation['translation']
+                    ]);
+                }
+
             } else {
-                $this->line('Nothing has been updated or created.');
+                Translation::create([
+                    'key' => $updateHelpTranslation['key'],
+                    'language' => $updateHelpTranslation['language'],
+                    'translation' => $updateHelpTranslation['translation']
+                ]);
+                $createCounter++;
             }
         }
         foreach ($updateTitleTranslations as $updateTitleTranslation) {
-            $updateTitleTrans = Translation::updateOrCreate(
-                [
-                    'key' => $updateTitleTranslation['key']
-                ],
-                $updateTitleTranslation
-            );
+            $titleTranslation = Translation::where('key', $updateTitleTranslation['key'])->first();
 
-            if ($updateTitleTrans->wasChanged()) {
-                $updateCounter++;
-                $this->line('The translation with id:'. $updateTitleTrans->id. ' has been updated');
-            } elseif ($updateTitleTrans->wasRecentlyCreated) {
-                $createCounter++;
-                $this->line('The translation with id: '. $updateTitleTrans->id. ' is nieuw aangemaakt');
+            // check if the translation exists.
+            // if so, we can see if it needs a update
+            // else create a new one.
+            if ($titleTranslation instanceof Translation) {
+                // check if the translation from the csv differs from the translation in the database
+                // ifso update it
+                if ($updateTitleTranslation['translation'] != $titleTranslation->translation) {
+                    $updateCounter++;
+                    Translation::where('key', $updateTitleTranslation['key'])->update([
+                        'key' => $updateTitleTranslation['key'],
+                        'language' => $updateTitleTranslation['language'],
+                        'translation' => $updateTitleTranslation['translation']
+                    ]);
+                }
+
             } else {
-                $this->line('Nothing has been updated or created.');
+                Translation::create([
+                    'key' => $updateTitleTranslation['key'],
+                    'language' => $updateTitleTranslation['language'],
+                    'translation' => $updateTitleTranslation['translation']
+                ]);
+                $createCounter++;
             }
         }
+
+        $this->line("Created counter: {$createCounter}");
+        $this->line("Update counter: {$updateCounter}");
+
 
 
 
@@ -221,6 +244,7 @@ class importTranslations extends Command
         // write and close the file
         fwrite($translationFile, $translationFileContent);
         fclose($translationFile);
+
         $this->line($createCounter." translations have been created and ".$updateCounter." have been updated.");
         $this->line('Done!', "fg=green");
 

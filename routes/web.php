@@ -44,6 +44,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
+            	Route::get('import', 'ToolController@import');
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
                 Route::group(['middleware' => 'filled-step:general-data'], function(){

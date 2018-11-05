@@ -26,7 +26,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 		// Login, forgot password etc.
 		Auth::routes();
 
-
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );

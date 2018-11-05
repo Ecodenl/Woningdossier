@@ -161,13 +161,12 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
+                                {{-- Had class .cover-zinc not used in js, does not seem neseserie --}}
                                 <div class="col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
                                         <label for="zinc-replaced" class="control-label">
-                                            <i data-toggle="collapse" data-target="#zinc-replaced-date" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                            <i data-toggle="collapse" data-target="#zinc-{{$roofCat}}-replaced-date" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                             {{\App\Helpers\Translation::translate('roof-insulation.current-situation.zinc-replaced.title')}}
                                         </label> <span> *</span>
 
@@ -178,19 +177,20 @@
                                         @endcomponent
 
 
-                                        <div id="zinc-replaced-date" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                        <div id="zinc-{{$roofCat}}-replaced-date" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             {{\App\Helpers\Translation::translate("roof-insulation.current-situation.zinc-replaced.help")}}
                                         </div>
 
-
-                                    @if ($errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date'))
+                                        @if ($errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date'))
                                             <span class="help-block">
-                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}</strong>
-                                                </span>
+                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}</strong>
+                                            </span>
                                         @endif
                                     </div>
                                 </div>
+
                             </div>
+
                             <div class="row cover-bitumen">
                                 <div class="col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date') ? ' has-error' : '' }}">
@@ -474,6 +474,9 @@
     <script>
         $(document).ready(function() {
 
+            function hide() {
+
+            }
             $(window).keydown(function(event){
                 if(event.keyCode === 13) {
                     event.preventDefault();

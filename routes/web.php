@@ -39,6 +39,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
 				Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
 
+				Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+
+					Route::get('', 'MessagesController@index')->name('index');
+					Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
+					Route::post('edit', 'MessagesController@store')->name('store');
+
+					Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
+
+						Route::get('', 'RequestController@index')->name('index');
+						Route::get('{requestMessageId}', 'RequestController@edit')->name('edit');
+						Route::post('{requestMessageId}', 'RequestController@update')->name('update');
+					});
+				});
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
 

@@ -2,15 +2,18 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Motivation;
 use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Factory;
 
 class GeneralDataFormRequest extends FormRequest
 {
     use DecimalReplacementTrait;
+    use ValidatorTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +27,14 @@ class GeneralDataFormRequest extends FormRequest
 
     public function getValidatorInstance()
     {
+
         $this->decimals(['surface', 'thermostat_high', 'thermostat_low']);
 
         return parent::getValidatorInstance();
     }
+
+
+
 
     /**
      * Get the validation rules that apply to the request.

@@ -11,7 +11,7 @@
                         </h4>
                     </div>
                     <ul id="sidebar" class="list-group panel-collapse open collapse in" aria-expanded="true">
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.index'])) active @endif"><a href="{{route('cooperation.admin.coach.index')}}">@lang('woningdossier.cooperation.admin.coach.side-nav.index')</a></li>
+                        {{--<li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.index'])) active @endif"><a href="{{route('cooperation.admin.coach.index')}}">@lang('woningdossier.cooperation.admin.coach.side-nav.index')</a></li>--}}
                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.buildings.index'])) active @endif"><a href="{{route('cooperation.admin.coach.buildings.index')}}">@lang('woningdossier.cooperation.admin.coach.side-nav.buildings')</a></li>
                         <li class="list-group-item"><a href="#">@lang('woningdossier.cooperation.admin.coach.side-nav.messages')</a></li>
                     </ul>

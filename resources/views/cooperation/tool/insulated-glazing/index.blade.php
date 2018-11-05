@@ -59,12 +59,22 @@
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                                 </label>
-
-                                <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
-                                    @foreach($insulatedGlazings as $insulateGlazing)
-                                        <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
-                                    @endforeach
-                                </select>
+                                {{--<div class="input-group">--}}
+                                    {{--<div class="input-group-btn">--}}
+                                        {{--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>--}}
+                                        {{--<ul class="dropdown-menu">--}}
+                                            {{--<li><a href="#">Action</a></li>--}}
+                                            {{--<li><a href="#">Another action</a></li>21--}}
+                                            {{--<li class="divider"></li>--}}
+                                            {{--<li><a href="#">Separated link</a></li>--}}
+                                        {{--</ul>--}}
+                                    {{--</div>--}}
+                                    <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
+                                        @foreach($insulatedGlazings as $insulateGlazing)
+                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
+                                        @endforeach
+                                    </select>
+                                {{--</div>--}}
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulated_glazing_id-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -89,7 +99,7 @@
                                 <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][building_heating_id]">
 
                                     @foreach($heatings as $heating)
-                                        <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
+                                        <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id == $heating->id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
                                     @endforeach
 
                                 </select>
@@ -324,8 +334,8 @@
 
                         @if ($errors->has('building_paintwork_statuses.paintwork_status_id'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('building_paintwork_statuses.paintwork_status_id') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('building_paintwork_statuses.paintwork_status_id') }}</strong>
+                            </span>
                         @endif
                     </div>
                 </div>

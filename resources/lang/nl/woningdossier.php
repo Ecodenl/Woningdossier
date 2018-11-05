@@ -45,11 +45,43 @@ return [
                                 'city' => 'Stad',
                                 'owner' => 'Eigenaar',
                                 'actions' => 'Acties',
+                                'status' => 'Status',
+                                'appointment' => 'Datum van afspraak'
+                            ],
+                            'status' =>  'Kies status',
+                            'current-status' => 'Huidige status:',
+                            'options' => [
+                                \App\Models\BuildingCoachStatus::STATUS_IN_CONSIDERATION => 'In behandeling',
+                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_DONE=> 'Afgehandeld',
                             ],
                         ],
                     ],
+                    'edit' => [
+                        'header' => 'Bewerk de status van het gebouw',
+                        'form' => [
+                            'status' => 'Status',
+                            'appointment-date' => 'Tijdstip van afspraak',
+                            'submit' => 'Opslaan'
+                        ],
+                    ],
+                    'set-building-status' => [
+                        'success' => 'Status is gekoppeld aan het gebouw',
+                    ],
+                    'fill-for-user' => [
+                        'warning' => 'Er is iets fout gegaan, probeer het later opnieuw'
+                    ],
                     'header' => 'Gebouwen waar u toegangt tot heeft',
-                ]
+                    
+                    'details' => [
+                        'index' => [
+                            'header' => 'Details van het gebouw',
+                            'form' => [
+                                'submit' => 'Toevoegen',
+                            ]
+                        ]
+                    ],
+                ],
             ],
 
             'cooperation' => [

@@ -6,7 +6,9 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
-        @include('cooperation.tool.includes.interested', ['type' => 'element'])
+        @include('cooperation.tool.includes.interested', [
+            'type' => 'element', 'buildingElements' => $facadeInsulation->element, 'buildingElement' => 'wall-insulation'
+        ])
         <div id="intro">
 
             <div class="row">

@@ -6,7 +6,9 @@
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'element'])
+        @include('cooperation.tool.includes.interested', [
+            'type' => 'element', 'buildingElements' => $floorInsulation, 'buildingElement' => 'floor-insulation'
+        ])
 
         <div id="floor-insulation">
             <div class="row">

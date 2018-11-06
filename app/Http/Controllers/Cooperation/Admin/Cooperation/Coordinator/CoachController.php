@@ -6,6 +6,7 @@ use App\Helpers\Str;
 use App\Http\Requests\Admin\Cooperation\Coordinator\CoachRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,6 +31,28 @@ class CoachController extends Controller
         return view('cooperation.admin.cooperation.coordinator.coach.create', compact('roles'));
     }
 
+
+    protected function getAddressData($postalCode, $number, $pointer = null){
+        \Log::debug($postalCode . " " . $number . " " . $pointer);
+        /** @var PicoClient $pico */
+        $pico = app()->make('pico');
+        $postalCode = str_replace(' ', '', trim($postalCode));
+        $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
+
+        if (!is_null($pointer)){
+            foreach ($response as $addrInfo){
+                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])){
+                    //$data['bag_addressid'] = $addrInfo['bag_adresid'];
+                    \Log::debug(json_encode($addrInfo));
+                    return $addrInfo;
+                }
+            }
+            return [];
+        }
+
+        return $response;
+    }
+
     public function store(Cooperation $cooperation, CoachRequest $request)
     {
         $firstName = $request->get('first_name', '');
@@ -37,6 +60,17 @@ class CoachController extends Controller
         $email = $request->get('email', '');
         $password = $request->get('password', Str::randomPassword());
 
+
+        $postalCode = trim(strip_tags($request->get('postal_code', '')));
+        $houseNumber = trim(strip_tags($request->get('number', '')));
+        $extension = trim(strip_tags($request->get('house_number_extension', '')));
+
+        $street = strip_tags($request->get('street', ''));
+        $city = trim(strip_tags($request->get('city')));
+        $addressId = $request->get('addressid', null);
+
+
+        // create the new user
         $user = User::create(
             [
                 'first_name' => $firstName,
@@ -46,6 +80,34 @@ class CoachController extends Controller
             ]
         );
 
+        // get the address information from the bag
+        $address = $this->getAddressData($postalCode, $houseNumber, $addressId);
+
+        // make building features
+        $features = new BuildingFeature(
+            [
+                'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
+                'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
+            ]
+        );
+
+        // make a new building
+        $address = new Building(
+            [
+                'street' => $street,
+                'number' => $houseNumber,
+                'extension' => $extension,
+                'postal_code' => $postalCode,
+                'city' => $city,
+                'bag_addressid' => isset($address['bag_adresid']) ? $address['bag_adresid'] : '',
+            ]
+        );
+
+        // save the building feature and the building itself and accociate the new user with it
+        $address->user()->associate($user)->save();
+        $features->building()->associate($address)->save();
+
+        // give the user his role
         $roleIds = $request->get('roles', '');
         $roles = [];
         foreach ($roleIds as $roleId) {

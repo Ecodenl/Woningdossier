@@ -744,10 +744,9 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
-                    @if(isset($energyHabitForMe) && !empty($energyHabitForMe->first()))
+                    @if($coachEnergyHabitRemarks instanceof \App\Models\UserEnergyHabit)
                         @component('cooperation.tool.components.alert')
-                            {{$energyHabitForMe->where('input_source_id', $coachInputSource->id)->first()->living_situation_extra}}
+                            {{ $coachEnergyHabitRemarks->living_situation_extra }}
                         @endcomponent
                     @endif
                 </div>
@@ -804,7 +803,7 @@
                     <div class="form-group add-space{{ $errors->has('motivation_extra') ? ' has-error' : '' }}">
                         <label for="motivation-extra" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.motivation-extra')</label>
 
-                        <textarea id="motivation-extra" class="form-control" name="motivation_extra">@if(old('motivation_extra') != ""){{old('motivation_extra')}}@elseif(isset($energyHabit)){{$energyHabit->motivation_extra}}@endif</textarea>
+                        <textarea id="motivation-extra" class="form-control" name="motivation_extra">@if(old('motivation_extra') != ""){{ old('motivation_extra') }}@elseif(isset($energyHabit)){{ $energyHabit->motivation_extra }}@endif</textarea>
 
                         <div id="motivation-extra-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And I would like to have it too...
@@ -828,7 +827,7 @@
                     <div class="panel-body">
                         <ol>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Algemene_gegevens.pdf"; ?>
-                            <li><a download="" href="{{ asset($helpFile) }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+                            <li><a download="" href="{{ asset($helpFile) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
                         </ol>
                     </div>
                 </div>

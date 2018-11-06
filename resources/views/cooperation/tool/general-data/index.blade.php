@@ -23,7 +23,7 @@
                             <label for="building_type_id" class=" control-label"><i data-toggle="collapse" data-target="#building-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.what-type') </label>
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $buildingTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'buildingType', 'userInputColumn' => 'id'])
+                            ['inputType' => 'select', 'inputValues' => $buildingTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'buildingType', 'userInputColumn' => 'building_type_id'])
                                 <select id="building_type_id" class="form-control" name="building_type_id">
                                     @foreach($buildingTypes as $buildingType)
                                         <option @if(old('building_type_id') && $buildingType->id == old('building_type_id'))
@@ -149,7 +149,7 @@
                             <label for="roof_type_id" class=" control-label"><i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.type-roof')</label>
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
+                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
                                 <select id="roof_type_id" class="form-control" name="roof_type_id" req>
                                     @foreach($roofTypes as $roofType)
                                         <option
@@ -198,7 +198,7 @@
                                 }
                             ?>
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'energyLabel', 'userInputColumn' => 'id'])
+                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
                             <select id="energy_label_id" class="form-control" name="energy_label_id">
                                 @foreach($energyLabels as $energyLabel)
                                     <option
@@ -743,13 +743,13 @@
                         @endif
                     </div>
                 </div>
+                @if($coachEnergyHabitRemarks instanceof \App\Models\UserEnergyHabit && !empty($coachEnergyHabitRemarks->living_situation_extra))
                 <div class="col-sm-12">
-                    @if($coachEnergyHabitRemarks instanceof \App\Models\UserEnergyHabit)
                         @component('cooperation.tool.components.alert')
                             {{ $coachEnergyHabitRemarks->living_situation_extra }}
                         @endcomponent
-                    @endif
                 </div>
+                @endif
             </div>
 
             <div class="row">

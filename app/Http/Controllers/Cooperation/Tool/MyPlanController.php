@@ -118,7 +118,7 @@ class MyPlanController extends Controller
                         'costs' => Calculator::indexCosts($advice->costs, $costYear),
                         'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
                         'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
-                        'savings_money' => is_null($advice->savings_money) ? 0 : $advice->savings_money,
+                        'savings_money' => is_null($advice->savings_money) ? 0 : Calculator::indexCosts($advice->savings_money, $costYear),
                     ];
                 }
             }

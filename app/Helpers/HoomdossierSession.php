@@ -124,6 +124,21 @@ class HoomdossierSession extends Session {
         return self::getHoomdossierSession('role_id');
     }
 
+    public static function currentRole($column = 'name') : string
+    {
+    	$roleId = self::getRole();
+		if (!empty($roleId)){
+			$role = Role::find($roleId);
+			if ($role instanceof Role){
+				$result = $role->getAttribute($column);
+				if (!empty($result)){
+					return $result;
+				}
+			}
+		}
+		return "";
+    }
+
     /**
      * Get the input source id
      *

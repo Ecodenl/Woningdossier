@@ -21,7 +21,7 @@
     @foreach($inputValues as $inputValue)
         @foreach($userInputValues as $userInputValue)
             <?php
-            if (isset($userInputModel) && $userInputModel == true) {
+            if ($userInputModel instanceof \Illuminate\Database\Eloquent\Model) {
                 $value = $userInputValue->$userInputModel->$userInputColumn;
             } else {
                 if (strpos($userInputColumn, ".") !== false) {

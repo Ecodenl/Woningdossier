@@ -140,4 +140,18 @@ class ExampleBuilding extends Model
 
         return $query->where('cooperation_id', '=', $cooperationId);
     }
+
+	/**
+	 * Scope a query to only include buildings for my cooperation.
+	 *
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 *
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeForAnyOrMyCooperation($query)
+	{
+		$cooperationId = \Session::get('cooperation', 0);
+
+		return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
+	}
 }

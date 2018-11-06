@@ -84,9 +84,11 @@
                             </li>
                         @else
                             <li class="dropdown">
+                                @if(\App\Helpers\HoomdossierSession::hasRole())
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                    @lang('woningdossier.cooperation.admin.navbar.current-role') {{\Spatie\Permission\Models\Role::find(session('role_id'))->human_readable_name}}<span class="caret"></span>
+                                    @lang('woningdossier.cooperation.admin.navbar.current-role') {{\Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name}}<span class="caret"></span>
                                 </a>
+                                @endif
 
                                 <ul class="dropdown-menu">
                                     @foreach(Auth::user()->roles()->orderBy('level', 'DESC')->get() as $role)

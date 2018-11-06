@@ -14,39 +14,6 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
-            <div id="example-building" class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                    <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
-                    <select id="example_building_id" class="form-control" name="example_building_id" >
-                        @foreach($exampleBuildings as $exampleBuilding)
-                            <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
-                                    selected="selected"
-                                    @elseif($exampleBuilding->id == old('example_building_id'))
-                                    selected="selected"
-                                    @endif
-                                    value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
-                        @endforeach
-                            <option value="" @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
-                    </select>
-
-                    @if ($errors->has('example_building_id'))
-                        <span class="help-block">
-                    <strong>{{ $errors->first('example_building_id') }}</strong>
-                </span>
-                    @endif
-                </div>
-
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
-                            I would like to have some help full information right here!
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
             <div id="building-type" class="col-md-12">
                 <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.building-type.title')</h4>
 
@@ -95,6 +62,39 @@
                                 <strong>{{ $errors->first('build_year') }}</strong>
                             </span>
                             @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="example-building" class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
+                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
+                            <select id="example_building_id" class="form-control" name="example_building_id" >
+                                @foreach($exampleBuildings as $exampleBuilding)
+                                    <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
+                                            selected="selected"
+                                            @elseif($exampleBuilding->id == old('example_building_id'))
+                                            selected="selected"
+                                            @endif
+                                            value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
+                                @endforeach
+                                <option value="" @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                            </select>
+
+                            @if ($errors->has('example_building_id'))
+                                <span class="help-block">
+                    <strong>{{ $errors->first('example_building_id') }}</strong>
+                </span>
+                            @endif
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group add-space">
+                                <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
+                                    I would like to have some help full information right here!
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -852,35 +852,40 @@
 @endsection
 
 @push('js')
-    {{--<script src="{{asset('js/datepicker/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('js/datepicker/bootstrap-datepicker.nl.min.js')}}"></script>--}}
     <script>
 
         $(document).ready(function () {
 
             $(window).keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
             });
 
+            var previous_eb;
 
-            {{--
-            // Load the datepicker
-            $('.input-group.date').datepicker({
-                language: "nl"
+            $("select#example_building_id").on('focus', function () {
+                // Store the current value on focus and on change
+                previous_eb = this.value;
+            }).change(function() {
+                // Do something with the previous value after the change
+                if (this.value !== previous_eb){
+                    console.log("Example building has changed. Trigger are you sure question.");
+                }
+
+                // Make sure the previous value is updated
+                previous_eb = this.value;
             });
-            --}}
 
-            // Check if the house ventialtion is mechanic
+            // Check if the house ventilation is mechanic
             $(document).change('#house-ventilation', function () {
 
                 // Housse ventilation
                 var houseVentilation = $('#house-ventilation option:selected').text();
 
                 // text wont change, id's will
-                if (houseVentilation == "Mechanisch" || houseVentilation == "Decentraal mechanisch") {
+                if (houseVentilation === "Mechanisch" || houseVentilation === "Decentraal mechanisch") {
                     $('#house-ventilation').parent().parent().next().next().show();
                 } else {
                     $('#house-ventilation').parent().parent().next().next().hide();
@@ -904,7 +909,7 @@
             });
 
             $(document).change('#hr-boiler', function() {
-                if ($('#hr-boiler').val() == 13) {
+                if ($('#hr-boiler').val() === 13) {
                     // hide the input for the type of boiler
                     $('#boiler').parent().hide();
                     // Hide the interest input

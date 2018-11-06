@@ -114,14 +114,27 @@ class HoomdossierSession extends Session {
      *
      * @param Building $building
      */
-    public static function setBuilding(Building $building): void
+    public static function setBuilding(Building $building)
     {
         self::setHoomdossierSession('building_id', $building->id);
     }
 
-    public static function getRole(): int
+	/**
+	 * @return int|null
+	 */
+    public static function getRole()
     {
         return self::getHoomdossierSession('role_id');
+    }
+
+	/**
+	 * Returns whether or not this session contains a current role.
+	 *
+	 * @return bool
+	 */
+    public static function hasRole() : bool
+    {
+    	return !empty(self::getRole());
     }
 
     /**

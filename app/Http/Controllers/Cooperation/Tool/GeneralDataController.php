@@ -62,7 +62,7 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildings = ExampleBuilding::forMyCooperation()->orderBy('order')->get();
+        $exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows',

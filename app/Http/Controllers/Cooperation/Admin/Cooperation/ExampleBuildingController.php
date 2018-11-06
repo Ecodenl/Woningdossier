@@ -223,6 +223,11 @@ class ExampleBuildingController extends Controller
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
+	            /*'insulation_wall_surface' => [
+	            	'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface'),
+		            'type' => 'text',
+		            'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
+	            ],*/
                 'cavity_wall' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall'),
                     'type' => 'select',

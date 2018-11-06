@@ -8354,6 +8354,10 @@ button.close {
   padding-top: 0;
 }
 
+.glyphicon {
+  top: 3px;
+}
+
 /**
   Helper classes for the html markup
  */
@@ -8422,6 +8426,14 @@ body i.glyphicon-info-sign {
   padding-left: 0;
 }
 
+.page-my-plan table tbody tr.collapse td {
+  border-top: 1px solid transparent !important;
+}
+
+.page-my-plan table tbody tr.collapsing td {
+  border-top: 1px solid transparent !important;
+}
+
 ul.progress-list li a img {
   width: 50px;
   height: 50px;
@@ -8460,6 +8472,65 @@ ul.progress-list li.not-available a:focus img {
 
 .panel .panel-heading button {
   margin-top: -45px;
+}
+
+.chat {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chat li {
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted #B3A9A9;
+}
+
+.chat li .chat-body p {
+  margin: 0;
+  color: #777777;
+  max-width: 500px;
+}
+
+.chat .glyphicon {
+  margin-right: 5px;
+}
+
+.panel-chat-body {
+  overflow-y: scroll;
+  max-height: 250px;
+}
+
+.panel-chat-body .left {
+  margin-right: 250px;
+}
+
+.panel-chat-body .right {
+  margin-left: 250px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555;
+}
+
+#take-action .dropdown-menu {
+  border-radius: 0px;
+}
+
+#take-action .dropdown-menu li label {
+  padding: 3px 20px;
+  font-weight: normal;
 }
 
 .choose-roles-panel:hover {

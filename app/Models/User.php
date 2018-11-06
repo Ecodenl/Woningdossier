@@ -149,6 +149,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Cooperation::class);
     }
 
+
     /**
      * Returns the interests off a user.
      *

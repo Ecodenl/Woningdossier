@@ -2,7 +2,6 @@
 
 namespace App\Http\ViewComposers;
 
-use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use Illuminate\View\View;
 

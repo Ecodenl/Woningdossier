@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Cooperation;
-use App\Models\InputSource;
 use App\Models\Interest;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,7 +30,6 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //\Log::debug(__METHOD__);
 
         $this->app->bind('Cooperation', function () {
             $cooperation = null;

@@ -187,7 +187,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 					Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
 				});
 
-				Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'middleware' => ['role:cooperation-admin']], function () {
+				Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
+
+                    Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
+                        Route::get('','AssignRoleController@index')->name('index');
+                        Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
+                        Route::post('edit/{userId}','AssignRoleController@update')->name('update');
+                    });
+
+			        Route::group(['prefix' => 'gebruikers', 'as' => 'users.'], function () {
+			            Route::get('', 'UserController@index')->name('index');
+			            Route::get('create', 'UserController@create')->name('create');
+			            Route::post('', 'UserController@store')->name('store');
+                    });
 
 					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
 						Route::get('', 'ReportController@index')->name('index');
@@ -196,11 +208,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 					});
 
-				Route::resource('example-buildings', 'ExampleBuildingController');
-				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+					Route::resource('example-buildings', 'ExampleBuildingController');
+					Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
-		// needs to be the last route due to the param
-                    Route::get('{role_name?}', 'CooperationController@index')->name('index');
+					// needs to be the last route due to the param
+                    Route::get('{role_name?}', 'CooperationAdminController@index')->name('index');
                 });
 
 			});

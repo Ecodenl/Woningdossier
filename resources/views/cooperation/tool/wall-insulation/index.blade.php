@@ -7,7 +7,7 @@
         {{ csrf_field() }}
 
         @include('cooperation.tool.includes.interested', [
-            'type' => 'element', 'buildingElements' => $facadeInsulation->element, 'buildingElement' => 'wall-insulation'
+            'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
         ])
         <div id="intro">
 
@@ -36,7 +36,7 @@
                                         @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
                                         selected="selected"
                                         @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
-                                            selected="selected"
+                                        selected="selected"
                                         @endif
                                 value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                             @endforeach

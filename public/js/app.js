@@ -68,7 +68,10 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(8);
+__webpack_require__(8);
+__webpack_require__(9);
+__webpack_require__(10);
+module.exports = __webpack_require__(11);
 
 
 /***/ }),
@@ -132,6 +135,45 @@ $("#register #street").focusin(function () {
             console.log(xhr, textStatus, errorThrown);
         },
         dataType: 'json'
+    });
+});
+
+$(document).ready(function () {
+
+    $('.input-source-group').on('click', 'li.change-input-value', function (event) {
+        // so it will not jump to the top of the page.
+        event.preventDefault();
+
+        var dataInputValue = $(this).data('input-value');
+
+        // find the selected option
+        var inputSourceGroup = $(this).parent().parent().parent();
+        var inputType = inputSourceGroup.find('input').attr('type');
+
+        // check if the input is a "input" and not a select
+        if (typeof inputType !== 'undefined') {
+
+            switch (inputType) {
+                case "text":
+                    inputSourceGroup.find('input[type=text]').val(dataInputValue);
+                    break;
+                case "radio":
+                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('selected');
+                    inputSourceGroup.find('input[value=' + dataInputValue + ']').attr('selected', true);
+                    break;
+                case "checkbox":
+                    inputSourceGroup.find('input[type=checkbox]:checked').removeAttr('selected');
+                    inputSourceGroup.find('input[value=' + dataInputValue + ']').attr('selected', true);
+                    break;
+                default:
+                    console.log('Something went tremendously wrong...');
+                    break;
+            }
+            // its a select.
+        } else {
+            inputSourceGroup.find('select option:selected').removeAttr('selected');
+            inputSourceGroup.find('select option[value=' + dataInputValue + ']').attr('selected', true);
+        }
     });
 });
 
@@ -30111,6 +30153,24 @@ if (typeof jQuery === 'undefined') {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

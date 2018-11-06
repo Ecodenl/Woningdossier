@@ -4,20 +4,19 @@
 @section('coordinator_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.header', ['firstName' => $privateMessage->getSender($privateMessage->id)->first_name, 'lastName' => $privateMessage->getSender($privateMessage->id)->last_name])
-
+            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.header')
         </div>
 
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.store-with-message-to-coach')}}" method="post"  >
+                    <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.store')}}" method="post">
                         {{csrf_field()}}
                         <input type="hidden" name="sender_id" value="{{$senderId}}">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('coach') ? ' has-error' : '' }}>
-                                    <label for="coach">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.select-coach')</label>
+                                    <label for="coach">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.select-coach')</label>
                                     <select name="coach" class="coach form-control" id="coach">
                                         @foreach($coaches as $coach)
                                             <option @if(old('coach') == $coach->id) selected @endif value="{{$coach->id}}">{{$coach->first_name ." ". $coach->last_name}}</option>
@@ -32,11 +31,12 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('title') ? ' has-error' : '' }}>
-                                    <label for="title">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.title')</label>
-                                    <input type="text" value="{{old('title')}}" class="form-control" name="title" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.title')">
+                                    <label for="title">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.title')</label>
+                                    <input type="text" value="{{old('title')}}" class="form-control" name="title" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.title')">
                                     @if ($errors->has('title'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('title') }}</strong>
@@ -48,8 +48,8 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('message') ? ' has-error' : '' }}>
-                                    <label for="message">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.message-to-coach.label')</label>
-                                    <textarea name="message" id="" class="form-control">{{old('message', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.message-to-coach.placeholder'))}}</textarea>
+                                    <label for="message">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.message-to-coach.label')</label>
+                                    <textarea name="message" id="" class="form-control">{{old('message', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.message-to-coach.placeholder'))}}</textarea>
                                     @if ($errors->has('message'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('message') }}</strong>
@@ -61,7 +61,7 @@
 
                         <div class="row">
                             <div class="col-sm-6">
-                                <button class="btn btn-primary btn-block" type="submit">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.submit') <span class="glyphicon glyphicon-plus"></span></button>
+                                <button class="btn btn-primary btn-block" type="submit">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.submit') <span class="glyphicon glyphicon-plus"></span></button>
                             </div>
                         </div>
                     </form>
@@ -82,15 +82,6 @@
 
             $('form').disableAutoFill();
 
-            $('form').on('submit', function () {
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.submit-warning', ['firstName' => $privateMessage->getSender($privateMessage->id)->first_name, 'lastName' => $privateMessage->getSender($privateMessage->id)->last_name])')) {
-
-                } else {
-                    event.preventDefault();
-
-                }
-            });
-
 
             $('.collapse').on('shown.bs.collapse', function(){
                 $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
@@ -102,7 +93,7 @@
             $(document).ready(function () {
 
                 $(".coach").select2({
-                    placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.select-coach')",
+                    placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.select-coach')",
                     maximumSelectionLength: Infinity
                 });
             });

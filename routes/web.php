@@ -181,7 +181,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::group(['prefix' => 'verbind-met-coach', 'as' => 'connect-to-coach.'], function () {
                         Route::get('','ConnectToCoachController@index')->name('index');
                         Route::get('koppelen/{senderId}','ConnectToCoachController@create')->name('create');
-                        Route::post('', 'ConnectToCoachController@store')->name('store');
+                        Route::get('praten-met-coach/{senderId}','ConnectToCoachController@talkToCoachCreate')->name('talk-to-coach.create');
+                        Route::post('praten-met-coach','ConnectToCoachController@talkToCoachStore')->name('talk-to-coach.store');
+                        Route::post('message-and-connect', 'ConnectToCoachController@storeWithMessageToCoach')->name('store-with-message-to-coach');
+                        Route::post('', 'ConnectToCoachController@storeWithoutMessageToCoach')->name('store-without-message-to-coach');
                     });
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 
 class PrivateMessage extends Model
@@ -14,6 +15,7 @@ class PrivateMessage extends Model
 
     const STATUS_LINKED_TO_COACH = "gekoppeld aan coach";
     const STATUS_IN_CONSIDERATION = "in behandeling";
+    const STATUS_APPLICATION_SENT = "aanvraag verzonden";
 
     const REQUEST_TYPE_COACH_CONVERSATION = "coach-conversation";
     const REQUEST_TYPE_MORE_INFORMATION = "more-information";
@@ -49,9 +51,9 @@ class PrivateMessage extends Model
      */
     public function scopeOpenCooperationConversationRequests($query)
     {
-        $currentCooperationId = session('cooperation');
+        $currentCooperationId = HoomdossierSession::getCooperation();
 
-        return $query->where('to_cooperation_id', $currentCooperationId)->where('status', self::STATUS_IN_CONSIDERATION);
+        return $query->where('to_cooperation_id', $currentCooperationId)->where('status', self::STATUS_APPLICATION_SENT)->orWhere('status', self::STATUS_IN_CONSIDERATION);
     }
 
     /**

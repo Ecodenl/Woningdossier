@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Admin\Coach\ConnectToResidentRequest;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -13,7 +14,12 @@ class ConnectToResidentController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->getResidents()->get();
+
+        $users = \DB::table('private_messages')
+            ->where('to_cooperation_id', HoomdossierSession::getCooperation())
+            ->where('status', PrivateMessage::STATUS_IN_CONSIDERATION)
+            ->leftJoin('users', 'users.id', '=', 'private_messages.from_user_id')
+            ->select(['users.*'])->get();
 
         return view('cooperation.admin.coach.connect-to-resident.index', compact('cooperation', 'users'));
     }

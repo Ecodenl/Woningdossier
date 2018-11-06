@@ -28,7 +28,7 @@ class ConnectToResidentRequest extends FormRequest
         return [
             'message' => 'required',
             'receiver_id' => ['required', 'exists:users,id', new isUserMemberOfCooperation()],
-            'conversation-request-type' => ['required', Rule::in(['more_information', 'quotation', 'coach_conversation'])],
+            'conversation-request-type' => ['required', Rule::in(['more-information', 'other', 'coach-conversation'])],
         ];
     }
 }

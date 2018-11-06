@@ -20,7 +20,7 @@ return [
 				'header' => 'Als welke rol wilt u doorgaan ?',
 				'text'   => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
 			],
-			'coach'        => [
+        'coach'        => [
 				'side-nav' => [
 					'label'               => 'Coach menu',
 					'index'               => 'Home',
@@ -129,10 +129,11 @@ return [
 								'placeholder' => 'Selecteer optie'
 							],
 
+
 							'options' => [
 								\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION   => 'Meer informatie',
-								\App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION          => 'Offerte aanvragen',
 								\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+                                \App\Models\PrivateMessage::REQUEST_TYPE_OTHER              => 'Anders...',
 							],
 							'submit'  => 'Gesprek met bewoner beginnen',
 						]
@@ -312,6 +313,7 @@ return [
 							'columns' => [
 								'see-message'      => 'Bekijk bericht',
 								'connect-to-coach' => 'Verbind met coach',
+								'talk-to-coach' => 'Stuur bericht aan coach',
 								'type-request'     => 'Type aanvraag',
 								'first-name'       => 'Voornaam',
 								'last-name'        => 'Achternaam',
@@ -323,6 +325,7 @@ return [
 						],
 
 						\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION   => 'Meer informatie',
+						\App\Models\PrivateMessage::REQUEST_TYPE_OTHER   => 'Anders...',
 						\App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION          => 'Offerte',
 						\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
 
@@ -340,6 +343,20 @@ return [
 							'select-coach'     => 'Selecteer een coach',
 							'submit'           => 'Coach koppelen',
 							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
+						]
+					],
+					'talk-to-coach' => [
+						'header' => 'U kunt hier een bericht naar een coach sturen',
+
+						'form' => [
+							'message-to-coach' => [
+								'label'       => 'Uw bericht aan de coach',
+								'placeholder' => 'Bijv: bent u beschikbaar de komende tijd ?'
+							],
+							'title'            => 'Titel van het bericht',
+							'select-coach'     => 'Naar welke coach wilt u dit bericht sturen ?',
+							'submit'           => 'Coach bericht sturen',
+//							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
 						]
 					],
 					'store'  => [

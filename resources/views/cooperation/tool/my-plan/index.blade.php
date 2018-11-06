@@ -192,9 +192,9 @@
                         var totalSavingsElectricity = 0;
                         var totalSavingsMoney = 0;
 
-                        $.each(steps, function (stepName, stepMeasures) {
+                            $.each(steps, function (stepName, stepMeasures) {
 
-                            $.each(stepMeasures, function (i, stepData) {
+                                $.each(stepMeasures, function (i, stepData) {
 
                                 if (stepData.interested) {
                                     $("#advice-" + stepData.advice_id + "-planned").attr('checked', true)
@@ -213,8 +213,8 @@
 
                         });
 
-                        // total calculation
-                        table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + slugYear + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td></tr>";
+                            // total calculation
+                        table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + slugYear + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td colspan='1'></td></tr>";
                         table += "<tr class='collapse' id='total-costs-" + slugYear + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'> </td></tr>";
 
 
@@ -253,7 +253,7 @@
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
 
-            $('#warning-modal').on('shown.bs.modal', function (e) {
+        $('#warning-modal').on('shown.bs.modal', function (e) {
                 var clicked = $(e.relatedTarget);
                 var icon = clicked.find('i.glyphicon');
                 $(this).find('.modal-body').html('<p>' + icon.attr('title') + '</p>');
@@ -281,10 +281,10 @@
                 if (getPlanned(measureApplicationShort)) {
                     advicedYear = getPlannedYear(measureApplicationShort);
                     plannedYearInput.val(advicedYear)
-                } else {
-                    plannedYearInput.val("");
-                }
-            });
+            } else {
+                plannedYearInput.val("");
+            }
+        });
 
             function checkCoupledMeasuresAndMaintenance() {
                 // remove all previous warnings and recheck

@@ -10,7 +10,8 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
+use App\Scopes\GetValueScope;
 
 class MyPlanController extends Controller
 {
@@ -113,8 +114,8 @@ class MyPlanController extends Controller
                         $sortedAdvices[$year][$step->name] = [];
                     }
 
-                    $sortedAdvices[$year][$step->name][] = [
-                        'interested' => $advice->planned,
+					$sortedAdvices[$year][$step->name][] = [
+						'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
                         'measure_short' => $advice->measureApplication->short,

@@ -1,7 +1,6 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
-
     <div class="container">
         <div class="row">
             @include('cooperation.admin.cooperation.sidebar-menu')
@@ -15,9 +14,10 @@
 
 @prepend('css')
     <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
+@endprepend
 
 @prepend('js')
 
@@ -37,8 +37,8 @@
 
         $.extend( true, $.fn.dataTable.defaults, {
             language: {
-                url: "{{asset('js/datatables-dutch.json')}}"
-            },
+                url: "{{ asset('js/datatables-dutch.json') }}"
+            }
         });
     </script>
 @endprepend

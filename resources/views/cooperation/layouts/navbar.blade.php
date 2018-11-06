@@ -34,6 +34,8 @@
                         @endforeach
                     </ul>
                 </li>
+
+                {{--
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                         @lang('woningdossier.navbar.input_source')<span class="caret"></span>
@@ -48,8 +50,8 @@
                         @endforeach
                     </ul>
                 </li>
+                --}}
             </ul>
-
 
             @if (Auth::check() && Auth::user()->buildings()->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
                 <a href="{{route('cooperation.admin.index')}}" class="btn btn-warning navbar-btn">Stop sessie</a>

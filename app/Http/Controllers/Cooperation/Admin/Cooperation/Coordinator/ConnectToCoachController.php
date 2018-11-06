@@ -90,7 +90,7 @@ class ConnectToCoachController extends Controller
 
         // do not attach a status yet, the coach can do this himself in his gui
         BuildingCoachStatus::create([
-            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id
+            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_IN_CONSIDERATION
         ]);
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
@@ -124,9 +124,8 @@ class ConnectToCoachController extends Controller
             'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
         ]);
 
-        // do not attach a status yet, the coach can do this himself in his gui
         BuildingCoachStatus::create([
-            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id
+            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_IN_CONSIDERATION
         ]);
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));

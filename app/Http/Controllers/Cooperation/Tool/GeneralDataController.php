@@ -35,6 +35,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -93,10 +94,18 @@ class GeneralDataController extends Controller
         ));
     }
 
+    public function applyExampleBuilding(Request $request)
+    {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
+	    $exampleBuildingId = $request->get('example_building_id', null);
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param FormRequest $request
      *
      * @return \Illuminate\Http\Response
      */

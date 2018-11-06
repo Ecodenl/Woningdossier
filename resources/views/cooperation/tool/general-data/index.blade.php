@@ -870,12 +870,16 @@
                 previous_eb = this.value;
             }).change(function() {
                 // Do something with the previous value after the change
-                if (this.value !== previous_eb){
-                    console.log("Example building has changed. Trigger are you sure question.");
-                }
+                if (this.value !== previous_eb ){
+                    if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                        console.log("Let's save it");
 
-                // Make sure the previous value is updated
-                previous_eb = this.value;
+                        // Make sure the previous value is updated
+                        previous_eb = this.value;
+                    } else {
+                        $(this).val(previous_eb);
+                    }
+                }
             });
 
             // Check if the house ventilation is mechanic

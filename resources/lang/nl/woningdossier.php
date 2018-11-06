@@ -349,6 +349,7 @@ return [
 
 				'example-building' => [
 					'no-match' => 'Er is geen passende voorbeeldwoning',
+					'apply-are-you-sure' => 'Weet u zeker dat u deze voorbeeldwoning wilt toepassen?',
 				],
 
 				'energy-saving-measures' => [

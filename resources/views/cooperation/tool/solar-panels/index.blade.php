@@ -42,9 +42,13 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => array_combine($range = range(260, 300, 5), $range), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'peak_power'])
                             <span class="input-group-addon">Wp</span>
+                            <?php $additionalPeakPowers = [330] ?>
                             <select id="building_pv_panels_peak_power" class="form-control" name="building_pv_panels[peak_power]">
                                 @foreach(range(260, 300, 5) as $peakPower)
                                     <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
+                                @endforeach
+                                @foreach($additionalPeakPowers as $additionalPeakPower)
+                                    <option @if(old('building_pv_panels.peak_power') == $additionalPeakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $additionalPeakPower)) selected @endif value="{{ $additionalPeakPower }}">{{$additionalPeakPower}}</option>
                                 @endforeach
                             </select>
                         @endcomponent

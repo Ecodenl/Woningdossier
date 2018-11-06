@@ -47,7 +47,8 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        // middle ware on auth routes instead on controller
+//        $this->middleware('guest');
     }
 
     /**

@@ -31,7 +31,7 @@ class InsulatedGlazingCalculator
         $calcM2 = $windows * $m2PerWindow;
         self::debug(__METHOD__.' '.$calcM2.' = '.$windows.' * '.$m2PerWindow);
 
-        return Calculator::calculateMeasureApplicationCosts($measureApplication, $calcM2);
+        return Calculator::calculateMeasureApplicationCosts($measureApplication, $calcM2, null, false);
     }
 
     // in m3 per year

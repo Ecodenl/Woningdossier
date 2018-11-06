@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
@@ -27,6 +28,7 @@ class ConversationRequestController extends Controller
         if ($option == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION && PrivateMessage::hasUserResponseToCoachConversationRequest() == false && $myOpenCoachConversationRequest != null) {
             return redirect()->route('cooperation.conversation-requests.edit', ['cooperation' => $cooperation, 'option' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION]);
         }
+
 
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
@@ -135,7 +137,7 @@ class ConversationRequestController extends Controller
         }
 
         $user = \Auth::user();
-        $cooperationId = session('cooperation');
+        $cooperationId = HoomdossierSession::getCooperation();
 
         PrivateMessage::create(
             [
@@ -144,7 +146,7 @@ class ConversationRequestController extends Controller
                 'message' => $message,
                 'to_cooperation_id' => $cooperationId,
                 'from_user_id' => $user->id,
-                'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
+                'status' => PrivateMessage::STATUS_APPLICATION_SENT,
                 'request_type' => $action,
 	            'allow_access' => $allowAccess,
             ]

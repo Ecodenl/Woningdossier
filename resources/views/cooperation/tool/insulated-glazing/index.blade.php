@@ -42,7 +42,8 @@
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
                                 @foreach($interests as $interest)
-                                    <option @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))  selected="selected" @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                    {{-- calculate_value 4 is the default --}}
+                                    <option @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))  selected="selected" @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id) selected @elseif($interest->calculate_value == 4) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                 @endforeach
                             </select>
 
@@ -327,12 +328,12 @@
                         <label for="" class="control-label">
                             <i data-toggle="collapse" data-target="#building_paintwork_statuses.last_painted_year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
-                        </label> <span>*</span>
+                        </label>
 
                         @component('cooperation.tool.components.input-group',
                                ['inputType' => 'input', 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get() ,'userInputColumn' => 'last_painted_year'])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
-                                <input required type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
+                                <input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
                         @endcomponent
 
                         <div id="building_paintwork_statuses.last_painted_year" class="collapse alert alert-info remove-collapse-space alert-top-space">

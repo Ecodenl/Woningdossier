@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\UserCreated;
 use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -304,4 +305,5 @@ class User extends Authenticatable
 
         return false;
 	}
+
 }

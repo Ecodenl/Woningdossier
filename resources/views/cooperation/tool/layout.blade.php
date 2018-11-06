@@ -1,5 +1,6 @@
 @extends('cooperation.layouts.app')
 
+
 @section('content')
     <div class="container">
         <div class="row">
@@ -56,7 +57,7 @@
     <script>
         $('#submit-form-top-right').click(function () {
             // There will only be 1 form inside the panel body, submit it
-            $('.panel-body form').submit();
+            $('.panel-body form button[type=submit]').click();
         })
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>

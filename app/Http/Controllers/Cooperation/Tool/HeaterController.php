@@ -107,13 +107,34 @@ class HeaterController extends Controller
                     'gas' => $consumption->energy_consumption,
                 ];
             }
-            $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water']);
-            if ($systemSpecs instanceof HeaterSpecification) {
+            \Log::debug("Heater: Current consumption: " . json_encode($result['consumption']));
+
+	        $angle = $request->input('building_heaters.angle', 0);
+	        $orientationId = $request->input('building_heaters.pv_panel_orientation_id', 0);
+	        $orientation = PvPanelOrientation::find($orientationId);
+
+	        $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
+	        \Log::debug("Heater: Location factor for " . $building->postal_code . " is " . $locationFactor->factor);
+	        $helpFactor = 0;
+	        if ($orientation instanceof PvPanelOrientation && $angle > 0) {
+		        $yield = KeyFigures::getYield( $orientation, $angle );
+		        \Log::debug( "Heater: Yield for " . $orientation->name . " at " . $angle . " degrees = " . $yield->yield );
+		        if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
+			        $helpFactor = $yield->yield * $locationFactor->factor;
+		        }
+	        }
+	        \Log::debug("Heater: helpfactor: " . $helpFactor);
+
+            $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water'], $helpFactor);
+
+	        if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists('collector', $systemSpecs)){
                 $result['specs'] = [
-                    'size_boiler' => $systemSpecs->boiler,
-                    'size_collector' => $systemSpecs->collector,
+                    'size_boiler' => $systemSpecs['boiler'],
+                    'size_collector' => $systemSpecs['collector'],
                 ];
-                $result['production_heat'] = $systemSpecs->savings;
+
+                \Log::debug("Heater: For this water consumption you need this heater: " . json_encode($systemSpecs));
+                $result['production_heat'] = $systemSpecs['production_heat'];
                 $result['savings_gas'] = $result['production_heat'] / Kengetallen::gasKwhPerM3();
                 $result['percentage_consumption'] = isset($result['consumption']['gas']) ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
                 $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
@@ -125,18 +146,6 @@ class HeaterController extends Controller
 
                 $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-                $orientationId = $request->input('building_heaters.pv_panel_orientation_id', 0);
-                $angle = $request->input('building_heaters.angle', 0);
-                $orientation = PvPanelOrientation::find($orientationId);
-
-                $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
-                $helpFactor = 0;
-                if ($orientation instanceof PvPanelOrientation && $angle > 0) {
-                    $yield = KeyFigures::getYield($orientation, $angle);
-                    if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
-                        $helpFactor = $yield->yield * $locationFactor->factor;
-                    }
-                }
                 if ($helpFactor >= 0.84) {
                     $result['performance'] = [
                         'alert' => 'success',

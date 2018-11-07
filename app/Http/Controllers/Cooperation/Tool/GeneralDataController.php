@@ -35,6 +35,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use App\Services\ExampleBuildingService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
@@ -109,11 +110,21 @@ class GeneralDataController extends Controller
 	    $exampleBuildingId = $request->get('example_building_id', null);
 	    $buildYear = $request->get('build_year', null);
 	    if (!is_null($exampleBuildingId) && !is_null($buildYear)){
-	    	$exampleBuilding = ExampleBuilding::find($exampleBuildingId);
-			$contents = $exampleBuilding->getContentForYear($buildYear);
+		    $exampleBuildingId = $request->get('example_building_id', null);
+		    if (! is_null($exampleBuildingId)) {
+			    $exampleBuilding = ExampleBuilding::forMyCooperation()->where('id',
+				    $exampleBuildingId)->first();
+			    if ($exampleBuilding instanceof ExampleBuilding) {
+				    $building->exampleBuilding()->associate($exampleBuilding);
+				    $building->save();
+				    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
-			dd($contents);
+				    return response()->json();
+			    }
+		    }
 	    }
+	    // Something went wrong!
+	    return response()->json([], 500);
     }
 
     /**

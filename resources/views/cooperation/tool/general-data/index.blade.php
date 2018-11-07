@@ -869,14 +869,34 @@
                 previous_eb = this.value;
             }).change(function() {
                 // Do something with the previous value after the change
-                if (this.value !== previous_eb ){
-                    if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
-                        console.log("Let's save it");
+                var buildYear = $("input[name='build_year']").val();
+                if (buildYear === ""){
+                    @if(App::environment('local'))
+                    console.log("Can't select example building: build year is empty");
+                    @endif
+                }
+                else {
+                    if (this.value !== previous_eb ){
+                        if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                            @if(App::environment('local'))
+                            console.log("Let's save it. EB id: " + this.value + " build year: " + buildYear);
+                            @endif
 
-                        // Make sure the previous value is updated
-                        previous_eb = this.value;
-                    } else {
-                        $(this).val(previous_eb);
+                            $.ajax({
+                                type: "POST",
+                                url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                                data: { example_building_id: this.value, build_year: buildYear },
+                                success: function(data){
+
+                                }
+                            });
+
+
+                            // Make sure the previous value is updated
+                            previous_eb = this.value;
+                        } else {
+                            $(this).val(previous_eb);
+                        }
                     }
                 }
             });

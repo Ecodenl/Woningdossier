@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;

@@ -107,7 +107,13 @@ class GeneralDataController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
 
 	    $exampleBuildingId = $request->get('example_building_id', null);
+	    $buildYear = $request->get('build_year', null);
+	    if (!is_null($exampleBuildingId) && !is_null($buildYear)){
+	    	$exampleBuilding = ExampleBuilding::find($exampleBuildingId);
+			$contents = $exampleBuilding->getContentForYear($buildYear);
 
+			dd($contents);
+	    }
     }
 
     /**

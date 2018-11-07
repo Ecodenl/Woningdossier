@@ -536,11 +536,11 @@
                     <div class="panel-heading">@lang('default.buttons.download')</div>
                     <div class="panel-body">
                         <ol>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf')))))}}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')))))}}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')))))}}</a></li>
+                            <li><a download="" href="{{ asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{ asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')))))}}</a></li>
+                            <li><a download="" href="{{ asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')))))}}</a></li>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Glasisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
+                            <li><a download="" href="{{ asset($helpFile)}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
 
                         </ol>
                     </div>
@@ -612,7 +612,7 @@
             $('.user-interest').change(function() {
                 $('.user-interest option:selected').each(function() {
                     $userInterest = $(this); // the input field
-                    if ($userInterest.text() == "Geen actie" || $userInterest.text() == "Niet mogelijk") {
+                    if ($userInterest.text() === "Geen actie" || $userInterest.text() === "Niet mogelijk") {
                         $userInterest.parent().parent().parent().next().hide();
                     } else {
                         $userInterest.parent().parent().parent().next().show();

@@ -51,9 +51,6 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
         // we do not want the user to set his interests for this step
 //        $typeIds = [1, 2];
 
@@ -301,27 +298,36 @@ class InsulatedGlazingController extends Controller
         }
 
         $result['crack-sealing'] = [
-            'cost' => 0,
-            'savings' => 0,
+            'costs' => 0,
+            'savings_gas' => 0,
         ];
 
-        $crackSealingId = $request->get('building_elements.crack-sealing', 0);
-        $crackSealingElement = ElementValue::find($crackSealingId);
+        //$crackSealingId = $request->get('building_elements.crack-sealing', 0);
+        //$crackSealingElement = ElementValue::find($crackSealingId);
+	    $crackSealing = Element::where('short', 'crack-sealing')->first();
+	    $crackSealingId = 0;
+	    if (array_key_exists($crackSealing->id, $buildingElements) && array_key_exists('crack-sealing', $buildingElements[$crackSealing->id])) {
+		    $crackSealingId = (int) $buildingElements[$crackSealing->id]['crack-sealing'];
+	    }
+	    $crackSealingElement = ElementValue::find($crackSealingId);
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
-            $energyHabit = $user->energyHabits;
+            $energyHabit = $user->energyHabit;
             $gas = 0;
             if ($energyHabit instanceof UserEnergyHabit) {
                 $gas = $energyHabit->amount_gas;
             }
+
             if (2 == $crackSealingElement->calculate_value) {
-                $result['crack-sealing']['savings'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
+                $result['crack-sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
             } else {
-                $result['crack-sealing']['savings'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
+                $result['crack-sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
             }
 
             $measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
 
             $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1, null, false);
+	        $result['crack-sealing']['savings_co2'] = Calculator::calculateCo2Savings($result['crack-sealing']['savings_gas']);
+	        $result['crack-sealing']['savings_money'] = Calculator::calculateMoneySavings($result['crack-sealing']['savings_gas']);
         }
 
         return response()->json($result);

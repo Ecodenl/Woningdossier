@@ -43,7 +43,16 @@
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
                                 @foreach($interests as $interest)
                                     {{-- calculate_value 4 is the default --}}
-                                    <option @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))  selected="selected" @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id) selected @elseif($interest->calculate_value == 4) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                    <option
+                                            @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))
+                                            selected="selected"
+                                            @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id)
+                                            selected="selected"
+                                            @elseif(!array_key_exists($measureApplication->id, $userInterests) && $interest->calculate_value == 4)
+                                            selected="selected"
+                                            @endif
+                                            value="{{ $interest->id }}">{{ $interest->name }}
+                                    </option>
                                 @endforeach
                             </select>
 

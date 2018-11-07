@@ -94,7 +94,6 @@ class InsulatedGlazingController extends Controller
             if ($measureApplication instanceof MeasureApplication) {
                 // get current situation
                 $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
-
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
                 if (!$currentInsulatedGlazingInputs->isEmpty()) {
@@ -107,7 +106,7 @@ class InsulatedGlazingController extends Controller
                 $measureInterest = $user->interests()
                     ->where('interested_in_type', 'measure_application')
                     ->where('interested_in_id', $measureApplication->id)
-                    ->get();
+                    ->first();
 
                 if ($measureInterest instanceof UserInterest) {
                     // We only have to check on the interest ID, so we don't put
@@ -358,7 +357,8 @@ class InsulatedGlazingController extends Controller
             $windows = isset($buildingInsulatedGlazing['windows']) ? $buildingInsulatedGlazing['windows'] : 0;
 
             // The interest for a measure
-            $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
+	        $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
+
             // Update or Create the buildingInsulatedGlazing
             BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [

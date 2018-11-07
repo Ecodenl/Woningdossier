@@ -46,6 +46,10 @@ class SwitchRoleController extends Controller
 
         HoomdossierSession::setBuilding($building);
 
+        if ($request->has('return')){
+        	return redirect()->back();
+        }
+
 		return redirect(RoleHelper::getUrlByRole($role));
 	}
 }

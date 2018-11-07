@@ -216,11 +216,11 @@ class ExampleBuildingController extends Controller
                 // user interests
             ],
             'wall-insulation' => [
-                'user_interest.element.'.$wallInsulation->id => [
+                /*'user_interest.element.'.$wallInsulation->id => [
                     'label' => 'Interest in '.$wallInsulation->name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ],
+                ],*/
                 'element.'.$wallInsulation->id => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation'),
                     'type' => 'select',
@@ -304,11 +304,11 @@ class ExampleBuildingController extends Controller
                 ],
             ],
             'floor-insulation' => [
-                'user_interest.element.'.$floorInsulation->id => [
+                /*'user_interest.element.'.$floorInsulation->id => [
                     'label' => 'Interest in '.$floorInsulation->name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ],
+                ],*/
                 'element.'.$floorInsulation->id => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.floor-insulation'),
                     'type' => 'select',
@@ -336,11 +336,11 @@ class ExampleBuildingController extends Controller
                 ],
             ],
             'roof-insulation' => [
-                'user_interest.element.'.$roofInsulation->id => [
+                /*'user_interest.element.'.$roofInsulation->id => [
                     'label' => 'Interest in '.$roofInsulation->name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ],
+                ],*/
                 'building_features.roof_type_id' => [
                     'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof'),
                     'type' => 'select',
@@ -373,6 +373,7 @@ class ExampleBuildingController extends Controller
 //		    ],
         ];
 
+        /*
         // From GeneralDataController
         $interestElements = Element::whereIn('short', [
             'living-rooms-windows', 'sleeping-rooms-windows',
@@ -386,6 +387,7 @@ class ExampleBuildingController extends Controller
                 'options' => $interestOptions,
             ];
         }
+        */
 
         // Insulated glazing
         $igShorts = [
@@ -396,11 +398,11 @@ class ExampleBuildingController extends Controller
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['user_interests.'.$measureApplication->id] = [
+                /*$structure['insulated-glazing']['user_interests.'.$measureApplication->id] = [
                     'label' => 'Interest in '.$measureApplication->measure_name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ];
+                ];*/
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.insulated_glazing_id'] = [
                     'label' => $measureApplication->measure_name.': '.__('woningdossier.cooperation.tool.insulated-glazing.current-glass'),
                     'type' => 'select',

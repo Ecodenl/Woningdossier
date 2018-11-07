@@ -103,8 +103,7 @@ class ExampleBuilding extends Model
         return $this->contents()
                     ->where('build_year', '<=', $year)
                     ->orderBy('build_year')
-                    ->take(1)
-                    ->get();
+                    ->first();
     }
 
     /**

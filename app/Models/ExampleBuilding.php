@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -136,7 +137,7 @@ class ExampleBuilding extends Model
      */
     public function scopeForMyCooperation($query)
     {
-        $cooperationId = \Session::get('cooperation', 0);
+        $cooperationId = !empty(HoomdossierSession::getCooperation()) ? : 0;
 
         return $query->where('cooperation_id', '=', $cooperationId);
     }

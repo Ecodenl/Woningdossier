@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingHeating;
@@ -16,6 +17,7 @@ use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
+use App\Models\Role;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
@@ -32,8 +34,14 @@ class ExampleBuildingController extends Controller
      */
     public function index()
     {
-        $exampleBuildings = ExampleBuilding::orderBy('cooperation_id', 'asc')
-                                           ->orderBy('order', 'asc')->get();
+    	$exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
+		                                        ->orderBy('order', 'asc');
+
+    	if (stristr(HoomdossierSession::currentRole(), 'super') === false){
+			$exampleBuildingsQuery->forMyCooperation();
+	    }
+
+		$exampleBuildings = $exampleBuildingsQuery->get();
 
         return view('cooperation.admin.cooperation.cooperation-admin.example-buildings.index', compact('exampleBuildings'));
     }

@@ -47,6 +47,7 @@ return [
 
 				'buildings' => [
 					'index'               => [
+					    'no-appointment' => 'Nog geen afspraak',
 						'table' => [
 							'columns'        => [
 								'street'      => 'Straatnaam',
@@ -59,9 +60,9 @@ return [
 							'status'         => 'Kies status',
 							'current-status' => 'Huidige status:',
 							'options'        => [
-								\App\Models\BuildingCoachStatus::STATUS_IN_CONSIDERATION => 'In behandeling',
 								\App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
 								\App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
+								\App\Models\BuildingCoachStatus::STATUS_ACTIVE           => 'Actief',
 							],
 						],
 					],
@@ -120,6 +121,10 @@ return [
 					'create' => [
 						'header' => 'Een gesprek beginnen met :firstName :lastName',
 						'form'   => [
+						    'title' => [
+						        'label' => 'Onderwerp van het gesprek',
+                                'placeholder' => 'Vul hier het onderwerp van het gesprek in',
+                            ],
 							'message'      => [
 								'label'       => 'Bericht aan de bewoner',
 								'placeholder' => 'Vul hier uw bericht in voor de bewoner'

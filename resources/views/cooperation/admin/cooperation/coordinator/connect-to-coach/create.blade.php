@@ -11,7 +11,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.store-with-message-to-coach')}}" method="post"  >
+                    <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.store')}}" method="post"  >
                         {{csrf_field()}}
                         <input type="hidden" name="sender_id" value="{{$senderId}}">
                         <div class="row">
@@ -32,33 +32,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group" {{ $errors->has('title') ? ' has-error' : '' }}>
-                                    <label for="title">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.title')</label>
-                                    <input type="text" value="{{old('title')}}" class="form-control" name="title" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.title')">
-                                    @if ($errors->has('title'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('title') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group" {{ $errors->has('message') ? ' has-error' : '' }}>
-                                    <label for="message">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.message-to-coach.label')</label>
-                                    <textarea name="message" id="" class="form-control">{{old('message', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.message-to-coach.placeholder'))}}</textarea>
-                                    @if ($errors->has('message'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('message') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="col-sm-6">
                                 <button class="btn btn-primary btn-block" type="submit">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.submit') <span class="glyphicon glyphicon-plus"></span></button>

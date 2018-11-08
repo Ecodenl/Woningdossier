@@ -46,64 +46,13 @@ class ConnectToCoachController extends Controller
 
 
     /**
-     * Send a message to the selected coach
+     * Connect a coach to a building and resident
      *
      * @param Cooperation $cooperation
      * @param ConnectToCoachRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function storeWithMessageToCoach(Cooperation $cooperation, ConnectToCoachRequest $request)
-    {
-        $coach = $request->get('coach', '');
-        $message = $request->get('message');
-        $title = $request->get('title', '');
-        $senderId = $request->get('sender_id', "");
-
-
-        // the resident now has a coach to talk to, so the conversation request is done.
-        PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->update([
-            'status' => PrivateMessage::STATUS_LINKED_TO_COACH
-        ]);
-
-        // the receiver of the message
-        $toUser = $cooperation->users()->find($coach);
-
-        // TODO: create a function that does the same as this, but without the message
-        // so a coordinator can attach a coach to a resident in one click
-        PrivateMessage::create(
-            [
-                'title' => $title,
-                'request_type' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION,
-                'message' => $message,
-                'from_cooperation_id' => $cooperation->id,
-                'to_user_id' => $toUser->id,
-                'from_user_id' => \Auth::id(),
-            ]
-        );
-
-        $residentBuilding = Building::where('user_id', $senderId)->first();
-
-        // give the coach permission to the resident his building
-        BuildingPermission::create([
-            'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
-        ]);
-
-        // do not attach a status yet, the coach can do this himself in his gui
-        BuildingCoachStatus::create([
-            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_IN_CONSIDERATION
-        ]);
-
-        return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
-    }
-
-    /**
-     * Send a message to the selected coach
-     *
-     * @param Cooperation $cooperation
-     * @param ConnectToCoachRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function storeWithoutMessageToCoach(Cooperation $cooperation, ConnectToCoachRequest $request)
+    public function store(Cooperation $cooperation, ConnectToCoachRequest $request)
     {
         $coach = $request->get('coach', '');
         $senderId = $request->get('sender_id', "");
@@ -125,11 +74,13 @@ class ConnectToCoachController extends Controller
         ]);
 
         BuildingCoachStatus::create([
-            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_IN_CONSIDERATION
+            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_ACTIVE
         ]);
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }
+
+
 
     /**
      * When the coordinator decides to message the coach before attaching anything to the user

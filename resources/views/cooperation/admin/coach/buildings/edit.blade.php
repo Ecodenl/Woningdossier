@@ -54,7 +54,6 @@
         $('#appointmentdate').datetimepicker({
             format: "YYYY-MM-DD HH:mm:ss",
             locale: '{{app()->getLocale()}}',
-
         });
 
         $(document).ready(function () {

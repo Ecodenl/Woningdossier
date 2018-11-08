@@ -56,6 +56,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
+
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
 

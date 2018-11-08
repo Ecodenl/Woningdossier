@@ -6,6 +6,7 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
@@ -16,9 +17,11 @@ use App\Models\ElementValue;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,14 +44,7 @@ class WallInsulationController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
-        if (Auth::user()->isNotInterestedInStep('element', 3)) {
-            $nextStep = Step::where('order', $nextPage)->first();
-
-            return redirect(url('tool/'.$nextStep->slug));
-        }
+        $typeIds = [3];
 
         $steps = Step::orderBy('order')->get();
         /** @var Building $building */
@@ -62,9 +58,11 @@ class WallInsulationController extends Controller
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
+        $interests = Interest::orderBy('order')->get();
+
         return view('cooperation.tool.wall-insulation.index', compact(
             'steps', 'building', 'facadeInsulation',
-            'surfaces', 'buildingFeature',
+            'surfaces', 'buildingFeature', 'interests', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages'
         ));
     }
@@ -78,6 +76,11 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
+        $user = Auth::user();
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($user, $interests);
+
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
         $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');
@@ -85,12 +88,12 @@ class WallInsulationController extends Controller
         $wallJoints = $request->get('wall_joints', '');
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
         $wallSurface = $request->get('wall_surface', 0);
+        $insulationWallSurface = $request->get('insulation_wall_surface', 0);
         $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
 
         // get the user buildingfeature
-        $user = Auth::user();
         $building = $user->buildings()->first();
         $buildingFeatures = $building->buildingFeatures();
 
@@ -116,6 +119,7 @@ class WallInsulationController extends Controller
             'cavity_wall' => $cavityWall,
             'contaminated_wall_joints' => $wallJointsContaminated,
             'wall_surface' => $wallSurface,
+            'insulation_wall_surface' => $insulationWallSurface,
             'facade_damaged_paintwork_id' => $damagedPaintwork,
             'additional_info' => $additionalInfo,
             'facade_plastered_painted' => $facadePlasteredOrPainted,
@@ -126,7 +130,7 @@ class WallInsulationController extends Controller
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.insulated-glazing.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)
@@ -183,7 +187,7 @@ class WallInsulationController extends Controller
         $cavityWall = $request->get('cavity_wall', -1);
         $elements = $request->get('element', []);
         //$facadeSurface = NumberFormatter::reverseFormat($request->get('wall_surface', 0));
-        $facadeSurface = $request->get('wall_surface', 0);
+        $facadeSurface = $request->get('insulation_wall_surface', 0);
 
         $result = [
             'savings_gas' => 0,

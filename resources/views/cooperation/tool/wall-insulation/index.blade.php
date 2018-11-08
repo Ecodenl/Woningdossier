@@ -5,7 +5,10 @@
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
+
+        @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div id="intro">
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
@@ -204,7 +207,7 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
+                    <div class="form-group add-space {{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
                         <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty')</label>
 
                         <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
@@ -228,15 +231,15 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
+                <div class="col-sm-6">
+                    <div class="form-group add-space @if ($errors->has('wall_surface')) has-error @endif">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.facade-surface')
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
                         </label>
 
                         <div class="input-group">
-                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ \App\Helpers\NumberFormatter::format(old('wall_surface'), 1) }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         </div>
 
@@ -250,6 +253,29 @@
                         @endif
                     </div>
                 </div>
+                <div class="col-sm-6">
+                    <div class="form-group add-space @if ($errors->has('insulation_wall_surface')) has-error @endif">
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')
+                        </label>
+
+                        <div class="input-group">
+                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                        </div>
+
+                        <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            I would like to have some helpful information right here!
+                        </div>
+                        @if ($errors->has('insulation_wall_surface'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('insulation_wall_surface') }}</strong>
+                        </span>
+                        @endif
+                    </div>
+                </div>
+
             </div>
 
             <div class="row" id="advice-help">
@@ -403,17 +429,17 @@
                     <div class="panel-heading">@lang('default.buttons.download')</div>
                     <div class="panel-body">
                         <ol>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')))))}}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a></li>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a></li>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Gevelisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+                            <li><a download="" href="{{ asset($helpFile) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
                         </ol>
                     </div>
                 </div>
                 <hr>
                 <div class="form-group add-space">
                     <div class="">
-                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
                         <button type="submit" class="btn btn-primary pull-right">
                             @lang('default.buttons.next')
                         </button>
@@ -531,8 +557,15 @@
             });
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
+
+
         });
 
+        $('#wall_surface').on('change', function () {
+            if ($('#insulation_wall_surface').val().length == 0 || $('#insulation_wall_surface').val() == "0,0" || $('#insulation_wall_surface').val() == "0.00") {
+                $('#insulation_wall_surface').val($('#wall_surface').val())
+            }
+        });
 
     </script>
 @endpush

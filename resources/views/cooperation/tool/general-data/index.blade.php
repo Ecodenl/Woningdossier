@@ -247,7 +247,7 @@
                 @if ($i % 2 == 0)
                     <div class="row">
                 @endif
-                        <div class="col-sm-4">
+                        <div class="@if(in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows'])) col-sm-6 @else col-sm-4 @endif">
                             <div class="form-group add-space{{ $errors->has('element.'.$element->id) ? ' has-error' : '' }}">
                                 <label for="element_{{ $element->id }}" class="control-label">
                                     <i data-toggle="collapse" data-target="#element_{{ $element->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
@@ -270,6 +270,7 @@
                                 @endif
                             </div>
                         </div>
+                        @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
                         <div class="col-sm-2">
                             <div class="form-group add-space{{ $errors->has('user_interest.element.' . $element->id) ? ' has-error' : '' }}">
                                 <label for="user_interest_element_{{ $element->id }}" class="control-label small-text">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested') <span>*</span></label>
@@ -287,6 +288,7 @@
                                 @endif
                             </div>
                         </div>
+                        @endif
                 @if ($i % 2 == 1)
                     </div>
                 @endif

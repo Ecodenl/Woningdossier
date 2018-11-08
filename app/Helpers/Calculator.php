@@ -60,7 +60,12 @@ class Calculator
             return 0;
         }
 
-        $result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
+        if (null == $surface || '0.0' == $surface) {
+            $result = 0;
+        } else {
+            $result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
+        }
+
         self::debug('Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
 
         return $result;

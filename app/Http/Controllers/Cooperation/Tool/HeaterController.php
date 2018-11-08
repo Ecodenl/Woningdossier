@@ -7,6 +7,7 @@ use App\Helpers\Calculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HeaterFormRequest;
 use App\Models\Building;
@@ -23,6 +24,7 @@ use App\Models\PvPanelYield;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
+use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,13 +46,7 @@ class HeaterController extends Controller
      */
     public function index()
     {
-        // check if the user is interested in a heater, if not redirect to next step
-        if (Auth::user()->isNotInterestedInStep('service', 3)) {
-            // the heater is the "last" step for now, so redirect them to the my plan
-            $cooperation = Cooperation::find(\Session::get('cooperation'));
-
-            return redirect()->route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]);
-        }
+        $typeIds = [3];
 
         $user = \Auth::user();
         /** @var Building $building */
@@ -68,7 +64,7 @@ class HeaterController extends Controller
         $currentHeater = $building->heater;
 
         return view('cooperation.tool.heater.index', compact(
-            'comfortLevels', 'collectorOrientations',
+            'comfortLevels', 'collectorOrientations', 'typeIds',
             'currentComfort', 'currentHeater', 'habits', 'steps'
         ));
     }
@@ -170,6 +166,11 @@ class HeaterController extends Controller
      */
     public function store(HeaterFormRequest $request)
     {
+        $user = Auth::user();
+
+        $interests = $request->input('interest', '');
+        UserInterest::saveUserInterests($user, $interests);
+
         // Store the building heater part
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
@@ -177,7 +178,7 @@ class HeaterController extends Controller
 
         BuildingHeater::updateOrCreate(
             [
-                'building_id' => Auth::user()->buildings()->first()->id,
+                'building_id' => $user->buildings()->first()->id,
             ],
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
@@ -189,16 +190,14 @@ class HeaterController extends Controller
         $habits = $request->input('user_energy_habits', '');
         $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
 
-        UserEnergyHabit::where('user_id', Auth::id())->update([
-            'water_comfort_id' => $waterComFortId,
-        ]);
+        $user->energyHabit()->update(['water_comfort_id' => $waterComFortId]);
 
         // Save progress
         $this->saveAdvices($request);
-        Auth::user()->complete($this->step);
+        $user->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]);
+        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)

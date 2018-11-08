@@ -127,12 +127,21 @@ trait TranslatableTrait
     }
 
     /**
+     * Model classes will use this trait. They implement the getTable method.
+     *
+     * @return string
+     */
+    abstract public function getTable();
+
+    /**
      * Scope a query to check translations table.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string                                $attribute Table column
+     * @param string                                $name      Translation text
      * @param string                                $locale
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function scopeTranslated($query, $attribute, $name, $locale = 'nl')
     {

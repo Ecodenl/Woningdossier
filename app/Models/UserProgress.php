@@ -23,4 +23,9 @@ use Illuminate\Database\Eloquent\Model;
 class UserProgress extends Model
 {
     public $fillable = ['user_id', 'step_id'];
+
+    public function steps()
+    {
+        return $this->hasMany(Step::class);
+    }
 }

@@ -53,7 +53,7 @@ class RegisterController extends Controller
     /**
      * Show the application registration form.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
     public function showRegistrationForm()
     {
@@ -87,7 +87,7 @@ class RegisterController extends Controller
      *
      * @param RegisterFormRequest $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function register(RegisterFormRequest $request)
     {
@@ -97,8 +97,12 @@ class RegisterController extends Controller
 
         //$this->guard()->login($user);
 
+        /*
         return $this->registered($request, $user)
             ?: redirect($this->redirectPath())->with('success', trans('auth.register.form.message.success'));
+        */
+
+        return redirect($this->redirectPath())->with('success', __('auth.register.form.message.success'));
     }
 
     /**

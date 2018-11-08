@@ -126,7 +126,7 @@ class ExampleBuildingService {
 		$buildingFeatures->save();
 		self::log("Saving building features " . json_encode($buildingFeatures->toArray()));
 
-		dd($exampleData);
+		//dd($exampleData);
 
 	}
 

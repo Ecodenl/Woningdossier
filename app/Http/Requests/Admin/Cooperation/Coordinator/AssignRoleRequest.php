@@ -13,7 +13,7 @@ class AssignRoleRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasPermissionTo('assign role coach and resident');
+        return \Auth::check();
     }
 
     /**
@@ -24,7 +24,7 @@ class AssignRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'roles' => 'exists:roles,id'
+            'roles' => 'required|exists:roles,id'
         ];
     }
 }

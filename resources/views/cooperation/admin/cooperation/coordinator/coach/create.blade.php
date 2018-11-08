@@ -13,7 +13,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group {{ $errors->has('first_name') ? ' has-error' : '' }}">
                                     <label for="first-name">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.first-name')</label>
-                                    <input value="{{old('first_name')}}" type="text" class="form-control" name="first_name" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.first-name')...">
+                                    <input value="{{old('first_name')}}"  type="text" class="form-control" name="first_name" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.first-name')...">
                                     @if ($errors->has('first_name'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('first_name') }}</strong>
@@ -26,7 +26,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group {{ $errors->has('last_name') ? ' has-error' : '' }}">
                                     <label for="last_name">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.last-name')</label>
-                                    <input value="{{old('last_name')}}"  type="text" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.last-name')..." name="last_name">
+                                    <input  value="{{old('last_name')}}"  type="text" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.last-name')..." name="last_name">
                                     @if ($errors->has('last_name'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('last_name') }}</strong>
@@ -71,7 +71,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                                     <label for="email">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.email')</label>
-                                    <input  type="email" value="{{old('email')}}" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.email')..." name="email">
+                                    <input  value="{{old('email')}}" type="email" value="{{old('email')}}" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.email')..." name="email">
                                     @if ($errors->has('email'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('email') }}</strong>

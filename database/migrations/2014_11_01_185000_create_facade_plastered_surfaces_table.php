@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateFacadePlasteredSurfacesTable extends Migration
 {
@@ -15,9 +15,9 @@ class CreateFacadePlasteredSurfacesTable extends Migration
     {
         Schema::create('facade_plastered_surfaces', function (Blueprint $table) {
             $table->increments('id');
-	        $table->uuid('name');
-	        $table->integer('calculate_value')->nullable();
-	        $table->integer('order');
+            $table->uuid('name');
+            $table->integer('calculate_value')->nullable();
+            $table->integer('order');
             $table->timestamps();
         });
     }

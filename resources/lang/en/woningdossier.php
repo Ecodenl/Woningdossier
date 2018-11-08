@@ -1,45 +1,45 @@
 <?php
 
 return [
-	'navbar' => [
-		'language' => 'Language',
-		'languages' => [
-			'nl' => 'Dutch',
-			'en' => 'English',
-		],
-	],
-	'cooperation' => [
+    'navbar' => [
+        'language' => 'Language',
+        'languages' => [
+            'nl' => 'Dutch',
+            'en' => 'English',
+        ],
+    ],
+    'cooperation' => [
         'radiobutton' => [
             'yes' => 'Yes',
             'no' => 'No',
             'unknown' => 'Unknown',
-            'mostly' => 'Mostly'
+            'mostly' => 'Mostly',
         ],
-		'my-account' => [
-			'settings' => [
-				'form' => [
-					'index' => [
-						'header' => 'My account',
-						'submit' => 'Update',
-					],
-					'store' => [
-						'success' => 'Your data was successfully updated',
-					],
-					'destroy' => [
-						'header' => 'Delete account',
-						'label' => 'Delete my account',
-						'submit' => 'Delete',
-					]
-				],
-			],
-			'cooperations' => [
-				'form' => [
-					'header' => 'My cooperations',
-				],
-			],
-		],
-		'tool' => [
-			'title' => 'Kitchen table tool',
+        'my-account' => [
+            'settings' => [
+                'form' => [
+                    'index' => [
+                        'header' => 'My account',
+                        'submit' => 'Update',
+                    ],
+                    'store' => [
+                        'success' => 'Your data was successfully updated',
+                    ],
+                    'destroy' => [
+                        'header' => 'Delete account',
+                        'label' => 'Delete my account',
+                        'submit' => 'Delete',
+                    ],
+                ],
+            ],
+            'cooperations' => [
+                'form' => [
+                    'header' => 'My cooperations',
+                ],
+            ],
+        ],
+        'tool' => [
+            'title' => 'Kitchen table tool',
 
             'wall-insulation' => [
                 'intro' => [
@@ -58,10 +58,10 @@ return [
                 ],
 
                 'insulation-advice' => [
-	                'text' => 'The wall / facade is best insulated in the following way',
-	                'cavity-wall' => 'Cavity wall insulation',
-	                'facade-internal' => 'Internal wall insulation',
-	                'research' => 'More research is needed to find out how the walls are best insulated',
+                    'text' => 'The wall / facade is best insulated in the following way',
+                    'cavity-wall' => 'Cavity wall insulation',
+                    'facade-internal' => 'Internal wall insulation',
+                    'research' => 'More research is needed to find out how the walls are best insulated',
                 ],
 
                 'indication-for-costs' => [
@@ -83,6 +83,6 @@ return [
                     'year' => 'Year',
                 ],
             ],
-		],
-	],
+        ],
+    ],
 ];

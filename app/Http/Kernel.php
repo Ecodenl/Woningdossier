@@ -35,7 +35,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-	        \App\Http\Middleware\UserLanguage::class,
+            \App\Http\Middleware\UserLanguage::class,
         ],
 
         'api' => [
@@ -52,16 +52,15 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-    	'is-admin' => \App\Http\Middleware\IsAdmin::class,
-    	'cooperation' => \App\Http\Middleware\CooperationMiddleware::class,
+        'is-admin' => \App\Http\Middleware\IsAdmin::class,
+        'cooperation' => \App\Http\Middleware\CooperationMiddleware::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-	    'filled-step' => \App\Http\Middleware\FilledStep::class,
-
+        'filled-step' => \App\Http\Middleware\FilledStep::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
     ];

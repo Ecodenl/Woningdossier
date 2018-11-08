@@ -7,7 +7,7 @@ use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Step
+ * App\Models\Step.
  *
  * @property int $id
  * @property string $slug
@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $cooperation_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereCreatedAt($value)
@@ -28,19 +29,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Step extends Model
 {
+    use TranslatableTrait;
 
-	use TranslatableTrait;
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
 
-	/**
-	 * The "booting" method of the model.
-	 *
-	 * @return void
-	 */
-	protected static function boot()
-	{
-		parent::boot();
-
-		static::addGlobalScope(new CooperationScope);
-	}
-
+        static::addGlobalScope(new CooperationScope());
+    }
 }

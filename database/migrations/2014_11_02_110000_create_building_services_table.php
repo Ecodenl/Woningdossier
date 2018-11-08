@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBuildingServicesTable extends Migration
 {
@@ -17,15 +17,15 @@ class CreateBuildingServicesTable extends Migration
             $table->increments('id');
 
             $table->integer('building_id')->unsigned()->nullable()->default(null);
-            $table->foreign('building_id')->references('id')->on('buildings') ->onDelete('restrict');
+            $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
-	        $table->integer('service_id')->unsigned();
-	        $table->foreign('service_id')->references('id')->on('services')->onDelete('restrict');
+            $table->integer('service_id')->unsigned();
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('restrict');
 
-	        $table->integer('service_value_id')->unsigned()->nullable()->default(null);
-	        $table->foreign('service_value_id')->references('id')->on('service_values')->onDelete('restrict');
+            $table->integer('service_value_id')->unsigned()->nullable()->default(null);
+            $table->foreign('service_value_id')->references('id')->on('service_values')->onDelete('restrict');
 
-	        $table->text('extra')->nullable();
+            $table->text('extra')->nullable();
 
             $table->timestamps();
         });

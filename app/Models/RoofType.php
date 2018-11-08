@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\RoofType
+ * App\Models\RoofType.
  *
  * @property int $id
  * @property string $name
@@ -14,7 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $order
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingFeature[] $buildingFeatures
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\RoofType translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\RoofType whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\RoofType whereCreatedAt($value)
@@ -26,9 +27,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RoofType extends Model
 {
-	use TranslatableTrait;
+    use TranslatableTrait;
 
-    public function buildingFeatures(){
-    	return $this->hasMany(BuildingFeature::class);
+    public function buildingFeatures()
+    {
+        return $this->hasMany(BuildingFeature::class);
     }
 }

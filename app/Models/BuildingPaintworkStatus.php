@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPaintworkStatus
+ * App\Models\BuildingPaintworkStatus.
  *
  * @property int $id
  * @property int $building_id
@@ -14,9 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $wood_rot_status_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\PaintworkStatus $paintworkStatus
- * @property-read \App\Models\WoodRotStatus $woodRotStatus
+ * @property \App\Models\Building $building
+ * @property \App\Models\PaintworkStatus $paintworkStatus
+ * @property \App\Models\WoodRotStatus $woodRotStatus
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus whereId($value)
@@ -28,17 +29,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingPaintworkStatus extends Model
 {
-
     protected $fillable = ['building_id', 'last_painted_year', 'paintwork_status_id', 'wood_rot_status_id'];
-	public function building(){
-		return $this->belongsTo(Building::class);
-	}
 
-    public function paintworkStatus(){
-    	return $this->belongsTo(PaintworkStatus::class);
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
     }
 
-    public function woodRotStatus(){
-    	return $this->belongsTo(WoodRotStatus::class);
+    public function paintworkStatus()
+    {
+        return $this->belongsTo(PaintworkStatus::class);
+    }
+
+    public function woodRotStatus()
+    {
+        return $this->belongsTo(WoodRotStatus::class);
     }
 }

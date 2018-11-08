@@ -9,7 +9,6 @@ use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
-
     public function index()
     {
         $user = \Auth::user();

@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureApplication
+ * App\Models\MeasureApplication.
  *
  * @property int $id
  * @property string $measure_type
@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $step_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereApplication($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereCostUnit($value)
@@ -40,5 +41,4 @@ use Illuminate\Database\Eloquent\Model;
 class MeasureApplication extends Model
 {
     use TranslatableTrait;
-
 }

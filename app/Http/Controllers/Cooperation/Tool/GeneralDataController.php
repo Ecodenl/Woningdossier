@@ -103,6 +103,25 @@ class GeneralDataController extends Controller
         ));
     }
 
+    // todo
+	/**
+	 * return the example buildings based on the building types
+	 *
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function exampleBuildingType(Request $request)
+	{
+		$buildingTypeId = $request->get('building_type_id', '');
+		$exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
+		// loop through all the example buildings so we can add the "real name" to the examplebuilding
+		foreach ($exampleBuildings as $exampleBuilding) {
+			$exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
+		}
+		return response()->json($exampleBuildings);
+	}
+	// todo end
+
     public function applyExampleBuilding(Request $request)
     {
         $building = Building::find(HoomdossierSession::getBuilding());

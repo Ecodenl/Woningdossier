@@ -40,6 +40,7 @@
         ?>
 
         @foreach($buildingElements->values()->orderBy('order')->get() as $elementValue)
+            {{dd($elementValue)}}
 {{--            {{dd($buildingInsulation->element_value_id, $elementValue, $buildingInsulation)}}--}}
             @if(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
                 @if(($elementValue->calculate_value == 3 || $elementValue->calculate_value == 4) && $interest->calculate_value <= 2)

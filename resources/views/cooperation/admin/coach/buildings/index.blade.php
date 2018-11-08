@@ -19,7 +19,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($buildings as $i => $building)
+                        @foreach($buildingsFromCoachStatuses as $i => $building)
                             <tr>
                                 <td>{{ $building->city }}</td>
                                 <td>{{ $building->street }}</td>
@@ -40,7 +40,9 @@
                                 <td>
                                     @if(empty($building->deleted_at))
                                         <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-                                        <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                        @if($building->allow_access)
+                                            <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                        @endif
                                     @endif
                                     <a href="{{ route('cooperation.admin.coach.buildings.details.index', ['id' => $building->id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-eye-open"></i></a>
                                 </td>

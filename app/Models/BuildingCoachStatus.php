@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingCoachStatus extends Model
 {
     protected $fillable = [
-        'coach_id', 'status', 'building_id', 'appointment_date'
+        'coach_id', 'status', 'building_id', 'appointment_date', 'private_message_id'
     ];
 
     protected $dates = [
@@ -17,10 +17,12 @@ class BuildingCoachStatus extends Model
     // TODO: remove const when is removed in controllers etc
     const STATUS_IN_CONSIDERATION = "in_consideration";
 
-    // status that will be used after a coordinator connected a coach to a resident or the "default" status.
+    // status that will be used after a coordinator connected a coach to a resident, the coach is not able to set this himself
     const STATUS_ACTIVE = "active";
     // status that will be used after a coach created a appointment with a resident.
     const STATUS_APPOINTMENT = "appointment";
+    // status that will be used after the appointment is moved
+    const STATUS_NEW_APPOINTMENT = "new_appointment";
     // status that will be used after the appointment is completed.
     const STATUS_DONE = "done";
 

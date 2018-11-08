@@ -21,9 +21,13 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                        @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                            <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
-                                            <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
+                                        @foreach(__('woningdossier.cooperation.admin.coach.buildings.edit.form.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
+                                            @if($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT && $buildingCoachStatuses->contains('status',  \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT))
+
+                                            @else
+                                                <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
+                                                <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
+                                            @endif
                                         @endforeach
                                     </ul>
                                 </div><!-- /btn-group -->
@@ -73,10 +77,6 @@
                 $('input[name=building_coach_status]').val(buildingCoachStatus);
                 $(input).val(inputValPrefix + $(this).text().trim());
             });
-
-
-
-
         });
     </script>
 @endpush

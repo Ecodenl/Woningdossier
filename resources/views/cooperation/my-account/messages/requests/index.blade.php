@@ -11,41 +11,35 @@
                 <div class="col-md-12">
                     <ul class="chat">
                         @forelse($conversationRequests as $conversationRequest)
+                            <a href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}">
+                                <li class="left clearfix">
 
-                            @if($conversationRequest->isCoachRequestConversation() && \App\Models\PrivateMessage::hasUserResponseToCoachConversationRequest())
 
-                            @else
+                                    <div class="chat-body clearfix">
 
-                                <a @if($conversationRequest->isCoachRequestConversation()) href="{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation, 'action' => \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])}}"
-                                   @else href="{{route('cooperation.my-account.messages.requests.edit', ['cooperation' => $cooperation, 'requestMessageId' => $conversationRequest->id])}}" @endif>
-                                    <li class="left clearfix">
+                                        <div class="header">
+                                            <strong class="primary-font">
+                                                {{$conversationRequest->getSender($conversationRequest->id)->first_name. ' ' .$conversationRequest->getSender($conversationRequest->id)->last_name}}
+                                                - {{ $conversationRequest->title }}
+                                            </strong>
 
-                                        <div class="chat-body clearfix">
-                                            <div class="header">
-                                                <strong class="primary-font">
-                                                    {{$conversationRequest->getSender($conversationRequest->id)->first_name. ' ' .$conversationRequest->getSender($conversationRequest->id)->last_name}}
-                                                    - {{ $conversationRequest->title }}
-                                                </strong>
-
-                                                <small class="pull-right text-muted">
-                                                    <?php $time = \Carbon\Carbon::parse($conversationRequest->created_at) ?>
-                                                    <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
-                                                </small>
-                                            </div>
-                                            <p>
-                                                @if($conversationRequest->hasUserUnreadMessages() || $conversationRequest->isRead() == false)
-                                                    <strong>
-                                                        {{$conversationRequest->message}}
-                                                    </strong>
-                                                @else
-                                                    {{$conversationRequest->message}}
-                                                @endif
-                                            </p>
+                                            <small class="pull-right text-muted">
+                                                <?php $time = \Carbon\Carbon::parse($conversationRequest->created_at) ?>
+                                                <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
+                                            </small>
                                         </div>
-                                    </li>
-                                </a>
-
-                            @endif
+                                        <p>
+                                            @if($conversationRequest->hasUserUnreadMessages() || $conversationRequest->isRead() == false)
+                                                <strong>
+                                                    {{$conversationRequest->message}}
+                                                </strong>
+                                            @else
+                                                {{$conversationRequest->message}}
+                                            @endif
+                                        </p>
+                                    </div>
+                                </li>
+                            </a>
                         @empty
                             <li class="left clearfix">
 

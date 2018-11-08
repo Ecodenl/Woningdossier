@@ -71,7 +71,12 @@ return [
 						'form'   => [
 							'status'           => 'Status',
 							'appointment-date' => 'Tijdstip van afspraak',
-							'submit'           => 'Opslaan'
+							'submit'           => 'Opslaan',
+                            'options'        => [
+                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
+                                \App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
+                            ],
 						],
 					],
 					'set-building-status' => [

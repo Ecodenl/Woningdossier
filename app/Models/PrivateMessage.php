@@ -53,7 +53,8 @@ class PrivateMessage extends Model
     {
         $currentCooperationId = HoomdossierSession::getCooperation();
 
-        return $query->where('to_cooperation_id', $currentCooperationId)->where('status', self::STATUS_APPLICATION_SENT)->orWhere('status', self::STATUS_IN_CONSIDERATION);
+        return $query->where('to_cooperation_id', $currentCooperationId);
+//            ->where('status', self::STATUS_APPLICATION_SENT)->orWhere('status', self::STATUS_IN_CONSIDERATION);
     }
 
     /**
@@ -75,7 +76,7 @@ class PrivateMessage extends Model
     {
         return $query
             ->where('from_user_id', \Auth::id())
-            ->where('to_cooperation_id', session('cooperation'));
+            ->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
     /**

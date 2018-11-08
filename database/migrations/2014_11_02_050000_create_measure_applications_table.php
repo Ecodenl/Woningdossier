@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMeasureApplicationsTable extends Migration
 {
@@ -21,12 +21,12 @@ class CreateMeasureApplicationsTable extends Migration
             $table->enum('application', ['place', 'replace', 'remove', 'repair']);
             $table->double('costs', 8, 2);
             $table->uuid('cost_unit');
-	        $table->double('minimal_costs', 8, 2);
-	        $table->integer('maintenance_interval');
-	        $table->uuid('maintenance_unit');
+            $table->double('minimal_costs', 8, 2);
+            $table->integer('maintenance_interval');
+            $table->uuid('maintenance_unit');
 
-	        $table->integer('step_id')->unsigned();
-	        $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
+            $table->integer('step_id')->unsigned();
+            $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
 
             $table->timestamps();
         });

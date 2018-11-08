@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\CentralHeatingAge;
 
 class HeatingAgesTableSeeder extends Seeder
 {
@@ -13,7 +12,6 @@ class HeatingAgesTableSeeder extends Seeder
     public function run()
     {
         $heatingAges = [
-
             [
                 'name' => 'Aanwezig, recent vervangen',
                 'calculate_value' => 1,
@@ -37,7 +35,7 @@ class HeatingAgesTableSeeder extends Seeder
         ];
 
         foreach ($heatingAges as $heatingAge) {
-        	DB::table('central_heating_ages')->insert($heatingAge);
+            DB::table('central_heating_ages')->insert($heatingAge);
         }
     }
 }

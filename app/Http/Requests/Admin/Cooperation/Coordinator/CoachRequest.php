@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Cooperation\Coordinator;
 
+use App\Rules\AlphaSpace;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CoachRequest extends FormRequest
@@ -13,7 +14,7 @@ class CoachRequest extends FormRequest
      */
     public function authorize()
     {
-//        return \Auth::user()->hasPermissionTo('assign role coach and resident');
+//        return \Auth::check();
         return \Auth::check();
     }
 
@@ -25,8 +26,8 @@ class CoachRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|alpha',
-            'last_name' => 'required|alpha',
+            'first_name' => ['required', new AlphaSpace()],
+            'last_name' => ['required', new AlphaSpace()],
             'password' => 'nullable|min:6',
             'email' => 'required|email|unique:users,email',
             'roles' => 'required|exists:roles,id'

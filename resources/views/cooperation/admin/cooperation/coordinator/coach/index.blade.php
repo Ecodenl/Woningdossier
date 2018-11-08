@@ -17,7 +17,7 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.last-name')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.email')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.role')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.actions')</th>
+                            {{--<th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.actions')</th>--}}
                         </tr>
                         </thead>
                         <tbody>
@@ -33,12 +33,12 @@
                                         })
                                     ?>
                                 </td>
-                                <td>
-                                    <form action="{{route('cooperation.admin.cooperation.coordinator.coach.destroy', ['userId' => $user->id])}}" method="post">
-                                        {{csrf_field()}}
-                                        <button type="submit" class="btn remove btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
-                                    </form>
-                                </td>
+                                {{--<td>--}}
+                                    {{--<form action="{{route('cooperation.admin.cooperation.coordinator.coach.destroy', ['userId' => $user->id])}}" method="post">--}}
+                                        {{--{{csrf_field()}}--}}
+                                        {{--<button type="submit" class="btn remove btn-danger"><span class="glyphicon glyphicon-trash"></span></button>--}}
+                                    {{--</form>--}}
+                                {{--</td>--}}
                             </tr>
                         @endforeach
                         </tbody>
@@ -54,7 +54,34 @@
 @push('js')
     <script>
         $(document).ready(function () {
-            $('table').DataTable():
+            $('table').DataTable(
+                {
+                    language: {
+                        "sProcessing": "Bezig...",
+                        "sLengthMenu": "_MENU_ resultaten weergeven",
+                        "sZeroRecords": "Geen resultaten gevonden",
+                        "sInfo": "_START_ tot _END_ van _TOTAL_ resultaten",
+                        "sInfoEmpty": "Geen resultaten om weer te geven",
+                        "sInfoFiltered": " (gefilterd uit _MAX_ resultaten)",
+                        "sInfoPostFix": "",
+                        "sSearch": "Zoeken:",
+                        "sEmptyTable": "Geen resultaten aanwezig in de tabel",
+                        "sInfoThousands": ".",
+                        "sLoadingRecords": "Een moment geduld aub - bezig met laden...",
+                        "oPaginate": {
+                            "sFirst": "Eerste",
+                            "sLast": "Laatste",
+                            "sNext": "Volgende",
+                            "sPrevious": "Vorige"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": activeer om kolom oplopend te sorteren",
+                            "sSortDescending": ": activeer om kolom aflopend te sorteren"
+                        }
+                    },
+
+                }
+            );
 
             $('.remove').click(function () {
                 if (confirm("Weet u zeker dat u de gebruiker wilt verwijderen")) {

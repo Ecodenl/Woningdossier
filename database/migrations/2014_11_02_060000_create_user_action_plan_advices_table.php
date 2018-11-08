@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUserActionPlanAdvicesTable extends Migration
 {
@@ -22,7 +22,7 @@ class CreateUserActionPlanAdvicesTable extends Migration
             $table->integer('measure_application_id')->unsigned();
             $table->foreign('measure_application_id')->references('id')->on('measure_applications')->onDelete('restrict');
 
-	        $table->decimal('costs')->nullable();
+            $table->decimal('costs')->nullable();
             $table->decimal('savings_gas')->nullable();
             $table->decimal('savings_electricity')->nullable();
             $table->decimal('savings_money')->nullable();

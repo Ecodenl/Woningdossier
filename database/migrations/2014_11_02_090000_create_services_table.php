@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateServicesTable extends Migration
 {
@@ -20,8 +20,8 @@ class CreateServicesTable extends Migration
             $table->integer('service_type_id')->unsigned();
             $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('restrict');
 
-	        $table->integer('order');
-	        $table->uuid('info');
+            $table->integer('order');
+            $table->uuid('info');
             $table->timestamps();
         });
     }

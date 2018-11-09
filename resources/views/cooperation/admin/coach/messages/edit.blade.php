@@ -4,8 +4,17 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             {{$privateMessages->first()->title}}
+            @can('respond', $mainMessageId)
+                <a id="revoke-access">
+                    <span class="pull-right label label-success">Ik wil geen contact meer met deze bewoner</span>
+                </a>
+            @endcan
         </div>
         <div class="panel-body panel-chat-body" id="chat">
+            <form id="revoke-access-form" action="{{route('cooperation.admin.coach.messages.revoke-access')}}" method="post">
+                {{csrf_field()}}
+                <input type="hidden" name="main_message_id" value="{{$mainMessageId}}">
+            </form>
             @component('cooperation.layouts.chat.messages')
                 @forelse($privateMessages->sortBy('created_at') as $privateMessage)
 
@@ -48,3 +57,15 @@
 
 
 @endsection
+
+@push('js')
+    <script>
+        $('document').ready(function () {
+            $('#revoke-access').on('click', function () {
+                if (confirm('Weet u zeker dat u geen contact wilt met deze coach, er word hierna een nieuwe coach voor u gezocht. Dit kan enige tijd duren.')) {
+                    $('#revoke-access-form').submit();
+                }
+            });
+        })
+    </script>
+@endpush

@@ -242,6 +242,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
                     Route::post('bericht', 'MessagesController@store')->name('store');
+                    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
                 Route::group(['prefix' => 'verbinden-met-bewoner', 'as' => 'connect-to-resident.'], function () {

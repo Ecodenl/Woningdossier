@@ -29,6 +29,7 @@ class WoningdossierServiceProvider extends ServiceProvider
             $mainMessage = PrivateMessage::find($mainMessageId);
             $receiveUser = User::find($mainMessage->to_user_id);
             $sendUser = User::find($mainMessage->from_user_id);
+
             // if the sender and receiver both have the role coordinator or coach,
             // there is no need to check for the status since they are always allowed to contact eachother
             if (($sendUser->hasRole('coordinator') || $sendUser->hasRole('coach') && $receiveUser->hasRole('coach') || $receiveUser->hasRole('coordinator'))) {

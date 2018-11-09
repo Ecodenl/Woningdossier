@@ -79,6 +79,8 @@ class BuildingController extends Controller
 
         $buildingCoachStatus = $request->get('building_coach_status', '');
         $appointmentDate = $request->get('appointment_date', null);
+        $privateMessageId = $request->get('private_message_id');
+
         $appointmentDateFormated = null;
         if (!empty($appointmentDate)) {
             $appointmentDateFormated = Carbon::parse($appointmentDate)->format('Y-m-d H:i:s');
@@ -91,6 +93,7 @@ class BuildingController extends Controller
                 'building_id' => $buildingId,
                 'appointment_date' => $appointmentDateFormated,
                 'status' => $buildingCoachStatus,
+                'private_message_id' => $privateMessageId,
             ]
         );
 

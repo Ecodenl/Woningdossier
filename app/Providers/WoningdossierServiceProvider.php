@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
+use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\Interest;
 use App\Models\PrivateMessage;
@@ -51,7 +52,29 @@ class WoningdossierServiceProvider extends ServiceProvider
                 return true;
             }
 
+        });
 
+        /**
+         * Check if a coach can create a appointment
+         */
+        \Gate::define('make-appointment', function ($user, $buildingId) {
+            $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $user->id)->where('building_id', $buildingId)->get()->last();
+
+            if ($buildingCoachStatus->status == BuildingCoachStatus::STATUS_REMOVED) {
+                return false;
+            }
+
+            return true;
+        });
+
+        \Gate::define('access-building', function ($user, $buildingId) {
+            $buildingCoachStatus = BuildingCoachStatus::where('building_id', $buildingId)->where('coach_id', $user->id)->get()->last();
+            $conversationRequest = PrivateMessage::find($buildingCoachStatus->private_message_id);
+
+            if ($user->hasBuildingPermission($buildingId) && $conversationRequest->allow_access) {
+                return true;
+            }
+            return false;
         });
 
         \View::composer('cooperation.tool.includes.interested', function ($view) {

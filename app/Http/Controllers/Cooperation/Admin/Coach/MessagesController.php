@@ -8,6 +8,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Services\BuildingCoachStatusService;
+use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
 use App\Services\MessageService;
 use Illuminate\Http\Request;
@@ -55,6 +56,9 @@ class MessagesController extends Controller
         $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $fromId)->where('building_id', $building->id)->get()->last();
 
         $privateMessageRequestId = $buildingCoachStatus->private_message_id;
+
+        // remove the building permission
+        BuildingPermissionService::revokePermission($fromId, $building->id);
 
         // no coach connected so the status gos back to in consideration, the coordinator can take further actions from now on.
         PrivateMessage::find($privateMessageRequestId)->update(['status' => PrivateMessage::STATUS_IN_CONSIDERATION]);

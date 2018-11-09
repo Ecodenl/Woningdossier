@@ -61,8 +61,10 @@ return [
 							'current-status' => 'Huidige status:',
 							'options'        => [
 								\App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
 								\App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
 								\App\Models\BuildingCoachStatus::STATUS_ACTIVE           => 'Actief',
+                                \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',
 							],
 						],
 					],
@@ -75,6 +77,7 @@ return [
                             'options'        => [
                                 \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
                                 \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
+                                \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',
                                 \App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
                             ],
 						],

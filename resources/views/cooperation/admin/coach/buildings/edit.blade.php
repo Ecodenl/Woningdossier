@@ -8,6 +8,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <form action="{{route('cooperation.admin.coach.buildings.update')}}" method="post">
+                        <input type="hidden" name="private_message_id" value="{{\App\Models\BuildingCoachStatus::where('building_id', $building->id)->where('coach_id', Auth::id())->get()->last()->private_message_id}}">
                         <input type="hidden" name="building_id" value="{{$building->id}}">
                         <input type="hidden" name="building_coach_status" value="{{\App\Models\BuildingCoachStatus::getCurrentStatusKey($building->id)}}">
                         {{csrf_field()}}
@@ -24,6 +25,10 @@
                                         @foreach(__('woningdossier.cooperation.admin.coach.buildings.edit.form.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
                                             @if($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT && $buildingCoachStatuses->contains('status',  \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT))
 
+                                            @elseif($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT && !$buildingCoachStatuses->contains('status', \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT))
+
+                                            @elseif($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_REMOVED)
+                                                {{-- Coach is not allowed to remove it from here he can do this from the chat--}}
                                             @else
                                                 <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
                                                 <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>

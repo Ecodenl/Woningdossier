@@ -63,6 +63,18 @@ return [
                     'text' => 'U kunt hier verschillende dingen doen.',
 
 
+
+                ],
+
+                'coordinator' => [
+                    'side-nav' => [
+                        'reports' => 'Rapporten',
+                        'label' => 'Coördinator menu',
+                        'home' => 'Home',
+                        'assign-roles' => 'Rollen toewijzen',
+                        'coach' => 'Coaches',
+                        'add-user' => 'Voeg Coach / Bewoner toe'
+                    ],
                     'reports' => [
                         'title' => 'Rapportages',
                         'description' => 'Rapportage downloads',
@@ -83,16 +95,6 @@ return [
                             'zip-code' => 'Postcode',
                             'country-code' => 'Landcode',
                         ],
-                    ]
-                ],
-
-                'coordinator' => [
-                    'side-nav' => [
-                        'label' => 'Coördinator menu',
-                        'home' => 'Home',
-                        'assign-roles' => 'Rollen toewijzen',
-                        'coach' => 'Coaches',
-                        'add-user' => 'Voeg Coach / Bewoner toe'
                     ],
 
                     'assign-roles' => [

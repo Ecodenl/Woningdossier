@@ -370,21 +370,23 @@ return [
 	                'build-year-post-1930' => 'Woningen met dit bouwjaar hebben vaak wel een spouwmuur',
 	                'build-year-pre-1930' => 'Woningen met dit bouwjaar hebben vaak geen spouwmuur',
                     'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
-                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
-                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',
-                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel ?',
-                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk ?'
+                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur?',
+                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd?',
+                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel?',
+                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk?',
                 ],
 
                 'optional' => [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
-                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
-                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
+                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn?',
+                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen)?',
 	                'facade-surface' => 'Geveloppervlakte van de woning',
+	                'wall-surface' => 'Geveloppervlakte',
+	                'insulation-wall-surface' => 'Te isoleren geveloppervlakte',
                 ],
 
                 'alert' => [
-                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie'
+                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
                 ],
 
 	            'insulation-advice' => [
@@ -428,7 +430,7 @@ return [
 	            'interested-in' => 'Bent u geïnteresseerd in :measure?',
 
                 'cracking-seal' => [
-                    'title' => 'Kierdichting'
+                    'title' => 'Kierdichting',
                 ],
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',

@@ -39,9 +39,6 @@ class Temperature
         if (! array_key_exists($measure, self::$calculationValues)) {
             return null;
         }
-        if ($avgHouseTemp < self::AVERAGE_TEMPERATURE_NORM) {
-            return 0;
-        }
 
         $calcValues = self::$calculationValues[$measure];
 

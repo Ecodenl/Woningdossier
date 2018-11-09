@@ -4,9 +4,9 @@ namespace App\Helpers\KeyFigures\WallInsulation;
 
 class Temperature
 {
-    const WALL_INSULATION_JOINTS = 'Spouwmuurisolatie';
-    const WALL_INSULATION_FACADE = 'Binnengevelisolatie';
-    const WALL_INSULATION_RESEARCH = 'Nader onderzoek nodig';
+    const WALL_INSULATION_JOINTS = 'cavity-wall-insulation';
+    const WALL_INSULATION_FACADE = 'facade-wall-insulation';
+    const WALL_INSULATION_RESEARCH = 'wall-insulation-research';
 
     // Gemiddelde temperatuur normberekening
     const AVERAGE_TEMPERATURE_NORM = 13.5; // degrees

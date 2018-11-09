@@ -46,6 +46,8 @@ class FloorInsulationController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
+        $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
+
         $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
@@ -61,14 +63,17 @@ class FloorInsulationController extends Controller
         }
 
         $buildingElement = $building->buildingElements;
+        $buildingElementsForMe = BuildingElement::forMe()->get();
 
         $buildingFeatures = $building->buildingFeatures;
+        $buildingFeaturesForMe = BuildingFeature::forMe()->get();
+
         $steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
-            'crawlspace', 'buildingCrawlspace', 'typeIds',
-            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement'
+            'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingElementForMe', 'buildingFeaturesForMe', 'buildingElementsForMe',
+            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
         ));
     }
 
@@ -197,7 +202,7 @@ class FloorInsulationController extends Controller
             [
                 'building_id' => $buildingId,
                 'element_id' => $buildingElementId,
-                'input_source_id' => $buildingId
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'element_value_id' => $heightCrawlspace,

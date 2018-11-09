@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\GetValueTrait;
+use App\Traits\GetMyValuesTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -67,6 +68,7 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingFeature extends Model
 {
     use GetValueTrait;
+    use GetMyValuesTrait;
 
     protected $fillable = [
         'element_values',
@@ -95,6 +97,7 @@ class BuildingFeature extends Model
     {
         return $this->belongsTo(Building::class);
     }
+
 
     public function buildingCategory()
     {

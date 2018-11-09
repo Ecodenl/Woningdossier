@@ -23,5 +23,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingCurrentHeating extends Model
 {
-    use GetValueTrait;
+
 }

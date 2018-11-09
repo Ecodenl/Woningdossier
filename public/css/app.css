@@ -8546,3 +8546,13 @@ ul.progress-list li.not-available a:focus img {
   color: white;
 }
 
+#current-building-status .dropdown-menu {
+  border-radius: 0px;
+}
+
+#current-building-status .dropdown-menu li a {
+  color: inherit;
+  padding: 3px 20px;
+  font-weight: normal;
+}
+

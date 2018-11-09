@@ -52,7 +52,7 @@ class RoofInsulationController extends Controller
         $typeIds = [5];
 
         /** var Building $building */
-        $building = \Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         /** var BuildingFeature $features */
         $features = $building->buildingFeatures;
@@ -134,6 +134,8 @@ class RoofInsulationController extends Controller
 
         $result = [];
 
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
+
         // Remove old results
         UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
 
@@ -192,7 +194,7 @@ class RoofInsulationController extends Controller
                     //}
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();
@@ -210,7 +212,7 @@ class RoofInsulationController extends Controller
                     $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -232,7 +234,7 @@ class RoofInsulationController extends Controller
                         $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                         $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();
@@ -253,7 +255,7 @@ class RoofInsulationController extends Controller
                     $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -264,12 +266,12 @@ class RoofInsulationController extends Controller
 
     public function calculate(Request $request)
     {
+
         $result = [];
-        /**
-         * var Building $building.
-         */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+
+        /** @var Building $building */
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $roofTypes = $request->input('building_roof_types', []);
         foreach ($roofTypes as $i => $details) {
@@ -424,7 +426,7 @@ class RoofInsulationController extends Controller
                     $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
                     $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
 
-                    BuildingFeature::updateOrCreate(
+                    BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'building_id' => $buildingId,
                             'input_source_id' => $inputSourceId,
@@ -435,7 +437,7 @@ class RoofInsulationController extends Controller
                     );
 
                     // insert the new ones
-                    BuildingRoofType::updateOrCreate(
+                    BuildingRoofType::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'building_id' => $buildingId,
                             'input_source_id' => $inputSourceId,

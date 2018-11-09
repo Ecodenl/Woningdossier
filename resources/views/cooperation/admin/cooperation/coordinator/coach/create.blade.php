@@ -7,7 +7,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.cooperation.coordinator.coach.store')}}" method="post" autocomplete="off">
+                    <form action="{{route('cooperation.admin.cooperation.coordinator.coach.store')}}" method="post"  >
                         {{csrf_field()}}
                         <div class="row">
                             <div class="col-sm-6">
@@ -51,7 +51,7 @@
                                         <div class="panel-body">
                                             <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }} ">
                                                 <label for="password">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.label')</label>
-                                                <input  type="password" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">
+                                                <input id="password" type="password" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">
                                                 @if ($errors->has('password'))
                                                     <span class="help-block">
                                                         <strong>{{ $errors->first('password') }}</strong>
@@ -122,13 +122,18 @@
 
     <script>
 
+        $('form').disableAutoFill();
+
+
         $('.collapse').on('shown.bs.collapse', function(){
             $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
         }).on('hidden.bs.collapse', function(){
             $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
         });
 
+
         $(document).ready(function () {
+
             $(".roles").select2({
                 placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.select-role')",
                 maximumSelectionLength: Infinity

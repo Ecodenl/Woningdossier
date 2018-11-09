@@ -113,8 +113,8 @@ class MyPlanController extends Controller
                         $sortedAdvices[$year][$step->name] = [];
                     }
 
-                    $sortedAdvices[$year][$step->name][] = [
-                        'interested' => $advice->planned,
+					$sortedAdvices[$year][$step->name][] = [
+						'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
                         'costs' => Calculator::indexCosts($advice->costs, $costYear),

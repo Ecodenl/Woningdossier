@@ -28,6 +28,7 @@ class ConversationRequestController extends Controller
             return redirect()->route('cooperation.conversation-requests.edit', ['cooperation' => $cooperation, 'option' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION]);
         }
 
+
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
         // set the measure application name if there is a measure application

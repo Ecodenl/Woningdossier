@@ -110,6 +110,7 @@ return [
             'rule-name' => 'custom-message',
         ],
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
+        'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
 
         'building_paintwork_statuses' => [
             'last_painted_year' => [
@@ -136,4 +137,6 @@ return [
     	'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
 	    'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
     ],
+];
+
 ];

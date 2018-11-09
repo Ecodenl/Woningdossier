@@ -31,7 +31,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
 			Route::get('help', 'HelpController@index')->name('help.index');
-//			Route::get('help-met-invullen', '')
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 			Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
@@ -43,7 +42,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
                 Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
 
-				Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+                Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
 
 				    Route::get('', 'MessagesController@index')->name('index');
 				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
@@ -166,6 +165,23 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
+                    Route::group(['prefix' => 'gespreks-aanvragen', 'as' => 'conversation-requests.'], function () {
+                        Route::get('', 'ConversationRequestsController@index')->name('index');
+                        Route::get('gespreks-aanvraag/{messageId}', 'ConversationRequestsController@show')->name('show');
+                    });
+
+                    Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {
+                        Route::get('', 'MessagesController@index')->name('index');
+                        Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
+                        Route::post('bericht', 'MessagesController@store')->name('store');
+                    });
+
+                    Route::group(['prefix' => 'verbind-met-coach', 'as' => 'connect-to-coach.'], function () {
+                        Route::get('','ConnectToCoachController@index')->name('index');
+                        Route::get('koppelen/{senderId}','ConnectToCoachController@create')->name('create');
+                        Route::post('', 'ConnectToCoachController@store')->name('store');
+                    });
+
 
                     // needs to be the last route due to the param
                     Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
@@ -197,6 +213,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			            Route::post('', 'BuildingDetailsController@store')->name('store');
                     });
                 });
+
+                Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {
+                    Route::get('', 'MessagesController@index')->name('index');
+                    Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
+                    Route::post('bericht', 'MessagesController@store')->name('store');
+                });
+
+                Route::group(['prefix' => 'verbinden-met-bewoner', 'as' => 'connect-to-resident.'], function () {
+                    Route::get('', 'ConnectToResidentController@index')->name('index');
+                    Route::get('{userId}', 'ConnectToResidentController@create')->name('create');
+                    Route::post('', 'ConnectToResidentController@store')->name('store');
+                });
+
 
                 // needs to be the last route due to the param
 			    Route::get('{role_name?}', 'CoachController@index')->name('index');

@@ -5,9 +5,11 @@
         <div class="panel-heading">
             {{$privateMessages->first()->title}}
             @can('respond', $mainMessageId)
+                @if(!\App\Models\User::find($privateMessages->first()->from_user_id)->hasRole('coordinator'))
                 <a id="revoke-access">
                     <span class="pull-right label label-success">Ik wil geen contact meer met deze bewoner</span>
                 </a>
+                @endif
             @endcan
         </div>
         <div class="panel-body panel-chat-body" id="chat">

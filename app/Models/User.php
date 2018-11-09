@@ -305,7 +305,7 @@ class User extends Authenticatable
      */
     public function hasBuildingPermission($buildingId) : bool
     {
-        if ($this->buildingPermissions()->find($buildingId) instanceof BuildingPermission) {
+        if ($this->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
             return true;
         }
         return false;

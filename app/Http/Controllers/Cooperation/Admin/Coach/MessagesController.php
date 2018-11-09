@@ -36,6 +36,13 @@ class MessagesController extends Controller
     }
 
 
+    public function store(Cooperation $cooperation, MessagesRequest $request)
+    {
+        MessageService::create($request);
+
+        return redirect()->back();
+    }
+
     public function revokeAccess(Cooperation $cooperation, Request $request)
     {
         $currentChatMainMessage = $request->get('main_message_id');
@@ -68,11 +75,5 @@ class MessagesController extends Controller
 
         return redirect()->back();
 
-    }
-    public function store(Cooperation $cooperation, MessagesRequest $request)
-    {
-        MessageService::create($request);
-
-        return redirect()->back();
     }
 }

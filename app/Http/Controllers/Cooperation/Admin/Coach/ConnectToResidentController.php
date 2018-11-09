@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Coach;
 use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Admin\Coach\ConnectToResidentRequest;
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -17,15 +18,42 @@ class ConnectToResidentController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        // the coach is allowed to talk to a resident if he has permission to that building.
-        $users = \DB::table('building_permissions')
-            ->where('building_permissions.user_id', \Auth::id())
-            ->leftJoin('buildings', 'buildings.id', '=', 'building_permissions.building_id')
-            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
-            ->select('users.*')->get();
+        $buildingsFromBuildingCoachStatuses = \DB::table('building_coach_statuses')
+            ->where('building_coach_statuses.coach_id', '=', \Auth::id())
+            ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
+            ->select('buildings.*')
+            ->get()->unique('id');
+
+        foreach ($buildingsFromBuildingCoachStatuses as $key => $building) {
+            // the coach can talk to a resident if there is a coach status where the active status is higher then the deleted status
+            $buildingCoachStatusActive = BuildingCoachStatus::where('building_coach_statuses.coach_id', '=', \Auth::id())
+                ->where('building_id', '=', $building->id)
+                ->where('status', '=', BuildingCoachStatus::STATUS_ACTIVE)->count();
+
+            $buildingCoachStatusRemoved = BuildingCoachStatus::where('building_coach_statuses.coach_id', '=', \Auth::id())
+                ->where('building_id', '=', $building->id)
+                ->where('status', '=', BuildingCoachStatus::STATUS_REMOVED)->count();
+
+            // if there are as many OR more records with removed remove it from the the collection
+            // the coach does not have access to that building
+            if ($buildingCoachStatusRemoved >= $buildingCoachStatusActive) {
+                $buildingsFromBuildingCoachStatuses->forget($key);
+
+            }
+
+        }
 
 
-        return view('cooperation.admin.coach.connect-to-resident.index', compact('cooperation', 'users'));
+//        $users = \DB::table('building_coach_statuses')
+//            ->where('building_coach_statuses.coach_id', '=', \Auth::id())
+//            ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
+//            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
+//            ->select('buildings.*', 'users.first_name', 'users.last_name')
+//            ->get()->unique('id');
+
+
+
+        return view('cooperation.admin.coach.connect-to-resident.index', compact('cooperation', 'buildingsFromBuildingCoachStatuses'));
     }
 
     public function create(Cooperation $cooperation, $userId)
@@ -45,15 +73,6 @@ class ConnectToResidentController extends Controller
         $message = $request->get('message', '');
         $receiverId = $request->get('receiver_id', '');
 
-        // Get the building from the receiver / resident
-        $buildingFromUser = Building::where('user_id', $receiverId)->first();
-        // If the coach does not have permission to this building redirect him.
-        $buildingPermission = BuildingPermission::where('building_id', $buildingFromUser->id)->where('user_id', \Auth::id())->first();
-        if (!$buildingPermission instanceof BuildingPermission) {
-            return redirect()
-                ->route('cooperation.admin.coach.connect-to-resident.index')
-                ->with('warning', __('woningdossier.cooperation.admin.coach.connect-to-resident.store.warning'));
-        }
 
         // we start the conversation between the resident and coach
         $newMessage = PrivateMessage::create(

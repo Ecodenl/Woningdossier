@@ -19,7 +19,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($buildings as $i => $building)
+                        @foreach($buildingsFromCoachStatuses as $i => $building)
                             <tr>
                                 <td>{{ $building->city }}</td>
                                 <td>{{ $building->street }}</td>
@@ -31,16 +31,21 @@
                                 <td>
                                     {{\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id)}}
                                 </td>
-                                <td>@if($buildingCoachStatuses->where('building_id', $building->id)->last() instanceof \App\Models\BuildingCoachStatus && !empty($buildingCoachStatuses->where('building_id', $building->id)->last()->appointment_date))
-                                        {{$buildingCoachStatuses->where('building_id', $building->id)->last()->appointment_date}}
+
+                                <td>@if($buildingCoachStatuses->where('coach_id', Auth::id())->where('building_id', $building->id)->last() instanceof \App\Models\BuildingCoachStatus && !empty($buildingCoachStatuses->where('coach_id', Auth::id())->where('building_id', $building->id)->last()->appointment_date))
+                                        {{$buildingCoachStatuses->where('coach_id', Auth::id())->where('building_id', $building->id)->last()->appointment_date}}
                                     @else
                                         @lang('woningdossier.cooperation.admin.coach.buildings.index.no-appointment')
                                     @endif
                                 </td>
                                 <td>
                                     @if(empty($building->deleted_at))
+                                        @can('make-appointment', $building->id)
                                         <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-                                        <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                        @endcan
+                                        @can('access-building', $building->id)
+                                            <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                        @endcan
                                     @endif
                                     <a href="{{ route('cooperation.admin.coach.buildings.details.index', ['id' => $building->id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-eye-open"></i></a>
                                 </td>

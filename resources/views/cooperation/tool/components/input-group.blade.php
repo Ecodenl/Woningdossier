@@ -50,6 +50,7 @@
         $(document).ready(function () {
 
             //TODO: could use some tweaks, event fires 16 times more as needed ?
+            //TODO: duhu, this files gets loaded around 16 times, should be in the master blade or separate js file
             $('.input-source-group').on('click', 'li.change-input-value', function (event) {
 
                 // so it will not jump to the top of the page.

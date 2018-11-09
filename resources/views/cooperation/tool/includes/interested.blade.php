@@ -12,7 +12,7 @@
             <div class="col-sm-12">
                 <div class="form-group add-space">
                     <label for="interest_{{ $type }}_{{ $elementId }}" class="control-label">
-                        @lang('woningdossier.cooperation.tool.change-interest', ['item' => $typeName])
+                        @uuidlang(general.change-interested.title, ['item' => {{$typeName}}])
                     </label>
                     <select class="form-control" id="interest_{{ $type }}_{{ $elementId }}" name="interest[{{ $type }}][{{ $elementId }}]">
                         @foreach($interests as $interest)

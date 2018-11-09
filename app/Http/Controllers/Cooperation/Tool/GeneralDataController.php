@@ -38,6 +38,7 @@ use App\Models\Ventilation;
 use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class GeneralDataController extends Controller
 {

@@ -20,6 +20,9 @@
             margin: 10px;
             padding: 0 10px 0 10px;
         }
+        body i.glyphicon-info-sign {
+            display: block !important;
+        }
     </style>
     @stack('css')
 </head>

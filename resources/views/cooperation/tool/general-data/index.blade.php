@@ -653,12 +653,12 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('amount_electricity') ? ' has-error' : '' }}">
-                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
+                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year') <span>*</span></label>
 
 
                         <div class="input-group">
                             <span class="input-group-addon">kWh</span>
-                            <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity">
+                            <input id="amount_electricity" required type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity">
                         </div>
 
                         <div id="amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

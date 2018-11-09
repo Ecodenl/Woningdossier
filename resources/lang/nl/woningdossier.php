@@ -425,6 +425,13 @@ return [
                                     'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
                                 ],
 
+                                'postal-code'           => 'Postcode',
+                                'number'                => 'Huisnummer',
+                                'house-number-extension' => 'Toevoeging',
+                                'street'                => 'Straat',
+                                'city'                  => 'Plaats',
+                                'phone-number'          => 'Telefoonnummer',
+
                                 'submit' => 'Gebruiker aanmaken',
                             ]
                         ],

@@ -2,6 +2,7 @@
 
 return [
 	'navbar' => [
+	    'input_source' => 'Invul bron',
 		'language' => 'Taal',
 		'languages' => [
 			'nl' => 'Nederlands',

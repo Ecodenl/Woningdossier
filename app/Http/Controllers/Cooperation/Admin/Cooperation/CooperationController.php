@@ -16,11 +16,6 @@ class CooperationController extends Controller
             return redirect()->route('cooperation.admin.index');
         }
 
-        $role = Role::findByName($roleName);
-        session()->put('role_id', $role->id);
-        $role = Role::findByName($roleName);
-        session()->put('role_id', $role->id);
-
         return view('cooperation.admin.cooperation.cooperation-admin.index');
     }
 }

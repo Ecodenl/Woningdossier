@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
+use App\Models\InputSource;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -98,27 +100,34 @@ class LoginController extends Controller
         }
 
 		if ($this->attemptLogin($request)) {
-		    $user = \Auth::user();
 
+		    $user = \Auth::user();
 		    // if the user only has one role we can set the session with his role id on the login
 		    if ($user->roles->count() == 1) {
                 $role = $user->roles()->first();
+		        $building = $user->buildings()->first();
+                $inputSource = $role->inputSource;
 
-                session()->put('role_id', $role->id);
+                // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
+		        if (!$role->inputSource instanceof InputSource) {
+		            $inputSource = InputSource::findByShort('resident');
+                }
+
+                // set the Auth user sessions
+                HoomdossierSession::setRole($role);
+                HoomdossierSession::setInputSource($inputSource);
+                // For now, we will set the input source value to input source.
+                // The user can later on change this.
+                HoomdossierSession::setInputSourceValue($inputSource);
+                HoomdossierSession::setBuilding($building);
 
 			    $this->redirectTo = RoleHelper::getUrlByRole( $role );
             }
 			else {
-				// get highest role and redirect to the corresponding route / url
-				$role = $user->roles()->orderBy('level', 'DESC')->first();
-
-				if ($role->level >= 5){
-					$this->redirectTo = '/admin';
-				}
-				else {
-					$this->redirectTo = RoleHelper::getUrlByRole( $role );
-				}
+				// if the user has multiple roles, always redirect them to the switch role.
+                $this->redirectTo = '/admin';
 			}
+
 
 			return $this->sendLoginResponse($request);
 		}

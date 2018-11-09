@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
@@ -16,7 +17,9 @@ use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\Role;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
@@ -44,12 +47,17 @@ class SolarPanelsController extends Controller
         $typeIds = [7];
 
         $steps = Step::orderBy('order')->get();
-        $user = \Auth::user();
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+//        dd($building->pvPanels);
+
+//        $buildingId = $building->id;
         /**
          * @var Building
          */
-        $building = $user->buildings()->first();
-        $user->energyHabit;
+//        $building = $user->buildings()->first();
+//        $user->energyHabit;
         $amountElectricity = ($user->energyHabit instanceof UserEnergyHabit) ? $user->energyHabit->amount_electricity : 0;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
@@ -137,7 +145,11 @@ class SolarPanelsController extends Controller
      */
     public function store(SolarPanelFormRequest $request)
     {
-        $user = Auth::user();
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
@@ -155,7 +167,8 @@ class SolarPanelsController extends Controller
 
         BuildingPvPanel::updateOrCreate(
             [
-                'building_id' => $user->buildings()->first()->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'peak_power' => $peakPower,
@@ -168,7 +181,7 @@ class SolarPanelsController extends Controller
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }

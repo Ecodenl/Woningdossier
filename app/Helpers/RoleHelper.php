@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-
 use Spatie\Permission\Models\Role;
 
 class RoleHelper

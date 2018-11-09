@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
@@ -161,7 +162,10 @@ class FloorInsulationController extends Controller
      */
     public function store(FloorInsulationFormRequest $request)
     {
-        $user = Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         // Get the value's from the input's
         $elements = $request->input('element', '');
@@ -169,8 +173,9 @@ class FloorInsulationController extends Controller
         foreach ($elements as $elementId => $elementValueId) {
             BuildingElement::updateOrCreate(
                 [
-                    'building_id' => $user->buildings()->first()->id,
+                    'building_id' => $buildingId,
                     'element_id' => $elementId,
+                    'input_source_id' => $inputSourceId
                 ],
                 [
                     'element_value_id' => $elementValueId,
@@ -191,8 +196,9 @@ class FloorInsulationController extends Controller
 
         BuildingElement::updateOrCreate(
             [
-                'building_id' => $user->buildings()->first()->id,
+                'building_id' => $buildingId,
                 'element_id' => $buildingElementId,
+                'input_source_id' => $buildingId
             ],
             [
                 'element_value_id' => $heightCrawlspace,
@@ -205,15 +211,21 @@ class FloorInsulationController extends Controller
         );
         $floorSurface = $request->input('building_features', '');
 
-        BuildingFeature::where('building_id', $user->buildings()->first()->id)->update([
-            'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '0.0',
-            'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : '0.0',
-        ]);
+        BuildingFeature::updateOrCreate(
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
+            ],
+            [
+                'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '0.0',
+                'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : '0.0',
+            ]
+        );
 
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }

@@ -12,7 +12,7 @@
 
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('app.name', 'Laravel') }}
+                {{ config('app.name', 'Hoomdossier') }}
             </a>
         </div>
 
@@ -71,14 +71,14 @@
                     <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>
                     <li><a href="{{ url('/home') }}">@lang('woningdossier.cooperation.disclaimer.title')</a></li>
 
-                    @if(Auth::user()->getRoleNames()->count() == 1 && Auth::user()->getRoleNames()->first() == "resident")
-                        <li>
-                            <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{ $myUnreadMessages->count() }}</span>
-                            </a>
-                        </li>
-                    @elseif(Auth::user()->getRoleNames()->count() == 1)
+                    {{--@if(Auth::user()->getRoleNames()->count() == 1 && Auth::user()->getRoleNames()->first() == "resident")--}}
+                        {{--<li>--}}
+                            {{--<a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">--}}
+                                {{--<span class="glyphicon glyphicon-envelope"></span>--}}
+                                {{--<span class="badge">{{ $myUnreadMessages->count() }}</span>--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
+                    @if(Auth::user()->getRoleNames()->count() == 1)
                         <li>
                             <a>
                                 @lang('woningdossier.cooperation.admin.navbar.current-role') {{ Auth::user()->getHumanReadableRoleName(Auth::user()->getRoleNames()->first()) }}
@@ -120,6 +120,8 @@
                                     {{ csrf_field() }}
                                 </form>
                             </li>
+
+
                             <li>
                                 <span class="pull-right" style="padding-right:.5em;line-height:100%;"><small>v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif</small></span>
                             </li>

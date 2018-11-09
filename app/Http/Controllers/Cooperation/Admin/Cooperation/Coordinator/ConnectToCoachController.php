@@ -55,11 +55,11 @@ class ConnectToCoachController extends Controller
     public function store(Cooperation $cooperation, ConnectToCoachRequest $request)
     {
         $coach = $request->get('coach', '');
-        $senderId = $request->get('sender_id', "");
-
+        $senderId = $request->get('sender_id', '');
+        $privateMessageId = $request->get('private_message_id', '');
 
         // the resident now has a coach to talk to, so the conversation request is done.
-        PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->update([
+        PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
             'status' => PrivateMessage::STATUS_LINKED_TO_COACH
         ]);
 
@@ -68,13 +68,20 @@ class ConnectToCoachController extends Controller
 
         $residentBuilding = Building::where('user_id', $senderId)->first();
 
-        // give the coach permission to the resident his building
-        BuildingPermission::create([
-            'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
-        ]);
+        $privateMessage = PrivateMessage::find($privateMessageId);
+
+        if ($privateMessage->allow_access) {
+            // give the coach permission to the resident his building
+            BuildingPermission::create([
+                'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
+            ]);
+        }
 
         BuildingCoachStatus::create([
-            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_ACTIVE
+            'coach_id' => $toUser->id,
+            'building_id' => $residentBuilding->id,
+            'status' => BuildingCoachStatus::STATUS_ACTIVE,
+            'private_message_id' => $privateMessageId
         ]);
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));

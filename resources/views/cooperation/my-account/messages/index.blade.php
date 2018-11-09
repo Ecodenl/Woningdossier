@@ -10,21 +10,6 @@
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.my-account.layouts.components.chat-messages')
-                        @if(isset($coachConversationRequest) && $coachConversationRequest->status == "in behandeling")
-                            <li class="left clearfix">
-
-                                <div class="chat-body clearfix">
-                                    <div class="header">
-                                        <strong class="primary-font">
-                                            @lang('woningdossier.cooperation.my-account.messages.index.chat.conversation-requests-consideration.title')
-                                        </strong>
-                                    </div>
-                                    <p>
-                                        @lang('woningdossier.cooperation.my-account.messages.index.chat.conversation-requests-consideration.text')
-                                    </p>
-                                </div>
-                            </li>
-                        @endif
                         @forelse($mainMessages as $mainMessage)
                             <a href="{{route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation, 'mainMessageId' => $mainMessage->id])}}">
                                 <li class="left clearfix">
@@ -57,7 +42,6 @@
                             </a>
 
                         @empty
-                            @if(isset($coachConversationRequest) != true)
                                 <li class="left clearfix">
 
                                     <div class="chat-body clearfix">
@@ -72,7 +56,6 @@
                                         </p>
                                     </div>
                                 </li>
-                            @endif
                         @endforelse
                     @endcomponent
                 </div>

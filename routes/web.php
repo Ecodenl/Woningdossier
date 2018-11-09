@@ -23,10 +23,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			'Auth\RegisterController@confirm' )->name( 'confirm' );
 
 		Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
-		// Login, forgot password etc.
-        Route::group(['middleware' => 'guest'], function () {
+//		 Login, forgot password etc.
+//        Route::group(['middleware' => 'guest'], function () {
 		    Auth::routes();
-        });
+//        });
 
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){
@@ -48,6 +48,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				    Route::get('', 'MessagesController@index')->name('index');
 				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
 				    Route::post('edit', 'MessagesController@store')->name('store');
+				    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
 
 				    Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
 
@@ -240,6 +241,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
                     Route::post('bericht', 'MessagesController@store')->name('store');
+                    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
                 Route::group(['prefix' => 'verbinden-met-bewoner', 'as' => 'connect-to-resident.'], function () {

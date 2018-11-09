@@ -4,8 +4,19 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             {{$privateMessages->first()->title}}
+            @can('respond', $mainMessageId)
+                @if(!\App\Models\User::find($privateMessages->first()->from_user_id)->hasRole('coordinator'))
+                <a id="revoke-access">
+                    <span class="pull-right label label-success">Ik wil geen contact meer met deze bewoner</span>
+                </a>
+                @endif
+            @endcan
         </div>
         <div class="panel-body panel-chat-body" id="chat">
+            <form id="revoke-access-form" action="{{route('cooperation.admin.coach.messages.revoke-access')}}" method="post">
+                {{csrf_field()}}
+                <input type="hidden" name="main_message_id" value="{{$mainMessageId}}">
+            </form>
             @component('cooperation.layouts.chat.messages')
                 @forelse($privateMessages->sortBy('created_at') as $privateMessage)
 
@@ -38,7 +49,7 @@
         </div>
 
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'url' => route('cooperation.admin.coach.messages.store')])
+            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'mainMessageId' => $mainMessageId, 'url' => route('cooperation.admin.coach.messages.store')])
                 <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                     @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
                 </button>
@@ -48,3 +59,15 @@
 
 
 @endsection
+
+@push('js')
+    <script>
+        $('document').ready(function () {
+            $('#revoke-access').on('click', function () {
+                if (confirm('Weet u zeker dat u geen contact wilt met deze coach, er word hierna een nieuwe coach voor u gezocht. Dit kan enige tijd duren.')) {
+                    $('#revoke-access-form').submit();
+                }
+            });
+        })
+    </script>
+@endpush

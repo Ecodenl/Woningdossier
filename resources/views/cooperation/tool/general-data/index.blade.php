@@ -70,7 +70,7 @@
                                 'inputValues' => $buildingTypes,
                                 'userInputValues' => $building->buildingFeatures()->forMe()->get(),
                                 'userInputModel' => 'buildingType',
-                                'userInputColumn' => 'id'
+                                'userInputColumn' => 'building_type_id'
                             ])
                                 <select id="building_type_id" class="form-control" name="building_type_id">
                                     @foreach($buildingTypes as $buildingType)
@@ -190,7 +190,7 @@
                             </label>
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
+                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
                                 <select id="roof_type_id" class="form-control" name="roof_type_id" req>
                                     @foreach($roofTypes as $roofType)
                                         <option
@@ -243,7 +243,7 @@
                             }
                             ?>
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'energyLabel', 'userInputColumn' => 'id'])
+                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
                                 <select id="energy_label_id" class="form-control" name="energy_label_id">
                                     @foreach($energyLabels as $energyLabel)
                                         <option
@@ -440,7 +440,8 @@
                                     @else
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra.value'])
-                                            <input type="text" id="{{ $service->short }}" class="form-control"
+                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
+                                <input type="text" id="{{ $service->short }}" class="form-control"
                                                    value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif"
                                                    name="service[{{ $service->id }}]">
                                         @endcomponent
@@ -894,14 +895,13 @@
                         @endif
                     </div>
                 </div>
+                @if($coachEnergyHabitRemarks instanceof \App\Models\UserEnergyHabit && !empty($coachEnergyHabitRemarks->living_situation_extra))
                 <div class="col-sm-12">
-                    <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
-                    @if(isset($energyHabitForMe) && $energyHabitForMe->first()->hasCoachInputSource())
                         @component('cooperation.tool.components.alert')
-                            {{$energyHabitForMe->where('input_source_id', $coachInputSource->id)->first()->living_situation_extra}}
+                            {{ $coachEnergyHabitRemarks->living_situation_extra }}
                         @endcomponent
-                    @endif
                 </div>
+                @endif
             </div>
 
                     <div class="row">
@@ -968,7 +968,7 @@
                                 </label>
 
                                 <textarea id="motivation-extra" class="form-control"
-                                          name="motivation_extra">@if(old('motivation_extra') != ""){{old('motivation_extra')}}@elseif(isset($energyHabit)){{$energyHabit->motivation_extra}}@endif</textarea>
+                                          name="motivation_extra">@if(old('motivation_extra') != ""){{ old('motivation_extra') }}@elseif(isset($energyHabit)){{ $energyHabit->motivation_extra }}@endif</textarea>
 
                                 <div id="motivation-extra-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -994,7 +994,7 @@
                                 <ol>
                                     <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Algemene_gegevens.pdf"; ?>
                                     <li><a download=""
-                                           href="{{ asset($helpFile) }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a>
+                                           href="{{ asset($helpFile) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a>
                                     </li>
                                 </ol>
                             </div>

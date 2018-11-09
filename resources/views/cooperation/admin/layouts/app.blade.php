@@ -12,7 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('css/datepicker/datetimepicker.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/datepicker/datetimepicker.min.css') }}">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
     @endif
@@ -64,6 +64,10 @@
                         </ul>
                     </li>
                 </ul>
+
+                @hasrole('coach|coordinator|cooperation-admin|super-admin|superuser')
+                    <a href="{{ route('cooperation.tool.index') }}" class="btn btn-warning navbar-btn">Naar tool</a>
+                @endhasrole
             @endif
 
             <!-- Right Side Of Navbar -->
@@ -85,7 +89,7 @@
                         @else
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                    @lang('woningdossier.cooperation.admin.navbar.current-role') {{\Spatie\Permission\Models\Role::find(session('role_id'))->human_readable_name}}<span class="caret"></span>
+                                    @lang('woningdossier.cooperation.admin.navbar.current-role') {{ \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name }}<span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu">

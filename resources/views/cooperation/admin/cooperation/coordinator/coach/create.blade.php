@@ -71,7 +71,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                                     <label for="email">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.email')</label>
-                                    <input  value="{{old('email')}}" type="email" value="{{old('email')}}" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.email')..." name="email">
+                                    <input type="email" value="{{old('email')}}" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.email')..." name="email">
                                     @if ($errors->has('email'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('email') }}</strong>

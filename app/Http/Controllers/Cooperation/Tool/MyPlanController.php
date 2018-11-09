@@ -10,7 +10,8 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
+use App\Scopes\GetValueScope;
 
 class MyPlanController extends Controller
 {
@@ -118,6 +119,7 @@ class MyPlanController extends Controller
 						'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
+                        'measure_short' => $advice->measureApplication->short,
                         'costs' => Calculator::indexCosts($advice->costs, $costYear),
                         'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
                         'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,

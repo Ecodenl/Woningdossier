@@ -10,7 +10,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-repsonsive table-bordered compact nowrap">
+                    <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.type-request')</th>
@@ -31,6 +31,9 @@
                                     <div class="btn-group" role="group" style="min-width: 145px;">
                                         <a href="{{route('cooperation.admin.cooperation.coordinator.conversation-requests.show', ['messageId' => $openConversation->id])}}" class="btn btn-default">
                                             @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.see-message')
+                                        </a>
+                                        <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.create', ['senderId' => $openConversation->from_user_id])}}" class="btn btn-default">
+                                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.talk-to-coach')
                                         </a>
                                         <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['senderId' => $openConversation->from_user_id])}}" class="btn btn-default">
                                             @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.connect-to-coach')

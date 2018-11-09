@@ -1,4 +1,3 @@
-
 <div class="input-group input-source-group">
     {{ $slot }}
     <div class="input-group-btn">
@@ -7,10 +6,10 @@
             @switch($inputType)
                 @case('select')
                     @include('cooperation.tool.components.select', [
-                        'customInputValueColumn' => isset($customInputValueColumn)  ? $customInputValueColumn : "",
+                        'customInputValueColumn' => isset($customInputValueColumn) ? $customInputValueColumn : null,
                         'userInputValues' => $userInputValues,
                         'userInputColumn' => $userInputColumn,
-                        'userInputModel' => isset($userInputModel) ? $userInputModel : "",
+                        'userInputModel' => isset($userInputModel) ? $userInputModel : null,
                         'inputValues' => $inputValues,
                     ])
                     @break
@@ -45,14 +44,13 @@
     </div>
 </div>
 
+{{--
 @push('js')
     <script>
         $(document).ready(function () {
 
-            //TODO: could use some tweaks, event fires 16 times more as needed ?
-            //TODO: duhu, this files gets loaded around 16 times, should be in the master blade or separate js file
+            // moved to app.js
             $('.input-source-group').on('click', 'li.change-input-value', function (event) {
-
                 // so it will not jump to the top of the page.
                 event.preventDefault();
 
@@ -79,7 +77,6 @@
                             break;
                         default:
                             console.log('Something went tremendously wrong...');
-                            '{{Log::alert('Something went tremendously wrong...')}}';
                             break;
                     }
                     // its a select.
@@ -91,6 +88,7 @@
             });
 
 
-        })
+        });
     </script>
 @endpush
+--}}

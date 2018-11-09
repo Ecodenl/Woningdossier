@@ -24,7 +24,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Cooperation extends Model
 {
-    public $fillable = ['name', 'slug' ];
+    public $fillable = [
+        'name',
+        'slug',
+    ];
 
     /**
      * The users associated with this cooperation.

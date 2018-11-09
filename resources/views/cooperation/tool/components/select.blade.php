@@ -1,8 +1,8 @@
-{{-- TODO: could use some improvement, do not know how atm--}}
+{{-- TODO: could use some improvement, do not know how atm --}}
 @if(is_array($inputValues) && $customInputValueColumn == false)
     @foreach($inputValues as $key => $inputValue)
         @foreach($userInputValues as $userInputValue)
-            {{--we use array get, we cant use it like $userInputValue->$userInputColumn--}}
+            {{-- we use array get, we cant use it like $userInputValue->$userInputColumn --}}
             <?php
             // check if the input column has dots, ifso we need to use the array get function
             // else its a property that we can access
@@ -21,7 +21,7 @@
     @foreach($inputValues as $inputValue)
         @foreach($userInputValues as $userInputValue)
             <?php
-            if (isset($userInputModel) && $userInputModel == true) {
+            if ($userInputModel instanceof \Illuminate\Database\Eloquent\Model) {
                 $value = $userInputValue->$userInputModel->$userInputColumn;
             } else {
                 if (strpos($userInputColumn, ".") !== false) {
@@ -41,7 +41,7 @@
 
             ?>
             @if($inputValue->id == $value)
-                <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputName}}</a></li>
+                <li class="change-input-value" data-input-value="{{ $inputValue->id }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
             @endif
         @endforeach
     @endforeach

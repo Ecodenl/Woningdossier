@@ -56,7 +56,6 @@
                             @endif
                         </td>
                         <td>
-                            {{--<a href="#myModal" role="button" class="btn btn-large btn-primary" data-toggle="modal">Launch Demo Modal</a>--}}
                             {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                         </td>
                         <td>
@@ -223,10 +222,10 @@
                         table += "<tr class='collapse' id='total-costs-" + slugYear + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'> </td></tr>";
 
 
-                            table += "</tbody></table>";
+                        table += "</tbody></table>";
 
-                            $("ul#years").append("<li>" + header + table + "</li>");
-                        });
+                        $("ul#years").append("<li>" + header + table + "</li>");
+                    });
 
                     // toggle chevron for the personal plan
                     $('.turn-on-click').on('click', function () {
@@ -249,7 +248,8 @@
                             window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
                         });
 
-                        checkCoupledMeasuresAndMaintenance();
+                    checkCoupledMeasuresAndMaintenance();
+
                     }
                 });
 
@@ -274,8 +274,7 @@
                 $(this).find('i').css("transform", "rotate(0deg)");
                 $(this).find('i').css("transition", "1s");
             }
-        });
-
+            });
             $(".interested-checker").click(function(){
                 // get the planned year input
                 var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');

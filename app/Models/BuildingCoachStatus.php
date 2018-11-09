@@ -14,8 +14,14 @@ class BuildingCoachStatus extends Model
         'appointment_date'
     ];
 
-    const STATUS_APPOINTMENT = "appointment";
+    // TODO: remove const when is removed in controllers etc
     const STATUS_IN_CONSIDERATION = "in_consideration";
+
+    // status that will be used after a coordinator connected a coach to a resident or the "default" status.
+    const STATUS_ACTIVE = "active";
+    // status that will be used after a coach created a appointment with a resident.
+    const STATUS_APPOINTMENT = "appointment";
+    // status that will be used after the appointment is completed.
     const STATUS_DONE = "done";
 
     /**

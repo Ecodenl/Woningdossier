@@ -14,7 +14,6 @@
                         U ziet nu de gegevens die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld
 .
                     </div>
-
                 @endif
                 @include('cooperation.tool.progress')
             </div>

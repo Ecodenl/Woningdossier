@@ -34,6 +34,8 @@
                         @endforeach
                     </ul>
                 </li>
+
+                {{--
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                         @lang('woningdossier.navbar.input_source')<span class="caret"></span>
@@ -48,11 +50,11 @@
                         @endforeach
                     </ul>
                 </li>
+                --}}
             </ul>
 
-
-            @if (Auth::check() && Auth::user()->buildings()->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
-                <a href="{{route('cooperation.admin.index')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
+            @if(Auth::check() && (Auth::user()->getRoleNames()->count() > 1 || Auth::user()->getRoleNames()->first() != "resident"))
+                <a href="{{ route('cooperation.admin.index') }}" class="btn btn-warning navbar-btn">Naar admin</a>
             @endif
         @endif
 
@@ -73,22 +75,30 @@
                         <li>
                             <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                                 <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessages->count()}}</span>
+                                <span class="badge">{{ $myUnreadMessages->count() }}</span>
                             </a>
                         </li>
                     @elseif(Auth::user()->getRoleNames()->count() == 1)
                         <li>
-                            <a href="{{route('cooperation.admin.index', ['role' => Auth::user()->getRoleNames()->first()])}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessages->count()}}</span>
+                            <a>
+                                @lang('woningdossier.cooperation.admin.navbar.current-role') {{ Auth::user()->getHumanReadableRoleName(Auth::user()->getRoleNames()->first()) }}
                             </a>
                         </li>
                     @else
-                        <li>
-                            <a href="{{route('cooperation.admin.index')}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessages->count()}}</span>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                                @lang('woningdossier.cooperation.admin.navbar.current-role') {{ \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name }}<span class="caret"></span>
                             </a>
+
+                            <ul class="dropdown-menu">
+                                @foreach(Auth::user()->roles()->orderBy('level', 'DESC')->get() as $role)
+                                    <li>
+                                        <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name, 'return']) }}">
+                                            {{ $role->human_readable_name }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </li>
                     @endif
                     <li class="dropdown">

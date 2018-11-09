@@ -101,7 +101,6 @@ class LoginController extends Controller
         }
 
 		if ($this->attemptLogin($request)) {
-
 		    $user = \Auth::user();
 		    // if the user only has one role we can set the session with his role id on the login
 		    if ($user->roles->count() == 1) {

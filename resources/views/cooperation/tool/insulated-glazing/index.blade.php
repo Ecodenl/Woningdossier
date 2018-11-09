@@ -41,7 +41,17 @@
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
                                 @foreach($interests as $interest)
-                                    <option @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))  selected="selected" @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id) selected @elseif($interest->calculate_value == 4) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                    {{-- calculate_value 4 is the default --}}
+                                    <option
+                                            @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))
+                                            selected="selected"
+                                            @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id)
+                                            selected="selected"
+                                            @elseif(!array_key_exists($measureApplication->id, $userInterests) && $interest->calculate_value == 4)
+                                            selected="selected"
+                                            @endif
+                                            value="{{ $interest->id }}">{{ $interest->name }}
+                                    </option>
                                 @endforeach
                             </select>
 
@@ -535,11 +545,11 @@
                     <div class="panel-heading">@lang('default.buttons.download')</div>
                     <div class="panel-body">
                         <ol>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf')))))}}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')))))}}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')))))}}</a></li>
+                            <li><a download="" href="{{ asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Glasisolatie.pdf')))))}}</a></li>
+                            <li><a download="" href="{{ asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_bouwdelen.pdf')))))}}</a></li>
+                            <li><a download="" href="{{ asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Kierdichting_ramen_en_deuren.pdf')))))}}</a></li>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Glasisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
+                            <li><a download="" href="{{ asset($helpFile)}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
 
                         </ol>
                     </div>
@@ -611,7 +621,7 @@
             $('.user-interest').change(function() {
                 $('.user-interest option:selected').each(function() {
                     $userInterest = $(this); // the input field
-                    if ($userInterest.text() == "Geen actie" || $userInterest.text() == "Niet mogelijk") {
+                    if ($userInterest.text() === "Geen actie" || $userInterest.text() === "Niet mogelijk") {
                         $userInterest.parent().parent().parent().next().hide();
                     } else {
                         $userInterest.parent().parent().parent().next().show();

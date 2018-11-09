@@ -69,7 +69,10 @@ class BuildingController extends Controller
 
         $buildingCoachStatus = $request->get('building_coach_status', '');
         $appointmentDate = $request->get('appointment_date', null);
-        $appointmentDateFormated = Carbon::parse($appointmentDate)->format('Y-m-d H:i:s');
+        $appointmentDateFormated = null;
+        if (!empty($appointmentDate)) {
+            $appointmentDateFormated = Carbon::parse($appointmentDate)->format('Y-m-d H:i:s');
+        }
         $buildingId = $request->get('building_id');
 
         BuildingCoachStatus::create(

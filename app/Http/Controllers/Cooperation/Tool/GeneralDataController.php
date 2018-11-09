@@ -57,6 +57,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
+
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
 
@@ -81,11 +82,19 @@ class GeneralDataController extends Controller
         $motivations = Motivation::orderBy('order')->get();
         $energyHabit = $buildingOwner->energyHabit;
         $steps = Step::orderBy('order')->get();
-        $energyHabitForMe = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->where('user_id', $buildingOwner->id)->get();
+
+        // Get possible remarks from the coach on energy habits
+        $coachSource = InputSource::findByShort('coach');
+        $coachEnergyHabitRemarks = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)
+                                       ->where('user_id', $buildingOwner->id)
+                                       ->where('input_source_id', $coachSource->id)
+                                       ->first();
+
         $step = $this->step;
 
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step', 'buildingOwner', 'energyHabitForMe',
+            'building', 'step', 'buildingOwner',
+            'coachEnergyHabitRemarks',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',

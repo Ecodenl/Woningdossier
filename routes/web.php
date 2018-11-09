@@ -31,17 +31,61 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
 			Route::get('help', 'HelpController@index')->name('help.index');
+//			Route::get('help-met-invullen', '')
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 			Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
-            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function () {
-                Route::resource('settings', 'SettingsController', ['only' => ['index', 'store']]);
-                Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
+			// my account
+			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
+
+			    Route::get('', 'MyAccountController@index')->name('index');
+				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
+				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
                 Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
+
+				Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+
+				    Route::get('', 'MessagesController@index')->name('index');
+				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
+				    Route::post('edit', 'MessagesController@store')->name('store');
+
+				    Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
+
+				        Route::get('', 'RequestController@index')->name('index');
+				        Route::get('{requestMessageId}', 'RequestController@edit')->name('edit');
+				        Route::post('{requestMessageId}', 'RequestController@update')->name('update');
+                    });
+                });
 
 				//Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
 			});
 
+			// conversation requests
+			Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+
+			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
+
+			    Route::post('', 'ConversationRequestController@store')->name('store');
+			    Route::post('/edit', 'ConversationRequestController@update')->name('update');
+			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
+
+//			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
+//			        Route::resource('', 'CoachController');
+//                });
+
+//			    Route::group(['prefix' => 'meer-informatie', 'as' => 'more-information.'], function () {
+//
+//			        Route::get('{measure}', 'MoreInfoController@index')->name('index');
+//			        Route::post('', 'MoreInfoController@store')->name('store');
+//                });
+//
+//			    Route::group(['prefix' => 'offerte', 'as' => 'quotation.'], function () {
+//                    Route::get('{measure}', 'QuotationController@index')->name('index');
+//                    Route::post('', 'QuotationController@store')->name('store');
+//                });
+            });
+
+			// the tool
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
@@ -130,10 +174,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'middleware' => ['role:cooperation-admin']], function () {
 
 
-                    Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+				Route::resource('example-buildings', 'ExampleBuildingController');
+				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
-                    // needs to be the last route due to the param
+		// needs to be the last route due to the param
                     Route::get('{role_name?}', 'CooperationController@index')->name('index');
                 });
 

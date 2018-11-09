@@ -132,11 +132,26 @@ class LoginController extends Controller
 			return $this->sendLoginResponse($request);
 		}
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
+		// If the login attempt was unsuccessful we will increment the number of attempts
+		// to login and redirect the user back to the login form. Of course, when this
+		// user surpasses their maximum number of attempts they will get locked out.
+		$this->incrementLoginAttempts($request);
 
-        return $this->sendFailedLoginResponse($request);
+		return $this->sendFailedLoginResponse($request);
+	}
+
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendLoginResponse ($request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
     }
 }

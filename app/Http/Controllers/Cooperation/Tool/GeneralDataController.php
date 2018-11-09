@@ -106,7 +106,7 @@ class GeneralDataController extends Controller
         $buildingId = $building->id;
         $user = $building->user;
         $inputSourceId = HoomdossierSession::getInputSource();
-        
+
         $exampleBuildingId = $request->get('example_building_id', null);
         if (! is_null($exampleBuildingId)) {
             $exampleBuilding = ExampleBuilding::forMyCooperation()->where('id',

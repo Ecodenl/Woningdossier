@@ -65,12 +65,12 @@
                     <li><a href="{{ url('/home') }}">@lang('woningdossier.cooperation.disclaimer.title')</a></li>
 
                     @if(Auth::user()->getRoleNames()->count() == 1 && Auth::user()->getRoleNames()->first() == "resident")
-                    <li>
-                        <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
-                            <span class="glyphicon glyphicon-envelope"></span>
-                            <span class="badge">{{$myUnreadMessages->count()}}</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
+                                <span class="glyphicon glyphicon-envelope"></span>
+                                <span class="badge">{{$myUnreadMessages->count()}}</span>
+                            </a>
+                        </li>
                     @elseif(Auth::user()->getRoleNames()->count() == 1)
                         <li>
                             <a href="{{route('cooperation.admin.index', ['role' => Auth::user()->getRoleNames()->first()])}}">

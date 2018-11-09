@@ -42,7 +42,6 @@ class Cooperation extends Model
 	public function getRouteKeyName() {
 		return 'slug';
 	}
-
     /**
      * Return the coaches from the current cooperation
      *
@@ -82,5 +81,10 @@ class Cooperation extends Model
 
 	}
 
+    public function getCoordinators()
+    {
+        $users = $this->users()->role('coordinator');
 
+        return $users;
+	}
 }

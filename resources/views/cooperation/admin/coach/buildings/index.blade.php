@@ -40,6 +40,7 @@
                                 <td>
                                     @if(empty($building->deleted_at))
                                         <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+                                    {{--TODO: do not only do this on building level, should be double checked in building permissions table. --}}
                                         @if($building->allow_access)
                                             <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
                                         @endif

@@ -49,6 +49,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				    Route::get('', 'MessagesController@index')->name('index');
 				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
 				    Route::post('edit', 'MessagesController@store')->name('store');
+				    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
 
 				    Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
 

@@ -26,6 +26,8 @@ class BuildingCoachStatus extends Model
     // status that will be used after the appointment is completed.
     const STATUS_DONE = "done";
 
+    const STATUS_REMOVED = "removed";
+
     /**
      * Get the building from the status
      *
@@ -88,4 +90,18 @@ class BuildingCoachStatus extends Model
         return "";
     }
 
+
+    public static function hasCoachAccess()
+    {
+        // the coach can talk to a resident if there is a coach status where the active status is higher then the deleted status
+        $buildingCoachStatusActive = self::where('building_coach_statuses.coach_id', '=', \Auth::id())
+            ->where('status', '=', self::STATUS_ACTIVE)->count();
+
+        $buildingCoachStatusRemoved = self::where('building_coach_statuses.coach_id', '=', \Auth::id())
+            ->where('status', '=', self::STATUS_REMOVED)->count();
+
+        if ($buildingCoachStatusRemoved > $buildingCoachStatusActive) {
+            return false;
+        }
+    }
 }

@@ -38,7 +38,7 @@
         </div>
 
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'url' => route('cooperation.admin.coach.messages.store')])
+            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'mainMessageId' => $mainMessageId, 'url' => route('cooperation.admin.coach.messages.store')])
                 <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                     @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
                 </button>

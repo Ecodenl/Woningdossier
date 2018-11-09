@@ -30,7 +30,7 @@ class RequestController extends Controller
         $conversationRequest = PrivateMessage::myConversationRequest()->find($requestMessageId);
 
         $user = \Auth::user();
-        $message = $request->get('message', '');
+        $message = $request->get('message', $conversationRequest->message);
         $cooperationId = HoomdossierSession::getCooperation();
         $allowAccess = empty($request->get('allow_access', '')) ? false : true;
 

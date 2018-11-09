@@ -52,7 +52,7 @@
 
                         <div class="form-group">
                             <div class="col-md-12 ">
-                                <button type="submit" @if(\App\Models\PrivateMessage::isConversationRequestConnectedToCoach($conversationRequest)) disabled @endif class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary">
                                     @lang('default.buttons.update')
                                 </button>
                             </div>

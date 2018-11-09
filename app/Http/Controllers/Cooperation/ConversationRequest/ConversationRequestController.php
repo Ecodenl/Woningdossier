@@ -79,7 +79,7 @@ class ConversationRequestController extends Controller
     public function update(ConversationRequest $request, Cooperation $cooperation)
     {
         $user = \Auth::user();
-        $cooperationId = session('cooperation');
+        $cooperationId = HoomdossierSession::getCooperation();
 
         $message = $request->get('message', '');
         $action = $request->get('action', '');

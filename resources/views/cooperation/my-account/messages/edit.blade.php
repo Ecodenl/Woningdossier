@@ -4,8 +4,17 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             {{$privateMessages->first()->title}}
+            @can('respond', $mainMessageId)
+                <a id="revoke-access">
+                    <span class="pull-right label label-success">Ik wil geen contact meer met deze coach</span>
+                </a>
+            @endcan
         </div>
         <div class="panel-body panel-chat-body" id="chat">
+            <form id="revoke-access-form" action="{{route('cooperation.my-account.messages.revoke-access')}}" method="post">
+                {{csrf_field()}}
+                <input type="hidden" name="main_message_id" value="{{$mainMessageId}}">
+            </form>
             @component('cooperation.layouts.chat.messages')
                 @forelse($privateMessages->sortBy('created_at') as $privateMessage)
 
@@ -36,9 +45,8 @@
                 @endforelse
             @endcomponent
         </div>
-
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'url' => route('cooperation.my-account.messages.store')])
+            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'mainMessageId' => $mainMessageId, 'url' => route('cooperation.my-account.messages.store')])
                 <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                     @lang('woningdossier.cooperation.my-account.messages.edit.chat.button')
                 </button>
@@ -48,3 +56,15 @@
 
 
 @endsection
+
+@push('js')
+    <script>
+        $('document').ready(function () {
+            $('#revoke-access').on('click', function () {
+                if (confirm('Weet u zeker dat u geen contact wilt met deze coach, er word hierna een nieuwe coach voor u gezocht. Dit kan enige tijd duren.')) {
+                    $('#revoke-access-form').submit();
+                 }
+            });
+        })
+    </script>
+@endpush

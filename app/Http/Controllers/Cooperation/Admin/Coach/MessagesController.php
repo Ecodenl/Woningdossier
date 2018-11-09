@@ -28,7 +28,7 @@ class MessagesController extends Controller
 
         InboxService::setRead($mainMessageId);
 
-        return view('cooperation.admin.coach.messages.edit', compact('privateMessages'));
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'mainMessageId'));
     }
 
     public function store(Cooperation $cooperation, MessagesRequest $request)

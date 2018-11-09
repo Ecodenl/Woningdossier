@@ -16,8 +16,6 @@ class AddHumanReadableNameColumnToRoles extends Migration
         Schema::table('roles', function (Blueprint $table) {
            $table->string('human_readable_name')->after('name')->default("");
         });
-
-	    Artisan::call('db:seed', array('--class' => 'ModelHasRolesTableSeeder'));
     }
 
     /**

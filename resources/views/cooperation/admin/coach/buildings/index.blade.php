@@ -53,23 +53,3 @@
     </div>
 @endsection
 
-
-@push('js')
-    <script>
-        $('#appointmentdate').datetimepicker({
-            locale: 'nl',
-
-        });
-
-        $(document).ready(function () {
-            // put the label text from the selected option inside the input for ux
-            var buildingCoachStatus = $('#current-building-status');
-            var input = $(buildingCoachStatus).find('input.form-control');
-            var currentStatus = $(buildingCoachStatus).find('li a[id=current]');
-
-            var inputValPrefix = '{{__('woningdossier.cooperation.admin.coach.buildings.index.table.current-status')}} ';
-
-            $(input).val(inputValPrefix + $(currentStatus).text().trim());
-        });
-    </script>
-@endpush

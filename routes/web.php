@@ -23,10 +23,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			'Auth\RegisterController@confirm' )->name( 'confirm' );
 
 		Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
-		// Login, forgot password etc.
-        Route::group(['middleware' => 'guest'], function () {
+//		 Login, forgot password etc.
+//        Route::group(['middleware' => 'guest'], function () {
 		    Auth::routes();
-        });
+//        });
 
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){

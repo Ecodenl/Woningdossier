@@ -52,21 +52,24 @@ class ConversationRequestController extends Controller
     public function edit(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
 
-        if ($option != PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
-            return redirect()->back();
-        }
 
-        // we get the intended message so if users wrote half a book they not lose it
-        $intendedMessage = session('intendedMessage');
+        return redirect()->route('cooperation.my-account.messages.requests.index');
 
-        $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
-        if (!$myOpenCoachConversationRequest instanceof PrivateMessage){
-        	return redirect()->route('cooperation.conversation-requests.index');
-        }
-
-        $selectedOption = $option;
-
-        return view('cooperation.conversation-requests.edit', compact('myOpenCoachConversationRequest', 'selectedOption', 'intendedMessage'));
+//        if ($option != PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+//            return redirect()->back();
+//        }
+//
+//        // we get the intended message so if users wrote half a book they not lose it
+//        $intendedMessage = session('intendedMessage');
+//
+//        $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
+//        if (!$myOpenCoachConversationRequest instanceof PrivateMessage){
+//        	return redirect()->route('cooperation.conversation-requests.index');
+//        }
+//
+//        $selectedOption = $option;
+//
+//        return view('cooperation.conversation-requests.edit', compact('myOpenCoachConversationRequest', 'selectedOption', 'intendedMessage'));
     }
 
     /**

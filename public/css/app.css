@@ -8368,11 +8368,6 @@ body #app .glyphicon-padding {
   color: #8eb4cb;
 }
 
-body #app .remove-collapse-space {
-  margin: 0px;
-  max-height: 55px;
-}
-
 body #app .alert-top-space {
   margin-top: 10px;
 }

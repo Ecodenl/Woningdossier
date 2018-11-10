@@ -71,20 +71,7 @@
                     <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>
                     <li><a href="{{ url('/home') }}">@lang('woningdossier.cooperation.disclaimer.title')</a></li>
 
-                    {{--@if(Auth::user()->getRoleNames()->count() == 1 && Auth::user()->getRoleNames()->first() == "resident")--}}
-                    {{--<li>--}}
-                        {{--<a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">--}}
-                            {{--<span class="glyphicon glyphicon-envelope"></span>--}}
-                            {{--<span class="badge">{{ $myUnreadMessages->count() }}</span>--}}
-                        {{--</a>--}}
-                    {{--</li>--}}
-                    @if(Auth::user()->getRoleNames()->count() == 1)
-                        <li>
-                            <a>
-                                @lang('woningdossier.cooperation.admin.navbar.current-role') {{ Auth::user()->getHumanReadableRoleName(Auth::user()->getRoleNames()->first()) }}
-                            </a>
-                        </li>
-                    @else
+                    @if(Auth::user()->getRoleNames()->count() > 1)
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 @lang('woningdossier.cooperation.admin.navbar.current-role') {{ \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name }}<span class="caret"></span>

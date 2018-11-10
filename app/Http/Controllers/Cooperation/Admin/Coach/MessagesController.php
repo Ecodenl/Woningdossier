@@ -19,6 +19,7 @@ class MessagesController extends Controller
     public function index(Cooperation $cooperation)
     {
         $myCreatedMessages = PrivateMessage::myCreatedMessages()->get();
+
         $mainMessages = PrivateMessage::mainMessages()->get();
 
         $mainMessages = collect($mainMessages)->merge($myCreatedMessages)->unique('id');
@@ -28,6 +29,8 @@ class MessagesController extends Controller
 
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
+	    $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
+
         $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
 
         InboxService::setRead($mainMessageId);

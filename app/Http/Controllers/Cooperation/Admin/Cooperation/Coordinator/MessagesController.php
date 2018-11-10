@@ -21,9 +21,8 @@ class MessagesController extends Controller
 
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
-
+    	$this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
         $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
-
         InboxService::setRead($mainMessageId);
 
         return view('cooperation.admin.cooperation.coordinator.messages.edit', compact('privateMessages', 'mainMessageId'));

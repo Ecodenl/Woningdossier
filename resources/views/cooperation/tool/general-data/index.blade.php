@@ -150,7 +150,7 @@
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
-                                <select id="roof_type_id" class="form-control" name="roof_type_id" req>
+                                <select id="roof_type_id" class="form-control" name="roof_type_id">
                                     @foreach($roofTypes as $roofType)
                                         <option
                                                 @if(old('roof_type_id') && $roofType->id == old('roof_type_id'))

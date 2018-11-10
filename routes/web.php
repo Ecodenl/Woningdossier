@@ -176,9 +176,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('', 'ConnectToCoachController@store')->name('store');
                     });
 
-
                     // needs to be the last route due to the param
-                    Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
+                    //Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
+	                Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
 			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'middleware' => ['role:cooperation-admin']], function () {
@@ -194,7 +194,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
                     // needs to be the last route due to the param
-                    Route::get('{role_name?}', 'CooperationController@index')->name('index');
+                    //Route::get('{role_name?}', 'CooperationController@index')->name('index');
+				    Route::get('home', 'CooperationController@index')->name('index');
                 });
 
             });
@@ -221,7 +222,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 
                 // needs to be the last route due to the param
-			    Route::get('{role_name?}', 'CoachController@index')->name('index');
+			    //Route::get('{role_name?}', 'CoachController@index')->name('index');
+				Route::get('home', 'CoachController@index')->name('index');
             });
 
             // auth

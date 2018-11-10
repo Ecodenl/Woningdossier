@@ -18,7 +18,6 @@ class MessagesController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-
         $mainMessages = PrivateMessage::mainMessages()->get();
 
         return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'mainMessages'));
@@ -38,7 +37,6 @@ class MessagesController extends Controller
     public function revokeAccess(Cooperation $cooperation, Request $request)
     {
         $currentChatMainMessage = $request->get('main_message_id');
-
 
         // the resident himself cannot start a chat with a coach, resident or whatsoever.
         // the main message is started from the coach or coordinator

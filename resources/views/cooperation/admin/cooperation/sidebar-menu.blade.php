@@ -5,8 +5,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.label')</a>
-                        <span class="glyphicon {{-- @if(str_replace(['coordinator.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} glyphicon-chevron-up {{--@else glyphicon-chevron-down @endif --}}"></span>
+                        <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">
+                            @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.label')
+                            <span class="glyphicon {{-- @if(str_replace(['coordinator.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} glyphicon-chevron-up {{--@else glyphicon-chevron-down @endif --}}"></span>
+                        </a>
+
                     </h4>
                 </div>
                 <ul id="sidebar-main" class="sidebar list-group panel-collapse  {{--@if(str_replace(['users.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} open collapse in {{--@else collapse @endif--}}" aria-expanded="true">
@@ -25,8 +28,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.label')</a>
-                        <span class="glyphicon {{--@if(str_replace(['assign-roles.', '.coach.', 'coordinator.index'], '', \Route::currentRouteName()) != \Route::currentRouteName()) --}}glyphicon-chevron-up {{--@else glyphicon-chevron-down @endif--}}"></span>
+                        <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">
+                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.label')
+                            <span class="glyphicon {{--@if(str_replace(['assign-roles.', '.coach.', 'coordinator.index'], '', \Route::currentRouteName()) != \Route::currentRouteName()) --}}glyphicon-chevron-up {{--@else glyphicon-chevron-down @endif--}}"></span>
+                        </a>
                     </h4>
                 </div>
                 <ul id="sidebar-main" class="sidebar list-group panel-collapse {{-- @if(str_replace(['assign-roles.', '.coach.', 'coordinator.index'], '', \Route::currentRouteName()) != \Route::currentRouteName()) --}}open collapse in {{--@else collapse @endif --}}" aria-expanded="true">
@@ -42,8 +47,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#sidebar-messages" href="#sidebar-messages">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.messages')</a>
-                        <span class="glyphicon {{--@if(str_replace(['assign-roles', 'coach', 'messages'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} glyphicon-chevron-up {{--@else glyphicon-chevron-down @endif--}}"></span>
+                        <a data-toggle="collapse" data-parent="#sidebar-messages" href="#sidebar-messages">
+                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.messages')
+                            <span class="glyphicon {{--@if(str_replace(['assign-roles', 'coach', 'messages'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} glyphicon-chevron-up {{--@else glyphicon-chevron-down @endif--}}"></span>
+                        </a>
                     </h4>
                 </div>
                 <ul id="sidebar-messages" class="sidebar list-group panel-collapse {{--@if(str_replace(['messages', 'conversation-requests', 'connect-to-coach'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} open collapse in {{--@else collapse @endif--}}" aria-expanded="true">

@@ -99,8 +99,7 @@ class ConversationRequestController extends Controller
             ]
         );
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.update.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
-
+        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.update.success', ['url' => route('cooperation.my-account.messages.requests.index', ['cooperation' => $cooperation->slug])]));
     }
 
 

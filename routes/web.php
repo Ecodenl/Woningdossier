@@ -214,12 +214,12 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 					});
 
-				Route::resource('example-buildings', 'ExampleBuildingController');
-				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+					Route::resource('example-buildings', 'ExampleBuildingController');
+					Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
-		// needs to be the last route due to the param
+					// needs to be the last route due to the param
                     //Route::get('{role_name?}', 'CooperationAdminController@index')->name('index');
-				    Route::get('home', 'CooperationController@index')->name('index');
+				    Route::get('home', 'CooperationAdminController@index')->name('index');
                 });
 
 			});

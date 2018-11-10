@@ -65,9 +65,11 @@
                     </li>
                 </ul>
 
-                @hasrole('coach|coordinator|cooperation-admin|super-admin|superuser')
-                    <a href="{{ route('cooperation.tool.index') }}" class="btn btn-warning navbar-btn">Naar tool</a>
-                @endhasrole
+                @if(\App\Helpers\HoomdossierSession::getRole())
+                    @hasrole('coach|coordinator|cooperation-admin|super-admin|superuser')
+                        <a href="{{ route('cooperation.tool.index') }}" class="btn btn-warning navbar-btn">Naar tool</a>
+                    @endhasrole
+                @endif
             @endif
 
             <!-- Right Side Of Navbar -->
@@ -86,7 +88,7 @@
                                     @lang('woningdossier.cooperation.admin.navbar.current-role') {{ Auth::user()->getHumanReadableRoleName(Auth::user()->getRoleNames()->first()) }}
                                 </a>
                             </li>
-                        @else
+                        @elseif(\App\Helpers\HoomdossierSession::getRole())
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                     @lang('woningdossier.cooperation.admin.navbar.current-role') {{ \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name }}<span class="caret"></span>

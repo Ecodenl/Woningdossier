@@ -53,8 +53,10 @@
                 --}}
             </ul>
 
-            @if(Auth::check() && (Auth::user()->getRoleNames()->count() > 1 || Auth::user()->getRoleNames()->first() != "resident"))
-                <a href="{{ route('cooperation.admin.index') }}" class="btn btn-warning navbar-btn">Naar admin</a>
+            @if(Auth::check() && \App\Helpers\HoomdossierSession::getRole())
+                @if(Auth::user()->getRoleNames()->count() > 1 || Auth::user()->getRoleNames()->first() != "resident")
+                    <a href="{{ route('cooperation.admin.index') }}" class="btn btn-warning navbar-btn">Naar admin</a>
+                @endif
             @endif
         @endif
 
@@ -71,7 +73,7 @@
                     <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>
                     <li><a href="{{ url('/home') }}">@lang('woningdossier.cooperation.disclaimer.title')</a></li>
 
-                    @if(Auth::user()->getRoleNames()->count() > 1)
+                    @if(\App\Helpers\HoomdossierSession::getRole() && Auth::user()->getRoleNames()->count() > 1)
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                 @lang('woningdossier.cooperation.admin.navbar.current-role') {{ \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name }}<span class="caret"></span>

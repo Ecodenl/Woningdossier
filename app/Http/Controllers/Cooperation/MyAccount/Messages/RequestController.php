@@ -44,6 +44,6 @@ class RequestController extends Controller
             ]
         );
 
-        return redirect()->route('cooperation.my-account.messages.requests.index')->with('success', __('woningdossier.cooperation.my-account.messages.requests.update.success', ['url' => route('cooperation.my-account.messages.index')]));
+        return redirect()->route('cooperation.my-account.messages.requests.index')->with('success', __('woningdossier.cooperation.my-account.messages.requests.update.success', ['url' => route('cooperation.my-account.messages.requests.index')]));
     }
 }

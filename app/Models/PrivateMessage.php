@@ -113,7 +113,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get the main messages for a person who will recieves messages
+     * Get the main messages for a person who will receives messages
      *
      * @param $query
      * @return mixed

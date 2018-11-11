@@ -4,7 +4,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.coach.messages.index.header')
-            <a href="{{route('cooperation.admin.coach.connect-to-resident.index')}}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-envelope"></span></a>
+            <a href="{{ route('cooperation.admin.coach.connect-to-resident.index') }}" class="btn btn-sm btn-primary pull-right"><span class="glyphicon glyphicon-envelope"></span></a>
         </div>
 
         <div class="panel-body">
@@ -12,12 +12,12 @@
                 <div class="col-sm-12">
                     @component('cooperation.admin.layouts.components.chat-messages')
                         @forelse($mainMessages->sortByDesc('created_at') as $mainMessage)
-                            <a href="{{route('cooperation.admin.coach.messages.edit', ['messageId' => $mainMessage->id])}}">
+                            <a href="{{ route('cooperation.admin.coach.messages.edit', ['messageId' => $mainMessage->id]) }}">
                                 <li class="left clearfix">
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{$mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
+                                                {{ $mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
                                             </strong>
 
                                             <small class="pull-right text-muted">
@@ -31,10 +31,10 @@
                                         <p>
                                             @if($mainMessage->hasUserUnreadMessages() || $mainMessage->isRead() == false)
                                                 <strong>
-                                                    {{$mainMessage->message}}
+                                                    {{ $mainMessage->message }}
                                                 </strong>
                                             @else
-                                                {{$mainMessage->message}}
+                                                {{ $mainMessage->message }}
                                             @endif
                                         </p>
                                     </div>

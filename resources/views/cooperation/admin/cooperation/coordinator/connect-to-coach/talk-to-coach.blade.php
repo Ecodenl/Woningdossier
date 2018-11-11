@@ -49,7 +49,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('message') ? ' has-error' : '' }}>
                                     <label for="message">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.message-to-coach.label')</label>
-                                    <textarea name="message" id="" class="form-control">{{old('message', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.message-to-coach.placeholder'))}}</textarea>
+                                    <textarea name="message" id="" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.form.message-to-coach.placeholder')">@if(old('message')){{old('message', '')}}@endif</textarea>
                                     @if ($errors->has('message'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('message') }}</strong>

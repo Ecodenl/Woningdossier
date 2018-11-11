@@ -161,28 +161,28 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                     });
 
-                    Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
+                    Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');
                         Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
-                    Route::group(['prefix' => 'gespreks-aanvragen', 'as' => 'conversation-requests.'], function () {
+                    Route::group(['prefix' => 'conversation-requests', 'as' => 'conversation-requests.'], function () {
                         Route::get('', 'ConversationRequestsController@index')->name('index');
-                        Route::get('gespreks-aanvraag/{messageId}', 'ConversationRequestsController@show')->name('show');
+                        Route::get('request/{messageId}', 'ConversationRequestsController@show')->name('show');
                     });
 
-                    Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {
+                    Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
                         Route::get('', 'MessagesController@index')->name('index');
-                        Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
-                        Route::post('bericht', 'MessagesController@store')->name('store');
+                        Route::get('message/{messageId}', 'MessagesController@edit')->name('edit');
+                        Route::post('message', 'MessagesController@store')->name('store');
                     });
 
-                    Route::group(['prefix' => 'verbind-met-coach', 'as' => 'connect-to-coach.'], function () {
+                    Route::group(['prefix' => 'connect-to-coach', 'as' => 'connect-to-coach.'], function () {
                         Route::get('','ConnectToCoachController@index')->name('index');
-                        Route::get('koppelen/{senderId}','ConnectToCoachController@create')->name('create');
-                        Route::get('praten-met-coach/{senderId}','ConnectToCoachController@talkToCoachCreate')->name('talk-to-coach.create');
-                        Route::post('praten-met-coach','ConnectToCoachController@talkToCoachStore')->name('talk-to-coach.store');
+                        Route::get('connect/{senderId}','ConnectToCoachController@create')->name('create');
+                        Route::get('consult-coach/{senderId}','ConnectToCoachController@talkToCoachCreate')->name('talk-to-coach.create');
+                        Route::post('consult-coach','ConnectToCoachController@talkToCoachStore')->name('talk-to-coach.store');
 //                        Route::post('message-and-connect', 'ConnectToCoachController@storeWithMessageToCoach')->name('store-with-message-to-coach');
                         Route::post('', 'ConnectToCoachController@store')->name('store');
                     });
@@ -192,15 +192,15 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 					Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
-				Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
+				Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
 
-                    Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
+                    Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');
                         Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
-			        Route::group(['prefix' => 'gebruikers', 'as' => 'users.'], function () {
+			        Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
 			            Route::get('', 'UserController@index')->name('index');
 			            Route::get('create', 'UserController@create')->name('create');
 			            Route::post('', 'UserController@store')->name('store');
@@ -237,14 +237,14 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     });
                 });
 
-				Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {
+				Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
-                    Route::post('bericht', 'MessagesController@store')->name('store');
+                    Route::get('message/{messageId}', 'MessagesController@edit')->name('edit');
+                    Route::post('message', 'MessagesController@store')->name('store');
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
-                Route::group(['prefix' => 'verbinden-met-bewoner', 'as' => 'connect-to-resident.'], function () {
+                Route::group(['prefix' => 'connect-to-resident', 'as' => 'connect-to-resident.'], function () {
                     Route::get('', 'ConnectToResidentController@index')->name('index');
                     Route::get('{userId}', 'ConnectToResidentController@create')->name('create');
                     Route::post('', 'ConnectToResidentController@store')->name('store');

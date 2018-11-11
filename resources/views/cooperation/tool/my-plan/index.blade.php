@@ -180,10 +180,8 @@
                         $.each(data, function(year, steps){
                             var slugYear = year;
                             var header = "<h1>" + year + "</h1>";
-                            {{--var table = "<table class=\"table table-condensed table-responsive table-striped\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th></tr></thead><tbody>";--}}
 
-
-                            var table = "<table class=\"table table-responsive\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.help-question')</th><th></th></tr></thead><tbody> " ;
+                            var table = "<table class=\"table table-responsive\"><thead><tr><th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th><th style=\"width: 62%\">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.take-action')</th></tr></thead><tbody>";
                             var totalCosts = 0;
                             var totalSavingsGas = 0;
                             var totalSavingsElectricity = 0;

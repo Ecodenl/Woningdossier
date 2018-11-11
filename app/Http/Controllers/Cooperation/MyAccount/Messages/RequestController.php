@@ -22,6 +22,10 @@ class RequestController extends Controller
         $conversationRequest = PrivateMessage::myConversationRequest()->find($requestMessageId);
 
         return view('cooperation.my-account.messages.requests.edit', compact('conversationRequest'));
+
+	    //$conversation = PrivateMessage::conversation($requestMessageId)->get();
+
+	    //return view('cooperation.my-account.messages.requests.edit', compact('conversation'));
     }
 
     public function update(Request $request, Cooperation $cooperation, $requestMessageId)

@@ -47,7 +47,7 @@ class MessagesController extends Controller
         // the building from the user / resident
         $building = Building::where('user_id', $mainMessage->to_user_id)->first();
 
-        // either the coach or the coordinator, or someone with a higher role then resident.
+        // either the coach or the coordinator, or someone with a higher role than resident.
         $fromId = $mainMessage->from_user_id;
 
         // get the most recent conversation between that user and coach
@@ -57,7 +57,7 @@ class MessagesController extends Controller
 
         BuildingPermissionService::revokePermission($fromId, $building->id);
 
-        // no coach connected so the status gos back to in consideration, the coordinator can take further actions from now on.
+        // no coach connected so the status goes back to in consideration, the coordinator can take further actions from now on.
         PrivateMessage::find($privateMessageRequestId)->update(['status' => PrivateMessage::STATUS_IN_CONSIDERATION]);
 
         // revoke the access for the coach to talk with the resident

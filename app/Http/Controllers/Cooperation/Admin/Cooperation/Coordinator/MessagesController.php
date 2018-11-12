@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -16,6 +17,11 @@ class MessagesController extends Controller
     {
         $mainMessages = PrivateMessage::myCreatedMessages()->get();
 
+//        $mainMessages = PrivateMessage::cooperationRequestAndMyCreatedMessages
+//        $mainMessages = PrivateMessage::where('is_completed', false)
+//            ->where('main_message', null)
+//            ->where('from_user_id', \Auth::id())
+//            ->orWhere('to_cooperation_id', HoomdossierSession::getCooperation())->get();
         return view('cooperation.admin.cooperation.coordinator.messages.index', compact('mainMessages'));
     }
 

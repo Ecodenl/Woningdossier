@@ -298,6 +298,20 @@ class PrivateMessage extends Model
     }
 
     /**
+     * Check if the message is a conversation request
+     *
+     * @return bool
+     */
+    public function isConversationRequest() : bool
+    {
+        if (!empty($this->request_type)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Check if the request is a coach conversation request
      *
      * @return bool

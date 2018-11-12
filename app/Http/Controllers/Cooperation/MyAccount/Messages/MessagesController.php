@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount\Messages;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -19,6 +20,11 @@ class MessagesController extends Controller
     public function index(Cooperation $cooperation)
     {
         $mainMessages = PrivateMessage::mainMessages()->get();
+
+//        $mainMessages = PrivateMessage::where('is_completed', false)
+//            ->where('main_message', null)
+//            ->where('from_user_id', \Auth::id())
+//            ->orWhere('to_cooperation_id', HoomdossierSession::getCooperation())->get();
 
         return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'mainMessages'));
     }

@@ -7,7 +7,7 @@ use App\Models\Translation;
 use Illuminate\Console\Command;
 use Ramsey\Uuid\Uuid;
 
-class importTranslations extends Command
+class ImportTranslations extends Command
 {
     /**
      * The name and signature of the console command.

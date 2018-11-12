@@ -26,7 +26,7 @@ trait GetMyValuesTrait {
      */
     public function inputSource()
     {
-        return $this->belongsTo('App\Models\InputSource');
+        return $this->belongsTo(InputSource::class);
     }
 
     /**

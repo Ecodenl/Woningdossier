@@ -5,16 +5,29 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 @if (Auth::user()->buildings->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
-                    <div class="alert alert-success alert-dismissible show" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        U bewerkt nu de tool namens {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}}.
-                        <br>
-                        U ziet nu de gegevens die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld
-.
+                    <div class="col-sm-6">
+                        @component('cooperation.tool.components.alert')
+                            U bewerkt nu de tool namens {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}}.
+                            <br>
+                            U ziet nu de gegevens die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld.
+                        @endcomponent
                     </div>
+                    <div class="col-sm-6">
+                        @component('cooperation.tool.components.alert')
+                            Huidig adres: <br>
+                            <span>{{$building->street}} {{$building->number}} {{$building->extension}},</span>
+                            <span>{{$building->postal_code}} {{$building->city}} </span>
+                        @endcomponent
+                    </div>
+                @else
+                    @component('cooperation.tool.components.alert')
+                        Huidig adres:
+                        <br>
+                        <span>{{$building->street}} {{$building->number}} {{$building->extension}},</span>
+                        <span>{{$building->postal_code}} {{$building->city}} </span>
+                    @endcomponent
                 @endif
+
                 @include('cooperation.tool.progress')
             </div>
         </div>

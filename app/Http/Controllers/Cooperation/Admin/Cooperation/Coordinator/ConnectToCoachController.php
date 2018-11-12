@@ -41,7 +41,7 @@ class ConnectToCoachController extends Controller
 
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches', 'senderId'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches'));
     }
 
 
@@ -58,7 +58,6 @@ class ConnectToCoachController extends Controller
         $senderId = $request->get('sender_id', '');
         $privateMessageId = $request->get('private_message_id', '');
 
-        dd($privateMessageId);
         // the resident now has a coach to talk to, so the conversation request is done.
         PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
             'status' => PrivateMessage::STATUS_LINKED_TO_COACH

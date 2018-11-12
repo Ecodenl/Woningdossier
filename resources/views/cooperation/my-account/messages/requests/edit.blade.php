@@ -15,6 +15,9 @@
                             <p>@lang('woningdossier.cooperation.my-account.messages.requests.edit.is-connected-to-coach')</p>
                         @endif
 
+                        @if(\App\Models\PrivateMessage::isConversationRequestConnectedToCoach($conversationRequest))
+                            <input type="hidden" name="message" value="{{$conversationRequest->message}}">
+                        @endif
 
 
                         <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">

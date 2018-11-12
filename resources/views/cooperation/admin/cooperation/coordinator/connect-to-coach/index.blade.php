@@ -34,7 +34,7 @@
                                         <a href="{{route('cooperation.admin.cooperation.coordinator.conversation-requests.show', ['messageId' => $openConversation->id])}}" class="btn btn-default">
                                             @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.see-message')
                                         </a>
-                                        <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.create', ['senderId' => $openConversation->id])}}" class="btn btn-default">
+                                        <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.create', ['privateMessageId' => $openConversation->id])}}" class="btn btn-default">
                                             @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.talk-to-coach')
                                         </a>
                                         <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['privateMessageId' => $openConversation->id])}}" class="btn btn-default">

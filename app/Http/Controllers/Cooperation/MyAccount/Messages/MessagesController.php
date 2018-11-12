@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\MyAccount\Messages;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Requests\ChatRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -73,7 +74,7 @@ class MessagesController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function store(ChatRequest $request)
     {
         MessageService::create($request);
 

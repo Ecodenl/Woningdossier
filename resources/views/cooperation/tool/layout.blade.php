@@ -7,24 +7,32 @@
                 @if (Auth::user()->buildings->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.alert')
-                            U bewerkt nu de tool namens {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}}.
-                            <br>
-                            U ziet nu de gegevens die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld.
+                            @lang('woningdossier.cooperation.tool.filling-for', [
+                                'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
+                                'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
+                            ])
                         @endcomponent
                     </div>
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.alert')
-                            Huidig adres: <br>
-                            <span>{{$building->street}} {{$building->number}} {{$building->extension}},</span>
-                            <span>{{$building->postal_code}} {{$building->city}} </span>
+                            @lang('woningdossier.cooperation.tool.current-building-address', [
+                                'street' => $building->street,
+                                'number' => $building->number,
+                                'extension' => $building->extension,
+                                'zip_code' => $building->postal_code,
+                                'city' => $building->city
+                            ])
                         @endcomponent
                     </div>
                 @else
                     @component('cooperation.tool.components.alert')
-                        Huidig adres:
-                        <br>
-                        <span>{{$building->street}} {{$building->number}} {{$building->extension}},</span>
-                        <span>{{$building->postal_code}} {{$building->city}} </span>
+                        @lang('woningdossier.cooperation.tool.current-building-address', [
+                            'street' => $building->street,
+                            'number' => $building->number,
+                            'extension' => $building->extension,
+                            'zip_code' => $building->postal_code,
+                            'city' => $building->city
+                        ])
                     @endcomponent
                 @endif
 

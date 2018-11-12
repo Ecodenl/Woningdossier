@@ -12,10 +12,6 @@ use App\Models\UserEnergyHabit;
 
 class KeyFigures
 {
-
-	const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
-
-
     /**
      * @param $zipcode
      *

@@ -140,18 +140,33 @@ class PrivateMessage extends Model
      * @param int $messageId
      * @return User|null
      */
-    public function getSender($messageId)
+//    public function getSender($messageId)
+//    {
+//        $senderId = $this->find($messageId)->from_user_id;
+//        if (empty($senderId)){
+//        	return null;
+//        }
+//
+//        $sender = User::find($senderId);
+//
+//        return $sender;
+//    }
+
+    public function getSender()
     {
-        $senderId = $this->find($messageId)->from_user_id;
-        if (empty($senderId)){
-        	return null;
+        $senderId = $this->from_user_id;
+        if (empty($senderId)) {
+            return null;
         }
 
         $sender = User::find($senderId);
 
-        return $sender;
-    }
+        if ($sender instanceof User) {
+            return $sender;
+        }
 
+        return null;
+    }
     /**
      * Return info about the receiver of the message
      *

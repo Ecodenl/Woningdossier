@@ -326,11 +326,12 @@ return [
 							'columns' => [
 								'see-message'      => 'Bekijk bericht',
 								'connect-to-coach' => 'Verbind met coach',
-								'talk-to-coach' => 'Stuur bericht aan coach',
+								'talk-to-coach'    => 'Stuur bericht aan coach',
 								'type-request'     => 'Type aanvraag',
 								'first-name'       => 'Voornaam',
 								'last-name'        => 'Achternaam',
 								'email'            => 'E-mail adres',
+                                'requested-on'     => 'Aangevraagd op',
 								'role'             => 'Huidige rollen van gebruiker',
 								'actions'          => 'Acties'
 							]

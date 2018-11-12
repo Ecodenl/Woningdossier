@@ -12,7 +12,7 @@
                 <div class="col-sm-12">
                     <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach.store')}}" method="post">
                         {{csrf_field()}}
-                        <input type="hidden" name="sender_id" value="{{$senderId}}">
+                        <input type="hidden" name="private_message_id" value="{{$privateMessageId}}">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('coach') ? ' has-error' : '' }}>

@@ -13,11 +13,11 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.current-gas-usage')</label>
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                             <span class="input-group-addon">m<sup>3</sup></span>
                             <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">
-                        </div>
-
+                        @endcomponent
                         @if ($errors->has('habit.gas_usage'))
                             <span class="help-block">
                                     <strong>{{ $errors->first('habit.gas_usage') }}</strong>
@@ -28,10 +28,11 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.resident_count') ? ' has-error' : '' }}">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.resident-count')</label>
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'resident_count'])
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('habit.resident_count'))
                             <span class="help-block">

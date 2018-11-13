@@ -45,6 +45,7 @@ class HighEfficiencyBoilerController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
         $habit = $user->energyHabit;
+        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
 
         $steps = Step::orderBy('order')->get();
         // NOTE: building element hr-boiler tells us if it's there
@@ -56,7 +57,7 @@ class HighEfficiencyBoilerController extends Controller
 
         return view('cooperation.tool.hr-boiler.index', compact(
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
-            'typeIds', 'installedBoilerForMe',
+            'typeIds', 'installedBoilerForMe', 'energyHabitsForMe',
             'steps'));
     }
 

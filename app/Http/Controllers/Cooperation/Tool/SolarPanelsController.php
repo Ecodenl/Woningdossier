@@ -53,9 +53,9 @@ class SolarPanelsController extends Controller
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
         $buildingPvPanels = $building->pvPanels;
         $buildingPvPanelsForMe = $building->pvPanels()->forMe()->get();
-
+        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
         return view('cooperation.tool.solar-panels.index',
-            compact('pvPanelOrientations', 'amountElectricity',
+            compact('pvPanelOrientations', 'amountElectricity', 'energyHabitsForMe',
                 'buildingPvPanels', 'steps', 'typeIds', 'buildingPvPanelsForMe'
             )
         );

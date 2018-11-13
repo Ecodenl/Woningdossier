@@ -270,7 +270,7 @@
                 }
             });
 
-            $("select, input[type=radio], input[type=number]").change(formChange);
+            $("select, input[type=radio], input[type=text]").change(formChange);
 
             function formChange(){
                 var form = $(this).closest("form").serialize();

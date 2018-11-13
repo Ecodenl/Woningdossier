@@ -25,6 +25,11 @@
                         @endcomponent
                     </div>
                 @else
+                    <?php
+                        if(!isset($building)) {
+                            $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
+                        }
+                    ?>
                     @component('cooperation.tool.components.alert')
                         @lang('woningdossier.cooperation.tool.current-building-address', [
                             'street' => $building->street,

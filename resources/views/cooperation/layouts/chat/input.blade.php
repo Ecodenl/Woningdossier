@@ -35,7 +35,7 @@
         {{--<input type="hidden" name="main_message_id" value="{{ $privateMessages->sortBy('created_at')->first()->id }}">--}}
         <input type="hidden" name="main_message_id" value="{{ $mainMessageId }}">
 
-        <input id="btn-input" @cannot('respond', $mainMessageId) disabled @endcan autofocus autocomplete="false" name="message" type="text" class="form-control input-md" placeholder="@lang('woningdossier.cooperation.my-account.messages.edit.chat.input')" />
+        <input id="btn-input" required @cannot('respond', $mainMessageId) disabled @endcan autofocus autocomplete="false" name="message" type="text" class="form-control input-md" placeholder="@lang('woningdossier.cooperation.my-account.messages.edit.chat.input')" />
 
         <span class="input-group-btn">
             {{ $slot }}

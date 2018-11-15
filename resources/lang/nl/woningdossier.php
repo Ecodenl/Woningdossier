@@ -20,7 +20,7 @@ return [
 				'header' => 'Als welke rol wilt u doorgaan ?',
 				'text'   => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
 			],
-        'coach'        => [
+            'coach'        => [
 				'side-nav' => [
 					'label'               => 'Coach menu',
 					'index'               => 'Home',
@@ -326,11 +326,12 @@ return [
 							'columns' => [
 								'see-message'      => 'Bekijk bericht',
 								'connect-to-coach' => 'Verbind met coach',
-								'talk-to-coach' => 'Stuur bericht aan coach',
+								'talk-to-coach'    => 'Stuur bericht aan coach',
 								'type-request'     => 'Type aanvraag',
 								'first-name'       => 'Voornaam',
 								'last-name'        => 'Achternaam',
 								'email'            => 'E-mail adres',
+                                'requested-on'     => 'Aangevraagd op',
 								'role'             => 'Huidige rollen van gebruiker',
 								'actions'          => 'Acties'
 							]
@@ -698,8 +699,9 @@ return [
 		'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="' . route( 'cooperation.my-account.messages.requests.index' ) . '">hier bekijken</a></strong> ',
 
 	],
-	'tool'                  => [
-
+	'tool' => [
+	    'current-building-address' => 'Huidig adres: <br> :street :number, :zip_code :city',
+	    'filling-for' => 'U bewerkt nu de tool namens :first_name. <br> U ziet nu de gegevens die de :input_source_name heeft ingevuld.',
 		'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
 
             'unit' => [

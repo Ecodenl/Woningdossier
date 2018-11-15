@@ -32,16 +32,16 @@ class ConnectToCoachController extends Controller
      * Show the coordinator the form to connect a coach to a resident that has an open request
      *
      * @param Cooperation $cooperation
-     * @param $senderId
+     * @param $privateMessageId
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Cooperation $cooperation, $senderId)
+    public function create(Cooperation $cooperation, $privateMessageId)
     {
-        $privateMessage = PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->first();
+        $privateMessage = PrivateMessage::openCooperationConversationRequests()->find($privateMessageId);
 
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches', 'senderId'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches'));
     }
 
 
@@ -93,14 +93,14 @@ class ConnectToCoachController extends Controller
      * When the coordinator decides to message the coach before attaching anything to the user
      *
      * @param Cooperation $cooperation
-     * @param integer $senderId
+     * @param integer $privateMessageId
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function talkToCoachCreate(Cooperation $cooperation, $senderId)
+    public function talkToCoachCreate(Cooperation $cooperation, $privateMessageId)
     {
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach', compact('coaches', 'senderId'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach', compact('coaches', 'privateMessageId'));
     }
 
     /**
@@ -115,11 +115,11 @@ class ConnectToCoachController extends Controller
         $coach = $request->get('coach', '');
         $message = $request->get('message');
         $title = $request->get('title', '');
-        $senderId = $request->get('sender_id', "");
+        $privateMessageId = $request->get('private_message_id', '');
 
         // When a coordinator starts a message with a coach through a specific conversation request
         // we update the status of that request to "in consideration"
-        PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->update([
+        PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
             'status' => PrivateMessage::STATUS_IN_CONSIDERATION
         ]);
 

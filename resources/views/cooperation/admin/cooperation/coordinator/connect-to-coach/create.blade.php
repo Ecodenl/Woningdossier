@@ -13,7 +13,7 @@
                 <div class="col-sm-12">
                     <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.store')}}" method="post"  >
                         {{csrf_field()}}
-                        <input type="hidden" name="sender_id" value="{{$senderId}}">
+                        <input type="hidden" name="sender_id" value="{{$privateMessage->from_user_id}}">
                         <input type="hidden" name="private_message_id" value="{{$privateMessage->id}}">
                         <div class="row">
                             <div class="col-sm-6">

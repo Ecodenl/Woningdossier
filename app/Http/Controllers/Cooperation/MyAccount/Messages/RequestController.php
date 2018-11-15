@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\MyAccount\Messages;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -31,6 +32,9 @@ class RequestController extends Controller
     public function update(Request $request, Cooperation $cooperation, $requestMessageId)
     {
 
+        $request->validate([
+            'message' => 'required',
+        ]);
         $conversationRequest = PrivateMessage::myConversationRequest()->find($requestMessageId);
 
         $user = \Auth::user();

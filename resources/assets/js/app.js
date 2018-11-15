@@ -50,8 +50,8 @@ $(document).ready(function () {
                     inputSourceGroup.find('input[type=text]').val(dataInputValue);
                     break;
                 case "radio":
-                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('selected');
-                    inputSourceGroup.find('input[value='+dataInputValue+']').attr('selected', true);
+                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('checked');
+                    inputSourceGroup.find('input[type=radio][value='+dataInputValue+']').attr('checked', true);
                     break;
                 case "checkbox":
                     inputSourceGroup.find('input[type=checkbox]:checked').removeAttr('selected');

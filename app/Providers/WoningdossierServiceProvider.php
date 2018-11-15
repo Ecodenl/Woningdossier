@@ -33,9 +33,25 @@ class WoningdossierServiceProvider extends ServiceProvider
             $receiveUser = User::find($mainMessage->to_user_id);
             $sendUser = User::find($mainMessage->from_user_id);
 
+//            if ($mainMessage->isConversationRequest()) {
+//                $mainMessage->getRespons();
+//            }
+
+//            dd($mainMessage);
+//
+//             if the chat is a conversation request there may not be a receive user.
+//             so we allow it
+//            if (!$receiveUser instanceof User) {
+//                dd($receiveUser);
+//                return true;
+//                if ($receiveUser->hasRole('coordinator')) {
+//                    return true;
+//                }
+//            }
+
             // if the sender and receiver both have the role coordinator or coach,
             // there is no need to check for the status since they are always allowed to contact eachother
-            if (($sendUser->hasRole('coordinator') || $sendUser->hasRole('coach') && $receiveUser->hasRole('coach') || $receiveUser->hasRole('coordinator'))) {
+            if ($sendUser->hasRole(['coordinator', 'coach'])  && $receiveUser->hasRole(['coach', 'coordinator'])) {
                 return true;
             } else {
                 // this is NOT the request to the cooperation.

@@ -6,7 +6,7 @@
             <div class="col-md-12 text-center">
                 @if (Auth::user()->buildings->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.alert')
+                        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                             @lang('woningdossier.cooperation.tool.filling-for', [
                                 'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
                                 'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
@@ -14,7 +14,7 @@
                         @endcomponent
                     </div>
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.alert')
+                        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                             @lang('woningdossier.cooperation.tool.current-building-address', [
                                 'street' => $building->street,
                                 'number' => $building->number,
@@ -30,7 +30,7 @@
                             $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
                         }
                     ?>
-                    @component('cooperation.tool.components.alert')
+                    @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                         @lang('woningdossier.cooperation.tool.current-building-address', [
                             'street' => $building->street,
                             'number' => $building->number,

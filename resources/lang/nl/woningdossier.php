@@ -700,7 +700,7 @@ return [
 
 	],
 	'tool' => [
-	    'current-building-address' => 'Huidig adres: <br> :street :number, :zip_code :city',
+	    'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',
 	    'filling-for' => 'U bewerkt nu de tool namens :first_name. <br> U ziet nu de gegevens die de :input_source_name heeft ingevuld.',
 		'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
 

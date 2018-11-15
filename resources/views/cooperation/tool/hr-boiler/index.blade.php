@@ -17,10 +17,11 @@
                             {{\App\Helpers\Translation::translate('boiler.current-gas-usage.title')}}
                         </label>
 
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                             <span class="input-group-addon">m<sup>3</sup></span>
                             <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">
-                        </div>
+                        @endcomponent
 
                         <div id="current-gas-usage" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('boiler.current-gas-usage.help')}}
@@ -39,10 +40,11 @@
                             <i data-toggle="collapse" data-target="#resident-count" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('boiler.resident-count.title')}}
                         </label>
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'resident_count'])
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">
-                        </div>
+                        @endcomponent
 
                         <div id="resident-count" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('boiler.resident-count.help')}}
@@ -125,6 +127,14 @@
                                 {{\App\Helpers\Translation::translate('general.specific-situation.title')}} </label>
                             <?php
                                 $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
+                                if (Auth::user()->hasRole('resident')) {
+                                    $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
+                                } elseif (Auth::user()->hasRole('coach')) {
+
+                                    $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
+
+                                    $default = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';
+                                }
                             ?>
 
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
@@ -149,7 +159,7 @@
                         @endif
                     </div>
 
-                    
+
                 </div>
             </div>
 
@@ -223,7 +233,23 @@
             </div>
         </div>
 
+        @if(\App\Models\BuildingService::hasCoachInputSource($installedBoilerForMe) && Auth::user()->hasRole('resident'))
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                        <?php
+                            $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
+                            $comment = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';
+                        ?>
+                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                        </label>
 
+                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <div class="row">
             <div class="col-md-12">

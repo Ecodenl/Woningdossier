@@ -92,11 +92,13 @@ class GeneralDataController extends Controller
 
         $step = $this->step;
 
+        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
+
         return view('cooperation.tool.general-data.index', compact(
             'building', 'step', 'buildingOwner',
             'coachEnergyHabitRemarks',
             'buildingTypes', 'roofTypes', 'energyLabels',
-            'exampleBuildings', 'interests', 'elements',
+            'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
             'steps', 'motivations', 'energyHabit', 'services'
@@ -136,7 +138,7 @@ class GeneralDataController extends Controller
             [
                 'build_year' => $request->get('build_year'),
                 'surface' => $request->get('surface'),
-                'monument' => $request->get('monument', 0),
+                'monument' => $request->get('monument'),
                 'building_layers' => $request->get('building_layers'),
             ]
         );

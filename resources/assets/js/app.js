@@ -44,7 +44,6 @@ $(document).ready(function () {
 
         // check if the input is a "input" and not a select
         if (typeof inputType !== undefined) {
-
             switch (inputType) {
                 case "text":
                     inputSourceGroup.find('input[type=text]').val(dataInputValue);
@@ -65,6 +64,9 @@ $(document).ready(function () {
                     //inputSourceGroup.find('select option[value='+dataInputValue+']').attr('selected', true);
                     break;
             }
+
+            $('form').find('*').filter(':input:visible:first').trigger('change');
+
         }
     });
 

@@ -33,30 +33,20 @@ class WoningdossierServiceProvider extends ServiceProvider
             $receiveUser = User::find($mainMessage->to_user_id);
             $sendUser = User::find($mainMessage->from_user_id);
 
-//            if ($mainMessage->isConversationRequest()) {
-//                $mainMessage->getRespons();
-//            }
-
-//            dd($mainMessage);
-//
-//             if the chat is a conversation request there may not be a receive user.
-//             so we allow it
-//            if (!$receiveUser instanceof User) {
-//                dd($receiveUser);
-//                return true;
-//                if ($receiveUser->hasRole('coordinator')) {
-//                    return true;
-//                }
-//            }
 
             // if the sender and receiver both have the role coordinator or coach,
             // there is no need to check for the status since they are always allowed to contact eachother
             if ($sendUser->hasRole(['coordinator', 'coach'])  && $receiveUser->hasRole(['coach', 'coordinator'])) {
                 return true;
             } else {
+                // if the to user id is empty, its probbaly a message thats send to the cooperation
+                if (empty($mainMessage->to_user_id)) {
+                    return true;
+                }
                 // this is NOT the request to the cooperation.
                 // this is the mainMessage from the current chat with resident and coach
                 $building = Building::where('user_id', $mainMessage->to_user_id)->first();
+
 
                 // either the coach or the coordinator, or someone with a higher role then resident.
                 $fromId = $mainMessage->from_user_id;

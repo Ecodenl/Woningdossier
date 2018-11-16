@@ -100,7 +100,6 @@ class CoachInputController extends Controller
             }
         }
 
-
         /*
          * Copy it for the user energy habits, the table can't be added to the $table array
          * the user_energy_habits does not have a building_id.

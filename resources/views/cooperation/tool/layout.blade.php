@@ -46,8 +46,8 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']))
-                    <form action="{{route('cooperation.tool.coach-input.copy')}}" method="post">
+                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident'))
+                    <form id="copy-coach-input" action="{{route('cooperation.tool.coach-input.copy')}}" method="post">
                         {{csrf_field()}}
                         <button class="btn btn-primary">
                             @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
@@ -92,7 +92,16 @@
         $('#submit-form-top-right').click(function () {
             // There will only be 1 form inside the panel body, submit it
             $('.panel-body form button[type=submit]').click();
-        })
+        });
+
+        $('#copy-coach-input').on('submit', function (event) {
+            if(confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
+
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

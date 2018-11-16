@@ -46,6 +46,14 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']))
+                    <form action="{{route('cooperation.tool.coach-input.copy')}}" method="post">
+                        {{csrf_field()}}
+                        <button class="btn btn-primary">
+                            @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                        </button>
+                    </form>
+                @endif
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>

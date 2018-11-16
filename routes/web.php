@@ -89,6 +89,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			// the tool
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
+
+
+            	Route::post('copy-coach-input', 'CoachInputController@copy')->name('coach-input.copy');
+//            	Route::get('remove-coach-input', 'CoachInputController@remove')->name('coach-input.remove');
+
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
 				Route::group(['middleware' => 'filled-step:general-data'], function(){

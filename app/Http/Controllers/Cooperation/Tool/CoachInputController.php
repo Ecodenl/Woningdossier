@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
+use \Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -17,6 +18,7 @@ class CoachInputController extends Controller
      */
     public function copy()
     {
+        // all the tables that have a building_id and input_source_id
         $tables = [
             'building_user_usages',
             'building_elements',
@@ -34,62 +36,59 @@ class CoachInputController extends Controller
         $coachInputSource = InputSource::findByShort('coach');
         $residentInputSource = InputSource::findByShort('resident');
 
+        // loop trough all the buildings
         foreach ($tables as $table) {
 
-            $coachInput = \DB::table($table)
+            // first delete all the input from the resident
+            // there is no way to update it.
+            \DB::table($table)
                 ->where('building_id', HoomdossierSession::getBuilding())
-                ->where('input_source_id', $coachInputSource->id)->first();
+                ->where('input_source_id', $residentInputSource->id)
+                ->delete();
+
+            // get all the coach input values.
+            $coachInputValues = \DB::table($table)
+                ->where('building_id', HoomdossierSession::getBuilding())
+                ->where('input_source_id', $coachInputSource->id)->get();
 
             // check if there are coach input values.
-            // if so, update the resident values to the coach values
-            if (!empty($coachInput)) {
+            // if so, insert the coach input values.
+            if ($coachInputValues->isNotEmpty()) {
 
-                $residentInputQuery = \DB::table($table)
-                    ->where('building_id', HoomdossierSession::getBuilding())
-                    ->where('input_source_id', $residentInputSource->id);
+                foreach ($coachInputValues as $coachInput) {
+                    // cast to array
+                    // remove the keys we do not want to update
+                    $coachInput = (array) $coachInput;
+                    unset($coachInput['id'], $coachInput['created_at'], $coachInput['updated_at'], $coachInput['input_source_id']);
 
-                // cast to array
-                // remove the keys we do not want to update
-                $coachInput = (array) $coachInput;
-                unset($coachInput['id'], $coachInput['created_at'], $coachInput['updated_at'], $coachInput['input_source_id']);
-
-                // get the first residentInput, and cast it to an array
-                $residentInputArray = (array) $residentInputQuery->first();
-                // if its not empty, we update it else we insert it.
-                if (!empty($residentInputArray)) {
-                    $residentInputQuery->update($coachInput);
-                } else {
-                    $residentInputQuery->insert($coachInput);
+                    \DB::table($table)->insert($coachInput);
                 }
             }
         }
 
-        // need to do manually, user_energy_habits does not have a building id.
-        $coachUserEnergyHabitsForUser = \DB::table('user_energy_habits')
+
+        /*
+         * Copy it for the user energy habits, the table can't be added to the $table array
+         * the user_energy_habits does not have a building_id.
+         */
+        // first delete all the input from the resident
+        \DB::table('user_energy_habits')
+            ->where('user_id', \Auth::id())
+            ->where('input_source_id', $residentInputSource->id)
+            ->delete();
+
+        $coachInputForUserEnergyHabit = \DB::table('user_energy_habits')
             ->where('user_id', \Auth::id())
             ->where('input_source_id', $coachInputSource->id)->first();
 
-        // cast to array and unset, same as above.
-        $coachUserEnergyHabitsForUser = (array) $coachUserEnergyHabitsForUser;
-        unset($coachUserEnergyHabitsForUser['id'], $coachUserEnergyHabitsForUser['created_at'], $coachUserEnergyHabitsForUser['updated_at'], $coachUserEnergyHabitsForUser['input_source_id']);
+        // cast to array
+        // remove the keys we do not want to update
+        $coachInputForUserEnergyHabit = (array) $coachInputForUserEnergyHabit;
+        unset($coachInputForUserEnergyHabit['id'], $coachInputForUserEnergyHabit['created_at'], $coachInputForUserEnergyHabit['updated_at'], $coachInputForUserEnergyHabit['input_source_id']);
 
-        if (!empty($coachUserEnergyHabitsForUser)) {
+        \DB::table('user_energy_habits')->insert($coachInputForUserEnergyHabit);
 
-            $residentUserEnergyHabitsQuery = \DB::table('user_energy_habits')
-                ->where('user_id', \Auth::id())
-                ->where('input_source_id', $residentInputSource->id);
-
-            // get the first residentInput, and cast it to an array
-            $residentInputArray = (array) $residentUserEnergyHabitsQuery->first();
-            // if its not empty, we update it else we insert it.
-            if (!empty($residentInputArray)) {
-                $residentUserEnergyHabitsQuery->update($coachUserEnergyHabitsForUser);
-            } else {
-                $residentUserEnergyHabitsQuery->insert($coachUserEnergyHabitsForUser);
-            }
-
-        }
-
+        Log::info('A user imported all answers from a coach');
 
         return redirect()->route('cooperation.tool.general-data.index');
     }
@@ -123,8 +122,12 @@ class CoachInputController extends Controller
             \DB::table($table)
                 ->where('building_id', HoomdossierSession::getBuilding())
                 ->where('input_source_id', $coachInputSource->id)->delete();
-
         }
+
+        // and delete the user energy habits
+        \DB::table('user_energy_habits')
+            ->where('user_id', \Auth::id())
+            ->where('input_source_id', $coachInputSource->id)->delete();
 
         return redirect()->route('cooperation.tool.general-data.index');
 

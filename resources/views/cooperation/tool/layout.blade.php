@@ -4,6 +4,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
+                <?php
+                    if(!isset($building)) {
+                        $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
+                    }
+                ?>
                 @if (Auth::user()->buildings->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
@@ -25,11 +30,7 @@
                         @endcomponent
                     </div>
                 @else
-                    <?php
-                        if(!isset($building)) {
-                            $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
-                        }
-                    ?>
+
                     @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                         @lang('woningdossier.cooperation.tool.current-building-address', [
                             'street' => $building->street,

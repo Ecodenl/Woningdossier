@@ -21,7 +21,6 @@ class ExampleBuildingService {
 		// Clear the current example building data
 		$contents = $exampleBuilding->getContentForYear($buildYear);
 
-
 		// Check if there's already a building for the example building input source
 		/*
 		$building = Building::withoutGlobalScope(GetValueScope::class)
@@ -42,7 +41,6 @@ class ExampleBuildingService {
 
 		self::clearExampleBuilding($userBuilding);
 
-		// todo belongs to "todo temporary"
 		$features = [];
 
 		/**
@@ -50,10 +48,14 @@ class ExampleBuildingService {
 		 * This makes us * not * doing if-elseif-elseif-elseif...-else
 		 */
 
+		dd($exampleData);
+
 		foreach($exampleData as $stepSlug => $stepData){
 			self::log("=====");
 			self::log("Processing " . $stepSlug);
 			self::log("=====");
+
+
 			foreach($stepData as $columnOrTable => $values){
 				if (is_null($values)){
 					self::log("Skipping " . $columnOrTable . " (empty)");
@@ -100,7 +102,7 @@ class ExampleBuildingService {
 					}
 					continue;
 				}
-				// todo temporary
+
 				// wall-insulation
 				// wall_surface => building_features
 				// cavity_wall => building_features
@@ -108,17 +110,19 @@ class ExampleBuildingService {
 				// facade_damaged_paintwork_id => building_features
 				// wall_joints => building_features
 				// contaminated_wall_joints => building_features
-				if(in_array($columnOrTable, ['wall_surface', 'cavity_wall', 'facade_plastered_painted', 'facade_damaged_paintwork_id', 'wall_joints', 'contaminated_wall_joints'])){
+				if($stepSlug == 'wall-insulation' && in_array($columnOrTable, ['wall_surface', 'cavity_wall', 'facade_plastered_painted', 'facade_damaged_paintwork_id', 'wall_joints', 'contaminated_wall_joints'])){
 					// we already know that values is filled
 					$features[$columnOrTable] = $values;
+
+					continue;
 				}
 
+				self::log("unknown element: " . $columnOrTable);
 
 
 			}
 		}
 
-		// todo belongs to "todo temporary"
 		$buildingFeatures = new BuildingFeature($features);
 		$buildingFeatures->buildingType()->associate($exampleBuilding->buildingType);
 		$buildingFeatures->inputSource()->associate($inputSource);

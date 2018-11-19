@@ -2,12 +2,6 @@
 
 @section('step_title', __('woningdossier.cooperation.tool.general-data.title'))
 
-{{--
-@push('css')
-    <link rel="stylesheet" href="{{asset('css/datepicker/bootstrap-datepicker3.css')}}">
-@endpush
---}}
-
 @section('step_content')
 
 
@@ -888,7 +882,7 @@
                             });
                         } else {
                         }
-                    },
+                    }
                 });
             });
             // if the user changes the build year trigger the example building cause different years have different content
@@ -898,8 +892,7 @@
 
             // todo end
 
-
-            var previous_eb;
+            var previous_eb = $("select#example_building_id").val();
 
             $("select#example_building_id").on('focus', function () {
                 // Store the current value on focus and on change
@@ -911,6 +904,7 @@
                     @if(App::environment('local'))
                     console.log("Can't select example building: build year is empty");
                     @endif
+                    $(this).val(previous_eb);
                 }
                 else {
                     if (this.value !== previous_eb ){

@@ -136,7 +136,7 @@ class ExampleBuilding extends Model
      */
     public function scopeForMyCooperation($query)
     {
-        $cooperationId = !empty(HoomdossierSession::getCooperation()) ? : 0;
+        $cooperationId = !empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
         return $query->where('cooperation_id', '=', $cooperationId);
     }

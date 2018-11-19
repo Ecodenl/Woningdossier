@@ -272,7 +272,7 @@ class ExampleBuildingController extends Controller
             ],
             'insulated-glazing' => [
                 // will be filled in later
-                'building_elements.'.$crackSealing->id.'.crack-sealing' => [
+                'elements.'.$crackSealing->id => [
                     'label' => __('woningdossier.cooperation.tool.insulated-glazing.moving-parts-quality'),
                     'type' => 'select',
                     'options' => $this->createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
@@ -282,7 +282,7 @@ class ExampleBuildingController extends Controller
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-                'building_elements.'.$frames->id.'.frames' => [
+                'elements.'.$frames->id => [
                     'label' => __('woningdossier.cooperation.tool.insulated-glazing.paint-work.which-frames'),
                     'type' => 'select',
                     'options' => $this->createOptions($frames->values()->orderBy('order')->get(), 'value'),

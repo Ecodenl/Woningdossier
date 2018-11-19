@@ -6,12 +6,10 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
-        {{--{{dd($buildingElements)}}--}}
-        @include('cooperation.tool.includes.interested', [
-            'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
-        ])
         <div id="intro">
-
+            @include('cooperation.tool.includes.interested', [
+                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
+            ])
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
@@ -33,7 +31,7 @@
 
                         <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
                             @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
-                                <option
+                                <option data-calculate-value="{{$elementValue->calculate_value}}"
                                         @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
                                         selected="selected"
                                         @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
@@ -60,7 +58,8 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+        <div id="hideable">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
@@ -174,109 +173,109 @@
                 </div>
 
             </div>
-        </div>
 
-        <div id="options">
-            <hr>
-            <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.wall-insulation.optional.title')</h4>
 
-            <div id="wall-joints" class="row">
-                <div class="col-sm-6">
-                    <div class="form-group add-space{{ $errors->has('wall_joints') ? ' has-error' : '' }}">
-                        <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')</label>
+            <div id="options">
+                <hr>
+                <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.wall-insulation.optional.title')</h4>
 
-                        <select id="wall_joints" class="form-control" name="wall_joints">
-                            @foreach($surfaces as $surface)
-                                <option @if(old('wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
-                            @endforeach
-                        </select>
+                <div id="wall-joints" class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group add-space{{ $errors->has('wall_joints') ? ' has-error' : '' }}">
+                            <label for="wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.flushing')</label>
 
-                        <div id="wall-joints-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some helpful information right here!
+                            <select id="wall_joints" class="form-control" name="wall_joints">
+                                @foreach($surfaces as $surface)
+                                    <option @if(old('wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                @endforeach
+                            </select>
+
+                            <div id="wall-joints-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                I would like to have some helpful information right here!
+                            </div>
+
+                            @if ($errors->has('wall_joints'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('wall_joints') }}</strong>
+                            </span>
+                            @endif
                         </div>
 
-                        @if ($errors->has('wall_joints'))
+
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group add-space {{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
+                            <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty')</label>
+
+                            <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
+                                @foreach($surfaces as $surface)
+                                    <option @if(old('contaminated_wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                @endforeach
+                            </select>
+
+                            <div id="wall-joints-surface" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                I would like to have some helpful information right here!
+                            </div>
+
+                            @if ($errors->has('contaminated_wall_joints'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('contaminated_wall_joints') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group add-space @if ($errors->has('wall_surface')) has-error @endif">
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
+                            </label>
+
+                            <div class="input-group">
+                                <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                            </div>
+
+                            <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                I would like to have some helpful information right here!
+                            </div>
+                            @if ($errors->has('wall_surface'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('wall_joints') }}</strong>
-                        </span>
-                        @endif
-                    </div>
-
-
-                </div>
-
-                <div class="col-sm-6">
-                    <div class="form-group add-space {{ $errors->has('contaminated_wall_joints') ? ' has-error' : '' }}">
-                        <label for="contaminated_wall_joints" class=" control-label"><i data-toggle="collapse" data-target="#wall-joints-surface" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty')</label>
-
-                        <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
-                            @foreach($surfaces as $surface)
-                                <option @if(old('contaminated_wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
-                            @endforeach
-                        </select>
-
-                        <div id="wall-joints-surface" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some helpful information right here!
+                                <strong>{{ $errors->first('wall_surface') }}</strong>
+                            </span>
+                            @endif
                         </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group add-space @if ($errors->has('insulation_wall_surface')) has-error @endif">
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')
+                            </label>
 
-                        @if ($errors->has('contaminated_wall_joints'))
+                            <div class="input-group">
+                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                            </div>
+
+                            <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                I would like to have some helpful information right here!
+                            </div>
+                            @if ($errors->has('insulation_wall_surface'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('contaminated_wall_joints') }}</strong>
-                        </span>
-                        @endif
+                                <strong>{{ $errors->first('insulation_wall_surface') }}</strong>
+                            </span>
+                            @endif
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group add-space @if ($errors->has('wall_surface')) has-error @endif">
-                        <label class="control-label">
-                            <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.wall-surface')
-                        </label>
-
-                        <div class="input-group">
-                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                        </div>
-
-                        <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some helpful information right here!
-                        </div>
-                        @if ($errors->has('wall_surface'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('wall_surface') }}</strong>
-                        </span>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group add-space @if ($errors->has('insulation_wall_surface')) has-error @endif">
-                        <label class="control-label">
-                            <i data-toggle="collapse" data-target="#wall-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface')
-                        </label>
-
-                        <div class="input-group">
-                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                        </div>
-
-                        <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            I would like to have some helpful information right here!
-                        </div>
-                        @if ($errors->has('insulation_wall_surface'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('insulation_wall_surface') }}</strong>
-                        </span>
-                        @endif
-                    </div>
-                </div>
-
-            </div>
-
             <div class="row" id="advice-help">
                 <div class="col-sm-12 col-md-8 col-md-offset-2">
                     <div class="alert alert-info" role="alert">
@@ -467,7 +466,18 @@
                }
 
 
-              var form = $(this).closest("form").serialize();
+               var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
+               var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
+
+               if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
+                   $('#hideable').hide();
+                   $('#wall-insulation-info-alert').find('.alert').removeClass('hide')
+               } else {
+                   $('#hideable').show();
+                   $('#wall-insulation-info-alert').find('.alert').addClass('hide')
+               }
+
+               var form = $(this).closest("form").serialize();
               $.ajax({
                   type: "POST",
                   url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',

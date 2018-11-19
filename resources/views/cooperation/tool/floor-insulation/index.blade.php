@@ -8,9 +8,11 @@
         {{ csrf_field() }}
 
         {{--{{dd($floorInsulation)}}--}}
+
         @include('cooperation.tool.includes.interested', [
             'type' => 'element', 'buildingElements' => $floorInsulation, 'buildingElement' => 'floor-insulation'
         ])
+
 
         <div id="floor-insulation">
             <div class="row">
@@ -29,7 +31,7 @@
                         <div id="floor-insulation-options">
                             <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
                                 @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
-                                    <option
+                                    <option data-calculate-value="{{$elementValue->calculate_value}}"
                                             @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
                                             selected="selected"
                                             @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
@@ -59,6 +61,8 @@
                     </div>
                 </div>
             </div>
+
+        <div id="hideable">
 
             <div id="answers">
 
@@ -236,6 +240,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -397,6 +402,18 @@
             }
 
             function formChange(){
+
+                var interestedCalculateValue = $('#interest_element_{{$floorInsulation->id}} option:selected').data('calculate-value');
+                var elementCalculateValue = $('#element_{{$floorInsulation->id}} option:selected').data('calculate-value');
+
+                if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
+                    $('#hideable').hide();
+                    $('#floor-insulation-info-alert').find('.alert').removeClass('hide')
+                } else {
+                    $('#hideable').show();
+                    $('#floor-insulation-info-alert').find('.alert').addClass('hide')
+                }
+
                 var form = $(this).closest("form").serialize();
                 $.ajax({
                     type: "POST",

@@ -29,19 +29,17 @@
             </div>
         </div>
     @endforeach
-    <?php $buildingElement = 'floor-insulation'; ?>
+
     @isset($buildingElement)
+    <?php
 
-        <?php
-            $buildingInsulation = Auth::user()->buildings()->first()->getBuildingElement($buildingElement);
-            $userInterestIdForCurrentType = Auth::user()->getInterestedType($type, $elementId)->interest_id;
-            $interest = \App\Models\Interest::find($userInterestIdForCurrentType);
+        $buildingInsulation = Auth::user()->buildings()->first()->getBuildingElement($buildingElement);
+        $userInterestIdForCurrentType = Auth::user()->getInterestedType($type, $elementId)->interest_id;
+        $interest = \App\Models\Interest::find($userInterestIdForCurrentType);
 
-        ?>
+    ?>
 
         @foreach($buildingElements->values()->orderBy('order')->get() as $elementValue)
-            {{dd($elementValue)}}
-{{--            {{dd($buildingInsulation->element_value_id, $elementValue, $buildingInsulation)}}--}}
             @if(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
                 @if(($elementValue->calculate_value == 3 || $elementValue->calculate_value == 4) && $interest->calculate_value <= 2)
                     {{--TODO: put in import csv file when all branches are merged. --}}

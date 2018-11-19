@@ -11,6 +11,7 @@ use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoofInsulationFormRequest;
 use App\Models\Building;
+use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingRoofType;
@@ -65,6 +66,11 @@ class RoofInsulationController extends Controller
         $heatings = BuildingHeating::all();
         $measureApplications = $this->getMeasureApplicationsAdviceMap();
 
+        // for the note when a user has interest and a specific insulation.
+        $userInterestIdForCurrentType = Auth::user()->getInterestedType('element', $roofInsulation->id)->interest_id;
+        $interest = \App\Models\Interest::find($userInterestIdForCurrentType);
+
+
         $currentCategorizedRoofTypes = [
             'flat' => [],
             'pitched' => [],
@@ -81,7 +87,7 @@ class RoofInsulationController extends Controller
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps', 'typeIds',
+            'features', 'roofTypes', 'steps', 'typeIds', 'interest',
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation',
              'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
     }
@@ -426,7 +432,6 @@ class RoofInsulationController extends Controller
                     BuildingFeature::where('building_id', $building->id)->update([
                         'roof_type_id' => $request->input('building_features.roof_type_id'),
                     ]);
-
                     // insert the new ones
                     BuildingRoofType::updateOrCreate(
                         [

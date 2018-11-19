@@ -98,6 +98,19 @@
                                         @endif
                                     </div>
                                 </div>
+                                <div class="col-sm-12 col-md-12">
+                                    @foreach($roofInsulation->values as $insulation)
+                                        @if(isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)
+                                            @if(($insulation->calculate_value == 3 || $insulation->calculate_value == 4) && $interest->calculate_value <= 2)
+                                                @component('cooperation.tool.components.alert', ['type' => 'info'])
+                                                    Hoe veel u met deze maatregel kunt besparen hangt ervan wat de isolatiewaarde van de huidige isolatielaag is.
+                                                    Voor het uitrekenen van de daadwerkelijke besparing bij het na- isoleren van een reeds geïsoleerde gevel/vloer/dak is aanvullend en gespecialiseerd advies nodig.
+                                                @endcomponent
+                                            @endif
+                                            @break
+                                        @endif
+                                    @endforeach
+                                </div>
                                 <div class="col-sm-12 col-md-6 roof-surface-inputs">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.roof_surface') ? ' has-error' : '' }}">
 

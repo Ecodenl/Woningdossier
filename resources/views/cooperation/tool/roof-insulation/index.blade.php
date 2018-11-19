@@ -580,6 +580,9 @@
         });
 
 
+        $('select[name^=interest]').on('change', function () {
+            $('select[name*=element_value_id]').trigger('change');
+        });
         $('select[name*=element_value_id]').on('change', function () {
             var interestedCalculateValue = $('#interest_element_{{$roofInsulation->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $(this).find(':selected').data('calculate-value');

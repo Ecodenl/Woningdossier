@@ -341,7 +341,6 @@
                                        aria-expanded="false"></i>
                                     {{ $element->name }}
                                 </label>
-                                </label>
 
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $element->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingElements()->forMe()->where('element_id', $element->id)->get(), 'userInputColumn' => 'element_value_id'])
@@ -374,19 +373,20 @@
                                            class="control-label small-text">{{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
                                         <span>*</span></label>
 
-                                    <select id="user_interest_element_{{ $element->id }}" class="form-control"
+    @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'element')->where('interested_in_id', $element->id),  'userInputColumn' => 'interest_id'])                                <select id="user_interest_element_{{ $element->id }}" class="form-control"
                                             name="user_interest[element][{{ $element->id }}]">
                                         @foreach($interests as $interest)
                                             <option @if($interest->id == old('user_interest.element.'. $element->id . ']')) selected
                                                     @elseif(Auth::user()->getInterestedType('element', $element->id) != null && Auth::user()->getInterestedType('element', $element->id)->interest_id == $interest->id) selected
                                                     @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                         @endforeach
-                                    </select>
+                                    </select>@endcomponent
 
                                     @if ($errors->has('user_interest.element.' . $element->id))
                                         <span class="help-block">
-                                <strong>{{ $errors->first('user_interest.element.' . $element->id) }}</strong>
-                            </span>
+                                        <strong>{{ $errors->first('user_interest.element.' . $element->id) }}</strong>
+                                    </span>
                                     @endif
                                 </div>
                             </div>
@@ -483,14 +483,15 @@
                                                class="control-label small-text">{{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}</label>
                                         <span>*</span>
 
-                                        <select id="user_interest_service_{{ $service->id }}" class="form-control"
+                @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'service')->where('interested_in_id', $service->id),  'userInputColumn' => 'interest_id'])                        <select id="user_interest_service_{{ $service->id }}" class="form-control"
                                                 name="user_interest[service][{{ $service->id }}]">
                                             @foreach($interests as $interest)
                                                 <option @if($interest->id == old('user_interest.service.' . $service->id )) selected
                                                         @elseif(Auth::user()->getInterestedType('service', $service->id) != null && Auth::user()->getInterestedType('service', $service->id)->interest_id == $interest->id) selected
                                                         @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                             @endforeach
-                                        </select>
+                                        </select>@endcomponent
 
                                         @if ($errors->has('user_interest.service.' . $service->id))
                                             <span class="help-block">
@@ -572,10 +573,10 @@
                     <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
                         <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.total-citizens.title')}}
                                 </label> <span>*</span>
-                    @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'resident_count'])
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'resident_count'])
                         <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
-                    @endcomponent
+                        @endcomponent
 
                         <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('general-data.data-about-usage.total-citizens.help')}}
@@ -591,37 +592,37 @@
 
                 <div class="col-sm-6">
 
-                <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
-                    <label for="cook_gas" class=" control-label">
-                        <i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')
-                    </label> <span>*</span>
+                    <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
+                        <label for="cook_gas" class=" control-label">
+                            <i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')
+                        </label> <span>*</span>
                     <br>
-                    <div class="input-group input-source-group">
-                        <label class="radio-inline">
-                            <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 2 ) checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
-                        </label>
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                @foreach($userEnergyHabitsForMe as $userInputValue)
-                                    <?php
-                                        // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
-                                        $value = $userInputValue->cook_gas;
-                                        if ($value === 1) {
-                                            $trans = __('woningdossier.cooperation.radiobutton.yes');
-                                        } elseif($value === 2) {
-                                            $trans = __('woningdossier.cooperation.radiobutton.no');
-                                        }
-                                    ?>
+                        <div class="input-group input-source-group">
+                            <label class="radio-inline">
+                                <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 2 ) checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
+                            </label>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    @foreach($userEnergyHabitsForMe as $userInputValue)
+                                        <?php
+                                            // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
+                                            $value = $userInputValue->cook_gas;
+                                            if ($value === 1) {
+                                                $trans = __('woningdossier.cooperation.radiobutton.yes');
+                                            } elseif($value === 2) {
+                                                $trans = __('woningdossier.cooperation.radiobutton.no');
+                                            }
+                                        ?>
 
-                                    <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$trans}}</a></li>
-                                @endforeach
-                            </ul>
+                                        <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$trans}}</a></li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
-                    </div>
 
                         <div id="cooked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('general-data.data-about-usage.cooked-on-gas.help')}}

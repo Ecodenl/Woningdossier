@@ -51,8 +51,9 @@ class WallInsulationController extends Controller
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
 
-        $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
+        $facadeInsulation = $building->getBuildingElement('wall-insulation');
         $buildingFeature = $building->buildingFeatures;
+        $buildingElements = $facadeInsulation->element;
 
         $buildingFeaturesForMe = BuildingFeature::withoutGlobalScope(GetValueScope::class)->forMe()->get();
 
@@ -66,7 +67,8 @@ class WallInsulationController extends Controller
         return view('cooperation.tool.wall-insulation.index', compact(
             'steps', 'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
-            'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe'
+            'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
+	        'buildingElements'
         ));
     }
 

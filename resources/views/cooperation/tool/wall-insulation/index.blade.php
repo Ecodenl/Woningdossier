@@ -35,7 +35,7 @@
                         ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
                             <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
                                 @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
-                                    <optiondata-calculate-value="{{$elementValue->calculate_value}}"
+                                    <option data-calculate-value="{{$elementValue->calculate_value}}"
                                             @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
                                                 selected="selected"
                                             @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)

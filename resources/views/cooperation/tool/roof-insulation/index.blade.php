@@ -114,7 +114,7 @@
 {{--                                    @foreach($roofInsulation->values as $insulation)--}}
 {{--                                        @if(isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)--}}
 {{--                                            @if(($insulation->calculate_value == 3 || $insulation->calculate_value == 4) && $interest->calculate_value <= 2)--}}
-                                                @component('cooperation.tool.components.alert', ['type' => 'info', 'hide' => true])
+                                                @component('cooperation.tool.components.alert', ['alertType' => 'info', 'hide' => true])
                                                     Hoe veel u met deze maatregel kunt besparen hangt ervan wat de isolatiewaarde van de huidige isolatielaag is.
                                                     Voor het uitrekenen van de daadwerkelijke besparing bij het na- isoleren van een reeds geïsoleerde gevel/vloer/dak is aanvullend en gespecialiseerd advies nodig.
                                                 @endcomponent

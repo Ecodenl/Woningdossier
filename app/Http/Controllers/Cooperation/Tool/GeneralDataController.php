@@ -83,9 +83,10 @@ class GeneralDataController extends Controller
         $step = $this->step;
 
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
+        $userInterestsForMe = UserInterest::forMe()->get();
 
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step',
+            'building', 'step', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
@@ -156,6 +157,7 @@ class GeneralDataController extends Controller
         UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id'            => $buildingOwner->id,
+                'input_source_id'    => $inputSourceId,
                 'interested_in_type' => 'element',
                 'interested_in_id'   => $livingRoomWindowsElement->id,
             ],
@@ -188,6 +190,7 @@ class GeneralDataController extends Controller
                     UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'user_id'            => $buildingOwner->id,
+                            'input_source_id'    => $inputSourceId,
                             'interested_in_type' => 'element',
                             'interested_in_id'   => $elementId,
                         ],
@@ -250,6 +253,7 @@ class GeneralDataController extends Controller
                     UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'user_id'            => $buildingOwner->id,
+                            'input_source_id'    => $inputSourceId,
                             'interested_in_type' => 'service',
                             'interested_in_id'   => $serviceId,
                         ],

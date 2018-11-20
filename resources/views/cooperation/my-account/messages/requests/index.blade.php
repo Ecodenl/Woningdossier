@@ -29,7 +29,7 @@
                                             </small>
                                         </div>
                                         <p>
-                                            @if($conversationRequest->hasUserUnreadMessages() || $conversationRequest->isRead() == false)
+                                            @if($conversationRequest->hasUserUnreadMessages())
                                                 <strong>
                                                     {{$conversationRequest->message}}
                                                 </strong>

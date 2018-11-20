@@ -256,9 +256,6 @@
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')))))}}</a></li>
-                                <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Zonnepanelen.pdf"; ?>
-                                <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
-
                             </ol>
                         </div>
                     </div>

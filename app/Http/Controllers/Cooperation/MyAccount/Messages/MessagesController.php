@@ -9,6 +9,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
@@ -20,12 +21,15 @@ class MessagesController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $mainMessages = PrivateMessage::mainMessages()->get();
 
-//        $mainMessages = PrivateMessage::where('is_completed', false)
-//            ->where('main_message', null)
-//            ->where('from_user_id', \Auth::id())
-//            ->orWhere('to_cooperation_id', HoomdossierSession::getCooperation())->get();
+
+        // TODO: create a query instead of the merg
+        // gives a idea of how it should be
+        // but really, TODO!
+        $mainMessages = PrivateMessage::where('is_completed', false)
+            ->where('main_message', null)
+            ->where('from_user_id', \Auth::id())
+            ->orWhere('to_cooperation_id', HoomdossierSession::getCooperation())->get()->merge(PrivateMessage::mainMessages()->get());
 
         return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'mainMessages'));
     }
@@ -69,6 +73,15 @@ class MessagesController extends Controller
 
         // revoke the access for the coach to talk with the resident
         BuildingCoachStatusService::revokeAccess($fromId, $building->id, $privateMessageRequestId);
+
+        $sender = User::find($fromId);
+
+        PrivateMessage::create([
+            'from_user_id' => \Auth::id(),
+            'to_cooperation_id' => HoomdossierSession::getCooperation(),
+            'title' => \Auth::user()->first_name.' heeft de toegang van coach '.$sender->first_name.' ontzegt.',
+            'message' => ''
+        ]);
 
         return redirect()->back();
 

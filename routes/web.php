@@ -31,7 +31,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
-			Route::get('help', 'HelpController@index')->name('help.index');
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 			Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
@@ -89,6 +88,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			// the tool
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
+
+
+            	Route::post('copy-coach-input', 'CoachInputController@copy')->name('coach-input.copy');
+//            	Route::get('remove-coach-input', 'CoachInputController@remove')->name('coach-input.remove');
+
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
 				Route::group(['middleware' => 'filled-step:general-data'], function(){

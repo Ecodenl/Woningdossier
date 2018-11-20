@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use App\Observers\PrivateMessageObserver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class PrivateMessage extends Model
 {
@@ -230,6 +231,16 @@ class PrivateMessage extends Model
     }
 
     /**
+     * Returns the opposite from isMyMessage()
+     *
+     * @return bool
+     */
+    public function isNotMyMessage() : bool
+    {
+        return !$this->isMyMessage();
+    }
+
+    /**
      * Check if the user has response to his conversation request
      *
      * @return bool
@@ -270,32 +281,64 @@ class PrivateMessage extends Model
 
 
     /**
-     * Check if the user has unread messages based on the main message
-     *
-     * if you want to check if a specific message has been read use the isRead() function.
+     * Check if a message is the main message
      *
      * @return bool
      */
-    public function hasUserUnreadMessages()
+    public function isMainMessage() : bool
     {
-        $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
-
-        return $answers->contains('to_user_read', false);
-    }
-
-    /**
-     * Check if a user has read his message
-     *
-     * @return bool
-     */
-    public function isRead()
-    {
-        if ($this->to_user_id == \Auth::id() && $this->to_user_read == true) {
+        if (empty($this->main_message)) {
             return true;
         }
 
         return false;
     }
+
+    /**
+     * Check if the main message is read
+     *
+     * @return bool
+     */
+    public function isMainMessageRead() : bool
+    {
+        // if its set to 1 it wil return true;
+        // if the to user read is set to 0 it will return false
+        return $this->to_user_read;
+    }
+
+    /**
+     * Returns the opposite of isMainMessageRead();
+     *
+     * @return bool
+     */
+    public function isMainMessageUnread() : bool
+    {
+        return !$this->isMainMessageRead();
+    }
+
+    /**
+     * Check if the user has unread messages based on the main message
+     *
+     * @return bool
+     */
+    public function hasUserUnreadMessages() : bool
+    {
+        $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
+
+        // $asnwers will be empty when there is no response to the main message
+        if ($answers->isNotEmpty()) {
+
+            return $answers->contains('to_user_read', false);
+        } else if ($this->isMainMessage()) {
+            // we check if the main message is unread and if its not our message, you have always read your own message.
+            // unless your blind.
+            return $this->isMainMessageUnread() && $this->isNotMyMessage();
+        } else {
+            \Log::debug(__FUNCTION__ .'Came to the else for message id: '. $this->id);
+        }
+
+    }
+
 
     /**
      * Check wheter a conversation request has been read, this can only be used on conversation requests

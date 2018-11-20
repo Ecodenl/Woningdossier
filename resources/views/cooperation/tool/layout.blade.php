@@ -4,6 +4,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
+                <?php
+                    if(!isset($building)) {
+                        $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
+                    }
+                ?>
                 @if (Auth::user()->buildings->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
@@ -25,11 +30,7 @@
                         @endcomponent
                     </div>
                 @else
-                    <?php
-                        if(!isset($building)) {
-                            $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
-                        }
-                    ?>
+
                     @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                         @lang('woningdossier.cooperation.tool.current-building-address', [
                             'street' => $building->street,
@@ -46,6 +47,14 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident'))
+                    <form id="copy-coach-input" action="{{route('cooperation.tool.coach-input.copy')}}" method="post">
+                        {{csrf_field()}}
+                        <button class="btn btn-primary">
+                            @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                        </button>
+                    </form>
+                @endif
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
@@ -84,7 +93,16 @@
         $('#submit-form-top-right').click(function () {
             // There will only be 1 form inside the panel body, submit it
             $('.panel-body form button[type=submit]').click();
-        })
+        });
+
+        $('#copy-coach-input').on('submit', function (event) {
+            if(confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
+
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

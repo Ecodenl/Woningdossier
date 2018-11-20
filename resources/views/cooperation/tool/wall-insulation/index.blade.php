@@ -14,19 +14,6 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
 
-                        @if(isset($building->buildingFeatures->build_year))
-                        <label for="house_has_insulation" class=" control-label">
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year]) }}
-                            @if($building->buildingFeatures->build_year >= 1985)
-                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1985.title')}}
-                            @elseif($building->buildingFeatures->build_year >= 1930)
-                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1930.title')}}
-                            @else
-                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-pre-1930.title')}}
-                            @endif
-                        </label>
-                        @endif
-
                         <label for="element_{{ $facadeInsulation->element->id }}" class="control-label">
                             <i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.title')}} </label>
@@ -65,6 +52,24 @@
             </div>
         </div>
         <div id="hideable">
+
+            @if(isset($building->buildingFeatures->build_year))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label for="house_has_insulation" class=" control-label">
+                            {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year]) }}
+                            @if($building->buildingFeatures->build_year >= 1985)
+                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1985.title')}}
+                            @elseif($building->buildingFeatures->build_year >= 1930)
+                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1930.title')}}
+                            @else
+                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-pre-1930.title')}}
+                            @endif
+                        </label>
+                    </div>
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
@@ -448,7 +453,7 @@
                     <?php
                         $coachInputSource = App\Models\InputSource::findByShort('coach');
                     ?>
-                    @if(isset($buildingFeaturesForMe) && $buildingFeaturesForMe->first()->hasCoachInputSource() && !is_null($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info))
+                    @if(isset($buildingFeaturesForMe) && $buildingFeaturesForMe->first()->hasCoachInputSource() && isset($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info) && !is_null($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info))
                         @component('cooperation.tool.components.alert')
                             {{$buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info}}
                         @endcomponent
@@ -483,8 +488,6 @@
                         <ol>
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a></li>
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a></li>
-                            <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Gevelisolatie.pdf"; ?>
-                            <li><a download="" href="{{ asset($helpFile) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a></li>
                         </ol>
                     </div>
                 </div>

@@ -26,11 +26,11 @@
                                 @if($privateMessage->isMyMessage())
 
                                     <small class="text-muted"><span class="glyphicon glyphicon-time"></span>{{$time->diffForHumans()}}</small>
-                                    <strong class="pull-right primary-font">{{$privateMessage->getSender($privateMessage->id)->first_name}}</strong>
+                                    <strong class="pull-right primary-font">{{$privateMessage->getSender()->first_name}}</strong>
 
                                 @else
 
-                                    <strong class="primary-font">{{$privateMessage->getSender($privateMessage->id)->first_name}}</strong>
+                                    <strong class="primary-font">{{$privateMessage->getSender()->first_name}}</strong>
                                     <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>{{$time->diffForHumans()}}</small>
 
                                 @endif
@@ -60,10 +60,14 @@
 @push('js')
     <script>
         $('document').ready(function () {
-            $('#revoke-access').on('click', function () {
-                if (confirm('Weet u zeker dat u geen contact wilt met deze coach, er word hierna een nieuwe coach voor u gezocht. Dit kan enige tijd duren.')) {
+            $('#revoke-access').on('click', function (event) {
+                // Bij de "weet je het zeker" voor de gebruiker aangeven dat de toegang tot de woning word ingetrokken en de aanvraag bij de cooperatie wordt teruggelegd
+                if (confirm('Weet u zeker dat u geen contact wilt met deze coach, de toegang tot de woning word voor de coach ingetrokken. Ook word de cooperatie teruggelegd bij de cooperatie, het kan enige tijd duren tot er een nieuwe coach word gekoppeld.')) {
                     $('#revoke-access-form').submit();
-                 }
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
             });
         })
     </script>

@@ -153,7 +153,7 @@
 <script>
 
     $(document).ready(function() {
-        const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
+            const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
             const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
 
             const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";

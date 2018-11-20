@@ -721,6 +721,13 @@ return [
 		'title' => 'Basisadvies',
 
 		'general-data'    => [
+
+            'coach-input' => [
+                'copy' => [
+                    'title' => 'Neem coach antwoorden over',
+                    'help' => 'Weet u zeker dat u alle antwoorden van de coach wil overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de coach.'
+                ]
+            ],
 			'title' => 'Algemene gegevens',
 
 			'name-address-data' => [

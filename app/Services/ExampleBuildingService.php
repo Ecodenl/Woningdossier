@@ -171,7 +171,17 @@ class ExampleBuildingService {
 
 					continue;
 				}
+				if ($stepSlug == 'insulated-glazing' && in_array($columnOrTable, ['window_surface'])){
+					$features[$columnOrTable] = $values;
+
+					continue;
+				}
 				if($stepSlug == 'floor-insulation' && in_array($columnOrTable, ['floor_surface',])){
+					$features[$columnOrTable] = $values;
+
+					continue;
+				}
+				if($stepSlug == 'roof-insulation' && in_array($columnOrTable, ['roof_type_id'])){
 					$features[$columnOrTable] = $values;
 
 					continue;

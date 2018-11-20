@@ -204,8 +204,8 @@ class ExampleBuildingController extends Controller
         $boiler = Service::where('short', 'boiler')->first();
 
         // Common
-        $interests = Interest::orderBy('order')->get();
-        $interestOptions = $this->createOptions($interests);
+        //$interests = Interest::orderBy('order')->get();
+        //$interestOptions = $this->createOptions($interests);
 
         $structure = [
             'general-data' => [

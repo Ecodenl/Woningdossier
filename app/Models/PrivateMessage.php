@@ -272,29 +272,14 @@ class PrivateMessage extends Model
     /**
      * Check if the user has unread messages based on the main message
      *
-     * if you want to check if a specific message has been read use the isRead() function.
      *
      * @return bool
      */
-    public function hasUserUnreadMessages()
+    public function hasUserUnreadMessages() : bool
     {
         $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
 
         return $answers->contains('to_user_read', false);
-    }
-
-    /**
-     * Check if a user has read his message
-     *
-     * @return bool
-     */
-    public function isRead()
-    {
-        if ($this->to_user_id == \Auth::id() && $this->to_user_read == true) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

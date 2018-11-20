@@ -21,7 +21,7 @@
                                             </strong>
 
                                             <small class="pull-right text-muted">
-                                                @if($mainMessage->hasUserUnreadMessages() || $mainMessage->isRead() == false)
+                                                @if($mainMessage->hasUserUnreadMessages())
                                                     <span class="label label-primary">@lang('default.new-message')</span>
                                                 @endif
                                                 <?php $time = \Carbon\Carbon::parse($mainMessage->created_at) ?>
@@ -29,7 +29,7 @@
                                             </small>
                                         </div>
                                         <p>
-                                            @if($mainMessage->hasUserUnreadMessages() || $mainMessage->isRead() == false)
+                                            @if($mainMessage->hasUserUnreadMessages())
                                                 <strong>
                                                     {{ $mainMessage->message }}
                                                 </strong>

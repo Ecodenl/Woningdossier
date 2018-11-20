@@ -23,25 +23,61 @@ class TransformExampleBuildingContentsContents extends Migration {
 
 			$content = $exampleBuildingContent->content;
 
-			if ( array_key_exists( 'insulated-glazing', $content ) ) {
-				if ( array_key_exists( 'building_elements',
-					$content['insulated-glazing'] ) ) {
-					$shouldBe = [];
-					//dd($content['insulated-glazing']['building_elements']);
-					foreach ( $content['insulated-glazing']['building_elements'] as $elementId => $elementValues ) {
-						foreach ( $elementValues as $short => $elementValueId ) {
-							$shouldBe[ $elementId ] = (int) $elementValueId;
+			foreach(['insulated-glazing', 'floor-insulation'] as $section) {
+
+				if ( array_key_exists( $section, $content ) ) {
+					if ( array_key_exists( 'building_elements',
+						$content[ $section ] ) ) {
+
+						$shouldBe = [];
+
+						// Floor insulation: has_crawlspace data fix
+						if ( array_key_exists( 'crawlspace',
+							$content[ $section ]['building_elements'] ) ) {
+							$crawlspaceElement = \App\Models\Element::where( 'short',
+								'crawlspace' )->first();
+							if ( $crawlspaceElement instanceof \App\Models\Element ) {
+								$extra = array_get( $content,
+									$section . '.building_elements.' . $crawlspaceElement->id . '.extra',
+									[] );
+								if ( ! is_array( $extra ) ) {
+									// only accessibility in there now
+									$extra = [ 'access' => $extra ];
+								}
+								$extra['has_crawlspace'] = array_get( $content,
+									$section . '.building_elements.crawlspace',
+									'unknown' );
+								$content[ $section ]['building_elements'][ $crawlspaceElement->id ]['extra'] = $extra;
+							}
+							unset( $content[ $section ]['building_elements']['crawlspace'] );
 						}
-					}
 
-					if ( ! array_key_exists( 'element',
-						$content['insulated-glazing'] ) ) {
-						$content['insulated-glazing']['element'] = [];
-					}
+						foreach ( $content[ $section ]['building_elements'] as $elementId => $elementValues ) {
+							if (is_array($elementValues) && array_key_exists('extra', $elementValues)){
+								$shouldBe[$elementId] = $elementValues;
+							}
+							else {
+								foreach ( $elementValues as $short => $idOrArray ) {
+									if ( $short == 'extra' ) {
+										// take as-is
+										$shouldBe[ $elementId ][ $short ] = $idOrArray;
+									} else {
+										// int (id)
+										$shouldBe[ $elementId ] = (int) $idOrArray;
+									}
+								}
+							}
+						}
 
-					$content['insulated-glazing']['element'] = array_replace_recursive( $content['insulated-glazing']['element'],
-						$shouldBe );
-					unset( $content['insulated-glazing']['building_elements'] );
+						if ( ! array_key_exists( 'element',
+							$content[ $section ] ) ) {
+							$content[ $section ]['element'] = [];
+						}
+
+						$content[ $section ]['element'] = array_replace_recursive( $content[ $section ]['element'],
+							$shouldBe );
+						unset( $content[ $section ]['building_elements'] );
+					}
 				}
 			}
 
@@ -59,6 +95,7 @@ class TransformExampleBuildingContentsContents extends Migration {
 	 */
 	public function down()
 	{
+		/*
 		$exampleBuildingContents = \App\Models\ExampleBuildingContent::all();
 
 		foreach ( $exampleBuildingContents as $exampleBuildingContent ) {
@@ -90,5 +127,6 @@ class TransformExampleBuildingContentsContents extends Migration {
 			$exampleBuildingContent->content = $content;
 			$exampleBuildingContent->save();
 		}
+		*/
 	}
 }

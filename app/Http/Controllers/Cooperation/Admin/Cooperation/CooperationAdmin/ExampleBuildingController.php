@@ -142,6 +142,7 @@ class ExampleBuildingController extends Controller
      */
     public function edit(Cooperation $cooperation, $id)
     {
+    	/** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
@@ -272,7 +273,7 @@ class ExampleBuildingController extends Controller
             ],
             'insulated-glazing' => [
                 // will be filled in later
-                'elements.'.$crackSealing->id => [
+                'element.'.$crackSealing->id => [
                     'label' => __('woningdossier.cooperation.tool.insulated-glazing.moving-parts-quality'),
                     'type' => 'select',
                     'options' => $this->createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
@@ -282,7 +283,7 @@ class ExampleBuildingController extends Controller
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-                'elements.'.$frames->id => [
+                'element.'.$frames->id => [
                     'label' => __('woningdossier.cooperation.tool.insulated-glazing.paint-work.which-frames'),
                     'type' => 'select',
                     'options' => $this->createOptions($frames->values()->orderBy('order')->get(), 'value'),
@@ -319,17 +320,17 @@ class ExampleBuildingController extends Controller
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-                'building_elements.crawlspace' => [
+                'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.title'),
                     'type' => 'select',
                     'options' => __('woningdossier.cooperation.option'),
                 ],
-                'building_elements.'.$crawlspace->id.'.extra' => [
+                'element.'.$crawlspace->id.'.extra.access' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.title'),
                     'type' => 'select',
                     'options' => __('woningdossier.cooperation.option'),
                 ],
-                'building_elements.'.$crawlspace->id.'.element_value_id' => [
+                'element.'.$crawlspace->id.'.element_value_id' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.crawlspace-height'),
                     'type' => 'select',
                     'options' => $this->createOptions($crawlspace->values()->orderBy('order')->get(), 'value'),
@@ -527,6 +528,7 @@ class ExampleBuildingController extends Controller
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+            $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {
                     // addition

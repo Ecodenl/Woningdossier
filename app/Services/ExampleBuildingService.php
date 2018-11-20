@@ -5,11 +5,15 @@ namespace App\Services;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
+use App\Models\BuildingInsulatedGlazing;
+use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingType;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\InputSource;
+use App\Models\PaintworkStatus;
+use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use Symfony\Component\Debug\Debug;
 
@@ -102,6 +106,57 @@ class ExampleBuildingService {
 					}
 					continue;
 				}
+				if ($columnOrTable == 'building_paintwork_statuses'){
+					$statusId = array_get($values, 'paintwork_status_id');
+					$woodRotStatusId = array_get($values, 'wood_rot_status_id');
+
+					if (empty($statusId) || empty($woodRotStatusId)){
+						self::log("Skipping paintwork status as the paint or wood rot (or both) status is empty");
+						continue;
+					}
+
+					$buildingPaintworkStatus = new BuildingPaintworkStatus($values);
+
+					/*
+					$buildingPaintworkStatus->last_painted_year = array_get($values, 'last_painted_year');
+
+					$statusId = array_get($values, 'paintwork_status_id');
+					if (!is_null($statusId)){
+						$status = PaintworkStatus::find($statusId);
+						if ($status instanceof PaintworkStatus){
+							$buildingPaintworkStatus->paintworkStatus()->associate($status);
+						}
+					}
+
+					$woodRotStatusId = array_get($values, 'wood_rot_status_id');
+					if (!is_null($woodRotStatusId)){
+						$woodRotStatus = WoodRotStatus::find($woodRotStatusId);
+						if ($woodRotStatus instanceof WoodRotStatus){
+							$buildingPaintworkStatus->woodRotStatus()->associate($woodRotStatus);
+						}
+					}
+					*/
+
+					$buildingPaintworkStatus->inputSource()->associate($inputSource);
+					$buildingPaintworkStatus->building()->associate($userBuilding);
+					$buildingPaintworkStatus->save();
+
+					continue;
+				}
+				if ($columnOrTable == 'building_insulated_glazings'){
+					foreach($values as $measureApplicationId => $glazingData){
+						$glazingData['measure_application_id'] = $measureApplicationId;
+
+						$buildingInsulatedGlazing = new BuildingInsulatedGlazing($glazingData);
+
+						$buildingInsulatedGlazing->inputSource()->associate($inputSource);
+						$buildingInsulatedGlazing->building()->associate($userBuilding);
+						$buildingInsulatedGlazing->save();
+
+						continue;
+					}
+				}
+
 
 				// wall-insulation
 				// wall_surface => building_features
@@ -112,6 +167,11 @@ class ExampleBuildingService {
 				// contaminated_wall_joints => building_features
 				if($stepSlug == 'wall-insulation' && in_array($columnOrTable, ['wall_surface', 'cavity_wall', 'facade_plastered_painted', 'facade_damaged_paintwork_id', 'wall_joints', 'contaminated_wall_joints'])){
 					// we already know that values is filled
+					$features[$columnOrTable] = $values;
+
+					continue;
+				}
+				if($stepSlug == 'floor-insulation' && in_array($columnOrTable, ['floor_surface',])){
 					$features[$columnOrTable] = $values;
 
 					continue;

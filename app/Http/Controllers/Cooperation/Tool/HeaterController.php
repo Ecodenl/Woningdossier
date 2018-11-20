@@ -233,7 +233,6 @@ class HeaterController extends Controller
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->planned = true;
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
                 $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);

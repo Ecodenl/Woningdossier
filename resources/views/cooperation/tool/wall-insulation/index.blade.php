@@ -446,7 +446,7 @@
                     <?php
                         $coachInputSource = App\Models\InputSource::findByShort('coach');
                     ?>
-                    @if(isset($buildingFeaturesForMe) && $buildingFeaturesForMe->first()->hasCoachInputSource() && !is_null($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info))
+                    @if(isset($buildingFeaturesForMe) && $buildingFeaturesForMe->first()->hasCoachInputSource() && isset($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info) && !is_null($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info))
                         @component('cooperation.tool.components.alert')
                             {{$buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info}}
                         @endcomponent

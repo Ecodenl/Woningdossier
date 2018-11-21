@@ -350,6 +350,24 @@
                     </div>
                 </div>
             </div>
+            @if(\App\Models\BuildingService::hasCoachInputSource($buildingElementsForMe->where('element_id', $crawlspace->id)) && Auth::user()->hasRole('resident'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                            <?php
+                            $coachInputSource = \App\Models\BuildingService::getCoachInput($buildingElementsForMe->where('element_id', $crawlspace->id));
+                            $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
 
 
             <div class="row" id="no-crawlspace-error">

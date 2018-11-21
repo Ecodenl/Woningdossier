@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
+use Illuminate\Support\Collection;
 
 trait GetMyValuesTrait {
 
@@ -29,6 +30,42 @@ trait GetMyValuesTrait {
         return $this->belongsTo(InputSource::class);
     }
 
+
+    /**
+     * Check on a collection that comes from the forMe() scope if it contains a
+     * Coach input source.
+     *
+     * @param Collection $inputSourcesForMe
+     * @return bool
+     */
+    public static function hasCoachInputSource(Collection $inputSourcesForMe): bool
+    {
+//        dd($inputSourcesForMe);
+        $coachInputSource = InputSource::findByShort('coach');
+
+        if ($inputSourcesForMe->contains('input_source_id', $coachInputSource->id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the coach input from a collection that comes from the forMe() scope
+     *
+     * @param Collection $inputSourcesForMe
+     * @return mixed
+     */
+    public static function getCoachInput(Collection $inputSourcesForMe)
+    {
+        $coachInputSource = InputSource::findByShort('coach');
+
+        if (self::hasCoachInputSource($inputSourcesForMe)) {
+            return $inputSourcesForMe->where('input_source_id', $coachInputSource->id)->first();
+        }
+
+    }
+
     /**
      * Get a input source name
      *
@@ -38,6 +75,7 @@ trait GetMyValuesTrait {
     {
         return $this->inputSource()->first()->name;
     }
+
 //
 //    /**
 //     * Almost the same as getBuildingElement($short) except this returns all the input

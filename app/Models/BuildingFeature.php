@@ -84,6 +84,7 @@ class BuildingFeature extends Model
         'building_layers',
         'surface',
         'floor_surface',
+        'monument',
         'insulation_surface',
         'build_year',
         'input_source_id',

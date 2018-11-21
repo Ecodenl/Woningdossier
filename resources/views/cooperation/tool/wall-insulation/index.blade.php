@@ -522,7 +522,6 @@
                    $('#painted-options').hide();
                }
 
-
                var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
                var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 

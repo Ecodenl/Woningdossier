@@ -75,6 +75,7 @@ trait GetMyValuesTrait {
     {
         return $this->inputSource()->first()->name;
     }
+
 //
 //    /**
 //     * Almost the same as getBuildingElement($short) except this returns all the input

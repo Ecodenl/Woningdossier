@@ -184,7 +184,7 @@ class GeneralDataController extends Controller
             [
                 'build_year' => $request->get('build_year'),
                 'surface' => $request->get('surface'),
-                'monument' => $request->get('monument'),
+                'monument' => $request->get('monument', 0),
                 'building_layers' => $request->get('building_layers'),
             ]
         );

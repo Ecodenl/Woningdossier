@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\Str;
 use App\Models\Translation;
 use Illuminate\Console\Command;
@@ -43,7 +44,7 @@ class ImportTranslations extends Command
         $importFile = storage_path('app/public/translations-import.csv');
 
         // csv to associative array
-        $csvRows = csv_to_array($importFile, ',', false);
+        $csvRows = CsvHelper::toArray($importFile, ',', false);
 
         // update for the translatable uuid.php file
         $uuidTranslatableData = [];

@@ -7,12 +7,16 @@ use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingPaintworkStatus;
+use App\Models\BuildingRoofType;
+use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\PaintworkStatus;
+use App\Models\Service;
+use App\Models\ServiceValue;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use Symfony\Component\Debug\Debug;
@@ -23,25 +27,13 @@ class ExampleBuildingService {
 		$inputSource = InputSource::findByShort('example-building');
 
 		// Clear the current example building data
+		self::log("Lookup " . $exampleBuilding->name . " for " . $buildYear);
 		$contents = $exampleBuilding->getContentForYear($buildYear);
 
-		// Check if there's already a building for the example building input source
-		/*
-		$building = Building::withoutGlobalScope(GetValueScope::class)
-		            ->where('user_id', $userBuilding->user_id)
-		            ->where('input_source_id', $inputSource->id)
-					->first();
-
-		if ($building instanceof Building){
-			$building->delete();
-		}
-
-		$building = new Building();
-		*/
 		// traverse the contents:
 		$exampleData = $contents->content;
 
-		self::log("Applying Example Building " . $exampleBuilding->name . " (" . $exampleBuilding->id . ")");
+		self::log("Applying Example Building " . $exampleBuilding->name . " (" . $exampleBuilding->id . ", " . $contents->build_year . ")");
 
 		self::clearExampleBuilding($userBuilding);
 
@@ -52,8 +44,6 @@ class ExampleBuildingService {
 		 * This makes us * not * doing if-elseif-elseif-elseif...-else
 		 */
 
-		dd($exampleData);
-
 		foreach($exampleData as $stepSlug => $stepData){
 			self::log("=====");
 			self::log("Processing " . $stepSlug);
@@ -61,6 +51,8 @@ class ExampleBuildingService {
 
 
 			foreach($stepData as $columnOrTable => $values){
+				self::log("-> " . $stepSlug . " + " . $columnOrTable . " <-");
+
 				if (is_null($values)){
 					self::log("Skipping " . $columnOrTable . " (empty)");
 					continue;
@@ -87,24 +79,71 @@ class ExampleBuildingService {
 							else {
 								$elementValueId = (int) $elementValueData;
 							}
-							if (!is_null($elementValueId)){
-								$element = Element::find($elementId);
-								if ($element instanceof Element){
-									$elementValue = $element->values()->where('id', $elementValueId)->first();
-									if ($elementValue instanceof ElementValue){
-										$buildingElement = new BuildingElement([ 'extra' => $extra, ]);
-										$buildingElement->inputSource()->associate($inputSource);
-										$buildingElement->element()->associate($element);
-										$buildingElement->elementValue()->associate($elementValue);
-										$buildingElement->building()->associate($userBuilding);
-										$buildingElement->save();
-										self::log("Saving building element " . json_encode($buildingElement->toArray()));
+
+							$element = Element::find($elementId);
+							if ($element instanceof Element){
+
+								$buildingElement = new BuildingElement([ 'extra' => $extra, ]);
+								$buildingElement->inputSource()->associate($inputSource);
+								$buildingElement->element()->associate($element);
+								$buildingElement->building()->associate( $userBuilding );
+
+								if (!is_null($elementValueId)) {
+									$elementValue = $element->values()->where( 'id', $elementValueId )->first();
+
+									if ( $elementValue instanceof ElementValue ) {
+										$buildingElement->elementValue()->associate( $elementValue );
+									}
+								}
+
+								$buildingElement->save();
+								self::log( "Saving building element " . json_encode( $buildingElement->toArray() ) );
+							}
+						}
+					}
+					//continue;
+				}
+				if ($columnOrTable == 'service'){
+					// process elements
+					if (is_array($values)){
+						foreach($values as $serviceId => $serviceValueData){
+							$extra = null;
+							if (is_array($serviceValueData)){
+								if (!array_key_exists('service_value_id', $serviceValueData)){
+									self::log("Skipping service value as there is no service_value_id");
+									continue;
+								}
+								$serviceValueId = (int) $serviceValueData['service_value_id'];
+								if (array_key_exists('extra', $serviceValueData)){
+									$extra = $serviceValueData['extra'];
+								}
+							}
+							else {
+								$serviceValueId = (int) $serviceValueData;
+							}
+							if (!is_null($serviceValueId)){
+								$service = Service::find($serviceId);
+								if ($service instanceof Service){
+									$serviceValue = $service->values()->where('id', $serviceValueId)->first();
+									if ($serviceValue instanceof ServiceValue){
+										$buildingService = new BuildingService([ 'extra' => $extra, ]);
+										$buildingService->inputSource()->associate($inputSource);
+										$buildingService->service()->associate($service);
+										$buildingService->serviceValue()->associate($serviceValue);
+										$buildingService->building()->associate($userBuilding);
+										$buildingService->save();
+										self::log("Saving building service " . json_encode($buildingService->toArray()));
 									}
 								}
 							}
 						}
 					}
-					continue;
+					//continue;
+				}
+				if($columnOrTable == 'building_features'){
+					$features = array_replace_recursive($features, $values);
+
+					//continue;
 				}
 				if ($columnOrTable == 'building_paintwork_statuses'){
 					$statusId = array_get($values, 'paintwork_status_id');
@@ -141,7 +180,7 @@ class ExampleBuildingService {
 					$buildingPaintworkStatus->building()->associate($userBuilding);
 					$buildingPaintworkStatus->save();
 
-					continue;
+					//continue;
 				}
 				if ($columnOrTable == 'building_insulated_glazings'){
 					foreach($values as $measureApplicationId => $glazingData){
@@ -153,46 +192,32 @@ class ExampleBuildingService {
 						$buildingInsulatedGlazing->building()->associate($userBuilding);
 						$buildingInsulatedGlazing->save();
 
-						continue;
+						self::log("Saving building insulated glazing " . json_encode($buildingInsulatedGlazing->toArray()));
 					}
+					//continue;
+				}
+				if ($columnOrTable == 'building_roof_types'){
+					foreach($values as $roofTypeId => $buildingRoofTypeData) {
+						$buildingRoofTypeData['roof_type_id'] = $roofTypeId;
+
+						$buildingRoofType = new BuildingRoofType( $buildingRoofTypeData );
+						$buildingRoofType->inputSource()->associate($inputSource);
+						$buildingRoofType->building()->associate($userBuilding);
+						$buildingRoofType->save();
+
+						self::log("Saving building rooftype " . json_encode($buildingRoofType->toArray()));
+					}
+
+					//continue;
 				}
 
-
-				// wall-insulation
-				// wall_surface => building_features
-				// cavity_wall => building_features
-				// facade_plastered_painted => building_features
-				// facade_damaged_paintwork_id => building_features
-				// wall_joints => building_features
-				// contaminated_wall_joints => building_features
-				if($stepSlug == 'wall-insulation' && in_array($columnOrTable, ['wall_surface', 'cavity_wall', 'facade_plastered_painted', 'facade_damaged_paintwork_id', 'wall_joints', 'contaminated_wall_joints'])){
-					// we already know that values is filled
-					$features[$columnOrTable] = $values;
-
-					continue;
-				}
-				if ($stepSlug == 'insulated-glazing' && in_array($columnOrTable, ['window_surface'])){
-					$features[$columnOrTable] = $values;
-
-					continue;
-				}
-				if($stepSlug == 'floor-insulation' && in_array($columnOrTable, ['floor_surface',])){
-					$features[$columnOrTable] = $values;
-
-					continue;
-				}
-				if($stepSlug == 'roof-insulation' && in_array($columnOrTable, ['roof_type_id'])){
-					$features[$columnOrTable] = $values;
-
-					continue;
-				}
-
-				self::log("unknown element: " . $columnOrTable);
+				//self::log("unknown element: " . $columnOrTable);
 
 
 			}
 		}
 
+		self::log("processing features " . json_encode($features));
 		$buildingFeatures = new BuildingFeature($features);
 		$buildingFeatures->buildingType()->associate($exampleBuilding->buildingType);
 		$buildingFeatures->inputSource()->associate($inputSource);
@@ -210,6 +235,10 @@ class ExampleBuildingService {
 		// Delete all building elements
 		$building->buildingElements()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
 		$building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+		$building->buildingServices()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+		$building->currentInsulatedGlazing()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+		$building->roofTypes()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+		$building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
 
 		return true;
 	}

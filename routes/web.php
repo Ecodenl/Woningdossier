@@ -196,7 +196,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 					Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
 				});
 
-				Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
+				Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
 
                     Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');

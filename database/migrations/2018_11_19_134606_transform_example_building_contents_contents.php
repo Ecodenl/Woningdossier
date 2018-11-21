@@ -19,13 +19,36 @@ class TransformExampleBuildingContentsContents extends Migration {
 	{
 		$exampleBuildingContents = \App\Models\ExampleBuildingContent::all();
 
+		$buildingFeaturesPerSection = [
+			'general-data' => ['surface', ],
+			'wall-insulation' => ['wall_surface', 'cavity_wall', 'facade_plastered_painted', 'facade_damaged_paintwork_id', 'wall_joints', 'contaminated_wall_joints', ],
+			'insulated-glazing' => ['window_surface', ],
+			'floor-insulation' => ['floor_surface', ],
+			'roof-insulation' => ['roof_type_id', ],
+		];
+
 		foreach ( $exampleBuildingContents as $exampleBuildingContent ) {
 
 			$content = $exampleBuildingContent->content;
 
-			foreach(['insulated-glazing', 'floor-insulation'] as $section) {
+			foreach(array_keys($content) as $section) {
+
+				// Move particular columns to building_features
+				if (array_key_exists($section, $buildingFeaturesPerSection)){
+					foreach($buildingFeaturesPerSection[$section] as $featureColumn){
+						if (array_key_exists($featureColumn, $content[$section])){
+							if (!array_key_exists('building_features', $content[$section])){
+								$content[$section]['building_features'] = [];
+							}
+							$content[$section]['building_features'][$featureColumn] = $content[$section][$featureColumn];
+							unset($content[$section][$featureColumn]);
+						}
+					}
+				}
 
 				if ( array_key_exists( $section, $content ) ) {
+
+					// move particular building_elements
 					if ( array_key_exists( 'building_elements',
 						$content[ $section ] ) ) {
 
@@ -78,7 +101,31 @@ class TransformExampleBuildingContentsContents extends Migration {
 							$shouldBe );
 						unset( $content[ $section ]['building_elements'] );
 					}
+
+					// move roof types from category (which will become 'short' later on) to roof type id
+					if(array_key_exists('building_roof_types', $content[$section])){
+						$move = ['pitched' => 1, 'flat' => 2, ];
+
+						foreach($move as $cat => $rtid) {
+							if ( array_key_exists( $cat,
+								$content[ $section ]['building_roof_types'] ) ) {
+								$content[ $section ]['building_roof_types'][$rtid] = $content[ $section ]['building_roof_types'][$cat];
+
+								unset( $content[ $section ]['building_roof_types'][$cat] );
+							}
+							if (array_key_exists('surface', $content[ $section ]['building_roof_types'][$rtid])){
+								$content[ $section ]['building_roof_types'][$rtid]['roof_surface'] = $content[ $section ]['building_roof_types'][$rtid]['surface'];
+								unset($content[ $section ]['building_roof_types'][$rtid]['surface']);
+							}
+						}
+					}
+
+					if(array_key_exists('building_services', $content[$section])){
+						$content[$section]['service'] = $content[$section]['building_services'];
+						unset($content[$section]['building_services']);
+					}
 				}
+
 			}
 
 			$exampleBuildingContent->content = $content;

@@ -22,7 +22,6 @@
                             <span class="input-group-addon">m<sup>3</sup></span>
                             <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">
                         @endcomponent
-
                         <div id="current-gas-usage" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('boiler.current-gas-usage.help')}}
                         </div>
@@ -151,7 +150,7 @@
                         </div>
                     </div>
                     <div class="col-sm-12">
-                        <?php $coachInput = \App\Models\BuildingService::forMe()->where('service_id', $boiler->id)->coachInput()->first(); ?>
+                        <?php $coachInput = \App\Models\BuildingService::getCoachInput($installedBoilerForMe); ?>
                         @if($coachInput instanceOf \App\Models\BuildingService && is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra))
                             @component('cooperation.tool.components.alert')
                                 {{$coachInput->extra['comment']}}

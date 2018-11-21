@@ -269,6 +269,9 @@ class RoofInsulationController extends Controller
             }
             if (array_key_exists('bitumen_replaced_date', $extra)) {
                 $bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
+                if ($bitumenReplaceYear <= 0){
+                	$bitumenReplaceYear = Carbon::now()->year - 10;
+                }
                 $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
 
                 if ($bitumenReplaceYear > 0 && $surface > 0) {

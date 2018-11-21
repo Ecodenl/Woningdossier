@@ -39,11 +39,6 @@ class ExampleBuildingService {
 
 		$features = [];
 
-		/**
-		 * Note the continue statements!!
-		 * This makes us * not * doing if-elseif-elseif-elseif...-else
-		 */
-
 		foreach($exampleData as $stepSlug => $stepData){
 			self::log("=====");
 			self::log("Processing " . $stepSlug);
@@ -101,7 +96,6 @@ class ExampleBuildingService {
 							}
 						}
 					}
-					//continue;
 				}
 				if ($columnOrTable == 'service'){
 					// process elements
@@ -138,12 +132,10 @@ class ExampleBuildingService {
 							}
 						}
 					}
-					//continue;
 				}
 				if($columnOrTable == 'building_features'){
 					$features = array_replace_recursive($features, $values);
 
-					//continue;
 				}
 				if ($columnOrTable == 'building_paintwork_statuses'){
 					$statusId = array_get($values, 'paintwork_status_id');
@@ -155,26 +147,6 @@ class ExampleBuildingService {
 					}
 
 					$buildingPaintworkStatus = new BuildingPaintworkStatus($values);
-
-					/*
-					$buildingPaintworkStatus->last_painted_year = array_get($values, 'last_painted_year');
-
-					$statusId = array_get($values, 'paintwork_status_id');
-					if (!is_null($statusId)){
-						$status = PaintworkStatus::find($statusId);
-						if ($status instanceof PaintworkStatus){
-							$buildingPaintworkStatus->paintworkStatus()->associate($status);
-						}
-					}
-
-					$woodRotStatusId = array_get($values, 'wood_rot_status_id');
-					if (!is_null($woodRotStatusId)){
-						$woodRotStatus = WoodRotStatus::find($woodRotStatusId);
-						if ($woodRotStatus instanceof WoodRotStatus){
-							$buildingPaintworkStatus->woodRotStatus()->associate($woodRotStatus);
-						}
-					}
-					*/
 
 					$buildingPaintworkStatus->inputSource()->associate($inputSource);
 					$buildingPaintworkStatus->building()->associate($userBuilding);
@@ -194,7 +166,6 @@ class ExampleBuildingService {
 
 						self::log("Saving building insulated glazing " . json_encode($buildingInsulatedGlazing->toArray()));
 					}
-					//continue;
 				}
 				if ($columnOrTable == 'building_roof_types'){
 					foreach($values as $roofTypeId => $buildingRoofTypeData) {
@@ -207,12 +178,7 @@ class ExampleBuildingService {
 
 						self::log("Saving building rooftype " . json_encode($buildingRoofType->toArray()));
 					}
-
-					//continue;
 				}
-
-				//self::log("unknown element: " . $columnOrTable);
-
 
 			}
 		}
@@ -229,24 +195,10 @@ class ExampleBuildingService {
 
 	}
 
-	public static function clearBuildingFromInputSource(Building $building, InputSource $inputSource){
-		self::log("Clearing data from input source '" . $inputSource->name . "'");
-
-		// Delete all building elements
-		$building->buildingElements()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
-		$building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
-		$building->buildingServices()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
-		$building->currentInsulatedGlazing()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
-		$building->roofTypes()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
-		$building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
-
-		return true;
-	}
-
 	public static function clearExampleBuilding(Building $building){
 		$inputSource = InputSource::findByShort('example-building');
 
-		return self::clearBuildingFromInputSource($building, $inputSource);
+		return BuildingDataService::clearBuildingFromInputSource($building, $inputSource);
 	}
 
 	protected static function log($text){

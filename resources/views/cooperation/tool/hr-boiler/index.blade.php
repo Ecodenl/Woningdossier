@@ -150,7 +150,7 @@
                         </div>
                     </div>
                     <div class="col-sm-12">
-                        <?php $coachInput = \App\Models\BuildingService::forMe()->where('service_id', $boiler->id)->coachInput()->first(); ?>
+                        <?php $coachInput = \App\Models\BuildingService::getCoachInput($installedBoilerForMe); ?>
                         @if($coachInput instanceOf \App\Models\BuildingService && is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra))
                             @component('cooperation.tool.components.alert')
                                 {{$coachInput->extra['comment']}}

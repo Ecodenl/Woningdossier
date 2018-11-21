@@ -274,9 +274,9 @@
                     <div class="col-sm-12">
                         <?php
                             $coachInputSource = App\Models\InputSource::findByShort('coach');
-                            $coachInput = $buildingElementsForMe->where('input_source_id', $coachInputSource->id)->where('element_id', $crawlspace->id)->first()
+                            $coachInput = \App\Models\BuildingElement::getCoachInput($buildingElementsForMe);
                         ?>
-                        @if(!is_null($coachInput) && $coachInput->hasCoachInputSource() && array_key_exists('comment', $coachInput->extra))
+                        @if(($coachInput instanceof \App\Models\BuildingElement && is_array($coachInput->extra)) && array_key_exists('comment', $coachInput->extra))
                             @component('cooperation.tool.components.alert')
                                 {{$coachInput->extra['comment']}}
                             @endcomponent

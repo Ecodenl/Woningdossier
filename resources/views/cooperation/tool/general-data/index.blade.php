@@ -1121,8 +1121,6 @@
                 $('#example_building_id option').trigger('change');
             });
 
-            // todo end
-
             var previous_eb = $("select#example_building_id").val();
 
             $("select#example_building_id").on('focus', function () {
@@ -1194,7 +1192,7 @@
             });
 
             $(document).change('#hr-boiler', function () {
-                if (parseInt($('#hr-boiler').val()) ==== 13) {
+                if (parseInt($('#hr-boiler').val()) === 13) {
                     // hide the input for the type of boiler
                     //$('#boiler').parent().hide();
                     // Hide the interest input

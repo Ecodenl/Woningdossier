@@ -982,22 +982,6 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">{{\App\Helpers\Translation::translate('general.download.title')}}</div>
-                            <div class="panel-body">
-                                <ol>
-                                    <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Algemene_gegevens.pdf"; ?>
-                                    <li><a download=""
-                                           href="{{ asset($helpFile) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile))))) }}</a>
-                                    </li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
                         <hr>
                         <div class="form-group add-space">
                             <div class="">

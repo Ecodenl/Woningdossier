@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Building.
@@ -53,10 +55,51 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Building extends Model
 {
-    public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid',
+    use SoftDeletes;
+
+    protected $dates = [
+        'deleted_at'
     ];
 
+    public $fillable = [
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id',
+    ];
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($building) {
+            $building->user_id = null;
+            $building->country_code = 'nl';
+            $building->example_building_id = null;
+            $building->primary = false;
+            $building->save();
+
+            // delete the services from a building
+            $building->buildingServices()->delete();
+            // delete the elements from a building
+            $building->buildingElements()->delete();
+            // remove the features from a building
+            $building->buildingFeatures()->delete();
+            // remove the roof types from a building
+            $building->roofTypes()->delete();
+            // remove the heater from a building
+            $building->heater()->delete();
+            // remove the solar panels from a building
+            $building->pvPanels()->delete();
+            // remove the insulated glazings from a building
+            $building->currentInsulatedGlazing()->delete();
+            // remove the paintwork from a building
+            $building->currentPaintworkStatus()->delete();
+            // remove the user usage from a building
+            $building->userUsage()->delete();
+        });
+    }
+
+    public function buildingNotes()
+    {
+        return $this->hasMany('App\Models\BuildingNotes');
+	}
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -162,6 +205,22 @@ class Building extends Model
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->first(['building_elements.*']);
     }
+
+    /**
+     * Almost the same as getBuildingElement($short) except this returns all the input
+     *
+     * @param $query
+     * @param $short
+     * @return mixed
+     */
+    public function getBuildingElementsForMe($short)
+    {
+        return $this->buildingElements()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->select(['building_elements.*'])->get();
+    }
+
 
     /**
      * @param string $short

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\RoofInsulationCalculator;
@@ -24,6 +25,7 @@ use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -47,19 +49,20 @@ class RoofInsulationController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
         $typeIds = [5];
 
         /** var Building $building */
-        $building = \Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         /** var BuildingFeature $features */
         $features = $building->buildingFeatures;
+        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
+
         $roofTypes = RoofType::all();
         $steps = Step::orderBy('order')->get();
         $currentRoofTypes = $building->roofTypes;
+        $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
+
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $heatings = BuildingHeating::all();
@@ -68,8 +71,13 @@ class RoofInsulationController extends Controller
         $currentCategorizedRoofTypes = [
             'flat' => [],
             'pitched' => [],
-//            'no' => [],
         ];
+
+        $currentCategorizedRoofTypesForMe = [
+            'flat' => [],
+            'pitched' => [],
+        ];
+
         if ($currentRoofTypes instanceof Collection) {
             /** var BuildingRoofType $currentRoofType */
             foreach ($currentRoofTypes as $currentRoofType) {
@@ -78,12 +86,20 @@ class RoofInsulationController extends Controller
                     $currentCategorizedRoofTypes[$cat] = $currentRoofType->toArray();
                 }
             }
+
+            foreach ($currentRoofTypesForMe as $currentRoofTypeForMe) {
+                $cat = $this->getRoofTypeCategory($currentRoofTypeForMe->roofType);
+                if (! empty($cat)) {
+                    // we do not want this to be an array, otherwise we would have to add additional functionality to the input group component.
+                    $currentCategorizedRoofTypesForMe[$cat][] = $currentRoofTypeForMe;
+                }
+            }
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps', 'typeIds',
-             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation',
-             'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
+            'features', 'roofTypes', 'steps', 'typeIds', 'buildingFeaturesForMe',
+             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
+             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
 
     protected function getRoofTypeCategory(RoofType $roofType)
@@ -134,6 +150,8 @@ class RoofInsulationController extends Controller
         $results = $results->getData(true);
 
         $result = [];
+
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
 
         // Remove old results
         UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
@@ -193,7 +211,7 @@ class RoofInsulationController extends Controller
                     //}
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();
@@ -211,7 +229,7 @@ class RoofInsulationController extends Controller
                     $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -233,7 +251,7 @@ class RoofInsulationController extends Controller
                         $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                         $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();
@@ -254,7 +272,7 @@ class RoofInsulationController extends Controller
                     $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -265,12 +283,12 @@ class RoofInsulationController extends Controller
 
     public function calculate(Request $request)
     {
+
         $result = [];
-        /**
-         * var Building $building.
-         */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+
+        /** @var Building $building */
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $roofTypes = $request->input('building_roof_types', []);
         foreach ($roofTypes as $i => $details) {
@@ -386,19 +404,21 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
-        $user = Auth::user();
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
 
-        // Get the user his building / house
-        $building = $user->buildings()->first();
         // the selected roof types for the current situation
         $roofTypes = $request->input('building_roof_types', []);
 
         // remove the old answers
-        if (BuildingRoofType::where('building_id', $building->id)->count() > 0) {
-            BuildingRoofType::where('building_id', $building->id)->delete();
+        if (BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', HoomdossierSession::getInputSource())->count() > 0) {
+            BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', HoomdossierSession::getInputSource())->delete();
         }
 
         foreach ($roofTypes as $i => $details) {
@@ -423,14 +443,21 @@ class RoofInsulationController extends Controller
                     $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
                     $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
 
-                    BuildingFeature::where('building_id', $building->id)->update([
-                        'roof_type_id' => $request->input('building_features.roof_type_id'),
-                    ]);
+                    BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+                        [
+                            'building_id' => $buildingId,
+                            'input_source_id' => $inputSourceId,
+                        ],
+                        [
+                            'roof_type_id' => $request->input('building_features.roof_type_id'),
+                        ]
+                    );
 
                     // insert the new ones
-                    BuildingRoofType::updateOrCreate(
+                    BuildingRoofType::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
-                            'building_id' => $building->id,
+                            'building_id' => $buildingId,
+                            'input_source_id' => $inputSourceId,
                             'roof_type_id' => $roofType->id,
                         ],
                         [
@@ -454,7 +481,7 @@ class RoofInsulationController extends Controller
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }

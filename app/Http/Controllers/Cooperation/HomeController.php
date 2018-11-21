@@ -1,7 +1,9 @@
 <?php
 
+
 namespace App\Http\Controllers\Cooperation;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 
 class HomeController extends Controller

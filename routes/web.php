@@ -26,12 +26,12 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 		// Login, forgot password etc.
 		Auth::routes();
 
-
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
 			Route::get('help', 'HelpController@index')->name('help.index');
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
+			Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function () {
                 Route::resource('settings', 'SettingsController', ['only' => ['index', 'store']]);
@@ -139,8 +139,18 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 			Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
 
-			    Route::get('buildings', 'BuildingController@index')->name('buildings.index');
-			    Route::get('buildings/{id}', 'BuildingController@fillForUser')->name('buildings.fill-for-user');
+			    Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
+			        Route::get('', 'BuildingController@index')->name('index');
+			        Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
+			        Route::post('edit', 'BuildingController@update')->name('update');
+			        Route::get('{id}', 'BuildingController@fillForUser')->name('fill-for-user');
+			        Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
+
+			        Route::group(['prefix' => 'details', 'as' => 'details.'], function () {
+			            Route::get('{building_id}', 'BuildingDetailsController@index')->name('index');
+			            Route::post('', 'BuildingDetailsController@store')->name('store');
+                    });
+                });
 
                 // needs to be the last route due to the param
 			    Route::get('{role_name?}', 'CoachController@index')->name('index');

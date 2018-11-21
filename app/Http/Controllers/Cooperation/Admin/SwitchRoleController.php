@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
+use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,8 +14,8 @@ use App\Http\Controllers\Controller;
 class SwitchRoleController extends Controller
 {
 
-	public function switchRole($cooperation, Request $request, $newRole){
-
+	public function switchRole($cooperation, Request $request, $newRole)
+    {
 		// check if the targeted role exists
 		if (!Role::where('name', $newRole)->exists()){
 			\Log::debug("Role '$newRole' does not exist");
@@ -20,6 +23,9 @@ class SwitchRoleController extends Controller
 		}
 		/** @var User $user */
 		$user = $request->user();
+		/** @var Building $building */
+		$building = $user->buildings()->first();
+
 		$role = Role::where('name', $newRole)->first();
 
 		if (!$user || !$user->hasRole($role)){
@@ -28,6 +34,17 @@ class SwitchRoleController extends Controller
 		}
 
 		$request->session()->put('role_id', $role->id);
+
+		// set the Auth user sessions
+        HoomdossierSession::setRole($role);
+        if ($role->inputSource instanceof InputSource) {
+	        HoomdossierSession::setInputSource( $role->inputSource );
+	        // For now, we will set the input source value to input source.
+	        // The user can later on change this.
+	        HoomdossierSession::setInputSourceValue($role->inputSource);
+        }
+
+        HoomdossierSession::setBuilding($building);
 
 		return redirect(RoleHelper::getUrlByRole($role));
 	}

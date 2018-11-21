@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -34,6 +36,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingRoofType extends Model
 {
+
+    use GetValueTrait;
+    use GetMyValuesTrait;
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -44,7 +50,7 @@ class BuildingRoofType extends Model
     ];
 
     protected $fillable = [
-        'building_id', 'roof_type_id', 'element_value_id', 'roof_surface', 'building_heating_id', 'extra', 'insulation_roof_surface',
+        'building_id', 'roof_type_id', 'input_source_id', 'element_value_id', 'roof_surface', 'building_heating_id', 'extra', 'insulation_roof_surface',
     ];
 
     /**

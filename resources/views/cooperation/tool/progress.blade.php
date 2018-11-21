@@ -50,7 +50,12 @@
             {{--@else--}}
             {{--@endif--}}
 
-        <li class="list-inline-item @if(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index') active @elseif(Auth::user()->hasCompleted($step)) done @endif
+        <li class="list-inline-item
+            @if(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index')
+                active
+            @elseif(Auth::user()->hasCompleted($step))
+                done
+            @endif
 
             @if($step->slug != "general-data" && Route::currentRouteName() != 'cooperation.tool.' . $step->slug . '.index')
                 @foreach ($stepInterests as $interestedInType => $interestedInNames)
@@ -62,7 +67,7 @@
                 @endforeach
             @endif ">
             <a
-                @if($step->slug == "general-data")
+            @if($step->slug == "general-data")
                 href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
                 <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}" alt="{{ $step->name }}" class="img-circle"/>
                 @else

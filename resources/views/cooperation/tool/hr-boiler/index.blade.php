@@ -13,11 +13,11 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.current-gas-usage')</label>
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                             <span class="input-group-addon">m<sup>3</sup></span>
                             <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">
-                        </div>
-
+                        @endcomponent
                         @if ($errors->has('habit.gas_usage'))
                             <span class="help-block">
                                     <strong>{{ $errors->first('habit.gas_usage') }}</strong>
@@ -28,10 +28,11 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.resident_count') ? ' has-error' : '' }}">
                         <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.resident-count')</label>
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'resident_count'])
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('habit.resident_count'))
                             <span class="help-block">
@@ -50,11 +51,14 @@
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.service_value_id') ? ' has-error' : '' }}">
                             <label for="high_efficiency_boiler_id" class=" control-label"><i data-toggle="collapse" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.boiler.boiler-type') </label>
 
-                            <select id="high_efficiency_boiler_id" class="form-control" name="building_services[{{ $boiler->id  }}][service_value_id]">
-                                @foreach($boilerTypes as $boilerType)
-                                    <option @if(old('building_services.' . $boiler->id . '.service_value_id') == $boilerType->id || ($installedBoiler instanceof \App\Models\BuildingService && $installedBoiler->service_value_id == $boilerType->id)) selected @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>
-                                @endforeach
-                            </select>
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'service_value_id'])
+                                <select id="high_efficiency_boiler_id" class="form-control" name="building_services[{{ $boiler->id  }}][service_value_id]">
+                                    @foreach($boilerTypes as $boilerType)
+                                        <option @if(old('building_services.' . $boiler->id . '.service_value_id') == $boilerType->id || ($installedBoiler instanceof \App\Models\BuildingService && $installedBoiler->service_value_id == $boilerType->id)) selected @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
 
                             <div id="high-efficiency-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
@@ -81,7 +85,10 @@
                                 $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('date', $installedBoiler->extra)) ? $installedBoiler->extra['date'] : '';
                             ?>
 
-                            <input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'extra.date'])
+                                <input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">
+                            @endcomponent
 
                             <div id="high-efficiency-boiler-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And i would like to have it to...
@@ -102,6 +109,14 @@
                             <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment') </label>
                             <?php
                                 $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
+                                if (Auth::user()->hasRole('resident')) {
+                                    $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
+                                } elseif (Auth::user()->hasRole('coach')) {
+                                    
+                                    $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
+                                    
+                                    $default = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';
+                                }
                             ?>
 
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
@@ -191,7 +206,23 @@
             </div>
         </div>
 
+        @if(\App\Models\BuildingService::hasCoachInputSource($installedBoilerForMe) && Auth::user()->hasRole('resident'))
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                        <?php
+                            $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
+                            $comment = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';
+                        ?>
+                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                        </label>
 
+                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <div class="row">
             <div class="col-md-12">

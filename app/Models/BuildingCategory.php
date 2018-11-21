@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**

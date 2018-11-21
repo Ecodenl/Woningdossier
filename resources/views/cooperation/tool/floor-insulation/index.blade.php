@@ -363,7 +363,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">@lang('general.download.title')}}</div>
+                        <div class="panel-heading">@lang('default.buttons.download')</div>
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a></li>

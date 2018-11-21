@@ -432,8 +432,8 @@ return [
                 ],
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
-                'm2' => 'm<sup>2</sup>',
-                'total-windows' => 'Aantal ramen',
+                'm2' => 'Hoeveel m<sup>2</sup> glas wilt u vervangen?',
+                'total-windows' => 'Aantal te vervangen ruiten',
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 
@@ -551,7 +551,7 @@ return [
 			],
 			'solar-panels' => [
 				'title' => 'Zonnepanelen',
-
+                'amount' => 'stuks',
 				'peak-power' => 'Piekvermogen per paneel',
 				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
 				'number' => 'Hoeveel zonnepanelen moeten er komen?',

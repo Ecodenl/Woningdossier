@@ -35,6 +35,8 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use App\Services\ExampleBuildingService;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -64,7 +66,7 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildings = ExampleBuilding::forMyCooperation()->orderBy('order')->get();
+        $exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows',
@@ -106,10 +108,53 @@ class GeneralDataController extends Controller
         ));
     }
 
+    // todo
+	/**
+	 * return the example buildings based on the building types
+	 *
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function exampleBuildingType(Request $request)
+	{
+		$buildingTypeId = $request->get('building_type_id', '');
+		$exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
+		// loop through all the example buildings so we can add the "real name" to the examplebuilding
+		foreach ($exampleBuildings as $exampleBuilding) {
+			$exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
+		}
+		return response()->json($exampleBuildings);
+	}
+	// todo end
+
+    public function applyExampleBuilding(Request $request)
+    {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
+	    $exampleBuildingId = $request->get('example_building_id', null);
+	    $buildYear = $request->get('build_year', null);
+	    if (!is_null($exampleBuildingId) && !is_null($buildYear)){
+		    $exampleBuildingId = $request->get('example_building_id', null);
+		    if (! is_null($exampleBuildingId)) {
+			    $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id',
+				    $exampleBuildingId)->first();
+			    if ($exampleBuilding instanceof ExampleBuilding) {
+				    $building->exampleBuilding()->associate($exampleBuilding);
+				    $building->save();
+				    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+				    return response()->json();
+			    }
+		    }
+	    }
+	    // Something went wrong!
+	    return response()->json([], 500);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param FormRequest $request
      *
      * @return \Illuminate\Http\Response
      */

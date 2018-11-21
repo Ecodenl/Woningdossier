@@ -8,44 +8,6 @@
           action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
-            <div id="example-building" class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                    <label for="example_building_id" class=" control-label">
-                        <i data-toggle="collapse" data-target="#example-building-info"
-                           class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                        {{\App\Helpers\Translation::translate('general-data.building-type.example-building-type.title')}}
-                    </label>
-                    <select id="example_building_id" class="form-control" name="example_building_id">
-                        @foreach($exampleBuildings as $exampleBuilding)
-                            <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
-                                    selected="selected"
-                                    @elseif($exampleBuilding->id == old('example_building_id'))
-                                    selected="selected"
-                                    @endif
-                                    value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
-                        @endforeach
-                        <option value=""
-                                @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >{{\App\Helpers\Translation::translate('general-data.example-building.no-match.title')}}</option>
-                    </select>
-
-                    @if ($errors->has('example_building_id'))
-                        <span class="help-block">
-                    <strong>{{ $errors->first('example_building_id') }}</strong>
-                </span>
-                    @endif
-                </div>
-
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
-                            {{\App\Helpers\Translation::translate('general-data.building-type.example-building-type.help')}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
             <div id="building-type" class="col-md-12">
                 <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('general-data.building-type.title.title')}} </h4>
 
@@ -114,6 +76,41 @@
                                 <strong>{{ $errors->first('build_year') }}</strong>
                             </span>
                             @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="example-building" class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
+                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
+                            <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
+                                @foreach($exampleBuildings as $exampleBuilding)
+                                    <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
+                                            selected="selected"
+                                            @elseif($exampleBuilding->id == old('example_building_id'))
+                                            selected="selected"
+                                            @elseif ($building->example_building_id == $exampleBuilding->id)
+                                                    selected="selected"
+                                            @endif
+                                            value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
+                                @endforeach
+                                <option value="" @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                            </select>
+
+                            @if ($errors->has('example_building_id'))
+                                <span class="help-block">
+                    <strong>{{ $errors->first('example_building_id') }}</strong>
+                </span>
+                            @endif
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group add-space">
+                                <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
+                                    I would like to have some help full information right here!
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1092,7 +1089,81 @@
                 }
             });
 
-            // Check if the house ventialtion is mechanic
+            // todo
+
+            $('#building_type_id').change( function() {
+                var buildingTypeId = $('#building_type_id').val();
+                $.ajax({
+                    type: "GET",
+                    url: '{{route('cooperation.tool.general-data.example-building-type', ['cooperation' => $cooperation])}}',
+                    data: {
+                        building_type_id: buildingTypeId
+                    },
+                    success: function (data) {
+                        // try to remove the old options wheter there is new information or not
+                        $('#example_building_id option').remove();
+                        // add a new empty option
+                        $('#example_building_id').append($("<option></option>").attr('selected', true).text("---"));
+                        if (data.length) {
+                            // remove the old options so we don't get any duplicates or false options
+                            $.each(data, function(index, exampleBuilding) {
+                                var exampleBuildingName = exampleBuilding.real_name;
+                                var exampleBuildingId = exampleBuilding.id;
+                                $('#example_building_id').append($("<option></option>").attr("value", exampleBuildingId).text(exampleBuildingName));
+                            });
+                        } else {
+                        }
+                    }
+                });
+            });
+            // if the user changes the build year trigger the example building cause different years have different content
+            $('#build_year').change(function () {
+                $('#example_building_id option').trigger('change');
+            });
+
+            // todo end
+
+            var previous_eb = $("select#example_building_id").val();
+
+            $("select#example_building_id").on('focus', function () {
+                // Store the current value on focus and on change
+                previous_eb = this.value;
+            }).change(function() {
+                // Do something with the previous value after the change
+                var buildYear = $("input[name='build_year']").val();
+                if (buildYear === ""){
+                    @if(App::environment('local'))
+                    console.log("Can't select example building: build year is empty");
+                    @endif
+                    $(this).val(previous_eb);
+                }
+                else {
+                    if (this.value !== previous_eb ){
+                        if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                            @if(App::environment('local'))
+                            console.log("Let's save it. EB id: " + this.value + " build year: " + buildYear);
+                            @endif
+
+                            $.ajax({
+                                type: "POST",
+                                url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                                data: { example_building_id: this.value, build_year: buildYear },
+                                success: function(data){
+                                    location.reload();
+                                }
+                            });
+
+
+                            // Make sure the previous value is updated
+                            previous_eb = this.value;
+                        } else {
+                            $(this).val(previous_eb);
+                        }
+                    }
+                }
+            });
+
+            // Check if the house ventilation is mechanic
             $(document).change('#house-ventilation', function () {
 
                 // Housse ventilation
@@ -1123,7 +1194,7 @@
             });
 
             $(document).change('#hr-boiler', function () {
-                if (parseInt($('#hr-boiler').val()) === 13) {
+                if (parseInt($('#hr-boiler').val()) ==== 13) {
                     // hide the input for the type of boiler
                     //$('#boiler').parent().hide();
                     // Hide the interest input

@@ -29,9 +29,15 @@ class RoleHelper
 			        break;
 		        case 'superuser':
 		        	// for now: fall through
+			        return route( 'cooperation.admin.cooperation.cooperation-admin.index',
+				        [ 'role_name' => $roleName ] );
+			        break;
 			        //break;
 		        case 'super-admin':
 		            // for now: fall through
+			        return route( 'cooperation.admin.cooperation.cooperation-admin.index',
+				        [ 'role_name' => $roleName ] );
+			        break;
 			        //break;
 		        default:
 			        return route('cooperation.tool.index');

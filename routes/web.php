@@ -94,6 +94,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 //            	Route::get('remove-coach-input', 'CoachInputController@remove')->name('coach-input.remove');
 
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                // todo
+	            Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
+	            // todo end
+                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
 
 				Route::group(['middleware' => 'filled-step:general-data'], function(){
 
@@ -196,7 +200,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 					Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
-				Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
+				Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
 
                     Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');

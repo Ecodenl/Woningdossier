@@ -753,9 +753,10 @@ return [
 				'current-energy-label'     => 'Wat is het huidige energielabel?'
 			],
 
-			'example-building' => [
-				'no-match' => 'Er is geen passende voorbeeldwoning',
-			],
+				'example-building' => [
+					'no-match' => 'Er is geen passende voorbeeldwoning',
+					'apply-are-you-sure' => 'Weet u zeker dat u deze voorbeeldwoning wilt toepassen?',
+				],
 
 			'energy-saving-measures' => [
 				'title'                     => 'Wat is de huidige staat van isolatie van uw woning en in welke maatregelen heeft u interesse?',

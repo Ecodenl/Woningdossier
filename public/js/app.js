@@ -102,6 +102,12 @@ __webpack_require__(2);
 //    el: '#app'
 //});
 
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 var baseUrl = window.location.origin;
 var fillAddressUrl = baseUrl + "/fill-address";
 

@@ -11,7 +11,12 @@ use App\Http\Controllers\Controller;
 class CoachInputController extends Controller
 {
 
-    protected function copyCoachInputWithBuildingAndInputSourceWithAdditionalWhereColumn($tablesWithAdditionalWhereColumn)
+    /**
+     * Copy the coach input to the resident from tables that have a building, input source id and a additional where column to query on
+     *
+     * @param array $tablesWithAdditionalWhereColumn
+     */
+    protected function copyCoachInputWithBuildingAndInputSourceWithAdditionalWhereColumn(array $tablesWithAdditionalWhereColumn)
     {
         // input sources
         $coachInputSource = InputSource::findByShort('coach');
@@ -48,6 +53,11 @@ class CoachInputController extends Controller
         }
     }
 
+    /**
+     * Copy the input of the coach to the resident from tables that have a building and input source id
+     *
+     * @param array $tablesWithBuildingAndInputSourceId
+     */
     protected function copyCoachInputWithBuildingAndInputSource(array $tablesWithBuildingAndInputSourceId)
     {
         // input sources
@@ -84,6 +94,11 @@ class CoachInputController extends Controller
         }
     }
 
+    /**
+     * Copy the coach input to the resident from tables that have a user and input source id
+     *
+     * @param array $tablesWithUserIdAndInputSourceId
+     */
     protected function copyCoachInputWithUserAndInputSource(array $tablesWithUserIdAndInputSourceId)
     {
         // input sources
@@ -111,6 +126,11 @@ class CoachInputController extends Controller
         }
     }
 
+    /**
+     * Copy the coach input to the resident from tables that have a user and input source id and additional columns to query on
+     *
+     * @param array $tablesWithUserIdAndInputSourceIdWithAdditionalWhere
+     */
     protected function copyCoachInputWithUserAndInputSourceWithAdditionalWhereColumns(array $tablesWithUserIdAndInputSourceIdWithAdditionalWhere)
     {
         // input sources

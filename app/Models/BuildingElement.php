@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,6 +31,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingElement extends Model
 {
+    use GetValueTrait;
+    use GetMyValuesTrait;
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -38,7 +43,7 @@ class BuildingElement extends Model
         'extra' => 'array',
     ];
 
-    protected $fillable = ['building_id', 'element_id', 'element_value_id', 'extra'];
+    protected $fillable = ['building_id', 'input_source_id', 'element_id', 'element_value_id', 'extra'];
 
     public function building()
     {

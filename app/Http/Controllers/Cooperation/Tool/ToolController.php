@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
-use Illuminate\Http\Request;
+use App\Models\Translation;
+use App\Services\CsvExportService;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Ramsey\Uuid\Uuid;
 
 class ToolController extends Controller
 {
@@ -28,4 +32,5 @@ class ToolController extends Controller
 
         return redirect(route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]));
     }
+
 }

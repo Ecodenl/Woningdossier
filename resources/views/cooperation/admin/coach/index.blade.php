@@ -1,3 +1,4 @@
+{{-- // do not delete yet --}}
 @extends('cooperation.admin.coach.layouts.app')
 
 @section('coach_content')
@@ -8,7 +9,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <h4>@lang('woningdossier.cooperation.admin.coach.index.text')</h4>
-                    <table class="table table-responsive table-condensed">
+                    <table id="table" class="table table-responsive table-condensed">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.coach.index.table.columns.city')</th>
@@ -32,5 +33,6 @@
         </div>
     </div>
 @endsection
+
 
 

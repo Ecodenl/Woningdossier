@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-
 use Spatie\Permission\Models\Role;
 
 class RoleHelper
@@ -20,16 +19,13 @@ class RoleHelper
         if (\Auth::check() && \Auth::user()->roles()->where('name', $roleName)->first() instanceof Role) {
         	switch($roleName) {
 		        case 'cooperation-admin':
-			        return route( 'cooperation.admin.cooperation.cooperation-admin.index',
-				        [ 'role_name' => $roleName ] );
+			        return route( 'cooperation.admin.cooperation.cooperation-admin.index');
 			        break;
 		        case 'coordinator':
-			        return route( 'cooperation.admin.cooperation.coordinator.index',
-				        [ 'role_name' => $roleName ] );
+			        return route( 'cooperation.admin.cooperation.coordinator.index');
 			        break;
 		        case 'coach':
-			        return route( 'cooperation.admin.coach.index',
-				        [ 'role_name' => $roleName ] );
+			        return route( 'cooperation.admin.coach.index');
 			        break;
 		        case 'superuser':
 		        	// for now: fall through

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Closure;
 use Illuminate\Support\Facades\URL;
@@ -28,10 +29,10 @@ class CooperationMiddleware
         }
 
         \Log::debug('Session: cooperation -> '.$cooperation->id.' ('.$cooperation->slug.')');
-        \Session::put('cooperation', $cooperation->id);
+        HoomdossierSession::setCooperation($cooperation);
 
         // Set as default URL parameter
-        if ($request->session()->has('cooperation')) {
+        if (HoomdossierSession::hasCooperation()) {
             //$cooperation = Cooperation::find($request->session()->get('cooperation'));
             if ($cooperation instanceof Cooperation) {
                 \Log::debug('Setting default cooperation for URL -> '.$cooperation->id.' ('.$cooperation->slug.')');

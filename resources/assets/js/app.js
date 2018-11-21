@@ -21,6 +21,56 @@ require('./bootstrap');
 //    el: '#app'
 //});
 
+var baseUrl = window.location.origin;
+var fillAddressUrl = baseUrl + "/fill-address";
+
+$(document).ready(function () {
+
+    $('.input-source-group').on('click', 'li.change-input-value', function (event) {
+
+        // so it will not jump to the top of the page.
+        event.preventDefault();
+
+        var dataInputValue = $(this).data('input-value');
+
+        // find the selected option
+        var inputSourceGroup = $(this).parent().parent().parent();
+        var inputType = inputSourceGroup.find('input').attr('type');
+
+        if (inputType === undefined){
+            // check if it's a select
+            inputType = inputSourceGroup.find('select').length === 1 ? 'select' : undefined;
+        }
+
+        // check if the input is a "input" and not a select
+        if (typeof inputType !== undefined) {
+
+            switch (inputType) {
+                case "text":
+                    inputSourceGroup.find('input[type=text]').val(dataInputValue);
+                    break;
+                case "radio":
+                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('checked');
+                    inputSourceGroup.find('input[type=radio][value='+dataInputValue+']').attr('checked', true);
+                    break;
+                case "checkbox":
+                    inputSourceGroup.find('input[type=checkbox]:checked').removeAttr('selected');
+                    inputSourceGroup.find('input[value='+dataInputValue+']').attr('selected', true);
+                    break;
+                case "select":
+                    inputSourceGroup.find('select').val(dataInputValue);
+                    break;
+                default:
+                    //inputSourceGroup.find('select option:selected').removeAttr('selected');
+                    //inputSourceGroup.find('select option[value='+dataInputValue+']').attr('selected', true);
+                    break;
+            }
+        }
+    });
+
+
+});
+
 $("#register #street").focusin(
     function(){
         var postalCode = $("#register #postal_code");
@@ -32,7 +82,7 @@ $("#register #street").focusin(
 
         $.ajax({
             method: 'get',
-            url: 'fill-address',
+            url: fillAddressUrl,
             data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
             beforeSend: function(){
                 street.addClass("loading");
@@ -48,6 +98,9 @@ $("#register #street").focusin(
                 houseNumberExtension.val(address.house_number_extension);
                 addressId.val(address.id);
                 city.val(address.city);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                console.log(xhr, textStatus, errorThrown);
             },
             dataType: 'json'
         });

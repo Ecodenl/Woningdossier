@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\MyAccount;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
+use App\Services\UserService;
 
 class SettingsController extends Controller
 {
@@ -92,5 +93,10 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
+        $user = \Auth::user();
+
+        UserService::deleteUser($user);
+
+        return redirect(url(''));
     }
 }

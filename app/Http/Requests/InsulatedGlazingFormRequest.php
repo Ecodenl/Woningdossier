@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingFormRequest extends FormRequest
 {
+    use ValidatorTrait;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -32,7 +33,7 @@ class InsulatedGlazingFormRequest extends FormRequest
 
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
-            'building_paintwork_statuses.last_painted_year' => 'required|numeric|between:1900,'.$max,
+            'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1900,'.$max,
         ];
 
         return $rules;

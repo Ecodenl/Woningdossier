@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\UserCreated;
 use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -106,6 +107,16 @@ class User extends Authenticatable
         return $this->hasOne(UserEnergyHabit::class);
     }
 
+    /**
+     * Return all the building notes a user has created
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingNotes()
+    {
+        return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
+    }
+
     public function progress()
     {
         return $this->hasMany(UserProgress::class);
@@ -138,6 +149,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Cooperation::class);
     }
+
 
     /**
      * Returns the interests off a user.
@@ -283,6 +295,20 @@ class User extends Authenticatable
     public function buildingPermissions()
     {
         return $this->hasMany('App\Models\BuildingPermission');
+	}
+
+    /**
+     * Check if a user had permissions for a specific building
+     *
+     * @param $buildingId
+     * @return bool
+     */
+    public function hasBuildingPermission($buildingId) : bool
+    {
+        if ($this->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
+            return true;
+        }
+        return false;
 	}
 
     public function isBuildingOwner(Building $building)

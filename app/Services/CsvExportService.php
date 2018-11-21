@@ -18,6 +18,7 @@ class CsvExportService
 
         // write the CSV file
         $callback = function () use ($headers, $contents) {
+
             $file = fopen('php://output', 'w');
             fputcsv($file, $headers, ';');
 

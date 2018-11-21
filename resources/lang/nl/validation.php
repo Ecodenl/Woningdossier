@@ -106,6 +106,7 @@ return [
         'alpha_space' => 'Het veld :attribute mag alleen letters en spaties bevatten.',
         'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
         'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
+        'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
@@ -132,5 +133,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+    	'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
+	    'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
+    ],
 ];

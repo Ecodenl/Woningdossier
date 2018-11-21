@@ -68,8 +68,8 @@ class FloorInsulationController extends Controller
 
         $buildingFeatures = $building->buildingFeatures;
         $buildingFeaturesForMe = BuildingFeature::forMe()->get();
-
         $steps = Step::orderBy('order')->get();
+
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',

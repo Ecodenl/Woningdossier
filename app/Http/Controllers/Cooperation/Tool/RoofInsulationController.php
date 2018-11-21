@@ -96,6 +96,8 @@ class RoofInsulationController extends Controller
             }
         }
 
+
+
         return view('cooperation.tool.roof-insulation.index', compact(
             'features', 'roofTypes', 'steps', 'typeIds', 'buildingFeaturesForMe',
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
@@ -329,7 +331,7 @@ class RoofInsulationController extends Controller
             $surface = $roofTypes[$cat]['insulation_roof_surface'] ?? 0;
             $heating = null;
             // should take the bitumen field
-            $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year;
+            $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
 
             // default, changes only for roof tiles effect
             $factor = 1;

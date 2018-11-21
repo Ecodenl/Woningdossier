@@ -7,14 +7,14 @@
             } else {
                 $typeName = \App\Models\Element::find($typeId)->name;
             }
-            
+
             $userInterestsForMe = \App\Models\UserInterest::forMe()->get();
         ?>
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group add-space">
                     <label for="interest_{{ $type }}_{{ $typeId }}" class="control-label">
-                        @lang('woningdossier.cooperation.tool.change-interest', ['item' => $typeName])
+                        {{\App\Helpers\Translation::translate('general.change-interested.title', ['item' => $typeName])}}
                     </label>
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', $type)->where('interested_in_id', $typeId),  'userInputColumn' => 'interest_id'])

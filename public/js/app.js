@@ -68,7 +68,10 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(8);
+__webpack_require__(8);
+__webpack_require__(9);
+__webpack_require__(10);
+module.exports = __webpack_require__(11);
 
 
 /***/ }),
@@ -99,6 +102,9 @@ __webpack_require__(2);
 //    el: '#app'
 //});
 
+var baseUrl = window.location.origin;
+var fillAddressUrl = baseUrl + "/fill-address";
+
 $(document).ready(function () {
 
     $('.input-source-group').on('click', 'li.change-input-value', function (event) {
@@ -119,13 +125,14 @@ $(document).ready(function () {
 
         // check if the input is a "input" and not a select
         if ((typeof inputType === 'undefined' ? 'undefined' : _typeof(inputType)) !== undefined) {
+
             switch (inputType) {
                 case "text":
                     inputSourceGroup.find('input[type=text]').val(dataInputValue);
                     break;
                 case "radio":
-                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('selected');
-                    inputSourceGroup.find('input[value=' + dataInputValue + ']').attr('selected', true);
+                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('checked');
+                    inputSourceGroup.find('input[type=radio][value=' + dataInputValue + ']').attr('checked', true);
                     break;
                 case "checkbox":
                     inputSourceGroup.find('input[type=checkbox]:checked').removeAttr('selected');
@@ -139,8 +146,6 @@ $(document).ready(function () {
                     //inputSourceGroup.find('select option[value='+dataInputValue+']').attr('selected', true);
                     break;
             }
-
-            $('form').find('*').filter(':input:visible:first').trigger('change');
         }
     });
 });
@@ -155,7 +160,7 @@ $("#register #street").focusin(function () {
 
     $.ajax({
         method: 'get',
-        url: 'fill-address',
+        url: fillAddressUrl,
         data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
         beforeSend: function beforeSend() {
             street.addClass("loading");
@@ -171,6 +176,9 @@ $("#register #street").focusin(function () {
             houseNumberExtension.val(address.house_number_extension);
             addressId.val(address.id);
             city.val(address.city);
+        },
+        fail: function fail(xhr, textStatus, errorThrown) {
+            console.log(xhr, textStatus, errorThrown);
         },
         dataType: 'json'
     });
@@ -30152,6 +30160,24 @@ if (typeof jQuery === 'undefined') {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

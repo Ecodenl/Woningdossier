@@ -62,7 +62,7 @@ class Building extends Model
     ];
 
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id',
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension'
     ];
 
     public static function boot() {
@@ -76,30 +76,26 @@ class Building extends Model
             $building->save();
 
             // delete the services from a building
-            $building->buildingServices()->delete();
+            $building->buildingServices()->withoutGlobalScope(GetValueScope::class)->delete();
             // delete the elements from a building
-            $building->buildingElements()->delete();
+            $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the features from a building
-            $building->buildingFeatures()->delete();
+            $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the roof types from a building
-            $building->roofTypes()->delete();
+            $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the heater from a building
-            $building->heater()->delete();
+            $building->heater()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the solar panels from a building
-            $building->pvPanels()->delete();
+            $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the insulated glazings from a building
-            $building->currentInsulatedGlazing()->delete();
+            $building->currentInsulatedGlazing()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the paintwork from a building
-            $building->currentPaintworkStatus()->delete();
+            $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the user usage from a building
-            $building->userUsage()->delete();
+            $building->userUsage()->withoutGlobalScope(GetValueScope::class)->delete();
         });
     }
 
-    public function buildingNotes()
-    {
-        return $this->hasMany('App\Models\BuildingNotes');
-	}
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -122,6 +118,16 @@ class Building extends Model
     public function buildingFeatures()
     {
         return $this->hasOne(BuildingFeature::class);
+    }
+
+    /**
+     * Return all the building notes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingNotes()
+    {
+        return $this->hasMany(BuildingNotes::class);
     }
 
     /**

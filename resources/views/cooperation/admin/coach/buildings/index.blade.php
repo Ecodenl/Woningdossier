@@ -7,7 +7,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-responsive table-condensed">
+                    <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.city')</th>
@@ -19,27 +19,33 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($buildingPermissions as $buildingPermission)
-                            <?php $building =  $buildingPermission->building()->withTrashed()->first()?>
-
+                        @foreach($buildingsFromCoachStatuses as $i => $building)
                             <tr>
                                 <td>{{ $building->city }}</td>
-                                <td>{{ $building->city }}</td>
-                                @if(!$building->trashed())
-                                    <td>{{ $building->user->first_name .' '. $building->user->last_name}}</td>
+                                <td>{{ $building->street }}</td>
+                                @if(is_null($building->deleted_at))
+                                    <td>{{ str_limit($building->first_name .' '. $building->last_name, 40)}}</td>
                                 @else
                                     <td>-</td>
                                 @endif
                                 <td>
-                                    @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                        @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus) {{$buildingCoachStatusName}}@endif
-                                    @endforeach
+                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id)}}
                                 </td>
-                                <td>{{$buildingCoachStatuses->where('building_id', $building->id)->first()->appointment_date}}</td>
+
+                                <td>@if($buildingCoachStatuses->where('coach_id', Auth::id())->where('building_id', $building->id)->last() instanceof \App\Models\BuildingCoachStatus && !empty($buildingCoachStatuses->where('coach_id', Auth::id())->where('building_id', $building->id)->last()->appointment_date))
+                                        {{$buildingCoachStatuses->where('coach_id', Auth::id())->where('building_id', $building->id)->last()->appointment_date}}
+                                    @else
+                                        @lang('woningdossier.cooperation.admin.coach.buildings.index.no-appointment')
+                                    @endif
+                                </td>
                                 <td>
-                                    @if(!$building->trashed())
-                                    <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                    @if(empty($building->deleted_at))
+                                        @can('make-appointment', $building->id)
+                                        <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+                                        @endcan
+                                        @can('access-building', $building->id)
+                                            <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                        @endcan
                                     @endif
                                     <a href="{{ route('cooperation.admin.coach.buildings.details.index', ['id' => $building->id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-eye-open"></i></a>
                                 </td>
@@ -52,4 +58,22 @@
         </div>
     </div>
 @endsection
+
+
+@push('js')
+    <script>
+
+        $('#table').DataTable({
+            responsive: true,
+            columnDefs: [
+                {responsivePriority: 4, targets: 4},
+                {responsivePriority: 5, targets: 3},
+                {responsivePriority: 3, targets: 2},
+                {responsivePriority: 2, targets: 1},
+                {responsivePriority: 1, targets: 0}
+            ],
+        });
+
+    </script>
+@endpush
 

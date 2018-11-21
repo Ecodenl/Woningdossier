@@ -38,6 +38,7 @@ use App\Models\Ventilation;
 use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class GeneralDataController extends Controller
 {
@@ -56,6 +57,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
+
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
 
@@ -80,13 +82,22 @@ class GeneralDataController extends Controller
         $motivations = Motivation::orderBy('order')->get();
         $energyHabit = $buildingOwner->energyHabit;
         $steps = Step::orderBy('order')->get();
+
+        // Get possible remarks from the coach on energy habits
+        $coachSource = InputSource::findByShort('coach');
+        $coachEnergyHabitRemarks = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)
+                                       ->where('user_id', $buildingOwner->id)
+                                       ->where('input_source_id', $coachSource->id)
+                                       ->first();
+
         $step = $this->step;
 
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->get();
 
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step', 'userInterestsForMe',
+            'building', 'step', 'buildingOwner',
+            'coachEnergyHabitRemarks', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
@@ -109,7 +120,7 @@ class GeneralDataController extends Controller
         $buildingId = $building->id;
         $user = $building->user;
         $inputSourceId = HoomdossierSession::getInputSource();
-        
+
         $exampleBuildingId = $request->get('example_building_id', null);
         if (! is_null($exampleBuildingId)) {
             $exampleBuilding = ExampleBuilding::forMyCooperation()->where('id',

@@ -1018,7 +1018,7 @@
         $(document).ready(function () {
 
             $(window).keydown(function (event) {
-                if (event.keyCode == 13) {
+                if (event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
@@ -1042,7 +1042,7 @@
             // check if a user is interested in a sun panel
             $(document).change('#total-sun-panels', function () {
                 var input = $("#total-sun-panels");
-                var totalSunPanels = input.val();
+                var totalSunPanels = parseInt(input.val());
                 var extraField =  input.parent().parent().parent().next().next();
 
                 if (totalSunPanels > 0) {
@@ -1055,16 +1055,18 @@
             });
 
             $(document).change('#hr-boiler', function () {
-                if ($('#hr-boiler').val() == 13) {
+                if (parseInt($('#hr-boiler').val()) === 13) {
                     // hide the input for the type of boiler
-                    $('#boiler').parent().hide();
+                    //$('#boiler').parent().hide();
                     // Hide the interest input
-                    $('#boiler').parent().parent().next().hide();
+                    //$('#boiler').parent().parent().next().hide();
+                    $('#boiler').parent().parent().parent().hide();
 
                 } else {
-                    $('#boiler').parent().show();
+                    //$('#boiler').parent().show();
                     // Hide the interest input
-                    $('#boiler').parent().parent().next().show();
+                    //$('#boiler').parent().parent().next().show();
+                    $('#boiler').parent().parent().parent().show();
                 }
             });
 

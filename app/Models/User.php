@@ -160,6 +160,7 @@ class User extends Authenticatable
     public function getInterestedType($type, $interestedInId)
     {
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+
     }
 
     /**

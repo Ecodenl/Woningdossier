@@ -85,6 +85,8 @@ class GeneralDataController extends Controller
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->get();
 
+
+//        dd($userInterestsForMe->where('interested_in_type', 'element')->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->where('interested_in_id', 3)->first()->interest_id);
         return view('cooperation.tool.general-data.index', compact(
             'building', 'step', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',

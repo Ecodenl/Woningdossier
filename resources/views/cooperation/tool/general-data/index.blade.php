@@ -321,7 +321,10 @@
                                 ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'element')->where('interested_in_id', $element->id),  'userInputColumn' => 'interest_id'])
                                 <select id="user_interest_element_{{ $element->id }}" class="form-control" name="user_interest[element][{{ $element->id }}]" >
                                     @foreach($interests as $interest)
-                                        <option @if($interest->id == old('user_interest.element.'. $element->id . ']')) selected @elseif(Auth::user()->getInterestedType('element', $element->id) != null && Auth::user()->getInterestedType('element', $element->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                        <option @if($interest->id == old('user_interest.element.'. $element->id . ']'))
+                                                selected
+                                                @elseif($userInterestsForMe->where('interested_in_type', 'element')->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->where('interested_in_id', $element->id)->first() instanceof \App\Models\UserInterest &&
+                                                $userInterestsForMe->where('interested_in_type', 'element')->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->where('interested_in_id', $element->id)->first()->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                     @endforeach
                                 </select>
                                 @endcomponent
@@ -420,7 +423,9 @@
                         ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'service')->where('interested_in_id', $service->id),  'userInputColumn' => 'interest_id'])
                         <select id="user_interest_service_{{ $service->id }}" class="form-control" name="user_interest[service][{{ $service->id }}]" >
                             @foreach($interests as $interest)
-                                <option @if($interest->id == old('user_interest.service.' . $service->id )) selected @elseif(Auth::user()->getInterestedType('service', $service->id) != null && Auth::user()->getInterestedType('service', $service->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                <option @if($interest->id == old('user_interest.service.' . $service->id )) selected
+                                        @elseif($userInterestsForMe->where('interested_in_type', 'service')->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->where('interested_in_id', $service->id)->first() instanceof \App\Models\UserInterest &&
+                                        $userInterestsForMe->where('interested_in_type', 'service')->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->where('interested_in_id', $service->id)->first()->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                             @endforeach
                         </select>
                         @endcomponent

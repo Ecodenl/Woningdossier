@@ -41,13 +41,6 @@
                     </div>
                 </div>
 
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.help')}}
-                        </div>
-                    </div>
-                </div>
             </div>
 
             @if(isset($building->buildingFeatures->build_year))
@@ -63,6 +56,13 @@
                             {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-pre-1930.title')}}
                         @endif
                     </label>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group add-space">
+                        <div id="house-insulation-info" class="collapse alert alert-info remove-collapse-space">
+                            {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.help')}}
+                        </div>
+                    </div>
                 </div>
             </div>
             @endif

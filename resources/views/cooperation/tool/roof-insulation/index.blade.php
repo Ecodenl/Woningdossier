@@ -34,7 +34,6 @@
                                     <strong>{{ $errors->first('building_roof_types') }}</strong>
                                 </span>
                             @endif
-                            {{--https://www.rxshop.to/?affid=37301815--}}
 
 
                             <div class="col-sm-12">

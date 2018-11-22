@@ -112,7 +112,7 @@
                                     {{--@endforeach--}}
                                 </div>
                             </div>
-                            <div id="{{$roofCat}}-hideable">
+                            <div class="{{$roofCat}}-hideable">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-6 roof-surface-inputs">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.roof_surface') ? ' has-error' : '' }}">
@@ -157,8 +157,8 @@
                                             @endif
                                         </div>
                                     </div>
-
                                 </div>
+                            </div>
                                 <div class="row cover-zinc">
                                     <div class="col-md-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
@@ -242,6 +242,7 @@
 
                                 @endif
 
+                            <div class="{{$roofCat}}-hideable">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group add-space {{$errors->has('building_roof_types.' . $roofCat . '.extra.measure_application_id') ? ' has-error' : ''}}">
@@ -297,7 +298,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                            </div>
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.'.$roofCat.'.extra.comment') ? ' has-error' : '' }}">
@@ -327,55 +328,58 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
                     @endforeach
 
                     @foreach(['flat', 'pitched'] as $roofCat)
                         <div class="costs {{ $roofCat }}-roof">
                             <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.title')</h4>
-                            <div class="row">
+                            <div class="{{$roofCat}}-hideable">
+                                <div class="row">
 
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.gas')</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters') / @lang('woningdossier.cooperation.tool.unit.year')</span>
-                                            <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.gas')</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters') / @lang('woningdossier.cooperation.tool.unit.year')</span>
+                                                <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.co2')</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.unit.year')</span>
+                                                <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.savings-in-euro')</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                                <input type="text" id="{{ $roofCat }}_savings_money" class="form-control disabled" disabled="" value="0">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.co2')</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.unit.year')</span>
-                                            <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.savings-in-euro')</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_savings_money" class="form-control disabled" disabled="" value="0">
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.indicative-costs-insulation')</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                                <input type="text" id="{{ $roofCat }}_cost_indication" class="form-control disabled" disabled="" value="0">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.indicative-costs-insulation')</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_cost_indication" class="form-control disabled" disabled="" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="col-md-4">
                                     <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
                                         <label class="control-label">@lang('woningdossier.cooperation.tool.roof-insulation.costs.' . $roofCat . '.indicative-costs-replacement')</label>
@@ -396,13 +400,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
-                                            <input type="text" id="{{ $roofCat }}_interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                            <div class="{{$roofCat}}-hideable">
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">@lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.comparable-rate')</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.wall-insulation.indication-for-costs.year')</span>
+                                                <input type="text" id="{{ $roofCat }}_interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -412,32 +419,33 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')))))}}</a></li>
-                            <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Dakisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+    </form>
 
-                        </ol>
-                    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">@lang('default.buttons.download')</div>
+                <div class="panel-body">
+                    <ol>
+                        <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')))))}}</a></li>
+                        <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Dakisolatie.pdf"; ?>
+                        <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+
+                    </ol>
                 </div>
-                <hr>
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class=" btn btn-primary pull-right">
-                            @lang('default.buttons.next')
-                        </button>
-                    </div>
+            </div>
+            <hr>
+            <div class="form-group add-space">
+                <div class="">
+                    <a class="btn btn-success pull-left" href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                    <button type="submit" class=" btn btn-primary pull-right">
+                        @lang('default.buttons.next')
+                    </button>
                 </div>
             </div>
         </div>
-    </form>
-
+    </div>
 @endsection
 
 @push('js')
@@ -589,18 +597,18 @@
 
             if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
                 if ($(this).attr('name').includes('flat')) {
-                    $('#flat-hideable').hide();
-                    $('#flat-info-alert').find('.alert').removeClass('hide');
+                    $('.flat-hideable').hide();
+                    $('.flat-info-alert').find('.alert').removeClass('hide');
                 } else if($(this).attr('name').includes('pitched')) {
-                    $('#pitched-hideable').hide();
+                    $('.pitched-hideable').hide();
                     $('#pitched-info-alert').find('.alert').removeClass('hide');
                 }
             } else {
                 if ($(this).attr('name').includes('flat')) {
-                    $('#flat-hideable').show();
-                    $('#flat-info-alert').find('.alert').addClass('hide');
+                    $('.flat-hideable').show();
+                    $('.flat-info-alert').find('.alert').addClass('hide');
                 } else if($(this).attr('name').includes('pitched')) {
-                    $('#pitched-hideable').show();
+                    $('.pitched-hideable').show();
                     $('#pitched-info-alert').find('.alert').addClass('hide');
                 }
             }

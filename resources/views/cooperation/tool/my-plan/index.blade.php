@@ -16,29 +16,18 @@
 
 
 
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+    @component('cooperation.tool.components.modal', ['id' => 'messagesModal'])
+        @slot('title')
+            @lang('woningdossier.cooperation.tool.my-plan.coach-comments.title')
+        @endslot
 
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">@lang('woningdossier.cooperation.tool.my-plan.coach-comments.title')</h4>
-                </div>
-                <div class="modal-body">
-                    @foreach($coachComments as $stepName => $coachComment)
-                        <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
-                        <p>{{$coachComment}}</p>
-                        <hr>
-                    @endforeach
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
+        @foreach($coachComments as $stepName => $coachComment)
+            <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
+            <p>{{$coachComment}}</p>
+            <hr>
+        @endforeach
+    @endcomponent
 
-        </div>
-    </div>
     <form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
         {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)

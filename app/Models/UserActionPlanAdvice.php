@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\UserActionPlanAdvice.
@@ -110,6 +112,83 @@ class UserActionPlanAdvice extends Model
 
         ksort($result);
         return $result;
+    }
+
+    /**
+     * Get all the comments that are saved in multiple tables
+     *
+     * @return Collection
+     */
+    public static function getAllCoachComments() : Collection
+    {
+        $building = Building::find(HoomdossierSession::getInputSource());
+        $allInputForMe = collect();
+        $coachComments = collect();
+        $comment = "";
+
+        /* General-data */
+        $userEnergyHabitForMe = UserEnergyHabit::forMe()->get();
+        $allInputForMe->put('general-data', $userEnergyHabitForMe);
+
+        /* wall insulation */
+        $buildingFeaturesForMe = BuildingFeature::forMe()->get();
+        $allInputForMe->put('wall-insulation', $buildingFeaturesForMe);
+
+        /* floor insualtion */
+        $crawlspace = Element::where('short', 'crawlspace')->first();
+        $buildingElementsForMe = BuildingElement::forMe()->get();
+        $allInputForMe->put('floor-insulation', $buildingElementsForMe->where('element_id', $crawlspace->id));
+
+        /* beglazing */
+        $insulatedGlazingsForMe = $building->currentInsulatedGlazing()->forMe()->get();
+        $allInputForMe->put('insulated-glazing', $insulatedGlazingsForMe);
+
+        /* roof */
+        $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
+        $allInputForMe->put('roof-insulation', $currentRoofTypesForMe);
+
+        /* hr boiler ketel */
+        $boiler = Service::where('short', 'boiler')->first();
+        $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
+        $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
+
+
+        foreach ($allInputForMe as $step => $inputForMe) {
+
+            // get the coach his input from the collection
+            $coachInputSource = InputSource::findByShort('coach');
+            // get the coach answers
+            $coachInputs = $inputForMe->where('input_source_id', $coachInputSource->id);
+
+            // loop through them and extract the comments from them
+            foreach ($coachInputs as $coachInput) {
+                if (!is_null($coachInput)) {
+
+                    if (is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra)) {
+                        $comment = $coachInput->extra['comment'];
+                    } elseif (array_key_exists('additional_info', $coachInput->attributes)) {
+                        $comment = $coachInput->additional_info;
+                    } elseif (array_key_exists('living_situation_extra', $coachInput->attributes)) {
+                        $comment = $coachInput->living_situation_extra;
+                    }
+
+                    // for the rooftype there are multiple comments
+                    if ($coachInput instanceof BuildingRoofType) {
+                        $coachComments->put($step.'-'.str_slug(RoofType::find($coachInput->roof_type_id)->name), $comment);
+                    } else {
+                        // comment as key, yes. Comments will be unique.
+                        $coachComments->put($step, $comment);
+
+                    }
+                }
+            }
+
+
+        }
+
+        $coachComments = $coachComments->unique();
+
+        return $coachComments;
     }
 
     public function getAdviceYear()

@@ -58,6 +58,7 @@ class HeaterController extends Controller
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
         /** @var UserEnergyHabit|null $habits */
         $habits = $user->energyHabit;
+        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $currentComfort = null;
         if ($habits instanceof UserEnergyHabit) {
             $currentComfort = $habits->comfortLevelTapWater;
@@ -66,7 +67,7 @@ class HeaterController extends Controller
         $currentHeatersForMe = $building->heater()->forMe()->get();
 
         return view('cooperation.tool.heater.index', compact(
-            'comfortLevels', 'collectorOrientations', 'typeIds',
+            'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
             'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
         ));
     }

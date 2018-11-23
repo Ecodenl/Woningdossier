@@ -40,10 +40,27 @@ trait GetMyValuesTrait {
      */
     public static function hasCoachInputSource(Collection $inputSourcesForMe): bool
     {
-//        dd($inputSourcesForMe);
         $coachInputSource = InputSource::findByShort('coach');
 
         if ($inputSourcesForMe->contains('input_source_id', $coachInputSource->id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check on a collection that comes from the forMe() scope if it contains a
+     * Resident input source.
+     *
+     * @param Collection $inputSourcesForMe
+     * @return bool
+     */
+    public static function hasResidentInputSource(Collection $inputSourcesForMe): bool
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        if ($inputSourcesForMe->contains('input_source_id', $residentInputSource->id)) {
             return true;
         }
 
@@ -62,6 +79,22 @@ trait GetMyValuesTrait {
 
         if (self::hasCoachInputSource($inputSourcesForMe)) {
             return $inputSourcesForMe->where('input_source_id', $coachInputSource->id)->first();
+        }
+
+    }
+    
+    /**
+     * Get the resident input from a collection that comes from the forMe() scope
+     *
+     * @param Collection $inputSourcesForMe
+     * @return mixed
+     */
+    public static function getResidentInput(Collection $inputSourcesForMe)
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        if (self::hasResidentInputSource($inputSourcesForMe)) {
+            return $inputSourcesForMe->where('input_source_id', $residentInputSource->id)->first();
         }
 
     }

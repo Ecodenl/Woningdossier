@@ -927,6 +927,22 @@
                     </div>
                 </div>
             </div>
+        @elseif(\App\Models\BuildingService::hasResidentInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('coach'))
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space">
+                        <?php
+                            $residentInputSource = \App\Models\BuildingService::getResidentInput($userEnergyHabitsForMe);
+                            $comment = $residentInputSource->living_situation_extra;
+                        ?>
+                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
+                        </label>
+
+                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                    </div>
+                </div>
+            </div>
         @endif
 
         <div class="row">

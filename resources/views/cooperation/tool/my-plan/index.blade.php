@@ -8,7 +8,6 @@
 
     <div class="row">
         <div class="col-md-12">
-            {{--<h1>@lang('woningdossier.cooperation.tool.my-plan.title')</h1>--}}
             <p>@lang('woningdossier.cooperation.tool.my-plan.description')</p>
             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#messagesModal">@lang('woningdossier.cooperation.tool.my-plan.coach-comments.title')</button>
         </div>

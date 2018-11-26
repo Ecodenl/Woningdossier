@@ -5,8 +5,10 @@ namespace App\Models;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
+use App\Traits\GetValueTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 
 /**
@@ -48,10 +50,12 @@ use Illuminate\Support\Collection;
  */
 class UserActionPlanAdvice extends Model
 {
+    use GetValueTrait;
+
     public $fillable = [
         'user_id', 'measure_application_id', // old
         'costs', 'savings_gas', 'savings_electricity', 'savings_money',
-        'year', 'planned', 'planned_year',
+        'year', 'planned', 'planned_year', 'input_source_id'
     ];
 
     /**
@@ -62,6 +66,53 @@ class UserActionPlanAdvice extends Model
     protected $casts = [
         'planned' => 'boolean',
     ];
+
+    /**
+     * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
+     * The UserEnergyHabit uses the user_id instead off the building_id
+     * @param $query
+     * @return mixed
+     */
+    public function scopeForMe($query)
+    {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
+        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
+    }
+
+
+    /**
+     * Scope a query to only include results for the particular step.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param Step                                  $step
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeForStep($query, Step $step)
+    {
+        return $query->where('step_id', $step->id);
+    }
+
+    /**
+     * Get the input Sources
+     *
+     * @return BelongsTo
+     */
+    public function inputSource()
+    {
+        return $this->belongsTo('App\Models\InputSource');
+    }
+
+    /**
+     * Get a input source name
+     *
+     * @return InputSource name
+     */
+    public function getInputSourceName()
+    {
+        return $this->inputSource()->first()->name;
+    }
 
     public function user()
     {
@@ -240,30 +291,5 @@ class UserActionPlanAdvice extends Model
         }
 
         return null;
-    }
-
-    /**
-     * Scope a query to only include the current user.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeForMe($query)
-    {
-        return $query->where('user_id', Building::find(HoomdossierSession::getBuilding())->user_id);
-    }
-
-    /**
-     * Scope a query to only include results for the particular step.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param Step                                  $step
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeForStep($query, Step $step)
-    {
-        return $query->where('step_id', $step->id);
     }
 }

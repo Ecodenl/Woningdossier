@@ -41,9 +41,9 @@
                     <ul class="dropdown-menu">
                         @foreach($inputSources as $inputSource)
                             @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
-                            <li>
-                                <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
-                            </li>
+                                <li>
+                                    <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
+                                </li>
                             @endif
                         @endforeach
                     </ul>

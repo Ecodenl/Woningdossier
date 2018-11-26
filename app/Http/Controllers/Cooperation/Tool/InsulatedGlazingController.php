@@ -153,7 +153,7 @@ class InsulatedGlazingController extends Controller
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         foreach ($results['measure'] as $measureId => $data) {
             if (array_key_exists('costs', $data) && $data['costs'] > 0) {

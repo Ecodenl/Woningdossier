@@ -617,14 +617,17 @@
             });
 
             $('.user-interest').change(function() {
-                $('.user-interest option:selected').each(function() {
-                    $userInterest = $(this); // the input field
-                    if ($userInterest.text() === "Geen actie" || $userInterest.text() === "Niet mogelijk") {
-                        $userInterest.parent().parent().parent().next().hide();
-                    } else {
-                        $userInterest.parent().parent().parent().next().show();
-                    }
-                });
+
+                // the input field
+                var userInterest = $(this);
+                // the text from the selected interested option
+                var userInterestText = userInterest.find('option:selected').text().trim();
+
+                if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
+                    userInterest.parent().parent().parent().find('.values').hide();
+                } else {
+                    userInterest.parent().parent().parent().find('.values').show();
+                }
             });
             // Trigger the change event so it will load the data
             //$("select, input[type=radio], input[type=text]").trigger('change');

@@ -178,7 +178,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('', 'ConnectToCoachController@store')->name('store');
                     });
 
-
                     // needs to be the last route due to the param
                     Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
                 });

@@ -35,38 +35,38 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12">
+                        {{--<div class="row">--}}
+                            {{--<div class="col-sm-12">--}}
 
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" href="#password">
-                                                <span class="glyphicon glyphicon-plus"></span>
-                                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.header')
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="password" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                            <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }} ">
-                                                <label for="password">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.label')</label>
-                                                <input id="password" type="password" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">
-                                                @if ($errors->has('password'))
-                                                    <span class="help-block">
-                                                        <strong>{{ $errors->first('password') }}</strong>
-                                                    </span>
-                                                @else
-                                                    <span class="help-block">
-                                                        <strong>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.help')</strong>
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                {{--<div class="panel panel-default">--}}
+                                    {{--<div class="panel-heading">--}}
+                                        {{--<h4 class="panel-title">--}}
+                                            {{--<a data-toggle="collapse" href="#password">--}}
+                                                {{--<span class="glyphicon glyphicon-plus"></span>--}}
+                                                {{--@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.header')--}}
+                                            {{--</a>--}}
+                                        {{--</h4>--}}
+                                    {{--</div>--}}
+                                    {{--<div id="password" class="panel-collapse collapse">--}}
+                                        {{--<div class="panel-body">--}}
+                                            {{--<div class="form-group {{ $errors->has('password') ? ' has-error' : '' }} ">--}}
+                                                {{--<label for="password">@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.label')</label>--}}
+                                                {{--<input id="password" type="password" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.placeholder')" name="password">--}}
+                                                {{--@if ($errors->has('password'))--}}
+                                                    {{--<span class="help-block">--}}
+                                                        {{--<strong>{{ $errors->first('password') }}</strong>--}}
+                                                    {{--</span>--}}
+                                                {{--@else--}}
+                                                    {{--<span class="help-block">--}}
+                                                        {{--<strong>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.password.help')</strong>--}}
+                                                    {{--</span>--}}
+                                                {{--@endif--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">

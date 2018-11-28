@@ -670,7 +670,7 @@
             if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
                 if ($(this).attr('name').includes('flat')) {
                     $('.flat-hideable').hide();
-                    $('.flat-info-alert').find('.alert').removeClass('hide');
+                    $('#flat-info-alert').find('.alert').removeClass('hide');
                 } else if($(this).attr('name').includes('pitched')) {
                     $('.pitched-hideable').hide();
                     $('#pitched-info-alert').find('.alert').removeClass('hide');
@@ -678,7 +678,7 @@
             } else {
                 if ($(this).attr('name').includes('flat')) {
                     $('.flat-hideable').show();
-                    $('.flat-info-alert').find('.alert').addClass('hide');
+                    $('#flat-info-alert').find('.alert').addClass('hide');
                 } else if($(this).attr('name').includes('pitched')) {
                     $('.pitched-hideable').show();
                     $('#pitched-info-alert').find('.alert').addClass('hide');

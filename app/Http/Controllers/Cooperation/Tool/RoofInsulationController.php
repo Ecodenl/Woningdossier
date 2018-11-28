@@ -69,10 +69,6 @@ class RoofInsulationController extends Controller
         $heatings = BuildingHeating::all();
         $measureApplications = $this->getMeasureApplicationsAdviceMap();
 
-        // for the note when a user has interest and a specific insulation.
-        $userInterestIdForCurrentType = Auth::user()->getInterestedType('element', $roofInsulation->id)->interest_id;
-        $interest = \App\Models\Interest::find($userInterestIdForCurrentType);
-
 
         $currentCategorizedRoofTypes = [
             'flat' => [],

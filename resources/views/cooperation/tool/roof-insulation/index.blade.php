@@ -124,7 +124,7 @@
                                     {{--@endforeach--}}
                                 </div>
                             </div>
-                            <div id="{{$roofCat}}-hideable">
+                            <div class="{{$roofCat}}-hideable">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-6 roof-surface-inputs">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.roof_surface') ? ' has-error' : '' }}">
@@ -176,8 +176,8 @@
                                         @endif
                                     </div>
                                 </div>
-
-                                {{-- Had class .cover-zinc not used in js, does not seem neseserie --}}
+                            </div>
+                            {{-- Had class .cover-zinc not used in js, does not seem neseserie --}}
                                 <div class="col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
                                         <label for="zinc-replaced" class="control-label">
@@ -274,6 +274,7 @@
 
                                 @endif
 
+                            <div class="{{$roofCat}}-hideable">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group add-space {{$errors->has('building_roof_types.' . $roofCat . '.extra.measure_application_id') ? ' has-error' : ''}}">
@@ -341,7 +342,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                            </div>
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.'.$roofCat.'.extra.comment') ? ' has-error' : '' }}">
@@ -385,52 +386,55 @@
 
                     @endforeach
 
-
                     @foreach(['flat', 'pitched'] as $roofCat)
                         <div class="costs {{ $roofCat }}-roof">
                             <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.costs.title.title')}}</h4>
-                            <div class="row">
+                            <div class="{{$roofCat}}-hideable">
+                                <div class="row">
 
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters') / @lang('woningdossier.cooperation.tool.unit.year')</span>
-                                            <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters') / @lang('woningdossier.cooperation.tool.unit.year')</span>
+                                                <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
+                                                <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                                <input type="text" id="{{ $roofCat }}_savings_money" class="form-control disabled" disabled="" value="0">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                            <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_savings_money" class="form-control disabled" disabled="" value="0">
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs-insulation.title')}}</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                                <input type="text" id="{{ $roofCat }}_cost_indication" class="form-control disabled" disabled="" value="0">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs-insulation.title')}}</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_cost_indication" class="form-control disabled" disabled="" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="col-md-4">
                                     <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
                                         <label class="control-label">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.indicative-costs-replacement.title')}}</label>
@@ -451,13 +455,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="form-group add-space">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                            <input type="text" id="{{ $roofCat }}_interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                            <div class="{{$roofCat}}-hideable">
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group add-space">
+                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
+                                                <input type="text" id="{{ $roofCat }}_interest_comparable" class="form-control disabled" disabled="" value="0,0">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -467,7 +474,7 @@
                 </div>
             </div>
         </div>
-        @foreach(['flat', 'pitched'] as $roofCat)
+    @foreach(['flat', 'pitched'] as $roofCat)
             @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('resident'))
                 <div class="row">
                     <div class="col-sm-12">
@@ -486,7 +493,10 @@
                 </div>
             @endif
         @endforeach
-        <div class="row">
+        </form>
+
+
+    <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading">@lang('default.buttons.download')</div>
@@ -507,7 +517,6 @@
                 </div>
             </div>
         </div>
-    </form>
 
 @endsection
 
@@ -663,18 +672,18 @@
 
             if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
                 if ($(this).attr('name').includes('flat')) {
-                    $('#flat-hideable').hide();
-                    $('#flat-info-alert').find('.alert').removeClass('hide');
+                    $('.flat-hideable').hide();
+                    $('.flat-info-alert').find('.alert').removeClass('hide');
                 } else if($(this).attr('name').includes('pitched')) {
-                    $('#pitched-hideable').hide();
+                    $('.pitched-hideable').hide();
                     $('#pitched-info-alert').find('.alert').removeClass('hide');
                 }
             } else {
                 if ($(this).attr('name').includes('flat')) {
-                    $('#flat-hideable').show();
-                    $('#flat-info-alert').find('.alert').addClass('hide');
+                    $('.flat-hideable').show();
+                    $('.flat-info-alert').find('.alert').addClass('hide');
                 } else if($(this).attr('name').includes('pitched')) {
-                    $('#pitched-hideable').show();
+                    $('.pitched-hideable').show();
                     $('#pitched-info-alert').find('.alert').addClass('hide');
                 }
             }

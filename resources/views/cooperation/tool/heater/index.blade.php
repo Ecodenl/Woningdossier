@@ -24,11 +24,14 @@
                             {{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.title')}}
                         </label>
 
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $comfortLevels, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                             <select id="user_energy_habits_water_comfort_id" class="form-control" name="user_energy_habits[water_comfort_id]">
                                 @foreach($comfortLevels as $comfortLevel)
                                     <option @if(old('user_energy_habits.water_comfort_id') == $comfortLevel->id || ($habits instanceof \App\Models\UserEnergyHabit && $habits->water_comfort_id == $comfortLevel->id)) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>
                                 @endforeach
                             </select>
+                        @endcomponent
 
                         <div id="water-comfort-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.help')}}

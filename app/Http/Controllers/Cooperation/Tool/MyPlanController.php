@@ -15,17 +15,16 @@ use App\Scopes\GetValueScope;
 
 class MyPlanController extends Controller
 {
-
-	public function index()
-	{
-        $privateMessage = PrivateMessage::myConversationRequest()->first();
+    public function index()
+    {
         $user = \Auth::user();
 		$advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+        $coachComments = UserActionPlanAdvice::getAllCoachComments();
 
         $steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'steps', 'privateMessage'
+            'advices', 'steps', 'coachComments'
         ));
     }
 

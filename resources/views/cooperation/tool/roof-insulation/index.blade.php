@@ -484,16 +484,29 @@
                                     @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}}, @lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title'))
                                 </label>
 
-                                <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                            </div>
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
                         </div>
                     </div>
-                @endif
-            @endforeach
-        </form>
+                </div>
+            @elseif(\App\Models\BuildingService::hasResidentInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('coach'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space">
+						    <?php
+						    $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentCategorizedRoofTypesForMe[$roofCat]));
+						    $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
+						    ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}}, @lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title'))
+                            </label>
 
-
-    <div class="row">
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
+        <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading">@lang('default.buttons.download')</div>

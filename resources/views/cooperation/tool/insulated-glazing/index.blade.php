@@ -455,16 +455,33 @@
                     @endforeach
                 </div>
             </div>
+
             @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentMeasureBuildingInsulatedGlazingForMe)) && Auth::user()->hasRole('resident'))
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
                             <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
-                            $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
+                                $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
+                                $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
                             ?>
                             <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @elseif(\App\Models\BuildingService::hasResidentInputSource(collect($currentMeasureBuildingInsulatedGlazingForMe)) && Auth::user()->hasRole('coach'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space">
+                            <?php
+                                $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
+                                $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
                             </label>
 
                             <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>

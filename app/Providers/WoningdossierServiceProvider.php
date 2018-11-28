@@ -2,17 +2,14 @@
 
 namespace App\Providers;
 
-use App\Helpers\Str;
 use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
-use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\Interest;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Observers\PrivateMessageObserver;
-use App\Models\Translation;
 use App\Models\UserActionPlanAdvice;
 use App\Observers\UserActionPlanAdviceObserver;
 use Illuminate\Support\ServiceProvider;

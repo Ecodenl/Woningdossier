@@ -17,8 +17,16 @@
         </div>
 
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
+        @auth
+            <ul class="nav navbar-nav">
+                @if (Auth::user()->isFillingToolForOtherBuilding())
+                    <a href="{{route('cooperation.admin.index')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
+                @endif
+            </ul>
+        @endauth
+
         @if(App::environment() == 'local') {{-- currently only for local --}}
-        <!-- Left Side Of Navbar -->
+            <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
@@ -34,28 +42,24 @@
                         @endforeach
                     </ul>
                 </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                        @lang('woningdossier.navbar.input_source')<span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        @foreach($inputSources as $inputSource)
-                            @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
-                                <li>
-                                    <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
-                                </li>
-                            @endif
-                        @endforeach
-                    </ul>
-                </li>
+                @auth
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                            @lang('woningdossier.navbar.input_source')<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            @foreach($inputSources as $inputSource)
+                                @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
+                                    <li>
+                                        <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </li>
+                @endauth
             </ul>
-
-
-            @if (Auth::check() && Auth::user()->buildings()->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
-                <a href="{{route('cooperation.admin.index')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
-            @endif
         @endif
-
         <!-- Right Side Of Navbar -->
             <ul class="nav navbar-nav navbar-right">
                 <!-- Authentication Links -->
@@ -64,6 +68,7 @@
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
                     <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
+                    @if (!Auth::user()->isFillingToolForOtherBuilding())
                     <li><a href="{{ route('cooperation.help.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.help.title')</a></li>
                     <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>
                     <li><a href="{{ url('/home') }}">@lang('woningdossier.cooperation.disclaimer.title')</a></li>
@@ -91,6 +96,7 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
                 @endguest
             </ul>
         </div>

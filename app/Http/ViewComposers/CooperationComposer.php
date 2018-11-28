@@ -2,8 +2,8 @@
 
 namespace App\Http\ViewComposers;
 
+use App\Models\InputSource;
 use App\Models\PrivateMessage;
-//use App\Models\InputSource;
 use Illuminate\View\View;
 
 class CooperationComposer
@@ -15,8 +15,7 @@ class CooperationComposer
         $view->with('cooperation', app()->make('Cooperation'));
 		$view->with('cooperationStyle', app()->make('CooperationStyle'));
 
+	    $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
 	    $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
-
-	//$view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
 	}
 }

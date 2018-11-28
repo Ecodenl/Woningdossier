@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -58,8 +59,6 @@ class CoachController extends Controller
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');
         $email = $request->get('email', '');
-        $password = $request->get('password', Str::randomPassword());
-
 
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
         $houseNumber = trim(strip_tags($request->get('number', '')));
@@ -76,7 +75,8 @@ class CoachController extends Controller
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $email,
-                'password' => bcrypt($password),
+                'confirm_token' => str_random(60),
+                'password' => bcrypt(Str::randomPassword()),
             ]
         );
 
@@ -121,7 +121,7 @@ class CoachController extends Controller
         $user->assignRole($roles);
 
         // send a mail to the user
-        \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation));
+        \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation, $user));
 
         return redirect()
             ->route('cooperation.admin.cooperation.coordinator.coach.index')

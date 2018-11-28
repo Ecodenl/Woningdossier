@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -58,7 +59,7 @@ class CoachController extends Controller
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');
         $email = $request->get('email', '');
-        $password = $request->get('password', Str::randomPassword());
+        $password = $request->get('password');
 
 
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
@@ -69,15 +70,24 @@ class CoachController extends Controller
         $city = trim(strip_tags($request->get('city')));
         $addressId = $request->get('addressid', null);
 
+        // things we will insert
+        $userAttributes = [
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'email' => $email,
+            'password' => bcrypt($password),
+        ];
+
+        // if the password from the request is empty we set a random password that the user can not guess.
+        // and we set a confirm token so the user has to use the link we provide him in a email
+        if (empty($password)) {
+            $userAttributes['confirm_token'] = str_random(60);
+            $userAttributes['password'] = bcrypt(Str::randomPassword());
+        }
 
         // create the new user
         $user = User::create(
-            [
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'email' => $email,
-                'password' => bcrypt($password),
-            ]
+            $userAttributes
         );
 
         // get the address information from the bag
@@ -121,7 +131,7 @@ class CoachController extends Controller
         $user->assignRole($roles);
 
         // send a mail to the user
-        \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation));
+        \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation, $user));
 
         return redirect()
             ->route('cooperation.admin.cooperation.coordinator.coach.index')

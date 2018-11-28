@@ -40,4 +40,5 @@ class ForgotPasswordController extends Controller
     {
         return view('cooperation.auth.passwords.email');
     }
+
 }

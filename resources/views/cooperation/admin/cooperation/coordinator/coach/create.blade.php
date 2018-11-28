@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="resident-info" class="col-md-6" style="display: none">
+                    <div id="resident-info" class="col-md-6">
                         <div class="row">
                             <div class="form-group{{ $errors->has('postal_code') || $errors->has('number') ? ' has-error' : '' }}">
                                 <div class="col-md-4">
@@ -215,19 +215,19 @@
 
         });
 
-        $('.roles').change(function () {
-            // show the fill resident form if the value is 5 or contains 5
-            if ($('.roles').val() == 5 || $('.roles').val().includes('5')) {
-                $('#resident-info').show();
-                // $('#resident-info input').attr('required', true);
-                // $('#resident-info input').attr('autofocus', true);
-            } else {
-                $('#resident-info input').attr('required', false);
-                $('#resident-info input').attr('autofocus', false);
-                $('#resident-info input').val('');
-                $('#resident-info').hide()
-            }
-        })
+        // $('.roles').change(function () {
+        //     // show the fill resident form if the value is 5 or contains 5
+        //     if ($('.roles').val() == 5 || $('.roles').val().includes('5')) {
+        //         $('#resident-info').show();
+        //         // $('#resident-info input').attr('required', true);
+        //         // $('#resident-info input').attr('autofocus', true);
+        //     } else {
+        //         $('#resident-info input').attr('required', false);
+        //         $('#resident-info input').attr('autofocus', false);
+        //         $('#resident-info input').val('');
+        //         $('#resident-info').hide()
+        //     }
+        // })
 
     </script>
 @endpush

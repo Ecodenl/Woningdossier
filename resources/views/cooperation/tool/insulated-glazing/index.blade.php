@@ -537,7 +537,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rate.title')}}</label>
+                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
                         <div class="input-group">
                             <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                             <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">

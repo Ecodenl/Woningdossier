@@ -946,13 +946,6 @@
                         @endif
                     </div>
                 </div>
-                @if($coachEnergyHabitRemarks instanceof \App\Models\UserEnergyHabit && !empty($coachEnergyHabitRemarks->living_situation_extra))
-                <div class="col-sm-12">
-                        @component('cooperation.tool.components.alert')
-                            {{ $coachEnergyHabitRemarks->living_situation_extra }}
-                        @endcomponent
-                </div>
-                @endif
             </div>
 
                     <div class="row">

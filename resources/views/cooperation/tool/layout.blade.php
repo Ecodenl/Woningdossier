@@ -14,6 +14,7 @@
                         @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                             @lang('woningdossier.cooperation.tool.filling-for', [
                                 'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
+                                'last_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->last_name,
                                 'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
                             ])
                         @endcomponent

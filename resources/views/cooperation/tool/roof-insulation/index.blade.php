@@ -23,7 +23,9 @@
                                 @foreach($roofTypes as $roofType)
                                     <label class="checkbox-inline">
                                         <input data-calculate-value="{{$roofType->calculate_value}}" type="checkbox" name="building_roof_types[]" value="{{ $roofType->id }}"
-                                        @if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) || ($currentRoofTypes->contains('roof_type_id', $roofType->id))) checked @endif>
+                                        @if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
+                                        ($currentRoofTypes->contains('roof_type_id', $roofType->id)) ||
+                                        ($features->roofType->id == $roofType->id)) checked @endif>
                                         {{ $roofType->name }}
                                     </label>
                                 @endforeach
@@ -34,7 +36,6 @@
                                     <strong>{{ $errors->first('building_roof_types') }}</strong>
                                 </span>
                             @endif
-                            {{--https://www.rxshop.to/?affid=37301815--}}
 
 
                             <div class="col-sm-12">

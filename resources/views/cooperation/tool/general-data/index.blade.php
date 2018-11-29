@@ -522,7 +522,7 @@
                                 @if(strpos($service->name, 'geventileerd'))
                                     {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.title')}}
                                 @elseif($service->short == 'total-sun-panels')
-                                    {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.sun-panel.if-yes.title')}}
+                                    {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.solar-panels.if-yes.title')}}
                                 @endif
 
                             </label>

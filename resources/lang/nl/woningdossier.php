@@ -1096,6 +1096,7 @@ return [
 					'savings-costs' => 'Besparing in euro',
 					'advice-year' => 'Geadviseerd',
 					'planned-year' => 'Planning',
+					'take-action' => 'Actie ondernemen',
 				],
 			],
 

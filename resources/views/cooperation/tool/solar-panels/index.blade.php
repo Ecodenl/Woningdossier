@@ -186,7 +186,7 @@
                 <div id="costs" class="row">
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.title')}}</lavel>
+                            <label class="control-label">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="yield_electricity" class="form-control disabled" disabled="" value="0">
@@ -195,7 +195,7 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title')}}</lavel>
+                            <label class="control-label">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">%</span>
                                 <input type="text" id="raise_own_consumption" class="form-control disabled" disabled="" value="0">
@@ -204,16 +204,16 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</lavel>
+                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
                             <div class="input-group">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('unit.kilograms.title.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
+                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</lavel>
+                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">€ / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
@@ -222,7 +222,7 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</lavel>
+                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
@@ -231,7 +231,7 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</lavel>
+                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">

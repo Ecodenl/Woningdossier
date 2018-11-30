@@ -11,6 +11,26 @@ return [
 	'cooperation' => [
 
 	    'admin' => [
+
+	        'custom-fields' => [
+	            'index' => [
+	                'rules' => [
+	                    'number' => 'Getal',
+                        'string' => 'Tekst',
+                    ],
+                    'optional-rules' => [
+                        'number' => [
+                            'between' => 'Tussen',
+                        ],
+                        'string' => [
+                            'email' => 'E-mailadres',
+                            'between' => 'Tussen',
+                            'max' => 'Maximaal aantal letters'
+                        ],
+                    ],
+                ],
+            ],
+
             'choose-roles' => [
                 'header' => 'Als welke rol wilt u doorgaan ?',
                 'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',

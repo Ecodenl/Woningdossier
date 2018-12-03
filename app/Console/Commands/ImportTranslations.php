@@ -59,28 +59,26 @@ class ImportTranslations extends Command
          * Array key indexes
          *
          * 0 = tabblad
-         * 1 = getests
-         *
-         * 2 = veldnaam
-         * 3 = uitleg
-         * 4 = short
-         * 5 = help-uuid
-         * 6 = title-uuid
+         * 1 = veldnaam
+         * 2 = uitleg
+         * 3 = short
+         * 4 = help-uuid
+         * 5 = title-uuid
          */
         foreach ($csvRows as $csvKey => $csvRow) {
 
             // check if the short is empty
-            if ($csvRow[4] != "") {
-                $short = $csvRow[4];
+            if ($csvRow[3] != "") {
+                $short = $csvRow[3];
 
                 // if the uuid key does not exist or the uuid is empty create a new one
-                if (array_key_exists(5, $csvRow) && $csvRow != "") {
-                    $translationUuidHelpKey = $csvRow[5];
+                if (array_key_exists(4, $csvRow) && $csvRow != "") {
+                    $translationUuidHelpKey = $csvRow[4];
                 } else {
                     $translationUuidHelpKey = Str::uuid();
                 }
-                if (array_key_exists(6, $csvRow) && $csvRow[6] != "") {
-                    $translationUuidTitleKey = $csvRow[6];
+                if (array_key_exists(5, $csvRow) && $csvRow[5] != "") {
+                    $translationUuidTitleKey = $csvRow[5];
                 } else {
                     $translationUuidTitleKey = Str::uuid();
                 }
@@ -89,14 +87,14 @@ class ImportTranslations extends Command
                 $updateHelpTranslations[] = [
                     'key' => $translationUuidHelpKey,
                     'language' => 'nl',
-                    'translation' => $csvRow[3]
+                    'translation' => $csvRow[2]
                 ];
 
                 // update for the title translations
                 $updateTitleTranslations[] = [
                     'language' => 'nl',
                     'key' => $translationUuidTitleKey,
-                    'translation' => $csvRow[2]
+                    'translation' => $csvRow[1]
                 ];
 
                 // update for the translatable uuid.php file
@@ -104,12 +102,12 @@ class ImportTranslations extends Command
                     $short . ".help" => [
                         'key' => $translationUuidHelpKey,
                         'language' => 'nl',
-                        'translation' => $csvRow[3]
+                        'translation' => $csvRow[2]
                     ],
                     $short . ".title" => [
                         'language' => 'nl',
                         'key' => $translationUuidTitleKey,
-                        'translation' => $csvRow[2]
+                        'translation' => $csvRow[1]
                     ]
                 ];
 
@@ -119,9 +117,6 @@ class ImportTranslations extends Command
                     $csvRow[1],
                     $csvRow[2],
                     $csvRow[3],
-                    $csvRow[4],
-                    $csvRow[5],
-                    $csvRow[6],
                     $translationUuidHelpKey,
                     $translationUuidTitleKey,
                 ];
@@ -131,7 +126,6 @@ class ImportTranslations extends Command
         // Column names
         $headers = [
             'tabblad',
-            'gestest',
             'veldnaam',
             'uitleg',
             'short',
@@ -200,7 +194,6 @@ class ImportTranslations extends Command
                 }
 
             } else {
-                $this->line("wtf is this shit {$updateTitleTranslation['key']}");
                 Translation::create([
                     'key' => $updateTitleTranslation['key'],
                     'language' => $updateTitleTranslation['language'],

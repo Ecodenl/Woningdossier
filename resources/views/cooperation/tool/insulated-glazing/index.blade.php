@@ -26,6 +26,7 @@
                     } else {
                         $currentMeasureBuildingInsulatedGlazingForMe = [];
                     }
+
                 ?>
 
                 <div class="row">

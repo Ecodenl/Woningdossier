@@ -9,7 +9,7 @@
         @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div class="row">
             <div id="current-situation" class="col-md-12">
-                <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.title.title')}}</h4>
+                @include('cooperation.layouts.section-title', ['translationKey' => 'roof-insulation.title'])
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -395,7 +395,10 @@
                             <div class="row">
 
                                 <div class="col-md-12">
-                                    <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.costs.title.title')}}</h4>
+                                    @include('cooperation.layouts.section-title', [
+                                        'translationKey' => 'roof-insulation.'.$roofCat.'.costs.title',
+                                        'infoAlertId' => $roofCat.'costs-info'
+                                    ])
                                 </div>
 
                             </div>

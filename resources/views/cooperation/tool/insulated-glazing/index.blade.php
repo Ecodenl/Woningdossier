@@ -493,7 +493,7 @@
 
         <div id="indication-for-costs">
             <hr>
-            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('general.costs.cost-and-benefits.title')}}</h4>
+            @include('cooperation.layouts.section-title', ['translationKey' => 'general.costs.cost-and-benefits'])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
@@ -518,7 +518,7 @@
 
         <div id="taking-into-account">
             <hr>
-            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('insulated-glazing.taking-into-account.title.title')}}</h4>
+            @include('cooperation.layouts.section-title', ['translationKey' => 'insulated-glazing.taking-into-account.title'])
 
             <div class="row">
                 <div class="col-sm-6">

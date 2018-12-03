@@ -9,7 +9,7 @@
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('solar-panels.title.title')}}</h4>
+                    @include('cooperation.layouts.section-title', ['translationKey' => 'solar-panels.title'])
                 </div>
             </div>
             <div class="row">
@@ -181,7 +181,10 @@
 
             <div id="indication-for-costs">
                 <hr>
-                <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.title.title')}}</h4>
+                @include('cooperation.layouts.section-title', [
+                    'translationKey' => 'solar-panels.indication-for-costs.title',
+                    'infoAlertId' => 'indication-for-costs-info'
+                ])
 
                 <div id="costs" class="row">
                     <div class="col-sm-4">

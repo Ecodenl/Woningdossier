@@ -198,7 +198,7 @@
 
             <div id="options">
                 <hr>
-                <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.optional.title.title')}}</h4>
+                @include('cooperation.layouts.section-title', ['translationKey' => 'wall-insulation.optional.title'])
 
                 <div id="wall-joints" class="row">
                     <div class="col-sm-6">
@@ -329,7 +329,10 @@
         <div class="hideable">
             <div id="indication-for-costs">
                 <hr>
-                <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('wall-insulation.indication-for-costs.title.title')}}</h4>
+                    @include('cooperation.layouts.section-title', [
+                        'translationKey' => 'wall-insulation.indication-for-costs.title',
+                        'infoAlertId' => 'indication-for-costs-info'
+                    ])
 
                 <div id="costs" class="row">
                     <div class="col-sm-4">
@@ -354,7 +357,7 @@
         </div>
         <div id="taking-into-account">
             <hr>
-            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.title.title')}}</h4>
+            @include('cooperation.layouts.section-title', ['translationKey' => 'wall-insulation.taking-into-account.title'])
             <h6 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</h6>
 
             <div class="row">

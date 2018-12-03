@@ -17,7 +17,7 @@
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('floor-insulation.intro.title.title')}}</h4>
+                    @include('cooperation.layouts.section-title', ['translationKey' => 'floor-insulation.intro.title'])
                 </div>
             </div>
             <div class="row">

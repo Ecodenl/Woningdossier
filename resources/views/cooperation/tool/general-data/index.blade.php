@@ -9,7 +9,7 @@
         {{ csrf_field() }}
         <div class="row">
             <div id="building-type" class="col-md-12">
-                <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('general-data.building-type.title.title')}} </h4>
+                @include('cooperation.tool.includes.interested', ['translationKey' => 'general-data.building-type.title'])
 
                 <div class="row">
                     <div class="col-md-6">
@@ -324,7 +324,10 @@
         </div>
 
         <div id="energy-saving-measures">
-            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('general-data.energy-saving-measures.title.title')}} </h4>
+            @include('cooperation.layouts.section-title', [
+                'translationKey' => 'general-data.energy-saving-measures.title',
+                'infoAlertId' => 'energy-saving-measures-info'
+            ])
 
             @foreach($elements as $i => $element)
                 <?php
@@ -585,9 +588,11 @@
 
 
 
-                <div id="data-about-usage">
-
-                    <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('general-data.data-about-usage.title.title')}}</h4>
+            <div id="data-about-usage">
+                @include('cooperation.layouts.section-title', [
+                    'translationKey' => 'general-data.data-about-usage.title',
+                    'infoAlertId' => 'data-about-usage-info'
+                ])
             <div class="row">
                 <div class="col-sm-6">
 
@@ -964,7 +969,10 @@
 
                     <div class="row">
                         <div class="col-sm-12">
-                            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('general-data.motivation.title.title')}} </h4>
+                            @include('cooperation.layouts.section-title', [
+                                'translationKey' => 'general-data.motivation.title',
+                                'infoAlertId' => 'motivation-info'
+                            ])
                         </div>
 
                         {{-- Start at 1 so the translation will too. --}}

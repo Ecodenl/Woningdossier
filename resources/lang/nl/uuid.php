@@ -72,6 +72,16 @@
 
                         ],
 
+                    "solar-panels" => 
+                        [
+                            "if-yes" => 
+                                [
+                                    "help" => '',
+                                    "title" => '5b0cf94e-d8f1-4b20-8037-851ffb66208c',
+                                ],
+
+                        ],
+
                     "title" => 
                         [
                             "help" => 'd3a39a80-157c-4b13-b2a4-60339dbb0769',

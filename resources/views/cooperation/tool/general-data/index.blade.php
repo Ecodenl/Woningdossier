@@ -374,9 +374,11 @@
                         @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
                             <div class="col-sm-2">
                                 <div class="form-group add-space{{ $errors->has('user_interest.element.' . $element->id) ? ' has-error' : '' }}">
-                                    <label for="user_interest_element_{{ $element->id }}"
-                                           class="control-label small-text">{{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
-                                        <span>*</span></label>
+                                    <label for="user_interest_element_{{ $element->id }}" class="control-label small-text">
+                                        <i data-toggle="collapse" data-target="#element_interested_{{ $element->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                        {{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
+                                        <span>*</span>
+                                    </label>
 
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'element')->where('interested_in_id', $element->id),  'userInputColumn' => 'interest_id'])
@@ -390,6 +392,11 @@
                                     @endforeach
                                 </select>
                                 @endcomponent
+
+                                <div id="element_interested_{{ $element->id }}-info"
+                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{ $element->info }}
+                                </div>
 
                                     @if ($errors->has('user_interest.element.' . $element->id))
                                         <span class="help-block">
@@ -486,7 +493,10 @@
                 @if($service->short != 'boiler')
                 <div class="col-sm-2">
                     <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
-                        <label for="user_interest_service_{{ $service->id }}" class="control-label small-text">@lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.interested')</label> <span>*</span>
+                        <label for="user_interest_service_{{ $service->id }}" class="control-label small-text">
+                            <i data-toggle="collapse" data-target="#element_interested_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            {{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
+                        </label> <span>*</span>
 
 
                         @component('cooperation.tool.components.input-group',
@@ -499,6 +509,10 @@
                             @endforeach
                         </select>
                         @endcomponent
+                        <div id="element_{{ $service->id }}-info"
+                             class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{ $service->info }}
+                        </div>
 
                         @if ($errors->has('user_interest.service.' . $service->id))
                             <span class="help-block">

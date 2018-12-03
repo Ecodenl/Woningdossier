@@ -174,60 +174,39 @@
             <hr>
             <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('boiler.indication-for-costs.title')}}</h4>
 
+
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.gas')
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title') }}/ {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.co2')
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">€ / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.title')}}</label>
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#replace-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.title')}}
+                        </label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                             <input type="text" id="replace_year" class="form-control disabled" disabled="" >
                         </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
+                        <div id="replace-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.help')}}
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                </div>
+                <div class="col-sm-4">
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
                 </div>
             </div>
         </div>

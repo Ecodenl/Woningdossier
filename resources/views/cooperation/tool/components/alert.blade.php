@@ -3,7 +3,8 @@
     $alertType = (isset($alertType) && in_array($alertType, ['success', 'info', 'warning', 'danger'])) ? $alertType : 'success';
     $hide = (isset($hide) && $hide) ? 'hide' : '';
     $id = isset($id) ? $id : '';
-    $collapsable = (isset($collapsable) && $collapsable) ? 'collapse' : '';
+    // if its collapsable we also need a lill topspace
+    $collapsable = (isset($collapsable) && $collapsable) ? 'collapse alert-top-space' : '';
 ?>
 
 <div id="{{$id}}" class="alert {{$collapsable}} alert-{{ $alertType }} @if($dismissible)alert-dismissible @endif {{ $hide }}" role="alert">

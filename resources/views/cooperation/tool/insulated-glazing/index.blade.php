@@ -38,7 +38,9 @@
                             <label class=" control-label">
                                 <i data-toggle="collapse" data-target="#user_interests_{{ $measureApplication->id }}-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                {{\App\Helpers\Translation::translate('insulated-glazing.interested-in.title.title', ['measure' => lcfirst($measureApplication->measure_name)]) }}
+                                @if(array_key_exists($measureApplication->id, $titles))
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.title.title') }}
+                                @endif
                             </label>
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
@@ -75,7 +77,9 @@
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.current-glass.title')}}
+                                    @if(array_key_exists($measureApplication->id, $titles))
+                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.current-glass.title')}}
+                                    @endif
                                 </label>
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
@@ -88,7 +92,9 @@
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.current-glass.help')}} }}
+                                    @if(array_key_exists($measureApplication->id, $titles))
+                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.current-glass.help')}}
+                                    @endif
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'))
@@ -103,7 +109,9 @@
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.heated-rooms.title')}}
+                                    @if(array_key_exists($measureApplication->id, $titles))
+                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.rooms-heated.title')}}
+                                    @endif
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
@@ -115,9 +123,10 @@
                                 </select>
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.heated-rooms.help')}}
+                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    @if(array_key_exists($measureApplication->id, $titles))
+                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.rooms-heated.help')}}
+                                    @endif
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'))
@@ -127,12 +136,14 @@
                                 @endif
                             </div>
                         </div>
-                        <div class=" col-sm-3 ">
+                        <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2') ? ' has-error' : '' }}">
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.m2.title')}}
+                                    @if(array_key_exists($measureApplication->id, $titles))
+                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.m2.title')}}
+                                    @endif
                                 </label> <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
@@ -142,7 +153,9 @@
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.m2.help')}}
+                                    @if(array_key_exists($measureApplication->id, $titles))
+                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.m2.help')}}
+                                    @endif
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2'))

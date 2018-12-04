@@ -77,7 +77,7 @@
                             "if-yes" => 
                                 [
                                     "help" => '',
-                                    "title" => '1600a7d0-8c80-4836-8d3a-ee21278c0622',
+                                    "title" => '7a497c41-11ca-4fee-96ae-aeb283720e79',
                                 ],
 
                         ],
@@ -540,18 +540,104 @@
                     "title" => '6c6d0a09-0d23-4ab7-96e7-e0a546bb53a4',
                 ],
 
-            "interested-in" => 
+            "glass-in-lead" => 
                 [
-                    "hr-++" => 
-                        [
-                            "help" => '0e17e887-3f31-4259-ad22-7b7a4c603d24',
-                            "title" => 'e7d369f3-3743-42c9-a7a8-0eb674f0db08',
-                        ],
-
                     "title" => 
                         [
-                            "help" => '30b4c69c-01da-4eb3-9348-452571707b69',
-                            "title" => '38a8bf89-5a9e-4265-aafb-b52a0e36a6b1',
+                            "help" => '',
+                            "title" => '21b469ca-898b-4ec0-9ff0-b90627c01ee0',
+                        ],
+
+                    "current-glass" => 
+                        [
+                            "help" => '',
+                            "title" => '33a4037d-50ac-4938-83dc-15fa73671efd',
+                        ],
+
+                    "rooms-heated" => 
+                        [
+                            "help" => '',
+                            "title" => 'b7873a6a-a84c-4072-90e8-540978f10438',
+                        ],
+
+                    "m2" => 
+                        [
+                            "help" => '',
+                            "title" => 'fc24af5f-9474-441f-9165-95f2386f7a51',
+                        ],
+
+                    "window-replace" => 
+                        [
+                            "help" => '',
+                            "title" => '3b6eb1b1-a894-4b21-aa67-ad789c31bc0c',
+                        ],
+
+                ],
+
+            "place-hr-only-glass" => 
+                [
+                    "title" => 
+                        [
+                            "help" => '',
+                            "title" => '7995c030-4bb1-43b9-a0a7-fd358f88e4f5',
+                        ],
+
+                    "current-glass" => 
+                        [
+                            "help" => '',
+                            "title" => 'eaff116c-cd79-411a-9d75-437562767201',
+                        ],
+
+                    "rooms-heated" => 
+                        [
+                            "help" => '',
+                            "title" => 'da6a3011-e7a8-4825-9d37-d926be40a55e',
+                        ],
+
+                    "m2" => 
+                        [
+                            "help" => '',
+                            "title" => '7f9de1a2-3f5d-4a2b-a313-b42f540852f3',
+                        ],
+
+                    "window-replace" => 
+                        [
+                            "help" => '',
+                            "title" => 'cfcca812-d422-405e-8dcf-354741f33540',
+                        ],
+
+                ],
+
+            "place-hr-with-frame" => 
+                [
+                    "title" => 
+                        [
+                            "help" => '',
+                            "title" => '53d4a2f8-5333-4b0e-96be-c72957980bc2',
+                        ],
+
+                    "current-glass" => 
+                        [
+                            "help" => '',
+                            "title" => 'dbad5850-43e7-450d-b3d5-6bcb0e2b01d1',
+                        ],
+
+                    "rooms-heated" => 
+                        [
+                            "help" => '',
+                            "title" => 'd1751f6f-e446-4a44-b3d3-3b53edca8e44',
+                        ],
+
+                    "m2" => 
+                        [
+                            "help" => '',
+                            "title" => '8fe12f9d-23b5-4e12-b344-4f7049999fb9',
+                        ],
+
+                    "window-replace" => 
+                        [
+                            "help" => '',
+                            "title" => '02cf0559-fb08-4e8d-adff-9e5fdf9b1e3e',
                         ],
 
                 ],

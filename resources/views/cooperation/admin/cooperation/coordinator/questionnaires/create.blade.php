@@ -65,7 +65,7 @@
             '</div>' +
             '</div>' +
             '<div class="panel-footer">' +
-            '<div class="row"><div class="col-sm-12"><div class="pull-left"><a href=""><i class="glyphicon glyphicon-trash"></i></a></div><div class="pull-right"><label class="control-label" for="required-{{$id}}">Verplicht <input id="required-{{$id}}" name="required[{{$id}}]" type="checkbox"></label></div></div></div>'
+            '<div class="row"><div class="col-sm-12"><div class="pull-left"><a><i class="glyphicon glyphicon-trash"></i></a></div><div class="pull-right"><label class="control-label" for="required-{{$id}}">Verplicht <input id="required-{{$id}}" name="required[{{$id}}]" type="checkbox"></label></div></div></div>'
         '</div>'
 
         var formBuildValidation = '<div class="col-sm-4">' +
@@ -162,6 +162,13 @@
             var optionalRule = validationRuleRow.find('select[name*=validation-options][id='+selectedMainRule.val()+']');
             optionalRule.show();
         });
+
+        $('body').on('click', '.glyphicon-trash', function (event) {
+            console.log('bier');
+            event.preventDefault();
+            $(this).parent().parent().parent().parent().parent().parent().remove();
+            return false;
+        }) ;
 
 
 

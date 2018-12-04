@@ -6,10 +6,12 @@
 @section('step_content')
 
     <?php
+        // we only need this for the titles above the main inputs
+        // we dont want a title above the hr3p-frames
         $titles = [
             7 => 'glass-in-lead',
-            8 => 'place-hr-only-glass',
-            9 => 'place-hr-with-frame',
+            8 => 'hrpp-glass-only',
+            9 => 'hrpp-glass-frames',
         ];
     ?>
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
@@ -26,21 +28,20 @@
                     } else {
                         $currentMeasureBuildingInsulatedGlazingForMe = [];
                     }
-
                 ?>
 
                 <div class="row">
                     <div class="col-sm-12">
+                        {{-- since there is no title / subtitle for the hr3p --}}
                         @if(array_key_exists($measureApplication->id, $titles))
-                            <h4>{{\App\Helpers\Translation::translate('insulated-glazing.subtitles.'.$titles[$measureApplication->id].'.title')}}</h4>
+                            <h4>{{\App\Helpers\Translation::translate('insulated-glazing.subtitles.'.$measureApplication->short.'.title')}}</h4>
                         @endif
+
                         <div class="form-group add-space {{$errors->has('user_interests.'.$measureApplication->id) ? 'has-error' : '' }}">
                             <label class=" control-label">
                                 <i data-toggle="collapse" data-target="#user_interests_{{ $measureApplication->id }}-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @if(array_key_exists($measureApplication->id, $titles))
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.title.title') }}
-                                @endif
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.title') }}
                             </label>
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
@@ -59,9 +60,8 @@
                                 @endforeach
                             </select>
 
-                            <div id="user_interests_{{ $measureApplication->id }}-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('insulated-glazing.interested-in.title.help')}}
+                            <div id="user_interests_{{ $measureApplication->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.help') }}
                             </div>
 
                             @if ($errors->has('user_interests.' . $measureApplication->id))
@@ -75,11 +75,8 @@
                         <div class=" col-sm-3 ">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    @if(array_key_exists($measureApplication->id, $titles))
-                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.current-glass.title')}}
-                                    @endif
+                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title')}}
                                 </label>
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
@@ -90,11 +87,8 @@
                                     </select>
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    @if(array_key_exists($measureApplication->id, $titles))
-                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.current-glass.help')}}
-                                    @endif
+                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'))
@@ -107,11 +101,8 @@
                         <div class=" col-sm-3 ">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    @if(array_key_exists($measureApplication->id, $titles))
-                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.rooms-heated.title')}}
-                                    @endif
+                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title')}}
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
@@ -124,9 +115,7 @@
                                 @endcomponent
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    @if(array_key_exists($measureApplication->id, $titles))
-                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.rooms-heated.help')}}
-                                    @endif
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'))
@@ -139,11 +128,8 @@
                         <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    @if(array_key_exists($measureApplication->id, $titles))
-                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.m2.title')}}
-                                    @endif
+                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.title')}}
                                 </label> <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
@@ -151,11 +137,8 @@
                                     <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    @if(array_key_exists($measureApplication->id, $titles))
-                                        {{\App\Helpers\Translation::translate('insulated-glazing.'.$titles[$measureApplication->id].'.m2.help')}}
-                                    @endif
+                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2'))
@@ -170,7 +153,7 @@
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.total-windows.title')}}
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.title')}}
                                 </label> <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
@@ -179,7 +162,7 @@
                                 @endcomponent
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.total-windows.help')}}
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.windows'))

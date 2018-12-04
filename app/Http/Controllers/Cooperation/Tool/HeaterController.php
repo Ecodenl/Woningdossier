@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
@@ -175,7 +176,12 @@ class HeaterController extends Controller
      */
     public function store(HeaterFormRequest $request)
     {
-        $user = Auth::user();
+
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
@@ -187,7 +193,8 @@ class HeaterController extends Controller
 
         BuildingHeater::updateOrCreate(
             [
-                'building_id' => $user->buildings()->first()->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId
             ],
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
@@ -204,7 +211,7 @@ class HeaterController extends Controller
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }

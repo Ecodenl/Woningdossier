@@ -6,6 +6,15 @@
     <section class="section">
         <div class="container">
             <div class="row">
+                <div class="col-sm-12">
+                    <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-warning">
+                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool-warning')
+                    </a>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-3">
                     <div id="tool-box" class="list-group">
                         <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i> Kort antwoord</a>
@@ -117,10 +126,22 @@
 
         });
 
+        toolBox.find('#long-answer').on('click', function () {
+            var question = sortable.find('.panel').first().find('#question');
+            var formGroup = question.find('.form-group');
+
+            formGroup.append("<input class='form-control' placeholder='Stel uw vraag waar een langer antwoord voor nodig is'>");
+            question.parent().parent().find('.validation-rules').append(formBuildValidation);
+
+            sortable.sortable('refresh');
+            $('input, select').trigger('change');
+        });
+
         toolBox.find('#dropdown').on('click', function () {
 
             var question = sortable.find('.panel').first().find('#question');
             // first we want to add one with a default value
+            question.find('.form-group').append('<input name="" placeholder="Vraag" type="text" class="form-control"><br>');
             question.find('.form-group').append('<input name="" placeholder="Optie toevoegen" value="Optie..." type="text" class="option-text form-control">');
 
             // add a new form group with input that only has a placehodler
@@ -147,9 +168,7 @@
 
                 var formGroup = $(this).parent().parent();
 
-
                 formGroup.append($(formGroupElement).append(dropdownMenuInputElement));
-
             }
         });
 
@@ -169,6 +188,15 @@
             event.preventDefault();
             $(this).parent().parent().parent().parent().parent().parent().remove();
             return false;
+        });
+
+        $('#leave-creation-tool').on('click', function (event) {
+           if (confirm('@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool-warning')')) {
+
+           } else {
+               event.preventDefault();
+               return false;
+           }
         });
 
 

@@ -113,6 +113,7 @@
             question.parent().parent().find('.validation-rules').append(formBuildValidation);
 
             sortable.sortable('refresh');
+            $('input, select').trigger('change');
 
         });
 
@@ -129,6 +130,7 @@
             question.find('.option-text').first().attr('autofocus', true);
 
             sortable.sortable('refresh')
+            $('input, select').trigger('change');
         });
 
 
@@ -164,11 +166,10 @@
         });
 
         $('body').on('click', '.glyphicon-trash', function (event) {
-            console.log('bier');
             event.preventDefault();
             $(this).parent().parent().parent().parent().parent().parent().remove();
             return false;
-        }) ;
+        });
 
 
 

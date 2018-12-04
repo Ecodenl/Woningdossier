@@ -200,12 +200,15 @@ return [
                     ],
                     'questionnaires' => [
                         'index' => [
+                            'header' => 'Alle vragenlijsten voor uw cooperatie',
                             'table' => [
                                 'columns' => [
                                     'questionnaire-name' => 'Vragenlijst naam',
                                     'step' => 'Komt na stap',
                                     'active' => 'Actief',
-                                    'actions' => 'Acties'
+                                    'actions' => 'Acties',
+                                    'see-results' => 'Bekijk resultaten',
+                                    'edit' => 'Bewerk vragenlijst',
                                 ]
                             ]
                         ]

@@ -22,6 +22,9 @@ class CreateQuestionsAnswersTable extends Migration
             $table->integer('building_id')->unsigned()->nullable();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');
 
+            $table->integer('input_source_id')->unsigned()->default("1");
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
+
             // json
             $table->longText('answers');
             $table->timestamps();

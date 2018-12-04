@@ -118,6 +118,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                     Route::group(['as' => 'questionnaires.', 'prefix' => 'custom-forms'], function () {
                         Route::get('', 'QuestionnaireController@index')->name('index');
+                        Route::get('create', 'QuestionnaireController@create')->name('create');
+                        Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
                     });
 
 

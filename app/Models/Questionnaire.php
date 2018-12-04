@@ -2,11 +2,18 @@
 
 namespace App\Models;
 
+use App\Helpers\TranslatableTrait;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Questionnaire extends Model
 {
+
+    use TranslatableTrait;
+
+    protected $casts = [
+        'is_active' => 'bool'
+    ];
     /**
      * The "booting" method of the model.
      *

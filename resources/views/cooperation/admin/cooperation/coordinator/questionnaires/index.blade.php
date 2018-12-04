@@ -3,8 +3,8 @@
 @section('coordinator_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.header')
-            <a href="{{route('cooperation.admin.cooperation.coordinator.coach.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+            @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.header')
+            <a href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
 
         <div class="panel-body">
@@ -24,10 +24,13 @@
                             <tr>
                                 <td>{{$questionnaire->name}}</td>
                                 <td>{{$questionnaire->step->name}}</td>
-                                <td><i class="glyphicon glyphicon-{{$questionnaire->isActive() ? 'check' : 'remove'}}"></i></td>
+                                <td>
+                                    <input id="toggle-active" data-questionnaire-id="{{$questionnaire->id}}" data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}"type="checkbox"  data-toggle="toggle"  data-on="Actief" data-off="Niet actief">
+                                </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-danger">Bier</button>
+                                        <button class="btn btn-success">@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.see-results')</button>
+                                        <button class="btn btn-success">@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.edit')</button>
                                     </div>
                                 </td>
                             </tr>
@@ -45,10 +48,35 @@
 
 
 @push('css')
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/datatables.min.css')}}">
+    <link href="{{asset('css/bootstrap-toggle.min.css')}}" rel="stylesheet">
+
+
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/datatables.min.css')}}">
     @push('js')
+        <script src="{{asset('js/bootstrap-toggle.min.js')}}"></script>
+
         <script>
+
             $(document).ready(function () {
+                var toggleActive = $('#toggle-active');
+
+                $(toggleActive).bootstrapToggle(toggleActive.data('active'));
+
+                toggleActive.change(function () {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: "post",
+                        url: '{{route('cooperation.admin.cooperation.coordinator.questionnaires.set-active')}}',
+                        data: {
+                            questionnaire_active: $(this).prop('checked'),
+                            questionnaire_id: $(this).data('questionnaire-id')
+                        }
+                    }).done(function () {
+                        console.log('bier!');
+                    })
+                });
                 $('table').DataTable(
                     {
                         language: {

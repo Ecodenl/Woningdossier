@@ -197,6 +197,18 @@ return [
                             'success' => 'Gebruiker is verwijderd'
                         ]
                     ],
+                    'questionnaires' => [
+                        'index' => [
+                            'table' => [
+                                'columns' => [
+                                    'questionnaire-name' => 'Vragenlijst naam',
+                                    'step' => 'Komt na stap',
+                                    'active' => 'Actief',
+                                    'actions' => 'Acties'
+                                ]
+                            ]
+                        ]
+                    ],
                     'index' => [
                         'header' => 'Coordinator hoofdpagina - overzicht van alle gebruikers voor uw cooperatie',
                         'text' => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',

@@ -115,6 +115,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
+                    Route::group(['as' => 'questionnaires.', 'prefix' => 'custom-forms'], function () {
+                        Route::get('', 'QuestionnaireController@index')->name('index');
+                    });
+
 
                     // needs to be the last route due to the param
                     Route::get('{role_name?}', 'CoordinatorController@index')->name('index');

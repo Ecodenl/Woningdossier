@@ -177,6 +177,10 @@ class RoofInsulationController extends Controller
         }
 
         foreach (array_keys($result) as $roofCat) {
+	        $isBitumenOnPitchedRoof = $roofCat == 'pitched' && $results['pitched']['type'] == 'bitumen';
+	        // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
+	        $isBitumenRoof = !in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
+
             $measureApplicationId = $request->input('building_roof_types.'.$roofCat.'.measure_application_id', 0);
             if ($measureApplicationId > 0) {
                 // results in an advice
@@ -191,7 +195,11 @@ class RoofInsulationController extends Controller
                             $interest = Interest::find($interestId);
 
                             if (1 == $interest->calculate_value) {
-                                $advicedYear = date('Y');
+                            	// on short term: this year
+                                $advicedYear = Carbon::now()->year;
+                            } elseif($interest->calculate_value == 2) {
+                            	// on term: this year + 5
+                            	$advicedYear = Carbon::now()->year + 5;
                             } else {
                                 $advicedYear = $results[$roofCat]['replace']['year'];
                             }
@@ -264,7 +272,7 @@ class RoofInsulationController extends Controller
                     }
                 }
             }
-            if (array_key_exists('bitumen_replaced_date', $extra)) {
+            if ($isBitumenRoof && array_key_exists('bitumen_replaced_date', $extra)) {
                 $bitumenReplaceYear = (int) $extra['bitumen_replaced_date'];
                 if ($bitumenReplaceYear <= 0){
                 	$bitumenReplaceYear = Carbon::now()->year - 10;
@@ -338,7 +346,22 @@ class RoofInsulationController extends Controller
             $surface = $roofTypes[$cat]['insulation_roof_surface'] ?? 0;
             $heating = null;
             // should take the bitumen field
-            $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
+
+	        // A pitched roof with bitumen could be the case earlier on.
+	        // Not sure if this can never be the case again in the future, but
+	        // we account for it in this function. Therefor we have to calculate
+	        // a little bit differently in the case of a pitched roof covered
+	        // in bitumen instead of roof tiles
+	        $isBitumenOnPitchedRoof = $cat == 'pitched' && $result['pitched']['type'] == 'bitumen';
+	        // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
+	        $isBitumenRoof = !in_array($cat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
+
+	        if ($isBitumenRoof){
+		        $year = isset( $roofTypes[ $cat ]['extra']['bitumen_replaced_date'] ) ? (int) $roofTypes[ $cat ]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
+	        }
+	        else {
+		        $year = Carbon::now()->year;
+	        }
 
             // default, changes only for roof tiles effect
             $factor = 1;
@@ -363,6 +386,7 @@ class RoofInsulationController extends Controller
             }
 
             if (isset($roofTypes[$cat]['element_value_id'])) {
+            	// Current roof insulation level
                 $roofInsulationValue = ElementValue::where('element_id', $roofInsulation->id)->where('id', $roofTypes[$cat]['element_value_id'])->first();
 
                 if ($roofInsulationValue instanceof ElementValue && $heating instanceof BuildingHeating && isset($advice)) {
@@ -376,8 +400,9 @@ class RoofInsulationController extends Controller
                 }
             }
 
+            // If tiles condition is set, use the status to calculate the replace moment
             $tilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? (int) $roofTypes[$cat]['extra']['tiles_condition'] : null;
-            if (! is_null($tilesCondition)) {
+            if (!is_null($tilesCondition)) {
                 $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
                 // no year here. Default is this year. It is incremented by factor * maintenance years
                 $year = Carbon::now()->year;
@@ -387,11 +412,10 @@ class RoofInsulationController extends Controller
                 }
             }
 
-            $bitumenReplaceYear = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : null;
-            if (! is_null($bitumenReplaceYear)) {
-                $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
-                // no percentages here. We just do this to keep the determineApplicationYear definition in one place
-                $year = $bitumenReplaceYear;
+            if ($isBitumenRoof){
+            	// If it is a bitumen roof, $year is already set to the best
+	            // value.
+            	$replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
             }
 
             if (isset($replaceMeasure)) {

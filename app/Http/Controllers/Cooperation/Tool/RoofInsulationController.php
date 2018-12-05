@@ -210,7 +210,7 @@ class RoofInsulationController extends Controller
                     $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc')->first();
 
                     $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
-                    $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $surface, $year);
+                    $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
                     $actionPlanAdvice->user()->associate(Auth::user());
@@ -232,7 +232,7 @@ class RoofInsulationController extends Controller
                         $factor = ($roofTilesStatus->calculate_value / 100);
 
                         $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                        $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year);
+                        $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                         $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
                         $actionPlanAdvice->user()->associate(Auth::user());
@@ -253,7 +253,7 @@ class RoofInsulationController extends Controller
                     $factor = 1;
 
                     $year = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                    $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year);
+                    $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
                     $actionPlanAdvice->user()->associate(Auth::user());
@@ -344,7 +344,7 @@ class RoofInsulationController extends Controller
                     $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $roofInsulationValue, $user->energyHabit, $heating, $surface, $totalSurface, $advice);
                     $catData['savings_co2'] = Calculator::calculateCo2Savings($catData['savings_gas']);
                     $catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));
-                    $catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice->measure_name);
+                    $catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice);
                     $catData['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
                     // The replace year is about the replacement of bitumen..
                     $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($objAdvice, $year, $factor);
@@ -371,7 +371,7 @@ class RoofInsulationController extends Controller
 
             if (isset($replaceMeasure)) {
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year']);
+                $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);
             }
 
             $result[$cat] = array_merge($result[$cat], $catData);

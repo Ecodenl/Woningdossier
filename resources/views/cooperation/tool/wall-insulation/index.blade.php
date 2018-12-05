@@ -14,19 +14,6 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
 
-                        @if(isset($building->buildingFeatures->build_year))
-                        <label for="house_has_insulation" class=" control-label">
-                            @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year', ['year' => $building->buildingFeatures->build_year])
-                            @if($building->buildingFeatures->build_year >= 1985)
-                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1985')
-                            @elseif($building->buildingFeatures->build_year >= 1930)
-                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1930')
-                            @else
-                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-pre-1930')
-                            @endif
-                        </label>
-                        @endif
-
                         <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation')</label>
 
                         <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
@@ -63,6 +50,23 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
+
+
+                        @if(isset($building->buildingFeatures->build_year))
+                            <label for="house_has_insulation" class=" control-label">
+                                @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year', ['year' => $building->buildingFeatures->build_year])
+                                @if($building->buildingFeatures->build_year >= 1985)
+                                    @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1985')
+                                @elseif($building->buildingFeatures->build_year >= 1930)
+                                    @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-post-1930')
+                                @else
+                                    @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year-pre-1930')
+                                @endif
+                            </label>
+                        @endif
+                        <br>
+
+
                         <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
 
                         <label class="radio-inline">

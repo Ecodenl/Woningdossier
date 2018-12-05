@@ -471,6 +471,7 @@
                     @endforeach
 
                 </div>
+        </div>
 
             @foreach(['flat', 'pitched'] as $roofCat)
                 @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('resident'))
@@ -528,7 +529,7 @@
                 </div>
             </div>
         </div>
-
+    </form>
 @endsection
 
 @push('js')

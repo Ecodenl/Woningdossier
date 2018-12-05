@@ -388,11 +388,10 @@ class RoofInsulationController extends Controller
                 }
             }
 
-            $bitumenReplaceYear = ($isBitumenRoof && isset($roofTypes[$cat]['extra']['bitumen_replaced_date'])) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : null;
-            if (!is_null($bitumenReplaceYear)) {
-                $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
-                // no percentages here. We just do this to keep the determineApplicationYear definition in one place
-                $year = $bitumenReplaceYear;
+            if ($isBitumenRoof){
+            	// If it is a bitumen roof, $year is already set to the best
+	            // value.
+            	$replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
             }
 
             if (isset($replaceMeasure)) {

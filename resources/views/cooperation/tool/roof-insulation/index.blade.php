@@ -545,13 +545,11 @@
                 }
             });
 
-            $('select[name*=element_value_id]').trigger('change')
+            $('select[name*=element_value_id]').trigger('change');
 
             $("select, input[type=radio], input[type=text], input[type=number], input[type=checkbox]").change(formChange);
 
             function formChange(){
-
-
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
@@ -681,7 +679,7 @@
             var interestedCalculateValue = $('#interest_element_{{$roofInsulation->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $(this).find(':selected').data('calculate-value');
 
-            if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
+            if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
                 if ($(this).attr('name').includes('flat')) {
                     $('.flat-hideable').hide();
                     $('#flat-info-alert').find('.alert').removeClass('hide');
@@ -699,8 +697,7 @@
                 }
             }
 
-        })
-
+        });
 
     </script>
 @endpush

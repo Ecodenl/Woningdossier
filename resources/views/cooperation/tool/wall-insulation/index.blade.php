@@ -307,22 +307,23 @@
                 </div>
             </div>
 
-            <div class="row" id="advice-help">
-                <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-info" role="alert">
-                        <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
-                        <p id="insulation-advice"></p>
+            <div class="hideable">
+                <div class="row" id="advice-help">
+                    <div class="col-sm-12 col-md-8 col-md-offset-2">
+                        <div class="alert alert-info" role="alert">
+                            <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
+                            <p id="insulation-advice"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="cavity-wall-alert" style="display: none;">
+                    <div class="col-sm-12 col-md-8 col-md-offset-2">
+                        <div class="alert alert-warning" role="alert">
+                            <b><p>{{\App\Helpers\Translation::translate('wall-insulation.alert.description.title')}}</p></b>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" id="cavity-wall-alert" style="display: none;">
-                <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-warning" role="alert">
-                        <b><p>{{\App\Helpers\Translation::translate('wall-insulation.alert.description.title')}}</p></b>
-                    </div>
-                </div>
-            </div>
-
 
 
 
@@ -540,14 +541,15 @@
 
                if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
                    $('.hideable').hide();
-                   $('#wall-insulation-info-alert').find('.alert').removeClass('hide')
+                   $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
                } else {
                    $('.hideable').show();
-                   $('#wall-insulation-info-alert').find('.alert').addClass('hide')
+                   $('#wall-insulation-info-alert').find('.alert').addClass('hide');
+
                }
 
                var form = $(this).closest("form").serialize();
-              $.ajax({
+               $.ajax({
                   type: "POST",
                   url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                   data: form,
@@ -631,8 +633,9 @@
                         console.log(data);
                       @endif
                   }
-              })
+               });
             });
+
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
 

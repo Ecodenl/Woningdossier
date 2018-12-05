@@ -5,43 +5,49 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-warning">
-                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool')
-                    </a>
-                    <br>
-                    <br>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <div id="tool-box" class="list-group">
-                        <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i> Kort antwoord</a>
-                        <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>  Alinea</a>
-                        <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i>  Meerkeuze</a>
-                        <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i>  Selectievakjes</a>
-                        <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i>  Dropdownmenu</a>
-                        <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>  Datum</a>
-                        <a href="#" id="time" class="list-group-item"><i class="glyphicon glyphicon-time"></i>  Tijd</a>
+            <form action="{{route('cooperation.admin.cooperation.coordinator.questionnaires.store')}}" method="post">
+                {{csrf_field()}}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-warning">
+                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool')
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="submit" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-primary pull-right">
+                            Opslaan
+                        </button>
                     </div>
                 </div>
-                <div class="col-md-9">
-                    <div class="panel">
-                        <div class="panel-body" >
-                            <div id="sortable">
-{{--                                @foreach([1,2,3] as $number)--}}
-{{--                                    @component('form-build-panel', ['id' => $number])--}}
-                                        {{--<div class="form-group">--}}
-                                            {{--<input id="f" name="" placeholder="Vraag" type="text" class="form-control">--}}
-                                        {{--</div>--}}
-                                    {{--@endcomponent--}}
-                                {{--@endforeach--}}
+                <div class="row alert-top-space">
+                    <div class="col-md-3">
+                        <div id="tool-box" class="list-group">
+                            <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i> Kort antwoord</a>
+                            <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>  Alinea</a>
+                            <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i>  Meerkeuze</a>
+                            <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i>  Selectievakjes</a>
+                            <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i>  Dropdownmenu</a>
+                            <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>  Datum</a>
+                            <a href="#" id="time" class="list-group-item"><i class="glyphicon glyphicon-time"></i>  Tijd</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="panel">
+                            <div class="panel-body" >
+                                <div id="sortable">
+                                    @forelse($questionnaire->questions as $question)
+                                        @component('cooperation.admin.cooperation.coordinator.questionnaires.layouts.form-build-panel', ['question' => $question])
+
+                                        @endcomponent
+                                    @empty
+
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </section>
 @endsection
@@ -59,9 +65,9 @@
                 '<div class="panel-body">' +
                     '<div class="row">' +
                         '<div class="col-sm-12" id="question">' +
-                            '<div class="form-group">' +
+                            // '<div class="form-group">' +
 
-                            '</div>' +
+                            // '</div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="row validation-rules">' +
@@ -85,7 +91,7 @@
         var formBuildValidation =
             '<div class="col-sm-4">' +
                 '<div class="form-group">' +
-                    '<select class="validation form-control" name="validation[]" id="">' +
+                    '<select class="validation form-control" name="questions[new][][validation]" id="">' +
                         '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)' +
                             '<option value="{{$rule}}">{{$translation}}</option>' +
                         '@endforeach' +
@@ -95,7 +101,7 @@
             '<div class="col-sm-4">' +
                 '<div class="form-group">' +
                     '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)' +
-                        '<select class="form-control" name="validation-options[]" id="{{$rule}}">' +
+                        '<select class="form-control" name="questions[new][][validation-options]" id="{{$rule}}">' +
                         '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.optional-rules.".$rule) as $optionalRule => $optionalRuleTranslation)' +
                             '<option value="{{$optionalRule}}">{{$optionalRuleTranslation}}</option>' +
                         '@endforeach' +
@@ -108,7 +114,16 @@
         var sortable = $('#sortable');
         var toolBox = $('#tool-box');
         var formGroupElement = '<div class="form-group"></div>';
+        var inputGroupElement = '<div class="input-group"></div>';
+
         var requiredCheckboxLabel = $('<label>').addClass('control-label').text('Verplicht ');
+
+        var supportedLocales = [];
+
+        // created two pushes, but it works.
+        @foreach(config('woningdossier.supported_locales') as $locale)
+        supportedLocales.push('{{$locale}}');
+        @endforeach
 
         // we will increment the questionId each time a new panel / question is added
         // so we can use it in the name off the input and retrieve it as array in the request later on
@@ -133,10 +148,8 @@
         toolBox.find('#short-answer').on('click', function () {
             var questionPanel = sortable.find('.panel').first();
             var question = questionPanel.find('#question');
-            var formGroup = question.find('.form-group');
             var panelFooter = questionPanel.find('.panel-footer');
             var questionType = "text";
-            var fullQuestionName = 'question['+questionId+']['+questionType+']';
             questionId++;
 
 
@@ -145,17 +158,31 @@
                 for: 'required-'+questionId
             });
 
-            var textInput = $('<input>').addClass('form-control').attr({
-                placeholder: 'Vraag',
-                name: fullQuestionName,
-                type: questionType
+            $(supportedLocales).each(function (index, locale) {
+                var fullQuestionName = 'questions[new][][question]['+locale+']';
+                var hiddenInputWithInputTypeName = 'questions[new][][question]['+locale+']';
+                var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(question);
+
+                var hiddenInputWithInputType = $('<input>').attr({
+                    name: hiddenInputWithInputTypeName,
+                    type: 'hidden'
+                });
+
+                var textInput = $('<input>').addClass('form-control').attr({
+                    placeholder: 'Vraag',
+                    name: fullQuestionName,
+                    type: questionType
+                });
+
+                formGroup.find('.input-group').append(textInput);
+                formGroup.find('.input-group').append(hiddenInputWithInputType);
             });
-            formGroup.append(textInput);
+
 
             var requiredCheckbox = $('<input>').addClass('control-label').attr({
                 id: 'required-'+questionId+'',
                 type: 'checkbox',
-                name: 'required['+questionId+']'
+                name: 'questions[new][][required]'
             });
 
             panelFooter.find('.pull-right').append(requiredCheckboxLabel);

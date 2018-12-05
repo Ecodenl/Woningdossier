@@ -19,6 +19,9 @@ class CreateQuestionsTable extends Migration
             $table->string('name');
             $table->string('type');
 
+            $table->tinyInteger('order')->default(0);
+            $table->integer('required')->default(0);
+
             $table->integer('questionnaire_id')->unsigned();
             $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('cascade');
 

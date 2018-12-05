@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,9 +17,21 @@ class QuestionnaireController extends Controller
         return view('cooperation.admin.cooperation.coordinator.questionnaires.index', compact('questionnaires'));
     }
 
+    public function edit(Cooperation $cooperation, $questionnaireId)
+    {
+        $questionnaire = Questionnaire::find($questionnaireId);
+
+        return view('cooperation.admin.cooperation.coordinator.questionnaires.questionnaire-editor', compact('questionnaire'));
+    }
+
     public function create()
     {
         return view('cooperation.admin.cooperation.coordinator.questionnaires.create');
+    }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
     }
 
     /**

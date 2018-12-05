@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Translation;
+use Illuminate\Support\Collection;
 
 trait TranslatableTrait
 {
@@ -23,6 +24,17 @@ trait TranslatableTrait
     }
 
     /**
+     * Returns the original value of the attribute to "bypass" the getAttribute method.
+     *
+     * @param $attribute
+     * @return string
+     */
+    public function getOriginalAttributeValue($attribute) : string
+    {
+        return parent::getAttribute($attribute);
+    }
+
+    /**
      * Check if a given string is a valid UUID.
      *
      * @param string $uuid The string to check
@@ -39,7 +51,7 @@ trait TranslatableTrait
     }
 
     /**
-     * @param string      $attribute Model attribute
+     * @param string      $attribute Model attribute ? value of the attribute ??
      * @param null|string $lang      Locale to translate to
      *
      * @return mixed|string
@@ -148,5 +160,19 @@ trait TranslatableTrait
         return $query->where('translations.language', '=', $locale)
                     ->where('translations.translation', '=', $name)
                     ->join('translations', $this->getTable().'.'.$attribute, '=', 'translations.key');
+    }
+
+
+    /**
+     * Return all the translations that are available in a collection
+     *
+     * @param string $attribute default 'name' since this is the most common used field
+     *
+     * @return Collection
+     */
+    public function getAllTranslations(string $attribute = 'name') : Collection
+    {
+        // we use parent::getAttribute or it would return the translated text
+        return Translation::where('key', parent::getAttribute($attribute))->get();
     }
 }

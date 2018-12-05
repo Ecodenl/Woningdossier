@@ -9,7 +9,7 @@
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('solar-panels.title.title')}}</h4>
+                    @include('cooperation.layouts.section-title', ['translationKey' => 'solar-panels.title'])
                 </div>
             </div>
             <div class="row">
@@ -181,62 +181,56 @@
 
             <div id="indication-for-costs">
                 <hr>
-                <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.title.title')}}</h4>
+                @include('cooperation.layouts.section-title', [
+                    'translationKey' => 'solar-panels.indication-for-costs.title',
+                    'infoAlertId' => 'indication-for-costs-info'
+                ])
 
                 <div id="costs" class="row">
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.title')}}</label>
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#yield-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.title')}}
+                            </label>
                             <div class="input-group">
                                 <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="yield_electricity" class="form-control disabled" disabled="" value="0">
                             </div>
+                            <div id="yield-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.help')}}
+                            </div>
                         </div>
                     </div>
+
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title')}}</label>
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#raise-own-consumption-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title')}}
+                            </label>
                             <div class="input-group">
                                 <span class="input-group-addon">%</span>
                                 <input type="text" id="raise_own_consumption" class="form-control disabled" disabled="" value="0">
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
+                            <div id="raise-own-consumption-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.help')}}
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">€ / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.co2')
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.indicative-costs')
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.comparable-rent')
                     </div>
                 </div>
             </div>

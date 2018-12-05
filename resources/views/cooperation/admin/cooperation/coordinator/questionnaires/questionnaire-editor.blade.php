@@ -17,11 +17,9 @@
                         <button type="submit" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-primary pull-right">
                             Opslaan
                         </button>
-                   sdf </div>
+                    </div>
                 </div>
-                dsf
-                sdasidugadfdfs
-                dfsdfsdf
+                <!-- comment -->
                 <div class="row alert-top-space">
                     <div class="col-md-3">
                         <div id="tool-box" class="list-group">

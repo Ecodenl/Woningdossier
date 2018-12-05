@@ -419,33 +419,33 @@
                 </div>
             </div>
         </div>
-    </form>
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')))))}}</a></li>
+                            <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Dakisolatie.pdf"; ?>
+                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">@lang('default.buttons.download')</div>
-                <div class="panel-body">
-                    <ol>
-                        <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')))))}}</a></li>
-                        <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Dakisolatie.pdf"; ?>
-                        <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
-
-                    </ol>
+                        </ol>
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <div class="form-group add-space">
-                <div class="">
-                    <a class="btn btn-success pull-left" href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                    <button type="submit" class=" btn btn-primary pull-right">
-                        @lang('default.buttons.next')
-                    </button>
+                <hr>
+                <div class="form-group add-space">
+                    <div class="">
+                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                        <button type="submit" class="btn btn-primary pull-right">
+                            @lang('default.buttons.next')
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+    </form>
 @endsection
 
 @push('js')
@@ -459,13 +459,11 @@
                 }
             });
 
-            $('select[name*=element_value_id]').trigger('change')
+            $('select[name*=element_value_id]').trigger('change');
 
             $("select, input[type=radio], input[type=text], input[type=number], input[type=checkbox]").change(formChange);
 
             function formChange(){
-
-
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
@@ -613,8 +611,7 @@
                 }
             }
 
-        })
-
+        });
 
     </script>
 @endpush

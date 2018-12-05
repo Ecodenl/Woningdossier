@@ -9,6 +9,10 @@ class Question extends Model
 {
     use TranslatableTrait;
 
+    protected $fillable = [
+        'name', 'type', 'order', 'required', 'questionnaire_id'
+    ];
+
     protected $casts = [
         'required' => 'bool'
     ];

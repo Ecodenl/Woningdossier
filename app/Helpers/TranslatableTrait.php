@@ -24,17 +24,6 @@ trait TranslatableTrait
     }
 
     /**
-     * Returns the original value of the attribute to "bypass" the getAttribute method.
-     *
-     * @param $attribute
-     * @return string
-     */
-    public function getOriginalAttributeValue($attribute) : string
-    {
-        return parent::getAttribute($attribute);
-    }
-
-    /**
      * Check if a given string is a valid UUID.
      *
      * @param string $uuid The string to check
@@ -51,7 +40,7 @@ trait TranslatableTrait
     }
 
     /**
-     * @param string      $attribute Model attribute ? value of the attribute ??
+     * @param string      $attribute Model attribute
      * @param null|string $lang      Locale to translate to
      *
      * @return mixed|string
@@ -71,6 +60,7 @@ trait TranslatableTrait
 
         return $translation->translation;
     }
+
 
     public function getTranslations($key)
     {

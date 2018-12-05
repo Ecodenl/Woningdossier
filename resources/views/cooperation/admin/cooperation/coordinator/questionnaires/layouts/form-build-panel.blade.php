@@ -12,6 +12,7 @@
                     @case('select')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
                     @break
+
                 @endswitch
 
 

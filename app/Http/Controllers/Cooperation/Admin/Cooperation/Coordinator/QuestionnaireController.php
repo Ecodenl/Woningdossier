@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Models\Cooperation;
+use App\Models\Question;
+use App\Models\QuestionInput;
 use App\Models\Questionnaire;
+use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Symfony\Component\Console\Question\Question;
+use Ramsey\Uuid\Uuid;
 
 class QuestionnaireController extends Controller
 {
@@ -31,7 +34,93 @@ class QuestionnaireController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $questionnaireId = $request->get('questionnaire_id');
+
+        if ($request->has('questions.new')) {
+            $newQuestions = $request->input('questions.new');
+
+            // for now, later we will use the panel move drag drop shit to order.
+            $order = 0;
+            foreach ($newQuestions as $newQuestion) {
+                $order++;
+                $questionType = $newQuestion['type'];
+
+                if ($questionType == 'text') {
+                    $required = false;
+
+                    if (array_key_exists('required', $newQuestion)) {
+                        $required = true;
+                    }
+
+                    $uuid = Uuid::uuid4();
+
+                    Question::create([
+                        'name' => $uuid,
+                        'type' => $questionType,
+                        'order' => $order,
+                        'required' => $required,
+                        'questionnaire_id' => $questionnaireId
+                    ]);
+
+                    // multiple translations can be available
+                    foreach ($newQuestion['question'] as $locale => $question) {
+                        // the uuid we will put in the key for the translation and set in the question name column-
+                        Translation::create([
+                            'key' => $uuid,
+                            'translation' => $question,
+                            'language' => $locale
+                        ]);
+                    }
+                } elseif ($questionType == 'select') {
+                    $required = false;
+
+                    if (array_key_exists('required', $newQuestion)) {
+                        $required = true;
+                    }
+
+                    $questionNameUUid = Uuid::uuid4();
+
+                    $createdQuestion = Question::create([
+                        'name' => $questionNameUUid,
+                        'type' => $questionType,
+                        'order' => $order,
+                        'required' => $required,
+                        'questionnaire_id' => $questionnaireId
+                    ]);
+
+                    // multiple translations can be available
+                    foreach ($newQuestion['question'] as $locale => $question) {
+                        // the uuid we will put in the key for the translation and set in the question name column-
+                        Translation::create([
+                            'key' => $questionNameUUid,
+                            'translation' => $question,
+                            'language' => $locale
+                        ]);
+                    }
+                    $optionNameUuid = Uuid::uuid4();
+
+                    // atm i know it works but dont know why
+                    // TODO: add comments that make sense
+                    // reeds refrtor to question options
+                    QuestionInput::create([
+                        'question_id' => $createdQuestion->id,
+                        'name' => $optionNameUuid,
+                    ]);
+                    foreach ($newQuestion['options'] as $locale => $options) {
+
+                        foreach ($options as $option) {
+                            if (!empty($option)) {
+                                Translation::create([
+                                    'key' => $optionNameUuid,
+                                    'translation' => $option,
+                                    'language' => $locale
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

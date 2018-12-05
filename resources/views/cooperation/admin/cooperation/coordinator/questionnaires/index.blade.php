@@ -30,7 +30,7 @@
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn btn-success">@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.see-results')</button>
-                                        <button class="btn btn-success">@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.edit')</button>
+                                        <a class="btn btn-success" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.edit', ['id' => $questionnaire->id])}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.edit')</a>
                                     </div>
                                 </td>
                             </tr>

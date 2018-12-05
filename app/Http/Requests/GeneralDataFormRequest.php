@@ -93,7 +93,7 @@ class GeneralDataFormRequest extends FormRequest
             'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
             'heating_second_floor' => 'required|numeric|exists:building_heatings,id',
             'water_comfort' => 'numeric|exists:comfort_level_tap_waters,id',
-            'amount_electricity' => 'nullable|numeric',
+            'amount_electricity' => 'required|numeric',
             'amount_gas' => 'required|numeric',
             'motivation.*' => 'numeric',
         ];

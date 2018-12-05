@@ -139,11 +139,6 @@
             var fullQuestionName = 'question['+questionId+']['+questionType+']';
             questionId++;
 
-
-            var cbl = requiredCheckboxLabel.clone().attr({
-                for: 'required-'+questionId
-            });
-
             var textInput = $('<input>').addClass('form-control').attr({
                 placeholder: 'Vraag',
                 name: fullQuestionName,
@@ -151,6 +146,9 @@
             });
             formGroup.append(textInput);
 
+            var cbl = requiredCheckboxLabel.clone().attr({
+                for: 'required-'+questionId
+            });
             var requiredCheckbox = $('<input>').addClass('control-label').attr({
                 id: 'required-'+questionId+'',
                 type: 'checkbox',
@@ -159,7 +157,6 @@
 
             panelFooter.find('.pull-right').html(cbl);
             requiredCheckbox.appendTo(panelFooter.find('.pull-right > label'));
-
 
             sortable.sortable('refresh');
             $('input, select').trigger('change');

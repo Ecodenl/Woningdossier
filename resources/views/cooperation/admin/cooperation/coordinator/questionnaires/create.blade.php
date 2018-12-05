@@ -175,8 +175,11 @@
         });
 
         toolBox.find('#dropdown').on('click', function () {
+            //var question = sortable.find('.panel').first().find('.question');
+            var questionPanel = sortable.find('.panel').first();
+            var question = questionPanel.find('.question').attr('id', questionId);
+            var panelFooter = questionPanel.find('.panel-footer');
 
-            var question = sortable.find('.panel').first().find('.question');
             // first we want to add one with a default value
             question.find('.form-group').append('<input name="" placeholder="Vraag" type="text" class="form-control"><br>');
             question.find('.form-group').append('<input name="" placeholder="Optie toevoegen" value="Optie..." type="text" class="option-text form-control">');
@@ -186,6 +189,18 @@
 
             // now let it autofocus to the first option input
             question.find('.option-text').first().attr('autofocus', true);
+
+            var cbl = requiredCheckboxLabel.clone().attr({
+                for: 'required-'+questionId
+            });
+            var requiredCheckbox = $('<input>').addClass('control-label').attr({
+                id: 'required-'+questionId+'',
+                type: 'checkbox',
+                name: 'required['+questionId+']'
+            });
+
+            panelFooter.find('.pull-right').html(cbl);
+            requiredCheckbox.appendTo(panelFooter.find('.pull-right > label'));
 
             sortable.sortable('refresh');
             $('input, select').trigger('change');

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Models\Cooperation;
+use App\Models\Question;
 use App\Models\Questionnaire;
+use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Symfony\Component\Console\Question\Question;
+use Ramsey\Uuid\Uuid;
 
 class QuestionnaireController extends Controller
 {
@@ -31,7 +33,72 @@ class QuestionnaireController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $questionnaireId = $request->get('questionnaire_id');
+
+        if ($request->has('questions.new')) {
+            $newQuestions = $request->input('questions.new');
+
+            // for now, later we will use the panel move drag drop shit to order.
+            $order = 0;
+            foreach ($newQuestions as $newQuestion) {
+                $order++;
+                $questionType = $newQuestion['type'];
+
+                if ($questionType == 'text') {
+                    $required = false;
+
+                    if (array_key_exists('required', $newQuestion)) {
+                        $required = true;
+                    }
+
+                    $uuid = Uuid::uuid4();
+
+                    Question::create([
+                        'name' => $uuid,
+                        'type' => $questionType,
+                        'order' => $order,
+                        'required' => $required,
+                        'questionnaire_id' => $questionnaireId
+                    ]);
+
+                    // multiple translations can be available
+                    foreach ($newQuestion['question'] as $locale => $question) {
+                        // the uuid we will put in the key for the translation and set in the question name column-
+                        Translation::create([
+                            'key' => $uuid,
+                            'translation' => $question,
+                            'language' => $locale
+                        ]);
+                    }
+                } elseif ($questionType == 'select') {
+                    $required = false;
+
+                    if (array_key_exists('required', $newQuestion)) {
+                        $required = true;
+                    }
+
+                    $uuid = Uuid::uuid4();
+
+                    Question::create([
+                        'name' => $uuid,
+                        'type' => $questionType,
+                        'order' => $order,
+                        'required' => $required,
+                        'questionnaire_id' => $questionnaireId
+                    ]);
+
+                    // multiple translations can be available
+                    foreach ($newQuestion['question'] as $locale => $question) {
+                        // the uuid we will put in the key for the translation and set in the question name column-
+                        Translation::create([
+                            'key' => $uuid,
+                            'translation' => $question,
+                            'language' => $locale
+                        ]);
+                    }
+                }
+            }
+        }
     }
 
     /**

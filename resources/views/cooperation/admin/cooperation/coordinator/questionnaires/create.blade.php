@@ -18,12 +18,12 @@
                 <div class="col-md-3">
                     <div id="tool-box" class="list-group">
                         <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i> Kort antwoord</a>
-                        <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>  Alinea</a>
-                        <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i>  Meerkeuze</a>
-                        <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i>  Selectievakjes</a>
-                        <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i>  Dropdownmenu</a>
-                        <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>  Datum</a>
-                        <a href="#" id="time" class="list-group-item"><i class="glyphicon glyphicon-time"></i>  Tijd</a>
+                        <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i> Alinea</a>
+                        <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i> Meerkeuze</a>
+                        <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> Selectievakjes</a>
+                        <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> Dropdownmenu</a>
+                        <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i> Datum</a>
+                        <a href="#" id="time" class="list-group-item"><i class="glyphicon glyphicon-time"></i> Tijd</a>
                     </div>
                 </div>
                 <div class="col-md-9">
@@ -47,18 +47,18 @@
 @endsection
 @push('css')
     <link href="{{asset('css/bootstrap-toggle.min.css')}}" rel="stylesheet">
+@endpush
 @push('js')
 
-
     <script src="{{asset('js/bootstrap-toggle.min.js')}}"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
         var formBuildPanel =
             '<div class="form-builder panel panel-default">' +
                 '<div class="panel-body">' +
                     '<div class="row">' +
-                        '<div class="col-sm-12" id="question">' +
+                        '<div class="col-sm-12 question">' +
                             '<div class="form-group">' +
 
                             '</div>' +
@@ -132,7 +132,7 @@
 
         toolBox.find('#short-answer').on('click', function () {
             var questionPanel = sortable.find('.panel').first();
-            var question = questionPanel.find('#question');
+            var question = questionPanel.find('.question').attr('id', questionId);
             var formGroup = question.find('.form-group');
             var panelFooter = questionPanel.find('.panel-footer');
             var questionType = "text";
@@ -140,8 +140,7 @@
             questionId++;
 
 
-            // add the for attr to the label, so when a user clicks the label the checkbox will check
-            requiredCheckboxLabel.attr({
+            var cbl = requiredCheckboxLabel.clone().attr({
                 for: 'required-'+questionId
             });
 
@@ -158,7 +157,7 @@
                 name: 'required['+questionId+']'
             });
 
-            panelFooter.find('.pull-right').append(requiredCheckboxLabel);
+            panelFooter.find('.pull-right').html(cbl);
             requiredCheckbox.appendTo(panelFooter.find('.pull-right > label'));
 
 
@@ -168,7 +167,7 @@
         });
 
         toolBox.find('#long-answer').on('click', function () {
-            var question = sortable.find('.panel').first().find('#question');
+            var question = sortable.find('.panel').first().find('.question');
             var formGroup = question.find('.form-group');
 
             formGroup.append("<input class='form-control' placeholder='Stel uw vraag waar een langer antwoord voor nodig is'>");
@@ -180,7 +179,7 @@
 
         toolBox.find('#dropdown').on('click', function () {
 
-            var question = sortable.find('.panel').first().find('#question');
+            var question = sortable.find('.panel').first().find('.question');
             // first we want to add one with a default value
             question.find('.form-group').append('<input name="" placeholder="Vraag" type="text" class="form-control"><br>');
             question.find('.form-group').append('<input name="" placeholder="Optie toevoegen" value="Optie..." type="text" class="option-text form-control">');
@@ -191,7 +190,7 @@
             // now let it autofocus to the first option input
             question.find('.option-text').first().attr('autofocus', true);
 
-            sortable.sortable('refresh')
+            sortable.sortable('refresh');
             $('input, select').trigger('change');
         });
 

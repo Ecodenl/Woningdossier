@@ -116,7 +116,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
-                    Route::group(['as' => 'questionnaires.', 'prefix' => 'custom-forms'], function () {
+                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
                         Route::get('', 'QuestionnaireController@index')->name('index');
                         Route::get('create', 'QuestionnaireController@create')->name('create');
                         Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');

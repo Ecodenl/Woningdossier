@@ -8483,3 +8483,8 @@ ul.progress-list li.not-available a:focus img {
   color: white;
 }
 
+.ui-sortable .ui-sortable-handle:hover,
+.ui-sortable .ui-sortable-handle:focus {
+  cursor: move;
+}
+

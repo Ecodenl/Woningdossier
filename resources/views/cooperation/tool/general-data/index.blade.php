@@ -661,7 +661,7 @@
 
                         <div class="input-group">
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
-                            <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity" required>
+                            <input id="amount_electricity" required type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity" required>
                         </div>
 
                         <div id="amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

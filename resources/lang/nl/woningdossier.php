@@ -373,21 +373,23 @@ return [
 	                'build-year-post-1930' => 'Woningen met dit bouwjaar hebben vaak wel een spouwmuur',
 	                'build-year-pre-1930' => 'Woningen met dit bouwjaar hebben vaak geen spouwmuur',
                     'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
-                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
-                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',
-                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel ?',
-                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk ?'
+                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur?',
+                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd?',
+                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel?',
+                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk?',
                 ],
 
                 'optional' => [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
-                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
-                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
+                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn?',
+                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen)?',
 	                'facade-surface' => 'Geveloppervlakte van de woning',
+	                'wall-surface' => 'Geveloppervlakte',
+	                'insulation-wall-surface' => 'Te isoleren geveloppervlakte',
                 ],
 
                 'alert' => [
-                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie'
+                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
                 ],
 
 	            'insulation-advice' => [
@@ -431,12 +433,12 @@ return [
 	            'interested-in' => 'Bent u geïnteresseerd in :measure?',
 
                 'cracking-seal' => [
-                    'title' => 'Kierdichting'
+                    'title' => 'Kierdichting',
                 ],
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
-                'm2' => 'm<sup>2</sup>',
-                'total-windows' => 'Aantal ramen',
+                'm2' => 'Hoeveel m<sup>2</sup> glas wilt u vervangen?',
+                'total-windows' => 'Aantal te vervangen ruiten',
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 
@@ -554,7 +556,7 @@ return [
 			],
 			'solar-panels' => [
 				'title' => 'Zonnepanelen',
-
+                'amount' => 'stuks',
 				'peak-power' => 'Piekvermogen per paneel',
 				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
 				'number' => 'Hoeveel zonnepanelen moeten er komen?',
@@ -602,7 +604,13 @@ return [
 			],
 
 			'my-plan' => [
-				'title' => 'Actieplan',
+				'warnings' => [
+                	'title' => 'Let op!',
+                    'check-order' => 'U probeert dakisolatie met vervanging van de dakbedekking te plannen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit!',
+                    'planned-year' => 'De uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk!',
+                ],
+
+                'title' => 'Actieplan',
 				'description' => 'Op deze pagina ziet u een samenvatting van alle maatregelen die u in het hoomdossier volledig hebt ingevuld. Per maatregel ziet u wat de indicatieve kosten en besparingen zijn.<br><br>Op basis van deze uitkomsten kunt u uw persoonlijke stappenplan voor de komende jaren samenstellen. Hiervoor selecteert u een maatregel in de eerste kolom (“Interesse”) en voert in de laatste kolom (“Planning”) het jaartal in wanneer u deze maatregel uit zou willen voeren.<br><br>Onder aan de pagina wordt dan uw stappenplan weergegeven. Per jaar kunt u zien hoe veel geld u voor onderhoud en energiebesparende maatregelen zou moeten reserveren en wat u aan besparing op uw energierekening in dit jaar zou kunnen verwachten.',
 				'energy-saving-measures' => 'Energiebesparende maatregelen',
 				'maintenance-measures' => 'Onderhoud',

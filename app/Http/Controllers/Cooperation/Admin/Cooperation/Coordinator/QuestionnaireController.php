@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Models\Cooperation;
 use App\Models\Question;
+use App\Models\QuestionInput;
 use App\Models\Questionnaire;
 use App\Models\Translation;
 use Illuminate\Http\Request;
@@ -77,10 +78,10 @@ class QuestionnaireController extends Controller
                         $required = true;
                     }
 
-                    $uuid = Uuid::uuid4();
+                    $questionNameUUid = Uuid::uuid4();
 
-                    Question::create([
-                        'name' => $uuid,
+                    $createdQuestion = Question::create([
+                        'name' => $questionNameUUid,
                         'type' => $questionType,
                         'order' => $order,
                         'required' => $required,
@@ -91,10 +92,31 @@ class QuestionnaireController extends Controller
                     foreach ($newQuestion['question'] as $locale => $question) {
                         // the uuid we will put in the key for the translation and set in the question name column-
                         Translation::create([
-                            'key' => $uuid,
+                            'key' => $questionNameUUid,
                             'translation' => $question,
                             'language' => $locale
                         ]);
+                    }
+                    $optionNameUuid = Uuid::uuid4();
+
+                    // atm i know it works but dont know why
+                    // TODO: add comments that make sense
+                    // reeds refrtor to question options
+                    QuestionInput::create([
+                        'question_id' => $createdQuestion->id,
+                        'name' => $optionNameUuid,
+                    ]);
+                    foreach ($newQuestion['options'] as $locale => $options) {
+
+                        foreach ($options as $option) {
+                            if (!empty($option)) {
+                                Translation::create([
+                                    'key' => $optionNameUuid,
+                                    'translation' => $option,
+                                    'language' => $locale
+                                ]);
+                            }
+                        }
                     }
                 }
             }

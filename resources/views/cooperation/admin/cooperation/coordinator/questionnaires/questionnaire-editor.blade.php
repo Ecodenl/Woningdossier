@@ -188,7 +188,7 @@
             var optionGroup = question.append('<div class="option-group"></div>');
 
             $(supportedLocales).each(function (index, locale) {
-                var fullQuestionName = 'questions[new]['+guid+'][options]['+locale+']';
+                var fullQuestionName = 'questions[new]['+guid+'][options]['+locale+'][]';
 
                 var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(optionGroup);
 
@@ -207,7 +207,7 @@
         function addAdditionalInputOptions(question, guid)
         {
             $(supportedLocales).each(function (index, locale) {
-                var fullQuestionName = 'questions[new]['+guid+'][options]['+locale+']';
+                var fullQuestionName = 'questions[new]['+guid+'][options]['+locale+'][]';
 
                 var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(question);
 
@@ -281,6 +281,8 @@
             var question = questionPanel.find('.question');
             var panelFooter = questionPanel.find('.panel-footer');
             var guid = createGuid();
+
+            addHiddenInputWithInputType(question, guid, 'select');
 
             var guidHiddenInput = $('<input>').attr({
                 type: 'hidden',

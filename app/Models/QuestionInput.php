@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class QuestionInput extends Model
 {
     use TranslatableTrait;
+
+    protected $fillable = [
+        'question_id', 'name'
+    ];
 }

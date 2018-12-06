@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Helpers\Str;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\QuestionInput;
 use App\Models\Questionnaire;
+use App\Models\Step;
 use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Ramsey\Uuid\Uuid;
 
 class QuestionnaireController extends Controller
 {
@@ -23,17 +24,21 @@ class QuestionnaireController extends Controller
     public function edit(Cooperation $cooperation, $questionnaireId)
     {
         $questionnaire = Questionnaire::find($questionnaireId);
+	    $steps = Step::orderBy('order')->get();
 
-        return view('cooperation.admin.cooperation.coordinator.questionnaires.questionnaire-editor', compact('questionnaire'));
+        return view('cooperation.admin.cooperation.coordinator.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
     }
 
     public function create()
     {
-        return view('cooperation.admin.cooperation.coordinator.questionnaires.create');
+	    $steps = Step::orderBy('order')->get();
+
+        return view('cooperation.admin.cooperation.coordinator.questionnaires.create', compact('steps'));
     }
 
     public function store(Request $request)
     {
+
         $questionnaireId = $request->get('questionnaire_id');
 
         if ($request->has('questions.new')) {
@@ -52,7 +57,7 @@ class QuestionnaireController extends Controller
                         $required = true;
                     }
 
-                    $uuid = Uuid::uuid4();
+                    $uuid = Str::uuid();
 
                     Question::create([
                         'name' => $uuid,
@@ -78,7 +83,7 @@ class QuestionnaireController extends Controller
                         $required = true;
                     }
 
-                    $questionNameUUid = Uuid::uuid4();
+                    $questionNameUUid = Str::uuid();
 
                     $createdQuestion = Question::create([
                         'name' => $questionNameUUid,
@@ -97,7 +102,7 @@ class QuestionnaireController extends Controller
                             'language' => $locale
                         ]);
                     }
-                    $optionNameUuid = Uuid::uuid4();
+                    $optionNameUuid = Str::uuid();
 
                     // atm i know it works but dont know why
                     // TODO: add comments that make sense

@@ -5,16 +5,21 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-warning">
-                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool')
-                    </a>
-                    <br>
-                    <br>
+            <form action="{{ route('cooperation.admin.cooperation.coordinator.questionnaires.store') }}" method="post">
+                {{csrf_field()}}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-warning">
+                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool')
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="submit" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-primary pull-right">
+                            Opslaan
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
+            <div class="row alert-top-space">
                 <div class="col-md-3">
                     <div id="tool-box" class="list-group">
                         <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i> Kort antwoord</a>
@@ -27,6 +32,27 @@
                     </div>
                 </div>
                 <div class="col-md-9">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="name">Naam:</label>
+                                        <input type="text" class="form-control" name="name" placeholder="Nieuwe vragenlijst">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="step_id">Na stap:</label>
+                                        <select name="step_id" class="form-control">
+                                            @foreach($steps as $i => $step)
+                                            <option value="{{ $step->id }}">{{ $i+1 }}: {{ $step->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="panel">
                         <div class="panel-body" >
                             <div id="sortable">
@@ -42,6 +68,7 @@
                     </div>
                 </div>
             </div>
+            </form>
         </div>
     </section>
 @endsection
@@ -120,7 +147,8 @@
         // name=question[new][][options][]
 
         // used input for the dropdown builder
-        var dropdownMenuInputElement = '<input name="" placeholder="Optie toevoegen" type="text" class="option-text form-control">';
+        //var dropdownMenuInputElement = '<input name="" placeholder="Optie toevoegen" type="text" class="option-text form-control">';
+        var dropdownMenuInputElement = $('<input>').attr('placeholder','Optie toevoegen').attr('type', 'text').addClass('option-text form-control');
 
         toolBox.find('a').on('click', function (event) {
             // always add the empty form build panel
@@ -136,7 +164,7 @@
             var formGroup = question.find('.form-group');
             var panelFooter = questionPanel.find('.panel-footer');
             var questionType = "text";
-            var fullQuestionName = 'question['+questionId+']['+questionType+']';
+            var fullQuestionName = 'question[new]['+questionId+']['+questionType+']';
             questionId++;
 
             var textInput = $('<input>').addClass('form-control').attr({
@@ -180,12 +208,17 @@
             var question = questionPanel.find('.question').attr('id', questionId);
             var panelFooter = questionPanel.find('.panel-footer');
 
-            // first we want to add one with a default value
-            question.find('.form-group').append('<input name="" placeholder="Vraag" type="text" class="form-control"><br>');
-            question.find('.form-group').append('<input name="" placeholder="Optie toevoegen" value="Optie..." type="text" class="option-text form-control">');
+            var questionType = "select";
+            var fullQuestionName = 'question[new]['+questionId+']['+questionType+']';
+            var fullQuestionOptionName = 'question[new][' + questionId + '][options][]';
+            questionId++;
 
-            // add a new form group with input that only has a placehodler
-            question.append($(formGroupElement).append('<input name="" placeholder="Optie toevoegen"  type="text" class="option-text form-control">'));
+            // first we want to add one with a default value
+            question.find('.form-group').append('<input name="' + fullQuestionName + '" placeholder="Vraag" type="text" class="form-control"><br>');
+            question.find('.form-group').append('<input name="' + fullQuestionOptionName + '" placeholder="Optie toevoegen" value="Optie..." type="text" class="option-text form-control">');
+
+            // add a new form group with input that only has a placeholder
+            question.append($(formGroupElement).append('<input name="' + fullQuestionOptionName + '" placeholder="Optie toevoegen"  type="text" class="option-text form-control">'));
 
             // now let it autofocus to the first option input
             question.find('.option-text').first().attr('autofocus', true);
@@ -220,7 +253,15 @@
 
                 var formGroup = $(this).parent().parent();
 
-                formGroup.append($(formGroupElement).append(dropdownMenuInputElement));
+                // Get the name of the first option-text input and use this for
+                // the one we're adding too (as it's an array, this is possible)
+                var optionInputName = formGroup.find('input.option-text').first().attr('name');
+
+                var inputElement = dropdownMenuInputElement.clone();
+                inputElement.attr('name', optionInputName);
+
+                //formGroup.append($(formGroupElement).append(dropdownMenuInputElement));
+                formGroup.append($(formGroupElement).append(inputElement));
             }
         });
 

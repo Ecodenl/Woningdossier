@@ -5,7 +5,7 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{route('cooperation.admin.cooperation.coordinator.questionnaires.store')}}" method="post">
+            <form action="{{ route('cooperation.admin.cooperation.coordinator.questionnaires.store') }}" method="post">
                 <input type="hidden" name="questionnaire_id" value="{{$questionnaire->id}}">
                 {{csrf_field()}}
                 <div class="row">
@@ -25,15 +25,35 @@
                     <div class="col-md-3">
                         <div id="tool-box" class="list-group">
                             <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i> Kort antwoord</a>
-                            <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>  Alinea</a>
-                            <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i>  Meerkeuze</a>
-                            <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i>  Selectievakjes</a>
-                            <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i>  Dropdownmenu</a>
-                            <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>  Datum</a>
-                            <a href="#" id="time" class="list-group-item"><i class="glyphicon glyphicon-time"></i>  Tijd</a>
+                            <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i> Alinea</a>
+                            <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i> Meerkeuze</a>
+                            <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> Selectievakjes</a>
+                            <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> Dropdownmenu</a>
+                            <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i> Datum</a>
+                            <a href="#" id="time" class="list-group-item"><i class="glyphicon glyphicon-time"></i> Tijd</a>
                         </div>
                     </div>
                     <div class="col-md-9">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="name">Naam:</label>
+                                            <input type="text" class="form-control" name="name" value="{{ $questionnaire->name }}" placeholder="Nieuwe vragenlijst">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="step_id">Na stap:</label>
+                                            <select name="step_id" class="form-control">
+                                                @foreach($steps as $i => $step)
+                                                    <option value="{{ $step->id }}" @if($questionnaire->step_id == $step->id) selected="selected" @endif >{{ $i+1 }}: {{ $step->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="panel">
                             <div class="panel-body" >
                                 <div id="sortable">
@@ -55,6 +75,7 @@
 @endsection
 @push('css')
     <link href="{{asset('css/bootstrap-toggle.min.css')}}" rel="stylesheet">
+@endpush
 @push('js')
 
 

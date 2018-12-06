@@ -178,6 +178,9 @@
             event.preventDefault();
         });
 
+        /**
+         * function to add the validation inputs
+         */
         function addValidationInputs(question, guid)
         {
 
@@ -190,6 +193,9 @@
         }
 
 
+        /**
+         * function to add a hidden input with the type the question should be
+         */
         function addHiddenInputWithInputType(question, guid, type)
         {
             var hiddenInputWithInputTypeName = 'questions[new]['+guid+'][type]';
@@ -208,8 +214,12 @@
             // later on the code appendto is found
             var optionGroup = question.append('<div class="option-group"></div>');
 
+            // we need to create this for every new option
+            // so we can make a difference between the multiple options
+            var additionalQuestionOptionGuid = createGuid();
+
             $(supportedLocales).each(function (index, locale) {
-                var fullQuestionName = 'questions[new]['+guid+'][options]['+locale+'][]';
+                var fullQuestionName = 'questions[new]['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
 
                 var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(optionGroup);
 
@@ -225,10 +235,14 @@
             });
         }
 
-        function addAdditionalInputOptions(question, guid)
+        function addAdditionalQuestionOptions(question, guid)
         {
+            // we need to create this for every new option
+            // so we can make a difference between the multiple options
+            var additionalQuestionOptionGuid = createGuid();
+
             $(supportedLocales).each(function (index, locale) {
-                var fullQuestionName = 'questions[new]['+guid+'][options]['+locale+'][]';
+                var fullQuestionName = 'questions[new]['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
 
                 var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(question);
 
@@ -244,6 +258,9 @@
             });
         }
 
+        /**
+         * the input where the user can fill in the main question
+         */
         function addInputQuestion(question, guid)
         {
             $(supportedLocales).each(function (index, locale) {
@@ -262,33 +279,40 @@
             });
         }
 
+        /**
+         * function to add a required checkbox to the footer off the panel
+         *
+         * @param panelFooter
+         * @param guid
+         */
+        function addRequiredCheckbox(panelFooter, guid)
+        {
+
+            var rbl = requiredCheckboxLabel.clone().attr({
+                for: 'required-'+guid
+            });
+            var requiredCheckbox = $('<input>').addClass('control-label').attr({
+                id: 'required-'+guid+'',
+                type: 'checkbox',
+                name: 'questions[new]['+guid+'][required]'
+            });
+
+            panelFooter.find('.pull-right').html(rbl);
+            requiredCheckbox.appendTo(panelFooter.find('.pull-right > label'));
+        }
+
         toolBox.find('#short-answer').on('click', function () {
             var questionPanel = sortable.find('.panel').first();
             var question = questionPanel.find('.question');
             var panelFooter = questionPanel.find('.panel-footer');
             var guid = createGuid();
 
-            var randomString = makeRandomString();
-
-            // add the for attr to the label, so when a user clicks the label the checkbox will check
-            requiredCheckboxLabel.attr({
-                for: 'required-'+randomString
-            });
 
             addInputQuestion(question, guid);
 
-
             addHiddenInputWithInputType(question, guid, 'text');
 
-
-            var requiredCheckbox = $('<input>').attr({
-                id: 'required-'+randomString,
-                type: 'checkbox',
-                name: 'questions[new]['+guid+'][required]'
-            });
-
-            panelFooter.find('.pull-right').append(requiredCheckboxLabel);
-            requiredCheckbox.appendTo(panelFooter.find('.pull-right > label'));
+            addRequiredCheckbox(panelFooter, guid);
 
             addValidationInputs(question, guid);
 
@@ -312,18 +336,13 @@
 
             question.append(guidHiddenInput);
 
-            var randomString = makeRandomString();
-
-            // add the for attr to the label, so when a user clicks the label the checkbox will check
-            requiredCheckboxLabel.attr({
-                for: 'required-'+randomString
-            });
-
             addInputQuestion(question, guid);
 
             addInputOptions(question, guid);
 
-            addAdditionalInputOptions(question, guid);
+            addAdditionalQuestionOptions(question, guid);
+
+            addRequiredCheckbox(panelFooter, guid);
 
             // now let it autofocus to the first option input
             question.find('.option-text').first().attr('autofocus', true);
@@ -357,7 +376,7 @@
                 var question = questionPanel.find('.question');
                 var guid = question.find('.guid').val();
 
-                addAdditionalInputOptions(question, guid);
+                addAdditionalQuestionOptions(question, guid);
             }
         });
 

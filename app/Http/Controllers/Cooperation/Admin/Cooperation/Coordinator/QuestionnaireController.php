@@ -102,22 +102,21 @@ class QuestionnaireController extends Controller
                             'language' => $locale
                         ]);
                     }
-                    $optionNameUuid = Str::uuid();
 
-                    // atm i know it works but dont know why
-                    // TODO: add comments that make sense
-                    // reeds refrtor to question options
-                    QuestionInput::create([
-                        'question_id' => $createdQuestion->id,
-                        'name' => $optionNameUuid,
-                    ]);
-                    foreach ($newQuestion['options'] as $locale => $options) {
+                    foreach ($newQuestion['options'] as $options) {
+                        $optionNameUuid = Str::uuid();
+                        // for every option we need to create a option input
+                        QuestionInput::create([
+                            'question_id' => $createdQuestion->id,
+                            'name' => $optionNameUuid,
+                        ]);
 
-                        foreach ($options as $option) {
-                            if (!empty($option)) {
+                        // for every translation we need to create a new, you wont guess! Translation.
+                        foreach ($options as $locale => $translation) {
+                            if (!empty($translation)) {
                                 Translation::create([
                                     'key' => $optionNameUuid,
-                                    'translation' => $option,
+                                    'translation' => $translation,
                                     'language' => $locale
                                 ]);
                             }

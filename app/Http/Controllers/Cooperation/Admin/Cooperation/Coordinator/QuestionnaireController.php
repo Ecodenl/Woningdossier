@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\Str;
+use App\Helpers\TranslatableTrait;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\QuestionOption;
@@ -11,6 +12,7 @@ use App\Models\Step;
 use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Ramsey\Uuid\Uuid;
 
 class QuestionnaireController extends Controller
 {
@@ -73,36 +75,6 @@ class QuestionnaireController extends Controller
     }
 
     /**
-     * Create the options for a question
-     *
-     * @param array $newQuestion
-     * @param Question $createdQuestion
-     */
-    protected function createQuestionOptions(array $newQuestion, Question $createdQuestion)
-    {
-        foreach ($newQuestion['options'] as $translations) {
-            if (!$this->isEmptyTranslation($translations)) {
-
-                $optionNameUuid = Str::uuid();
-                // for every option we need to create a option input
-                QuestionOption::create([
-                    'question_id' => $createdQuestion->id,
-                    'name' => $optionNameUuid,
-                ]);
-
-                // for every translation we need to create a new, you wont guess! Translation.
-                foreach ($translations as $locale => $translation) {
-                    Translation::create([
-                        'key' => $optionNameUuid,
-                        'translation' => $translation,
-                        'language' => $locale
-                    ]);
-                }
-            }
-        }
-    }
-
-    /**
      * Create a question with select as his type
      *
      * @param int $questionnaireId
@@ -136,7 +108,10 @@ class QuestionnaireController extends Controller
             ]);
         }
 
-        $this->createQuestionOptions($newQuestion, $createdQuestion);
+        // create the options for the question
+        foreach ($newQuestion['options'] as $newOptions) {
+            $this->createQuestionOptions($newOptions, $createdQuestion);
+        }
 
     }
 
@@ -168,17 +143,62 @@ class QuestionnaireController extends Controller
     }
 
     /**
+     * Create the options for a question
+     *
+     * Creates question option and 2 translations
+     *
+     * @param array $newOptions
+     * @param Question $question
+     */
+    protected function createQuestionOptions(array $newOptions, Question $question)
+    {
+        if (!$this->isEmptyTranslation($newOptions)) {
+
+            $optionNameUuid = Str::uuid();
+            // for every option we need to create a option input
+            QuestionOption::create([
+                'question_id' => $question->id,
+                'name' => $optionNameUuid,
+            ]);
+
+            // for every translation we need to create a new, you wont guess! Translation.
+            foreach ($newOptions as $locale => $translation) {
+                Translation::create([
+                    'key' => $optionNameUuid,
+                    'translation' => $translation,
+                    'language' => $locale
+                ]);
+            }
+        }
+    }
+
+
+    /**
      * Update the options from a question
      *
-     * @param Question $currentQuestion
      * @param array $editedQuestion
+     * @param Question $question
      */
-    public function updateQuestionOptions(Question $currentQuestion, array $editedQuestion)
+    public function updateQuestionOptions(array $editedQuestion, $question)
     {
+        // $questionOptionId will mostly contain the id of a QuestionOption
+        // however, if a new option to a existing question is added, we set a uuid.
+        // so if the $questionOptionId = a valid uuid we need to create a new QuestionOption and the translations.
         foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
 
-            if (!$this->isEmptyTranslation($translations)) {
+            if (Uuid::isValid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
 
+                // if the uuid is valid a pomp it to a array and create new question options
+                $allNewOptions = collect($editedQuestion['options'])->filter(function ($value, $key) {
+                    return Uuid::isValid($key);
+                })->toArray();
+
+                // create the options
+                foreach ($allNewOptions as $newOptions) {
+                    $this->createQuestionOptions($newOptions, $question);
+                }
+
+            } elseif ($this->isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
                     QuestionOption::find($questionOptionId)->updateTranslation('name', $option, $locale);
@@ -201,7 +221,7 @@ class QuestionnaireController extends Controller
             $required = true;
         }
 
-        $currentQuestion = Question::withTrashed()->find($questionId);
+        $currentQuestion = Question::find($questionId);
 
         $currentQuestion->update([
             'type' => 'select',
@@ -214,7 +234,7 @@ class QuestionnaireController extends Controller
             $currentQuestion->updateTranslation('name', $question, $locale);
         }
 
-        $this->updateQuestionOptions($currentQuestion, $editedQuestion);
+        $this->updateQuestionOptions($editedQuestion, $currentQuestion);
     }
 
     /**
@@ -271,22 +291,21 @@ class QuestionnaireController extends Controller
      * @param $translations
      * @return bool
      */
-    protected function isEmptyTranslation($translations)
+    protected function isEmptyTranslation(array $translations) : bool
     {
-
-        try {
-
         foreach($translations as $locale => $translation) {
             if (!is_null($translation)) {
                 return false;
             }
         }
         return true;
-        } catch (\ErrorException $t) {
-            dd($translations);
-        }
-
     }
+
+    protected function isNotEmptyTranslation(array $translations) : bool
+    {
+        return !$this->isEmptyTranslation($translations);
+    }
+
 
     /**
      * Set a questionnaire active status

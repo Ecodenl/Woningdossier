@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
-class QuestionInput extends Model
+class QuestionOption extends Model
 {
     use TranslatableTrait;
 

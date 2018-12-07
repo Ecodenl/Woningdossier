@@ -32,12 +32,12 @@ class Question extends Model
     }
 
     /**
-     * Return the question "inputs", this will return the additional answer options to a dropdown
+     * Return the options from a questions, a question will have options if its a radio, checkbox or dropdown etc.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function questionInputs()
+    public function questionOptions()
     {
-        return $this->hasMany(QuestionInput::class);
+        return $this->hasMany(QuestionOption::class);
     }
 }

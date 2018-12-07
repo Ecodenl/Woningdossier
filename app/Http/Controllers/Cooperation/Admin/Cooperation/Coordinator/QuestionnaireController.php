@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 use App\Helpers\Str;
 use App\Models\Cooperation;
 use App\Models\Question;
-use App\Models\QuestionInput;
+use App\Models\QuestionOption;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\Translation;
@@ -85,7 +85,7 @@ class QuestionnaireController extends Controller
 
                 $optionNameUuid = Str::uuid();
                 // for every option we need to create a option input
-                QuestionInput::create([
+                QuestionOption::create([
                     'question_id' => $createdQuestion->id,
                     'name' => $optionNameUuid,
                 ]);
@@ -140,7 +140,13 @@ class QuestionnaireController extends Controller
 
     }
 
-    public function updateTextQuestion($questionnaireId, $questionId, $editedQuestion)
+    /**
+     * Update a question with type text
+     *
+     * @param int $questionId
+     * @param array $editedQuestion
+     */
+    public function updateTextQuestion(int $questionId, array $editedQuestion)
     {
         $required = false;
 
@@ -148,27 +154,68 @@ class QuestionnaireController extends Controller
             $required = true;
         }
 
-        $uuid = Str::uuid();
-
         $currentQuestion = Question::find($questionId);
-
-        Question::create([
-            'name' => $uuid,
+        $currentQuestion->update([
             'type' => 'text',
             'order' => rand(1, 3),
             'required' => $required,
-            'questionnaire_id' => $questionnaireId
+        ]);
+
+        // multiple translations can be available
+        foreach ($editedQuestion['question'] as $locale => $question) {
+            $currentQuestion->updateTranslation('name', $question, $locale);
+        }
+    }
+
+    /**
+     * Update the options from a question
+     *
+     * @param Question $currentQuestion
+     * @param array $editedQuestion
+     */
+    public function updateQuestionOptions(Question $currentQuestion, array $editedQuestion)
+    {
+        foreach ($editedQuestion['options'] as $translations) {
+            if (!$this->isEmptyTranslation($translations)) {
+
+                // for every translation we need to create a new, you wont guess! Translation.
+                foreach ($translations as $locale => $option) {
+                    $currentQuestion->questionOptions()
+                        ->where('question_id', $currentQuestion->id)
+                        ->first()->updateTranslation('name', $option, $locale);
+                }
+            }
+        }
+    }
+
+    /**
+     * Update the question with type select
+     *
+     * @param $questionId
+     * @param $editedQuestion
+     */
+    public function updateSelectQuestion($questionId, $editedQuestion)
+    {
+        $required = false;
+
+        if (array_key_exists('required', $editedQuestion)) {
+            $required = true;
+        }
+
+        $currentQuestion = Question::find($questionId);
+
+        $currentQuestion->update([
+            'type' => 'select',
+            'required' => $required,
         ]);
 
         // multiple translations can be available
         foreach ($editedQuestion['question'] as $locale => $question) {
             // the uuid we will put in the key for the translation and set in the question name column-
-            Translation::create([
-                'key' => $uuid,
-                'translation' => $question,
-                'language' => $locale
-            ]);
+            $currentQuestion->updateTranslation('name', $question, $locale);
         }
+
+        $this->updateQuestionOptions($currentQuestion, $editedQuestion);
     }
 
     public function store(Request $request)
@@ -199,7 +246,10 @@ class QuestionnaireController extends Controller
 
                 switch ($editedQuestionType) {
                     case ('text'):
-                        $this->updateTextQuestion($questionnaireId, $editedQuestion, $questionId);
+                        $this->updateTextQuestion($questionId, $editedQuestion);
+                        break;
+                    case ('select'):
+                        $this->updateSelectQuestion($questionId, $editedQuestion);
                         break;
                 }
             }

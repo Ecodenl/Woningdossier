@@ -211,6 +211,9 @@ return [
                                     'edit' => 'Bewerk vragenlijst',
                                 ]
                             ]
+                        ],
+                        'edit' => [
+                            'success' => 'Vragenlijst is bijgewerkt'
                         ]
                     ],
                     'index' => [

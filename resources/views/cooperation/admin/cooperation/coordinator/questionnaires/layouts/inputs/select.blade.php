@@ -1,5 +1,4 @@
 <label for="">Vraag</label>
-<input type="hidden" name="questions[edit][{{$question->id}}]type" value="{{$question->type}}">
 @foreach(config('woningdossier.supported_locales') as $locale)
     <div class="form-group">
         <div class="input-group">

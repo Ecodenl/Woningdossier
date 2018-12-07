@@ -4,8 +4,10 @@
             <div class="col-sm-12">
                 {{$slot}}
             </div>
-            <div class="col-sm-12">
+            <div class="col-sm-12 bier">
+                <input type="hidden" name="questions[edit][{{$question->id}}][type]" value="{{$question->type}}">
                 @switch($question->type)
+
                     @case('text')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.text', ['question' => $question])
                     @break

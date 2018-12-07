@@ -3,7 +3,6 @@
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">{{$locale}}</span>
-            <input type="hidden" name="questions[edit][{{$question->id}}]type" value="{{$question->type}}">
             <input name="questions[edit][{{$question->id}}][question][{{$locale}}]" placeholder="Vraag" type="text" value="{{ $question->getTranslation('name', $locale)->translation }}" class="form-control">
         </div>
     </div>

@@ -1193,10 +1193,10 @@
 
                 // text wont change, id's will
                 if (houseVentilation === "Mechanisch" || houseVentilation === "Decentraal mechanisch") {
-                    $('#house-ventilation').parent().parent().next().next().show();
+                    $('#house-ventilation').parent().parent().parent().next().next().show();
                 } else {
-                    $('#house-ventilation').parent().parent().next().next().hide();
-                    $('#house-ventilation').parent().parent().next().next().find('input').val("");
+                    $('#house-ventilation').parent().parent().parent().next().next().hide();
+                    $('#house-ventilation').parent().parent().parent().next().next().find('input').val("");
                 }
             });
 

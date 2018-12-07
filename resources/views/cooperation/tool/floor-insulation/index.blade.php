@@ -112,7 +112,7 @@
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
-                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.unknown.title')}}</p>
+                                    <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.unknown')</p>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@
 
                                 <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
                                     <div class="alert alert-warning show" role="alert">
-                                        <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
+                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
                                     </div>
                                 </div>
 
@@ -188,6 +188,14 @@
                                     </select>
                                 @endcomponent
 
+                                <div class="col-sm-12">
+                                    <div class="form-group add-space">
+                                        <div id="crawlspace-height-info" class="collapse alert alert-info remove-collapse-space">
+                                            {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.help')}}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 @if ($errors->has('building_elements.' . $crawlspace->id .'.element_value_id'))
                                     <span class="help-block">
                                     <strong>{{ $errors->first('building_elements.' . $crawlspace->id .'.element_value_id') }}</strong>
@@ -195,12 +203,6 @@
                                 @endif
                             </div>
                         </div>
-
-                            <div class="form-group add-space">
-                                <div id="crawlspace-height-info" class="collapse alert alert-info remove-collapse-space">
-                                    {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.help')}}
-                                </div>
-                            </div>
                     </div>
                 </div>
                 <div class="row crawlspace-accessible">
@@ -367,7 +369,7 @@
             <div class="row" id="no-crawlspace-error">
                 <div class="col-md-12">
                     <div class="alert alert-danger show" role="alert">
-                        <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title')}}</p>
+                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.no-crawlspace')</p>
                     </div>
                 </div>
             </div>

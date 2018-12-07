@@ -826,7 +826,7 @@ return [
 			],
 
 			'alert' => [
-				'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
+				'description' => 'Let op: geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
 			],
 
 			'insulation-advice' => [

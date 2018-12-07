@@ -154,7 +154,7 @@ class QuestionnaireController extends Controller
             $required = true;
         }
 
-        $currentQuestion = Question::find($questionId);
+        $currentQuestion = Question::withTrashed()->find($questionId);
         $currentQuestion->update([
             'type' => 'text',
             'order' => rand(1, 3),
@@ -175,14 +175,13 @@ class QuestionnaireController extends Controller
      */
     public function updateQuestionOptions(Question $currentQuestion, array $editedQuestion)
     {
-        foreach ($editedQuestion['options'] as $translations) {
+        foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
+
             if (!$this->isEmptyTranslation($translations)) {
 
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
-                    $currentQuestion->questionOptions()
-                        ->where('question_id', $currentQuestion->id)
-                        ->first()->updateTranslation('name', $option, $locale);
+                    QuestionOption::find($questionOptionId)->updateTranslation('name', $option, $locale);
                 }
             }
         }
@@ -202,7 +201,7 @@ class QuestionnaireController extends Controller
             $required = true;
         }
 
-        $currentQuestion = Question::find($questionId);
+        $currentQuestion = Question::withTrashed()->find($questionId);
 
         $currentQuestion->update([
             'type' => 'select',
@@ -218,6 +217,12 @@ class QuestionnaireController extends Controller
         $this->updateQuestionOptions($currentQuestion, $editedQuestion);
     }
 
+    /**
+     * Save the questionnaire, store and update.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $questionnaireId = $request->get('questionnaire_id');
@@ -268,12 +273,18 @@ class QuestionnaireController extends Controller
      */
     protected function isEmptyTranslation($translations)
     {
+
+        try {
+
         foreach($translations as $locale => $translation) {
             if (!is_null($translation)) {
                 return false;
             }
         }
         return true;
+        } catch (\ErrorException $t) {
+            dd($translations);
+        }
 
     }
 

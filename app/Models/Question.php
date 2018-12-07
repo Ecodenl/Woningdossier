@@ -4,15 +4,20 @@ namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
-    use TranslatableTrait;
+    use TranslatableTrait, SoftDeletes;
+
 
     protected $fillable = [
         'name', 'type', 'order', 'required', 'questionnaire_id'
     ];
 
+    protected $dates = [
+        'deleted_at'
+    ];
     protected $casts = [
         'required' => 'bool'
     ];

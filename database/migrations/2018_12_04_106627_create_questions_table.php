@@ -26,6 +26,7 @@ class CreateQuestionsTable extends Migration
             $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('cascade');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

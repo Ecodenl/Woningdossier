@@ -39,12 +39,14 @@ class QuestionnaireController extends Controller
     }
 
     /**
-     * Create a question with text as his type
+     * Create a question
      *
      * @param int $questionnaireId
      * @param array $newQuestion
+     * @param string $questionType
+     * @param bool $questionHasOptions
      */
-    protected function createTextQuestion(int $questionnaireId, array $newQuestion)
+    protected function createQuestion(int $questionnaireId, array $newQuestion, string $questionType, bool $questionHasOptions = false)
     {
 
         $required = false;
@@ -55,9 +57,9 @@ class QuestionnaireController extends Controller
 
         $uuid = Str::uuid();
 
-        Question::create([
+        $createdQuestion = Question::create([
             'name' => $uuid,
-            'type' => 'text',
+            'type' => $questionType,
             'order' => rand(1, 3),
             'required' => $required,
             'questionnaire_id' => $questionnaireId
@@ -72,48 +74,16 @@ class QuestionnaireController extends Controller
                 'language' => $locale
             ]);
         }
-    }
 
-    /**
-     * Create a question with select as his type
-     *
-     * @param int $questionnaireId
-     * @param array $newQuestion
-     */
-    protected function createSelectQuestion(int $questionnaireId, array $newQuestion)
-    {
-        $required = false;
-
-        if (array_key_exists('required', $newQuestion)) {
-            $required = true;
-        }
-
-        $questionNameUUid = Str::uuid();
-
-        $createdQuestion = Question::create([
-            'name' => $questionNameUUid,
-            'type' => 'select',
-            'order' => rand(1, 3),
-            'required' => $required,
-            'questionnaire_id' => $questionnaireId
-        ]);
-
-        // multiple translations can be available
-        foreach ($newQuestion['question'] as $locale => $question) {
-            // the uuid we will put in the key for the translation and set in the question name column-
-            Translation::create([
-                'key' => $questionNameUUid,
-                'translation' => $question,
-                'language' => $locale
-            ]);
-        }
-
-        // create the options for the question
-        foreach ($newQuestion['options'] as $newOptions) {
-            $this->createQuestionOptions($newOptions, $createdQuestion);
+        if ($questionHasOptions) {
+            // create the options for the question
+            foreach ($newQuestion['options'] as $newOptions) {
+                $this->createQuestionOptions($newOptions, $createdQuestion);
+            }
         }
 
     }
+
 
     /**
      * Update a question with type text
@@ -255,10 +225,10 @@ class QuestionnaireController extends Controller
 
                 switch ($questionType) {
                     case ('text'):
-                        $this->createTextQuestion($questionnaireId, $newQuestion);
+                        $this->createQuestion($questionnaireId, $newQuestion, $questionType);
                         break;
                     case('select'):
-                        $this->createSelectQuestion($questionnaireId, $newQuestion);
+                        $this->createQuestion($questionnaireId, $newQuestion, $questionType, true);
                 }
             }
         }

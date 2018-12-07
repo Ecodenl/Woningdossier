@@ -377,7 +377,7 @@
                         @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
                             <div class="col-sm-2">
                                 <div class="form-group add-space{{ $errors->has('user_interest.element.' . $element->id) ? ' has-error' : '' }}">
-                                    <label for="user_interest_element_{{ $element->id }}" class="control-label small-text">
+                                    <label for="element_interested_{{ $element->id }}-info" class="control-label small-text">
                                         <i data-toggle="collapse" data-target="#element_interested_{{ $element->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                         {{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
                                         <span>*</span>
@@ -396,10 +396,9 @@
                                 </select>
                                 @endcomponent
 
-                                <div id="element_interested_{{ $element->id }}-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.alert', ['collapsable' => true, 'id' => 'element_interested_'.$element->id.'-info', 'alertType' => 'info'])
                                     {{ $element->info }}
-                                </div>
+                                @endcomponent
 
                                     @if ($errors->has('user_interest.element.' . $element->id))
                                         <span class="help-block">
@@ -497,7 +496,7 @@
                 <div class="col-sm-2">
                     <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
                         <label for="user_interest_service_{{ $service->id }}" class="control-label small-text">
-                            <i data-toggle="collapse" data-target="#element_interested_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            <i data-toggle="collapse" data-target="#service_interested_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                             {{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
                         </label> <span>*</span>
 
@@ -512,10 +511,10 @@
                             @endforeach
                         </select>
                         @endcomponent
-                        <div id="element_{{ $service->id }}-info"
-                             class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.alert', ['collapsable' => true, 'id' => 'service_interested_'.$service->id.'-info', 'alertType' => 'info'])
                             {{ $service->info }}
-                        </div>
+                        @endcomponent
+
 
                         @if ($errors->has('user_interest.service.' . $service->id))
                             <span class="help-block">

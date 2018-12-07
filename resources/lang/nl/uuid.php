@@ -168,80 +168,80 @@
 
             "element" => 
                 [
-                    "window-living-room" => 
+                    "living-rooms-windows" => 
                         [
-                            "help" => 'ee94f335-b83e-4c8e-b2dd-29c6ffec9ad5',
-                            "title" => '11bf3052-2e45-45ec-bc9b-26f6eeb23e3b',
+                            "help" => 'f8b684e5-f297-435d-9038-ef5b974031e1',
+                            "title" => '4ca8faf8-162d-41e1-ab42-3534c4415954',
                         ],
 
-                    "window-sleep-room" => 
+                    "sleeping-rooms-windows" => 
                         [
-                            "help" => '354da55b-ba8f-4f76-a0cc-fb51f7adca98',
-                            "title" => '607eb79e-2d7d-47b0-9b92-b8b1b67bd973',
+                            "help" => '51337ae4-3fec-4712-9e25-fff05bc919a2',
+                            "title" => '02f507a5-9215-40b1-9e7e-0d9e2504feac',
                         ],
 
                     "wall-insulation" => 
                         [
-                            "help" => '37b15044-01a1-4767-84e8-e59b6908034a',
-                            "title" => '5717f8f4-bf3a-4e49-a31f-7f1f859e2f86',
+                            "help" => '3bf8460b-3667-410c-bc98-aa118fa0954c',
+                            "title" => '2c4827f9-e84d-4218-a1ab-8948fd4162f3',
                         ],
 
                     "floor-insulation" => 
                         [
-                            "help" => 'e3add828-3a34-40a3-a7ab-8d611304a555',
-                            "title" => '8b2a5da1-22b7-47ef-8144-81b8f9106159',
+                            "help" => 'db525b83-6a42-4cfa-ac2a-e7dde697b31e',
+                            "title" => '914a4907-4cd1-40f8-8e2e-dbe7165a4529',
                         ],
 
                     "roof-insulation" => 
                         [
-                            "help" => '419ef56c-a12d-4a66-ae35-c7ae642fcd75',
-                            "title" => 'fcfdb111-f11b-41d8-9978-2c1ddcb9aa80',
+                            "help" => 'b0e70345-b3e6-4d2a-be8f-02c10dd588ad',
+                            "title" => '9bda38b6-351b-48eb-8f99-046714de87e5',
                         ],
 
                 ],
 
             "service" => 
                 [
-                    "hybrid-heatpump" => 
+                    "hybrid-heat-pump" => 
                         [
-                            "help" => 'd3673772-f26a-4b53-8e72-f56bc5f4fee1',
-                            "title" => 'd02978e6-bc2c-4a2e-8d36-3c6e8bd665f3',
+                            "help" => '02924e41-6603-4c5b-9ab1-99f0ea74514b',
+                            "title" => 'ae87b82c-3e77-4f93-a1d4-9d99a3566d25',
                         ],
 
-                    "full-heatpump" => 
+                    "full-heat-pump" => 
                         [
-                            "help" => '21c55918-c817-40da-afea-544b41a0f048',
-                            "title" => '5f218870-7c65-443c-9e5c-a7f77b471f13',
+                            "help" => 'd31cce94-468d-4409-b8cc-7d6347c8fc68',
+                            "title" => '7ac2e61d-9c53-4a1e-95c1-df3910e3f39c',
                         ],
 
                     "sun-boiler" => 
                         [
-                            "help" => '1e48ce42-cc30-4c82-8790-637b41d75261',
-                            "title" => '71e0c565-6a57-45fb-8bcb-c14afd9264b4',
+                            "help" => '6f658d67-0b33-4157-b52e-2993c8f2a323',
+                            "title" => 'a02ed0e6-d18e-42c3-8475-20f2396e2ee4',
                         ],
 
-                    "hr-cv" => 
+                    "hr-boiler" => 
                         [
-                            "help" => '4eb40b69-abff-4f89-93d1-973fc860bd14',
-                            "title" => '2eb62e1b-8f54-49aa-8035-da2ffe57e881',
+                            "help" => '222df593-6979-4962-b1da-f1055872563b',
+                            "title" => 'c92cb87a-de88-41be-857d-8a54eda7e75b',
                         ],
 
-                    "type-hr-cv" => 
+                    "boiler" => 
                         [
-                            "help" => '754855a3-0c7b-42b4-9a1f-97754265530f',
-                            "title" => 'f59a68a0-3973-430c-9158-3e63e8404dc8',
+                            "help" => 'd057a478-3066-4064-a903-9b13bf86a513',
+                            "title" => '838a6a5f-8cc2-4562-a80b-79871bb036cb',
                         ],
 
                     "house-ventilation" => 
                         [
-                            "help" => 'a06d3123-83a7-4d1c-9fd0-ddc505b297a8',
-                            "title" => '618ed8a5-b1e2-4393-9048-b06c2ada6eda',
+                            "help" => 'e4ca36e8-003f-4988-b378-72592ecbd58b',
+                            "title" => '6e17a2bb-925a-462d-a0c3-2d818b9cc40c',
                         ],
 
-                    "sun-panels" => 
+                    "total-sun-panels" => 
                         [
-                            "help" => '05e0fa4d-d746-46e0-a676-fa8d75d62fc5',
-                            "title" => '05fe3069-9941-4d8c-a7f9-2fe498c9ba89',
+                            "help" => 'eb8629e1-0cd5-48bc-a14a-0bdb74bf7c0d',
+                            "title" => 'f98b00d4-467b-45bb-bdb6-4e1fb17e82d3',
                         ],
 
                 ],

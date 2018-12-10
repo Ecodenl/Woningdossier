@@ -349,7 +349,17 @@
 
         $(document).on('focus', 'input.option-text', function (event) {
 
-            if ($(this).val() === "") {
+            // we need to check if all the language inputs are filled
+            // so we get the option group
+            var optionGroup = $(this).parent().parent().parent();
+
+            var lastInputFromOptionGroup = optionGroup.find('input:last');
+
+            // check if the last input from the option group is empty
+            // and if the current focussed input is equal to the last input from the option group
+            // because if so, we need to add a new option group
+            if (lastInputFromOptionGroup.val() === "" && $(this)[0] === lastInputFromOptionGroup[0]) {
+
                 var questionPanel = sortable.find('.panel').first();
                 var question = questionPanel.find('.question');
                 var guid = question.find('.guid').val();

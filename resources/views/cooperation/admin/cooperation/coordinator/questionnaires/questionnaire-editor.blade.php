@@ -136,11 +136,17 @@
             '</div>';
 
 
+        // in the comments you may see "options"
+        // these will be the inputs that hold the name off the option that the user can choose from
+        // a question could have options, those options are the "option" inputs.
+
+        // preset variables we need in almost in every function
         var sortable = $('#sortable');
         var toolBox = $('#tool-box');
         var formGroupElement = '<div class="form-group"></div>';
         var inputGroupElement = '<div class="input-group"></div>';
         var localeInputGroupAddon = '<span class="input-group-addon"></span>';
+        var optionGroupElement = '<div class="option-group"></div>';
 
         var requiredCheckboxLabel = $('<label>').addClass('control-label').text('Verplicht ');
 
@@ -151,11 +157,12 @@
         supportedLocales.push('{{$locale}}');
         @endforeach
 
+        // create guid
         function createGuid()
         {
             return "ss-s-s-s-sss".replace(/s/g, s4());
         }
-
+        // some quick maths
         function s4()
         {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -163,13 +170,6 @@
                 .substring(1);
         }
 
-        // each question input name should be structured like
-        // questions[new][uniqueuuid / guid][question]';
-        // if the question has "options", for instance when it is a dropdown the name should be structured like this
-        // name=question[new][][options][]
-
-        // used input for the dropdown builder
-        var dropdownMenuInputElement = '<input name="" placeholder="Optie toevoegen" type="text" class="option-text form-control">';
 
         toolBox.find('a').on('click', function (event) {
             // always add the empty form build panel
@@ -207,33 +207,7 @@
             question.append(hiddenInputWithInputType);
         }
 
-        function addInputOptions(question, guid)
-        {
-            // does work, but not how its supposed to work
-            // a optionGroup should contain all the inputs for one option
-            // later on the code appendto is found
-            var optionGroup = question.append('<div class="option-group"></div>');
 
-            // we need to create this for every new option
-            // so we can make a difference between the multiple options
-            var additionalQuestionOptionGuid = createGuid();
-
-            $(supportedLocales).each(function (index, locale) {
-                var fullQuestionName = 'questions[new]['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
-
-                var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(optionGroup);
-
-                var textInput = $('<input>').addClass('form-control option-text').attr({
-                    placeholder: 'Optie toevoegen',
-                    value: 'Optie...',
-                    name: fullQuestionName,
-                    type: 'text'
-                });
-
-                formGroup.find('.input-group').append($(localeInputGroupAddon).append(locale));
-                formGroup.find('.input-group').append(textInput);
-            });
-        }
 
         function addAdditionalQuestionOptions(question, guid)
         {
@@ -241,10 +215,16 @@
             // so we can make a difference between the multiple options
             var additionalQuestionOptionGuid = createGuid();
 
+            // we append a option-group for every new added option
+            question.append(optionGroupElement);
+
+            // we add "option" inputs for each supported language
             $(supportedLocales).each(function (index, locale) {
                 var fullQuestionName = 'questions[new]['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
 
-                var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(question);
+                var formGroup = $($(formGroupElement).append(inputGroupElement));
+                // raging because i dont know why $(optionGroup).append(formGroup) does not work.
+                $(question).find('.option-group').last().append(formGroup);
 
 
                 var additionalTextInput = $('<input>').addClass('form-control option-text').attr({
@@ -337,8 +317,6 @@
             question.append(guidHiddenInput);
 
             addInputQuestion(question, guid);
-
-            addInputOptions(question, guid);
 
             addAdditionalQuestionOptions(question, guid);
 

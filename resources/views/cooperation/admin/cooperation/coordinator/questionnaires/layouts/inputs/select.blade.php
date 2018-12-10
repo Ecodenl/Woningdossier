@@ -12,14 +12,16 @@
 @foreach($question->questionOptions as $questionOption)
     <?php $questionOptionCount++ ?>
     <label for="">Optie {{$questionOptionCount}}</label>
-    @foreach(config('woningdossier.supported_locales') as $locale)
-        <div class="form-group">
-            <div class="input-group">
-                <span class="input-group-addon">{{$locale}}</span>
-                <input name="questions[edit][{{$question->id}}][options][{{$questionOption->id}}][{{$locale}}]" placeholder="Vraag" type="text" value="{{$questionOption->getTranslation('name', $locale)->translation}}" class="form-control">
+    <div class="option-group">
+        @foreach(config('woningdossier.supported_locales') as $locale)
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">{{$locale}}</span>
+                    <input name="questions[edit][{{$question->id}}][options][{{$questionOption->id}}][{{$locale}}]" placeholder="Vraag" type="text" value="{{$questionOption->getTranslation('name', $locale)->translation}}" class="form-control">
+                </div>
             </div>
-        </div>
-    @endforeach
+        @endforeach
+    </div>
 @endforeach
 
 {{-- For every existing question, we want to add a new option group field --}}

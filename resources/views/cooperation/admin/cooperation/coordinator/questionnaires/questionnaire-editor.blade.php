@@ -187,8 +187,8 @@
             // add the validation options to the form
             question.append(formBuildValidation);
             // after that we add the name attribute
-            question.find('.validation').attr('name', 'questions[new]['+guid+'][validation]');
-            question.find('.validation-options').attr('name', 'questions[new]['+guid+'][validation-options]');
+            question.find('.validation').attr('name', 'validation['+guid+'][validation]');
+            question.find('.validation-options').attr('name', 'validation['+guid+'][validation-options]');
 
         }
 
@@ -389,6 +389,7 @@
         /**
          * Add the min and max input rule to the validation row
          *
+         * @param event
          * @param question
          * @param guid
          */
@@ -400,13 +401,13 @@
 
             // create the min and max inputs
             var betweenMinInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
-                name: 'questions[new]['+guid+'][validation-options][between][min]',
+                name: 'validation['+guid+'][validation-options][between][min]',
                 placeholder: 'Min..',
                 type: 'text'
             }).addClass('form-control'));
 
             var betweenMaxInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
-                name: 'questions[new]['+guid+'][validation-options][between][max]',
+                name: 'validation['+guid+'][validation-options][between][max]',
                 placeholder: 'Max..',
                 type: 'text'
             }).addClass('form-control'));
@@ -417,25 +418,48 @@
         }
 
         function removeOldRuleInput(question) {
-            var validationInputRow = question.find('.validation-inputs');
 
+            var validationInputRow = question.find('.validation-inputs');
             validationInputRow.find('.col-sm-2').remove();
         }
 
         function addMinRuleInputs(question, guid) {
 
             // remove the old rule inputs
-            removeOldRuleInput(question, guid);
+            removeOldRuleInput(question);
 
             var validationInputRow = question.find('.validation-inputs');
             // create the min and max inputs
             var minInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
-                name: 'questions[new]['+guid+'][validation-options][between][min]',
+                name: 'validation['+guid+'][validation-options][between][min]',
                 placeholder: 'Min..',
                 type: 'text'
             }).addClass('form-control'));
 
             validationInputRow.append(minInput);
+        }
+        
+        function hasQuestionQuestionId(question)
+        {
+            if (question.find('input.question_id').length > 0) {
+                return true;
+            } 
+            return false
+        }
+
+
+        /**
+         * This returns the question id from a existing question or if it is a new question we return the guid.
+         * @param question
+         * @returns {*}
+         */
+        function getQuestionId(question)
+        {
+            if (hasQuestionQuestionId(question)) {
+                return question.find('input.question_id').val();
+            }
+
+            return question.find('input.guid').val();
         }
 
 
@@ -444,15 +468,16 @@
             var selectedValidationOption = $(this);
             var question = selectedValidationOption.parent().parent().parent().parent();
             var selectedValidationValue = $(this).val();
-            var guid = question.find('input.guid').val();
+            var guid = getQuestionId(question);
 
-            switch (selectedValidationValue) {
-
-                case 'between':
-                    addBetweenRuleInputs(question, guid);
-                    break;
-                case 'min':
-                    addMinRuleInputs(question, guid)
+            if (event.originalEvent !== undefined) {
+                switch (selectedValidationValue) {
+                    case 'between':
+                        addBetweenRuleInputs(question, guid);
+                        break;
+                    case 'min':
+                        addMinRuleInputs(question, guid)
+                }
             }
 
 

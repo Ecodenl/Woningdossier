@@ -218,6 +218,7 @@
             // we append a option-group for every new added option
             question.append(optionGroupElement);
 
+            console.log(question);
             // we add "option" inputs for each supported language
             $(supportedLocales).each(function (index, locale) {
                 var fullQuestionName = 'questions[new]['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
@@ -355,13 +356,14 @@
 
             var lastInputFromOptionGroup = optionGroup.find('input:last');
 
+            console.log(optionGroup);
+
             // check if the last input from the option group is empty
             // and if the current focussed input is equal to the last input from the option group
             // because if so, we need to add a new option group
             if (lastInputFromOptionGroup.val() === "" && $(this)[0] === lastInputFromOptionGroup[0]) {
 
-                var questionPanel = sortable.find('.panel').first();
-                var question = questionPanel.find('.question');
+                var question = $(this).parent().parent().parent().parent();
                 var guid = question.find('.guid').val();
 
                 addAdditionalQuestionOptions(question, guid);

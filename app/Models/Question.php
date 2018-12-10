@@ -10,16 +10,16 @@ class Question extends Model
 {
     use TranslatableTrait, SoftDeletes;
 
-
     protected $fillable = [
-        'name', 'type', 'order', 'required', 'questionnaire_id'
+        'name', 'type', 'order', 'required', 'questionnaire_id', 'validation'
     ];
 
     protected $dates = [
         'deleted_at'
     ];
     protected $casts = [
-        'required' => 'bool'
+        'required' => 'bool',
+        'validation' => 'array'
     ];
 
     /**

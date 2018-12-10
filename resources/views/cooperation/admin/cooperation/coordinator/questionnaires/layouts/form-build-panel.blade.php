@@ -20,7 +20,7 @@
 
             </div>
         </div>
-        <div class="row" id="validation-rules">
+        <div class="row validation-inputs">
             @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.validation-options', ['question' => $question])
         </div>
     </div>

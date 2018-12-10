@@ -218,7 +218,6 @@
             // we append a option-group for every new added option
             question.append(optionGroupElement);
 
-            console.log(question);
             // we add "option" inputs for each supported language
             $(supportedLocales).each(function (index, locale) {
                 var fullQuestionName = 'questions[new]['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
@@ -288,10 +287,16 @@
             var panelFooter = questionPanel.find('.panel-footer');
             var guid = createGuid();
 
-
             addInputQuestion(question, guid);
 
             addHiddenInputWithInputType(question, guid, 'text');
+
+            var guidHiddenInput = $('<input>').attr({
+                type: 'hidden',
+                value: guid,
+            }).addClass('guid');
+
+            question.append(guidHiddenInput);
 
             addRequiredCheckbox(panelFooter, guid);
 
@@ -356,8 +361,6 @@
 
             var lastInputFromOptionGroup = optionGroup.find('input:last');
 
-            console.log(optionGroup);
-
             // check if the last input from the option group is empty
             // and if the current focussed input is equal to the last input from the option group
             // because if so, we need to add a new option group
@@ -370,7 +373,7 @@
             }
         });
 
-        $('body').on('change', 'select[name*=validation]', function () {
+        $('body').on('change', 'select.validation', function () {
             var selectedMainRule = $(this);
 
             var validationRuleRow = selectedMainRule.parent().parent().parent();
@@ -380,6 +383,79 @@
 
             var optionalRule = validationRuleRow.find('select[name*=validation-options][id='+selectedMainRule.val()+']');
             optionalRule.show();
+        });
+
+
+        /**
+         * Add the min and max input rule to the validation row
+         *
+         * @param question
+         * @param guid
+         */
+        function addBetweenRuleInputs(question, guid) {
+            // remove the old rule inputs
+            removeOldRuleInput(question, guid);
+
+            var validationInputRow = question.find('.validation-inputs');
+
+            // create the min and max inputs
+            var betweenMinInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
+                name: 'questions[new]['+guid+'][validation-options][between][min]',
+                placeholder: 'Min..',
+                type: 'text'
+            }).addClass('form-control'));
+
+            var betweenMaxInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
+                name: 'questions[new]['+guid+'][validation-options][between][max]',
+                placeholder: 'Max..',
+                type: 'text'
+            }).addClass('form-control'));
+
+            validationInputRow.append(betweenMinInput);
+            validationInputRow.append(betweenMaxInput);
+
+        }
+
+        function removeOldRuleInput(question) {
+            var validationInputRow = question.find('.validation-inputs');
+
+            validationInputRow.find('.col-sm-2').remove();
+        }
+
+        function addMinRuleInputs(question, guid) {
+
+            // remove the old rule inputs
+            removeOldRuleInput(question, guid);
+
+            var validationInputRow = question.find('.validation-inputs');
+            // create the min and max inputs
+            var minInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
+                name: 'questions[new]['+guid+'][validation-options][between][min]',
+                placeholder: 'Min..',
+                type: 'text'
+            }).addClass('form-control'));
+
+            validationInputRow.append(minInput);
+        }
+
+
+        // add the validation inputs if needed
+        $('body').on('change', 'select.validation-options', function (event) {
+            var selectedValidationOption = $(this);
+            var question = selectedValidationOption.parent().parent().parent().parent();
+            var selectedValidationValue = $(this).val();
+            var guid = question.find('input.guid').val();
+
+            switch (selectedValidationValue) {
+
+                case 'between':
+                    addBetweenRuleInputs(question, guid);
+                    break;
+                case 'min':
+                    addMinRuleInputs(question, guid)
+            }
+
+
         });
 
         $('body').on('click', '.glyphicon-trash', function (event) {
@@ -396,18 +472,6 @@
                return false;
            }
         });
-
-
-        function makeRandomString() {
-            var text = "";
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-            for (var i = 0; i < 5; i++)
-                text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-            return text;
-        }
-
 
 
 
@@ -441,6 +505,6 @@
             });
         });
 
-        $('input, select').trigger('change');
+        // $('input, select').trigger('change');
     </script>
 @endpush

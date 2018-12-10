@@ -22,10 +22,10 @@ return [
                     'optional-rules' => [
                         'number' => [
                             'between' => 'Tussen',
+                            'min' => 'Minimale grootte'
                         ],
                         'string' => [
                             'email' => 'E-mailadres',
-                            'between' => 'Tussen',
                             'max' => 'Maximaal aantal letters'
                         ],
                     ],

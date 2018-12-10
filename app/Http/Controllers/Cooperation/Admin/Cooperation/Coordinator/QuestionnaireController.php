@@ -13,6 +13,7 @@ use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class QuestionnaireController extends Controller
 {
@@ -62,6 +63,7 @@ class QuestionnaireController extends Controller
             'type' => $questionType,
             'order' => rand(1, 3),
             'required' => $required,
+            'validation' => $this->getValidationRule($newQuestion),
             'questionnaire_id' => $questionnaireId
         ]);
 
@@ -82,6 +84,67 @@ class QuestionnaireController extends Controller
             }
         }
 
+
+    }
+
+    /**
+     * Returns the full concatenated validation rule
+     *
+     * @param array $newQuestion
+     * @return string $validationRule
+     */
+//    protected function getValidationRule(array $newQuestion) : string
+//    {
+//        // the main validation name
+//        $mainValidation = $newQuestion['validation'];
+//
+//        // example:
+//        // $mainValidation = number
+//        // $subValidationRule = between
+//        // $subValidationRuleName = min or max etc,
+//        // $subValidationRuleValue = the value to check the validation on
+//
+//        $subValidationRule = key($newQuestion['validation-options']);
+//
+//        $validationRule = "{$mainValidation}|";
+//
+//        switch ($subValidationRule) {
+//            case 'between':
+//                $validationRule .= "{$subValidationRule}:";
+//                foreach ($newQuestion['validation-options'][$subValidationRule] as $subValidationRuleName => $subValidationRuleValue) {
+//                    $validationRule .= "{$subValidationRuleValue},";
+//                }
+//
+//                break;
+//        }
+//
+//        return rtrim($validationRule, ',');
+//
+//    }
+    protected function getValidationRule(array $newQuestion) : array
+    {
+        // the main validation name
+        $mainValidation = $newQuestion['validation'];
+
+        // example:
+        // $mainValidation = number
+        // $subValidationRule = between
+        // $subValidationRuleName = min or max etc,
+        // $subValidationRuleValue = the value to check the validation on
+
+        $subValidationRule = key($newQuestion['validation-options']);
+
+
+        // create an array of the rules
+        $validationRule = [
+            $mainValidation => [
+                $subValidationRule => $newQuestion['validation-options'][$subValidationRule]
+            ]
+        ];
+
+
+        return $validationRule;
+
     }
 
 
@@ -100,11 +163,13 @@ class QuestionnaireController extends Controller
         }
 
         $currentQuestion = Question::withTrashed()->find($questionId);
+
         $currentQuestion->update([
             'type' => 'text',
             'order' => rand(1, 3),
             'required' => $required,
         ]);
+
 
         // multiple translations can be available
         foreach ($editedQuestion['question'] as $locale => $question) {
@@ -215,6 +280,8 @@ class QuestionnaireController extends Controller
      */
     public function store(Request $request)
     {
+
+//        dd($request->all());
         $questionnaireId = $request->get('questionnaire_id');
 
         if ($request->has('questions.new')) {

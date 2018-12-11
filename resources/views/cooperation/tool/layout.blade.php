@@ -19,19 +19,22 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if($step->hasQuestionnaires())
+                @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a href="#main-tab" data-toggle="tab">{{$step->name}}</a></li>
-                    @foreach($step->questionnaires as $questionnaire)
-                        <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
+                        <a href="#main-tab" data-toggle="tab">{{$currentStep->name}}</a></li>
+                    @foreach($currentStep->questionnaires as $questionnaire)
+                        @if($questionnaire->isActive())
+                            <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
+                        @endif
                     @endforeach
                 </ul>
                 @endif
 
                 <div class="tab-content">
-                    @if($step->hasQuestionnaires())
-                        @foreach($step->questionnaires as $questionnaire)
+                    @if(isset($currentStep) && $currentStep->hasQuestionnaires())
+                        @foreach($currentStep->questionnaires as $questionnaire)
+                            @if($questionnaire->isActive())
                             <div class="panel tab-pane panel-default" id="questionnaire-{{$questionnaire->id}}">
                                 <div class="panel-heading">
                                     <h3>
@@ -62,6 +65,7 @@
                                     @endforeach
                                 </div>
                             </div>
+                            @endif
                         @endforeach
                     @endif
 

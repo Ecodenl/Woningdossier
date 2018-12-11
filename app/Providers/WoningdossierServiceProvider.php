@@ -33,7 +33,7 @@ class WoningdossierServiceProvider extends ServiceProvider
             $slug = str_replace('/tool/', '', request()->getRequestUri());
             $step = Step::where('slug', $slug)->first();
 
-            $view->with('step', $step);
+            $view->with('currentStep', $step);
         });
 
         \View::creator('*', CooperationComposer::class);

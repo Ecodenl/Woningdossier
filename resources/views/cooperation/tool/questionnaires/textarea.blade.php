@@ -2,7 +2,7 @@
     <div class="col-sm-12">
         <div class="form-group add-space{{ $errors->has('question.'.$question->id) ? ' has-error' : '' }}">
             <label for="">{{$question->name}} @if($question->isRequired()) * @endif</label>
-            <textarea name="question[{{$question->id}}]" class="form-control"></textarea>
+            <textarea name="question[{{$question->id}}]" class="form-control" rows="5"></textarea>
         </div>
     </div>
 </div>

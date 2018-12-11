@@ -319,6 +319,13 @@ class QuestionnaireController extends Controller
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.success'));
     }
 
+    /**
+     * Store a questionnaire, after this the user will get redirected to the edit page and he can add questions to the questionnaire
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function storeQuestionnaire(Request $request)
     {
 

@@ -41,7 +41,7 @@
                                         {{$questionnaire->name}}
                                     </h3>
 
-                                        <button id="submit-form-top-right" class="pull-right btn btn-primary">
+                                        <button id="submit-form-top-right" disabled class="pull-right btn btn-primary">
                                                 @lang('default.buttons.next')
                                         </button>
                                     <div class="clearfix"></div>

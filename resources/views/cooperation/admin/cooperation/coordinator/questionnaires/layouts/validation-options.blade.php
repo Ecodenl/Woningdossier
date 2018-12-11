@@ -20,7 +20,7 @@
 <div class="col-sm-4">
     <div class="form-group">
         @foreach(__('woningdossier.cooperation.admin.custom-fields.index.rules') as $rule => $translation)
-            <select class="form-control sub-rule" data-sub-rule="{{$rule}}" name="validation[{{$question->id}}][sub-rule]" @if($rule != $mainValidationRule) style="display: none;" @endif>
+            <select class="form-control sub-rule" data-sub-rule="{{$rule}}" name="validation[{{$question->id}}][sub-rule]" @if($rule != $mainValidationRule) disabled="disabled" style="display: none;" @endif>
                 @foreach(__('woningdossier.cooperation.admin.custom-fields.index.optional-rules.'.$rule) as $optionalRule => $optionalRuleTranslation)
                     <option @if($optionalValidationRule == $optionalRule) selected @endif value="{{$optionalRule}}">{{$optionalRuleTranslation}}</option>
                 @endforeach
@@ -30,11 +30,11 @@
 </div>
 
 @if(is_array($question->validation))
-    @foreach($question->validation[$mainValidationRule] as $optionalRule => $rules)
-        @foreach($rules as $validationOptionName => $validationOptionValue)
+    @foreach($question->validation[$mainValidationRule] as $subRule => $subRuleCheckValues)
+        @foreach($subRuleCheckValues as $subRuleCheckValue)
             <div class="col-sm-2">
                 <div class="form-group">
-                    <input type="text" name="validation[{{$question->id}}][sub-rule-check-value][]" class="form-control" value="{{$validationOptionValue}}">
+                    <input type="text" name="validation[{{$question->id}}][sub-rule-check-value][]" class="form-control" value="{{$subRuleCheckValue}}">
                 </div>
             </div>
         @endforeach

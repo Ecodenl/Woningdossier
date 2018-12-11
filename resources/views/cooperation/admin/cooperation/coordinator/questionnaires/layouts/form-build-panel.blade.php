@@ -22,7 +22,9 @@
             </div>
         </div>
         <div class="row validation-inputs">
-            @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.validation-options', ['question' => $question])
+            @if(in_array($question->type, ['text']))
+                @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.validation-options', ['question' => $question])
+            @endif
         </div>
     </div>
     <div class="panel-footer">

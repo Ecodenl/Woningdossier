@@ -56,29 +56,35 @@ class QuestionnaireController extends Controller
         }
     }
 
-    // request contains wrong validation rule ?
 
+    /**
+     * Returns the validation rule in a array
+     *
+     * @param array $requestQuestion
+     * @param array $validation
+     * @return array
+     */
     protected function getValidationRule(array $requestQuestion, array $validation) : array
     {
+        // get the validation for the current question
         $validationForCurrentQuestion = $this->getValidationForCurrentQuestion($requestQuestion, $validation);
-        // the main validation name
-        $mainValidation = $requestQuestion['validation'];
-
-        // example:
-        // $mainValidation = number
-        // $subValidationRule = between
-        // $subValidationRuleName = min or max etc,
-        // $subValidationRuleValue = the value to check the validation on
-
-        $subValidationRule = key($requestQuestion['validation-options']);
 
 
-        // create an array of the rules
+        // built the validation rule array
         $validationRule = [
-            $mainValidation => [
-                $subValidationRule => $requestQuestion['validation-options'][$subValidationRule]
+            $validationForCurrentQuestion['main-rule'] => [
+                $validationForCurrentQuestion['sub-rule']  => []
             ]
         ];
+
+        // first check if there are sub rule check values
+        if (array_key_exists('sub-rule-check-value', $validationForCurrentQuestion)) {
+
+            // if so, push them inside the sub-rule array
+            foreach ($validationForCurrentQuestion['sub-rule-check-value'] as $subRuleCheckValue) {
+                array_push($validationRule[$validationForCurrentQuestion['main-rule']][$validationForCurrentQuestion['sub-rule']], $subRuleCheckValue);
+            }
+        }
 
 
         return $validationRule;

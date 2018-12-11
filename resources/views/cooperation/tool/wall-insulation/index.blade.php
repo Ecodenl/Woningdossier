@@ -7,9 +7,9 @@
         {{ csrf_field() }}
 
         <div id="intro">
-            @include('cooperation.tool.includes.interested', [
-                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
-            ])
+
+            @include('cooperation.tool.includes.interested', ['type' => 'element', 'buildingElements' => $buildingElements,])
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
@@ -46,6 +46,9 @@
                 </div>
             </div>
         </div>
+
+        @include('cooperation.tool.includes.savings-alert', ['buildingElement' => 'wall-insulation'])
+
         <div class="hideable">
             <div class="row">
                 <div class="col-sm-12">

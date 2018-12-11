@@ -115,7 +115,7 @@
             '<div class="row validation-inputs">' +
             '<div class="col-sm-4">' +
                 '<div class="form-group">' +
-                    '<select class="validation form-control"  id="">' +
+                    '<select class="validation form-control">' +
                         '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)' +
                             '<option value="{{$rule}}">{{$translation}}</option>' +
                         '@endforeach' +
@@ -125,7 +125,7 @@
             '<div class="col-sm-4">' +
                 '<div class="form-group">' +
                     '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)' +
-                        '<select class="validation-options form-control" name="questions[new][][validation-options]" id="{{$rule}}">' +
+                        '<select disabled="true" class="sub-rule form-control" data-sub-rule="{{$rule}}" style="display: none;">' +
                         '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.optional-rules.".$rule) as $optionalRule => $optionalRuleTranslation)' +
                             '<option value="{{$optionalRule}}">{{$optionalRuleTranslation}}</option>' +
                         '@endforeach' +
@@ -178,19 +178,6 @@
             event.preventDefault();
         });
 
-        /**
-         * function to add the validation inputs
-         */
-        function addValidationInputs(question, guid)
-        {
-
-            // add the validation options to the form
-            question.append(formBuildValidation);
-            // after that we add the name attribute
-            question.find('.validation').attr('name', 'validation['+guid+'][validation]');
-            question.find('.validation-options').attr('name', 'validation['+guid+'][validation-options]');
-
-        }
 
 
         /**
@@ -298,10 +285,28 @@
             addValidationInputs(question, guid);
 
             sortable.sortable('refresh');
-            $('input, select').trigger('change');
+            $('input').trigger('change');
 
         });
 
+        /**
+         * function to add the validation inputs
+         */
+        function addValidationInputs(question, guid)
+        {
+
+            // add the validation options to the form
+            question.append(formBuildValidation);
+            // after that we add the name attribute
+            question.find('.validation').attr('name', 'validation['+guid+'][validation]');
+            question.find('.validation-options').attr('name', 'validation['+guid+'][validation-options]');
+
+        }
+
+
+        /**
+         * Add a hidden input with a guid
+         */
         function addHiddenGuidInput(question, guid)
         {
             var guidHiddenInput = $('<input>').attr({
@@ -346,7 +351,6 @@
             sortable.sortable('refresh');
             $('input, select').trigger('change');
         });
-
 
         $(document).on('focusout', 'input.option-text', function (event) {
             if($(this).val() === "") {

@@ -291,12 +291,7 @@
 
             addHiddenInputWithInputType(question, guid, 'text');
 
-            var guidHiddenInput = $('<input>').attr({
-                type: 'hidden',
-                value: guid,
-            }).addClass('guid');
-
-            question.append(guidHiddenInput);
+            addHiddenGuidInput(question, guid);
 
             addRequiredCheckbox(panelFooter, guid);
 
@@ -307,6 +302,17 @@
 
         });
 
+        function addHiddenGuidInput(question, guid)
+        {
+            var guidHiddenInput = $('<input>').attr({
+                name: 'questions[new]['+guid+'][guid]',
+                type: 'hidden',
+                value: guid,
+            }).addClass('guid');
+
+            question.append(guidHiddenInput);
+        }
+
         toolBox.find('#dropdown').on('click', function () {
             var questionPanel = sortable.find('.panel').first();
             var question = questionPanel.find('.question');
@@ -315,12 +321,7 @@
 
             addHiddenInputWithInputType(question, guid, 'select');
 
-            var guidHiddenInput = $('<input>').attr({
-                type: 'hidden',
-                value: guid,
-            }).addClass('guid');
-
-            question.append(guidHiddenInput);
+            addHiddenGuidInput(question, guid);
 
             addInputQuestion(question, guid);
 
@@ -336,7 +337,7 @@
         });
 
         toolBox.find('#long-answer').on('click', function () {
-            var question = sortable.find('.panel').first().find('#question');
+            var question = sortable.find('.panel').first().find('.question');
             var formGroup = question.find('.form-group');
 
             formGroup.append("<input class='form-control' placeholder='Stel uw vraag waar een langer antwoord voor nodig is'>");
@@ -378,67 +379,54 @@
 
             var validationRuleRow = selectedMainRule.parent().parent().parent();
 
-            var optionalRuleThatIsNotSelected = validationRuleRow.find('select[name*=validation-options][id!='+selectedMainRule.val()+']');
-            optionalRuleThatIsNotSelected.hide();
+            // get the select sub-rule that we dont want to show
+            var subRuleNotSelected = validationRuleRow.find('select[data-sub-rule!='+selectedMainRule.val()+'].sub-rule');
 
-            var optionalRule = validationRuleRow.find('select[name*=validation-options][id='+selectedMainRule.val()+']');
-            optionalRule.show();
+            // after that we hide & disable the input. No need to remove the name, see:
+            // https://www.w3.org/TR/html5/forms.html#constructing-the-form-data-set
+            subRuleNotSelected.hide();
+            subRuleNotSelected.attr('disabled', true);
+
+            var subRule = validationRuleRow.find('select[data-sub-rule='+selectedMainRule.val()+'].sub-rule');
+            subRule.removeAttr('disabled');
+            subRule.show();
+            subRule.trigger('change');
         });
 
 
-        /**
-         * Add the min and max input rule to the validation row
-         *
-         * @param event
-         * @param question
-         * @param guid
-         */
-        function addBetweenRuleInputs(question, guid) {
-            // remove the old rule inputs
-            removeOldRuleInput(question, guid);
-
-            var validationInputRow = question.find('.validation-inputs');
-
-            // create the min and max inputs
-            var betweenMinInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
-                name: 'validation['+guid+'][validation-options][between][min]',
-                placeholder: 'Min..',
-                type: 'text'
-            }).addClass('form-control'));
-
-            var betweenMaxInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
-                name: 'validation['+guid+'][validation-options][between][max]',
-                placeholder: 'Max..',
-                type: 'text'
-            }).addClass('form-control'));
-
-            validationInputRow.append(betweenMinInput);
-            validationInputRow.append(betweenMaxInput);
-
-        }
-
-        function removeOldRuleInput(question) {
-
+        function removeRuleInput(question)
+        {
             var validationInputRow = question.find('.validation-inputs');
             validationInputRow.find('.col-sm-2').remove();
         }
 
-        function addMinRuleInputs(question, guid) {
-
+        function addSubRuleCheckValueInput(question, guid, placeholders)
+        {
             // remove the old rule inputs
-            removeOldRuleInput(question);
+            removeRuleInput(question);
 
+            // get the validation input row
             var validationInputRow = question.find('.validation-inputs');
-            // create the min and max inputs
-            var minInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
-                name: 'validation['+guid+'][validation-options][between][min]',
-                placeholder: 'Min..',
-                type: 'text'
-            }).addClass('form-control'));
 
-            validationInputRow.append(minInput);
+            $(placeholders).each(function (index, placeholder) {
+
+                // create the min and max inputs
+                var minInput = $('<div class="col-sm-2"></div>').append($('<input>').attr({
+                    name: 'validation['+guid+'][sub-rule-check-value][]',
+                    placeholder: placeholder,
+                    type: 'text'
+                }).addClass('form-control'));
+
+                validationInputRow.append(minInput);
+            })
         }
-        
+
+        /**
+         * Check if a question has a question id.
+         * The question will have a question id if its a existing question
+         * The question wont have it if its a new question, in that case it wil have a guid
+         *
+         */
         function hasQuestionQuestionId(question)
         {
             if (question.find('input.question_id').length > 0) {
@@ -463,23 +451,28 @@
         }
 
 
+
         // add the validation inputs if needed
-        $('body').on('change', 'select.validation-options', function (event) {
+        $('body').on('change', 'select.sub-rule', function (event) {
             var selectedValidationOption = $(this);
             var question = selectedValidationOption.parent().parent().parent().parent();
             var selectedValidationValue = $(this).val();
             var guid = getQuestionId(question);
 
-            if (event.originalEvent !== undefined) {
-                switch (selectedValidationValue) {
-                    case 'between':
-                        addBetweenRuleInputs(question, guid);
-                        break;
-                    case 'min':
-                        addMinRuleInputs(question, guid)
-                }
+            switch (selectedValidationValue) {
+                case 'between':
+                    addSubRuleCheckValueInput(question, guid, ['Min..', 'Max..']);
+                    break;
+                case 'min':
+                    addSubRuleCheckValueInput(question, guid, ['Min..']);
+                    break;
+                case 'max':
+                    addSubRuleCheckValueInput(question, guid, ['Max..']);
+                    break;
+                case 'email':
+                    removeRuleInput(question);
+                    break;
             }
-
 
         });
 

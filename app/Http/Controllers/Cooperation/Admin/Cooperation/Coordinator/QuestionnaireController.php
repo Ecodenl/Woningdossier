@@ -39,20 +39,66 @@ class QuestionnaireController extends Controller
         return view('cooperation.admin.cooperation.coordinator.questionnaires.create', compact('steps'));
     }
 
+
+    /**
+     * Return the validation for the current question
+     *
+     * @param array $requestQuestion
+     * @param array $validation
+     * @return array
+     */
+    protected function getValidationForCurrentQuestion(array $requestQuestion, array $validation) : array
+    {
+        if (array_key_exists('guid', $requestQuestion)) {
+            return $validation[$requestQuestion['guid']];
+        } else {
+            return $validation[$requestQuestion['question_id']];
+        }
+    }
+
+    // request contains wrong validation rule ?
+
+    protected function getValidationRule(array $requestQuestion, array $validation) : array
+    {
+        $validationForCurrentQuestion = $this->getValidationForCurrentQuestion($requestQuestion, $validation);
+        // the main validation name
+        $mainValidation = $requestQuestion['validation'];
+
+        // example:
+        // $mainValidation = number
+        // $subValidationRule = between
+        // $subValidationRuleName = min or max etc,
+        // $subValidationRuleValue = the value to check the validation on
+
+        $subValidationRule = key($requestQuestion['validation-options']);
+
+
+        // create an array of the rules
+        $validationRule = [
+            $mainValidation => [
+                $subValidationRule => $requestQuestion['validation-options'][$subValidationRule]
+            ]
+        ];
+
+
+        return $validationRule;
+
+    }
+
     /**
      * Create a question
      *
      * @param int $questionnaireId
-     * @param array $newQuestion
+     * @param array $requestQuestion
      * @param string $questionType
      * @param bool $questionHasOptions
      */
-    protected function createQuestion(int $questionnaireId, array $newQuestion, string $questionType, bool $questionHasOptions = false)
+    protected function createQuestion(int $questionnaireId, array $requestQuestion, string $questionType, array $validation, bool $questionHasOptions = false)
     {
 
         $required = false;
 
-        if (array_key_exists('required', $newQuestion)) {
+        if (array_key_exists('required', $requestQuestion)) {
             $required = true;
         }
 
@@ -63,12 +109,12 @@ class QuestionnaireController extends Controller
             'type' => $questionType,
             'order' => rand(1, 3),
             'required' => $required,
-            'validation' => $this->getValidationRule($newQuestion),
+            'validation' => $this->getValidationRule($requestQuestion, $validation),
             'questionnaire_id' => $questionnaireId
         ]);
 
         // multiple translations can be available
-        foreach ($newQuestion['question'] as $locale => $question) {
+        foreach ($requestQuestion['question'] as $locale => $question) {
             // the uuid we will put in the key for the translation and set in the question name column-
             Translation::create([
                 'key' => $uuid,
@@ -79,37 +125,11 @@ class QuestionnaireController extends Controller
 
         if ($questionHasOptions) {
             // create the options for the question
-            foreach ($newQuestion['options'] as $newOptions) {
+            foreach ($requestQuestion['options'] as $newOptions) {
                 $this->createQuestionOptions($newOptions, $createdQuestion);
             }
         }
 
-
-    }
-
-    protected function getValidationRule(array $newQuestion) : array
-    {
-        // the main validation name
-        $mainValidation = $newQuestion['validation'];
-
-        // example:
-        // $mainValidation = number
-        // $subValidationRule = between
-        // $subValidationRuleName = min or max etc,
-        // $subValidationRuleValue = the value to check the validation on
-
-        $subValidationRule = key($newQuestion['validation-options']);
-
-
-        // create an array of the rules
-        $validationRule = [
-            $mainValidation => [
-                $subValidationRule => $newQuestion['validation-options'][$subValidationRule]
-            ]
-        ];
-
-
-        return $validationRule;
 
     }
 
@@ -120,7 +140,7 @@ class QuestionnaireController extends Controller
      * @param int $questionId
      * @param array $editedQuestion
      */
-    public function updateTextQuestion(int $questionId, array $editedQuestion)
+    public function updateTextQuestion(int $questionId, array $editedQuestion, array $validation)
     {
         $required = false;
 
@@ -130,9 +150,8 @@ class QuestionnaireController extends Controller
 
         $currentQuestion = Question::withTrashed()->find($questionId);
 
-        dd($editedQuestion);
         $currentQuestion->update([
-            'validation' => $this->getValidationRule($editedQuestion),
+            'validation' => $this->getValidationRule($editedQuestion, $validation),
             'type' => 'text',
             'order' => rand(1, 3),
             'required' => $required,
@@ -216,7 +235,7 @@ class QuestionnaireController extends Controller
      * @param $questionId
      * @param $editedQuestion
      */
-    public function updateSelectQuestion($questionId, $editedQuestion)
+    public function updateSelectQuestion($questionId, $editedQuestion, array $validation)
     {
         $required = false;
 
@@ -249,21 +268,21 @@ class QuestionnaireController extends Controller
     public function store(Request $request)
     {
 
-        dd($request->all());
         $questionnaireId = $request->get('questionnaire_id');
+        $validation = $request->get('validation');
 
         if ($request->has('questions.new')) {
             $newQuestions = $request->input('questions.new');
 
-            foreach ($newQuestions as $newQuestion) {
-                $questionType = $newQuestion['type'];
+            foreach ($newQuestions as $requestQuestion) {
+                $questionType = $requestQuestion['type'];
 
                 switch ($questionType) {
                     case ('text'):
-                        $this->createQuestion($questionnaireId, $newQuestion, $questionType);
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation);
                         break;
                     case('select'):
-                        $this->createQuestion($questionnaireId, $newQuestion, $questionType, true);
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, true);
                 }
             }
         }
@@ -276,10 +295,10 @@ class QuestionnaireController extends Controller
 
                 switch ($editedQuestionType) {
                     case ('text'):
-                        $this->updateTextQuestion($questionId, $editedQuestion);
+                        $this->updateTextQuestion($questionId, $editedQuestion, $validation);
                         break;
                     case ('select'):
-                        $this->updateSelectQuestion($questionId, $editedQuestion);
+                        $this->updateSelectQuestion($questionId, $editedQuestion, $validation);
                         break;
                 }
             }

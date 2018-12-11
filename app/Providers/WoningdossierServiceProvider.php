@@ -6,6 +6,7 @@ use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Interest;
+use App\Models\Step;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider
@@ -26,6 +27,13 @@ class WoningdossierServiceProvider extends ServiceProvider
 
         \View::composer('*', function ($view) {
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
+        });
+
+        \View::composer('cooperation.tool.*', function ($view) {
+            $slug = str_replace('/tool/', '', request()->getRequestUri());
+            $step = Step::where('slug', $slug)->first();
+
+            $view->with('step', $step);
         });
 
         \View::creator('*', CooperationComposer::class);

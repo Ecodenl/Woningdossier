@@ -274,9 +274,6 @@ class QuestionnaireController extends Controller
 
         $questionnaire->updateTranslation('name', $name, 'nl');
 
-
-
-
         if ($request->has('questions.new')) {
             $newQuestions = $request->input('questions.new');
 
@@ -401,6 +398,8 @@ class QuestionnaireController extends Controller
         $questionnaire = Questionnaire::find($questionnaireId);
         $questionnaire->is_active = $active;
         $questionnaire->save();
+
+        return $questionnaireId;
 
     }
 }

@@ -25,7 +25,7 @@
                                 <td>{{$questionnaire->name}}</td>
                                 <td>{{$questionnaire->step->name}}</td>
                                 <td>
-                                    <input class="toggle-active" data-questionnaire-id="{{$questionnaire->id}}" data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}"type="checkbox"  data-toggle="toggle"  data-on="Actief" data-off="Niet actief">
+                                    <input data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}" class="toggle-active" data-questionnaire-id="{{$questionnaire->id}}"  type="checkbox"  data-toggle="toggle"  data-on="Actief" data-off="Niet actief">
                                 </td>
                                 <td>
                                     <div class="btn-group">
@@ -60,7 +60,9 @@
             $(document).ready(function () {
                 var toggleActive = $('.toggle-active');
 
-                $(toggleActive).bootstrapToggle(toggleActive.data('active'));
+                $(toggleActive).each(function (index, value) {
+                    $(this).bootstrapToggle($(this).data('active'));
+                });
 
                 toggleActive.change(function () {
                     console.log($(this));

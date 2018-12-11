@@ -16,36 +16,85 @@
                 @include('cooperation.tool.progress')
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3>
-                            @yield('step_title', '')
-                        </h3>
+                @if($step->hasQuestionnaires())
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#main-tab" data-toggle="tab">{{$step->name}}</a></li>
+                    @foreach($step->questionnaires as $questionnaire)
+                        <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
+                    @endforeach
+                </ul>
+                @endif
 
-                        @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']))
-                            <button id="submit-form-top-right" class="pull-right btn btn-primary">
-                                @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
-                                    @lang('default.buttons.next-page')
-                                @else
-                                    @lang('default.buttons.next')
+                <div class="tab-content">
+                    @if($step->hasQuestionnaires())
+                        @foreach($step->questionnaires as $questionnaire)
+                            <div class="panel tab-pane panel-default" id="questionnaire-{{$questionnaire->id}}">
+                                <div class="panel-heading">
+                                    <h3>
+                                        {{$questionnaire->name}}
+                                    </h3>
+
+                                        <button id="submit-form-top-right" class="pull-right btn btn-primary">
+                                                @lang('default.buttons.next')
+                                        </button>
+                                    <div class="clearfix"></div>
+                                </div>
+
+                                <div class="panel-body">
+                                    @foreach($questionnaire->questions as $question)
+                                        @switch($question->type)
+
+                                            @case('text')
+                                                @include('cooperation.tool.questionnaires.text', ['question' => $question])
+                                                @break
+                                            @case('textarea')
+                                                @include('cooperation.tool.questionnaires.textarea', ['question' => $question])
+                                                @break
+                                            @case('select')
+                                                @include('cooperation.tool.questionnaires.select', ['question' => $question])
+                                                @break
+
+                                        @endswitch
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+
+                    <div class="panel tab-pane active tab-pane panel-default" id="main-tab">
+                        <div class="panel-heading">
+                            <h3>
+                                @yield('step_title', '')
+                            </h3>
+
+                            @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']))
+                                <button id="submit-form-top-right" class="pull-right btn btn-primary">
+                                    @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
+                                        @lang('default.buttons.next-page')
+                                    @else
+                                        @lang('default.buttons.next')
+                                    @endif
+                                </button>
+                            @else
+                                @if(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
+                                    <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}" class="pull-right btn btn-primary">
+                                        @lang('woningdossier.cooperation.tool.my-plan.download')
+                                    </a>
                                 @endif
-                            </button>
-                        @else
-                            @if(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
-                                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}" class="pull-right btn btn-primary">
-                                    @lang('woningdossier.cooperation.tool.my-plan.download')
-                                </a>
                             @endif
-                        @endif
-                        <div class="clearfix"></div>
-                    </div>
+                            <div class="clearfix"></div>
+                        </div>
 
-                    <div class="panel-body">
-                        @yield('step_content', '')
+                        <div class="panel-body">
+                            @yield('step_content', '')
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

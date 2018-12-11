@@ -127,7 +127,7 @@ class ElementsValuesTableSeeder extends Seeder
                     ],
                     [
                         'values' => [
-                            'nl' => 'Niet van toepassing',
+                            'nl' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
                         ],
                         'order' => 5,
                         'calculate_value' => 5,

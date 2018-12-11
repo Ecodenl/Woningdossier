@@ -7,9 +7,9 @@
         {{ csrf_field() }}
 
         <div id="intro">
-            @include('cooperation.tool.includes.interested', [
-                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
-            ])
+
+            @include('cooperation.tool.includes.interested', ['type' => 'element', 'buildingElements' => $buildingElements,])
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
@@ -51,6 +51,9 @@
                 </div>
             </div>
         </div>
+
+        @include('cooperation.tool.includes.savings-alert', ['buildingElement' => 'wall-insulation'])
+
         <div class="hideable">
 
             @if(isset($building->buildingFeatures->build_year))
@@ -535,7 +538,7 @@
                var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
                var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-               if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
+               if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
                    $('.hideable').hide();
                    $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
                } else {

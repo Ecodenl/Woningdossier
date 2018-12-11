@@ -474,7 +474,7 @@
                var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
                var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-               if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
+               if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
                    $('.hideable').hide();
                    $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
                } else {

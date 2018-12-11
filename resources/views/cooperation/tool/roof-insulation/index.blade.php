@@ -29,8 +29,6 @@
                                 </span>
                             @endif
 
-
-
                             <div class="col-sm-12">
                                 <div class="form-group add-space">
                                     <div id="roof-type-info" class="collapse alert alert-info remove-collapse-space">

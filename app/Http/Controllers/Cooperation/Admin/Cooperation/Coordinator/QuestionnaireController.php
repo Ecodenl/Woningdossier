@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Helpers\TranslatableTrait;
 use App\Models\Cooperation;
@@ -259,8 +260,22 @@ class QuestionnaireController extends Controller
     public function store(Request $request)
     {
 
+        $name = $request->get('name');
+        $stepId = $request->get('step_id');
+
         $questionnaireId = $request->get('questionnaire_id');
         $validation = $request->get('validation');
+
+        $questionnaire = Questionnaire::find($questionnaireId);
+
+        $questionnaire->update([
+            'step_id' => $stepId,
+        ]);
+
+        $questionnaire->updateTranslation('name', $name, 'nl');
+
+
+
 
         if ($request->has('questions.new')) {
             $newQuestions = $request->input('questions.new');
@@ -305,6 +320,29 @@ class QuestionnaireController extends Controller
         return redirect()
             ->route('cooperation.admin.cooperation.coordinator.questionnaires.index')
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.success'));
+    }
+
+    public function storeQuestionnaire(Request $request)
+    {
+
+        $key = Uuid::uuid4();
+        $name = $request->get('name');
+        $stepId = $request->get('step_id');
+
+        Translation::create([
+            'key' =>  $key,
+            'language' => 'nl',
+            'translation' => $name
+        ]);
+
+        $questionnaire = Questionnaire::create([
+            'name' => $key,
+            'step_id' => $stepId,
+            'cooperation_id' => HoomdossierSession::getCooperation(),
+            'is_active' => false
+        ]);
+
+        return redirect()->route('cooperation.admin.cooperation.coordinator.questionnaires.edit', ['id' => $questionnaire->id]);
     }
 
     /**

@@ -118,9 +118,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                     Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
                         Route::get('', 'QuestionnaireController@index')->name('index');
+                        Route::post('', 'QuestionnaireController@store')->name('store');
                         Route::get('create', 'QuestionnaireController@create')->name('create');
                         Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
-                        Route::post('', 'QuestionnaireController@store')->name('store');
+                        Route::post('create-questionnaire', 'QuestionnaireController@storeQuestionnaire')->name('store-questionnaire');
+
                         Route::delete('delete', 'QuestionnaireController@delete')->name('delete');
                         Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
                     });

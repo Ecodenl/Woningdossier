@@ -25,7 +25,7 @@
                                 <td>{{$questionnaire->name}}</td>
                                 <td>{{$questionnaire->step->name}}</td>
                                 <td>
-                                    <input id="toggle-active" data-questionnaire-id="{{$questionnaire->id}}" data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}"type="checkbox"  data-toggle="toggle"  data-on="Actief" data-off="Niet actief">
+                                    <input class="toggle-active" data-questionnaire-id="{{$questionnaire->id}}" data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}"type="checkbox"  data-toggle="toggle"  data-on="Actief" data-off="Niet actief">
                                 </td>
                                 <td>
                                     <div class="btn-group">
@@ -58,11 +58,12 @@
         <script>
 
             $(document).ready(function () {
-                var toggleActive = $('#toggle-active');
+                var toggleActive = $('.toggle-active');
 
                 $(toggleActive).bootstrapToggle(toggleActive.data('active'));
 
                 toggleActive.change(function () {
+                    console.log($(this));
                     $.ajax({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

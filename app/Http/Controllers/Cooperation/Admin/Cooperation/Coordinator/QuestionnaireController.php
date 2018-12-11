@@ -315,6 +315,14 @@ class QuestionnaireController extends Controller
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.success'));
     }
 
+    public function delete(Request $request)
+    {
+        $questionId = $request->question_id;
+        Question::find($questionId)->delete();
+
+        return 202;
+    }
+
     /**
      * Check if the translations from the request are empty
      *

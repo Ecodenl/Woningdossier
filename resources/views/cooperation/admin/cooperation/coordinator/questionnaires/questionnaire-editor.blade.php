@@ -398,12 +398,18 @@
         });
 
 
+        /**
+         * Remove the rule inputs from a question
+         */
         function removeRuleInput(question)
         {
             var validationInputRow = question.find('.validation-inputs');
             validationInputRow.find('.col-sm-2').remove();
         }
 
+        /**
+         * Add the sub-rule-check-value inputs, aka the inputs where the user can add a min, max, length etc
+         */
         function addSubRuleCheckValueInput(question, guid, placeholders)
         {
             // remove the old rule inputs
@@ -480,9 +486,29 @@
 
         });
 
+        /**
+         * Remove a whole question
+         */
         $('body').on('click', '.glyphicon-trash', function (event) {
             event.preventDefault();
-            $(this).parent().parent().parent().parent().parent().parent().remove();
+
+
+            if (confirm('Dit verwijderd de vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
+
+                var questionId = $(this).parent().parent().parent().parent().parent().parent().find('.question_id').val();
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{route('cooperation.admin.cooperation.coordinator.questionnaires.delete')}}',
+                    data: {question_id: questionId},
+                    method: "DELETE"
+                });
+
+                $(this).parent().parent().parent().parent().parent().parent().remove();
+            }
+
             return false;
         });
 

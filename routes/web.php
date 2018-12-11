@@ -121,7 +121,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('create', 'QuestionnaireController@create')->name('create');
                         Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
                         Route::post('', 'QuestionnaireController@store')->name('store');
-
+                        Route::delete('delete', 'QuestionnaireController@delete')->name('delete');
                         Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
                     });
 

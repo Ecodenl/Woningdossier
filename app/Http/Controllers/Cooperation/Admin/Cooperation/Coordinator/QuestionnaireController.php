@@ -49,11 +49,19 @@ class QuestionnaireController extends Controller
      */
     protected function getValidationForCurrentQuestion(array $requestQuestion, array $validation) : array
     {
+        // first check if the requestquestion has a guid
         if (array_key_exists('guid', $requestQuestion)) {
-            return $validation[$requestQuestion['guid']];
-        } else {
-            return $validation[$requestQuestion['question_id']];
+            // after that check if the guid exists in the validation
+            if (array_key_exists($requestQuestion['guid'], $validation)) {
+                return $validation[$requestQuestion['guid']];
+            }
+        } else if (array_key_exists('question_id', $requestQuestion)) {
+            if (array_key_exists($requestQuestion['question_id'], $validation)) {
+                return $validation[$requestQuestion['question_id']];
+            }
         }
+
+        return [];
     }
 
 
@@ -69,26 +77,27 @@ class QuestionnaireController extends Controller
         // get the validation for the current question
         $validationForCurrentQuestion = $this->getValidationForCurrentQuestion($requestQuestion, $validation);
 
+        if (!empty($validationForCurrentQuestion)) {
 
-        // built the validation rule array
-        $validationRule = [
-            $validationForCurrentQuestion['main-rule'] => [
-                $validationForCurrentQuestion['sub-rule']  => []
-            ]
-        ];
+            // built the validation rule array
+            $validationRule = [
+                $validationForCurrentQuestion['main-rule'] => [
+                    $validationForCurrentQuestion['sub-rule']  => []
+                ]
+            ];
 
-        // first check if there are sub rule check values
-        if (array_key_exists('sub-rule-check-value', $validationForCurrentQuestion)) {
+            // first check if there are sub rule check values
+            if (array_key_exists('sub-rule-check-value', $validationForCurrentQuestion)) {
 
-            // if so, push them inside the sub-rule array
-            foreach ($validationForCurrentQuestion['sub-rule-check-value'] as $subRuleCheckValue) {
-                array_push($validationRule[$validationForCurrentQuestion['main-rule']][$validationForCurrentQuestion['sub-rule']], $subRuleCheckValue);
+                // if so, push them inside the sub-rule array
+                foreach ($validationForCurrentQuestion['sub-rule-check-value'] as $subRuleCheckValue) {
+                    array_push($validationRule[$validationForCurrentQuestion['main-rule']][$validationForCurrentQuestion['sub-rule']], $subRuleCheckValue);
+                }
             }
+            return $validationRule;
         }
 
-
-        return $validationRule;
-
+        return [];
     }
 
     /**

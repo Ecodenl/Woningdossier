@@ -347,7 +347,7 @@
 
             addHiddenGuidInput(question, guid);
 
-            addInputQuestion(question, guid);
+            addInputQuestion(question, guid, 'Vraag');
 
             addAdditionalQuestionOptions(question, guid);
 

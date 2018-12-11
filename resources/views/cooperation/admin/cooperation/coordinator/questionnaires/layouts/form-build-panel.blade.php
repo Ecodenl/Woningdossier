@@ -12,6 +12,9 @@
                     @case('text')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.text', ['question' => $question])
                     @break
+                    @case('textarea')
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.text', ['question' => $question])
+                    @break
                     @case('select')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
                     @break
@@ -22,7 +25,7 @@
             </div>
         </div>
         <div class="row validation-inputs">
-            @if(in_array($question->type, ['text']))
+            @if(in_array($question->type, ['text', 'textarea']))
                 @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.validation-options', ['question' => $question])
             @endif
         </div>

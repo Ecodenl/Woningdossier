@@ -298,6 +298,13 @@ class QuestionnaireController extends Controller
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.success'));
     }
 
+    /**
+     * Detele a question (softdelete)
+     *
+     * @param Request $request
+     * @return int
+     * @throws \Exception
+     */
     public function delete(Request $request)
     {
         $questionId = $request->question_id;

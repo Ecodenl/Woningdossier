@@ -136,39 +136,8 @@ class QuestionnaireController extends Controller
             }
         }
 
-
     }
 
-
-    /**
-     * Update a question with type text
-     *
-     * @param int $questionId
-     * @param array $editedQuestion
-     */
-    public function updateTextQuestion(int $questionId, array $editedQuestion, array $validation)
-    {
-        $required = false;
-
-        if (array_key_exists('required', $editedQuestion)) {
-            $required = true;
-        }
-
-        $currentQuestion = Question::withTrashed()->find($questionId);
-
-        $currentQuestion->update([
-            'validation' => $this->getValidationRule($editedQuestion, $validation),
-            'type' => 'text',
-            'order' => rand(1, 3),
-            'required' => $required,
-        ]);
-
-
-        // multiple translations can be available
-        foreach ($editedQuestion['question'] as $locale => $question) {
-            $currentQuestion->updateTranslation('name', $question, $locale);
-        }
-    }
 
     /**
      * Create the options for a question
@@ -197,6 +166,42 @@ class QuestionnaireController extends Controller
                     'language' => $locale
                 ]);
             }
+        }
+    }
+
+
+    /**
+     * Update a question, if the question has options we will update the question options as well
+     *
+     * @param int $questionId
+     * @param array $editedQuestion
+     * @param array $validation
+     * @param bool $questionHasOptions
+     */
+    protected function updateQuestion(int $questionId, array $editedQuestion, array $validation, bool $questionHasOptions = false)
+    {
+        $required = false;
+
+        if (array_key_exists('required', $editedQuestion)) {
+            $required = true;
+        }
+
+        $currentQuestion = Question::find($questionId);
+
+        $currentQuestion->update([
+            'validation' => $this->getValidationRule($editedQuestion, $validation),
+            'order' => rand(1, 3),
+            'required' => $required,
+        ]);
+
+
+        // multiple translations can be available
+        foreach ($editedQuestion['question'] as $locale => $question) {
+            $currentQuestion->updateTranslation('name', $question, $locale);
+        }
+
+        if ($questionHasOptions) {
+            $this->updateQuestionOptions($editedQuestion, $currentQuestion);
         }
     }
 
@@ -235,35 +240,6 @@ class QuestionnaireController extends Controller
         }
     }
 
-    /**
-     * Update the question with type select
-     *
-     * @param $questionId
-     * @param $editedQuestion
-     */
-    public function updateSelectQuestion($questionId, $editedQuestion, array $validation)
-    {
-        $required = false;
-
-        if (array_key_exists('required', $editedQuestion)) {
-            $required = true;
-        }
-
-        $currentQuestion = Question::find($questionId);
-
-        $currentQuestion->update([
-            'type' => 'select',
-            'required' => $required,
-        ]);
-
-        // multiple translations can be available
-        foreach ($editedQuestion['question'] as $locale => $question) {
-            // the uuid we will put in the key for the translation and set in the question name column-
-            $currentQuestion->updateTranslation('name', $question, $locale);
-        }
-
-        $this->updateQuestionOptions($editedQuestion, $currentQuestion);
-    }
 
     /**
      * Save the questionnaire, store and update.
@@ -289,6 +265,10 @@ class QuestionnaireController extends Controller
                         break;
                     case('select'):
                         $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, true);
+                        break;
+                    case('textarea'):
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation);
+                        break;
                 }
             }
         }
@@ -301,10 +281,13 @@ class QuestionnaireController extends Controller
 
                 switch ($editedQuestionType) {
                     case ('text'):
-                        $this->updateTextQuestion($questionId, $editedQuestion, $validation);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation);
                         break;
                     case ('select'):
-                        $this->updateSelectQuestion($questionId, $editedQuestion, $validation);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, true);
+                        break;
+                    case ('textarea'):
+                        $this->updateQuestion($questionId, $editedQuestion, $validation);
                         break;
                 }
             }

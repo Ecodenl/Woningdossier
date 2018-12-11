@@ -228,14 +228,14 @@
         /**
          * the input where the user can fill in the main question
          */
-        function addInputQuestion(question, guid)
+        function addInputQuestion(question, guid, placeholder)
         {
             $(supportedLocales).each(function (index, locale) {
                 var fullQuestionName = 'questions[new]['+guid+'][question]['+locale+']';
                 var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(question);
 
                 var textInput = $('<input>').addClass('form-control').attr({
-                    placeholder: 'Vraag',
+                    placeholder: placeholder,
                     name: fullQuestionName,
                     type: 'text'
                 });
@@ -274,7 +274,7 @@
             var panelFooter = questionPanel.find('.panel-footer');
             var guid = createGuid();
 
-            addInputQuestion(question, guid);
+            addInputQuestion(question, guid, 'Vraag');
 
             addHiddenInputWithInputType(question, guid, 'text');
 
@@ -285,8 +285,27 @@
             addValidationInputs(question, guid);
 
             sortable.sortable('refresh');
-            $('input').trigger('change');
 
+        });
+
+
+        toolBox.find('#long-answer').on('click', function () {
+            var questionPanel = sortable.find('.panel').first();
+            var question = questionPanel.find('.question');
+            var panelFooter = questionPanel.find('.panel-footer');
+            var guid = createGuid();
+
+            addInputQuestion(question, guid, 'Stel uw vraag waar een langer antwoord voor nodig is...');
+
+            addHiddenInputWithInputType(question, guid, 'textarea');
+
+            addHiddenGuidInput(question, guid);
+
+            addRequiredCheckbox(panelFooter, guid);
+
+            addValidationInputs(question, guid);
+
+            sortable.sortable('refresh');
         });
 
         /**
@@ -338,17 +357,6 @@
             question.find('.option-text').first().attr('autofocus', true);
 
             sortable.sortable('refresh')
-            $('input, select').trigger('change');
-        });
-
-        toolBox.find('#long-answer').on('click', function () {
-            var question = sortable.find('.panel').first().find('.question');
-            var formGroup = question.find('.form-group');
-
-            formGroup.append("<input class='form-control' placeholder='Stel uw vraag waar een langer antwoord voor nodig is'>");
-            question.parent().parent().find('.validation-rules').append(formBuildValidation);
-
-            sortable.sortable('refresh');
             $('input, select').trigger('change');
         });
 

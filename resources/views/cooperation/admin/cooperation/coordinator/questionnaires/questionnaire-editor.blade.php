@@ -298,8 +298,8 @@
             // add the validation options to the form
             question.append(formBuildValidation);
             // after that we add the name attribute
-            question.find('.validation').attr('name', 'validation['+guid+'][validation]');
-            question.find('.validation-options').attr('name', 'validation['+guid+'][validation-options]');
+            question.find('.validation').attr('name', 'validation['+guid+'][main-rule]').trigger('change');
+            question.find('.sub-rule').attr('name', 'validation['+guid+'][sub-rule]');
 
         }
 

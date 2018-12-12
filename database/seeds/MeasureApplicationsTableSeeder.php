@@ -288,7 +288,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                     'nl' => 'per m2',
                 ],
                 'minimal_costs' => 350, // euro
-                'maintenance_interval' => 50,
+                'maintenance_interval' => 25,
                 'maintenance_unit' => [
                     'nl' => 'jaar',
                 ],

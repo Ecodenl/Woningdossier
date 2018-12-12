@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,6 +38,7 @@ class BuildingRoofType extends Model
 {
 
     use GetValueTrait;
+    use GetMyValuesTrait;
 
     /**
      * The attributes that should be cast to native types.

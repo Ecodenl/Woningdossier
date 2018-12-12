@@ -46,6 +46,8 @@ class FloorInsulationController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
+        $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
+
         $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
@@ -61,14 +63,17 @@ class FloorInsulationController extends Controller
         }
 
         $buildingElement = $building->buildingElements;
+        $buildingElementsForMe = BuildingElement::forMe()->get();
 
         $buildingFeatures = $building->buildingFeatures;
+        $buildingFeaturesForMe = BuildingFeature::forMe()->get();
+
         $steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
-            'crawlspace', 'buildingCrawlspace', 'typeIds',
-            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement'
+            'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingElementForMe', 'buildingFeaturesForMe', 'buildingElementsForMe',
+            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
         ));
     }
 
@@ -197,7 +202,7 @@ class FloorInsulationController extends Controller
             [
                 'building_id' => $buildingId,
                 'element_id' => $buildingElementId,
-                'input_source_id' => $buildingId
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'element_value_id' => $heightCrawlspace,
@@ -232,10 +237,12 @@ class FloorInsulationController extends Controller
     protected function saveAdvices(Request $request)
     {
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
+
         $user = Building::find(HoomdossierSession::getBuilding())->user;
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         $elements = $request->input('element');
+
         if (array_key_exists($floorInsulation->id, $elements)) {
             $floorInsulationValue = ElementValue::where('element_id',
                 $floorInsulation->id)->where('id',

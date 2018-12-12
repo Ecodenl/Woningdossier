@@ -21,6 +21,14 @@
                 @if($i > 0 && array_key_exists($measureApplication->id, $titles))
                     <hr>
                 @endif
+                <?php
+                    if(array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
+                        $currentMeasureBuildingInsulatedGlazingForMe = $buildingInsulatedGlazingsForMe[$measureApplication->id];
+                    } else {
+                        $currentMeasureBuildingInsulatedGlazingForMe = [];
+                    }
+                ?>
+
                 <div class="row">
                     <div class="col-sm-12">
                         @if(array_key_exists($measureApplication->id, $titles))
@@ -59,12 +67,14 @@
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                                 </label>
-
-                                <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
-                                    @foreach($insulatedGlazings as $insulateGlazing)
-                                        <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
-                                    @endforeach
-                                </select>
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
+                                    <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
+                                        @foreach($insulatedGlazings as $insulateGlazing)
+                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulated_glazing_id-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -86,13 +96,14 @@
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.heated-rooms')
                                 </label>
 
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => $heatings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'building_heating_id'])
                                 <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][building_heating_id]">
-
                                     @foreach($heatings as $heating)
                                         <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id == $heating->id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
                                     @endforeach
-
                                 </select>
+                                @endcomponent
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -114,7 +125,10 @@
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.m2')
                                 </label> <span> *</span>
 
-                                <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'm2'])
+                                    <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">
+                                @endcomponent
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -136,8 +150,10 @@
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.total-windows')
                                 </label> <span> *</span>
 
-                                <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}"
-                                       class="form-control">
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'windows'])
+                                    <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}" class="form-control">
+                                @endcomponent
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
                                     And i would like to have it to...
@@ -167,11 +183,14 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.moving-parts-quality')
                         </label>
 
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $crackSealing->values()->orderBy('order')->get(), 'userInputValues' => $building->getBuildingElementsForMe('crack-sealing'), 'userInputColumn' => 'element_value_id'])
                         <select class="form-control" name="building_elements[{{$crackSealing->id}}][crack-sealing]">
                             @foreach($crackSealing->values()->orderBy('order')->get() as $sealingValue)
                                 <option @if($sealingValue->id == old('building_elements.crack-sealing') || ($building->getBuildingElement('crack-sealing') instanceof \App\Models\BuildingElement && $building->getBuildingElement('crack-sealing')->element_value_id == $sealingValue->id)) selected @endif value="{{ $sealingValue->id }}">{{ $sealingValue->value }}</option>
                             @endforeach
                         </select>
+                        @endcomponent
 
                         <div id="building_elements.crack-sealing-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -202,11 +221,11 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.windows-surface')
                         </label>
 
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                       ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'window_surface'])
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                             <input type="text" name="window_surface"  value="{{ old('window_surface') || isset($building->buildingFeatures->window_surface) ? $building->buildingFeatures->window_surface : '' }}" class="form-control">
-                        </div>
-
+                        @endcomponent
                         <div id="window-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
                         </div>
@@ -227,11 +246,14 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.which-frames')
                         </label>
 
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $frames->values()->orderBy('order')->get(), 'userInputValues' => $building->getBuildingElementsForMe('frames'), 'userInputColumn' => 'element_value_id'])
                         <select class="form-control" name="building_elements[{{$frames->id}}][frames]">
                             @foreach($frames->values()->orderBy('order')->get() as $frameValue)
                                 <option @if($frameValue->id == old('building_elements.frames')  || ($building->getBuildingElement('frames') instanceof \App\Models\BuildingElement && $building->getBuildingElement('frames')->element_value_id == $frameValue->id)) selected @endif value="{{ $frameValue->id }}">{{ $frameValue->value }}</option>
                             @endforeach
                         </select>
+                        @endcomponent
 
                         <div id="which-frames-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -264,19 +286,38 @@
                         @endif
                     </div>
                     <div class="form-group add-space">
-                        @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
-                            <label for="building_elements.wood-elements.{{ $woodElement->id }}" class="checkbox-inline">
-                                <input
 
-                                        @if(old('building_elements.wood-elements.'.$woodElements->id.''.$woodElement->id.''))
+
+                        <?php
+                            // TODO: should do something with a component
+                            // the current problem is there are only 2 places where checkboxes are used and those are used in a different way
+                        ?>
+                        <div class="input-group input-source-group">
+                            @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
+                                <label for="building_elements.wood-elements.{{ $woodElement->id }}" class="checkbox-inline">
+                                    <input
+                                            @if(old('building_elements.wood-elements.'.$woodElements->id.''.$woodElement->id.''))
                                             checked
-                                        @elseif($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null && $building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
+                                            @elseif($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null
+                                            && $building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
                                             checked
+                                            @endif
+                                            type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" value="{{$woodElement->id}}" name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">
+                                    {{ $woodElement->value }}
+                                </label>
+                            @endforeach
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
+                                        <?php $notNull = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null; ?>
+                                        @if ($notNull && $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
+                                            <li><a href="#">{{$myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->getInputSourceName()}}: {{$woodElement->value}}</a></li>
                                         @endif
-                                        type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" value="{{$woodElement->id}}" name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">
-                                {{ $woodElement->value }}
-                            </label>
-                        @endforeach
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,10 +330,11 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
                         </label>
 
-                        <div class="input-group">
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
-                            <input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
-                        </div>
+                        @component('cooperation.tool.components.input-group',
+                               ['inputType' => 'input', 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get() ,'userInputColumn' => 'last_painted_year'])
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                <input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
+                        @endcomponent
 
                         <div id="building_paintwork_statuses.last_painted_year" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -312,11 +354,14 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.paint-damage-visible')
                         </label>
 
-                        <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
-                            @foreach($paintworkStatuses as $paintworkStatus)
-                                <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->paintwork_status_id == $paintworkStatus->id) ) selected @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $paintworkStatuses, 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get(), 'userInputColumn' => 'paintwork_status_id'])
+                            <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
+                                @foreach($paintworkStatuses as $paintworkStatus)
+                                    <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->paintwork_status_id == $paintworkStatus->id) ) selected @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="building_paintwork_statuses.paintwork_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -339,11 +384,14 @@
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.wood-rot-visible')
                         </label>
 
-                        <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
-                            @foreach($woodRotStatuses as $woodRotStatus)
-                                <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $woodRotStatuses, 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get(), 'userInputColumn' => 'wood_rot_status_id'])
+                            <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
+                                @foreach($woodRotStatuses as $woodRotStatus)
+                                    <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="building_paintwork_statuses.wood_rot_status_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -385,6 +433,40 @@
                     </div>
                 </div>
             </div>
+
+            @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentMeasureBuildingInsulatedGlazingForMe)) && Auth::user()->hasRole('resident'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                            <?php
+                                $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
+                                $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @elseif(\App\Models\BuildingService::hasResidentInputSource(collect($currentMeasureBuildingInsulatedGlazingForMe)) && Auth::user()->hasRole('coach'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space">
+                            <?php
+                                $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
+                                $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div id="indication-for-costs">

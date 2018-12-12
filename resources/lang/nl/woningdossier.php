@@ -252,7 +252,7 @@ return [
             'disclaimer' => [
                 'title' => 'Disclaimer voor het gebruik van de tool.',
                 'panel-title' => 'Disclaimer',
-                'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>',
+                'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363" target="_blank">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>',
             ],
         ],
         'help' => [
@@ -312,11 +312,14 @@ return [
 				'year' => 'jaar',
 				'liter' => 'liter',
 				'day' => 'dag',
+                'pieces' => 'stuks',
 				'square-meters' => 'm<sup>2</sup>',
 				'cubic-meters' => 'm<sup>3</sup>',
 				'co2' => 'CO<sub>2</sub>',
                 'kilograms' => 'kg',
-                'degrees' => 'graden'
+                'degrees' => 'graden',
+				'kwh' => 'kWh',
+				'hours' => 'uren',
 			],
 
 			'title' => 'Basisadvies',
@@ -363,7 +366,7 @@ return [
 					'monovalent-heatpump' => 'Monovalente warmtepomp',
 					'sun-panel' => [
 						'title' => 'Aantal zonnepanelen',
-                        'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
+                        'if-yes' => 'Wanneer zijn de huidige panelen geplaatst?',
 					],
 					'sun-boiler' => 'Zonneboiler',
 					'house-ventilation' => [
@@ -403,21 +406,23 @@ return [
 	                'build-year-post-1930' => 'Woningen met dit bouwjaar hebben vaak wel een spouwmuur',
 	                'build-year-pre-1930' => 'Woningen met dit bouwjaar hebben vaak geen spouwmuur',
                     'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
-                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
-                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',
-                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel ?',
-                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk ?'
+                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur?',
+                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd?',
+                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel?',
+                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk?',
                 ],
 
                 'optional' => [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
-                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
-                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
+                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn?',
+                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen)?',
 	                'facade-surface' => 'Geveloppervlakte van de woning',
+	                'wall-surface' => 'Geveloppervlakte',
+	                'insulation-wall-surface' => 'Te isoleren geveloppervlakte',
                 ],
 
                 'alert' => [
-                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie'
+                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
                 ],
 
 	            'insulation-advice' => [
@@ -461,12 +466,12 @@ return [
 	            'interested-in' => 'Bent u geïnteresseerd in :measure?',
 
                 'cracking-seal' => [
-                    'title' => 'Kierdichting'
+                    'title' => 'Kierdichting',
                 ],
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
-                'm2' => 'm<sup>2</sup>',
-                'total-windows' => 'Aantal ramen',
+                'm2' => 'Hoeveel m<sup>2</sup> glas wilt u vervangen?',
+                'total-windows' => 'Aantal te vervangen ruiten',
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 
@@ -517,15 +522,17 @@ return [
                 'no-roof' => 'Dit veld is verplicht als u een dak type heeft gekozen',
 				'title' => 'Dakisolatie',
 				'current-situation' => [
+					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
 					'title' => 'Huidige situatie',
 					'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
 					'main-roof' => 'Wat is het hoofddak?',
+					'insulation-flat-roof-surface' => 'Te isoleren oppervlakte plat dak',
+					'insulation-pitched-roof-surface' => 'Te isoleren oppervlakte hellend dak',
+					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
 					'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
 					'is-pitched-roof-insulated' => 'is het hellende dak geïsoleerd?',
-					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
 					'flat-roof-surface' => 'Dakoppervlak van platte dak',
 					'pitched-roof' => 'Is het hellende dak geïsoleerd?',
-					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
 					'zinc-replaced' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
 					'pitched-roof-surface' => 'Dakoppervlak hellend dak',
 				],
@@ -584,7 +591,7 @@ return [
 			],
 			'solar-panels' => [
 				'title' => 'Zonnepanelen',
-
+                'amount' => 'stuks',
 				'peak-power' => 'Piekvermogen per paneel',
 				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
 				'number' => 'Hoeveel zonnepanelen moeten er komen?',
@@ -632,7 +639,13 @@ return [
 			],
 
 			'my-plan' => [
-				'title' => 'Actieplan',
+				'warnings' => [
+                	'title' => 'Let op!',
+                    'check-order' => 'U probeert dakisolatie met vervanging van de dakbedekking te plannen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit!',
+                    'planned-year' => 'De uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk!',
+                ],
+
+                'title' => 'Actieplan',
 				'description' => 'Op deze pagina ziet u een samenvatting van alle maatregelen die u in het hoomdossier volledig hebt ingevuld. Per maatregel ziet u wat de indicatieve kosten en besparingen zijn.<br><br>Op basis van deze uitkomsten kunt u uw persoonlijke stappenplan voor de komende jaren samenstellen. Hiervoor selecteert u een maatregel in de eerste kolom (“Interesse”) en voert in de laatste kolom (“Planning”) het jaartal in wanneer u deze maatregel uit zou willen voeren.<br><br>Onder aan de pagina wordt dan uw stappenplan weergegeven. Per jaar kunt u zien hoe veel geld u voor onderhoud en energiebesparende maatregelen zou moeten reserveren en wat u aan besparing op uw energierekening in dit jaar zou kunnen verwachten.',
 				'energy-saving-measures' => 'Energiebesparende maatregelen',
 				'maintenance-measures' => 'Onderhoud',

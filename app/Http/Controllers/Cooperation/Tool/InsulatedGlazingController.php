@@ -295,7 +295,7 @@ class InsulatedGlazingController extends Controller
 
             $costs = Calculator::calculateMeasureApplicationCosts($measureApplication,
                 $number,
-                $year);
+                $year, false);
             $result['paintwork'] = compact('costs', 'year');
         }
 
@@ -320,7 +320,7 @@ class InsulatedGlazingController extends Controller
 
             $measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
 
-            $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1);
+            $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1, null, false);
         }
 
         return response()->json($result);

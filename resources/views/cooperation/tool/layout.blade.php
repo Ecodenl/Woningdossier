@@ -10,7 +10,7 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        Je bent nu voor {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}} zijn tool aant invullen
+                        U vult nu de tool in voor {{\App\Models\User::find(session('user_id'))->first_name}}
                         <br>
                         Je ziet de data die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld
 
@@ -60,7 +60,7 @@
     <script>
         $('#submit-form-top-right').click(function () {
             // There will only be 1 form inside the panel body, submit it
-            $('.panel-body form').submit();
+            $('.panel-body form button[type=submit]').click();
         })
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>

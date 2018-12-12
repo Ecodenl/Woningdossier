@@ -60,7 +60,8 @@ class MyPlanController extends Controller
                     $electricitySavings = round($advice->savings_electricity);
                     $savingsInEuro = round($advice->savings_money);
                     $advicedYear = $advice->year;
-                    $costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
+                    //$costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
+	                $costsAdvisedYear = round(Calculator::indexCosts($costs, $plannedYear));
 
                     // push the plan data to the array
                     $userPlanData[$plannedYear][$measure] = [$plannedYear, $isInterested, $measure, $costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear, $costsAdvisedYear];
@@ -115,12 +116,10 @@ class MyPlanController extends Controller
                         'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
-                        // In the table the costs are indexed based on the advice year
-                        // Now re-index costs based on user planned year in the personal plan
-                        'costs' => Calculator::reindexCosts($advice->costs, $advice->year, $costYear),
+                        'costs' => Calculator::indexCosts($advice->costs, $costYear),
                         'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
                         'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
-                        'savings_money' => is_null($advice->savings_money) ? 0 : $advice->savings_money,
+                        'savings_money' => is_null($advice->savings_money) ? 0 : Calculator::indexCosts($advice->savings_money, $costYear),
                     ];
                 }
             }

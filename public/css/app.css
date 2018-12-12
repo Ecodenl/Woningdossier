@@ -8417,6 +8417,10 @@ body i.glyphicon-info-sign {
   height: 50px;
 }
 
+.page-my-plan h3 {
+  display: inline;
+}
+
 .page-my-plan ul#years {
   list-style: none;
   padding-left: 0;

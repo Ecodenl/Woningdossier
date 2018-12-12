@@ -361,7 +361,7 @@
                 ->where('interested_in_id', $service->id)
                 ->first();
             ?>
-            @if ( ($i % 2 == 0 && $service->short != "boiler") || stripos($service->name, 'zonnepanelen'))
+            @if ( ($i % 2 == 0 && $service->short != "boiler") || $service->short == 'total-sun-panels')
                 <div class="row" id="service_row_{{$service->id}}">
             @elseif(strpos($service->name, 'geventileerd'))
                 </div><div class="row">
@@ -408,6 +408,7 @@
                         @else
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra.value'])
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
                                 <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
                             @endcomponent
                         @endif
@@ -450,7 +451,7 @@
                 </div>
                 @endif
 
-                @if(strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen'))
+                @if(strpos($service->name, 'geventileerd') || $service->short == "total-sun-panels")
                     <div class="col-sm-6 {{ $errors->has(''.$service->id.'.extra') ? ' show' : '' }}">
 
                         <div id="{{$service->id.'-extra'}}" class="form-group add-space{{ $errors->has(''.$service->id.'.extra') ? ' has-error' : '' }}">
@@ -458,7 +459,7 @@
                                 <i data-toggle="collapse" data-target="#service_{{ $service->id }}-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 @if(strpos($service->name, 'geventileerd'))
                                     @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.house-ventilation.if-mechanic')
-                                @elseif(strpos($service->name, 'zonnepanelen'))
+                                @elseif($service->short == 'total-sun-panels')
                                     @lang('woningdossier.cooperation.tool.general-data.energy-saving-measures.sun-panel.if-yes')
                                 @endif
 
@@ -490,7 +491,7 @@
                 @endif
 
 
-                @if (( $i % 2 == 1 && $service->short != "hr-boiler")  || strpos($service->name, 'geventileerd') || strpos($service->name, 'zonnepanelen') || $service->short == "sun-boiler")
+                @if (( $i % 2 == 1 && $service->short != "hr-boiler")  || strpos($service->name, 'geventileerd') || $service->short == "sun-boiler")
                     </div>
                 @endif
         @endforeach
@@ -539,7 +540,8 @@
                         </label> <span>*</span>
 
                         <div class="input-group input-source-group">
-                            <label class="radio-inline">
+                            <br>
+                        <label class="radio-inline">
                                 <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                             </label>
                             <label class="radio-inline">
@@ -633,7 +635,7 @@
                         <?php $hours = range(1, 24); ?>
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $hours, 'userInputValues' => $userEnergyHabitsForMe, 'userInputModel' => 'UserEnergyHabit', 'userInputColumn' => 'hours_high'])
-                            <span class="input-group-addon">Uren</span>
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.hours')</span>
                             <select id="hours_high" class="form-control" name="hours_high">
                                 @foreach($hours as $hour)
                                     <option @if($hour === old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @elseif(!isset($energyHabit) && $hour == 12) selected @endif value="{{ $hour }}">{{ $hour }}</option>
@@ -773,13 +775,12 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('amount_electricity') ? ' has-error' : '' }}">
-                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
-
+                        <label for="amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year') <span>*</span></label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
-                            <span class="input-group-addon">kWh</span>
-                            <input id="amount_electricity" type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity">
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
+                            <input id="amount_electricity" required type="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity" required>
                         @endcomponent
 
                         <div id="amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -946,7 +947,7 @@
                     <div class="panel-body">
                         <ol>
                             <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Algemene_gegevens.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
+                            <li><a download="" href="{{ asset($helpFile) }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
                         </ol>
                     </div>
                 </div>
@@ -970,8 +971,6 @@
 @endsection
 
 @push('js')
-    {{--<script src="{{asset('js/datepicker/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('js/datepicker/bootstrap-datepicker.nl.min.js')}}"></script>--}}
     <script>
 
         $(document).ready(function () {
@@ -983,14 +982,6 @@
                 }
             });
 
-
-            {{--
-            // Load the datepicker
-            $('.input-group.date').datepicker({
-                language: "nl"
-            });
-            --}}
-
             // Check if the house ventialtion is mechanic
             $(document).change('#house-ventilation', function () {
 
@@ -998,7 +989,7 @@
                 var houseVentilation = $('#house-ventilation option:selected').text();
 
                 // text wont change, id's will
-                if (houseVentilation == "Mechanisch" || houseVentilation == "Decentraal mechanisch") {
+                if (houseVentilation === "Mechanisch" || houseVentilation === "Decentraal mechanisch") {
                     $('#house-ventilation').parent().parent().next().next().show();
                 } else {
                     $('#house-ventilation').parent().parent().next().next().hide();
@@ -1008,15 +999,15 @@
 
             // check if a user is interested in a sun panel
             $(document).change('#total-sun-panels', function() {
-                var totalSunPanels = $('#total-sun-panels').val();
-                // var extraFieldSunPanel =  $('#total-sun-panels').parent().parent().next().next();
+                var input = $("#total-sun-panels");
+                var totalSunPanels = input.val();
+                var extraField =  input.parent().parent().parent().next().next();
 
                 if(totalSunPanels > 0) {
-                    $('#total-sun-panels').parent().parent().next().next().show();
+                    extraField.show();
                 } else {
-                    $('#total-sun-panels').parent().parent().next().next().hide();
-                    // Clear the value off the date
-                    $('#total-sun-panels').parent().parent().next().next().find('input').val("");
+                    extraField.hide();
+                    extraField.find('input').val("");
                 }
 
             });
@@ -1035,7 +1026,7 @@
                 }
             });
 
-            //$('#house-ventilation, #total-sun-panels').trigger('change')
+            $("#total-sun-panels").trigger('change');
         });
     </script>
 @endpush

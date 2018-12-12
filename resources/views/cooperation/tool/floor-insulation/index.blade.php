@@ -34,7 +34,7 @@
                                                 @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
                                                 selected="selected"
                                                 @elseif(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
-                                                selected="selected" pisdfsdf
+                                                selected="selected"
                                                 @endif
                                                 value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                                     @endforeach

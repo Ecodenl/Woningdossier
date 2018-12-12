@@ -16,6 +16,7 @@ use App\Models\ComfortLevelTapWater;
 use App\Models\Cooperation;
 use App\Models\HeaterComponentCost;
 use App\Models\HeaterSpecification;
+use App\Models\Interest;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
@@ -25,6 +26,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +82,7 @@ class HeaterController extends Controller
                 'size_boiler' => 0,
                 'size_collector' => 0,
             ],
+            'year' => null,
             'production_heat' => 0,
             'percentage_consumption' => 0,
             'savings_gas' => 0,
@@ -91,6 +94,7 @@ class HeaterController extends Controller
 
         $comfortLevelId = $request->input('user_energy_habits.water_comfort_id', 0);
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
+        $interests = $request->input('interest', '');
 
         $user = \Auth::user();
         /** @var Building $building */
@@ -143,6 +147,19 @@ class HeaterController extends Controller
                 $result['cost_indication'] = $componentCostBoiler->cost + $componentCostCollector->cost;
 
                 $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+
+                foreach ($interests as $type => $interestTypes) {
+                    foreach ($interestTypes as $typeId => $interestId) {
+                        $interest = Interest::find($interestId);
+                    }
+                }
+
+                $currentYear = Carbon::now()->year;
+                if ($interest->calculate_value == 1) {
+                    $result['year'] = $currentYear;
+                } elseif ($interest->calculate_value == 2) {
+                    $result['year'] = $currentYear + 5;
+                }
 
                 if ($helpFactor >= 0.84) {
                     $result['performance'] = [

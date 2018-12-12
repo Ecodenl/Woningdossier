@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Helpers\NumberFormatter;
@@ -26,7 +27,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class HeaterController extends Controller
@@ -48,9 +49,9 @@ class HeaterController extends Controller
     {
         $typeIds = [3];
 
-        $user = \Auth::user();
-        /** @var Building $building */
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         $steps = Step::orderBy('order')->get();
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
@@ -92,10 +93,10 @@ class HeaterController extends Controller
         $comfortLevelId = $request->input('user_energy_habits.water_comfort_id', 0);
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
 
-        $user = \Auth::user();
-        /** @var Building $building */
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
         $habit = $user->energyHabit;
+
 
         if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
@@ -175,7 +176,12 @@ class HeaterController extends Controller
      */
     public function store(HeaterFormRequest $request)
     {
-        $user = Auth::user();
+
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
@@ -185,9 +191,10 @@ class HeaterController extends Controller
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
 
-        BuildingHeater::updateOrCreate(
+        BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $user->buildings()->first()->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId
             ],
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
@@ -199,18 +206,21 @@ class HeaterController extends Controller
         $habits = $request->input('user_energy_habits', '');
         $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
 
-        $user->energyHabit()->update(['water_comfort_id' => $waterComFortId]);
+        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['water_comfort_id' => $waterComFortId]);
 
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -223,7 +233,7 @@ class HeaterController extends Controller
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

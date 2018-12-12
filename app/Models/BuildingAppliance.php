@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingAppliance extends Model
 {
+    use GetValueTrait;
+
     public function building()
     {
         return $this->belongsTo(Building::class);

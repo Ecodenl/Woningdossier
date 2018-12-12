@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingCategory extends Model
 {
-    use TranslatableTrait;
+    use TranslatableTrait, GetValueTrait;
 
     public function buildingFeatures()
     {

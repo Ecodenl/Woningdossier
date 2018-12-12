@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -168,7 +169,7 @@ class UserActionPlanAdvice extends Model
      */
     public function scopeForMe($query)
     {
-        return $query->where('user_id', \Auth::id());
+        return $query->where('user_id', Building::find(HoomdossierSession::getBuilding())->user_id);
     }
 
     /**

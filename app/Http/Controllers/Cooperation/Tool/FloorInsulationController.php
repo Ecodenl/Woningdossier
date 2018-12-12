@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
@@ -21,8 +22,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class FloorInsulationController extends Controller
 {
@@ -43,7 +43,7 @@ class FloorInsulationController extends Controller
     {
         $typeIds = [4];
         /** @var Building $building */
-        $building = \Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
         $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
@@ -60,7 +60,7 @@ class FloorInsulationController extends Controller
             $crawlspacePresent = 1; // now
         }
 
-        $buildingElement = Auth::user()->buildings()->first()->buildingElements;
+        $buildingElement = $building->buildingElements;
 
         $buildingFeatures = $building->buildingFeatures;
         $steps = Step::orderBy('order')->get();
@@ -77,8 +77,8 @@ class FloorInsulationController extends Controller
         /**
          * @var Building
          */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $result = [
             'savings_gas' => 0,
@@ -161,16 +161,20 @@ class FloorInsulationController extends Controller
      */
     public function store(FloorInsulationFormRequest $request)
     {
-        $user = Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         // Get the value's from the input's
         $elements = $request->input('element', '');
 
         foreach ($elements as $elementId => $elementValueId) {
-            BuildingElement::updateOrCreate(
+            BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
-                    'building_id' => $user->buildings()->first()->id,
+                    'building_id' => $buildingId,
                     'element_id' => $elementId,
+                    'input_source_id' => $inputSourceId
                 ],
                 [
                     'element_value_id' => $elementValueId,
@@ -189,10 +193,11 @@ class FloorInsulationController extends Controller
         $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : '';
         $comment = $request->input('comment', '');
 
-        BuildingElement::updateOrCreate(
+        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $user->buildings()->first()->id,
+                'building_id' => $buildingId,
                 'element_id' => $buildingElementId,
+                'input_source_id' => $buildingId
             ],
             [
                 'element_value_id' => $heightCrawlspace,
@@ -205,15 +210,21 @@ class FloorInsulationController extends Controller
         );
         $floorSurface = $request->input('building_features', '');
 
-        BuildingFeature::where('building_id', $user->buildings()->first()->id)->update([
-            'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '0.0',
-            'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : '0.0',
-        ]);
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
+            ],
+            [
+                'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '0.0',
+                'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : '0.0',
+            ]
+        );
 
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
@@ -222,7 +233,7 @@ class FloorInsulationController extends Controller
     {
         // Remove old results
         UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
-
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         $elements = $request->input('element');
         if (array_key_exists($floorInsulation->id, $elements)) {
@@ -242,7 +253,7 @@ class FloorInsulationController extends Controller
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();

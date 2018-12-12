@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingTypeElementMaxSaving extends Model
 {
+
     public function buildingType()
     {
         return $this->belongsTo(BuildingType::class);

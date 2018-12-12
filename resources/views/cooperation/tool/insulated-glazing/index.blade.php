@@ -89,7 +89,7 @@
                                 <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][building_heating_id]">
 
                                     @foreach($heatings as $heating)
-                                        <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
+                                        <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id == $heating->id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
                                     @endforeach
 
                                 </select>
@@ -324,8 +324,8 @@
 
                         @if ($errors->has('building_paintwork_statuses.paintwork_status_id'))
                             <span class="help-block">
-                            <strong>{{ $errors->first('building_paintwork_statuses.paintwork_status_id') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('building_paintwork_statuses.paintwork_status_id') }}</strong>
+                            </span>
                         @endif
                     </div>
                 </div>

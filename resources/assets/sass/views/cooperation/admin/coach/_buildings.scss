@@ -7,3 +7,16 @@
     }
   }
 }
+
+#current-building-status {
+  .dropdown-menu {
+    border-radius: 0px;
+    li {
+      a {
+        color: inherit;
+        padding: 3px 20px;
+        font-weight: normal;
+      }
+    }
+  }
+}

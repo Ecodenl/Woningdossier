@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
@@ -21,8 +22,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class SolarPanelsController extends Controller
 {
@@ -44,12 +44,10 @@ class SolarPanelsController extends Controller
         $typeIds = [7];
 
         $steps = Step::orderBy('order')->get();
-        $user = \Auth::user();
-        /**
-         * @var Building
-         */
-        $building = $user->buildings()->first();
-        $user->energyHabit;
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         $amountElectricity = ($user->energyHabit instanceof UserEnergyHabit) ? $user->energyHabit->amount_electricity : 0;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
@@ -73,8 +71,8 @@ class SolarPanelsController extends Controller
             'interest_comparable' => 0,
         ];
 
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);
@@ -137,7 +135,11 @@ class SolarPanelsController extends Controller
      */
     public function store(SolarPanelFormRequest $request)
     {
-        $user = Auth::user();
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
@@ -145,7 +147,7 @@ class SolarPanelsController extends Controller
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
 
-        $user->energyHabit()->update(['amount_electricity' => $habitAmountElectricity]);
+        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['amount_electricity' => $habitAmountElectricity]);
 
         $pvPanels = $request->input('building_pv_panels', '');
         $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : '';
@@ -153,9 +155,10 @@ class SolarPanelsController extends Controller
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
 
-        BuildingPvPanel::updateOrCreate(
+        BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $user->buildings()->first()->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'peak_power' => $peakPower,
@@ -168,13 +171,16 @@ class SolarPanelsController extends Controller
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -188,7 +194,7 @@ class SolarPanelsController extends Controller
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

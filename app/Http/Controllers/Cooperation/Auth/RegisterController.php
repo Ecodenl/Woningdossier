@@ -189,14 +189,14 @@ class RegisterController extends Controller
                 if (! empty($houseNumberExtension) && ! empty($extension)) {
                     $newDist = levenshtein(strtolower($houseNumberExtension), strtolower($extension), 1, 10, 1);
                 }
-                if (is_null($dist) || isset($newDist) && $newDist < $dist) {
+                if ((is_null($dist) || isset($newDist) && $newDist < $dist) && is_array($option)) {
                     // best match
                     $result = [
-                        'id'                     => md5($option['bag_adresid']),
-                        'street'                 => $option['straat'],
-                        'number'                 => $option['huisnummer'],
+                        'id'                     => array_key_exists('bag_adresid', $option) ? md5($option['bag_adresid']) : "",
+                        'street'                 => array_key_exists('straat', $option) ? $option['straat'] : "",
+                        'number'                 => array_key_exists('huisnummer', $option) ? $option['huisnummer'] : "",
                         'house_number_extension' => $houseNumberExtension,
-                        'city'                   => $option['woonplaats'],
+                        'city'                   => array_key_exists('woonplaats', $option) ? $option['woonplaats'] : "",
                     ];
                     $dist = $newDist;
                 }

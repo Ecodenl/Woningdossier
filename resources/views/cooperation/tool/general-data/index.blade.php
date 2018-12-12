@@ -2,12 +2,6 @@
 
 @section('step_title', __('woningdossier.cooperation.tool.general-data.title'))
 
-{{--
-@push('css')
-    <link rel="stylesheet" href="{{asset('css/datepicker/bootstrap-datepicker3.css')}}">
-@endpush
---}}
-
 @section('step_content')
 
 
@@ -636,7 +630,7 @@
                         <label for="hours_high" class=" control-label"><i data-toggle="collapse" data-target="#hours-hight-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.max-hours-thermostat-highest')</label>
 
 
-                        <?php $hours =  range(1, 24)?>
+                        <?php $hours = range(1, 24); ?>
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $hours, 'userInputValues' => $userEnergyHabitsForMe, 'userInputModel' => 'UserEnergyHabit', 'userInputColumn' => 'hours_high'])
                             <span class="input-group-addon">Uren</span>

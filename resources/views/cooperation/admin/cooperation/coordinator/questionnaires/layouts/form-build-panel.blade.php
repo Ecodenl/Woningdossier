@@ -11,13 +11,19 @@
 
                     @case('text')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.text', ['question' => $question])
-                    @break
+                        @break
                     @case('textarea')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.text', ['question' => $question])
-                    @break
+                        @break
                     @case('select')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
-                    @break
+                        @break
+                    @case('radio')
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.radio', ['question' => $question])
+                        @break
+                    @case('checkbox')
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.checkbox', ['question' => $question])
+                        @break
 
                 @endswitch
 

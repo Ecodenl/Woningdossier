@@ -340,6 +340,50 @@
             question.append(guidHiddenInput);
         }
 
+        toolBox.find('#radio-button').on('click', function () {
+            var questionPanel = sortable.find('.panel').first();
+            var question = questionPanel.find('.question');
+            var panelFooter = questionPanel.find('.panel-footer');
+            var guid = createGuid();
+
+            addHiddenInputWithInputType(question, guid, 'radio');
+
+            addHiddenGuidInput(question, guid);
+
+            addInputQuestion(question, guid, 'Vraag');
+
+            addAdditionalQuestionOptions(question, guid);
+
+            addRequiredCheckbox(panelFooter, guid);
+
+            // now let it autofocus to the first option input
+            question.find('.option-text').first().attr('autofocus', true);
+
+            sortable.sortable('refresh')
+        });
+
+        toolBox.find('#checkbox').on('click', function () {
+            var questionPanel = sortable.find('.panel').first();
+            var question = questionPanel.find('.question');
+            var panelFooter = questionPanel.find('.panel-footer');
+            var guid = createGuid();
+
+            addHiddenInputWithInputType(question, guid, 'checkbox');
+
+            addHiddenGuidInput(question, guid);
+
+            addInputQuestion(question, guid, 'Vraag');
+
+            addAdditionalQuestionOptions(question, guid);
+
+            addRequiredCheckbox(panelFooter, guid);
+
+            // now let it autofocus to the first option input
+            question.find('.option-text').first().attr('autofocus', true);
+
+            sortable.sortable('refresh')
+        });
+
         toolBox.find('#dropdown').on('click', function () {
             var questionPanel = sortable.find('.panel').first();
             var question = questionPanel.find('.question');

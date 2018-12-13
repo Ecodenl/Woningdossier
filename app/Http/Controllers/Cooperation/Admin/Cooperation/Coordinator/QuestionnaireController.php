@@ -109,7 +109,7 @@ class QuestionnaireController extends Controller
      * @param string $questionType
      * @param bool $questionHasOptions
      */
-    protected function createQuestion(int $questionnaireId, array $requestQuestion, string $questionType, array $validation, bool $questionHasOptions = false)
+    protected function createQuestion(int $questionnaireId, array $requestQuestion, string $questionType, array $validation, $order, bool $questionHasOptions = false)
     {
 
         $required = false;
@@ -260,7 +260,6 @@ class QuestionnaireController extends Controller
     public function store(Request $request)
     {
 
-
         // get the data for the questionnaire
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
@@ -284,18 +283,24 @@ class QuestionnaireController extends Controller
         if ($request->has('questions.new')) {
             $newQuestions = $request->input('questions.new');
 
-            foreach ($newQuestions as $requestQuestion) {
+            foreach ($newQuestions as $order => $requestQuestion) {
                 $questionType = $requestQuestion['type'];
 
                 switch ($questionType) {
                     case ('text'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation);
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
                         break;
                     case('select'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, true);
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
+                        break;
+                    case('radio'):
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
+                        break;
+                    case('checkbox'):
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
                         break;
                     case('textarea'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation);
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
                         break;
                 }
             }
@@ -312,6 +317,12 @@ class QuestionnaireController extends Controller
                         $this->updateQuestion($questionId, $editedQuestion, $validation);
                         break;
                     case ('select'):
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, true);
+                        break;
+                    case ('radio'):
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, true);
+                        break;
+                    case ('checkbox'):
                         $this->updateQuestion($questionId, $editedQuestion, $validation, true);
                         break;
                     case ('textarea'):

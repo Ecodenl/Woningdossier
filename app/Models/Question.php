@@ -66,12 +66,13 @@ class Question extends Model
     {
         $currentAnswerForInputSource = $this->questionAnswers()
             ->where('building_id', HoomdossierSession::getBuilding())
-            ->where('input_source_id', HoomdossierSession::getInputSource())->first();
+            ->where('input_source_id', HoomdossierSession::getInputSource())->get();
 
-        if ($currentAnswerForInputSource instanceof QuestionsAnswer) {
-            return $currentAnswerForInputSource->answer;
+
+        if ($currentAnswerForInputSource->count() == 1) {
+            return $currentAnswerForInputSource->first();
         }
 
-        return null;
+        return $currentAnswerForInputSource;
     }
 }

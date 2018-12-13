@@ -61,6 +61,12 @@
                                                 @case('select')
                                                     @include('cooperation.tool.questionnaires.select', ['question' => $question])
                                                     @break
+                                                @case('radio')
+                                                    @include('cooperation.tool.questionnaires.radio', ['question' => $question])
+                                                    @break
+                                                @case('checkbox')
+                                                    @include('cooperation.tool.questionnaires.checkbox', ['question' => $question])
+                                                    @break
                                             @endswitch
                                         @endforeach
                                         <div class="row">

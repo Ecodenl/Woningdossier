@@ -7,6 +7,11 @@
                     <option @if($question->getAnswerForCurrentInputSource() == $option->id) selected @endif value="{{$option->id}}">{{$option->name}}</option>
                 @endforeach
             </select>
+            @if ($errors->has('questions.'.$question->id))
+                <span class="help-block">
+                    <strong>{{ $errors->first('questions.'.$question->id) }}</strong>
+                </span>
+            @endif
         </div>
     </div>
 </div>

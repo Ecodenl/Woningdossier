@@ -3,19 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\HoomdossierSession;
-use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\MeasureApplication;
-use App\Models\Questionnaire;
 use App\Models\QuestionsAnswer;
 use App\Models\Translation;
-use App\Models\User;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
-use Doctrine\DBAL\Schema\Table;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Ramsey\Uuid\Uuid;
 
 class ReportController extends Controller
 {
@@ -57,6 +50,7 @@ class ReportController extends Controller
 
         foreach ($buildingsFromCurrentCooperation as $building) {
 
+            // get the answers from the building / user
             $questionAnswers = QuestionsAnswer::where('building_id', $building->id)->orderBy('question_id')->get();
 
             foreach ($questionAnswers as $questionAnswer) {
@@ -73,9 +67,15 @@ class ReportController extends Controller
             }
         }
 
+        // order and set some keys
+
+
         foreach ($csvHeaders as $questionIdFromCsvHeader => $csvHeader) {
             foreach ($rows as $buildingId => $userAnswers) {
                 foreach ($userAnswers as $questionIdFromUserAnswerRow => $userAnswer) {
+                    // if the question id from the csv header does not exist in a building id row
+                    // then the user did not answer that question
+                    // so we add the row with a default text
                     if (!array_key_exists($questionIdFromCsvHeader, $rows[$buildingId])) {
                         $rows[$buildingId][$questionIdFromCsvHeader] = "Niet beantwoord door bewoner";
                     }

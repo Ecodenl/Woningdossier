@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,5 +45,33 @@ class Question extends Model
     public function questionOptions()
     {
         return $this->hasMany(QuestionOption::class);
+    }
+
+    /**
+     * Return all the answers for a question
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function questionAnswers()
+    {
+        return $this->hasMany(QuestionsAnswer::class);
+    }
+
+    /**
+     * Return the answer on a question for a building and input source
+     *
+     * @return mixed|null
+     */
+    public function getAnswerForCurrentInputSource()
+    {
+        $currentAnswerForInputSource = $this->questionAnswers()
+            ->where('building_id', HoomdossierSession::getBuilding())
+            ->where('input_source_id', HoomdossierSession::getInputSource())->first();
+
+        if ($currentAnswerForInputSource instanceof QuestionsAnswer) {
+            return $currentAnswerForInputSource->answer;
+        }
+
+        return null;
     }
 }

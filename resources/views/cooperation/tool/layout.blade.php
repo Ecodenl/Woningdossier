@@ -42,27 +42,29 @@
                                     </h3>
 
                                         <button id="submit-form-top-right" disabled class="pull-right btn btn-primary">
-                                                @lang('default.buttons.next')
+                                            @lang('default.buttons.next')
                                         </button>
                                     <div class="clearfix"></div>
                                 </div>
 
                                 <div class="panel-body">
-                                    @foreach($questionnaire->questions as $question)
-                                        @switch($question->type)
-
-                                            @case('text')
-                                                @include('cooperation.tool.questionnaires.text', ['question' => $question])
-                                                @break
-                                            @case('textarea')
-                                                @include('cooperation.tool.questionnaires.textarea', ['question' => $question])
-                                                @break
-                                            @case('select')
-                                                @include('cooperation.tool.questionnaires.select', ['question' => $question])
-                                                @break
-
-                                        @endswitch
-                                    @endforeach
+                                    <form action="{{route('cooperation.tool.questionnaire.store')}}" method="post">
+                                        {{csrf_field()}}
+                                        @foreach($questionnaire->questions as $question)
+                                            @switch($question->type)
+                                                @case('text')
+                                                    @include('cooperation.tool.questionnaires.text', ['question' => $question])
+                                                    @break
+                                                @case('textarea')
+                                                    @include('cooperation.tool.questionnaires.textarea', ['question' => $question])
+                                                    @break
+                                                @case('select')
+                                                    @include('cooperation.tool.questionnaires.select', ['question' => $question])
+                                                    @break
+                                            @endswitch
+                                        @endforeach
+                                        <button type="submit" class="btn btn-primary">Opslaan</button>
+                                    </form>
                                 </div>
                             </div>
                             @endif

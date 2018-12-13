@@ -1,7 +1,4 @@
 @extends('cooperation.layouts.app')
-@push('css')
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-@endpush
 @section('content')
     <section class="section">
         <div class="container">
@@ -25,13 +22,16 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label for="name">Naam:</label>
-                                        <input type="text" class="form-control" name="name" placeholder="Nieuwe vragenlijst">
+                                    @foreach(config('woningdossier.supported_locales') as $locale)
+                                    <label for="name">Naam:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">{{$locale}}</span>
+                                        <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" placeholder="Nieuwe vragenlijst">
                                     </div>
+                                    @endforeach
                                     <div class="form-group">
                                         <label for="step_id">Na stap:</label>
-                                        <select name="step_id" class="form-control">
+                                        <select name="questionnaire[step_id]" class="form-control">
                                             @foreach($steps as $i => $step)
                                             <option value="{{ $step->id }}">{{ $i+1 }}: {{ $step->name }}</option>
                                             @endforeach

@@ -16,11 +16,11 @@ return [
 	        'custom-fields' => [
 	            'index' => [
 	                'rules' => [
-	                    'number' => 'Getal',
+	                    'numeric' => 'Getal',
                         'string' => 'Tekst',
                     ],
                     'optional-rules' => [
-                        'number' => [
+                        'numeric' => [
                             'between' => 'Tussen',
                             'min' => 'Minimale grootte'
                         ],

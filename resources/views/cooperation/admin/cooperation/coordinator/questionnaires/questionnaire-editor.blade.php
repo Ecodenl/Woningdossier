@@ -6,7 +6,7 @@
     <section class="section">
         <div class="container">
             <form action="{{ route('cooperation.admin.cooperation.coordinator.questionnaires.store') }}" method="post">
-                <input type="hidden" name="questionnaire_id" value="{{$questionnaire->id}}">
+                <input type="hidden" name="questionnaire[id]" value="{{$questionnaire->id}}">
                 {{csrf_field()}}
                 <div class="row">
                     <div class="col-sm-6">
@@ -38,13 +38,16 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <div class="form-group">
+                                        @foreach(config('woningdossier.supported_locales') as $locale)
                                             <label for="name">Naam:</label>
-                                            <input type="text" class="form-control" name="name" value="{{ $questionnaire->name }}" placeholder="Nieuwe vragenlijst">
-                                        </div>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">{{$locale}}</span>
+                                                <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" value="{{$questionnaire->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionnaire->getTranslation('name', $locale)->translation : "" }}" placeholder="Nieuwe vragenlijst">
+                                            </div>
+                                        @endforeach
                                         <div class="form-group">
                                             <label for="step_id">Na stap:</label>
-                                            <select name="step_id" class="form-control">
+                                            <select name="questionnaire[step_id]" class="form-control">
                                                 @foreach($steps as $i => $step)
                                                     <option value="{{ $step->id }}" @if($questionnaire->step_id == $step->id) selected="selected" @endif >{{ $i+1 }}: {{ $step->name }}</option>
                                                 @endforeach

@@ -26,7 +26,7 @@ class CreateQuestionsAnswersTable extends Migration
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
 
             // json
-            $table->longText('answers');
+            $table->longText('answer');
             $table->timestamps();
         });
     }

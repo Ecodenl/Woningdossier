@@ -260,20 +260,27 @@ class QuestionnaireController extends Controller
     public function store(Request $request)
     {
 
-        $name = $request->get('name');
-        $stepId = $request->get('step_id');
 
-        $questionnaireId = $request->get('questionnaire_id');
-        $validation = $request->get('validation');
+        // get the data for the questionnaire
+        $questionnaireNameTranslations = $request->input('questionnaire.name');
+        $stepId = $request->input('questionnaire.step_id');
+        $questionnaireId = $request->input('questionnaire.id');
 
+        // find the current questionnaire
         $questionnaire = Questionnaire::find($questionnaireId);
 
+        // update the step
         $questionnaire->update([
             'step_id' => $stepId,
         ]);
 
-        $questionnaire->updateTranslation('name', $name, 'nl');
+        // and update the translations
+        foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+            $questionnaire->updateTranslation('name', $questionnaireNameTranslation, $locale);
+        }
 
+
+        $validation = $request->get('validation');
         if ($request->has('questions.new')) {
             $newQuestions = $request->input('questions.new');
 
@@ -329,22 +336,25 @@ class QuestionnaireController extends Controller
     public function storeQuestionnaire(Request $request)
     {
 
-        $key = Uuid::uuid4();
-        $name = $request->get('name');
-        $stepId = $request->get('step_id');
+        $questionnaireNameKey = Uuid::uuid4();
 
-        Translation::create([
-            'key' =>  $key,
-            'language' => 'nl',
-            'translation' => $name
-        ]);
+        $questionnaireNameTranslations = $request->input('questionnaire.name');
+        $stepId = $request->input('questionnaire.step_id');
 
         $questionnaire = Questionnaire::create([
-            'name' => $key,
+            'name' => $questionnaireNameKey,
             'step_id' => $stepId,
             'cooperation_id' => HoomdossierSession::getCooperation(),
             'is_active' => false
         ]);
+
+        foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+            Translation::create([
+                'key' =>  $questionnaireNameKey,
+                'language' => $locale,
+                'translation' => $questionnaireNameTranslation,
+            ]);
+        }
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.questionnaires.edit', ['id' => $questionnaire->id]);
     }

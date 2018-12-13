@@ -47,6 +47,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             	Route::get('/', 'ToolController@index')->name('index');
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 
+                Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
+                    Route::post('', 'QuestionnaireController@store')->name('store');
+                });
+
                 Route::group(['middleware' => 'filled-step:general-data'], function(){
 
                     // Extra pages with downloadable or information content.

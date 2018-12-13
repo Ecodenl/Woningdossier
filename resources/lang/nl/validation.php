@@ -135,5 +135,6 @@ return [
     'attributes' => [
     	'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
 	    'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
+        'questions.*' => 'Klopt geen aids van'
     ],
 ];

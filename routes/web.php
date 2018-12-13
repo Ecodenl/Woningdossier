@@ -107,6 +107,14 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
 
+                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                        Route::get('', 'ReportController@index')->name('index');
+                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                        Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('download.questionnaire-results');
+
+                    });
+
                     Route::group(['prefix' => 'coaches', 'as' => 'coach.'], function () {
                         Route::get('', 'CoachController@index')->name('index');
                         Route::get('create', 'CoachController@create')->name('create');

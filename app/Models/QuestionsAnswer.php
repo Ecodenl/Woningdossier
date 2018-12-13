@@ -9,4 +9,9 @@ class QuestionsAnswer extends Model
     protected $fillable = [
         'question_id', 'building_id', 'input_source_id', 'answer'
     ];
+
+    public function question()
+    {
+        return $this->belongsTo(Question::class);
+    }
 }

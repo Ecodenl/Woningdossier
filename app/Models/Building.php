@@ -251,4 +251,14 @@ class Building extends Model
     {
         return $this->hasMany(BuildingRoofType::class);
     }
+
+    /**
+     * Get all the answers for the building
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function questionAnswers()
+    {
+        return $this->hasMany(QuestionsAnswer::class);
+    }
 }

@@ -113,7 +113,32 @@ return [
                         'home' => 'Home',
                         'assign-roles' => 'Rollen toewijzen',
                         'coach' => 'Coaches',
+                        'reports' => 'Rapportages',
                         'add-user' => 'Voeg Coach / Bewoner toe'
+                    ],
+
+
+                    'reports' => [
+                        'title' => 'Rapportages',
+                        'description' => 'Rapportage downloads',
+
+                        'download' => [
+                            'by-year' => 'Actieplan per jaar',
+                            'by-measure' => 'Actieplan per maatregel',
+                            'download-questionnaire-results' => 'Download de antwoorden van de bewoners op de custom vragenlijsten'
+                        ],
+                        'csv-columns' => [
+                            'first-name' => 'Voornaam',
+                            'last-name' => 'Achternaam',
+                            'email' => 'Email',
+                            'phonenumber' => 'Telefoonnummer',
+                            'mobilenumber' => 'Mobiel nummer',
+                            'street' => 'Straat',
+                            'house-number' => 'Huis nummer',
+                            'city' => 'Woonplaats',
+                            'zip-code' => 'Postcode',
+                            'country-code' => 'Landcode',
+                        ],
                     ],
 
                     'assign-roles' => [

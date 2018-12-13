@@ -2,7 +2,7 @@
     <div class="col-sm-12">
         <div class="form-group add-space{{ $errors->has('questions.'.$question->id) ? ' has-error' : '' }}">
             <label for="">{{$question->name}} @if($question->isRequired()) * @endif</label>
-            <input name="questions[{{$question->id}}]" placeholder="{{$question->name}}" value="{{old('questions.'.$question->id, $question->getAnswerForCurrentInputSource())}}" type="text" class="form-control">
+            <input @if($question->isRequired()) required="required" @endif name="questions[{{$question->id}}]" placeholder="{{$question->name}}" value="{{old('questions.'.$question->id, $question->getAnswerForCurrentInputSource())}}" type="text" class="form-control">
 
             @if ($errors->has('questions.'.$question->id))
                 <span class="help-block">

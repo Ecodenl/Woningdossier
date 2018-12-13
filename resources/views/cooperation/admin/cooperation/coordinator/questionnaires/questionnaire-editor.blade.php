@@ -360,7 +360,6 @@
             question.find('.option-text').first().attr('autofocus', true);
 
             sortable.sortable('refresh')
-            $('input, select').trigger('change');
         });
 
         $(document).on('focusout', 'input.option-text', function (event) {

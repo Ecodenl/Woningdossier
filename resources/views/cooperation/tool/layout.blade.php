@@ -41,9 +41,9 @@
                                         {{$questionnaire->name}}
                                     </h3>
 
-                                        <button id="submit-form-top-right" disabled class="pull-right btn btn-primary">
-                                            @lang('default.buttons.next')
-                                        </button>
+                                    <button id="submit-form-top-right" disabled class="pull-right btn btn-primary">
+                                        @lang('default.buttons.next')
+                                    </button>
                                     <div class="clearfix"></div>
                                 </div>
 
@@ -63,7 +63,13 @@
                                                     @break
                                             @endswitch
                                         @endforeach
-                                        <button type="submit" class="btn btn-primary">Opslaan</button>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary">Opslaan</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>

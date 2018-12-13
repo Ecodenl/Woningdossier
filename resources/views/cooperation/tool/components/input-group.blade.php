@@ -1,4 +1,3 @@
-
 <div class="input-group input-source-group">
     {{ $slot }}
     <div class="input-group-btn">
@@ -18,7 +17,8 @@
                     @include('cooperation.tool.components.input', [
                         'userInputValues' => $userInputValues,
                         'userInputColumn' => $userInputColumn,
-                        'needsFormat' => isset($needsFormat) ? true : false
+                        'needsFormat' => isset($needsFormat) ? true : false,
+                        'decimals' => $decimals ?? null,
                     ])
                     @break
                 @default

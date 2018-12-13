@@ -47,9 +47,11 @@
         </div>
 
         <div class="row">
+
             <div id="building-type" class="col-md-12">
                 <h4 style="margin-left: -5px;">@lang('woningdossier.cooperation.tool.general-data.building-type.title')</h4>
 
+                <!-- building type -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('building_type_id') ? ' has-error' : '' }}">
@@ -85,7 +87,7 @@
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'build_year'])
-                            <input id="build_year" type="text" class="form-control" name="build_year" value="@if(isset($building->buildingFeatures->build_year)){{ old('build_year', $building->buildingFeatures->build_year) }}@else{{ old('build_year') }}@endif" required autofocus>
+                            <input id="build_year" type="text" class="form-control" name="build_year" value="{{ old('build_year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year')) }}" required autofocus>
                             @endcomponent
                             <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 And I would like to have it too...
@@ -107,7 +109,7 @@
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'surface', 'needsFormat' => true])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                <input id="surface" type="text" class="form-control" name="surface" value="@if(old('surface')){{ old('surface') }}@elseif(isset($building->buildingFeatures)){{ \App\Helpers\NumberFormatter::format($building->buildingFeatures->surface, 1) }}@endif" required autofocus>
+                                <input id="surface" type="text" class="form-control" name="surface" value="{{ old('surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'surface'), 1)) }}" required autofocus>
                             @endcomponent
 
                             <div id="user-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -126,7 +128,7 @@
                             <label for="building_layers" class=" control-label"><i data-toggle="collapse" data-target="#roof-layers-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.how-much-building-layers')</label>
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'building_layers', 'needsFormat' => true])
+                            ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
                                 <input id="building_layers" type="text" class="form-control" name="building_layers" value="@if(isset($building->buildingFeatures->building_layers)){{ old('building_layers', $building->buildingFeatures->building_layers) }}@else{{ old('building_layers') }}@endif" autofocus>
                             @endcomponent
 
@@ -153,9 +155,7 @@
                                 <select id="roof_type_id" class="form-control" name="roof_type_id">
                                     @foreach($roofTypes as $roofType)
                                         <option
-                                                @if(old('roof_type_id') && $roofType->id == old('roof_type_id'))
-                                                selected="selected"
-                                                @elseif(isset($building->buildingFeatures->roofType) && $building->buildingFeatures->roofType->id == $roofType->id)
+                                                @if(old('roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id)
                                                 selected="selected"
                                                 @endif
                                                 value="{{ $roofType->id }}">{{ $roofType->name }}</option>
@@ -185,13 +185,15 @@
                                 //  2) db value
                                 //  3) default (G)
 
-                                $selected = old('energy_label_id');
+                                $selected = old('energy_label_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'energy_label_id'));
 
+                                /*
                                 if (is_null($selected)){
                                 	if (isset($building->buildingFeatures->energyLabel) && $building->buildingFeatures->energyLabel instanceof \App\Models\EnergyLabel){
                                 		$selected = $building->buildingFeatures->energyLabel->id;
                                     }
                                 }
+                                */
 
                                 if (is_null($selected)){
                                 	$selectedLabelName = 'G';
@@ -303,7 +305,8 @@
                                 ['inputType' => 'select', 'inputValues' => $element->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingElements()->forMe()->where('element_id', $element->id)->get(), 'userInputColumn' => 'element_value_id'])
                                     <select id="element_{{ $element->id }}" class="form-control" name="element[{{ $element->id }}]">
                                         @foreach($element->values()->orderBy('order')->get() as $elementValue)
-                                            <option @if($elementValue->id == old('element.'.$element->id.'')) selected="selected" @elseif($building->buildingElements()->where('element_id', $element->id)->first() && $building->buildingElements()->where('element_id', $element->id)->first()->element_value_id == $elementValue->id) selected @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                            {{--<option @if($elementValue->id == old('element.'.$element->id.'')) selected="selected" @elseif($building->buildingElements()->where('element_id', $element->id)->first() && $building->buildingElements()->where('element_id', $element->id)->first()->element_value_id == $elementValue->id) selected @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option> --}}
+                                            <option @if(old('element.' . $element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $element->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                                         @endforeach
                                     </select>
                                 @endcomponent

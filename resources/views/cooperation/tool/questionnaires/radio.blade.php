@@ -5,7 +5,7 @@
             <br>
             @foreach($question->questionOptions as $option)
                 <label class="radio-inline">
-                    <input type="radio" name="questions[{{$question->id}}]" value="{{$option->id}}" @if(old('questions.'.$question->id, $question->getAnswerForCurrentInputSource()->answer) == $option->id) checked @endif>
+                    <input type="radio" name="questions[{{$question->id}}]" value="{{$option->id}}" @if(old('questions.'.$question->id, $question->getAnswerForCurrentInputSource()) == $option->id) checked @endif>
                     {{$option->name}}
                 </label>
             @endforeach

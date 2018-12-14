@@ -60,19 +60,18 @@ class Question extends Model
     /**
      * Return the answer on a question for a building and input source
      *
-     * @return mixed|null
+     * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
      */
     public function getAnswerForCurrentInputSource()
     {
         $currentAnswerForInputSource = $this->questionAnswers()
             ->where('building_id', HoomdossierSession::getBuilding())
-            ->where('input_source_id', HoomdossierSession::getInputSource())->get();
+            ->where('input_source_id', HoomdossierSession::getInputSource())->first();
 
-
-        if ($currentAnswerForInputSource->count() == 1) {
-            return $currentAnswerForInputSource->first();
+        if ($currentAnswerForInputSource instanceof QuestionsAnswer) {
+            return $currentAnswerForInputSource->answer;
         }
 
-        return $currentAnswerForInputSource;
+        return null;
     }
 }

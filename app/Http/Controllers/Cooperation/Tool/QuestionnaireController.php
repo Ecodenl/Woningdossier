@@ -24,32 +24,30 @@ class QuestionnaireController extends Controller
         // it does not matter how we save it. Later when retrieving the answers we determine how we should show them based on the question type
         foreach ($questions as $questionId => $questionAnswer) {
 
-            // this will only be a array if the input type is a checkbox, because there can be more answers selected.
+            // this will only be a array if the user can select multiple answers for one question.
+            // in the current state this will only be applied for a checkbox.
             if (is_array($questionAnswer)) {
-                foreach ($questionAnswer as $answer) {
-                    QuestionsAnswer::updateOrCreate(
-                        [
-                            'question_id' => $questionId,
-                            'building_id' => HoomdossierSession::getBuilding(),
-                            'input_source_id' => HoomdossierSession::getInputSource(),
-                        ],
-                        [
-                            'answer' => $answer
-                        ]
-                    );
+                $answer = "";
+
+                // we pipe the answer, later on we can explode it and check it against the question ids
+                foreach ($questionAnswer as $qAnswer) {
+                    $answer .= "{$qAnswer}|";
                 }
+
             } else {
-                QuestionsAnswer::updateOrCreate(
-                    [
-                        'question_id' => $questionId,
-                        'building_id' => HoomdossierSession::getBuilding(),
-                        'input_source_id' => HoomdossierSession::getInputSource(),
-                    ],
-                    [
-                        'answer' => $questionAnswer
-                    ]
-                );
+                $answer = $questionAnswer;
             }
+
+            QuestionsAnswer::updateOrCreate(
+                [
+                    'question_id' => $questionId,
+                    'building_id' => HoomdossierSession::getBuilding(),
+                    'input_source_id' => HoomdossierSession::getInputSource(),
+                ],
+                [
+                    'answer' => $answer
+                ]
+            );
         }
 
         // something that should be discussed, we could redirect them to the next step with the stephelper

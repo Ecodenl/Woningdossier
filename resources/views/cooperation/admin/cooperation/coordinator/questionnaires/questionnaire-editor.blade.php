@@ -99,6 +99,9 @@
     <script>
         var formBuildPanel =
             '<div class="form-builder panel panel-default">' +
+                '<div class="panel-heading">' +
+
+                '</div>'+
                 '<div class="panel-body">' +
                     '<div class="row">' +
                         '<div class="col-sm-12 question">' +
@@ -184,9 +187,7 @@
         // some quick maths
         function s4()
         {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
+            return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
         }
 
 
@@ -195,6 +196,10 @@
             // we add the input types after that
             sortable.prepend(formBuildPanel);
             event.preventDefault();
+
+            // add the text from the toolbox to the panel-heading
+            var questionPanel = sortable.find('.panel').first();
+            questionPanel.find('.panel-heading').text($(this).text().trim())
         });
 
 
@@ -316,6 +321,7 @@
             panelFooter.find('.pull-right').html(rbl);
             requiredCheckbox.appendTo(panelFooter.find('.pull-right > label'));
         }
+
 
         toolBox.find('#short-answer').on('click', function () {
             var questionPanel = sortable.find('.panel').first();

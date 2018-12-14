@@ -235,7 +235,15 @@ return [
                                     'see-results' => 'Bekijk resultaten',
                                     'edit' => 'Bewerk vragenlijst',
                                 ]
-                            ]
+                            ],
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Meerkeuze',
+                                'date' => 'Datum',
+                                'checkbox' => 'Selectievakjes'
+                            ],
                         ],
                         'edit' => [
                             'types' => [

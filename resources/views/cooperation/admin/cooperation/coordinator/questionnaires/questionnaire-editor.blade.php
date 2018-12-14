@@ -24,13 +24,24 @@
                 <div class="row alert-top-space">
                     <div class="col-md-3">
                         <div id="tool-box" class="list-group">
-                            <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i> Kort antwoord</a>
-                            <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i> Alinea</a>
-                            <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i> Meerkeuze</a>
-                            <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> Selectievakjes</a>
-                            <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> Dropdownmenu</a>
-                            <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i> Datum</a>
-                            <a href="#" id="time" class="list-group-item"><i class="glyphicon glyphicon-time"></i> Tijd</a>
+                            <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i>
+                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.text')
+                            </a>
+                            <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>
+                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.textarea')
+                            </a>
+                            <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i> 
+                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.radio')
+                            </a>
+                            <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> 
+                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.checkbox')
+                            </a>
+                            <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> 
+                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.select')
+                            </a>
+                            <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>
+                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.date')
+                            </a>
                         </div>
                     </div>
                     <div class="col-md-9">

@@ -58,11 +58,15 @@ class QuestionnaireRequest extends FormRequest
             $currentQuestion = Question::find($questionId);
             $validation = $currentQuestion->validation;
 
+            $rule = "";
+            // if its required add the required rule
+            if ($currentQuestion->isRequired()) {
+                $rule .= "required|";
+            }
             foreach ($validation as $mainRule => $rules) {
                 // check if there is validation for the question
                 if (!empty($validation)) {
                     // let the concat start
-                    $rule = "";
                     $rule .= "{$mainRule}|";
 
                     foreach ($rules as $subRule => $subRuleCheckValues) {
@@ -76,10 +80,11 @@ class QuestionnaireRequest extends FormRequest
                     $rule = rtrim($rule, ',');
                     $rule .= "|";
 
-                    $validationRules['questions.'.$questionId] = $rule;
                 }
             }
+            $validationRules['questions.'.$questionId] = $rule;
         }
+
 
         return $validationRules;
     }

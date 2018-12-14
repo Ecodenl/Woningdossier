@@ -324,6 +324,25 @@
 
         });
 
+        toolBox.find('#date').on('click', function () {
+            var questionPanel = sortable.find('.panel').first();
+            var question = questionPanel.find('.question');
+            var panelFooter = questionPanel.find('.panel-footer');
+            var guid = createGuid();
+            // no validation needed here
+            questionPanel.find('.add-validation').remove();
+
+            addInputQuestion(question, guid, 'Vraag');
+
+            addHiddenInputWithInputType(question, guid, 'date');
+
+            addHiddenGuidInput(question, guid);
+
+            addRequiredCheckbox(panelFooter, guid);
+
+            sortable.sortable('refresh');
+        });
+
 
         toolBox.find('#long-answer').on('click', function () {
             var questionPanel = sortable.find('.panel').first();

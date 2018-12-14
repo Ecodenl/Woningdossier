@@ -295,6 +295,9 @@ class QuestionnaireController extends Controller
                     case('select'):
                         $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
                         break;
+                    case('date'):
+                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
+                        break;
                     case('radio'):
                         $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
                         break;
@@ -320,6 +323,9 @@ class QuestionnaireController extends Controller
                         break;
                     case ('select'):
                         $this->updateQuestion($questionId, $editedQuestion, $validation, true);
+                        break;
+                    case ('date'):
+                        $this->updateQuestion($questionId, $editedQuestion, $validation);
                         break;
                     case ('radio'):
                         $this->updateQuestion($questionId, $editedQuestion, $validation, true);

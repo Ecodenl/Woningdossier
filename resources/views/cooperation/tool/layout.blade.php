@@ -67,6 +67,9 @@
                                                 @case('checkbox')
                                                     @include('cooperation.tool.questionnaires.checkbox', ['question' => $question])
                                                     @break
+                                                @case('date')
+                                                    @include('cooperation.tool.questionnaires.date', ['question' => $question])
+                                                    @break
                                             @endswitch
                                         @endforeach
                                         <div class="row">

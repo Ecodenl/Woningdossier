@@ -243,6 +243,7 @@ return [
                                 'textarea' => 'Alinea',
                                 'select' => 'Dropdownmenu',
                                 'radio' => 'Meerkeuze',
+                                'date' => 'Datum',
                                 'checkbox' => 'Selectievakjes'
                             ],
                             'add-validation' => 'Voeg validatie toe',

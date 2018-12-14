@@ -238,6 +238,14 @@ return [
                             ]
                         ],
                         'edit' => [
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Meerkeuze',
+                                'checkbox' => 'Selectievakjes'
+                            ],
+                            'add-validation' => 'Voeg validatie toe',
                             'success' => 'Vragenlijst is bijgewerkt'
                         ]
                     ],

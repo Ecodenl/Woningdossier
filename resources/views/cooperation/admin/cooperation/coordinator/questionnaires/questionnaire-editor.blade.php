@@ -96,6 +96,11 @@
                             // '</div>' +
                         '</div>' +
                     '</div>' +
+                    '<div class="row">' +
+                        '<div class="col-sm-12">' +
+                            '<a class="btn btn-primary add-validation">Voeg validatie toe</a>'+
+                        '</div>' +
+                    '</div>'+
                     '<div class="row validation-rules">' +
 
                     '</div>' +
@@ -249,6 +254,36 @@
             });
         }
 
+
+        /**
+         * function to add the validation inputs
+         */
+        function addValidationInputs(question, guid)
+        {
+
+            // add the validation options to the form
+            question.append(formBuildValidation);
+            // after that we add the name attribute
+            question.find('.validation').attr('name', 'validation['+guid+'][main-rule]').trigger('change');
+            question.find('.sub-rule').attr('name', 'validation['+guid+'][sub-rule]');
+
+        }
+
+
+        /**
+         * Add a hidden input with a guid
+         */
+        function addHiddenGuidInput(question, guid)
+        {
+            var guidHiddenInput = $('<input>').attr({
+                name: 'questions[new]['+guid+'][guid]',
+                type: 'hidden',
+                value: guid,
+            }).addClass('guid');
+
+            question.append(guidHiddenInput);
+        }
+
         /**
          * function to add a required checkbox to the footer off the panel
          *
@@ -285,8 +320,6 @@
 
             addRequiredCheckbox(panelFooter, guid);
 
-            addValidationInputs(question, guid);
-
             sortable.sortable('refresh');
 
         });
@@ -306,45 +339,18 @@
 
             addRequiredCheckbox(panelFooter, guid);
 
-            addValidationInputs(question, guid);
 
             sortable.sortable('refresh');
         });
-
-        /**
-         * function to add the validation inputs
-         */
-        function addValidationInputs(question, guid)
-        {
-
-            // add the validation options to the form
-            question.append(formBuildValidation);
-            // after that we add the name attribute
-            question.find('.validation').attr('name', 'validation['+guid+'][main-rule]').trigger('change');
-            question.find('.sub-rule').attr('name', 'validation['+guid+'][sub-rule]');
-
-        }
-
-
-        /**
-         * Add a hidden input with a guid
-         */
-        function addHiddenGuidInput(question, guid)
-        {
-            var guidHiddenInput = $('<input>').attr({
-                name: 'questions[new]['+guid+'][guid]',
-                type: 'hidden',
-                value: guid,
-            }).addClass('guid');
-
-            question.append(guidHiddenInput);
-        }
 
         toolBox.find('#radio-button').on('click', function () {
             var questionPanel = sortable.find('.panel').first();
             var question = questionPanel.find('.question');
             var panelFooter = questionPanel.find('.panel-footer');
             var guid = createGuid();
+
+            // no validation needed here
+            questionPanel.find('.add-validation').remove();
 
             addHiddenInputWithInputType(question, guid, 'radio');
 
@@ -368,6 +374,9 @@
             var panelFooter = questionPanel.find('.panel-footer');
             var guid = createGuid();
 
+            // no validation needed here
+            questionPanel.find('.add-validation').remove();
+
             addHiddenInputWithInputType(question, guid, 'checkbox');
 
             addHiddenGuidInput(question, guid);
@@ -390,6 +399,9 @@
             var panelFooter = questionPanel.find('.panel-footer');
             var guid = createGuid();
 
+            // no validation needed here
+            questionPanel.find('.add-validation').remove();
+
             addHiddenInputWithInputType(question, guid, 'select');
 
             addHiddenGuidInput(question, guid);
@@ -404,6 +416,17 @@
             question.find('.option-text').first().attr('autofocus', true);
 
             sortable.sortable('refresh')
+        });
+
+        // add the validation to a question
+        $(document).on('click', '.add-validation', function (event) {
+            event.preventDefault();
+            var question = $(this).parent().parent().parent().find('.question');
+            var guid = getQuestionId(question);
+
+            addValidationInputs(question, guid);
+
+            return false;
         });
 
         $(document).on('focusout', 'input.option-text', function (event) {

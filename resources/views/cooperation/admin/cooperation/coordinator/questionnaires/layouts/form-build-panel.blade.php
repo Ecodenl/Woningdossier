@@ -1,4 +1,8 @@
+<?php $questionsApplicableForValidation = ['text', 'textarea'] ?>
 <div class="form-builder ui-sortable-handle panel panel-default" @isset($id) id="{{$id}}" @endisset>
+    <div class="panel-heading">
+        @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.types.'.$question->type)
+    </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-12">
@@ -31,10 +35,18 @@
             </div>
         </div>
         <div class="row validation-inputs">
-            @if(in_array($question->type, ['text', 'textarea']))
+            @if(in_array($question->type, $questionsApplicableForValidation))
                 @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.validation-options', ['question' => $question])
             @endif
         </div>
+
+        @if($question->hasNoValidation() && in_array($question->type, $questionsApplicableForValidation))
+        <div class="row">
+            <div class="col-sm-12">
+                <a class="btn btn-primary add-validation">@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.add-validation')</a>
+            </div>
+        </div>
+        @endif
     </div>
     <div class="panel-footer">
         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.form-build-panel-footer', ['question' => $question])

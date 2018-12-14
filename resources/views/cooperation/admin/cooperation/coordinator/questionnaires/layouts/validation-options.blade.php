@@ -2,12 +2,12 @@
     $optionalValidationRule = '';
     $mainValidationRule = '';
 
-    if (is_array($question->validation)) {
+    if ($question->hasValidation()) {
         $mainValidationRule = key($question->validation);
         $optionalValidationRule = key($question->validation[$mainValidationRule]);
     }
 ?>
-
+@if($question->hasValidation())
 <div class="col-sm-4">
     <div class="form-group">
         <select class="form-control validation" name="validation[{{$question->id}}][main-rule]" id="">
@@ -29,7 +29,6 @@
     </div>
 </div>
 
-@if(is_array($question->validation))
     @foreach($question->validation[$mainValidationRule] as $subRule => $subRuleCheckValues)
         @foreach($subRuleCheckValues as $subRuleCheckValue)
             <div class="col-sm-2">

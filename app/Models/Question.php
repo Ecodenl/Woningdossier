@@ -38,6 +38,29 @@ class Question extends Model
     }
 
     /**
+     * Check if a question has validation
+     *
+     * @return bool
+     */
+    public function hasValidation() : bool
+    {
+        if (is_array($this->validation) && !empty($this->validation)) {
+            return true;
+        }
+
+        return false;
+    }
+    /**
+     * Check if a question has validation
+     *
+     * @return bool
+     */
+    public function hasNoValidation() : bool
+    {
+        return !$this->hasValidation();
+    }
+
+    /**
      * Return the options from a questions, a question will have options if its a radio, checkbox or dropdown etc.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

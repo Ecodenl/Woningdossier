@@ -123,7 +123,7 @@ class QuestionnaireController extends Controller
         $createdQuestion = Question::create([
             'name' => $uuid,
             'type' => $questionType,
-            'order' => rand(1, 3),
+            'order' => $order,
             'required' => $required,
             'validation' => $this->getValidationRule($requestQuestion, $validation),
             'questionnaire_id' => $questionnaireId
@@ -200,7 +200,7 @@ class QuestionnaireController extends Controller
 
         $currentQuestion->update([
             'validation' => $this->getValidationRule($editedQuestion, $validation),
-            'order' => rand(1, 3),
+//            'order' => $order,
             'required' => $required,
         ]);
 
@@ -279,11 +279,13 @@ class QuestionnaireController extends Controller
         }
 
 
-        $validation = $request->get('validation');
+        $validation = $request->get('validation', []);
         if ($request->has('questions.new')) {
             $newQuestions = $request->input('questions.new');
 
-            foreach ($newQuestions as $order => $requestQuestion) {
+            $order = 0;
+            foreach ($newQuestions as $guid => $requestQuestion) {
+                $order++;
                 $questionType = $requestQuestion['type'];
 
                 switch ($questionType) {

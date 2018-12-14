@@ -16,7 +16,7 @@
                 <div class="panel-body">
                     <form action="{{route('cooperation.tool.questionnaire.store')}}"  id="questionnaire-form-{{$questionnaire->id}}" method="post">
                         {{csrf_field()}}
-                        @foreach($questionnaire->questions()->orderBy('order', 'ASC')->get() as $question)
+                        @foreach($questionnaire->questions()->orderBy('order')->get() as $question)
                             @switch($question->type)
                                 @case('text')
                                     @include('cooperation.tool.questionnaires.text', ['question' => $question])

@@ -191,7 +191,7 @@ class QuestionnaireController extends Controller
      * @param array $validation
      * @param bool $questionHasOptions
      */
-    protected function updateQuestion(int $questionId, array $editedQuestion, array $validation, bool $questionHasOptions = false)
+    protected function updateQuestion(int $questionId, array $editedQuestion, array $validation, $order, bool $questionHasOptions = false)
     {
         $required = false;
 
@@ -203,7 +203,7 @@ class QuestionnaireController extends Controller
 
         $currentQuestion->update([
             'validation' => $this->getValidationRule($editedQuestion, $validation),
-//            'order' => $order,
+            'order' => $order,
             'required' => $required,
         ]);
 
@@ -320,28 +320,29 @@ class QuestionnaireController extends Controller
 
         if ($request->has('questions.edit')) {
             $editedQuestions = $request->input('questions.edit');
-
+            $order = 0;
             foreach ($editedQuestions as $questionId => $editedQuestion) {
+                $order++;
                 $editedQuestionType = $editedQuestion['type'];
 
                 switch ($editedQuestionType) {
                     case ('text'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
                         break;
                     case ('select'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, true);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
                         break;
                     case ('date'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
                         break;
                     case ('radio'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, true);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
                         break;
                     case ('checkbox'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, true);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
                         break;
                     case ('textarea'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation);
+                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
                         break;
                 }
             }

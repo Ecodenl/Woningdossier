@@ -204,7 +204,7 @@
          */
         function addHiddenInputWithInputType(question, guid, type)
         {
-            var hiddenInputWithInputTypeName = 'questions[new]['+guid+'][type]';
+            var hiddenInputWithInputTypeName = 'questions['+guid+'][type]';
             var hiddenInputWithInputType = $('<input>').attr({
                 name: hiddenInputWithInputTypeName,
                 type: 'hidden',
@@ -226,7 +226,7 @@
 
             // we add "option" inputs for each supported language
             $(supportedLocales).each(function (index, locale) {
-                var fullQuestionName = 'questions[new]['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
+                var fullQuestionName = 'questions['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
 
                 var formGroup = $($(formGroupElement).append(inputGroupElement));
                 // raging because i dont know why $(optionGroup).append(formGroup) does not work.
@@ -250,7 +250,7 @@
         function addInputQuestion(question, guid, placeholder)
         {
             $(supportedLocales).each(function (index, locale) {
-                var fullQuestionName = 'questions[new]['+guid+'][question]['+locale+']';
+                var fullQuestionName = 'questions['+guid+'][question]['+locale+']';
                 var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(question);
 
                 var textInput = $('<input>').addClass('form-control').attr({
@@ -287,7 +287,7 @@
         function addHiddenGuidInput(question, guid)
         {
             var guidHiddenInput = $('<input>').attr({
-                name: 'questions[new]['+guid+'][guid]',
+                name: 'questions['+guid+'][guid]',
                 type: 'hidden',
                 value: guid,
             }).addClass('guid');
@@ -310,7 +310,7 @@
             var requiredCheckbox = $('<input>').addClass('control-label').attr({
                 id: 'required-'+guid+'',
                 type: 'checkbox',
-                name: 'questions[new]['+guid+'][required]'
+                name: 'questions['+guid+'][required]'
             });
 
             panelFooter.find('.pull-right').html(rbl);

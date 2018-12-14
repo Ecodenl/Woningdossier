@@ -3,7 +3,7 @@
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">{{$locale}}</span>
-            <input name="questions[edit][{{$question->id}}][question][{{$locale}}]" placeholder="Vraag" type="text" value="{{$question->getTranslation('name', $locale)->translation}}" class="form-control">
+            <input name="questions[{{$question->id}}][question][{{$locale}}]" placeholder="Vraag" type="text" value="{{$question->getTranslation('name', $locale)->translation}}" class="form-control">
         </div>
     </div>
 @endforeach
@@ -17,7 +17,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon">{{$locale}}</span>
-                    <input name="questions[edit][{{$question->id}}][options][{{$questionOption->id}}][{{$locale}}]" placeholder="Vraag" type="text" value="{{$questionOption->getTranslation('name', $locale)->translation}}" class="form-control">
+                    <input name="questions[{{$question->id}}][options][{{$questionOption->id}}][{{$locale}}]" placeholder="Vraag" type="text" value="{{$questionOption->getTranslation('name', $locale)->translation}}" class="form-control">
                 </div>
             </div>
         @endforeach
@@ -33,7 +33,7 @@
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">{{$locale}}</span>
-            <input name="questions[edit][{{$question->id}}][options][{{$uuid}}][{{$locale}}]" placeholder="Vraag" type="text" class="form-control option-text">
+            <input name="questions[{{$question->id}}][options][{{$uuid}}][{{$locale}}]" placeholder="Vraag" type="text" class="form-control option-text">
         </div>
     </div>
 @endforeach

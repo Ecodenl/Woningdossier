@@ -4,7 +4,7 @@
             <a href=""><i class="glyphicon glyphicon-trash"></i></a>
         </div>
         <div class="pull-right">
-            <label class="control-label" for="required-{{$question->id}}">Verplicht <input id="required-{{$question->id}}" name="questions[edit][{{$question->id}}][required]" @if($question->isRequired()) checked @endif type="checkbox"></label>
+            <label class="control-label" for="required-{{$question->id}}">Verplicht <input id="required-{{$question->id}}" name="questions[{{$question->id}}][required]" @if($question->isRequired()) checked @endif type="checkbox"></label>
         </div>
     </div>
 </div>

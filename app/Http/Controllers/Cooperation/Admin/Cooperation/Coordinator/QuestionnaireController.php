@@ -232,11 +232,11 @@ class QuestionnaireController extends Controller
         // so if the $questionOptionId = a valid uuid we need to create a new QuestionOption and the translations.
         foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
 
-            if (Uuid::isValid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
+            if (Str::isValidUuid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
 
                 // if the uuid is valid a pomp it to a array and create new question options
                 $allNewOptions = collect($editedQuestion['options'])->filter(function ($value, $key) {
-                    return Uuid::isValid($key);
+                    return Str::isValidUuid($key);
                 })->toArray();
 
                 // create the options
@@ -274,6 +274,7 @@ class QuestionnaireController extends Controller
         $questionnaire = Questionnaire::find($questionnaireId);
 
 
+
         $this->authorize('update', $questionnaire);
         // update the step
         $questionnaire->update([
@@ -285,65 +286,66 @@ class QuestionnaireController extends Controller
             $questionnaire->updateTranslation('name', $questionnaireNameTranslation, $locale);
         }
 
+        $order = 0;
 
         $validation = $request->get('validation', []);
-        if ($request->has('questions.new')) {
-            $newQuestions = $request->input('questions.new');
 
-            $order = 0;
-            foreach ($newQuestions as $guid => $requestQuestion) {
+        if ($request->has('questions')) {
+
+            foreach ($request->get('questions') as $key => $allRequestQuestion) {
                 $order++;
-                $questionType = $requestQuestion['type'];
 
-                switch ($questionType) {
-                    case ('text'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
-                        break;
-                    case('select'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
-                        break;
-                    case('date'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
-                        break;
-                    case('radio'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
-                        break;
-                    case('checkbox'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
-                        break;
-                    case('textarea'):
-                        $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
-                        break;
-                }
-            }
-        }
+                // if the key is a valid uuid, we know it is a new question
+                // existing questions will have a questionId as key
+                if (Str::isValidGuid($key)) {
+                    $questionType = $allRequestQuestion['type'];
+                    $requestQuestion = $allRequestQuestion;
 
-        if ($request->has('questions.edit')) {
-            $editedQuestions = $request->input('questions.edit');
-            $order = 0;
-            foreach ($editedQuestions as $questionId => $editedQuestion) {
-                $order++;
-                $editedQuestionType = $editedQuestion['type'];
+                    switch ($questionType) {
+                        case ('text'):
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
+                            break;
+                        case('select'):
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
+                            break;
+                        case('date'):
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
+                            break;
+                        case('radio'):
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
+                            break;
+                        case('checkbox'):
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
+                            break;
+                        case('textarea'):
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
+                            break;
+                    }
+                } else {
+                    $editedQuestionType = $allRequestQuestion['type'];
+                    $questionId = $key;
+                    $editedQuestion = $allRequestQuestion;
 
-                switch ($editedQuestionType) {
-                    case ('text'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
-                        break;
-                    case ('select'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
-                        break;
-                    case ('date'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
-                        break;
-                    case ('radio'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
-                        break;
-                    case ('checkbox'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
-                        break;
-                    case ('textarea'):
-                        $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
-                        break;
+                    switch ($editedQuestionType) {
+                        case ('text'):
+                            $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
+                            break;
+                        case ('select'):
+                            $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
+                            break;
+                        case ('date'):
+                            $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
+                            break;
+                        case ('radio'):
+                            $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
+                            break;
+                        case ('checkbox'):
+                            $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
+                            break;
+                        case ('textarea'):
+                            $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
+                            break;
+                    }
                 }
             }
         }

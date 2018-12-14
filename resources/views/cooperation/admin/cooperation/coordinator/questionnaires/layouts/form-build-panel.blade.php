@@ -9,8 +9,8 @@
                 {{$slot}}
             </div>
             <div class="col-sm-12 question">
-                <input type="hidden" name="questions[edit][{{$question->id}}][type]" value="{{$question->type}}">
-                <input type="hidden" name="questions[edit][{{$question->id}}][question_id]" class="question_id" value="{{$question->id}}">
+                <input type="hidden" name="questions[{{$question->id}}][type]" value="{{$question->type}}">
+                <input type="hidden" name="questions[{{$question->id}}][question_id]" class="question_id" value="{{$question->id}}">
                 @switch($question->type)
 
                     @case('text')

@@ -19,23 +19,23 @@
                         @foreach($questionnaire->questions()->orderBy('order', 'ASC')->get() as $question)
                             @switch($question->type)
                                 @case('text')
-                                @include('cooperation.tool.questionnaires.text', ['question' => $question])
-                                @break
+                                    @include('cooperation.tool.questionnaires.text', ['question' => $question])
+                                    @break
                                 @case('textarea')
-                                @include('cooperation.tool.questionnaires.textarea', ['question' => $question])
-                                @break
+                                    @include('cooperation.tool.questionnaires.textarea', ['question' => $question])
+                                    @break
                                 @case('select')
-                                @include('cooperation.tool.questionnaires.select', ['question' => $question])
-                                @break
+                                    @include('cooperation.tool.questionnaires.select', ['question' => $question])
+                                    @break
                                 @case('radio')
-                                @include('cooperation.tool.questionnaires.radio', ['question' => $question])
-                                @break
+                                    @include('cooperation.tool.questionnaires.radio', ['question' => $question])
+                                    @break
                                 @case('checkbox')
-                                @include('cooperation.tool.questionnaires.checkbox', ['question' => $question])
-                                @break
+                                    @include('cooperation.tool.questionnaires.checkbox', ['question' => $question])
+                                    @break
                                 @case('date')
-                                @include('cooperation.tool.questionnaires.date', ['question' => $question])
-                                @break
+                                    @include('cooperation.tool.questionnaires.date', ['question' => $question])
+                                    @break
                             @endswitch
                         @endforeach
                         <div class="row">

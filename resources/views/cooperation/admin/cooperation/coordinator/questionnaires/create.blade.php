@@ -2,7 +2,7 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{ route('cooperation.admin.cooperation.coordinator.questionnaires.store-questionnaire') }}" method="post">
+            <form action="{{ route('cooperation.admin.cooperation.coordinator.questionnaires.store') }}" method="post">
                 {{csrf_field()}}
                 <div class="row">
                     <div class="col-sm-6">

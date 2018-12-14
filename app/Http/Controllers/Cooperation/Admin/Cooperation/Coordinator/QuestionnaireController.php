@@ -28,6 +28,9 @@ class QuestionnaireController extends Controller
     public function edit(Cooperation $cooperation, $questionnaireId)
     {
         $questionnaire = Questionnaire::find($questionnaireId);
+
+        $this->authorize('edit', $questionnaire);
+
 	    $steps = Step::orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.coordinator.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
@@ -252,12 +255,14 @@ class QuestionnaireController extends Controller
 
 
     /**
-     * Save the questionnaire, store and update.
+     * Update the questionnaire and questions
+     * if there are new questions create those toes
      *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(Request $request)
+    public function update(Request $request)
     {
 
         // get the data for the questionnaire
@@ -268,6 +273,8 @@ class QuestionnaireController extends Controller
         // find the current questionnaire
         $questionnaire = Questionnaire::find($questionnaireId);
 
+
+        $this->authorize('update', $questionnaire);
         // update the step
         $questionnaire->update([
             'step_id' => $stepId,
@@ -352,13 +359,15 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
-    public function storeQuestionnaire(Request $request)
+    public function store(Request $request)
     {
+        $this->authorize('store', Questionnaire::class);
 
         $questionnaireNameKey = Uuid::uuid4();
 
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
+
 
         $questionnaire = Questionnaire::create([
             'name' => $questionnaireNameKey,
@@ -416,14 +425,19 @@ class QuestionnaireController extends Controller
 
 
     /**
-     * Set a questionnaire active status
+     * Set the active status from a questionnaire
      *
      * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function setActive(Request $request)
     {
         $questionnaireId = $request->get('questionnaire_id');
         $active = $request->get('questionnaire_active');
+        $questionnaire = Questionnaire::find($questionnaireId);
+
+        $this->authorize('setActiveStatus', $questionnaire);
 
         if ($active == "true") {
             $active = true;
@@ -431,7 +445,6 @@ class QuestionnaireController extends Controller
             $active = false;
         }
 
-        $questionnaire = Questionnaire::find($questionnaireId);
         $questionnaire->is_active = $active;
         $questionnaire->save();
 

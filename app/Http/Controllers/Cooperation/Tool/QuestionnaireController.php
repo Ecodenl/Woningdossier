@@ -38,16 +38,20 @@ class QuestionnaireController extends Controller
                 $answer = $questionAnswer;
             }
 
-            QuestionsAnswer::updateOrCreate(
-                [
-                    'question_id' => $questionId,
-                    'building_id' => HoomdossierSession::getBuilding(),
-                    'input_source_id' => HoomdossierSession::getInputSource(),
-                ],
-                [
-                    'answer' => $answer
-                ]
-            );
+
+            // check if the answer is not empty
+            if (!empty($answer)) {
+                QuestionsAnswer::updateOrCreate(
+                    [
+                        'question_id' => $questionId,
+                        'building_id' => HoomdossierSession::getBuilding(),
+                        'input_source_id' => HoomdossierSession::getInputSource(),
+                    ],
+                    [
+                        'answer' => $answer
+                    ]
+                );
+            }
         }
 
         // something that should be discussed, we could redirect them to the next step with the stephelper

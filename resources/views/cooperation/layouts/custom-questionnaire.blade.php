@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="panel-body">
-                    <form action="{{route('cooperation.tool.questionnaire.store')}}"  id="questionnaire-form-{{$questionnaire->id}}" method="post">
+                    <form class="form-horizontal" action="{{route('cooperation.tool.questionnaire.store')}}"  id="questionnaire-form-{{$questionnaire->id}}" method="post">
                         {{csrf_field()}}
                         @foreach($questionnaire->questions()->orderBy('order')->get() as $question)
                             @switch($question->type)
@@ -39,9 +39,13 @@
                             @endswitch
                         @endforeach
                         <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Opslaan</button>
+                            <div class="col-md-12">
+                                <hr>
+                                <div class="form-group add-space">
+                                    <div class="">
+                                        <button type="submit" class="pull-right btn btn-primary">
+                                            Opslaan                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

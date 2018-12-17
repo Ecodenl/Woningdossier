@@ -33,7 +33,6 @@ class ReportController extends Controller
 
         $questionnaires = Questionnaire::all();
         $rows = [];
-        $headers = [];
 
         // we only want to query on the buildings that belong to the cooperation of the current user
         $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());

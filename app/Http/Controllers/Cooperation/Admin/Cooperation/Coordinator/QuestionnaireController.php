@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
-use App\Helpers\TranslatableTrait;
+use App\Http\Requests\Admin\Cooperation\Coordinator\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\QuestionOption;
@@ -14,7 +14,6 @@ use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class QuestionnaireController extends Controller
 {
@@ -262,7 +261,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request)
+    public function update(QuestionnaireRequest $request)
     {
 
         // get the data for the questionnaire
@@ -362,7 +361,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(QuestionnaireRequest $request)
     {
         $this->authorize('store', Questionnaire::class);
 
@@ -370,7 +369,6 @@ class QuestionnaireController extends Controller
 
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
-
 
         $questionnaire = Questionnaire::create([
             'name' => $questionnaireNameKey,

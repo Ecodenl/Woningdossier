@@ -50,11 +50,13 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         @foreach(config('woningdossier.supported_locales') as $locale)
+                                        <div class="form-group {{ $errors->has('questionnaire.name.*') ? ' has-error' : '' }}">
                                             <label for="name">Naam:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">{{$locale}}</span>
                                                 <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" value="{{$questionnaire->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionnaire->getTranslation('name', $locale)->translation : "" }}" placeholder="Nieuwe vragenlijst">
                                             </div>
+                                        </div>
                                         @endforeach
                                         <div class="form-group">
                                             <label for="step_id">Na stap:</label>

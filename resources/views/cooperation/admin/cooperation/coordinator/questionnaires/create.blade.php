@@ -23,13 +23,15 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     @foreach(config('woningdossier.supported_locales') as $locale)
-                                    <label for="name">Naam:</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">{{$locale}}</span>
-                                        <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" placeholder="Nieuwe vragenlijst">
-                                    </div>
+                                        <div class="form-group {{ $errors->has('questionnaire.name.*') ? ' has-error' : '' }}">
+                                        <label for="name">Naam:</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">{{$locale}}</span>
+                                                <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" placeholder="Nieuwe vragenlijst">
+                                            </div>
+                                        </div>
                                     @endforeach
-                                    <div class="form-group">
+                                    <div class="form-group {{ $errors->has('questionnaire.step_id') ? ' has-error' : '' }}">
                                         <label for="step_id">Na stap:</label>
                                         <select name="questionnaire[step_id]" class="form-control">
                                             @foreach($steps as $i => $step)

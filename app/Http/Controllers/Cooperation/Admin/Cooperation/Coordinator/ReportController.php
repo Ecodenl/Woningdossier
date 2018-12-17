@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\MeasureApplication;
 use App\Models\Question;
 use App\Models\Questionnaire;
+use App\Models\QuestionOption;
 use App\Models\QuestionsAnswer;
 use App\Models\Translation;
 use App\Services\CsvExportService;
@@ -35,6 +37,8 @@ class ReportController extends Controller
 
             // foreach building get the
             foreach (Building::all() as $building) {
+
+
                 $questionAnswersForCurrentQuestionnaire = \DB::table('questionnaires')
                     ->where('questionnaires.id', $questionnaire->id)
                     ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
@@ -51,12 +55,56 @@ class ReportController extends Controller
 
 
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
-                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_id] = $questionAnswerForCurrentQuestionnaire->answer;
+                    $answer = $questionAnswerForCurrentQuestionnaire->answer;
+                    // check if the answer contains a int or is piped, if so it maybe is a question_option
+                    // we gotta check that later on
+                    if (Str::isPiped($answer) || (string)(int)$answer === $answer) {
+                        // the answer = int
+                        // try to get the question option
+
+                        $questionOptionAnswer = "";
+
+                        // if the string is piped, there is a 99% possibility that it is a question_option
+                        // and we need to loop through the piped answer to get all the question option names
+                        if (Str::isPiped($answer)) {
+                            $explodedAnswers = explode('|', $answer);
+
+                            // but if the user put for some reason imstupid|lol it would not be.
+                            // so we double check
+                            foreach ($explodedAnswers as $explodedAnswer) {
+                                $questionOption = QuestionOption::find($explodedAnswer);
+
+                                // now concat
+                                if ($questionOption instanceof QuestionOption) {
+                                    $questionOptionAnswer .= "{$questionOption->name}|";
+                                }
+                            }
+                        } else {
+                            // and if its not piped, we can just get it
+                            $questionOption = QuestionOption::find($questionAnswerForCurrentQuestionnaire->answer);
+
+                            // now check if it is really a question option, the answer can also be a int if the question was for example: "How old are you"
+                            if ($questionOption instanceof QuestionOption) {
+                                // reassign the answer var
+                                $questionOptionAnswer = $questionOption->name;
+                            }
+                        }
+
+                        // the questionOptionAnswer can be empty if the the if statements did not pass
+                        // so we check that before assigning it.
+                        if (!empty($questionOptionAnswer)) {
+                            // remove the last pipe from the answer
+                            $answer = rtrim($questionOptionAnswer, '|');
+                        }
+
+                    }
+                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_id] = $answer;
                 }
             }
 
         }
 
+        // and export the great results !
         return CsvExportService::export($headers, $rows, 'questionnaire-results');
     }
 

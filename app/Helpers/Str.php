@@ -61,6 +61,20 @@ class Str {
     }
 
     /**
+     * Check if a string contains a pipe
+     *
+     * @param $string
+     * @return bool
+     */
+    public static function isPiped($string) : bool
+    {
+        if (count(explode('|', $string)) > 1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns a random UUID. Only used as a fallback in case all other methods
      * don't work.
      *

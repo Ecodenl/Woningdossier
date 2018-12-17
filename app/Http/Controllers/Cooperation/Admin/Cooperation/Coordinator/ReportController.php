@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\Question;
 use App\Models\Questionnaire;
@@ -29,6 +30,15 @@ class ReportController extends Controller
         $rows = [];
         $headers = [];
 
+
+        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        $buildingsThatBelongToCurrentCooperation = \DB::table('cooperations')
+            ->where('cooperations.id', '=', $currentCooperation->id)
+            ->join('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
+            ->join('users', 'cooperation_user.user_id', '=', 'users.id')
+            ->join('buildings', 'users.id', '=', 'buildings.user_id')
+            ->select('buildings.*')
+            ->get();
         foreach ($questionnaires as $questionnaire) {
             // set the question translation as header for the csv
             foreach ($questionnaire->questions as $question) {
@@ -36,8 +46,7 @@ class ReportController extends Controller
             }
 
             // foreach building get the
-            foreach (Building::all() as $building) {
-
+            foreach ($buildingsThatBelongToCurrentCooperation as $building) {
 
                 $questionAnswersForCurrentQuestionnaire = \DB::table('questionnaires')
                     ->where('questionnaires.id', $questionnaire->id)

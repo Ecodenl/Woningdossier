@@ -273,7 +273,6 @@ class QuestionnaireController extends Controller
         $questionnaire = Questionnaire::find($questionnaireId);
 
 
-
         $this->authorize('update', $questionnaire);
         // update the step
         $questionnaire->update([

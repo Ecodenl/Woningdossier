@@ -224,6 +224,7 @@
 
         function addAdditionalQuestionOptions(question, guid)
         {
+            console.log(question);
             // we need to create this for every new option
             // so we can make a difference between the multiple options
             var additionalQuestionOptionGuid = createGuid();
@@ -484,9 +485,10 @@
             // check if the last input from the option group is empty
             // and if the current focussed input is equal to the last input from the option group
             // because if so, we need to add a new option group
+
             if (lastInputFromOptionGroup.val() === "" && $(this)[0] === lastInputFromOptionGroup[0]) {
 
-                var question = $(this).parent().parent().parent().parent();
+                var question = $(this).parent().parent().parent().parent().parent().find('.question');
                 var guid = question.find('.guid').val();
 
                 addAdditionalQuestionOptions(question, guid);

@@ -20,20 +20,23 @@
         @if(App::environment() == 'local') {{-- currently only for local --}}
         <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
+                @if(count(config('woningdossier.supported_locales')) > 1)
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                         @lang('woningdossier.navbar.language')<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        @foreach(config('woningdossier.supported_locales') as $locale)
-                            @if(app()->getLocale() != $locale)
-                                <li>
-                                    <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
-                                </li>
-                            @endif
-                        @endforeach
+
+                            @foreach(config('woningdossier.supported_locales') as $locale)
+                                @if(app()->getLocale() != $locale)
+                                    <li>
+                                        <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
+                                    </li>
+                                @endif
+                            @endforeach
                     </ul>
                 </li>
+                @endif
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                         @lang('woningdossier.navbar.input_source')<span class="caret"></span>

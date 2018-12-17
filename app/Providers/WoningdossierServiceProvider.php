@@ -6,6 +6,7 @@ use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\PrivateMessage;
 use App\Models\User;

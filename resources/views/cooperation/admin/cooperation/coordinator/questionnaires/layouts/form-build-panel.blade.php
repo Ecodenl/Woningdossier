@@ -19,6 +19,9 @@
                     @case('textarea')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.text', ['question' => $question])
                         @break
+                    @case('date')
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.text', ['question' => $question])
+                        @break
                     @case('select')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
                         @break
@@ -27,9 +30,6 @@
                         @break
                     @case('checkbox')
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.checkbox', ['question' => $question])
-                        @break
-                    @case('date')
-                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.date', ['question' => $question])
                         @break
 
                 @endswitch

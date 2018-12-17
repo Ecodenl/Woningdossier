@@ -26,6 +26,9 @@ class QuestionnaireRequest extends FormRequest
     {
         return [
             'questionnaire.name.*' => 'required',
+            'validation.*.main-rule' => 'required',
+            'validation.*.sub-rule' => 'required',
+            'validation.*.sub-rule-check-value.*' => 'required',
         ];
     }
 }

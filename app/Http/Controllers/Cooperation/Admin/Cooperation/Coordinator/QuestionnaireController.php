@@ -133,7 +133,12 @@ class QuestionnaireController extends Controller
 
         // multiple translations can be available
         foreach ($requestQuestion['question'] as $locale => $question) {
-            // the uuid we will put in the key for the translation and set in the question name column-
+            // the uuid we will put in the key for the translation and set in the question name column
+
+            if (empty($question)) {
+                $question = current(array_filter($requestQuestion['question']));
+            }
+
             Translation::create([
                 'key' => $uuid,
                 'translation' => $question,
@@ -172,6 +177,11 @@ class QuestionnaireController extends Controller
 
             // for every translation we need to create a new, you wont guess! Translation.
             foreach ($newOptions as $locale => $translation) {
+
+                if (empty($translation)) {
+                    $translation = current(array_filter($newOptions));
+                }
+
                 Translation::create([
                     'key' => $optionNameUuid,
                     'translation' => $translation,
@@ -209,6 +219,9 @@ class QuestionnaireController extends Controller
 
         // multiple translations can be available
         foreach ($editedQuestion['question'] as $locale => $question) {
+            if (empty($question)) {
+                $question = current(array_filter($editedQuestion['question']));
+            }
             $currentQuestion->updateTranslation('name', $question, $locale);
         }
 
@@ -246,6 +259,9 @@ class QuestionnaireController extends Controller
             } elseif ($this->isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
+                    if (empty($option)) {
+                        $option = current(array_filter($translations));
+                    }
                     QuestionOption::find($questionOptionId)->updateTranslation('name', $option, $locale);
                 }
             }
@@ -281,6 +297,9 @@ class QuestionnaireController extends Controller
 
         // and update the translations
         foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+            if (empty($questionnaireNameTranslation)) {
+                $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
+            }
             $questionnaire->updateTranslation('name', $questionnaireNameTranslation, $locale);
         }
 
@@ -377,6 +396,9 @@ class QuestionnaireController extends Controller
         ]);
 
         foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+            if (empty($questionnaireNameTranslation)) {
+                $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
+            }
             Translation::create([
                 'key' =>  $questionnaireNameKey,
                 'language' => $locale,

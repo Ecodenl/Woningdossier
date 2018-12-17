@@ -23,6 +23,11 @@ class ReportController extends Controller
         return view('cooperation.admin.cooperation.coordinator.reports.index');
     }
 
+    /**
+     * Download the reports of the questionnaires
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
     public function downloadQuestionnaireResults()
     {
 
@@ -30,7 +35,7 @@ class ReportController extends Controller
         $rows = [];
         $headers = [];
 
-
+        // we only want to query on the buildings that belong to the cooperation of the current user
         $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
         $buildingsThatBelongToCurrentCooperation = \DB::table('cooperations')
             ->where('cooperations.id', '=', $currentCooperation->id)
@@ -39,6 +44,7 @@ class ReportController extends Controller
             ->join('buildings', 'users.id', '=', 'buildings.user_id')
             ->select('buildings.*')
             ->get();
+
         foreach ($questionnaires as $questionnaire) {
             // set the question translation as header for the csv
             foreach ($questionnaire->questions as $question) {

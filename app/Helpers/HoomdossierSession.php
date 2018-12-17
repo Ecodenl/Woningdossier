@@ -78,6 +78,16 @@ class HoomdossierSession extends Session {
         return self::get('hoomdossier_session.'.$key);
     }
 
+	/**
+	 * Returns whether or not this session contains a current role.
+	 *
+	 * @return bool
+	 */
+	public static function hasRole() : bool
+	{
+		return !empty(self::getRole());
+	}
+
     /**
      * Set the role
      *

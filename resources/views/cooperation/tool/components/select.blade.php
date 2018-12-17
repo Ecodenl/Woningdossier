@@ -11,6 +11,7 @@
             } else {
                 $compareValue = $userInputValue->$userInputColumn;
             }
+
             ?>
             @if(!is_null($compareValue) && $key == $compareValue)
                 <li class="change-input-value" data-input-value="{{$key}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
@@ -18,11 +19,16 @@
         @endforeach
     @endforeach
 @else
-    @foreach($inputValues as $inputValue)
-        @foreach($userInputValues as $userInputValue)
+    @foreach($userInputValues as $userInputValue)
+        @foreach($inputValues as $inputValue)
             <?php
             if ($userInputModel instanceof \Illuminate\Database\Eloquent\Model) {
-                $value = $userInputValue->$userInputModel->$userInputColumn;
+            	if (!$userInputValue->$userInputModel instanceof \Illuminate\Database\Eloquent\Model){
+            		$value = null;
+                }
+            	else {
+                    $value = $userInputValue->$userInputModel->$userInputColumn;
+            	}
             } else {
                 if (strpos($userInputColumn, ".") !== false) {
                     $value = array_get($userInputValue, $userInputColumn);
@@ -38,7 +44,6 @@
             } else {
                 $inputName = $inputValue->name;
             }
-
             ?>
             @if(!is_null($value) && $inputValue->id == $value)
                 <li class="change-input-value" data-input-value="{{ $inputValue->id }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>

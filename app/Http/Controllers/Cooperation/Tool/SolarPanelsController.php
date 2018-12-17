@@ -24,7 +24,8 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
+use App\Scopes\GetValueScope;
 
 class SolarPanelsController extends Controller
 {

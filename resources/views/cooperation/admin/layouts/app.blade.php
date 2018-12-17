@@ -79,8 +79,8 @@
 
                     @else
                         @hasrole('cooperation-admin|super-admin|superuser')
-                            <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                            <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
+                        <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
+                        <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
                         @endhasrole
                         @if(Auth::user()->getRoleNames()->count() == 1)
                             <li>

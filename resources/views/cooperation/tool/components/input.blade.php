@@ -7,9 +7,12 @@
         $value = $userInputValue->$userInputColumn;
     }
     ?>
-    @if(isset($needsFormat) && $needsFormat == true)
-        <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, 1)}}</a></li>
-    @else(!is_null($value))
-        <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$value}}</a></li>
+    @if(!is_null($value))
+        @if(isset($needsFormat) && $needsFormat == true)
+            <?php $decimals = $decimals ?? 1; ?>
+            <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, $decimals)}}</a></li>
+        @else
+            <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$value}}</a></li>
+        @endif
     @endif
 @endforeach

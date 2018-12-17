@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Translation;
+use Illuminate\Support\Collection;
 
 trait TranslatableTrait
 {
@@ -31,11 +32,7 @@ trait TranslatableTrait
      */
     protected function isValidUuid($uuid)
     {
-        if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
-            return false;
-        }
-
-        return true;
+        return Str::isValidUuid($uuid);
     }
 
     /**
@@ -59,6 +56,7 @@ trait TranslatableTrait
 
         return $translation->translation;
     }
+
 
     public function getTranslations($key)
     {
@@ -148,5 +146,19 @@ trait TranslatableTrait
         return $query->where('translations.language', '=', $locale)
                     ->where('translations.translation', '=', $name)
                     ->join('translations', $this->getTable().'.'.$attribute, '=', 'translations.key');
+    }
+
+
+    /**
+     * Return all the translations that are available in a collection
+     *
+     * @param string $attribute default 'name' since this is the most common used field
+     *
+     * @return Collection
+     */
+    public function getAllTranslations(string $attribute = 'name') : Collection
+    {
+        // we use parent::getAttribute or it would return the translated text
+        return Translation::where('key', parent::getAttribute($attribute))->get();
     }
 }

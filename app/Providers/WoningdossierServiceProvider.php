@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Observers\PrivateMessageObserver;
 use App\Models\UserActionPlanAdvice;
 use App\Observers\UserActionPlanAdviceObserver;
+use App\Models\Step;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider
@@ -86,6 +87,17 @@ class WoningdossierServiceProvider extends ServiceProvider
 
         \View::composer('cooperation.tool.includes.interested', function ($view) {
             $view->with('interests', Interest::orderBy('order')->get());
+        });
+
+        \View::composer('*', function ($view) {
+            $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
+        });
+
+        \View::composer('cooperation.tool.*', function ($view) {
+            $slug = str_replace('/tool/', '', request()->getRequestUri());
+            $step = Step::where('slug', $slug)->first();
+
+            $view->with('currentStep', $step);
         });
 
         \View::creator('*', CooperationComposer::class);

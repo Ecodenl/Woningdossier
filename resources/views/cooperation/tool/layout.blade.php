@@ -46,6 +46,7 @@
                 @include('cooperation.tool.progress')
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
                 @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident'))
@@ -56,34 +57,53 @@
                         </button>
                     </form>
                 @endif
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3>
-                            @yield('step_title', '')
-                        </h3>
-
-                        @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']))
-                            <button id="submit-form-top-right" class="pull-right btn btn-primary">
-                                @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
-                                    @lang('default.buttons.next-page')
-                                @else
-                                    @lang('default.buttons.next')
-                                @endif
-                            </button>
-                        @else
-                            @if(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
-                                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}" class="pull-right btn btn-primary">
-                                    @lang('woningdossier.cooperation.tool.my-plan.download')
-                                </a>
+            </div>
+            <div class="col-md-12">
+                @if(isset($currentStep) && $currentStep->hasQuestionnaires())
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#main-tab" data-toggle="tab">{{$currentStep->name}}</a></li>
+                        @foreach($currentStep->questionnaires as $questionnaire)
+                            @if($questionnaire->isActive())
+                                <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
                             @endif
-                        @endif
-                        <div class="clearfix"></div>
-                    </div>
+                        @endforeach
+                    </ul>
+                @endif
 
-                    <div class="panel-body">
-                        @yield('step_content', '')
+                <div class="tab-content">
+                    @include('cooperation.layouts.custom-questionnaire')
+
+                    <div class="panel tab-pane active tab-pane panel-default" id="main-tab">
+                        <div class="panel-heading">
+                            <h3>
+                                @yield('step_title', '')
+                            </h3>
+
+                            @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']))
+                                <button id="submit-form-top-right" class="pull-right btn btn-primary">
+                                    @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
+                                        @lang('default.buttons.next-page')
+                                    @else
+                                        @lang('default.buttons.next')
+                                    @endif
+                                </button>
+                            @else
+                                @if(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
+                                    <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}" class="pull-right btn btn-primary">
+                                        @lang('woningdossier.cooperation.tool.my-plan.download')
+                                    </a>
+                                @endif
+                            @endif
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="panel-body">
+                            @yield('step_content', '')
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

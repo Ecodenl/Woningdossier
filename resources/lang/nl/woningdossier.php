@@ -16,6 +16,24 @@ return [
 				'reports'           => 'Rapportages',
 				'example-buildings' => 'Example buildings'
 			],
+			'custom-fields' => [
+	            'index' => [
+	                'rules' => [
+	                    'numeric' => 'Getal',
+                        'string' => 'Tekst',
+                    ],
+                    'optional-rules' => [
+                        'numeric' => [
+                            'between' => 'Tussen',
+                            'min' => 'Minimale grootte'
+                        ],
+                        'string' => [
+                            'email' => 'E-mailadres',
+                            'max' => 'Maximaal aantal letters'
+                        ],
+                    ],
+                ],
+            ],
 			'choose-roles' => [
 				'header' => 'Als welke rol wilt u doorgaan ?',
 				'text'   => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
@@ -347,7 +365,6 @@ return [
 					],
 					'create' => [
 						'header' => 'U bent de aanvraag van :firstName :lastName aan het koppelen met een coach',
-
 						'form' => [
 							'message-to-coach' => [
 								'label'       => 'Uw bericht aan de coach',
@@ -357,22 +374,22 @@ return [
 							'select-coach'     => 'Selecteer een coach',
 							'submit'           => 'Coach koppelen',
 							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
-						]
-					],
+						], // form
+					], // create
 					'talk-to-coach' => [
 						'header' => 'U kunt hier een bericht naar een coach sturen',
 
-						'form' => [
-							'message-to-coach' => [
-								'label'       => 'Uw bericht aan de coach',
-								'placeholder' => 'Bijv: bent u beschikbaar de komende tijd ?'
-							],
-							'title'            => 'Titel van het bericht',
-							'select-coach'     => 'Naar welke coach wilt u dit bericht sturen ?',
-							'submit'           => 'Coach bericht sturen',
-//							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
-						]
-					],
+	                    'form' => [
+								'message-to-coach' => [
+									'label'       => 'Uw bericht aan de coach',
+									'placeholder' => 'Bijv: bent u beschikbaar de komende tijd ?'
+								],
+								'title'            => 'Titel van het bericht',
+								'select-coach'     => 'Naar welke coach wilt u dit bericht sturen ?',
+								'submit'           => 'Coach bericht sturen',
+	//							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
+							], // form
+					], // talk-to-coach
 					'store'  => [
 						'success' => 'Uw bericht is verstuurd naar de coach, de coach kan nu verdere actie ondernemen.'
 					],
@@ -466,7 +483,42 @@ return [
 						'success' => 'Gebruiker is verwijderd'
 					]
 				],
-				'index'                 => [
+				'questionnaires' => [
+                        'index' => [
+                            'header' => 'Alle vragenlijsten voor uw cooperatie',
+                            'table' => [
+                                'columns' => [
+                                    'questionnaire-name' => 'Vragenlijst naam',
+                                    'step' => 'Komt na stap',
+                                    'active' => 'Actief',
+                                    'actions' => 'Acties',
+                                    'see-results' => 'Bekijk resultaten',
+                                    'edit' => 'Bewerk vragenlijst',
+                                ]
+                            ],
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Meerkeuze',
+                                'date' => 'Datum',
+                                'checkbox' => 'Selectievakjes'
+                            ],
+                        ],
+                        'edit' => [
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Meerkeuze',
+                                'date' => 'Datum',
+                                'checkbox' => 'Selectievakjes'
+                            ],
+                            'add-validation' => 'Voeg validatie toe',
+                            'success' => 'Vragenlijst is bijgewerkt'
+                        ]
+                    ],
+                    'index'                 => [
 					'header' => 'Alle gebruikers van uw coöperatie',
 					'text'   => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
 
@@ -480,6 +532,10 @@ return [
 						]
 
 					],
+                        'create' => [
+                            'leave-creation-tool' => 'Keer terug naar overzicht',
+                            'leave-creation-tool-warning' => 'Letop!, alle wijzigingen zullen verloren gaan. U hiervoor gemaakte formulier is niet meer terug te krijgen'
+                        ]
 				],
 			//],
 		],

@@ -21,8 +21,16 @@ class Hoomdossier
 
 	    $results = $found->pluck($column, 'short');
 
+	    // if the column name contains 'surface' there is particular logic:
+	    // if $value <= 0 we don't return it. We just check next sources to
+	    // see if there's a proper value and return that.
+
 	    // treating them in order
 	    foreach($results as $inputSourceShort => $value){
+	    	if (stristr($column, 'surface') !== false && $value <= 0){
+	    		// skip this one
+	    		continue;
+		    }
 	    	if ($inputSourceShort == 'resident'){
 	    		// no matter what
 	    		return $value;

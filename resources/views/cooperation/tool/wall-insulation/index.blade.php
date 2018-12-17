@@ -258,7 +258,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface'])
-                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="wall_surface" type="text" name="wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         @endcomponent
 
@@ -281,7 +281,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface'])
-                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}" class="form-control" >
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
                         @endcomponent
 

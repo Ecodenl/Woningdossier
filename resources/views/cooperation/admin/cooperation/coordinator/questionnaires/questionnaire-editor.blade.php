@@ -489,7 +489,7 @@
             if (lastInputFromOptionGroup.val() === "" && $(this)[0] === lastInputFromOptionGroup[0]) {
 
                 var question = $(this).parent().parent().parent().parent().parent().find('.question');
-                var guid = question.find('.guid').val();
+                var guid = getQuestionId(question);
 
                 addAdditionalQuestionOptions(question, guid);
             }

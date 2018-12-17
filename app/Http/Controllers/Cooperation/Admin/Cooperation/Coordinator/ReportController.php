@@ -17,114 +17,47 @@ class ReportController extends Controller
 {
     public function index()
     {
-
-//
         return view('cooperation.admin.cooperation.coordinator.reports.index');
     }
 
     public function downloadQuestionnaireResults()
     {
-        // working on query to get better code.
-//        $q = \DB::table('questionnaires')
-//            ->orderBy('questionnaires.step_id')
-//            ->leftJoin('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
-//            ->leftJoin('translations', function ($leftJoin) {
-//                $leftJoin->on('questions.name', '=', 'translations.key')
-//                    ->where('language', '=', app()->getLocale());
-//            })
-//            ->leftJoin('questions_answers', function ($leftJoin) {
-//                $leftJoin->on('questions.id', '=', 'questions_answers.question_id');
-//            })
-//            ->select('questionnaire_id','translations.translation as question_name', 'questions_answers.answer as question_answer', 'questions_answers.building_id as building_id', 'question_id')
-//            ->get()->toArray();
-//
-//        dd($q);
 
         $questionnaires = Questionnaire::all();
         $rows = [];
         $headers = [];
 
         foreach ($questionnaires as $questionnaire) {
+            // set the question translation as header for the csv
             foreach ($questionnaire->questions as $question) {
                 $headers[$question->id] = $question->name;
+            }
 
-                foreach (Building::all() as $building) {
-                    $questionAnswersForBuilding = QuestionsAnswer::where('building_id', $building->id)->orderBy('question_id')->get();
+            // foreach building get the
+            foreach (Building::all() as $building) {
+                $questionAnswersForCurrentQuestionnaire = \DB::table('questionnaires')
+                    ->where('questionnaires.id', $questionnaire->id)
+                    ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
+                    ->leftJoin('translations', function ($leftJoin) {
+                        $leftJoin->on('questions.name', '=', 'translations.key')
+                            ->where('language', '=', app()->getLocale());
+                    })
+                    ->leftJoin('questions_answers', function ($leftJoin) use ($building) {
+                        $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
+                            ->where('questions_answers.building_id', '=', $building->id);
+                    })
+                    ->select('questions_answers.answer', 'questions.id as question_id')
+                    ->get();
 
-                    foreach ($questionAnswersForBuilding as $questionAnswer) {
-                        $rows[$building->id][$questionAnswer->question_id] = $questionAnswer->answer;
-                    }
+
+                foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
+                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_id] = $questionAnswerForCurrentQuestionnaire->answer;
                 }
             }
+
         }
 
-//        dd($rows, $headers);
-    }
-
-    public function downloadQuestionnaireResults1()
-    {
-        // we only want the buildings from the current cooperation
-        $buildingsFromCurrentCooperation = \DB::table('cooperations')
-            ->where('cooperations.id', HoomdossierSession::getBuilding())
-            ->join('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
-            ->join('users', 'cooperation_user.user_id', '=', 'users.id')
-            ->leftJoin('buildings', 'users.id', '=', 'buildings.user_id')
-            ->select('buildings.*')
-            ->get();
-
-        // we wil put the question names as header
-        $csvHeaders = [];
-        $rows = [];
-
-        // get the questions ordered on question id
-        $questionsIdOrdered = \DB::table('questionnaires')
-            ->leftJoin('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
-            ->orderBy('questionnaires.id', 'asc')
-            ->select('questions.*')
-            ->get();
-
-        // loop through them and set the csv header
-        foreach ($questionsIdOrdered as $questionIdOrdered) {
-            $questionName = Translation::where('key', $questionIdOrdered->name)->where('language', app()->getLocale())->first()->translation;
-            // push the question name to the csv headers
-            // since we innerjoint
-            $csvHeaders[$questionIdOrdered->id] = $questionName;
-        }
-
-
-        foreach ($buildingsFromCurrentCooperation as $building) {
-
-            $questions = Question::orderBy('questionnaire_id')->get();
-
-            foreach ($questions as $question) {
-                foreach ($question->questionAnswers()->where('building_id', $building->id)->get() as $questionAnswer) {
-                    // this means the question has options and is a dropdown, checkbox, radiobutton etc.
-                    // so we need to get the translation from that option
-                    $questionOptions = $questionAnswer->question->questionOptions;
-                    if ($questionOptions->isNotEmpty()) {
-                        $selectedAnswer = $questionOptions->find($questionAnswer->answer)->name;
-                    } else {
-                        $selectedAnswer = $questionAnswer->answer;
-                    }
-
-                    $rows[$building->id][$questionAnswer->question_id] = $selectedAnswer;
-                }
-            }
-        }
-
-        foreach ($csvHeaders as $questionIdFromCsvHeader => $csvHeader) {
-            foreach ($rows as $buildingId => $userAnswers) {
-                foreach ($userAnswers as $questionIdFromUserAnswerRow => $userAnswer) {
-                    if (!array_key_exists($questionIdFromCsvHeader, $rows[$buildingId])) {
-                        $rows[$buildingId][$questionIdFromCsvHeader] = "Niet beantwoord door bewoner";
-                    }
-                }
-//                ksort($rows[$buildingId]);
-            }
-        }
-
-        dd($csvHeaders, $rows);
-        return CsvExportService::export($csvHeaders, $rows, 'answers-by-users-on-custom-questions');
+        return CsvExportService::export($headers, $rows, 'questionnaire-results');
     }
 
     public function downloadByYear()

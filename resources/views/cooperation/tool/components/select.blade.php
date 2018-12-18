@@ -1,6 +1,6 @@
 <?php
     // sort the incoming collection based on input source order
-    $userInputValues = $userInputValues->sortBy(function($a, $b){
+    $userInputValues = $userInputValues->sortBy(function($a){
 	    return $a->inputSource->order;
     });
 ?>
@@ -16,10 +16,9 @@
             } else {
                 $compareValue = $userInputValue->$userInputColumn;
             }
-
             ?>
             @if(!is_null($compareValue) && $key == $compareValue)
-                <li class="change-input-value" data-input-value="{{ $key }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{$inputValue}}</a></li>
+                <li class="change-input-value" data-input-value="{{ $key }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputValue }}</a></li>
             @endif
         @endforeach
     @endforeach

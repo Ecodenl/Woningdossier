@@ -12,7 +12,7 @@ class Hoomdossier
         return str_replace(',', '.', $input);
     }
 
-    public static function getMostCredibleValue(Relation $relation, $column){
+    public static function getMostCredibleValue(Relation $relation, $column, $default = null){
 	    $found = $relation
 		    ->withoutGlobalScope(GetValueScope::class)
 		    ->join('input_sources', $relation->getRelated()->getTable() . '.input_source_id', '=', 'input_sources.id')
@@ -35,12 +35,12 @@ class Hoomdossier
 	    		// no matter what
 	    		return $value;
 		    }
-	    	if (!is_null($value) && $value != ""){
+	    	if (!is_null($value) && $value !== ""){
 				return $value;
 		    }
 	    }
 	    // No value found
-	    return null;
+	    return $default;
 	}
 
 }

@@ -20,7 +20,8 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                             <span class="input-group-addon">kWh / @lang('woningdossier.cooperation.tool.unit.year')</span>
-                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
+                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'amount_electricity', 0)) }}" />
+                            {{--<input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />--}}
                         @endcomponent
 
                         <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -44,12 +45,13 @@
                         ['inputType' => 'select', 'inputValues' => array_combine($range = range(260, 300, 5), $range), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'peak_power'])
                             <span class="input-group-addon">Wp</span>
                             <?php $additionalPeakPowers = [330] ?>
+                            <?php
+                                $peakPowers = range(260, 300, 5);
+                                array_push($peakPowers, 330);
+                            ?>
                             <select id="building_pv_panels_peak_power" class="form-control" name="building_pv_panels[peak_power]">
-                                @foreach(range(260, 300, 5) as $peakPower)
-                                    <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
-                                @endforeach
-                                @foreach($additionalPeakPowers as $additionalPeakPower)
-                                    <option @if(old('building_pv_panels.peak_power') == $additionalPeakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $additionalPeakPower)) selected @endif value="{{ $additionalPeakPower }}">{{$additionalPeakPower}}</option>
+                                @foreach($peakPowers as $peakPower)
+                                    <option @if(old('building_pv_panels.peak_power', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'peak_power')) == $peakPower) selected="selected" @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
                                 @endforeach
                             </select>
                         @endcomponent
@@ -85,7 +87,8 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'number'])
-                            <input type="text" min="0" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
+                            <input type="text" min="0" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'number', 0)) }}" />
+                            {{--<input type="text" min="0" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />--}}
                         @endcomponent
 
                         <div id="number-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -108,7 +111,8 @@
                         ['inputType' => 'select', 'inputValues' => $pvPanelOrientations, 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'pv_panel_orientation_id'])
                             <select id="building_pv_panels_pv_panel_orientation_id" class="form-control" name="building_pv_panels[pv_panel_orientation_id]">
                                 @foreach($pvPanelOrientations as $pvPanelOrientation)
-                                    <option @if(old('building_pv_panels.pv_panel_orientation_id') == $pvPanelOrientation->id || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->pv_panel_orientation_id == $pvPanelOrientation->id)) selected @endif value="{{ $pvPanelOrientation->id }}">{{ $pvPanelOrientation->name }}</option>
+                                    <option @if(old('building_pv_panels.pv_panel_orientation_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'pv_panel_orientation_id')) == $pvPanelOrientation->id) selected="selected" @endif value="{{ $pvPanelOrientation->id }}">{{ $pvPanelOrientation->name }}</option>
+                                    {{--<option @if(old('building_pv_panels.pv_panel_orientation_id') == $pvPanelOrientation->id || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->pv_panel_orientation_id == $pvPanelOrientation->id)) selected @endif value="{{ $pvPanelOrientation->id }}">{{ $pvPanelOrientation->name }}</option>--}}
                                 @endforeach
                             </select>
                         @endcomponent
@@ -136,7 +140,8 @@
                             <span class="input-group-addon">&deg;</span>
                             <select id="building_pv_panels_angle" class="form-control" name="building_pv_panels[angle]">
                                 @foreach($angles as $angle)
-                                    <option @if(old('building_pv_panels.angle') == $angle || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
+                                    <option @if(old('building_pv_panels.angle', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'angle')) == $angle) selected="selected" @endif value="{{ $angle }}">{{ $angle }}</option>
+                                    {{--<option @if(old('building_pv_panels.angle') == $angle || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>--}}
                                 @endforeach
                             </select>
                         @endcomponent

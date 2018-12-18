@@ -205,10 +205,10 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.gas')
+                        @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
                     </div>
                     <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.co2')
+                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                     </div>
                     <div class="col-sm-4">
                         @include('cooperation.layouts.indication-for-costs.savings-in-euro')

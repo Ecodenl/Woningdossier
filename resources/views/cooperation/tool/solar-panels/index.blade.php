@@ -219,7 +219,7 @@
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.co2')
+                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                     </div>
                 </div>
                 <div class="row">

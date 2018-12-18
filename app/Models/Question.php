@@ -71,6 +71,19 @@ class Question extends Model
     }
 
     /**
+     * Check if a question has a question option
+     *
+     * @return bool
+     */
+    public function hasQuestionOptions()
+    {
+        if ($this->questionOptions()->first() instanceof QuestionOption) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Return all the answers for a question
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

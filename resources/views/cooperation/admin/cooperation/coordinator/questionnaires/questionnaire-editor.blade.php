@@ -50,11 +50,13 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         @foreach(config('woningdossier.supported_locales') as $locale)
+                                        <div class="form-group {{ $errors->has('questionnaire.name.*') ? ' has-error' : '' }}">
                                             <label for="name">Naam:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">{{$locale}}</span>
                                                 <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" value="{{$questionnaire->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionnaire->getTranslation('name', $locale)->translation : "" }}" placeholder="Nieuwe vragenlijst">
                                             </div>
+                                        </div>
                                         @endforeach
                                         <div class="form-group">
                                             <label for="step_id">Na stap:</label>
@@ -71,6 +73,9 @@
                         <div class="panel">
                             <div class="panel-body" >
                                 <div id="sortable">
+                                    @if($errors->any())
+                                        {{dd($errors->all(), old(), $questionnaire->questions)}}
+                                    @endif
                                     @forelse($questionnaire->questions()->orderBy('order')->get() as $question)
                                         @component('cooperation.admin.cooperation.coordinator.questionnaires.layouts.form-build-panel', ['question' => $question])
 
@@ -222,6 +227,7 @@
 
         function addAdditionalQuestionOptions(question, guid)
         {
+            console.log(question);
             // we need to create this for every new option
             // so we can make a difference between the multiple options
             var additionalQuestionOptionGuid = createGuid();
@@ -482,10 +488,11 @@
             // check if the last input from the option group is empty
             // and if the current focussed input is equal to the last input from the option group
             // because if so, we need to add a new option group
+
             if (lastInputFromOptionGroup.val() === "" && $(this)[0] === lastInputFromOptionGroup[0]) {
 
-                var question = $(this).parent().parent().parent().parent();
-                var guid = question.find('.guid').val();
+                var question = $(this).parent().parent().parent().parent().parent().find('.question');
+                var guid = getQuestionId(question);
 
                 addAdditionalQuestionOptions(question, guid);
             }

@@ -33,26 +33,17 @@ class ReportController extends Controller
 
         $questionnaires = Questionnaire::all();
         $rows = [];
-        $headers = [];
 
         // we only want to query on the buildings that belong to the cooperation of the current user
         $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
-        $buildingsThatBelongToCurrentCooperation = \DB::table('cooperations')
-            ->where('cooperations.id', '=', $currentCooperation->id)
-            ->join('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
-            ->join('users', 'cooperation_user.user_id', '=', 'users.id')
-            ->join('buildings', 'users.id', '=', 'buildings.user_id')
-            ->select('buildings.*')
-            ->get();
+
+        // get the users from the current cooperation that have the resident role
+        $usersFromCooperation = $currentCooperation->users()->role('resident')->with('buildings')->get();
 
         foreach ($questionnaires as $questionnaire) {
-            // set the question translation as header for the csv
-            foreach ($questionnaire->questions as $question) {
-                $headers[$question->id] = $question->name;
-            }
 
-            // foreach building get the
-            foreach ($buildingsThatBelongToCurrentCooperation as $building) {
+            foreach ($usersFromCooperation as $user) {
+                $building = $user->buildings()->first();
 
                 $questionAnswersForCurrentQuestionnaire = \DB::table('questionnaires')
                     ->where('questionnaires.id', $questionnaire->id)
@@ -65,59 +56,47 @@ class ReportController extends Controller
                         $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
                             ->where('questions_answers.building_id', '=', $building->id);
                     })
-                    ->select('questions_answers.answer', 'questions.id as question_id')
+                    ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name')
                     ->get();
 
 
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
+
                     $answer = $questionAnswerForCurrentQuestionnaire->answer;
-                    // check if the answer contains a int or is piped, if so it maybe is a question_option
-                    // we gotta check that later on
-                    if (Str::isPiped($answer) || (string)(int)$answer === $answer) {
-                        // the answer = int
-                        // try to get the question option
+                    $currentQuestion = Question::find($questionAnswerForCurrentQuestionnaire->question_id);
 
-                        $questionOptionAnswer = "";
+                    // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
+                    if ($currentQuestion->hasQuestionOptions()) {
+                        $questionOptionAnswer = [];
 
-                        // if the string is piped, there is a 99% possibility that it is a question_option
-                        // and we need to loop through the piped answer to get all the question option names
-                        if (Str::isPiped($answer)) {
-                            $explodedAnswers = explode('|', $answer);
+                        // explode on array since some questions are multi select
+                        $explodedAnswers = explode('|', $answer);
 
-                            // but if the user put for some reason imstupid|lol it would not be.
-                            // so we double check
-                            foreach ($explodedAnswers as $explodedAnswer) {
+                        foreach ($explodedAnswers as $explodedAnswer) {
+
+                            // check if the current question has options
+                            // the question can contain a int but can be a answer to a question like "How old are you"
+                            if ($currentQuestion->hasQuestionOptions()) {
                                 $questionOption = QuestionOption::find($explodedAnswer);
-
-                                // now concat
-                                if ($questionOption instanceof QuestionOption) {
-                                    $questionOptionAnswer .= "{$questionOption->name}|";
-                                }
-                            }
-                        } else {
-                            // and if its not piped, we can just get it
-                            $questionOption = QuestionOption::find($questionAnswerForCurrentQuestionnaire->answer);
-
-                            // now check if it is really a question option, the answer can also be a int if the question was for example: "How old are you"
-                            if ($questionOption instanceof QuestionOption) {
-                                // reassign the answer var
-                                $questionOptionAnswer = $questionOption->name;
+                                array_push($questionOptionAnswer, $questionOption->name);
                             }
                         }
 
                         // the questionOptionAnswer can be empty if the the if statements did not pass
                         // so we check that before assigning it.
                         if (!empty($questionOptionAnswer)) {
-                            // remove the last pipe from the answer
-                            $answer = rtrim($questionOptionAnswer, '|');
+                            // implode it
+                            $answer = implode($questionOptionAnswer, '|');
                         }
 
                     }
-                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_id] = $answer;
+                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
                 }
             }
-
         }
+
+
+        $headers = array_keys(array_first($rows));
 
         // and export the great results !
         return CsvExportService::export($headers, $rows, 'questionnaire-results');

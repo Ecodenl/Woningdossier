@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
-use App\Helpers\TranslatableTrait;
+use App\Http\Requests\Admin\Cooperation\Coordinator\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\QuestionOption;
@@ -14,7 +14,6 @@ use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class QuestionnaireController extends Controller
 {
@@ -123,29 +122,37 @@ class QuestionnaireController extends Controller
 
         $uuid = Str::uuid();
 
-        $createdQuestion = Question::create([
-            'name' => $uuid,
-            'type' => $questionType,
-            'order' => $order,
-            'required' => $required,
-            'validation' => $this->getValidationRule($requestQuestion, $validation),
-            'questionnaire_id' => $questionnaireId
-        ]);
-
-        // multiple translations can be available
-        foreach ($requestQuestion['question'] as $locale => $question) {
-            // the uuid we will put in the key for the translation and set in the question name column-
-            Translation::create([
-                'key' => $uuid,
-                'translation' => $question,
-                'language' => $locale
+        if ($this->isNotEmptyTranslation($requestQuestion['question'])) {
+            // if the translations are not present, we do not want to create a question
+            $createdQuestion = Question::create([
+                'name' => $uuid,
+                'type' => $questionType,
+                'order' => $order,
+                'required' => $required,
+                'validation' => $this->getValidationRule($requestQuestion, $validation),
+                'questionnaire_id' => $questionnaireId
             ]);
-        }
 
-        if ($questionHasOptions) {
-            // create the options for the question
-            foreach ($requestQuestion['options'] as $newOptions) {
-                $this->createQuestionOptions($newOptions, $createdQuestion);
+            // multiple translations can be available
+            foreach ($requestQuestion['question'] as $locale => $question) {
+                // the uuid we will put in the key for the translation and set in the question name column
+
+                if (empty($question)) {
+                    $question = current(array_filter($requestQuestion['question']));
+                }
+
+                Translation::create([
+                    'key' => $uuid,
+                    'translation' => $question,
+                    'language' => $locale
+                ]);
+            }
+
+            if ($questionHasOptions && $createdQuestion instanceof Question) {
+                // create the options for the question
+                foreach ($requestQuestion['options'] as $newOptions) {
+                    $this->createQuestionOptions($newOptions, $createdQuestion);
+                }
             }
         }
 
@@ -171,13 +178,21 @@ class QuestionnaireController extends Controller
                 'name' => $optionNameUuid,
             ]);
 
-            // for every translation we need to create a new, you wont guess! Translation.
-            foreach ($newOptions as $locale => $translation) {
-                Translation::create([
-                    'key' => $optionNameUuid,
-                    'translation' => $translation,
-                    'language' => $locale
-                ]);
+            if ($this->isNotEmptyTranslation($newOptions)) {
+
+                // for every translation we need to create a new, you wont guess! Translation.
+                foreach ($newOptions as $locale => $translation) {
+
+                    if (empty($translation)) {
+                        $translation = current(array_filter($newOptions));
+                    }
+
+                    Translation::create([
+                        'key' => $optionNameUuid,
+                        'translation' => $translation,
+                        'language' => $locale
+                    ]);
+                }
             }
         }
     }
@@ -208,9 +223,14 @@ class QuestionnaireController extends Controller
         ]);
 
 
-        // multiple translations can be available
-        foreach ($editedQuestion['question'] as $locale => $question) {
-            $currentQuestion->updateTranslation('name', $question, $locale);
+        if ($this->isNotEmptyTranslation($editedQuestion['question'])) {
+            // multiple translations can be available
+            foreach ($editedQuestion['question'] as $locale => $question) {
+                if (empty($question)) {
+                    $question = current(array_filter($editedQuestion['question']));
+                }
+                $currentQuestion->updateTranslation('name', $question, $locale);
+            }
         }
 
         if ($questionHasOptions) {
@@ -247,6 +267,9 @@ class QuestionnaireController extends Controller
             } elseif ($this->isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
+                    if (empty($option)) {
+                        $option = current(array_filter($translations));
+                    }
                     QuestionOption::find($questionOptionId)->updateTranslation('name', $option, $locale);
                 }
             }
@@ -262,7 +285,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request)
+    public function update(QuestionnaireRequest $request)
     {
 
         // get the data for the questionnaire
@@ -274,7 +297,6 @@ class QuestionnaireController extends Controller
         $questionnaire = Questionnaire::find($questionnaireId);
 
 
-
         $this->authorize('update', $questionnaire);
         // update the step
         $questionnaire->update([
@@ -283,6 +305,9 @@ class QuestionnaireController extends Controller
 
         // and update the translations
         foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+            if (empty($questionnaireNameTranslation)) {
+                $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
+            }
             $questionnaire->updateTranslation('name', $questionnaireNameTranslation, $locale);
         }
 
@@ -362,7 +387,7 @@ class QuestionnaireController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(QuestionnaireRequest $request)
     {
         $this->authorize('store', Questionnaire::class);
 
@@ -371,7 +396,6 @@ class QuestionnaireController extends Controller
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
 
-
         $questionnaire = Questionnaire::create([
             'name' => $questionnaireNameKey,
             'step_id' => $stepId,
@@ -379,12 +403,18 @@ class QuestionnaireController extends Controller
             'is_active' => false
         ]);
 
-        foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
-            Translation::create([
-                'key' =>  $questionnaireNameKey,
-                'language' => $locale,
-                'translation' => $questionnaireNameTranslation,
-            ]);
+        if ($this->isNotEmptyTranslation($questionnaireNameTranslations)) {
+
+            foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+                if (empty($questionnaireNameTranslation)) {
+                    $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
+                }
+                Translation::create([
+                    'key' =>  $questionnaireNameKey,
+                    'language' => $locale,
+                    'translation' => $questionnaireNameTranslation,
+                ]);
+            }
         }
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.questionnaires.edit', ['id' => $questionnaire->id]);

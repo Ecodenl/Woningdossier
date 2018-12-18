@@ -162,6 +162,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 						//Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
 					});
 
+					Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
+					    Route::get('', 'BuildingController@index')->name('index');
+                    });
+
 					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');

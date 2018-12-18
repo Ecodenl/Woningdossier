@@ -272,6 +272,7 @@ return [
 				'side-nav'              => [
 					'reports'      => 'Rapporten',
 					'label'            => 'Coördinator menu',
+                    'buildings' => 'Gebouwen',
 					'messages'         => 'Berichten menu',
 					'home'             => 'Home',
 					'assign-roles'     => 'Rollen toewijzen',
@@ -280,6 +281,31 @@ return [
 					'my-messages'      => 'Uw berichten',
 					'connect-to-coach' => 'Openstaande aanvragen',
 				],
+                'buildings' => [
+                    'index'               => [
+                        'no-appointment' => 'Nog geen afspraak',
+                        'table' => [
+                            'columns'        => [
+                                'street'      => 'Straatnaam',
+                                'city'        => 'Stad',
+                                'owner'       => 'Eigenaar',
+                                'actions'     => 'Acties',
+                                'status'      => 'Status',
+                                'appointment' => 'Datum van afspraak'
+                            ],
+                            'status'         => 'Kies status',
+                            'current-status' => 'Huidige status:',
+                            'options'        => [
+                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
+                                \App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
+                                \App\Models\BuildingCoachStatus::STATUS_ACTIVE           => 'Actief',
+                                \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',
+                            ],
+                        ],
+                    ],
+                ],
+
 				'reports'  => [
 					'title'       => 'Rapportages',
 					'description' => 'Rapportage downloads',

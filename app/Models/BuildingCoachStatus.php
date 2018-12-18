@@ -45,7 +45,7 @@ class BuildingCoachStatus extends Model
      */
     public function coach()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\User', 'coach_id', 'id');
     }
 
     /**
@@ -67,7 +67,9 @@ class BuildingCoachStatus extends Model
      */
     public static function getCurrentStatusName($buildingId): string
     {
-        $currentStatus = self::where('coach_id', \Auth::id())->where('building_id', $buildingId)->get()->last();
+        // should we show the last status that is attached or the status for the auth user / coach
+//        $currentStatus = self::where('coach_id', \Auth::id())->where('building_id', $buildingId)->get()->last();
+        $currentStatus = self::where('building_id', $buildingId)->get()->last();
 
         if ($currentStatus instanceof BuildingCoachStatus) {
             return __('woningdossier.cooperation.admin.coach.buildings.index.table.options.'.$currentStatus->status);

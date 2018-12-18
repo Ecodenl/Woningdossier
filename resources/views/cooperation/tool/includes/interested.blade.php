@@ -20,7 +20,8 @@
                     ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', $type)->where('interested_in_id', $typeId),  'userInputColumn' => 'interest_id'])
                         <select class="form-control" id="interest_{{ $type }}_{{ $typeId }}" name="interest[{{ $type }}][{{ $typeId }}]">
                             @foreach($interests as $interest)
-                                <option @if($interest->id == old('user_interest.'.$type.'.'. $typeId . '')) selected @elseif(Auth::user()->getInterestedType($type, $typeId) != null && Auth::user()->getInterestedType($type, $typeId)->interest_id == $interest->id) selected  @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                <option @if($interest->id == old('user_interest.' . $type . '.'. $typeId, \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->interests()->where('interested_in_type', $type)->where('interested_in_id', $typeId), 'interest_id'))) selected="selected" @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                {{--<option @if($interest->id == old('user_interest.'.$type.'.'. $typeId . '')) selected @elseif(Auth::user()->getInterestedType($type, $typeId) != null && Auth::user()->getInterestedType($type, $typeId)->interest_id == $interest->id) selected  @endif value="{{ $interest->id }}">{{ $interest->name }}</option>--}}
                             @endforeach
                         </select>
                     @endcomponent

@@ -48,7 +48,7 @@
                 <div class="if-roof">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group add-space {{$errors->has('building_features.roof_type_id') ? ' has-error' : ''}}">
+                            <div class="form-group add-space {{ $errors->has('building_features.roof_type_id') ? ' has-error' : '' }}">
 
                                 <label for="main_roof" class="control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof')</label>
 

@@ -1,5 +1,8 @@
 <?php
     // sort the incoming collection based on input source order
+    if (is_array($userInputValues)){
+    	$userInputValues = collect($userInputValues);
+    }
     $userInputValues = $userInputValues->sortBy(function($a){
 	    return $a->inputSource->order;
     });

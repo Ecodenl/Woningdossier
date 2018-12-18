@@ -24,7 +24,8 @@
                         ['inputType' => 'select', 'inputValues' => $comfortLevels, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                             <select id="user_energy_habits_water_comfort_id" class="form-control" name="user_energy_habits[water_comfort_id]">
                                 @foreach($comfortLevels as $comfortLevel)
-                                    <option @if(old('user_energy_habits.water_comfort_id') == $comfortLevel->id || ($habits instanceof \App\Models\UserEnergyHabit && $habits->water_comfort_id == $comfortLevel->id)) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>
+                                    <option @if(old('user_energy_habits.water_comfort_id', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'water_comfort_id')) == $comfortLevel->id) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>
+                                    {{--<option @if(old('user_energy_habits.water_comfort_id') == $comfortLevel->id || ($habits instanceof \App\Models\UserEnergyHabit && $habits->water_comfort_id == $comfortLevel->id)) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>--}}
                                 @endforeach
                             </select>
                         @endcomponent
@@ -48,7 +49,8 @@
                         ['inputType' => 'select', 'inputValues' => $collectorOrientations, 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'pv_panel_orientation_id'])
                             <select id="building_heaters_pv_panel_orientation_id" class="form-control" name="building_heaters[pv_panel_orientation_id]">
                                 @foreach($collectorOrientations as $collectorOrientation)
-                                    <option @if(old('building_heaters.pv_panel_orientation_id') == $collectorOrientation->id || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->pv_panel_orientation_id == $collectorOrientation->id)) selected @endif value="{{ $collectorOrientation->id }}">{{ $collectorOrientation->name }}</option>
+                                    <option @if(old('building_heaters.pv_panel_orientation_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->heater(), 'pv_panel_orientation_id')) == $collectorOrientation->id) selected="selected" @endif value="{{ $collectorOrientation->id }}">{{ $collectorOrientation->name }}</option>
+                                    {{--<option @if(old('building_heaters.pv_panel_orientation_id') == $collectorOrientation->id || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->pv_panel_orientation_id == $collectorOrientation->id)) selected @endif value="{{ $collectorOrientation->id }}">{{ $collectorOrientation->name }}</option>--}}
                                 @endforeach
                             </select>
                         @endcomponent
@@ -77,7 +79,7 @@
                             <span class="input-group-addon">&deg;</span>
                             <select id="building_heaters_angle" class="form-control" name="building_heaters[angle]">
                                 @foreach($angles as $angle)
-                                    <option @if(old('building_heaters.angle') == $angle || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
+                                    <option @if(old('building_heaters.angle', \App\Helpers\Hoomdossier::getMostCredibleValue($building->heater(), 'angle')) == $angle) selected @endif value="{{ $angle }}">{{ $angle }}</option>
                                 @endforeach
                             </select>
                         @endcomponent

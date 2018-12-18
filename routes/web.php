@@ -122,6 +122,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
                     });
 
+                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                        Route::get('', 'ReportController@index')->name('index');
+                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+
+                    });
+
                     Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');
                         Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
@@ -146,12 +153,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'middleware' => ['role:cooperation-admin']], function () {
 
-                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-                        Route::get('', 'ReportController@index')->name('index');
-                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
-                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-
-                    });
 
                     Route::resource('example-buildings', 'ExampleBuildingController');
                     Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');

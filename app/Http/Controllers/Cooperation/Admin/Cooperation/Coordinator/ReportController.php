@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
-use App\Models\QuestionsAnswer;
-use App\Models\Translation;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
@@ -113,16 +110,16 @@ class ReportController extends Controller
 
         // set the csv headers
         $csvHeaders = [
-            __('woningdossier.cooperation.admin.reports.csv-columns.first-name'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.last-name'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.email'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.mobilenumber'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.street'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.house-number'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.city'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.zip-code'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.country-code'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.first-name'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.last-name'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.email'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.phonenumber'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.mobilenumber'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.street'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.house-number'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.city'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.zip-code'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.country-code'),
         ];
 
         // put the measures inside the header array
@@ -137,11 +134,12 @@ class ReportController extends Controller
 
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
-            $street = $building->street;
-            $number = $building->number;
-            $city = $building->city;
-            $postalCode = $building->postal_code;
-            $countryCode = $building->country_code;
+            if ($building instanceof Building) {
+                $street = $building->street;
+                $number = $building->number;
+                $city = $building->city;
+                $postalCode = $building->postal_code;
+                $countryCode = $building->country_code;
 
             $firstName = $user->first_name;
             $lastName = $user->last_name;
@@ -170,9 +168,10 @@ class ReportController extends Controller
                 $allUserMeasures[$plannedYear][] = $measureName;
             }
 
-            // loop through the user measures and add them to the row
-            foreach ($allUserMeasures as $year => $userMeasures) {
-                $row[$key][$year] = implode(', ', $userMeasures);
+                // loop through the user measures and add them to the row
+                foreach ($allUserMeasures as $year => $userMeasures) {
+                    $row[$key][$year] = implode(', ', $userMeasures);
+                }
             }
 
             $rows = $row;
@@ -192,17 +191,18 @@ class ReportController extends Controller
 
         // set the csv headers
         $csvHeaders = [
-            __('woningdossier.cooperation.admin.reports.csv-columns.first-name'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.last-name'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.email'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.mobilenumber'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.street'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.house-number'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.city'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.zip-code'),
-            __('woningdossier.cooperation.admin.reports.csv-columns.country-code'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.first-name'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.last-name'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.email'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.phonenumber'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.mobilenumber'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.street'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.house-number'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.city'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.zip-code'),
+            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.country-code'),
         ];
+
 
         // get all the measures
         $measures = MeasureApplication::all();
@@ -217,39 +217,41 @@ class ReportController extends Controller
 
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
-            $street = $building->street;
-            $number = $building->number;
-            $city = $building->city;
-            $postalCode = $building->postal_code;
-            $countryCode = $building->country_code;
+            if ($building instanceof Building) {
 
-            $firstName = $user->first_name;
-            $lastName = $user->last_name;
-            $email = $user->email;
-            $phoneNumber = $user->phone_number;
-            $mobileNumber = $user->mobile;
+                $street = $building->street;
+                $number = $building->number;
+                $city = $building->city;
+                $postalCode = $building->postal_code;
+                $countryCode = $building->country_code;
 
-            // set the personal userinfo
-            $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
+                $firstName = $user->first_name;
+                $lastName = $user->last_name;
+                $email = $user->email;
+                $phoneNumber = $user->phone_number;
+                $mobileNumber = $user->mobile;
 
-            // set alle the measures to the user
-            foreach ($measures as $measure) {
-                $row[$key][$measure->measure_name] = '';
-            }
+                // set the personal userinfo
+                $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
 
-            // get the user measures / advices
-            foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
-                $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
-                $measureName = $actionPlanAdvice->measureApplication->measure_name;
-
-                if (is_null($plannedYear)) {
-                    $plannedYear = $actionPlanAdvice->getAdviceYear();
+                // set alle the measures to the user
+                foreach ($measures as $measure) {
+                    $row[$key][$measure->measure_name] = '';
                 }
 
-                // fill the measure with the planned year
-                $row[$key][$measureName] = $plannedYear;
-            }
+                // get the user measures / advices
+                foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
+                    $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+                    $measureName = $actionPlanAdvice->measureApplication->measure_name;
 
+                    if (is_null($plannedYear)) {
+                        $plannedYear = $actionPlanAdvice->getAdviceYear();
+                    }
+
+                    // fill the measure with the planned year
+                    $row[$key][$measureName] = $plannedYear;
+                }
+            }
             $rows = $row;
         }
 

@@ -20,22 +20,22 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.status')</th>
                             <th>Verleent toegang</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.appointment')</th>
-{{--                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.actions')</th>--}}
                         </tr>
                         </thead>
                         <tbody>
-                    @foreach($filteredResults as $i => $building)
+                        @foreach($filteredResults as $i => $building)
                             <tr>
                                 <td>{{ $building->city }}</td>
                                 <td>{{ $building->street }}</td>
                                 <td>{{ str_limit($building->first_name .' '. $building->last_name, 40)}}</td>
 
                                 <?php
+                                    $currentBuildingStatuses = $buildingCoachStatuses->where('building_id', $building->id);
                                     // get the last building status for the current building
-                                    $lastBuildingCoachStatus = $buildingCoachStatuses->where('building_id', $building->id)->last();
-                                    // get all the coach statuses for current building where the coach id is not the current coach
+                                    $lastBuildingCoachStatus = $currentBuildingStatuses->last();
+                                    // unique the current building statuses on coach id, if the count is more then one there are multiple coaches involved to this building thing dinges
                                 ?>
-                                <td>@if($buildingCoachStatuses->where('building_id', $building->id)->unique('coach_id')->count() > 1)
+                                <td>@if($currentBuildingStatuses->unique('coach_id')->count() > 1)
                                         Meerdere coaches gekoppeld aan gebouw
                                     @elseif($lastBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus)
                                         {{$lastBuildingCoachStatus->coach->first_name .' '. $lastBuildingCoachStatus->coach->last_name}}
@@ -56,10 +56,6 @@
                                         @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.no-appointment')
                                     @endif
                                 </td>
-                                {{--<td>--}}
-                                    {{--<a href="{{ route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['privateMessageId' => $building->private_message_id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-link"></i> Koppel met coach</a>--}}
-                                    {{--<a href="{{ route('cooperation.admin.cooperation.coordinator.building-access.edit', ['buildingId' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-ban-circle"></i> Haal coach toegang weg</a>--}}
-                                {{--</td>--}}
                             </tr>
                         @endforeach
                         </tbody>
@@ -81,8 +77,9 @@
             $('#table').DataTable({
                 responsive: true,
                 columnDefs: [
-                    {responsivePriority: 4, targets: 4},
-                    {responsivePriority: 5, targets: 3},
+                    {responsivePriority: 5, targets: 6},
+                    {responsivePriority: 4, targets: 5},
+                    {responsivePriority: 6, targets: 3},
                     {responsivePriority: 3, targets: 2},
                     {responsivePriority: 2, targets: 1},
                     {responsivePriority: 1, targets: 0}

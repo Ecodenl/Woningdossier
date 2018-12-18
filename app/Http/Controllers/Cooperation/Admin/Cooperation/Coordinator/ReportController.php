@@ -93,7 +93,10 @@ class ReportController extends Controller
         }
 
 
-        $headers = array_keys(array_first($rows));
+        $headers = [];
+        if (!empty($rows)) {
+            $headers = array_keys(array_first($rows));
+        }
 
         // and export the great results !
         return CsvExportService::export($headers, $rows, 'questionnaire-results');

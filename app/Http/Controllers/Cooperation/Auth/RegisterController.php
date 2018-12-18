@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
+use App\Models\Role;
 use App\Models\User;
 use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
@@ -166,6 +167,10 @@ class RegisterController extends Controller
         } else {
             $user->confirm_token = null;
             $user->save();
+
+            // give the user the role resident
+            $residentRole = Role::findByName('resident');
+            $user->roles()->attach($residentRole);
 
             return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
         }

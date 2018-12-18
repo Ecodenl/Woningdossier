@@ -20,7 +20,7 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.status')</th>
                             <th>Verleent toegang</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.appointment')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.actions')</th>
+{{--                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.actions')</th>--}}
                         </tr>
                         </thead>
                         <tbody>
@@ -31,10 +31,11 @@
                                 <td>{{ str_limit($building->first_name .' '. $building->last_name, 40)}}</td>
 
                                 <?php
-                                    // check if there are more then 1 building statuses to
-                                    $lastBuildingCoachStatus = $buildingCoachStatuses->where('building_id', $building->id)->last()
+                                    // get the last building status for the current building
+                                    $lastBuildingCoachStatus = $buildingCoachStatuses->where('building_id', $building->id)->last();
+                                    // get all the coach statuses for current building where the coach id is not the current coach
                                 ?>
-                                <td>@if($buildingCoachStatuses->where('building_id', $building->id)->count() > 1)
+                                <td>@if($buildingCoachStatuses->where('building_id', $building->id)->unique('coach_id')->count() > 1)
                                         Meerdere coaches gekoppeld aan gebouw
                                     @elseif($lastBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus)
                                         {{$lastBuildingCoachStatus->coach->first_name .' '. $lastBuildingCoachStatus->coach->last_name}}
@@ -55,10 +56,10 @@
                                         @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.no-appointment')
                                     @endif
                                 </td>
-                                <td>
-                                    <a href="{{ route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['privateMessageId' => $building->private_message_id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-link"></i> Koppel met coach</a>
-                                    <a href="{{ route('cooperation.admin.cooperation.coordinator.building-access.edit', ['buildingId' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-ban-circle"></i> Haal coach toegang weg</a>
-                                </td>
+                                {{--<td>--}}
+                                    {{--<a href="{{ route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['privateMessageId' => $building->private_message_id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-link"></i> Koppel met coach</a>--}}
+                                    {{--<a href="{{ route('cooperation.admin.cooperation.coordinator.building-access.edit', ['buildingId' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-ban-circle"></i> Haal coach toegang weg</a>--}}
+                                {{--</td>--}}
                             </tr>
                         @endforeach
                         </tbody>

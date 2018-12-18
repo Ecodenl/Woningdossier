@@ -106,4 +106,5 @@ class BuildingCoachStatus extends Model
             return false;
         }
     }
+
 }

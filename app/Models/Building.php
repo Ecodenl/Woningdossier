@@ -331,4 +331,5 @@ class Building extends Model
     {
         return $this->hasMany(BuildingPermission::class);
     }
+
 }

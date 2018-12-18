@@ -67,11 +67,13 @@
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                                 </label>
+
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
                                     <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
                                         @foreach($insulatedGlazings as $insulateGlazing)
-                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
+                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'insulated_glazing_id'))) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
+                                            {{--<option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>--}}
                                         @endforeach
                                     </select>
                                 @endcomponent

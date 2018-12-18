@@ -281,8 +281,9 @@ return [
 					'my-messages'      => 'Uw berichten',
 					'connect-to-coach' => 'Openstaande aanvragen',
 				],
-                'buildings' => [
-                    'index'               => [
+                'building-access' => [
+                    'index' => [
+                        'header' => 'Bewoners die de woning hebben vrijgegeven',
                         'no-appointment' => 'Nog geen afspraak',
                         'table' => [
                             'columns'        => [
@@ -304,6 +305,19 @@ return [
                             ],
                         ],
                     ],
+                    'edit' => [
+                        'header' => 'Gebruikers die toegang hebben tot gebouw :street :postal_code',
+                        'table' => [
+                            'columns'        => [
+                                'actions' => 'Acties',
+                                'name' => 'Naam',
+                                'email' => 'Email'
+                            ],
+                        ],
+                    ],
+                    'destroy' => [
+                        'success' => 'Toegang is ontzegd',
+                    ]
                 ],
 
 				'reports'  => [

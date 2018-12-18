@@ -162,8 +162,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 						//Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
 					});
 
-					Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
-					    Route::get('', 'BuildingController@index')->name('index');
+					Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {
+					    Route::get('', 'BuildingAccessController@index')->name('index');
+					    Route::get('{buildingId}', 'BuildingAccessController@edit')->name('edit');
+					    Route::delete('destroy', 'BuildingAccessController@destroy')->name('destroy');
                     });
 
 					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {

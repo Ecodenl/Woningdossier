@@ -3,7 +3,7 @@
 @section('coordinator_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.header')
+            @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.header')
 
         </div>
 
@@ -13,17 +13,18 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.buildings.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.buildings.index.table.columns.street')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.buildings.index.table.columns.owner')</th>
-                            <th>Coach toegang</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.buildings.index.table.columns.status')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.buildings.index.table.columns.appointment')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.buildings.index.table.columns.actions')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.city')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.street')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.owner')</th>
+                            <th>Coach</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.status')</th>
+                            <th>Verleent toegang</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.appointment')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($residentsThatGaveAccessToBuilding as $i => $building)
+                    @foreach($filteredResults as $i => $building)
                             <tr>
                                 <td>{{ $building->city }}</td>
                                 <td>{{ $building->street }}</td>
@@ -44,15 +45,19 @@
                                 <td>
                                     {{\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id)}}
                                 </td>
+                                <td>
+                                    {{$building->allow_access ? "Ja" : "Nee"}}
+                                </td>
 
                                 <td>@if($lastBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastBuildingCoachStatus->appointment_date))
                                         {{$lastBuildingCoachStatus->appointment_date}}
                                     @else
-                                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.buildings.index.no-appointment')
+                                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.no-appointment')
                                     @endif
                                 </td>
                                 <td>
                                     <a href="{{ route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['privateMessageId' => $building->private_message_id]) }}" class="btn btn-success"><i class="glyphicon glyphicon-link"></i> Koppel met coach</a>
+                                    <a href="{{ route('cooperation.admin.cooperation.coordinator.building-access.edit', ['buildingId' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-ban-circle"></i> Haal coach toegang weg</a>
                                 </td>
                             </tr>
                         @endforeach

@@ -1,8 +1,16 @@
-{{-- TODO: could use some improvement, do not know how atm --}}
+<?php
+    // sort the incoming collection based on input source order
+    if (is_array($userInputValues)){
+    	$userInputValues = collect($userInputValues);
+    }
+    $userInputValues = $userInputValues->sortBy(function($a){
+	    return $a->inputSource->order;
+    });
+?>
 @if(is_array($inputValues) && $customInputValueColumn == false)
-    @foreach($inputValues as $key => $inputValue)
-        @foreach($userInputValues as $userInputValue)
-            {{-- we use array get, we cant use it like $userInputValue->$userInputColumn --}}
+    @foreach($userInputValues as $userInputValue)
+        @foreach($inputValues as $key => $inputValue)
+            {{-- We use array get, we cant use it like $userInputValue->$userInputColumn --}}
             <?php
             // check if the input column has dots, ifso we need to use the array get function
             // else its a property that we can access
@@ -11,10 +19,9 @@
             } else {
                 $compareValue = $userInputValue->$userInputColumn;
             }
-
             ?>
             @if(!is_null($compareValue) && $key == $compareValue)
-                <li class="change-input-value" data-input-value="{{$key}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
+                <li class="change-input-value" data-input-value="{{ $key }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputValue }}</a></li>
             @endif
         @endforeach
     @endforeach

@@ -29,16 +29,16 @@
                             <div id="floor-insulation-options">
                                 <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
                                     @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
-                                        <option data-calculate-value="{{$elementValue->calculate_value}}"
+                                        <option data-calculate-value="{{$elementValue->calculate_value}}" @if(old('element.' . $floorInsulation->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $floorInsulation->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                        {{--<option
                                                 @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
                                                 selected="selected"
-                                                {{-- TODO: Remove the element_values ? --}}
                                                 @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
                                                 selected="selected"
                                                 @elseif(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
                                                 selected="selected"
                                                 @endif
-                                                value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                                value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>--}}
                                     @endforeach
                                 </select>
                             </div>
@@ -81,12 +81,13 @@
                             ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.has_crawlspace'])
                                 <select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
                                     @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                        <option @if(old('building_elements.crawlspace') == $i) selected
+                                        <option @if(old('building_elements.crawlspace', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.has_crawlspace')) == $i) selected="selected" @endif value="{{ $i }}">{{ $option }}</option>
+                                        {{--<option @if(old('building_elements.crawlspace') == $i) selected
                                                 @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                             && is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                             && array_key_exists('has_crawlspace', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                             && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['has_crawlspace'] == $i ) selected
-                                                @endif value="{{ $i }}">{{ $option }}</option>
+                                                @endif value="{{ $i }}">{{ $option }}</option>--}}
                                     @endforeach
                                 </select>
                             @endcomponent
@@ -130,12 +131,13 @@
                                 ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.access'])
                                     <select id="crawlspace_access" class="form-control" name="building_elements[{{ $crawlspace->id }}][extra]">
                                         @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                            <option @if(old('building_elements.crawlspace_access') == $option) selected
+                                            <option @if(old('building_elements.crawlspace_access', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.access')) == $i) selected="selected" @endif value="{{ $i }}">{{ $option }}</option>
+                                            {{--<option @if(old('building_elements.crawlspace_access') == $option) selected
                                                     @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                     &&is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                     && array_key_exists('access', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                     && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['access'] == $i) selected
-                                                    @endif value="{{ $i }}">{{ $option }}</option>
+                                                    @endif value="{{ $i }}">{{ $option }}</option>--}}
                                         @endforeach
                                     </select>
                                 @endcomponent
@@ -176,11 +178,12 @@
                                 ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'element_value_id'])
                                     <select id="crawlspace_height" class="form-control" name="building_elements[{{ $crawlspace->id }}][element_value_id]">
                                         @foreach($crawlspace->values as $crawlHeight)
-                                            <option @if(old('crawlspace_height') == $crawlHeight->id) selected
+                                            <option @if(old('crawlspace_height', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'element_value_id')) == $crawlHeight->id) selected="selected" @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
+                                            {{--<option @if(old('crawlspace_height') == $crawlHeight->id) selected
                                                     @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                     && $buildingElement->where('element_id', $crawlspace->id)->first()->element_value_id == $crawlHeight->id)
                                                     selected
-                                                @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
+                                                @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>--}}
                                         @endforeach
                                     </select>
                                 @endcomponent
@@ -214,7 +217,8 @@
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat'])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">
+                                    <input id="floor_surface" type="text" name="building_features[floor_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'floor_surface')),1) }}" class="form-control" >
+                                {{--<input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">--}}
                                 @endcomponent
                             @if ($errors->has('building_features.surface'))
                                 <span class="help-block">
@@ -239,7 +243,8 @@
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
                                     <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">
+                                    <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_surface')),1) }}" class="form-control" >
+                                {{--<input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">--}}
                                 @endcomponent
                             @if ($errors->has('building_features.insulation_surface'))
                                 <span class="help-block">

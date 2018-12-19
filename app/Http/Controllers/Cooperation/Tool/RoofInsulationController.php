@@ -102,10 +102,11 @@ class RoofInsulationController extends Controller
 
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps', 'typeIds',
-             'interest', 'buildingFeaturesForMe', 'currentRoofTypesForMe',
-             'currentCategorizedRoofTypesForMe', 'currentRoofTypes', 'roofTileStatuses',
-             'roofInsulation', 'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
+        	'building', 'features', 'roofTypes', 'steps', 'typeIds',
+	        'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses',
+	        'roofInsulation', 'currentRoofTypesForMe', 'heatings',
+	        'measureApplications', 'currentCategorizedRoofTypes',
+	        'currentCategorizedRoofTypesForMe'));
     }
 
     protected function getRoofTypeCategory(RoofType $roofType)

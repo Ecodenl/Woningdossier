@@ -63,7 +63,7 @@ class QuestionnaireRequest extends FormRequest
             $currentQuestion = Question::find($questionId);
             $validation = $currentQuestion->validation;
 
-            $rule = "";
+            $rule = "sometimes|nullable|";
             // if its required add the required rule
             if ($currentQuestion->isRequired()) {
                 $rule .= "required|";

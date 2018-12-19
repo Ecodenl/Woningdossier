@@ -14,7 +14,6 @@ use App\Models\User;
 use App\Observers\PrivateMessageObserver;
 use App\Models\UserActionPlanAdvice;
 use App\Observers\UserActionPlanAdviceObserver;
-use App\Models\Step;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider

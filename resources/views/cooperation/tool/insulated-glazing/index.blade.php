@@ -642,13 +642,14 @@
                 var userInterestText = userInterest.find('option:selected').text().trim();
 
                 if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
-                    userInterest.parent().parent().parent().parent().find('.values').hide();
+                    userInterest.parent().parent().parent().find('.values').hide();
                 } else {
-                    userInterest.parent().parent().parent().parent().find('.values').show();
+                    userInterest.parent().parent().parent().find('.values').show();
                 }
             });
             // Trigger the change event so it will load the data
             //$("select, input[type=radio], input[type=text]").trigger('change');
+            $('form').find('select.user-interest').trigger('change');
             $('form').find('*').filter(':input:visible:first').trigger('change');
         });
 

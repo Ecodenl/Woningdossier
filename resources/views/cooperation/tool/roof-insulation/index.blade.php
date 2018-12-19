@@ -15,7 +15,6 @@
                         <div class="form-group add-space {{ $errors->has('building_roof_types') ? ' has-error' : '' }}">
                             <label for="building_roof_types" class="control-label"><i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.roof-insulation.current-situation.roof-types')</label>
                             <br>
-                            {{--{{ dd(\App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes(), 'roof_type_id')) }}--}}
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'])
                                 @foreach($roofTypes as $roofType)

@@ -285,10 +285,31 @@ return [
 						'success' => 'Rollen zijn bijgewerkt'
 					],
 				],
+                'reports' => [
+                    'title' => 'Rapportages',
+                    'description' => 'Rapportage downloads',
+
+                    'download' => [
+	                    'by-year' => 'Actieplan per jaar',
+	                    'by-measure' => 'Actieplan per maatregel',
+                    ],
+                    'csv-columns' => [
+	                    'first-name' => 'Voornaam',
+	                    'last-name' => 'Achternaam',
+	                    'email' => 'Email',
+	                    'phonenumber' => 'Telefoonnummer',
+	                    'mobilenumber' => 'Mobiel nummer',
+	                    'street' => 'Straat',
+	                    'house-number' => 'Huis nummer',
+	                    'city' => 'Woonplaats',
+	                    'zip-code' => 'Postcode',
+	                    'country-code' => 'Landcode',
+                    ],
+                ],
 			],
 			'coordinator' => [
 				'side-nav'              => [
-					'reports'      => 'Rapporten',
+					'reports'      => 'Rapportages',
 					'label'            => 'Coördinator menu',
                     'buildings' => 'Gebouwen',
 					'messages'         => 'Berichten menu',

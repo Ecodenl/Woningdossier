@@ -334,4 +334,14 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function completedQuestionnaires()
+    {
+        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
+	}
+
+    public function completeQuestionnaire(Questionnaire $questionnaire)
+    {
+        $this->completedQuestionnaires()->attach($questionnaire);
+	}
 }

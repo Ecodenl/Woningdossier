@@ -73,9 +73,6 @@
                         <div class="panel">
                             <div class="panel-body" >
                                 <div id="sortable">
-                                    @if($errors->any())
-                                        {{dd($errors->all(), old(), $questionnaire->questions)}}
-                                    @endif
                                     @forelse($questionnaire->questions()->orderBy('order')->get() as $question)
                                         @component('cooperation.admin.cooperation.coordinator.questionnaires.layouts.form-build-panel', ['question' => $question])
 
@@ -616,7 +613,9 @@
             if (confirm('Dit verwijderd de vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
 
                 var questionId = $(this).parent().parent().parent().parent().parent().parent().find('.question_id').val();
-
+                if (typeof questionId === "undefined") {
+                    console.log('the question id is empty ohno!');
+                }
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -667,7 +666,6 @@
                     var questionOrder = blocks.map(function (questionOrder, questionId) {
                         return questionOrder, order[questionId];
                     });
-                    console.log(questionOrder);
 
                 }
             });

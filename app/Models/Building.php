@@ -318,6 +318,22 @@ class Building extends Model
     }
 
     /**
+     * Get all the statuses for a building
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingCoachStatuses()
+    {
+        return $this->hasMany(BuildingCoachStatus::class);
+    }
+
+    public function buildingPermissions()
+    {
+        return $this->hasMany(BuildingPermission::class);
+    }
+
+
+    /**
      * Get all the answers for the building
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

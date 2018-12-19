@@ -45,7 +45,7 @@ class GeneralDataController extends Controller
 
     public function __construct(Request $request)
     {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $slug = str_replace(['tool' , '/'], '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
     }
 

@@ -73,9 +73,6 @@
                         <div class="panel">
                             <div class="panel-body" >
                                 <div id="sortable">
-                                    @if($errors->any())
-                                        {{dd($errors->all(), old(), $questionnaire->questions)}}
-                                    @endif
                                     @forelse($questionnaire->questions()->orderBy('order')->get() as $question)
                                         @component('cooperation.admin.cooperation.coordinator.questionnaires.layouts.form-build-panel', ['question' => $question])
 

@@ -7,6 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class QuestionnaireRequest extends FormRequest
 {
+
+    protected $redirect;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -47,6 +49,9 @@ class QuestionnaireRequest extends FormRequest
      */
     public function makeRules()
     {
+
+        $this->redirect = url()->previous().'/'.$this->request->get('tab_id', 'main-tab');
+
         $request = $this->request;
         $questions = $request->get('questions');
         $validationRules = [];
@@ -84,7 +89,6 @@ class QuestionnaireRequest extends FormRequest
             }
             $validationRules['questions.'.$questionId] = $rule;
         }
-
 
         return $validationRules;
     }

@@ -41,7 +41,7 @@
                             </h3>
 
                             @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']))
-                                <button id="submit-form-top-right" class="pull-right btn btn-primary">
+                                <button id="submit-main-form" class="pull-right btn btn-primary">
                                     @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                         @lang('default.buttons.next-page')
                                     @else
@@ -72,10 +72,30 @@
 
 @push('js')
     <script>
-        $('#submit-form-top-right').click(function () {
-            // There will only be 1 form inside the panel body, submit it
-            $('.panel-body form button[type=submit]').click();
-        })
+
+        $(document).ready(function () {
+            // get the current url
+            var url = document.location.href;
+
+            // scroll to top off page for less retarded behaviour
+            window.scrollTo(0, 0);
+
+            // check if the current url matches a hashtag
+            if (url.match('#')) {
+                // see if there is a tab and show it.
+                $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+            }
+
+            // set the hash in url
+            $('.nav-tabs a').on('shown.bs.tab', function (e) {
+                window.location.hash = e.target.hash;
+            })
+        });
+
+        $('#submit-main-form').click(function () {
+            // submit the main form / tool tab
+            $('.panel#main-tab form button[type=submit]').click();
+        });
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

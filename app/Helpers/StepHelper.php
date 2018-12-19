@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Cooperation;
+use App\Models\Questionnaire;
 use App\Models\Step;
 use Illuminate\Support\Facades\Redirect;
 
@@ -86,7 +87,7 @@ class StepHelper
      *
      * @return string
      */
-    public static function getNextStep(Step $current): string
+    public static function getNextStep(Step $current)
     {
         // get all the steps
         $steps = Step::orderBy('order')->get();
@@ -94,6 +95,24 @@ class StepHelper
         $completedSteps = collect();
 
         $currentFound = false;
+
+        // todo finish
+        // check if the current step has additional questionnaires
+        if ($current->hasQuestionnaires()) {
+            $questionnairesForCurrentStep = $current->questionnaires;
+            $userCompletedQuestionnaires = \Auth::user()->completedQuestionnaires;
+
+            $nonCompletedQuestionnairesForCurrentStep = $questionnairesForCurrentStep->filter(function ($questionnaire) use ($userCompletedQuestionnaires){
+                return !$userCompletedQuestionnaires->find($questionnaire) instanceof Questionnaire;
+            });
+
+            // we should not take the first one i guess, should be on order based, but there is no order in the questionnaire table
+            $nextQuestionnaire = $nonCompletedQuestionnairesForCurrentStep->first();
+
+            if ($nextQuestionnaire instanceof Questionnaire) {
+//                return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab-id' => 'questionnaire-'.$nextQuestionnaire->id];
+            }
+        }
 
         // remove the completed steps from the steps
         foreach ($steps as $step) {

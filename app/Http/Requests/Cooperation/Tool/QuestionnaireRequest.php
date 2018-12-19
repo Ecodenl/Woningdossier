@@ -63,6 +63,9 @@ class QuestionnaireRequest extends FormRequest
             $currentQuestion = Question::find($questionId);
             $validation = $currentQuestion->validation;
 
+            // nullable is still needed, in some cases the strings will be converted to null
+            // if that happens sometimes would not work
+            // see ConvertEmptyStringsToNull middleware class
             $rule = "sometimes|nullable|";
             // if its required add the required rule
             if ($currentQuestion->isRequired()) {

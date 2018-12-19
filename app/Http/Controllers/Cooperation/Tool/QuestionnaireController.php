@@ -61,7 +61,7 @@ class QuestionnaireController extends Controller
             }
         }
 
-        \Auth::user()->completeQuestionnaire($questionnaire);
+//        \Auth::user()->completeQuestionnaire($questionnaire);
 
         // something that should be discussed, we could redirect them to the next step with the stephelper
         return redirect()->back();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingHeating;
@@ -17,6 +18,7 @@ use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
+use App\Models\PvPanelOrientation;
 use App\Models\Role;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
@@ -202,6 +204,11 @@ class ExampleBuildingController extends Controller
         // High efficiency boiler
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
+        //$solarPanels = Service::where('short', 'total-sun-panels')->first();
+        $solarPanelsOptionsPeakPower = ['' => '-', ] + KeyFigures::getPeakPowers();
+        $solarPanelsOptionsAngle = ['' => '-', ] + KeyFigures::getAngles();
+
+        $heater = Service::where('short', 'sun-boiler')->first();
 
         // Common
         //$interests = Interest::orderBy('order')->get();
@@ -371,12 +378,36 @@ class ExampleBuildingController extends Controller
 //		    'heat-pump' => [
 //
 //		    ],
-//		    'solar-panels' => [
-//
-//		    ],
-//		    'heater' => [
-//
-//		    ],
+		    'solar-panels' => [
+				'building_pv_panels.peak_power' => [
+					'label' => __('woningdossier.cooperation.tool.solar-panels.peak-power'),
+					'type' => 'select',
+					'options' => $solarPanelsOptionsPeakPower,
+				],
+			    'building_pv_panels.number' => [
+				    'label' => __('woningdossier.cooperation.tool.solar-panels.number'),
+				    'type' => 'text',
+					'unit' => __('woningdossier.cooperation.tool.unit.pieces'),
+			    ],
+			    'building_pv_panels.pv_panel_orientation_id' => [
+				    'label' => __('woningdossier.cooperation.tool.solar-panels.pv-panel-orientation-id'),
+				    'type' => 'select',
+				    'options' => $this->createOptions(PvPanelOrientation::orderBy('order')->get()),
+			    ],
+				'building_pv_panels.angle' => [
+					'label' => __('woningdossier.cooperation.tool.solar-panels.angle'),
+					'type' => 'select',
+					'options' => $solarPanelsOptionsAngle,
+				],
+
+		    ],
+		    'heater' => [
+			    /*'service.' .$heater->id.'.service_value_id' => [
+				    'label' => __('woningdossier.cooperation.tool.boiler.boiler-type'),
+				    'type' => 'select',
+				    'options' => $this->createOptions($heater->values()->orderBy('order')->get(), 'value'),
+			    ],*/
+		    ],
         ];
 
         /*

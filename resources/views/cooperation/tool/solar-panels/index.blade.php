@@ -40,15 +40,11 @@
                         <label for="building_pv_panels_peak_power" class=" control-label"><i data-toggle="collapse" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.peak-power')</label>
 
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => array_combine($range = range(260, 300, 5), $range), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'peak_power'])
+                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers(), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'peak_power'])
                             <span class="input-group-addon">Wp</span>
-                            <?php $additionalPeakPowers = [330] ?>
                             <select id="building_pv_panels_peak_power" class="form-control" name="building_pv_panels[peak_power]">
-                                @foreach(range(260, 300, 5) as $peakPower)
+                                @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers() as $peakPower)
                                     <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
-                                @endforeach
-                                @foreach($additionalPeakPowers as $additionalPeakPower)
-                                    <option @if(old('building_pv_panels.peak_power') == $additionalPeakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $additionalPeakPower)) selected @endif value="{{ $additionalPeakPower }}">{{$additionalPeakPower}}</option>
                                 @endforeach
                             </select>
                         @endcomponent
@@ -129,7 +125,7 @@
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.angle') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.angle')</label>
 
-                        <?php $angles = [10, 15, 20, 30, 40, 45, 50, 60, 70, 75, 90]  ?>
+                        <?php \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles();  ?>
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => array_combine($angles, $angles), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'angle'])
                             <span class="input-group-addon">&deg;</span>

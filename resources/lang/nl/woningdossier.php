@@ -1005,12 +1005,13 @@ return [
 				'unknown'       => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
 				'no-crawlspace' => 'De vloer kan alleen van boven af geïsoleerd worden. Let op de hoogtes bij deuren en bij de trap. Vraag om aanvullend advies.',
 			],
+			'surface' => 'Vloeroppervlak van de woning',
+			'insulation-surface' => 'Te isoleren vloeroppervlak',
 			'crawlspace-access' => [
 				'title'     => 'Is de kruipruimte toegankelijk?',
 				'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
 			],
 			'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
-			'floor-surface'     => 'Vloeroppervlak van de woning',
 			'insulation-advice' => [
 				'text'     => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
 				'floor'    => 'Vloerisolatie',

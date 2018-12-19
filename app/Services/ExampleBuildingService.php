@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
+use App\Models\BuildingHeater;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingPaintworkStatus;
+use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
 use App\Models\BuildingType;
@@ -179,7 +181,22 @@ class ExampleBuildingService {
 						self::log("Saving building rooftype " . json_encode($buildingRoofType->toArray()));
 					}
 				}
+				if ($columnOrTable == 'building_pv_panels'){
+					$buildingPvPanels = new BuildingPvPanel($values);
+					$buildingPvPanels->inputSource()->associate($inputSource);
+					$buildingPvPanels->building()->associate($userBuilding);
+					$buildingPvPanels->save();
 
+					self::log("Saving building pv_panels " . json_encode($buildingPvPanels->toArray()));
+				}
+				if ($columnOrTable == 'building_heaters'){
+					$buildingHeater = new BuildingHeater($values);
+					$buildingHeater->inputSource()->associate($inputSource);
+					$buildingHeater->building()->associate($userBuilding);
+					$buildingHeater->save();
+
+					self::log("Saving building heater " . json_encode($buildingHeater->toArray()));
+				}
 			}
 		}
 

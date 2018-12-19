@@ -127,10 +127,10 @@
 
                         <?php \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles();  ?>
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => array_combine($angles, $angles), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'angle'])
+                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'angle'])
                             <span class="input-group-addon">&deg;</span>
                             <select id="building_pv_panels_angle" class="form-control" name="building_pv_panels[angle]">
-                                @foreach($angles as $angle)
+                                @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles() as $angle)
                                     <option @if(old('building_pv_panels.angle') == $angle || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
                                 @endforeach
                             </select>

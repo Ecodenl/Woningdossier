@@ -64,6 +64,7 @@ class QuestionnaireController extends Controller
         \Auth::user()->completeQuestionnaire($questionnaire);
 
         // something that should be discussed, we could redirect them to the next step with the stephelper
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        return redirect()->back();
+//        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 }

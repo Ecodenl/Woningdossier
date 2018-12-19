@@ -232,11 +232,11 @@ class ExampleBuildingController extends Controller
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-	            /*'insulation_wall_surface' => [
+	            'building_features.insulation_wall_surface' => [
 	            	'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface'),
 		            'type' => 'text',
 		            'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
-	            ],*/
+	            ],
                 'building_features.cavity_wall' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall'),
                     'type' => 'select',
@@ -316,9 +316,14 @@ class ExampleBuildingController extends Controller
                     'options' => $this->createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
                 'building_features.floor_surface' => [
-                    'label' => __('woningdossier.cooperation.tool.floor-insulation.floor-surface'),
+                    'label' => __('woningdossier.cooperation.tool.floor-insulation.surface'),
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
+                ],
+                'building_features.insulation_surface' => [
+	                'label' => __('woningdossier.cooperation.tool.floor-insulation.insulation-surface'),
+	                'type' => 'text',
+	                'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
                 'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.title'),
@@ -451,6 +456,11 @@ class ExampleBuildingController extends Controller
                 'type' => 'text',
                 'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
             ];
+	        $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.insulation_roof_surface'] = [
+		        'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.insulation-'.$roofType->short.'-roof-surface'),
+		        'type' => 'text',
+		        'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
+	        ];
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
                 'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.zinc-replaced'),
                 'type' => 'text',

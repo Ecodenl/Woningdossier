@@ -8,6 +8,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Interest;
 use App\Models\PrivateMessage;
+use App\Models\Step;
 use App\Models\User;
 use App\Observers\PrivateMessageObserver;
 use App\Models\UserActionPlanAdvice;
@@ -84,8 +85,15 @@ class WoningdossierServiceProvider extends ServiceProvider
             return false;
         });
 
+        // TODO: create tool composer
         \View::composer('cooperation.tool.includes.interested', function ($view) {
             $view->with('interests', Interest::orderBy('order')->get());
+        });
+
+        \View::composer('cooperation.tool.*', function ($view) {
+            $slug = str_replace('/tool/', '', request()->getRequestUri());
+            $step = Step::where('slug', $slug)->first();
+            $view->with('currentStep', $step);
         });
 
         \View::creator('*', CooperationComposer::class);

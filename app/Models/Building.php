@@ -316,4 +316,20 @@ class Building extends Model
     {
         return $this->hasMany(BuildingRoofType::class);
     }
+
+    /**
+     * Get all the statuses for a building
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingCoachStatuses()
+    {
+        return $this->hasMany(BuildingCoachStatus::class);
+    }
+
+    public function buildingPermissions()
+    {
+        return $this->hasMany(BuildingPermission::class);
+    }
+
 }

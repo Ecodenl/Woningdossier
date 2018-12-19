@@ -404,11 +404,11 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4 {{$roofCat}}-hideable">
-                                    @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat])
+                                    @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
                                 </div>
 
                                 <div class="col-md-4 {{$roofCat}}-hideable">
-                                    @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat])
+                                    @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
                                 </div>
                                 <div class="col-md-4 {{$roofCat}}-hideable">
                                     @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat])

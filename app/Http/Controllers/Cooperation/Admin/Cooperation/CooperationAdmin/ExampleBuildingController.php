@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\KeyFigures\PvPanels\KeyFigures;
+use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
+use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingHeating;
@@ -205,10 +206,11 @@ class ExampleBuildingController extends Controller
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         //$solarPanels = Service::where('short', 'total-sun-panels')->first();
-        $solarPanelsOptionsPeakPower = ['' => '-', ] + KeyFigures::getPeakPowers();
-        $solarPanelsOptionsAngle = ['' => '-', ] + KeyFigures::getAngles();
+        $solarPanelsOptionsPeakPower = ['' => '-', ] + SolarPanelsKeyFigures::getPeakPowers();
+        $solarPanelsOptionsAngle = ['' => '-', ] + SolarPanelsKeyFigures::getAngles();
 
-        $heater = Service::where('short', 'sun-boiler')->first();
+        //$heater = Service::where('short', 'sun-boiler')->first();
+	    $heaterOptionsAngle = ['' => '-', ] + HeaterKeyFigures::getAngles();
 
         // Common
         //$interests = Interest::orderBy('order')->get();
@@ -402,11 +404,16 @@ class ExampleBuildingController extends Controller
 
 		    ],
 		    'heater' => [
-			    /*'service.' .$heater->id.'.service_value_id' => [
-				    'label' => __('woningdossier.cooperation.tool.boiler.boiler-type'),
+			    'building_heaters.pv_panel_orientation_id' => [
+				    'label' => __('woningdossier.cooperation.tool.heater.pv-panel-orientation-id'),
 				    'type' => 'select',
-				    'options' => $this->createOptions($heater->values()->orderBy('order')->get(), 'value'),
-			    ],*/
+				    'options' => $this->createOptions(PvPanelOrientation::orderBy('order')->get()),
+			    ],
+			    'building_heaters.angle' => [
+				    'label' => __('woningdossier.cooperation.tool.heater.angle'),
+				    'type' => 'select',
+				    'options' => $heaterOptionsAngle,
+			    ],
 		    ],
         ];
 

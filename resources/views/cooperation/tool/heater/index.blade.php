@@ -68,13 +68,11 @@
                     <div class="form-group add-space{{ $errors->has('building_heaters.angle') ? ' has-error' : '' }}">
                         <label for="building_heaters_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heater.angle')</label>
 
-
-                        <?php $angles = [20, 30, 40, 45, 50, 60, 70, 75, 90]  ?>
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => array_combine($angles, $angles), 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'angle'])
+                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\Heater\KeyFigures::getAngles(), 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'angle'])
                             <span class="input-group-addon">&deg;</span>
                             <select id="building_heaters_angle" class="form-control" name="building_heaters[angle]">
-                                @foreach($angles as $angle)
+                                @foreach(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles() as $angle)
                                     <option @if(old('building_heaters.angle') == $angle || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
                                 @endforeach
                             </select>

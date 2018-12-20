@@ -48,7 +48,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident'))
+                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident') || app()->environment() == ("develop" || "local")))
                     <form id="copy-coach-input" action="{{route('cooperation.tool.coach-input.copy')}}" method="post">
                         {{csrf_field()}}
                         <button class="btn btn-primary">

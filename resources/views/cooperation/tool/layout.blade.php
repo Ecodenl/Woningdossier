@@ -48,13 +48,26 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident') || app()->environment() == ("develop" || "local")))
-                    <form id="copy-coach-input" action="{{route('cooperation.tool.coach-input.copy')}}" method="post">
-                        {{csrf_field()}}
-                        <button class="btn btn-primary">
-                            @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
-                        </button>
-                    </form>
+                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident') || app()->environment() == "local")
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form id="copy-coach-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-left">
+                                <input type="hidden" name="input_source" value="coach">
+                                {{csrf_field()}}
+                                <button class="btn btn-primary">
+                                    @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                </button>
+                            </form>
+
+                            <form id="copy-example-coach-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-right">
+                                <input type="hidden" name="input_source" value="example-building">
+                                {{csrf_field()}}
+                                <button class="btn btn-primary">
+                                    Neem voorbeeldwoning antwoorden over
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 @endif
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -98,6 +111,14 @@
 
         $('#copy-coach-input').on('submit', function (event) {
             if(confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
+
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
+        $('#copy-example-coach-input').on('submit', function (event) {
+            if(confirm('Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.')) {
 
             } else {
                 event.preventDefault();

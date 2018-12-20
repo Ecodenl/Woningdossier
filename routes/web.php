@@ -87,7 +87,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 			// the tool
             Route::group(['prefix' => 'import', 'as' => 'import.'], function () {
-                Route::get('', 'ImportController@copy')->name('copy');
+                Route::post('', 'ImportController@copy')->name('copy');
             });
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');

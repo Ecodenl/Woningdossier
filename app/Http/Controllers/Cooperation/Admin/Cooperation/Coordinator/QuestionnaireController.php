@@ -427,10 +427,37 @@ class QuestionnaireController extends Controller
      * @return int
      * @throws \Exception
      */
-    public function delete(Request $request)
+    public function deleteQuestion(Cooperation $cooperation, $questionId)
     {
-        $questionId = $request->question_id;
-        Question::find($questionId)->delete();
+        $question = Question::find($questionId);
+        $questionnaire = $question->questionnaire;
+        $this->authorize('delete', $questionnaire);
+
+        // rm
+        $question->delete();
+
+        return 202;
+    }
+
+    /**
+     * Delete a question option
+     *
+     * @param Cooperation $cooperation
+     * @param $questionId
+     * @param $questionOptionId
+     * @throws \Exception
+     * @return int
+     */
+    public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId)
+    {
+        $question = Question::find($questionId);
+        $questionnaire = $question->questionnaire;
+        $this->authorize('delete', $questionnaire);
+
+        $questionOption = QuestionOption::find($questionOptionId);
+
+        $questionOption->deleteTranslations('name');
+        $questionOption->delete();
 
         return 202;
     }

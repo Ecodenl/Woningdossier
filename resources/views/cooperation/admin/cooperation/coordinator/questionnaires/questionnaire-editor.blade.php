@@ -620,12 +620,39 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{route('cooperation.admin.cooperation.coordinator.questionnaires.delete')}}',
-                    data: {question_id: questionId},
+                    url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-question')}}/'+questionId,
                     method: "DELETE"
                 });
 
                 $(this).parent().parent().parent().parent().parent().parent().remove();
+            }
+
+            return false;
+        });
+
+        /**
+         * Remove a option from a question
+         */
+        $('body').on('click', '.glyphicon-remove', function (event) {
+            event.preventDefault();
+            var currentOptionGroup = $(this).parent().parent().parent().parent().parent();
+            var question = currentOptionGroup.parent();
+            var questionId = question.find('.question_id').val();
+            var questionOptionId = currentOptionGroup.find('.question_option_id').val();
+
+            if (confirm('Dit verwijderd de optie van deze vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
+
+                if (typeof questionId !== "undefined" || typeof questionOptionId !== "undefined") {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-option')}}/'+questionId+'/'+questionOptionId,
+                        method: "DELETE"
+                    });
+                }
+
+                currentOptionGroup.remove();
             }
 
             return false;

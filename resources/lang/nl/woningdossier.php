@@ -240,9 +240,9 @@ return [
                                 'text' => 'Kort antwoord',
                                 'textarea' => 'Alinea',
                                 'select' => 'Dropdownmenu',
-                                'radio' => 'Meerkeuze',
+                                'radio' => 'Selectievakjes',
+                                'checkbox' => 'Meerkeuze',
                                 'date' => 'Datum',
-                                'checkbox' => 'Selectievakjes'
                             ],
                         ],
                         'edit' => [

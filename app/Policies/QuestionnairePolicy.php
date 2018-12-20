@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
+use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -77,6 +78,25 @@ class QuestionnairePolicy
     public function update(User $user, Questionnaire $questionnaire)
     {
         return $this->edit($user, $questionnaire);
+    }
+
+    public function delete(User $user, Questionnaire $questionnaire)
+    {
+        $userCooperations = $user->cooperations()->get();
+        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+
+        // check if the user has the coordinator role and check the current cooperation
+        if ($user->hasRole('coordinator') && $userCooperations->contains($currentCooperation)) {
+
+            // and check if the questionnaire from the question has a relation with the cooperation
+            $cooperationFromQuestionnaire = $questionnaire->cooperation;
+
+            if ($cooperationFromQuestionnaire == $currentCooperation) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

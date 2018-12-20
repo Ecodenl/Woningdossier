@@ -12,14 +12,20 @@
 <?php $questionOptionCount = 0; ?>
 @foreach($question->questionOptions as $questionOption)
     <?php $questionOptionCount++ ?>
-    <label for="">Optie {{$questionOptionCount}}</label>
     <div class="option-group">
+        <label for="">Optie {{$questionOptionCount}}</label>
+        <input type="hidden" name="questions[{{$question->id}}][option][id]" class="question_option_id" value="{{$questionOption->id}}">
         @foreach(config('woningdossier.supported_locales') as $locale)
             <?php $translation = $questionOption->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionOption->getTranslation('name', $locale)->translation : "" ?>
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon">{{$locale}}</span>
                     <input name="questions[{{$question->id}}][options][{{$questionOption->id}}][{{$locale}}]" placeholder="Vraag" type="text" value="{{ old("questions.{$question->id}.options.{$questionOption->id}.{$locale}", $translation) }}" class="form-control">
+                    <span class="input-group-addon">
+                          <a href="" class="text-danger">
+                              <i class="glyphicon glyphicon-remove"></i>
+                          </a>
+                    </span>
                 </div>
             </div>
         @endforeach

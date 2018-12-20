@@ -26,10 +26,12 @@
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
                         @break
                     @case('radio')
-                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.radio', ['question' => $question])
+                        {{--@include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.radio', ['question' => $question])--}}
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
                         @break
                     @case('checkbox')
-                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.checkbox', ['question' => $question])
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
+                        {{--@include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.checkbox', ['question' => $question])--}}
                         @break
 
                 @endswitch

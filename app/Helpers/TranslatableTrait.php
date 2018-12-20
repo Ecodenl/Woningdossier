@@ -24,6 +24,19 @@ trait TranslatableTrait
     }
 
     /**
+     * Delete translations
+     *
+     * @param string $key   model attribute name
+     * @throws \Exception
+     */
+    public function deleteTranslations(string $key)
+    {
+        $translationUuid = parent::getAttribute($key);
+        Translation::where('key', $translationUuid)->delete();
+
+    }
+
+    /**
      * Check if a given string is a valid UUID.
      *
      * @param string $uuid The string to check

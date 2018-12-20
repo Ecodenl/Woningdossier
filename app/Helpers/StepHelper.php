@@ -100,11 +100,9 @@ class StepHelper
 
         // before we check for other pets we want to check if the current step has additional questionnaires
         // if it does and the user did not finish those we redirect to that tab
-
         if ($current->hasQuestionnaires()) {
 
             // get the questionnaires for the current step  & the user his completed questionnaires
-
             $questionnairesForCurrentStep = $current->questionnaires;
             $userCompletedQuestionnaires = \Auth::user()->completedQuestionnaires;
 
@@ -126,7 +124,6 @@ class StepHelper
 
         // the step does not have custom questionnaires or the user does not have uncompleted questionnaires left for that step.
         // so we will redirect them to a next step.
-
 
         // remove the completed steps from the steps
         foreach ($steps as $step) {

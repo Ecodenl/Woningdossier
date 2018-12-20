@@ -92,6 +92,12 @@ __webpack_require__(2);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 //Vue.component('example', require('./components/Example.vue'));
 
 //const app = new Vue({

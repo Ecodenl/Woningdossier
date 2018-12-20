@@ -110,4 +110,14 @@ class Question extends Model
 
         return null;
     }
+
+    /**
+     * Get the questionnaire from a question
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function questionnaire()
+    {
+        return $this->belongsTo(Questionnaire::class);
+    }
 }

@@ -92,10 +92,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
 
-
-            	Route::post('copy-coach-input', 'CoachInputController@copy')->name('coach-input.copy');
-//            	Route::get('remove-coach-input', 'CoachInputController@remove')->name('coach-input.remove');
-
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 // todo
 	            Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');

@@ -35,13 +35,20 @@
 {{-- For every existing question, we want to add a new option group field --}}
 
 {{-- quick maths--}}
-<label for="">Optie {{$questionOptionCount + 1}} (toevoegen)</label>
 <?php $uuid = \Ramsey\Uuid\Uuid::uuid4(); ?>
-@foreach(config('woningdossier.supported_locales') as $locale)
-    <div class="form-group">
-        <div class="input-group">
-            <span class="input-group-addon">{{$locale}}</span>
-            <input name="questions[{{$question->id}}][options][{{$uuid}}][{{$locale}}]" placeholder="Vraag" type="text" class="form-control option-text">
+<div class="option-group">
+    <label for="">Optie {{$questionOptionCount + 1}}</label>
+    @foreach(config('woningdossier.supported_locales') as $locale)
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">{{$locale}}</span>
+                <input name="questions[{{$question->id}}][options][{{$uuid}}][{{$locale}}]" placeholder="Vraag" type="text" class="form-control option-text">
+                <span class="input-group-addon">
+                    <a href="" class="text-danger">
+                      <i class="glyphicon glyphicon-remove"></i>
+                    </a>
+                </span>
+            </div>
         </div>
-    </div>
-@endforeach
+    @endforeach
+</div>

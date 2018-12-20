@@ -209,6 +209,7 @@ class HeaterController extends Controller
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
+        $comment = $request->get('comment');
 
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -218,6 +219,7 @@ class HeaterController extends Controller
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
                 'angle' => $angle,
+                'comment' => $comment
             ]
         );
 

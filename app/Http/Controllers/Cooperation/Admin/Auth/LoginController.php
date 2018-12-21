@@ -63,7 +63,8 @@ class LoginController extends Controller
 
         return redirect()->route('cooperation.home');
 	}
-	/**
+
+    /**
 	 * Get the needed authorization credentials from the request.
 	 *
 	 * @param  \Illuminate\Http\Request  $request

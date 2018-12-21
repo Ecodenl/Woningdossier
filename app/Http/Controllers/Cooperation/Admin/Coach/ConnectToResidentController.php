@@ -22,7 +22,6 @@ class ConnectToResidentController extends Controller
     {
         $receiver = $cooperation->getResidents()->find($userId);
 
-
         if ($receiver instanceof User) {
             return view('cooperation.admin.coach.connect-to-resident.create', compact('cooperation', 'receiver', 'typeId'));
         }

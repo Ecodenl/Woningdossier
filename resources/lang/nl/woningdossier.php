@@ -125,9 +125,109 @@ return [
                     'text' => 'U kunt hier verschillende dingen doen.'
                 ],
                 'cooperation-admin' => [
-                    'header' => 'Welkom',
-                    'text' => 'U kunt hier verschillende dingen doen.',
 
+                    'side-nav' => [
+                        'label' => 'Coöperatie admin menu',
+                        'home' => 'Home',
+                        'users' => 'Gebruikers van uw coöperatie',
+                        'create-user' => 'Voeg een gebruiker toe',
+                        'assign-role' => 'Rollen toewijzen',
+                    ],
+
+                    'index' => [
+                        'header' => 'Welkom op het coöperatie admin panel',
+
+
+                        'table' => [
+                            'columns' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'email' => 'E-mail adres',
+                                'role' => 'Huidige rollen van gebruiker',
+                                'actions' => 'Acties'
+                            ]
+                        ],
+                    ],
+
+                    'users' => [
+                        'index' => [
+                            'header' => 'Overzicht van alle gebruikers binnen uw coöperatie',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+                            ],
+                        ],
+                        'create' => [
+                            'header' => 'Gebruiker toevoegen aan uw coöperatie',
+
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Gebruiker aanmaken',
+                            ]
+                        ],
+
+                        'store' => [
+                            'success' => 'Gebruiker is met success toevoegd',
+                        ],
+                    ],
+
+                    'assign-roles' => [
+                        'index' => [
+                            'header' => 'Overzicht gebruikers - rollen toewijzen',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+                        ],
+                        'edit' => [
+                            'header' => 'Verander rollen voor :firstName :lastName',
+
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Rollen bijwerken',
+                            ],
+                        ],
+                        'update' => [
+                            'success' => 'Rollen zijn bijgewerkt'
+                        ],
+                    ],
 
                     'reports' => [
                         'title' => 'Rapportages',
@@ -154,6 +254,7 @@ return [
 
                 'coordinator' => [
                     'side-nav' => [
+	                    'reports' => 'Rapporten',
                         'label' => 'Coördinator menu',
                         'messages' => 'Berichten menu',
                         'home' => 'Home',
@@ -162,6 +263,27 @@ return [
                         'add-user' => 'Voeg Coach / Bewoner toe',
                         'my-messages' => 'Uw berichten',
                         'connect-to-coach' => 'Openstaande aanvragen',
+                    ],
+                    'reports' => [
+	                    'title' => 'Rapportages',
+	                    'description' => 'Rapportage downloads',
+
+	                    'download' => [
+		                    'by-year' => 'Actieplan per jaar',
+		                    'by-measure' => 'Actieplan per maatregel',
+	                    ],
+	                    'csv-columns' => [
+		                    'first-name' => 'Voornaam',
+		                    'last-name' => 'Achternaam',
+		                    'email' => 'Email',
+		                    'phonenumber' => 'Telefoonnummer',
+		                    'mobilenumber' => 'Mobiel nummer',
+		                    'street' => 'Straat',
+		                    'house-number' => 'Huis nummer',
+		                    'city' => 'Woonplaats',
+		                    'zip-code' => 'Postcode',
+		                    'country-code' => 'Landcode',
+	                    ],
                     ],
                     'messages' => [
                         'index' => [
@@ -305,7 +427,7 @@ return [
                         ],
 
                         'store' => [
-                            'success' => 'Gebruiker is met toevoegd',
+                            'success' => 'Gebruiker is met success toevoegd',
                         ],
                         'destroy' => [
                             'success' => 'Gebruiker is verwijderd'
@@ -353,7 +475,7 @@ return [
             'disclaimer' => [
                 'title' => 'Disclaimer voor het gebruik van de tool.',
                 'panel-title' => 'Disclaimer',
-                'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>',
+                'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363" target="_blank">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>',
             ],
         ],
         'help' => [
@@ -416,7 +538,7 @@ return [
                         ],
                         'no-messages' => [
                             'title' => 'Geen berichten',
-                            'text' => 'Er zijn nog geen berichten, deze zullen hier verschijnen nadat uw antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                            'text' => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
                         ]
                     ],
 
@@ -439,17 +561,20 @@ return [
                         'chat' => [
                             'conversation-requests-consideration' => [
                                 'title' => 'Uw aanvraag is in behandeling',
-                                'text' => 'Uw aanvraag is in behandeling, er word op het moment voor u een coach uitgekozen die het best bij uw situatie past.',
+                                'text' => 'Uw aanvraag is in behandeling, er wordt een coach voor u uitgekozen die het best bij uw situatie past.',
                             ],
                             'no-messages' => [
                                 'title' => 'Geen berichten',
-                                'text' => 'Er zijn nog geen berichten, deze zullen hier verschijnen nadat uw antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
+                                'text' => 'Er zijn nog geen berichten. Deze zullen hier verschijnen nadat u antwoord heeft gekregen op een aanvraag voor een coachgesprek of offerte.',
                             ]
                         ],
                     ],
                     'update' => [
-                        'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+                        'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url">hier uw berichten bekijken</a> </strong> ',
                     ],
+                    'edit' => [
+                        'is-connected-to-coach' => 'Deze aanvraag is al gekoppeld aan een coach, u kunt deze dus niet meer bijwerken.'
+                    ]
                 ],
             ],
 
@@ -475,7 +600,7 @@ return [
                         'header' => 'Account verwijderen',
                         'label' => 'Mijn account verwijderen',
                         'submit' => 'Verwijderen',
-                    ]
+                    ],
                 ],
             ],
             'cooperations' => [
@@ -490,78 +615,82 @@ return [
 
             'index' => [
                 'header' => 'Actie ondernemen',
-                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                'text' => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
 
                 'form' => [
                     'no-measure-application-name-title' => 'Gesprek aanvragen',
                     'title' => 'Actie ondernemen met :measure_application_name',
-                    'agreement' => 'Ik geef toesteming',
+                    'allow_access' => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
+                    'are-you-sure' => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',
-                    'message' => 'Uw bericht aan de cooperatie',
-                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
-                    'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
+                    'message' => 'Nadere toelichting op uw vraag',
+                    'submit' => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
 
-                    'selected-option' => 'Geselecteerde actie:',
+					'selected-option' => 'Waar kunnen we u bij helpen?:',
                     'options' => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
                     ],
                 ],
             ],
 
             'edit' => [
                 'header' => 'Bewerk uw huidige :request_type',
-                'text' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
+                'text' => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
 
                 'form' => [
 
-                    'agreement' => 'Ik geef toesteming',
+                    'allow_access' => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
+                    'are-you-sure' => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
                     'action' => 'Actie',
                     'take-action' => 'Actie ondernemen',
                     'message' => 'Uw bericht aan de cooperatie',
-                    'submit' => 'Aanvraag bevestigen <span class="glyphicon glyphicon-envelope"></span>',
                     'update' => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
 
-                    'selected-option' => 'Geselecteerde actie:',
+                    'selected-option' => 'Waar kunnen we u bij helpen?:',
 
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
 
                     'options' => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
                     ],
                 ],
             ],
 
-            'store' => [
-                'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+		'store' => [
+                'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
             ],
             'update' => [
-                'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url" target="_blank">hier uw berichten bekijken</a> </strong> ',
+                'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.'
             ],
 
             'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="' . route('cooperation.my-account.messages.requests.index') . '">hier bekijken</a></strong> ',
 
         ],
-        'tool' => [
-            'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
+		'tool' => [
 
-            'unit' => [
-                'year' => 'jaar',
-                'liter' => 'liter',
-                'day' => 'dag',
-                'square-meters' => 'm<sup>2</sup>',
-                'cubic-meters' => 'm<sup>3</sup>',
-                'co2' => 'CO<sub>2</sub>',
+		    'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
+
+			'unit' => [
+				'year' => 'jaar',
+				'liter' => 'liter',
+				'day' => 'dag',
+                'pieces' => 'stuks',
+				'square-meters' => 'm<sup>2</sup>',
+				'cubic-meters' => 'm<sup>3</sup>',
+				'co2' => 'CO<sub>2</sub>',
                 'kilograms' => 'kg',
-                'degrees' => 'graden'
-            ],
+                'degrees' => 'graden',
+				'kwh' => 'kWh',
+				'hours' => 'uren',
+			],
 
             'title' => 'Basisadvies',
 
@@ -591,85 +720,87 @@ return [
                     'current-energy-label' => 'Wat is het huidige energielabel?'
                 ],
 
-                'example-building' => [
-                    'no-match' => 'Er is geen passende voorbeeldwoning',
-                ],
+				'example-building' => [
+					'no-match' => 'Er is geen passende voorbeeldwoning',
+				],
 
-                'energy-saving-measures' => [
-                    'title' => 'Wat is de huidige staat van isolatie van uw woning en in welke maatregelen heeft u interesse?',
-                    'facade-insulation' => 'Gevelisolatie',
-                    'window-in-living-space' => 'Ramen in de leefruimtes',
-                    'window-in-sleeping-spaces' => 'Ramen in de slaapruimtes',
-                    'floor-insulation' => 'Vloerisolatie',
-                    'roof-insulation' => 'Dakisolatie',
-                    'hr-cv-boiler' => 'HR CV Ketel',
-                    'hybrid-heatpump' => 'Hybride warmtepomp',
-                    'monovalent-heatpump' => 'Monovalente warmtepomp',
-                    'sun-panel' => [
-                        'title' => 'Aantal zonnepanelen',
-                        'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
-                    ],
-                    'sun-boiler' => 'Zonneboiler',
-                    'house-ventilation' => [
-                        'title' => 'Hoe wordt het huis geventileerd?',
-                        'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
-                    ],
-                    'additional' => 'Overig',
-                    'interested' => 'Interesse in verbetering?',
+				'energy-saving-measures' => [
+					'title' => 'Wat is de huidige staat van isolatie van uw woning en in welke maatregelen heeft u interesse?',
+					'facade-insulation' => 'Gevelisolatie',
+					'window-in-living-space' => 'Ramen in de leefruimtes',
+					'window-in-sleeping-spaces' => 'Ramen in de slaapruimtes',
+					'floor-insulation' => 'Vloerisolatie',
+					'roof-insulation' => 'Dakisolatie',
+					'hr-cv-boiler' => 'HR CV Ketel',
+					'hybrid-heatpump' => 'Hybride warmtepomp',
+					'monovalent-heatpump' => 'Monovalente warmtepomp',
+					'sun-panel' => [
+						'title' => 'Aantal zonnepanelen',
+                        'if-yes' => 'Wanneer zijn de huidige panelen geplaatst?',
+					],
+					'sun-boiler' => 'Zonneboiler',
+					'house-ventilation' => [
+						'title' => 'Hoe wordt het huis geventileerd?',
+						'if-mechanic' => 'Indien mechanisch: wanneer is installatie geplaatst?',
+					],
+					'additional' => 'Overig',
+					'interested' => 'Interesse in verbetering?',
 
-                ],
-                'data-about-usage' => [
-                    'title' => 'Gegevens over het gebruik van de woning',
-                    'total-citizens' => 'Wat is het aantal bewoners?',
-                    'thermostat-highest' => 'Op welke temperatuur staat de thermostaat op de hoge stand?',
-                    'thermostat-lowest' => 'Op welke temperatuur staat de thermostaat op lage stand?',
-                    'max-hours-thermostat-highest' => 'Hoe veel uren per dag staat de thermostaat op hoge stand?',
-                    'situation-first-floor' => 'Welke situatie is van toepassing op de eerste verdieping?',
-                    'situation-second-floor' => 'Welke situatie is van toepassing op de tweede verdieping?',
-                    'cooked-on-gas' => 'Wordt er op gas gekookt?',
-                    'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
-                    'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar?',
-                    'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m<sup>3</sup> gas per jaar)',
-                    'additional-info' => 'Toelichting op de woonsituatie',
+				],
+				'data-about-usage' => [
+					'title' => 'Gegevens over het gebruik van de woning',
+					'total-citizens' => 'Wat is het aantal bewoners?',
+					'thermostat-highest' => 'Op welke temperatuur staat de thermostaat op de hoge stand?',
+					'thermostat-lowest' => 'Op welke temperatuur staat de thermostaat op lage stand?',
+					'max-hours-thermostat-highest' => 'Hoe veel uren per dag staat de thermostaat op hoge stand?',
+					'situation-first-floor' => 'Welke situatie is van toepassing op de eerste verdieping?',
+					'situation-second-floor' => 'Welke situatie is van toepassing op de tweede verdieping?',
+					'cooked-on-gas' => 'Wordt er op gas gekookt?',
+					'comfortniveau-warm-tapwater' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
+					'electricity-consumption-past-year' => 'Wat is het elektragebruik van het afgelopen jaar?',
+					'gas-usage-past-year' => 'Wat is het gasgebruik van afgelopen jaar? (in m<sup>3</sup> gas per jaar)',
+					'additional-info' => 'Toelichting op de woonsituatie',
 
                     'motivation' => [
                         'title' => 'Wat is de motivatie om aan de slag te gaan',
                         'priority' => 'Priotiteit :prio',
                     ],
                     'motivation-extra' => 'Toelichting op de motivatie',
-                ],
-            ],
+				],
+			],
             'wall-insulation' => [
                 'intro' => [
                     'title' => 'Gevelisolatie',
                     'build-year' => 'Het huis is gebouwd in :year.',
-                    'build-year-post-1985' => 'Bij woningen met dit bouwjaar is de gevel vaak al tijdens de bouw geïsoleerd',
-                    'build-year-post-1930' => 'Woningen met dit bouwjaar hebben vaak wel een spouwmuur',
-                    'build-year-pre-1930' => 'Woningen met dit bouwjaar hebben vaak geen spouwmuur',
+	                'build-year-post-1985' => 'Bij woningen met dit bouwjaar is de gevel vaak al tijdens de bouw geïsoleerd',
+	                'build-year-post-1930' => 'Woningen met dit bouwjaar hebben vaak wel een spouwmuur',
+	                'build-year-pre-1930' => 'Woningen met dit bouwjaar hebben vaak geen spouwmuur',
                     'filled-insulation' => 'U hebt de volgende isolatie ingevuld voor de gevel, weet u nu meer? Pas de waarde dan hier aan.',
-                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur ?',
-                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd ?',
-                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel ?',
-                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk ?'
+                    'has-cavity-wall' => 'Heeft deze woning een spouwmuur?',
+                    'is-facade-plastered-painted' => 'Is de gevel gestuct of geverfd?',
+                    'surface-paintwork' => 'Wat is de oppervlakte van de geschilderde gevel?',
+                    'damage-paintwork' => 'Is er schade aan het gevelschilderwerk?',
                 ],
 
                 'optional' => [
                     'title' => 'Optioneel: Vragen over de staat van onderhoud van de gevel',
-                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn ?',
-                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen) ? ',
-                    'facade-surface' => 'Geveloppervlakte van de woning',
+                    'flushing' => 'Zijn er voegen die loslaten of uitgebroken zijn?',
+                    'if-facade-dirty' => 'Is de gevel vervuild (aanslag op de stenen)?',
+	                'facade-surface' => 'Geveloppervlakte van de woning',
+	                'wall-surface' => 'Geveloppervlakte',
+	                'insulation-wall-surface' => 'Te isoleren geveloppervlakte',
                 ],
 
                 'alert' => [
-                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie'
+                    'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
                 ],
 
-                'insulation-advice' => [
-                    'text' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
-                    'cavity-wall' => 'Spouwmuurisolatie',
-                    'facade-internal' => 'Binnengevelisolatie',
-                    'research' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
-                ],
+	            'insulation-advice' => [
+	            	'text' => 'De gevel kan het beste op de volgende manier geïsoleerd worden',
+		            'cavity-wall' => 'Spouwmuurisolatie',
+		            'facade-internal' => 'Binnengevelisolatie',
+		            'research' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
+	            ],
 
                 'indication-for-costs' => [
                     'title' => 'Indicatie voor kosten en baten voor deze maatregel',
@@ -697,20 +828,20 @@ return [
 
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',
-                'subtitles' => [
-                    'glass-in-lead' => 'Vragen over glas in lood',
-                    'place-hr-only-glass' => 'Vragen over vervangen glas',
-                    'place-hr-with-frame' => 'Vragen over vervangen kozijn',
-                ],
-                'interested-in' => 'Bent u geïnteresseerd in :measure?',
+	            'subtitles' => [
+	            	'glass-in-lead' => 'Vragen over glas in lood',
+		            'place-hr-only-glass' => 'Vragen over vervangen glas',
+		            'place-hr-with-frame' => 'Vragen over vervangen kozijn',
+	            ],
+	            'interested-in' => 'Bent u geïnteresseerd in :measure?',
 
                 'cracking-seal' => [
-                    'title' => 'Kierdichting'
+                    'title' => 'Kierdichting',
                 ],
                 'current-glass' => 'Wat voor glas is er nu?',
                 'heated-rooms' => 'Zijn de kamers verwarmd?',
-                'm2' => 'm<sup>2</sup>',
-                'total-windows' => 'Aantal ramen',
+                'm2' => 'Hoeveel m<sup>2</sup> glas wilt u vervangen?',
+                'total-windows' => 'Aantal te vervangen ruiten',
 
                 'moving-parts-quality' => 'Zijn de draaiende delen van ramen en deuren voorzien van kierdichting?',
 
@@ -726,164 +857,179 @@ return [
                     'wood-rot-visible' => 'Is houtrot waarneembaar?'
                 ],
 
-                'taking-into-account' => [
-                    'paintwork' => 'Indicatieve kosten schilderwerk',
-                    'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
-                ],
+	            'taking-into-account' => [
+	            	'paintwork' => 'Indicatieve kosten schilderwerk',
+		            'paintwork_year' => 'Volgende schilderbeurt aanbevolen',
+	            ],
                 'comments' => 'Opmerkingen.',
             ],
 
-            'floor-insulation' => [
-                'intro' => [
-                    'title' => 'Vloerisolatie',
+			'floor-insulation' => [
+			    'intro' => [
+			        'title' => 'Vloerisolatie',
                 ],
-                'title' => 'Vloerisolatie',
-                'floor-insulation' => 'U hebt de volgende isolatie ingevuld voor de vloer weet u nu meer? Pas de waarde dan hier aan',
-                'has-crawlspace' => [
-                    'title' => 'Heeft deze woning een kruipruimte',
-                    'unknown' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
-                    'no-crawlspace' => 'De vloer kan alleen van boven af geïsoleerd worden. Let op de hoogtes bij deuren en bij de trap. Vraag om aanvullend advies.',
-                ],
-                'crawlspace-access' => [
-                    'title' => 'Is de kruipruimte toegankelijk?',
-                    'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
-                ],
-                'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
-                'floor-surface' => 'Vloeroppervlak van de woning',
-                'insulation-advice' => [
-                    'text' => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
-                    'floor' => 'Vloerisolatie',
-                    'bottom' => 'Bodemisolatie',
-                    'research' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
-                ],
-            ],
-            'roof-insulation' => [
+				'title' => 'Vloerisolatie',
+				'floor-insulation' => 'U hebt de volgende isolatie ingevuld voor de vloer weet u nu meer? Pas de waarde dan hier aan',
+				'has-crawlspace' => [
+					'title' => 'Heeft deze woning een kruipruimte',
+					'unknown' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
+					'no-crawlspace' => 'De vloer kan alleen van boven af geïsoleerd worden. Let op de hoogtes bij deuren en bij de trap. Vraag om aanvullend advies.',
+				],
+				'crawlspace-access' => [
+					'title' => 'Is de kruipruimte toegankelijk?',
+					'no-access' => 'Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
+				],
+				'crawlspace-height' => 'Hoe hoog is de kruipruimte?',
+				'floor-surface' => 'Vloeroppervlak van de woning',
+				'insulation-advice' => [
+					'text' => 'De vloer kan het beste op de volgende manier geïsoleerd worden',
+					'floor' => 'Vloerisolatie',
+					'bottom' => 'Bodemisolatie',
+					'research' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
+				],
+			],
+			'roof-insulation' => [
                 'no-roof' => 'Dit veld is verplicht als u een dak type heeft gekozen',
-                'title' => 'Dakisolatie',
-                'current-situation' => [
-                    'title' => 'Huidige situatie',
-                    'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
-                    'main-roof' => 'Wat is het hoofddak?',
-                    'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
-                    'is-pitched-roof-insulated' => 'is het hellende dak geïsoleerd?',
-                    'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
-                    'flat-roof-surface' => 'Dakoppervlak van platte dak',
-                    'pitched-roof' => 'Is het hellende dak geïsoleerd?',
-                    'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
-                    'zinc-replaced' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
-                    'pitched-roof-surface' => 'Dakoppervlak hellend dak',
+				'title' => 'Dakisolatie',
+				'current-situation' => [
+					'bitumen-insulated' => 'Wanneer is het bitumen dak voor het laatst vernieuwd?',
+					'title' => 'Huidige situatie',
+					'roof-types' => 'Wat voor daktypes zijn aanwezig in uw woning?',
+					'main-roof' => 'Wat is het hoofddak?',
+					'insulation-flat-roof-surface' => 'Te isoleren oppervlakte plat dak',
+					'insulation-pitched-roof-surface' => 'Te isoleren oppervlakte hellend dak',
+					'in-which-condition-tiles' => 'In welke staat verkeren de dakpannen?',
+					'is-flat-roof-insulated' => 'is het platte dak geïsoleerd?',
+					'is-pitched-roof-insulated' => 'is het hellende dak geïsoleerd?',
+					'flat-roof-surface' => 'Dakoppervlak van platte dak',
+					'pitched-roof' => 'Is het hellende dak geïsoleerd?',
+					'zinc-replaced' => 'Wanneer is het zinkwerk voor het laatst vernieuwd?',
+					'pitched-roof-surface' => 'Dakoppervlak hellend dak',
+				],
+
+				'flat-roof' => [
+					'title' => 'Plat dak',
+					'insulate-roof' => 'Hoe wilt u het platte dak isoleren?',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
+				],
+				'pitched-roof' => [
+					'title' => 'Hellend dak',
+					'insulate-roof' => 'Hoe wilt u het hellende dak isoleren?',
+					'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
+				],
+				'measure-application' => [
+					'no' => 'Niet',
+				],
+
+				'costs' => [
+					'gas' => 'Gasbesparing',
+					'co2' => 'CO<sub>2</sub> Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs-insulation' => 'Indicatieve kosten aanbrengen isolatie',
+					'comparable-rent' => 'Vergelijkbare rente',
+					'flat' => [
+						'title' => 'Kosten en baten voor isoleren van het platte dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakbedekking',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakbedekking',
+					],
+					'pitched' => [
+						'title' => 'Kosten en baten voor isoleren van het hellende dak',
+						'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakpannen',
+						'indicative-replacement-year' => 'Indicatie vervangingsmoment dakpannen',
+					],
+				],
+			],
+			'boiler' => [
+				'title' => 'HR CV Ketel',
+
+				'current-gas-usage' => 'Huidig gasverbruik',
+				'resident-count' => 'Huidig aantal bewoners',
+				'boiler-type' => 'Wat is het type van de huidige CV ketel',
+				'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst?',
+				'already-efficient' => 'Het vervangen van de huidige ketel zal alleen een beperkte energiebesparing opleveren omdat u al een HR ketel hebt.',
+
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'gas-savings' => 'Gasbesparing',
+					'co2-savings' => 'CO<sub>2</sub> Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs' => 'Indicatieve kosten',
+					'indicative-replacement' => 'Indicatie vervangingsmoment cv ketel',
+					'comparable-rate' => 'Vergelijkbare rente',
+					'year' => 'Jaar',
+				],
+			],
+			'solar-panels' => [
+				'title' => 'Zonnepanelen',
+                'amount' => 'stuks',
+				'peak-power' => 'Piekvermogen per paneel',
+				'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
+				'number' => 'Hoeveel zonnepanelen moeten er komen?',
+				'pv-panel-orientation-id' => 'Wat is de oriëntatie van de panelen?',
+				'angle' => 'Wat is de hellingshoek van de panelen?',
+				'total-power' => 'Totale Wp vermogen van de installatie: :wp',
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'yield-electricity' => 'Opbrengst elektra',
+					'raise-own-consumption' => 'Opwekking t.o.v. eigen verbruik',
+					'co2-savings' => 'CO<sub>2</sub> Besparing',
+					'savings-in-euro' => 'Besparing in €',
+					'indicative-costs' => 'Indicatieve kosten',
+					'comparable-rate' => 'Vergelijkbare rente',
+					'performance-of-system' => 'Prestatie van het systeem: :performance',
+					'year' => 'Jaar',
+					'performance' => [
+						'ideal' => 'Ideaal',
+						'possible' => 'Mogelijk',
+						'no-go' => 'Onrendabel',
+					],
+				],
+			],
+			'heater' => [
+				'title' => 'Zonneboiler',
+
+				'comfort-level-warm-tap-water' => 'Comfortniveau voor het gebruik van warm tapwater',
+				'pv-panel-orientation-id' => 'Oriëntatie van de collector',
+				'angle' => 'Hellingshoek van de collector',
+
+				'estimated-usage' => 'Geschat huidig gebruik',
+				'consumption-water' => 'Gebruik warm tapwater',
+				'consumption-gas' => 'Bijhorend gasverbruik',
+
+				'system-specs' => 'Specificaties systeem',
+				'size-boiler' => 'Grootte zonneboiler',
+				'size-collector' => 'Grootte collector',
+
+				'indication-for-costs' => [
+					'title' => 'Indicatie voor kosten en baten voor deze maatregel',
+					'production-heat' => 'Warmteproductie per jaar',
+					'percentage-consumption' => 'Aandeel van de zonneboiler aan het totaalverbruik voor warm water',
+
+				],
+			],
+
+			'my-plan' => [
+
+			    'options' => [
+                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
+                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...'
+                ],
+				'warnings' => [
+                	'title' => 'Let op!',
+                    'check-order' => 'U probeert dakisolatie met vervanging van de dakbedekking te plannen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit!',
+                    'planned-year' => 'De uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk!',
                 ],
 
-                'flat-roof' => [
-                    'title' => 'Plat dak',
-                    'insulate-roof' => 'Hoe wilt u het platte dak isoleren?',
-                    'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het platte dak?',
-                ],
-                'pitched-roof' => [
-                    'title' => 'Hellend dak',
-                    'insulate-roof' => 'Hoe wilt u het hellende dak isoleren?',
-                    'situation' => 'Welke situatie is van toepassing voor de ruimtes direct onder het hellende dak?',
-                ],
-                'measure-application' => [
-                    'no' => 'Niet',
-                ],
-
-                'costs' => [
-                    'gas' => 'Gasbesparing',
-                    'co2' => 'CO<sub>2</sub> Besparing',
-                    'savings-in-euro' => 'Besparing in €',
-                    'indicative-costs-insulation' => 'Indicatieve kosten aanbrengen isolatie',
-                    'comparable-rent' => 'Vergelijkbare rente',
-                    'flat' => [
-                        'title' => 'Kosten en baten voor isoleren van het platte dak',
-                        'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakbedekking',
-                        'indicative-replacement-year' => 'Indicatie vervangingsmoment dakbedekking',
-                    ],
-                    'pitched' => [
-                        'title' => 'Kosten en baten voor isoleren van het hellende dak',
-                        'indicative-costs-replacement' => 'Indicatieve kosten vervanging dakpannen',
-                        'indicative-replacement-year' => 'Indicatie vervangingsmoment dakpannen',
-                    ],
-                ],
-            ],
-            'boiler' => [
-                'title' => 'HR CV Ketel',
-
-                'current-gas-usage' => 'Huidig gasverbruik',
-                'resident-count' => 'Huidig aantal bewoners',
-                'boiler-type' => 'Wat is het type van de huidige CV ketel',
-                'boiler-placed-date' => 'Wanneer is de huidige CV ketel geplaatst?',
-                'already-efficient' => 'Het vervangen van de huidige ketel zal alleen een beperkte energiebesparing opleveren omdat u al een HR ketel hebt.',
-
-                'indication-for-costs' => [
-                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
-                    'gas-savings' => 'Gasbesparing',
-                    'co2-savings' => 'CO<sub>2</sub> Besparing',
-                    'savings-in-euro' => 'Besparing in €',
-                    'indicative-costs' => 'Indicatieve kosten',
-                    'indicative-replacement' => 'Indicatie vervangingsmoment cv ketel',
-                    'comparable-rate' => 'Vergelijkbare rente',
-                    'year' => 'Jaar',
-                ],
-            ],
-            'solar-panels' => [
-                'title' => 'Zonnepanelen',
-
-                'peak-power' => 'Piekvermogen per paneel',
-                'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
-                'number' => 'Hoeveel zonnepanelen moeten er komen?',
-                'pv-panel-orientation-id' => 'Wat is de oriëntatie van de panelen?',
-                'angle' => 'Wat is de hellingshoek van de panelen?',
-                'total-power' => 'Totale Wp vermogen van de installatie: :wp',
-                'indication-for-costs' => [
-                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
-                    'yield-electricity' => 'Opbrengst elektra',
-                    'raise-own-consumption' => 'Opwekking t.o.v. eigen verbruik',
-                    'co2-savings' => 'CO<sub>2</sub> Besparing',
-                    'savings-in-euro' => 'Besparing in €',
-                    'indicative-costs' => 'Indicatieve kosten',
-                    'comparable-rate' => 'Vergelijkbare rente',
-                    'performance-of-system' => 'Prestatie van het systeem: :performance',
-                    'year' => 'Jaar',
-                    'performance' => [
-                        'ideal' => 'Ideaal',
-                        'possible' => 'Mogelijk',
-                        'no-go' => 'Onrendabel',
-                    ],
-                ],
-            ],
-            'heater' => [
-                'title' => 'Zonneboiler',
-
-                'comfort-level-warm-tap-water' => 'Comfortniveau voor het gebruik van warm tapwater',
-                'pv-panel-orientation-id' => 'Oriëntatie van de collector',
-                'angle' => 'Hellingshoek van de collector',
-
-                'estimated-usage' => 'Geschat huidig gebruik',
-                'consumption-water' => 'Gebruik warm tapwater',
-                'consumption-gas' => 'Bijhorend gasverbruik',
-
-                'system-specs' => 'Specificaties systeem',
-                'size-boiler' => 'Grootte zonneboiler',
-                'size-collector' => 'Grootte collector',
-
-                'indication-for-costs' => [
-                    'title' => 'Indicatie voor kosten en baten voor deze maatregel',
-                    'production-heat' => 'Warmteproductie per jaar',
-                    'percentage-consumption' => 'Aandeel van de zonneboiler aan het totaalverbruik voor warm water',
-
-                ],
-            ],
-
-            'my-plan' => [
                 'title' => 'Actieplan',
-                'description' => 'Op deze pagina ziet u een samenvatting van alle maatregelen die u in het hoomdossier volledig hebt ingevuld. Per maatregel ziet u wat de indicatieve kosten en besparingen zijn.<br><br>Op basis van deze uitkomsten kunt u uw persoonlijke stappenplan voor de komende jaren samenstellen. Hiervoor selecteert u een maatregel in de eerste kolom (“Interesse”) en voert in de laatste kolom (“Planning”) het jaartal in wanneer u deze maatregel uit zou willen voeren.<br><br>Onder aan de pagina wordt dan uw stappenplan weergegeven. Per jaar kunt u zien hoe veel geld u voor onderhoud en energiebesparende maatregelen zou moeten reserveren en wat u aan besparing op uw energierekening in dit jaar zou kunnen verwachten.',
-                'energy-saving-measures' => 'Energiebesparende maatregelen',
-                'maintenance-measures' => 'Onderhoud',
+				'description' => 'Op deze pagina ziet u een samenvatting van alle maatregelen die u in het hoomdossier volledig hebt ingevuld. Per maatregel ziet u wat de indicatieve kosten en besparingen zijn.<br><br>Op basis van deze uitkomsten kunt u uw persoonlijke stappenplan voor de komende jaren samenstellen. Hiervoor selecteert u een maatregel in de eerste kolom (“Interesse”) en voert in de laatste kolom (“Planning”) het jaartal in wanneer u deze maatregel uit zou willen voeren.<br><br>Onder aan de pagina wordt dan uw stappenplan weergegeven. Per jaar kunt u zien hoe veel geld u voor onderhoud en energiebesparende maatregelen zou moeten reserveren en wat u aan besparing op uw energierekening in dit jaar zou kunnen verwachten.',
+				'energy-saving-measures' => 'Energiebesparende maatregelen',
+				'maintenance-measures' => 'Onderhoud',
 
-                'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
-                'no-year' => 'Geen jaartal',
+				'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
+				'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
+
                 'conversation-requests' => [
                     'take-action' => 'Actie ondernemen',
                     'request' => 'Coachgesprek aanvragen',
@@ -916,10 +1062,14 @@ return [
                     'savings-costs' => 'Besparing in euro',
                     'advice-year' => 'Geadviseerd',
                     'planned-year' => 'Planning',
+                    'take-action' => 'Actie',
                     'more-information' => 'Meer info',
                     'quotation' => 'Vraag offerte aan',
                     'help-question' => 'Hulpvraag'
                 ],
+                'conversation-requests' => [
+                    'update-request' => 'Aanvraag bijwerken'
+                ]
             ],
 
             'ventilation-information' => [
@@ -932,14 +1082,14 @@ return [
                 ],
             ],
 
-            'heat-pump-information' => [
-                'title' => 'Informatie pagina over warmtepomp.',
-                'description' => '',
-                'downloads' => [
-                    'title' => 'Downloadbare informatie.',
-                    'content' => 'Pdf informatie...'
-                ],
-            ],
+			'heat-pump-information' => [
+				'title' => 'Informatie pagina over warmtepomp.',
+				'description' => '',
+				'downloads' => [
+					'title' => 'Downloadbare informatie.',
+					'content' => 'Pdf informatie...'
+				],
+			],
 
             'heat-pump' => [
                 'title' => 'Warmtepomp',
@@ -992,6 +1142,6 @@ return [
                     ],
                 ],
             ],
-        ],
+		],
     ],
 ];

@@ -7,12 +7,14 @@ use Illuminate\View\View;
 
 class CooperationComposer
 {
+
     public function create(View $view)
     {
-		$view->with('cooperation', app()->make('Cooperation'));
-		$view->with('cooperationStyle', app()->make('CooperationStyle'));
+        $view->with('cooperation', app()->make('Cooperation'));
+        $view->with('cooperationStyle', app()->make('CooperationStyle'));
 
         $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
 
-	}
+    }
+
 }

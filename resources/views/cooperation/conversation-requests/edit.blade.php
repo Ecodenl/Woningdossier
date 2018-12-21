@@ -51,7 +51,7 @@
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.edit.form.message')</label>
-                                    <textarea name="message" class="form-control">@if(isset($intendedMessage)){{$intendedMessage}}@elseif(isset($myOpenCoachConversationRequest)){{$myOpenCoachConversationRequest->message}} @else @lang('woningdossier.cooperation.conversation-requests.coach.edit.form.message') @endif </textarea>
+                                    <textarea name="message" class="form-control">@if(isset($intendedMessage)){{ $intendedMessage }}@elseif(isset($myOpenCoachConversationRequest)){{ $myOpenCoachConversationRequest->message }} @else @lang('woningdossier.cooperation.conversation-requests.coach.edit.form.message') @endif </textarea>
 
                                     @if ($errors->has('message'))
                                         <span class="help-block">
@@ -61,15 +61,15 @@
                                 </div>
                             </div>
 
-                            <div class="form-group {{ $errors->has('agreement') ? ' has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="">
-                                        <input name="agreement" type="checkbox">
-                                        @lang('woningdossier.cooperation.conversation-requests.edit.form.agreement')
+                                        <input name="allow_access" type="checkbox" @if((old('allow_access') && old('allow_access') == 'on') || $myOpenCoachConversationRequest->allow_access)checked="checked"@endif>
+                                        @lang('woningdossier.cooperation.conversation-requests.edit.form.allow_access')
                                     </label>
-                                    @if ($errors->has('agreement'))
+                                    @if ($errors->has('allow_access'))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first('agreement') }}</strong>
+                                            <strong>{{ $errors->first('allow_access') }}</strong>
                                         </span>
                                     @endif
                                     <p>@lang('woningdossier.cooperation.conversation-requests.edit.text')</p>
@@ -123,11 +123,11 @@
 
             $(dropdown).trigger('change');
 
-            // when the form gets submited check if the user agreed with the agreement
+            // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nuthing
             $('form').on('submit', function () {
 
-                if ($('input[name=agreement]').is(':checked')  == false) {
+                if ($('input[name=allow_access]').is(':checked')  == false) {
 
                     if (confirm('Weet u zeker dat u geen toesteming wilt geven ?')) {
 

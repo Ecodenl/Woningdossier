@@ -26,7 +26,7 @@ class Cooperation extends Model
 {
     public $fillable = [
         'name',
-        'slug'
+        'slug',
     ];
 
     /**
@@ -42,8 +42,9 @@ class Cooperation extends Model
         return $this->hasOne(CooperationStyle::class);
     }
 
-    public function getRouteKeyName()
-    {return 'slug';
+	public function getRouteKeyName()
+	{
+		return 'slug';
 	}
 
     /**
@@ -83,5 +84,12 @@ class Cooperation extends Model
 //        ->where('model_has_roles.role_id', '=', 5)
 //        ->leftJoin('users', 'cooperation_user.user_id', '=', 'users.id');
 
+	}
+
+    public function getCoordinators()
+    {
+        $users = $this->users()->role('coordinator');
+
+        return $users;
 	}
 }

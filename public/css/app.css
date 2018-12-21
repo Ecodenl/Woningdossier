@@ -8354,7 +8354,7 @@ button.close {
   padding-top: 0;
 }
 
-.glyphicon-text {
+.glyphicon {
   top: 3px;
 }
 
@@ -8421,6 +8421,10 @@ body i.glyphicon-info-sign {
   height: 50px;
 }
 
+.page-my-plan h3 {
+  display: inline;
+}
+
 .page-my-plan ul#years {
   list-style: none;
   padding-left: 0;
@@ -8472,29 +8476,6 @@ ul.progress-list li.not-available a:focus img {
 
 .panel .panel-heading button {
   margin-top: -45px;
-}
-
-.choose-roles-panel:hover {
-  -webkit-box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-          box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-}
-
-#sidebar .panel-title {
-  font-size: 16px;
-}
-
-#sidebar .sidebar li.active a {
-  color: white;
-}
-
-#current-building-status .dropdown-menu {
-  border-radius: 0px;
-}
-
-#current-building-status .dropdown-menu li a {
-  color: inherit;
-  padding: 3px 20px;
-  font-weight: normal;
 }
 
 .chat {
@@ -8554,5 +8535,14 @@ ul.progress-list li.not-available a:focus img {
 #take-action .dropdown-menu li label {
   padding: 3px 20px;
   font-weight: normal;
+}
+
+.choose-roles-panel:hover {
+  -webkit-box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+          box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+#sidebar li.active a {
+  color: white;
 }
 

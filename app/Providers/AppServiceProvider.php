@@ -41,9 +41,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
-
-	    Schema::defaultStringLength(191);
+        Schema::defaultStringLength(191);
 
         if ($this->app->environment('local', 'testing')) {
             $this->app->register(DuskServiceProvider::class);

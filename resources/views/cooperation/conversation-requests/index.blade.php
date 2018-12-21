@@ -1,6 +1,5 @@
 @extends('cooperation.layouts.app')
 
-
 @section('content')
     <style>
 
@@ -21,7 +20,7 @@
                                 <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName])</h2>
                             @endif
 
-                            <input type="hidden" value="{{$measureApplicationName}}" name="measure_application_name">
+                            <input type="hidden" value="{{ $measureApplicationName }}" name="measure_application_name">
 
                             <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
@@ -34,10 +33,11 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
+
                                                 @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
                                                     <li>
                                                         <label>
-                                                            <input name="action" @if(isset($selectedOption) && $value == $selectedOption) checked @endif value="{{$value}}" type="radio">
+                                                            <input name="action" @if(isset($selectedOption) && $value == $selectedOption) checked @endif value="{{ $value }}" type="radio">
                                                             {{$label}}
                                                         </label>
                                                     </li>
@@ -56,8 +56,8 @@
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</label>
-                                    <textarea name="message" class="form-control">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</textarea>
-                                    
+                                    <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')"></textarea>
+
                                     @if ($errors->has('message'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('message') }}</strong>
@@ -66,15 +66,15 @@
                                 </div>
                             </div>
 
-                            <div class="form-group {{ $errors->has('agreement') ? ' has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
-                                    <label for="">
-                                        <input name="agreement" type="checkbox">
-                                        @lang('woningdossier.cooperation.conversation-requests.index.form.agreement')
+                                    <label for="allow_access">
+                                        <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
+                                        @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(session('cooperation'))->name])
                                     </label>
-                                    @if ($errors->has('agreement'))
+                                    @if ($errors->has('allow_access'))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first('agreement') }}</strong>
+                                            <strong>{{ $errors->first('allow_access') }}</strong>
                                         </span>
                                     @endif
                                     <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
@@ -120,17 +120,17 @@
 
             $(dropdown).trigger('change');
 
-            // when the form gets submited check if the user agreed with the agreement
-            // if so submit, else do nuthing
+            // when the form gets submited check if the user agreed with the allow_access
+            // if so submit, else do nothing
             $('form').on('submit', function () {
 
-                if ($('input[name=agreement]').is(':checked')  == false) {
+                if ($('input[name=allow_access]').is(':checked')  == false) {
 
-                    if (confirm('Weet u zeker dat u geen toesteming wilt geven ?')) {
+                    if (confirm('@lang('woningdossier.cooperation.conversation-requests.index.form.are-you-sure')')) {
 
                     } else {
-                       event.preventDefault();
-
+                        return false;
+                        event.preventDefault();
                     }
                 }
             })

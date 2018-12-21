@@ -24,7 +24,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Cooperation extends Model
 {
-    public $fillable = ['name', 'slug' ];
+    public $fillable = [
+        'name',
+        'slug'
+    ];
 
     /**
      * The users associated with this cooperation.
@@ -39,7 +42,8 @@ class Cooperation extends Model
         return $this->hasOne(CooperationStyle::class);
     }
 
-	public function getRouteKeyName() {
+	public function getRouteKeyName()
+	{
 		return 'slug';
 	}
 
@@ -82,5 +86,10 @@ class Cooperation extends Model
 
 	}
 
+    public function getCoordinators()
+    {
+        $users = $this->users()->role('coordinator');
 
+        return $users;
+	}
 }

@@ -125,9 +125,109 @@ return [
                     'text' => 'U kunt hier verschillende dingen doen.'
                 ],
                 'cooperation-admin' => [
-                    'header' => 'Welkom',
-                    'text' => 'U kunt hier verschillende dingen doen.',
 
+                    'side-nav' => [
+                        'label' => 'Coöperatie admin menu',
+                        'home' => 'Home',
+                        'users' => 'Gebruikers van uw coöperatie',
+                        'create-user' => 'Voeg een gebruiker toe',
+                        'assign-role' => 'Rollen toewijzen',
+                    ],
+
+                    'index' => [
+                        'header' => 'Welkom op het coöperatie admin panel',
+
+
+                        'table' => [
+                            'columns' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'email' => 'E-mail adres',
+                                'role' => 'Huidige rollen van gebruiker',
+                                'actions' => 'Acties'
+                            ]
+                        ],
+                    ],
+
+                    'users' => [
+                        'index' => [
+                            'header' => 'Overzicht van alle gebruikers binnen uw coöperatie',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+                            ],
+                        ],
+                        'create' => [
+                            'header' => 'Gebruiker toevoegen aan uw coöperatie',
+
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Gebruiker aanmaken',
+                            ]
+                        ],
+
+                        'store' => [
+                            'success' => 'Gebruiker is met success toevoegd',
+                        ],
+                    ],
+
+                    'assign-roles' => [
+                        'index' => [
+                            'header' => 'Overzicht gebruikers - rollen toewijzen',
+
+                            'table' => [
+                                'columns' => [
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+                        ],
+                        'edit' => [
+                            'header' => 'Verander rollen voor :firstName :lastName',
+
+                            'form' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'roles' => 'Rol toewijzen aan gebruiker',
+                                'email' => 'E-mail adres',
+                                'role' => 'Koppel rol aan de nieuwe gebruiker',
+                                'select-role' => 'Selecteer een rol...',
+                                'password' => [
+                                    'header' => 'Wachtwoord instellen',
+                                    'label' => 'Wachtwoord',
+                                    'placeholder' => 'Wachtwoord invullen...',
+                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
+                                ],
+
+                                'submit' => 'Rollen bijwerken',
+                            ],
+                        ],
+                        'update' => [
+                            'success' => 'Rollen zijn bijgewerkt'
+                        ],
+                    ],
 
                     'reports' => [
                         'title' => 'Rapportages',
@@ -320,7 +420,7 @@ return [
                         ],
 
                         'store' => [
-                            'success' => 'Gebruiker is met toevoegd',
+                            'success' => 'Gebruiker is met success toevoegd',
                         ],
                         'destroy' => [
                             'success' => 'Gebruiker is verwijderd'
@@ -482,12 +582,12 @@ return [
                         'success' => 'Gegevens succesvol gewijzigd',
                     ],
                     'reset-file' => [
-                        'header' => 'Uw dossier verwijderen',
-                        'description' => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
-                        'label' => 'Reset mijn dossier',
-                        'submit' => 'Reset',
-                        'are-you-sure' => 'Letop, dit verwijderd alle gegevens die zijn ingevuld bij de veschillende stappen. Weet u zeker dat u wilt doorgaan ?',
-                        'success' => 'Uw gegevens zijn succesvol verwijderd van uw account',
+	                    'header' => 'Uw dossier verwijderen',
+	                    'description' => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
+	                    'label' => 'Reset mijn dossier',
+	                    'submit' => 'Reset',
+	                    'are-you-sure' => 'Letop, dit verwijderd alle gegevens die zijn ingevuld bij de veschillende stappen. Weet u zeker dat u wilt doorgaan ?',
+	                    'success' => 'Uw gegevens zijn succesvol verwijderd van uw account',
                     ],
                     'destroy' => [
                         'header' => 'Account verwijderen',

@@ -33,7 +33,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			Route::get('help', 'HelpController@index')->name('help.index');
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 
-			// my account
+            // my account
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 
 			    Route::get('', 'MyAccountController@index')->name('index');
@@ -186,7 +186,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 	                Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
-			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'middleware' => ['role:cooperation-admin']], function () {
+			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
+
+                    Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
+                        Route::get('','AssignRoleController@index')->name('index');
+                        Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
+                        Route::post('edit/{userId}','AssignRoleController@update')->name('update');
+                    });
+
+			        Route::group(['prefix' => 'gebruikers', 'as' => 'users.'], function () {
+			            Route::get('', 'UserController@index')->name('index');
+			            Route::get('create', 'UserController@create')->name('create');
+			            Route::post('', 'UserController@store')->name('store');
+                    });
 
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
@@ -198,7 +210,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
 					// needs to be the last route due to the param
-                    //Route::get('{role_name?}', 'CooperationController@index')->name('index');
+                    //Route::get('{role_name?}', 'CooperationAdminController@index')->name('index');
 				    Route::get('home', 'CooperationController@index')->name('index');
                 });
 
@@ -248,5 +260,5 @@ Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('lo
 //Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');
 
 Route::get('/', function () {
-	return view('welcome');
+    return view('welcome');
 })->name('index');

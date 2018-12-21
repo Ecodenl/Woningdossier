@@ -89,8 +89,8 @@
                     </tr>
                 @endforeach
             @endforeach
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
                 @if(\App\Models\PrivateMessage::hasUserResponseToConversationRequest())
                     <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.disabled')</a>
                 @elseif(isset($privateMessage))
@@ -99,7 +99,6 @@
                     <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => 'none'])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
                 @endif
             </div>
-
         </div>
     @endforeach
     </form>
@@ -197,7 +196,7 @@
                                 $.each(stepMeasures, function (i, stepData) {
 
                                 if (stepData.interested) {
-                                    $("#advice-" + stepData.advice_id + "-planned").attr('checked', true)
+                                    $("#advice-"+stepData.advice_id+"-planned").attr('checked', true)
                                 }
 
                                 totalCosts += parseFloat(stepData.costs);
@@ -205,13 +204,14 @@
                                 totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                 totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                var slug = stepName.replace(/\s+/g, '');
+                                var slug = stepName.replace( /\s+/g, '');
 
                                     table += "<tr> <td> <a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
-                                    table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td></tr>";
-                                });
-
+                                    table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td>" +
+                                    "<td> <div class='input-group'> <div class='input-group-btn'> <button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button> <button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'> <span class='caret'></span> </button> <ul class='dropdown-menu'>  <li> <a href='{{url('aanvragen/coach_conversation')}}'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.coach_conversation')</span> </a> </li><li> <a href='{{url('aanvragen/more_information')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.more_information') </span> </a> </li><li> <a href='{{url('aanvragen/quotation')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.quotation')</span> </a> </li></ul> </div></div></td></tr>";
                             });
+
+                        });
 
                             // total calculation
                             table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + slugYear + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td colspan='1'></td></tr>";

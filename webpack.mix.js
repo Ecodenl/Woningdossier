@@ -20,7 +20,11 @@ mix.js('resources/assets/js/app.js', 'public/js')
         ], 'public/js/are-you-sure.js')
     .scripts(
         [
-            'resources/assets/js/datatables.js'
+            'resources/assets/js/datatables/jquery.dataTables.js',
+            'resources/assets/js/datatables/datatables.js',
+            'resources/assets/js/datatables/dataTables.responsive.js',
+            'resources/assets/js/datatables/responsive.bootstrap.js',
+
         ], 'public/js/datatables.js'
     )
     .scripts(
@@ -28,5 +32,15 @@ mix.js('resources/assets/js/app.js', 'public/js')
             'resources/assets/js/select2.js'
         ], 'public/js/select2.js'
     )
+    .scripts(
+        [
+            'resources/assets/js/disable-auto-fill.js'
+        ], 'public/js/disable-auto-fill.js'
+    )
     .copy('resources/assets/images', 'public/images')
-    .sass('resources/assets/sass/app.scss', 'public/css');
+    .sass('resources/assets/sass/app.scss', 'public/css')
+    .sass('resources/assets/sass/datatables/_responsive_bootstrap.scss', 'public/css/datatables/responsive.bootstrap.min.css')
+    .sass('resources/assets/sass/datatables/_responsive_datatables.scss', 'public/css/datatables/responsive.dataTables.min.css')
+    .sass('resources/assets/sass/datatables/_dataTables_bootstrap.scss', 'public/css/datatables/dataTables.bootstrap.min.css');
+
+

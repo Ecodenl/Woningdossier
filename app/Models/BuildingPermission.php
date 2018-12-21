@@ -27,4 +27,9 @@ class BuildingPermission extends Model
     {
         return $this->belongsTo('App\Models\Building');
     }
+
+    public function buildingCoachStatus()
+    {
+        return $this->belongsTo('App\Models\BuildingCoachStatus', 'building_id', 'building_id');
+    }
 }

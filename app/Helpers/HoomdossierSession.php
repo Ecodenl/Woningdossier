@@ -115,8 +115,7 @@ class HoomdossierSession extends Session {
      */
     public static function setInputSource(InputSource $inputSource)
     {
-        self::setHoomdossierSession('input_source_id', $inputSource->id);
-
+    	self::setHoomdossierSession( 'input_source_id', $inputSource->id );
     }
 
     /**

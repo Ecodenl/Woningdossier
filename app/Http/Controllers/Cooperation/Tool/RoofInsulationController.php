@@ -18,6 +18,7 @@ use App\Models\BuildingRoofType;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
@@ -154,7 +155,7 @@ class RoofInsulationController extends Controller
         $user = Building::find(HoomdossierSession::getBuilding())->user;
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         $roofTypes = $request->input('building_roof_types', []);
         foreach ($roofTypes as $i => $details) {

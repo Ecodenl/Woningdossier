@@ -53,7 +53,6 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
 
-
                         @if(isset($building->buildingFeatures->build_year))
                             <label for="house_has_insulation" class=" control-label">
                                 @lang('woningdossier.cooperation.tool.wall-insulation.intro.build-year', ['year' => $building->buildingFeatures->build_year])
@@ -443,6 +442,39 @@
                 </div>
             </div>
         </div>
+
+        @if(\App\Models\BuildingService::hasCoachInputSource($buildingFeaturesForMe) && Auth::user()->hasRole('resident'))
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space">
+                        <?php
+                            $coachInputSource = \App\Models\BuildingService::getCoachInput($buildingFeaturesForMe);
+                            $comment = $coachInputSource->additional_info;
+                        ?>
+                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                        </label>
+                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                    </div>
+                </div>
+            </div>
+        @elseif(\App\Models\BuildingService::hasResidentInputSource($buildingFeaturesForMe) && Auth::user()->hasRole('coach'))
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space">
+                        <?php
+                            $residentInputSource = \App\Models\BuildingService::getResidentInput($buildingFeaturesForMe);
+                            $comment = $residentInputSource->additional_info;
+                        ?>
+                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
+                        </label>
+
+                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <div class="row">
             <div class="col-md-12">

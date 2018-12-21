@@ -93,16 +93,18 @@ class HighEfficiencyBoilerController extends Controller
                 if (array_key_exists('extra', $options)) {
                     $year = $options['extra'];
 
-                    $measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
+	                $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
+					//$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();
+                    //$measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
 
                     $amountGas = $request->input('habit.gas_usage', null);
 
                     $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas);
                     $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                     $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-                    //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure->measure_name);
+                    //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure);
                     $result['replace_year'] = HighEfficiencyBoilerCalculator::determineApplicationYear($measure, $year);
-                    $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year']);
+                    $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'], false);
                     $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
                 }
             }

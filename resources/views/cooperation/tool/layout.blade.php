@@ -1,6 +1,5 @@
 @extends('cooperation.layouts.app')
 
-
 @section('content')
     <div class="container">
         <div class="row">
@@ -10,10 +9,10 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        Je bent nu voor {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}} zijn tool aant invullen
+                        U bewerkt nu de tool namens {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}}.
                         <br>
-                        Je ziet de data die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld
-
+                        U ziet nu de gegevens die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld
+.
                     </div>
 
                 @endif
@@ -55,12 +54,11 @@
     </div>
 @endsection
 
-
 @push('js')
     <script>
         $('#submit-form-top-right').click(function () {
             // There will only be 1 form inside the panel body, submit it
-            $('.panel-body form').submit();
+            $('.panel-body form button[type=submit]').click();
         })
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>

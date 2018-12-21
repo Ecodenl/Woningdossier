@@ -70,7 +70,7 @@ class HeaterController extends Controller
 
         return view('cooperation.tool.heater.index', compact(
             'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
-            'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
+            'currentComfort', 'currentHeater', 'habits',  'currentHeatersForMe'
         ));
     }
 

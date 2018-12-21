@@ -93,7 +93,7 @@ class GeneralDataController extends Controller
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
-            'steps', 'motivations', 'energyHabit', 'services'
+             'motivations', 'energyHabit', 'services'
         ));
     }
 

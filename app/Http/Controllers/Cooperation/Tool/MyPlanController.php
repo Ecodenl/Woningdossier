@@ -26,7 +26,7 @@ class MyPlanController extends Controller
 
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'steps', 'coachComments', 'privateMessage'
+            'advices',  'coachComments', 'privateMessage'
         ));
     }
 

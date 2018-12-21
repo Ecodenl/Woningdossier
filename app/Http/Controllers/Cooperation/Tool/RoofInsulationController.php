@@ -100,7 +100,7 @@ class RoofInsulationController extends Controller
 
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps', 'typeIds', 'buildingFeaturesForMe',
+            'features', 'roofTypes',  'typeIds', 'buildingFeaturesForMe',
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
              'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }

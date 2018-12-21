@@ -138,7 +138,7 @@ class InsulatedGlazingController extends Controller
         $myBuildingElements = BuildingElement::forMe()->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'steps', 'interests', 'myBuildingElements',
+            'building',  'interests', 'myBuildingElements',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'

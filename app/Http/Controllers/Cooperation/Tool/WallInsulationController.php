@@ -64,7 +64,7 @@ class WallInsulationController extends Controller
         $interests = Interest::orderBy('order')->get();
 
         return view('cooperation.tool.wall-insulation.index', compact(
-            'steps', 'building', 'facadeInsulation',
+             'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe'
         ));

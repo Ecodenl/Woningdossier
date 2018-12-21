@@ -1,6 +1,5 @@
 @extends('cooperation.layouts.app')
 
-
 @section('content')
     <div class="container">
         <div class="row">
@@ -10,10 +9,9 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        U vult nu de tool in voor {{\App\Models\User::find(session('user_id'))->first_name}}
+                        U bewerkt nu de tool namens {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}}.
                         <br>
-                        Je ziet de data die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld
-
+                        U ziet nu de gegevens die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld.
                     </div>
 
                 @endif
@@ -54,7 +52,6 @@
         </div>
     </div>
 @endsection
-
 
 @push('js')
     <script>

@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Cooperation\MyAccount\Messages;
 
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Services\InboxService;
+use App\Services\MessageService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class MessagesController extends Controller
 {
-    public function index()
+    public function index(Cooperation $cooperation)
     {
-
-//        $incomingMessages = PrivateMessage::myPrivateMessages()->orderBy('to_user_read')->get();
 
         $mainMessages = PrivateMessage::mainMessages()->get();
 
@@ -24,36 +24,16 @@ class MessagesController extends Controller
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
 
-        $privateMessages = PrivateMessage::getConversation($mainMessageId);
+        $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
 
-        // get all the user his private messages and set them as read
-        $incomingMessages = PrivateMessage::myPrivateMessages()->get();
-
-        foreach ($incomingMessages as $incomingMessage) {
-            $incomingMessage = PrivateMessage::find($incomingMessage->id);
-            $incomingMessage->to_user_read = true;
-            $incomingMessage->save();
-        }
-
+        InboxService::setRead($mainMessageId);
 
         return view('cooperation.my-account.messages.edit', compact('privateMessages'));
     }
 
     public function store(Request $request)
     {
-
-        $message = $request->get('message', '');
-        $receiverId = $request->get('receiver_id', '');
-        $mainMessageId = $request->get('main_message_id', '');
-
-        PrivateMessage::create(
-            [
-                'message' => $message,
-                'from_user_id' => \Auth::id(),
-                'to_user_id' => $receiverId,
-                'main_message' => $mainMessageId
-            ]
-        );
+        MessageService::create($request);
 
         return redirect()->back();
     }

@@ -32,6 +32,23 @@ class PrivateMessage extends Model
 	    'allow_access' => 'boolean',
     ];
 
+    public static function isConversationRequestConnectedToCoach($conversationRequest)
+    {
+        return $conversationRequest->status == self::STATUS_LINKED_TO_COACH;
+    }
+
+    /**
+     * Scope a query to return the open conversation requests based on the cooperation id
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeOpenCooperationConversationRequests($query)
+    {
+        $currentCooperationId = session('cooperation');
+
+        return $query->where('to_cooperation_id', $currentCooperationId)->where('status', self::STATUS_IN_CONSIDERATION);
+    }
 
     /**
      * Scope a query to return the messages that are sent to a user / coach
@@ -84,43 +101,98 @@ class PrivateMessage extends Model
      *
      * @return $this
      */
-    public static function getConversation($mainMessageId)
+    public static function scopeConversation($query, $mainMessageId)
     {
-
-        $mainMessage = self::find($mainMessageId);
-
-        $coachConversation = self::where('main_message', $mainMessageId)
-            ->where('to_user_id', \Auth::id())
-            ->orWhere('from_user_id', \Auth::id())
-            ->where('from_cooperation_id', null)
-            ->where('to_cooperation_id', null)
-            ->get();
-
-        $coachConversation->push($mainMessage);
-
-
-        return $coachConversation;
+        return $query->where('id', $mainMessageId)->orWhere('main_message', $mainMessageId);
     }
 
+    /**
+     * Get the main messages for a person who will recieves messages
+     *
+     * @param $query
+     * @return mixed
+     */
     public function scopeMainMessages($query)
     {
         return $query->where('is_completed', false)->where('main_message', null)->where('to_user_id', \Auth::id());
     }
 
     /**
+     * Get the main messages for a person who sended / created the message
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeMyCreatedMessages($query)
+    {
+        return $query->where('is_completed', false)->where('main_message', null)->where('from_user_id', \Auth::id());
+    }
+
+    /**
      * Return the sender information
      *
-     * @param $messageId
-     * @return mixed|static
+     * @param int $messageId
+     * @return User|null
      */
     public function getSender($messageId)
     {
         $senderId = $this->find($messageId)->from_user_id;
+        if (empty($senderId)){
+        	return null;
+        }
 
         $sender = User::find($senderId);
 
         return $sender;
     }
+
+    /**
+     * Return info about the receiver of the message
+     *
+     * @param int $messageId
+     * @return User|null
+     */
+    public function getReceiver($messageId)
+    {
+        $receiverId = $this->find($messageId)->to_user_id;
+        if (empty($receiverId)){
+        	return null;
+        }
+
+        $receiver = User::find($receiverId);
+
+        return $receiver;
+    }
+
+	/**
+	 * Returns the receiving cooperation of this private message
+	 *
+	 * @return Cooperation|null
+	 */
+    public function getReceivingCooperation()
+    {
+    	$receivingCooperationId = $this->to_cooperation_id;
+    	if (empty($receivingCooperationId)){
+    		return null;
+	    }
+
+	    return Cooperation::find($receivingCooperationId);
+    }
+
+	/**
+	 * Returns the receiving cooperation of this private message
+	 *
+	 * @return Cooperation|null
+	 */
+	public function getSendingCooperation()
+	{
+		$sendingCooperationId = $this->from_cooperation_id;
+		if (empty($sendingCooperationId)){
+			return null;
+		}
+
+		return Cooperation::find($sendingCooperationId);
+	}
 
     /**
      * Check if its the user his message
@@ -198,6 +270,21 @@ class PrivateMessage extends Model
     public function isRead()
     {
         if ($this->to_user_id == \Auth::id() && $this->to_user_read == true) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check wheter a conversation request has been read, this can only be used on conversation requests
+     * Cause we search on cooperation id and not on user id
+     *
+     * @return bool
+     */
+    public function isConversationRequestRead()
+    {
+        if ($this->to_cooperation_id == session('cooperation') && $this->to_user_read == true) {
             return true;
         }
 

@@ -14,6 +14,7 @@
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.street')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.owner')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.actions')</th>
+                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -30,6 +31,28 @@
                                         <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
                                     </form>
                                 </td>
+                                <td>
+                                    <div class="input-group" id="current-building-status">
+                                        <input disabled placeholder="@lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')" type="text" class="form-control disabled" aria-label="...">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                @lang('woningdossier.cooperation.admin.coach.buildings.index.table.status')
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+
+                                                @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatus)
+                                                    <form action="{{route('cooperation.admin.coach.buildings.set-building-status')}}" method="post">
+                                                        {{csrf_field()}}
+                                                        <input type="hidden" name="building_coach_status" value="{{$buildingCoachStatusKey}}">
+                                                        <input type="hidden" name="building_id" value="{{$buildingPermission->building->id}}">
+                                                        <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus) id="current" @endif onclick="parentNode.parentNode.submit()" href="">{{$buildingCoachStatus}}</a></li>
+                                                    </form>
+                                                @endforeach
+                                            </ul>
+                                        </div><!-- /btn-group -->
+                                    </div><!-- /input-group -->
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -39,3 +62,19 @@
         </div>
     </div>
 @endsection
+
+
+@push('js')
+    <script>
+        $(document).ready(function () {
+            // put the label text from the selected option inside the input for ux
+            var buildingCoachStatus = $('#current-building-status');
+            var input = $(buildingCoachStatus).find('input.form-control');
+            var currentStatus = $(buildingCoachStatus).find('li a[id=current]');
+
+            var inputValPrefix = '{{__('woningdossier.cooperation.admin.coach.buildings.index.table.current-status')}} ';
+
+            $(input).val(inputValPrefix + $(currentStatus).text().trim());
+        });
+    </script>
+@endpush

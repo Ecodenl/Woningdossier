@@ -1,25 +1,30 @@
 <?php
 
 return [
-	'navbar' => [
-		'language' => 'Taal',
-		'languages' => [
-			'nl' => 'Nederlands',
-			'en' => 'Engels',
-		],
-	],
-	'cooperation' => [
-	    'admin' => [
-	        'choose-roles' => [
-	        	'header' => 'Als welke rol wilt u doorgaan ?',
+    'navbar' => [
+        'language' => 'Taal',
+        'languages' => [
+            'nl' => 'Nederlands',
+            'en' => 'Engels',
+        ],
+    ],
+    'cooperation' => [
+
+        'admin' => [
+            'choose-roles' => [
+                'header' => 'Als welke rol wilt u doorgaan ?',
                 'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
             ],
-	'coach' => [
+
+            'coach' => [
                 'side-nav' => [
                     'label' => 'Coach menu',
                     'index' => 'Home',
                     'buildings' => 'Gebouwen',
-                    'messages' => 'Berichten',
+                    'messages-menu' => 'Berichten menu',
+                    'connect-to-resident' => 'Contact maken met bewoners',
+                    'messages' => 'Uw berichten',
+                    'connect-to-coach' => 'Coach verbinden aan bewoner',
                 ],
 
                 'index' => [
@@ -44,11 +49,74 @@ return [
                                 'city' => 'Stad',
                                 'owner' => 'Eigenaar',
                                 'actions' => 'Acties',
+                                'status' => 'Status',
+                            ],
+                            'status' => 'Kies status',
+                            'current-status' => 'Huidige status:',
+                            'options' => [
+                                \App\Models\BuildingCoachStatus::STATUS_IN_CONSIDERATION => 'In behandeling',
+                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_DONE => 'Afgehandeld',
                             ],
                         ],
                     ],
+                    'set-building-status' => [
+                        'success' => 'Status is gekoppeld aan het gebouw',
+                    ],
                     'header' => 'Gebouwen waar u toegangt tot heeft',
-                ]
+                ],
+                'messages' => [
+                    'index' => [
+                        'header' => 'Uw berichten / chats',
+
+                        'filter' => [
+                            'residents' => 'Filter op gesprekken met bewoners',
+                            'coordinators' => 'Filter op gesprekken met coordinatoren',
+                        ],
+                    ],
+                    'edit' => [
+                        'header' => 'U gesprek met :firstName :lastName',
+                        'send' => 'Verstuur'
+                    ]
+                ],
+
+                'connect-to-resident' => [
+                    'index' => [
+                        'header' => 'Bewoners waarmee u een gesprek kunt beginnen',
+                        'table' => [
+                            'columns' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'email' => 'Email',
+                                'actions' => 'Acties',
+                                'start-conversation' => 'Start gesprek met bewoner',
+                            ]
+                        ],
+                    ],
+                    'create' => [
+                        'header' => 'Een gesprek beginnen met :firstName :lastName',
+                        'form' => [
+                            'message' => [
+                                'label' => 'Bericht aan de bewoner',
+                                'placeholder' => 'Vul hier uw bericht in voor de bewoner'
+                            ],
+                            'request-type' => [
+                                'label' => 'Waar wilde de bewoner het over hebben ?',
+                                'placeholder' => 'Selecteer optie'
+                            ],
+
+                            'options' => [
+                                \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                                \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte aanvragen',
+                                \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
+                            ],
+                            'submit' => 'Gesprek met bewoner beginnen',
+                        ]
+                    ],
+                    'store' => [
+                        'warning' => 'De bewoner is op dit moment niet geïnteresseerd',
+                    ],
+                ],
             ],
 
             'cooperation' => [
@@ -88,10 +156,13 @@ return [
                     'side-nav' => [
 	                    'reports' => 'Rapporten',
                         'label' => 'Coördinator menu',
+                        'messages' => 'Berichten menu',
                         'home' => 'Home',
                         'assign-roles' => 'Rollen toewijzen',
-                        'coach' => 'Coaches',
-                        'add-user' => 'Voeg Coach / Bewoner toe'
+                        'coach' => 'Gebruikers van uw coöperatie',
+                        'add-user' => 'Voeg Coach / Bewoner toe',
+                        'my-messages' => 'Uw berichten',
+                        'connect-to-coach' => 'Openstaande aanvragen',
                     ],
                     'reports' => [
 	                    'title' => 'Rapportages',
@@ -113,7 +184,66 @@ return [
 		                    'zip-code' => 'Postcode',
 		                    'country-code' => 'Landcode',
 	                    ],
+                    ],
+                    'messages' => [
+                        'index' => [
+                            'header' => 'Uw berichten'
+                        ],
+                    ],
+                    'conversation-requests' => [
+                        'index' => [
+                            'header' => 'Overzicht van openstaande gespreks aanvragen',
+                            'no-messages' => [
+                                'title' => 'Geen openstaande aanvragen',
+                                'text' => 'Er zijn op het moment geen openstaande aanvragen'
+                            ],
+                        ],
+                        'show' => [
+                            'header' => 'U bent de aanvraag van :firstName :lastName aan het bekijken'
+                        ]
+                    ],
+                    'connect-to-coach' => [
+                        'index' => [
+                            'header' => 'Overzicht van openstaande gespreks aanvragen',
 
+                            'table' => [
+                                'columns' => [
+                                    'see-message' => 'Bekijk bericht',
+                                    'connect-to-coach' => 'Verbind met coach',
+                                    'type-request' => 'Type aanvraag',
+                                    'first-name' => 'Voornaam',
+                                    'last-name' => 'Achternaam',
+                                    'email' => 'E-mail adres',
+                                    'role' => 'Huidige rollen van gebruiker',
+                                    'actions' => 'Acties'
+                                ]
+
+                            ],
+
+                            \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
+                            \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
+                            \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
+
+
+                        ],
+                        'create' => [
+                            'header' => 'U bent de aanvraag van :firstName :lastName aan het koppelen met een coach',
+
+                            'form' => [
+                                'message-to-coach' => [
+                                    'label' => 'Uw bericht aan de coach',
+                                    'placeholder' => 'Bijv: De heer Jan wilde meer weten over vloerisolatie...'
+                                ],
+                                'title' => 'Titel van het bericht',
+                                'select-coach' => 'Selecteer een coach',
+                                'submit' => 'Coach koppelen',
+                                'submit-warning' => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
+                            ]
+                        ],
+                        'store' => [
+                            'success' => 'Uw bericht is verstuurd naar de coach, de coach kan nu verdere actie ondernemen.'
+                        ],
+                    ],
                     'assign-roles' => [
                         'index' => [
                             'header' => 'Overzicht gebruikers - rollen toewijzen',
@@ -155,7 +285,7 @@ return [
                     ],
                     'coach' => [
                         'index' => [
-                            'header' => 'Overzicht van alle coaches voor uw coöperatie',
+                            'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
 
                             'table' => [
                                 'columns' => [
@@ -197,7 +327,7 @@ return [
                         ]
                     ],
                     'index' => [
-                        'header' => 'Coordinator hoofdpagina - overzicht van alle gebruikers voor uw cooperatie',
+                        'header' => 'Alle gebruikers van uw coöperatie',
                         'text' => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
 
                         'table' => [
@@ -214,9 +344,9 @@ return [
                 ],
             ],
 
-	        'navbar' => [
-	            'current-role' => 'Uw huidge rol:',
-	        	'reports' => 'Rapportages',
+            'navbar' => [
+                'current-role' => 'Uw huidge rol:',
+                'reports' => 'Rapportages',
                 'example-buildings' => 'Example buildings'
             ],
 
@@ -245,7 +375,7 @@ return [
             'title' => 'Help',
             'help' => [
                 'help-with-filling-tool' => 'Ik wil hulp bij het invullen',
-                'no-help-with-filling-tool' =>  'Ik ga zelf aan de slag',
+                'no-help-with-filling-tool' => 'Ik ga zelf aan de slag',
                 'title' => 'Hulp met het gebruik van de tool.',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, ea exercitationem facilis hic magni mollitia neque, non quo ratione sed sequi similique suscipit ullam unde voluptatibus. Impedit optio quasi tempora?',
             ],
@@ -261,10 +391,15 @@ return [
             'title' => 'Disclaimer',
         ],
 
-		'my-account' => [
+        'my-account' => [
+            'side-nav' => [
+                'label' => 'Berichten centrum',
+                'my-messages' => 'Mijn berichten',
+                'my-requests' => 'Mijn aanvragen',
+            ],
 
-		    'index' => [
-		        'header' => 'Mijn account',
+            'index' => [
+                'header' => 'Mijn account',
                 'text' => 'U kunt vanaf hier naar uw instellingen gaan om uw account te wijzigen, voortgang te resetten of om het account te verwijderen. Of u kunt naar uw berichten gaan om deze te zien.',
 
                 'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',
@@ -272,6 +407,8 @@ return [
             ],
 
             'messages' => [
+
+
                 'navigation' => [
                     'inbox' => 'Inbox',
                     'requests' => 'Uw aanvragen',
@@ -328,6 +465,9 @@ return [
                     'update' => [
                         'success' => 'Uw aanvraag is bijgewerkt. u kunt <strong><a href=":url">hier uw berichten bekijken</a> </strong> ',
                     ],
+                    'edit' => [
+                        'is-connected-to-coach' => 'Deze aanvraag is al gekoppeld aan een coach, u kunt deze dus niet meer bijwerken.'
+                    ]
                 ],
             ],
 
@@ -356,14 +496,14 @@ return [
                     ],
                 ],
             ],
-			'cooperations' => [
-				'form' => [
-					'header' => 'Mijn coöperaties',
-				],
+            'cooperations' => [
+                'form' => [
+                    'header' => 'Mijn coöperaties',
+                ],
 
-			],
+            ],
 
-		],
+        ],
         'conversation-requests' => [
 
             'index' => [
@@ -380,7 +520,7 @@ return [
                     'message' => 'Nadere toelichting op uw vraag',
                     'submit' => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
 
-                    'selected-option' => 'Waar kunnen we u bij helpen?:',
+					'selected-option' => 'Waar kunnen we u bij helpen?:',
                     'options' => [
                         \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
                         \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
@@ -424,7 +564,7 @@ return [
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.'
             ],
 
-            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
+            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="' . route('cooperation.my-account.messages.requests.index') . '">hier bekijken</a></strong> ',
 
         ],
 		'tool' => [
@@ -445,33 +585,33 @@ return [
 				'hours' => 'uren',
 			],
 
-			'title' => 'Basisadvies',
+            'title' => 'Basisadvies',
 
-			'general-data' => [
-				'title' => 'Algemene gegevens',
+            'general-data' => [
+                'title' => 'Algemene gegevens',
 
-				'name-address-data' => [
-					'title' => 'Naam en adresgegevens',
-					'name-resident' => 'Naam bewoner',
-					'street' => 'Straat',
-					'house-number' => 'Huisnummer',
-					'zip-code' => 'Postcode',
-					'residence' => 'Plaats',
-					'email' => 'e-mail adres',
-					'phone-number' => 'Telefoon'
-				],
+                'name-address-data' => [
+                    'title' => 'Naam en adresgegevens',
+                    'name-resident' => 'Naam bewoner',
+                    'street' => 'Straat',
+                    'house-number' => 'Huisnummer',
+                    'zip-code' => 'Postcode',
+                    'residence' => 'Plaats',
+                    'email' => 'e-mail adres',
+                    'phone-number' => 'Telefoon'
+                ],
 
-				'building-type' => [
-					'title' => 'Wat is het voor woning?',
-					'example-building-type' => 'Kies de best passende voorbeeldwoning',
-					'what-type' => 'Wat is het woningtype?',
-					'what-user-surface' => 'Wat is de gebruiksoppervlakte van de woning?',
-					'how-much-building-layers' => 'Hoeveel bouwlagen heeft het huis?',
-					'type-roof' => 'Type dak',
-					'is-monument' => 'Is het een monument?',
-					'what-building-year' => 'Wat is het bouwjaar?',
-					'current-energy-label' => 'Wat is het huidige energielabel?'
-				],
+                'building-type' => [
+                    'title' => 'Wat is het voor woning?',
+                    'example-building-type' => 'Kies de best passende voorbeeldwoning',
+                    'what-type' => 'Wat is het woningtype?',
+                    'what-user-surface' => 'Wat is de gebruiksoppervlakte van de woning?',
+                    'how-much-building-layers' => 'Hoeveel bouwlagen heeft het huis?',
+                    'type-roof' => 'Type dak',
+                    'is-monument' => 'Is het een monument?',
+                    'what-building-year' => 'Wat is het bouwjaar?',
+                    'current-energy-label' => 'Wat is het huidige energielabel?'
+                ],
 
 				'example-building' => [
 					'no-match' => 'Er is geen passende voorbeeldwoning',
@@ -803,10 +943,10 @@ return [
                     'savings-costs' => 'Besparing in euro',
                     'advice-year' => 'Geadviseerd jaar',
                     'planned-year' => 'Planning',
-	                'costs-advice-year' => 'Kosten in geadviseerd jaar',
+                    'costs-advice-year' => 'Kosten in geadviseerd jaar',
                 ],
-				'columns' => [
-					'more-info' => 'Meer info',
+                'columns' => [
+                    'more-info' => 'Meer info',
 					'interest' => 'Interesse',
                     'measure' => 'Maatregel',
                     'costs' => 'Kosten',
@@ -820,6 +960,9 @@ return [
                     'quotation' => 'Vraag offerte aan',
                     'help-question' => 'Hulpvraag'
                 ],
+                'conversation-requests' => [
+                    'update-request' => 'Aanvraag bijwerken'
+                ]
             ],
 
             'ventilation-information' => [
@@ -892,6 +1035,6 @@ return [
                     ],
                 ],
             ],
-        ],
+		],
     ],
 ];

@@ -135,5 +135,6 @@
 <script src="{{ asset('js/app.js') }}"></script>
 
 @stack('js')
+{{--additional js code here--}}
 </body>
 </html>

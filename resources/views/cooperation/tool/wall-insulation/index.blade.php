@@ -69,7 +69,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
+                            <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
                             <label class="radio-inline">
                                 <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                             </label>

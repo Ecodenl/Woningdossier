@@ -49,7 +49,26 @@ class Cooperation extends Model
      */
     public function steps()
     {
-        return $this->belongsToMany(Step::class, 'cooperation_steps');
+        return $this->belongsToMany(Step::class, 'cooperation_steps')->withPivot('order', 'is_active');
+    }
+
+    /**
+     * Check if the cooperation has a active step
+     *
+     * @param Step $step
+     * @return bool
+     */
+    public function isStepActive(Step $step): bool
+    {
+        $cooperationSteps = $this->steps();
+        $cooperationStep = $cooperationSteps->find($step->id);
+        if ($cooperationStep instanceof Step) {
+            if ($cooperationStep->pivot->is_active) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

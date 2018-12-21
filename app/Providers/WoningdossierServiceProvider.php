@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\UserActionPlanAdvice;
 use App\Observers\UserActionPlanAdviceObserver;
+use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider
@@ -19,6 +21,17 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        \View::composer('cooperation.tool.progress', function ($view) {
+            $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+
+            // get the steps from a cooperation that are active and ordered on the order column from the pivot table
+            $steps = $cooperation->steps()
+                ->orderBy('cooperation_steps.order')
+                ->where('cooperation_steps.is_active', '1')
+                ->get();
+
+            $view->with('steps', $steps);
+        });
         //view()->composer('cooperation.layouts.app',  CooperationComposer::class);
         //view()->composer('*',  CooperationComposer::class);
 

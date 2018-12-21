@@ -3,28 +3,25 @@
 @section('cooperation_admin_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.header')
-            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.users.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+            @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.steps.index.header')
         </div>
 
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-striped table-bordered compact nowrap table-responsive">
+                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.first-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.last-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.email')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.role')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.steps.index.table.columns.name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.steps.index.table.columns.active')</th>
                         </tr>
                         </thead>
                         <tbody>
                         @forelse($steps as $step)
-                            <tr>
-                                <td>{{$step->name}}</td>
+                        <tr>
+                            <td>{{$step->name}}</td>
                                 <td>
-                                    <input class="toggle-active" data-step-id="{{$step->id}}"  type="checkbox"  data-toggle="toggle"  data-on="Actief" data-off="Niet actief">
+                                    <input data-active="{{$cooperation->isStepActive($step) ? 'on' : 'off'}}" class="toggle-active" data-step-id="{{$step->id}}"  type="checkbox"  data-toggle="toggle"  data-on="Actief" data-off="Niet actief">
                                 </td>
                             </tr>
                         @empty
@@ -38,22 +35,38 @@
     </div>
 @endsection
 
-
+@push('css')
+    <link href="{{asset('css/bootstrap-toggle.min.css')}}" rel="stylesheet">
 @push('js')
+    <script src="{{asset('js/bootstrap-toggle.min.js')}}"></script>
+
     <script>
         $(document).ready(function () {
-            $('table').DataTable({
-                responsive: true
+            $('#table').dataTable();
+
+            var toggleActive = $('.toggle-active');
+
+            $(toggleActive).each(function (index, value) {
+                $(this).bootstrapToggle($(this).data('active'));
             });
 
-            $('.remove').click(function () {
-                if (confirm("Weet u zeker dat u de gebruiker wilt verwijderen")) {
+            toggleActive.change(function () {
+                console.log($(this));
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    url: '{{route('cooperation.admin.cooperation.cooperation-admin.steps.set-active')}}',
+                    data: {
+                        step_active: $(this).prop('checked'),
+                        step_id: $(this).data('step-id')
+                    }
+                }).done(function () {
+                    console.log('bier!');
+                })
+            });
+        });
 
-                } else {
-                    event.preventDefault();
-                }
-            })
-        })
     </script>
 @endpush
-

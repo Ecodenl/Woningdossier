@@ -22,6 +22,8 @@ class CreateCooperationStepsTable extends Migration
             $table->integer('step_id')->unsigned();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
 
+            $table->integer('is_active')->default(1);
+
             $table->integer('order')->nullable();
         });
     }

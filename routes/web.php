@@ -210,7 +210,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                        Route::get('', 'StepController@index')->name('index');
-                       Route::post('set-active', 'StepController@setActive')->name('set-aciv');
+                       Route::post('set-active', 'StepController@setActive')->name('set-active');
                     });
 
 				    Route::resource('example-buildings', 'ExampleBuildingController');

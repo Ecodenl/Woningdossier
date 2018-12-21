@@ -173,6 +173,18 @@ return [
                         ],
                     ],
 
+                    'steps' => [
+                        'index' => [
+                            'header' => 'Stappen die u kunt beheren',
+                            'table' => [
+                                'columns' => [
+                                    'name' => 'Stap naam',
+                                    'active' => 'Actief',
+                                ]
+                            ]
+                        ]
+                    ],
+
                     'users' => [
                         'index' => [
                             'header' => 'Overzicht van alle gebruikers binnen uw coöperatie',

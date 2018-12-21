@@ -14,7 +14,7 @@
                                     <span class="glyphicon  @if(str_replace(['coordinator.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName()) glyphicon-chevron-up @else glyphicon-chevron-down @endif"></span>
                                 </h4>
                             </div>
-                            <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['users.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
+                            <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['users.', 'cooperation-admin.index', 'assign-role', 'steps'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.index'])) active @endif"><a  href="{{route('cooperation.admin.cooperation.cooperation-admin.index', ['role' => \Spatie\Permission\Models\Role::find(session('role_id'))->name])}}">@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.home')</a></li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.steps.index'])) active @endif">
                                     <a href="{{route('cooperation.admin.cooperation.cooperation-admin.steps.index')}}">

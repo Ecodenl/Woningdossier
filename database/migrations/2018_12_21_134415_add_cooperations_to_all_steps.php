@@ -18,7 +18,11 @@ class AddCooperationsToAllSteps extends Migration
         $steps = \App\Models\Step::all();
 
         foreach ($allCooperations as $cooperation) {
-            $cooperation->steps()->attach($steps);
+//            $cooperation->steps()->attach($steps)
+            foreach ($steps as $step) {
+                $cooperation->steps()->attach($step);
+                $cooperation->steps()->updateExistingPivot($step->id, ['order' => $step->order]);
+            }
         }
     }
 

@@ -836,12 +836,8 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
-                    @if(isset($energyHabitForMe) && $energyHabitForMe->first()->hasCoachInputSource())
-                        @component('cooperation.tool.components.alert')
-                            {{$energyHabitForMe->where('input_source_id', $coachInputSource->id)->first()->living_situation_extra}}
-                        @endcomponent
-                    @endif
+                    {{--@component('cooperation.tool.components.alert')--}}
+                    {{--@endcomponent--}}
                 </div>
             </div>
 

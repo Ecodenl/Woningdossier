@@ -37,11 +37,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 
 			    Route::get('', 'MyAccountController@index')->name('index');
-
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
                 Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
-
 
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
 
@@ -49,7 +47,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
 				    Route::post('edit', 'MessagesController@store')->name('store');
 
-				    Route::group(['prefix' => 'aanvragen', 'as' => 'requests.'], function () {
+				    Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
 
 				        Route::get('', 'RequestController@index')->name('index');
 				        Route::get('{requestMessageId}', 'RequestController@edit')->name('edit');
@@ -61,7 +59,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			});
 
 			// conversation requests
-			Route::group(['prefix' => 'aanvragen', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+			Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
 
 			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
 			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
@@ -153,6 +151,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
                     });
 
+                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                        Route::get('', 'ReportController@index')->name('index');
+                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+
+                    });
+
                     Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');
                         Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
@@ -187,13 +192,12 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
                         Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                });
 
-                    });
+				Route::resource('example-buildings', 'ExampleBuildingController');
+				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
-                    Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
-
-                    // needs to be the last route due to the param
+					// needs to be the last route due to the param
                     //Route::get('{role_name?}', 'CooperationController@index')->name('index');
 				    Route::get('home', 'CooperationController@index')->name('index');
                 });
@@ -237,7 +241,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 	});
 });
-
 
 Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('logout');
 //Route::get('password/reset/{token?}', 'Cooperation\Auth\ResetPasswordController@showResetForm')->name('password.reset');

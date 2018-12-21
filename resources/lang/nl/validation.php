@@ -132,5 +132,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+    	'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
+	    'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
+    ],
 ];

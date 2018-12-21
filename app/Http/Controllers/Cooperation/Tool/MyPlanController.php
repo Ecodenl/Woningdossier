@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Helpers\Calculator;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
+use App\Models\PrivateMessage;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
@@ -13,15 +14,16 @@ use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
 {
-    public function index()
-    {
-        $user = \Auth::user();
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
-        $steps = Step::orderBy('order')->get();
+	public function index()
+		{
+        $privateMessage = PrivateMessage::myConversationRequest()->first();$user = \Auth::user();
+		$advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+
+		$steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'steps'
+            'advices', 'steps', 'privateMessage'
         ));
     }
 
@@ -73,7 +75,7 @@ class MyPlanController extends Controller
         $userPlanData = array_flatten($userPlanData, 1);
 
         return CsvExportService::export($headers, $userPlanData, 'my-plan');
-    }
+	}
 
     public function store(Request $request)
     {
@@ -115,6 +117,9 @@ class MyPlanController extends Controller
                         'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
+                        'measure_short' => $advice->measureApplication->short,
+                        // In the table the costs are indexed based on the advice year
+                        // Now re-index costs based on user planned year in the personal plan
                         'costs' => Calculator::indexCosts($advice->costs, $costYear),
                         'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
                         'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,

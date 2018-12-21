@@ -6,14 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class PrivateMessage extends Model
 {
-    protected $fillable = ['message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id', 'status', 'main_message', 'title', 'request_type'];
+    protected $fillable = [
+    	'message', 'from_user_id', 'to_user_id', 'from_cooperation_id',
+	    'to_cooperation_id', 'status', 'main_message', 'title',
+	    'request_type', 'allow_access',
+    ];
 
     const STATUS_LINKED_TO_COACH = "gekoppeld aan coach";
     const STATUS_IN_CONSIDERATION = "in behandeling";
 
-    const REQUEST_TYPE_COACH_CONVERSATION = "coach_conversation";
-    const REQUEST_TYPE_MORE_INFORMATION = "more_information";
+    const REQUEST_TYPE_COACH_CONVERSATION = "coach-conversation";
+    const REQUEST_TYPE_MORE_INFORMATION = "more-information";
     const REQUEST_TYPE_QUOTATION = "quotation";
+    const REQUEST_TYPE_OTHER = "other";
 
     /**
      * The attributes that should be cast to native types.
@@ -24,8 +29,13 @@ class PrivateMessage extends Model
         'is_completed' => 'boolean',
         'from_user_read' => 'boolean',
         'to_user_read' => 'boolean',
+	    'allow_access' => 'boolean',
     ];
 
+    public static function isConversationRequestConnectedToCoach($conversationRequest)
+    {
+        return $conversationRequest->status == self::STATUS_LINKED_TO_COACH;
+    }
 
     /**
      * Scope a query to return the open conversation requests based on the cooperation id
@@ -121,12 +131,15 @@ class PrivateMessage extends Model
     /**
      * Return the sender information
      *
-     * @param $messageId
-     * @return mixed|static
+     * @param int $messageId
+     * @return User|null
      */
     public function getSender($messageId)
     {
         $senderId = $this->find($messageId)->from_user_id;
+        if (empty($senderId)){
+        	return null;
+        }
 
         $sender = User::find($senderId);
 
@@ -136,17 +149,50 @@ class PrivateMessage extends Model
     /**
      * Return info about the receiver of the message
      *
-     * @param $messageId
-     * @return mixed|static
+     * @param int $messageId
+     * @return User|null
      */
     public function getReceiver($messageId)
     {
         $receiverId = $this->find($messageId)->to_user_id;
+        if (empty($receiverId)){
+        	return null;
+        }
 
         $receiver = User::find($receiverId);
 
         return $receiver;
     }
+
+	/**
+	 * Returns the receiving cooperation of this private message
+	 *
+	 * @return Cooperation|null
+	 */
+    public function getReceivingCooperation()
+    {
+    	$receivingCooperationId = $this->to_cooperation_id;
+    	if (empty($receivingCooperationId)){
+    		return null;
+	    }
+
+	    return Cooperation::find($receivingCooperationId);
+    }
+
+	/**
+	 * Returns the receiving cooperation of this private message
+	 *
+	 * @return Cooperation|null
+	 */
+	public function getSendingCooperation()
+	{
+		$sendingCooperationId = $this->from_cooperation_id;
+		if (empty($sendingCooperationId)){
+			return null;
+		}
+
+		return Cooperation::find($sendingCooperationId);
+	}
 
     /**
      * Check if its the user his message

@@ -26,10 +26,8 @@ class ConversationRequest extends FormRequest
     public function rules()
     {
         return [
-            'message' => 'required|max:10000',
-            'agreement' => '',
-            'action' => 'required', Rule::in(['more_information', 'quotation', 'coach_conversation'])
-
+            'action' => 'required', Rule::in(['more-information', 'coach', 'coach-conversation']),
+            'message' => 'required',
         ];
     }
 }

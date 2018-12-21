@@ -29,7 +29,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class HeaterController extends Controller
@@ -51,9 +51,9 @@ class HeaterController extends Controller
     {
         $typeIds = [3];
 
-        $user = \Auth::user();
-        /** @var Building $building */
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         $steps = Step::orderBy('order')->get();
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
@@ -97,10 +97,10 @@ class HeaterController extends Controller
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
         $interests = $request->input('interest', '');
 
-        $user = \Auth::user();
-        /** @var Building $building */
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
         $habit = $user->energyHabit;
+
 
         if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
@@ -208,7 +208,7 @@ class HeaterController extends Controller
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
 
-        BuildingHeater::updateOrCreate(
+        BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId
@@ -223,7 +223,7 @@ class HeaterController extends Controller
         $habits = $request->input('user_energy_habits', '');
         $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
 
-        $user->energyHabit()->update(['water_comfort_id' => $waterComFortId]);
+        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['water_comfort_id' => $waterComFortId]);
 
         // Save progress
         $this->saveAdvices($request);
@@ -235,6 +235,9 @@ class HeaterController extends Controller
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -247,7 +250,7 @@ class HeaterController extends Controller
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

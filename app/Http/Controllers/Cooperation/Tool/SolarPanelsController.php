@@ -22,14 +22,13 @@ use App\Models\PvPanelYield;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Scopes\GetValueScope;
 
 class SolarPanelsController extends Controller
 {
@@ -54,14 +53,7 @@ class SolarPanelsController extends Controller
 
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
-//        dd($building->pvPanels);
 
-//        $buildingId = $building->id;
-        /**
-         * @var Building
-         */
-//        $building = $user->buildings()->first();
-//        $user->energyHabit;
         $amountElectricity = ($user->energyHabit instanceof UserEnergyHabit) ? $user->energyHabit->amount_electricity : 0;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
@@ -88,8 +80,8 @@ class SolarPanelsController extends Controller
 
 
 
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);
@@ -179,7 +171,7 @@ class SolarPanelsController extends Controller
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
 
-        $user->energyHabit()->update(['amount_electricity' => $habitAmountElectricity]);
+        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['amount_electricity' => $habitAmountElectricity]);
 
         $pvPanels = $request->input('building_pv_panels', '');
         $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : '';
@@ -187,7 +179,7 @@ class SolarPanelsController extends Controller
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
 
-        BuildingPvPanel::updateOrCreate(
+        BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -210,6 +202,9 @@ class SolarPanelsController extends Controller
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -223,7 +218,7 @@ class SolarPanelsController extends Controller
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

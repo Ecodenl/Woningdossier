@@ -5,11 +5,36 @@ namespace App\Helpers;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\Role;
 use Illuminate\Support\Facades\Session;
-use Spatie\Permission\Models\Role;
 
 class HoomdossierSession extends Session {
 
+
+    /**
+     * Set all the required values.
+     *
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param InputSource $inputSourceValue
+     * @param Role $role
+     */
+    public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
+    {
+        self::setBuilding($building);
+        self::setInputSource($inputSource);
+        self::setInputSourceValue($inputSourceValue);
+        self::setRole($role);
+    }
+
+    /**
+     * Destroy the hoomdossier sessions
+     */
+    public static function destroy()
+    {
+//        self::forget(['hoomdossier_session.role_id', 'hoomdossier_session.building_id', 'hoomdossier_session.input_source_id', 'hoomdossier_session.input_source_value_id']);
+        self::forget(['hoomdossier_session']);
+    }
 
     /**
      * Set the Cooperation id

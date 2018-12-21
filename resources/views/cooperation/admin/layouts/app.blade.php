@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/datepicker/datetimepicker.min.css')}}">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
     @endif
@@ -132,6 +133,8 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/moment/moment.js') }}"></script>
+<script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
 
 @stack('js')
 {{--additional js code here--}}

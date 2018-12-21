@@ -223,8 +223,15 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 			    Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
 			        Route::get('', 'BuildingController@index')->name('index');
+			        Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
+			        Route::post('edit', 'BuildingController@update')->name('update');
 			        Route::get('{id}', 'BuildingController@fillForUser')->name('fill-for-user');
 			        Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
+
+			        Route::group(['prefix' => 'details', 'as' => 'details.'], function () {
+			            Route::get('{building_id}', 'BuildingDetailsController@index')->name('index');
+			            Route::post('', 'BuildingDetailsController@store')->name('store');
+                    });
                 });
 
                 Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {

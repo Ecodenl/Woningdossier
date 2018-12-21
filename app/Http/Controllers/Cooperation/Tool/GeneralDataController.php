@@ -35,7 +35,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,6 +57,7 @@ class GeneralDataController extends Controller
     public function index()
     {
         $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
@@ -77,7 +78,7 @@ class GeneralDataController extends Controller
         $heatPumps = PresentHeatPump::all();
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
         $motivations = Motivation::orderBy('order')->get();
-        $energyHabit = Auth::user()->energyHabit;
+        $energyHabit = $buildingOwner->energyHabit;
         $steps = Step::orderBy('order')->get();
         $step = $this->step;
 
@@ -103,6 +104,7 @@ class GeneralDataController extends Controller
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingId = $building->id;
+        $user = $building->user;
         $inputSourceId = HoomdossierSession::getInputSource();
         
         $exampleBuildingId = $request->get('example_building_id', null);
@@ -114,21 +116,20 @@ class GeneralDataController extends Controller
                 $building->save();
             }
         }
-        
-        $features = BuildingFeature::updateOrCreate(
+
+        $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
                 'build_year' => $request->get('build_year'),
                 'surface' => $request->get('surface'),
                 'monument' => $request->get('monument', 0),
                 'building_layers' => $request->get('building_layers'),
             ]
         );
+
 
 
         $energyLabel = EnergyLabel::find($request->get('energy_label_id'));
@@ -150,7 +151,7 @@ class GeneralDataController extends Controller
         $yesOnShortTermInterest = Interest::where('calculate_value', 1)->first();
         $buildingOwner = Building::find($buildingId)->user;
 
-        UserInterest::updateOrCreate(
+        UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id'            => $buildingOwner->id,
                 'interested_in_type' => 'element',
@@ -170,7 +171,7 @@ class GeneralDataController extends Controller
 
             if ($element instanceof Element && $elementValue instanceof ElementValue) {
 
-                BuildingElement::updateOrCreate(
+                BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [
                         'element_id' => $element->id,
                         'input_source_id' => $inputSourceId,
@@ -182,7 +183,7 @@ class GeneralDataController extends Controller
                 );
                 if (! empty($elementInterestId)) {
                     // We'll create the user interests for the elements or update it
-                    UserInterest::updateOrCreate(
+                    UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'user_id'            => $buildingOwner->id,
                             'interested_in_type' => 'element',
@@ -212,7 +213,7 @@ class GeneralDataController extends Controller
 
             if ($service instanceof Service) {
 
-                $buildingService = BuildingService::updateOrCreate(
+                $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [
                         'service_id' => $service->id,
                         'input_source_id' => $inputSourceId,
@@ -244,7 +245,7 @@ class GeneralDataController extends Controller
 
                 // We'll create the user interests for the services or update it
                 if (! empty($serviceInterestId)) {
-                    UserInterest::updateOrCreate(
+                    UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'user_id'            => $buildingOwner->id,
                             'interested_in_type' => 'service',
@@ -259,9 +260,9 @@ class GeneralDataController extends Controller
         }
 
         // Check if the user already has a motivation
-        if (UserMotivation::where('user_id', Auth::id())->count() > 0) {
+        if (UserMotivation::where('user_id', $user->id)->count() > 0) {
             // if so drop the old ones
-            UserMotivation::where('user_id', Auth::id())->delete();
+            UserMotivation::where('user_id', $user->id)->delete();
         }
         // get the motivations
         foreach ($request->get('motivation', []) as $key => $motivationId) {
@@ -275,12 +276,12 @@ class GeneralDataController extends Controller
             );
         }
 
-        UserEnergyHabit::updateOrCreate(
+        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id' => $buildingOwner->id,
+                'input_source_id' => $inputSourceId,
             ],
             [
-                'user_id' => $buildingOwner->id,
                 'resident_count' => $request->get('resident_count'),
                 'thermostat_high' => $request->get('thermostat_high', 20),
                 'thermostat_low' => $request->get('thermostat_low', 15),

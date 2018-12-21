@@ -83,10 +83,14 @@ class GeneralDataController extends Controller
         $energyHabitForMe = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->where('user_id', $buildingOwner->id)->get();
         $step = $this->step;
 
+        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
+        $userInterestsForMe = UserInterest::forMe()->get();
+
+
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step', 'buildingOwner', 'energyHabitForMe',
+            'building', 'step', 'buildingOwner', 'energyHabitForMe', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
-            'exampleBuildings', 'interests', 'elements',
+            'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
             'steps', 'motivations', 'energyHabit', 'services'
@@ -126,7 +130,7 @@ class GeneralDataController extends Controller
             [
                 'build_year' => $request->get('build_year'),
                 'surface' => $request->get('surface'),
-                'monument' => $request->get('monument', 0),
+                'monument' => $request->get('monument'),
                 'building_layers' => $request->get('building_layers'),
             ]
         );
@@ -155,6 +159,7 @@ class GeneralDataController extends Controller
         UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id'            => $buildingOwner->id,
+                'input_source_id'    => $inputSourceId,
                 'interested_in_type' => 'element',
                 'interested_in_id'   => $livingRoomWindowsElement->id,
             ],
@@ -187,6 +192,7 @@ class GeneralDataController extends Controller
                     UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'user_id'            => $buildingOwner->id,
+                            'input_source_id'    => $inputSourceId,
                             'interested_in_type' => 'element',
                             'interested_in_id'   => $elementId,
                         ],
@@ -249,6 +255,7 @@ class GeneralDataController extends Controller
                     UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
                             'user_id'            => $buildingOwner->id,
+                            'input_source_id'    => $inputSourceId,
                             'interested_in_type' => 'service',
                             'interested_in_id'   => $serviceId,
                         ],

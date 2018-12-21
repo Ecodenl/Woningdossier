@@ -45,6 +45,7 @@ class HighEfficiencyBoilerController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
         $habit = $user->energyHabit;
+        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
 
         $steps = Step::orderBy('order')->get();
         // NOTE: building element hr-boiler tells us if it's there
@@ -56,7 +57,7 @@ class HighEfficiencyBoilerController extends Controller
 
         return view('cooperation.tool.hr-boiler.index', compact(
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
-            'typeIds', 'installedBoilerForMe',
+            'typeIds', 'installedBoilerForMe', 'energyHabitsForMe',
             'steps'));
     }
 
@@ -93,16 +94,18 @@ class HighEfficiencyBoilerController extends Controller
                 if (array_key_exists('extra', $options)) {
                     $year = $options['extra'];
 
-                    $measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
+	                $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
+					//$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();
+                    //$measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
 
                     $amountGas = $request->input('habit.gas_usage', null);
 
                     $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas);
                     $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                     $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-                    //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure->measure_name);
+                    //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure);
                     $result['replace_year'] = HighEfficiencyBoilerCalculator::determineApplicationYear($measure, $year);
-                    $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year']);
+                    $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'], false);
                     $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
                 }
             }
@@ -181,7 +184,7 @@ class HighEfficiencyBoilerController extends Controller
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();

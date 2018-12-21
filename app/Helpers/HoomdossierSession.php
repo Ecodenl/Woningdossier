@@ -28,6 +28,15 @@ class HoomdossierSession extends Session {
     }
 
     /**
+     * Destroy the hoomdossier sessions
+     */
+    public static function destroy()
+    {
+//        self::forget(['hoomdossier_session.role_id', 'hoomdossier_session.building_id', 'hoomdossier_session.input_source_id', 'hoomdossier_session.input_source_value_id']);
+        self::forget(['hoomdossier_session']);
+    }
+
+    /**
      * Set the Cooperation id
      *
      * @param Cooperation $cooperation
@@ -106,8 +115,7 @@ class HoomdossierSession extends Session {
      */
     public static function setInputSource(InputSource $inputSource)
     {
-        self::setHoomdossierSession('input_source_id', $inputSource->id);
-
+    	self::setHoomdossierSession( 'input_source_id', $inputSource->id );
     }
 
     /**

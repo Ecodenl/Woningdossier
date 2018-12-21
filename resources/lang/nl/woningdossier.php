@@ -13,7 +13,7 @@ return [
         'admin' => [
             'choose-roles' => [
                 'header' => 'Als welke rol wilt u doorgaan ?',
-                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
+                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
             ],
 
             'coach' => [
@@ -414,6 +414,13 @@ return [
                                     'placeholder' => 'Wachtwoord invullen...',
                                     'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen'
                                 ],
+
+                                'postal-code'           => 'Postcode',
+                                'number'                => 'Huisnummer',
+                                'house-number-extension' => 'Toevoeging',
+                                'street'                => 'Straat',
+                                'city'                  => 'Plaats',
+                                'phone-number'          => 'Telefoonnummer',
 
                                 'submit' => 'Gebruiker aanmaken',
                             ]

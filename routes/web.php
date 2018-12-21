@@ -24,7 +24,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 		Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
 		// Login, forgot password etc.
-		Auth::routes();
+        Route::group(['middleware' => 'guest'], function () {
+		    Auth::routes();
+        });
 
 
 		// Logged In Section
@@ -148,7 +150,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('', 'CoachController@index')->name('index');
                         Route::get('create', 'CoachController@create')->name('create');
                         Route::post('create', 'CoachController@store')->name('store');
-                        Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
+//                        Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
                     });
 
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {

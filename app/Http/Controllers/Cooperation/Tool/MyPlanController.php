@@ -16,7 +16,6 @@ class MyPlanController extends Controller
 {
 
 	public function index()
-
     {
         $privateMessage = PrivateMessage::myConversationRequest()->first();
 

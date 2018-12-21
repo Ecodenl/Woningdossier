@@ -26,7 +26,7 @@ class Cooperation extends Model
 {
     public $fillable = [
         'name',
-        'slug'
+        'slug',
     ];
 
     /**

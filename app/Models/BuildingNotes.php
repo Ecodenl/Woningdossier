@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingNotes extends Model
 {
     protected $fillable = [
-        'street',
-        'number',
-        'extension',
-        'city',
-        'postal_code',
-        'country_code',
-        'bag_addressid',
+        'coach_id',
         'building_id',
         'note',
     ];
+
+    public function building()
+    {
+        return $this->belongsTo(Building::class, 'building_id', 'id');
+    }
 }

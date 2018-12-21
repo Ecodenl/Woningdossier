@@ -20,12 +20,14 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.water_comfort_id') ? ' has-error' : '' }}">
                         <label for="user_energy_habits_water_comfort_id" class=" control-label"><i data-toggle="collapse" data-target="#water-comfort-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heater.comfort-level-warm-tap-water')</label>
-
-                        <select id="user_energy_habits_water_comfort_id" class="form-control" name="user_energy_habits[water_comfort_id]">
-                            @foreach($comfortLevels as $comfortLevel)
-                                <option @if(old('user_energy_habits.water_comfort_id') == $comfortLevel->id || ($habits instanceof \App\Models\UserEnergyHabit && $habits->water_comfort_id == $comfortLevel->id)) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $comfortLevels, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
+                            <select id="user_energy_habits_water_comfort_id" class="form-control" name="user_energy_habits[water_comfort_id]">
+                                @foreach($comfortLevels as $comfortLevel)
+                                    <option @if(old('user_energy_habits.water_comfort_id') == $comfortLevel->id || ($habits instanceof \App\Models\UserEnergyHabit && $habits->water_comfort_id == $comfortLevel->id)) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="water-comfort-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -42,11 +44,14 @@
                     <div class="form-group add-space{{ $errors->has('building_heaters.pv_panel_orientation_id') ? ' has-error' : '' }}">
                         <label for="building_heaters_pv_panel_orientation_id" class=" control-label"><i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heater.pv-panel-orientation-id')</label>
 
-                        <select id="building_heaters_pv_panel_orientation_id" class="form-control" name="building_heaters[pv_panel_orientation_id]">
-                            @foreach($collectorOrientations as $collectorOrientation)
-                                <option @if(old('building_heaters.pv_panel_orientation_id') == $collectorOrientation->id || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->pv_panel_orientation_id == $collectorOrientation->id)) selected @endif value="{{ $collectorOrientation->id }}">{{ $collectorOrientation->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $collectorOrientations, 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'pv_panel_orientation_id'])
+                            <select id="building_heaters_pv_panel_orientation_id" class="form-control" name="building_heaters[pv_panel_orientation_id]">
+                                @foreach($collectorOrientations as $collectorOrientation)
+                                    <option @if(old('building_heaters.pv_panel_orientation_id') == $collectorOrientation->id || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->pv_panel_orientation_id == $collectorOrientation->id)) selected @endif value="{{ $collectorOrientation->id }}">{{ $collectorOrientation->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="orientation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...
@@ -66,14 +71,16 @@
                         <label for="building_heaters_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heater.angle')</label>
 
 
-                        <div class="input-group">
+                        <?php $angles = [20, 30, 40, 45, 50, 60, 70, 75, 90]  ?>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => array_combine($angles, $angles), 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'angle'])
                             <span class="input-group-addon">&deg;</span>
                             <select id="building_heaters_angle" class="form-control" name="building_heaters[angle]">
-                                @foreach([20, 30, 40, 45, 50, 60, 70, 75, 90] as $angle)
+                                @foreach($angles as $angle)
                                     <option @if(old('building_heaters.angle') == $angle || ($currentHeater instanceof \App\Models\BuildingHeater && $currentHeater->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        @endcomponent
 
                         <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             And i would like to have it to...

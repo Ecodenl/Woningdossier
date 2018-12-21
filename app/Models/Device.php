@@ -33,6 +33,7 @@ class Device extends Model
 
     use GetValueTrait;
 
+
     public function measure()
     {
         return $this->belongsTo(Measure::class);

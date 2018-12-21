@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -204,6 +205,22 @@ class Building extends Model
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->first(['building_elements.*']);
     }
+
+    /**
+     * Almost the same as getBuildingElement($short) except this returns all the input
+     *
+     * @param $query
+     * @param $short
+     * @return mixed
+     */
+    public function getBuildingElementsForMe($short)
+    {
+        return $this->buildingElements()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->select(['building_elements.*'])->get();
+    }
+
 
     /**
      * @param string $short

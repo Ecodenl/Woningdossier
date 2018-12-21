@@ -77,6 +77,7 @@ class InsulatedGlazingController extends Controller
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
+
         $measureApplicationShorts = [
             'glass-in-lead',
             'hrpp-glass-only',
@@ -85,6 +86,9 @@ class InsulatedGlazingController extends Controller
         ];
 
         $buildingInsulatedGlazings = [];
+        $buildingInsulatedGlazingsForMe = [];
+
+        $buildingFeaturesForMe = $building->buildingFeatures->forMe()->get();
         $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
@@ -92,16 +96,21 @@ class InsulatedGlazingController extends Controller
 
             if ($measureApplication instanceof MeasureApplication) {
                 // get current situation
-                $currentInsulatedGlazing = $building->currentInsulatedGlazing()
-                    ->where('measure_application_id', $measureApplication->id)->first();
+                $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
+
+                $currentInsulatedGlazingInput = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
+
+                if (!$currentInsulatedGlazingInput->isEmpty()) {
+                    $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInput;
+                }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
                 $measureInterest = $user->interests()
-                                                ->where('interested_in_type', 'measure_application')
-                                                ->where('interested_in_id', $measureApplication->id)
-                                                ->get();
+                    ->where('interested_in_type', 'measure_application')
+                    ->where('interested_in_id', $measureApplication->id)
+                    ->get();
 
                 if ($measureInterest instanceof UserInterest) {
                     // We only have to check on the interest ID, so we don't put
@@ -112,13 +121,30 @@ class InsulatedGlazingController extends Controller
                 $measureApplications[] = $measureApplication;
             }
         }
+
+//        $inputValues = $woodElements;
+//
+//        $x = $building;
+//        $z = $building->buildingElements()->forMe();
+//
+//        foreach ($inputValues->values()->orderBy('order')->get() as $i => $inputValue) {
+//            // returned 1 instance 2 null
+//            dump($z->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
+//            // returned 3 instances 0 null
+//            dump($x->buildingElements()->forMe()->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
+//        }
+
+
+        $myBuildingElements = BuildingElement::forMe()->get();
+
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'steps', 'interests',
+            'building', 'steps', 'interests', 'myBuildingElements',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'userInterests', 'crackSealing', 'frames', 'woodElements',
-            'paintworkStatuses', 'woodRotStatuses'
+            'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
+            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
         ));
     }
+
 
     protected function saveAdvices(Request $request)
     {
@@ -128,7 +154,7 @@ class InsulatedGlazingController extends Controller
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         foreach ($results['measure'] as $measureId => $data) {
             if (array_key_exists('costs', $data) && $data['costs'] > 0) {

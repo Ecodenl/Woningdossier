@@ -54,6 +54,8 @@ class WallInsulationController extends Controller
         $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
         $buildingFeature = $building->buildingFeatures;
 
+        $buildingFeaturesForMe = BuildingFeature::withoutGlobalScope(GetValueScope::class)->forMe()->get();
+
         /** @var BuildingElement $houseInsulation */
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
@@ -64,7 +66,7 @@ class WallInsulationController extends Controller
         return view('cooperation.tool.wall-insulation.index', compact(
             'steps', 'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
-            'facadePlasteredSurfaces', 'facadeDamages'
+            'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe'
         ));
     }
 
@@ -150,7 +152,7 @@ class WallInsulationController extends Controller
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);

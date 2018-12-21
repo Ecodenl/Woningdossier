@@ -13,16 +13,20 @@ use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
 use App\Models\BuildingPvPanel;
 use App\Models\Cooperation;
+use App\Models\Element;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
 use App\Models\Role;
+use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +83,10 @@ class SolarPanelsController extends Controller
             'savings_money' => 0,
             'cost_indication' => 0,
             'interest_comparable' => 0,
+            'year' => null,
         ];
+
+
 
         $user = \Auth::user();
         $building = $user->buildings()->first();
@@ -89,6 +96,7 @@ class SolarPanelsController extends Controller
         $panels = $request->input('building_pv_panels.number', 0);
         $orientationId = $request->input('building_pv_panels.pv_panel_orientation_id', 0);
         $angle = $request->input('building_pv_panels.angle', 0);
+        $interests = $request->input('interest', '');
         $orientation = PvPanelOrientation::find($orientationId);
 
         $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
@@ -114,6 +122,20 @@ class SolarPanelsController extends Controller
             $result['savings_money'] = $result['yield_electricity'] * KeyFigures::COST_KWH;
             $result['cost_indication'] = $wp * KeyFigures::COST_WP;
             $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+
+            foreach ($interests as $type => $interestTypes) {
+                foreach ($interestTypes as $typeId => $interestId) {
+                    $interest = Interest::find($interestId);
+                }
+            }
+
+            $currentYear = Carbon::now()->year;
+            if ($interest->calculate_value == 1) {
+                $result['year'] = $currentYear;
+            } elseif ($interest->calculate_value == 2) {
+                $result['year'] = $currentYear + 5;
+            }
+
         }
 
         if ($helpFactor >= 0.84) {

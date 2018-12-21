@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Helpers\Calculator;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
+use App\Models\PrivateMessage;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
@@ -13,15 +14,18 @@ use Illuminate\Http\Request;
 
 class MyPlanController extends Controller
 {
-    public function index()
+
+	public function index()
     {
-        $user = \Auth::user();
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+        $privateMessage = PrivateMessage::myConversationRequest()->first();
+
+		$user = \Auth::user();
+		$advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
         $steps = Step::orderBy('order')->get();
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'steps'
+            'advices', 'steps', 'privateMessage'
         ));
     }
 
@@ -59,7 +63,8 @@ class MyPlanController extends Controller
                     $electricitySavings = round($advice->savings_electricity);
                     $savingsInEuro = round($advice->savings_money);
                     $advicedYear = $advice->year;
-                    $costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
+                    //$costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
+	                $costsAdvisedYear = round(Calculator::indexCosts($costs, $plannedYear));
 
                     // push the plan data to the array
                     $userPlanData[$plannedYear][$measure] = [$plannedYear, $isInterested, $measure, $costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear, $costsAdvisedYear];
@@ -110,20 +115,21 @@ class MyPlanController extends Controller
                         $sortedAdvices[$year][$step->name] = [];
                     }
 
-                    $sortedAdvices[$year][$step->name][] = [
-                        'interested' => $advice->planned,
+					$sortedAdvices[$year][$step->name][] = [
+						'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
-                        // In the table the costs are indexed based on the advice year
-                        // Now re-index costs based on user planned year in the personal plan
-                        'costs' => Calculator::reindexCosts($advice->costs, $advice->year, $costYear),
-                        'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
-                        'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
-                        'savings_money' => is_null($advice->savings_money) ? 0 : $advice->savings_money,
-                    ];
-                }
-            }
-        }
+						'measure_short' => $advice->measureApplication->short,
+						// In the table the costs are indexed based on the advice year
+						// Now re-index costs based on user planned year in the personal plan
+						'costs' => Calculator::indexCosts($advice->costs, $costYear),
+						'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
+						'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
+						'savings_money' => is_null($advice->savings_money) ? 0 : Calculator::indexCosts($advice->savings_money, $costYear),
+					];
+				}
+			}
+		}
 
         ksort($sortedAdvices);
 

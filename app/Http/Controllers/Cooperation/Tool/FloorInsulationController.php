@@ -42,7 +42,6 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
-
         $typeIds = [4];
         /** @var Building $building */
         $building = \Auth::user()->buildings()->first();
@@ -124,14 +123,19 @@ class FloorInsulationController extends Controller
 
         if ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 45) {
             $advice = Temperature::FLOOR_INSULATION_FLOOR;
-            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.floor');
+            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 30) {
             $advice = Temperature::FLOOR_INSULATION_BOTTOM;
-            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.bottom');
+            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.bottom');
+	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } else {
             $advice = Temperature::FLOOR_INSULATION_RESEARCH;
-            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.research');
+            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.research');
+	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         }
+
+	    $insulationAdvice = MeasureApplication::byShort($advice);
+	    $result['insulation_advice'] = $insulationAdvice->measure_name;
 
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         if (array_key_exists($floorInsulation->id, $elements)) {
@@ -142,7 +146,7 @@ class FloorInsulationController extends Controller
 
             $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
             $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-            $result['cost_indication'] = Calculator::calculateCostIndication($surface, $result['insulation_advice']);
+            $result['cost_indication'] = Calculator::calculateCostIndication($surface, $insulationAdvice);
             $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
         }
 

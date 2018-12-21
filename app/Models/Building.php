@@ -54,7 +54,7 @@ use Illuminate\Database\Eloquent\Model;
 class Building extends Model
 {
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid',
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension'
     ];
 
     /**

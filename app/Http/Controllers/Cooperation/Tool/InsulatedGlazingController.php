@@ -30,7 +30,8 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
+use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
@@ -96,7 +97,7 @@ class InsulatedGlazingController extends Controller
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
-                // get interests fo3r the measure
+                // get interests for the measure
                 $measureInterest = $user->interests()
                                                 ->where('interested_in_type', 'measure_application')
                                                 ->where('interested_in_id', $measureApplication->id)
@@ -269,7 +270,7 @@ class InsulatedGlazingController extends Controller
 
             $costs = Calculator::calculateMeasureApplicationCosts($measureApplication,
                 $number,
-                $year);
+                $year, false);
             $result['paintwork'] = compact('costs', 'year');
         }
 
@@ -294,7 +295,7 @@ class InsulatedGlazingController extends Controller
 
             $measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
 
-            $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1);
+            $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1, null, false);
         }
 
         return response()->json($result);

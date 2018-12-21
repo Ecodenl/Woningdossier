@@ -43,6 +43,8 @@ class GeneralDataFormRequest extends FormRequest
      */
     public function rules()
     {
+    	$serviceRules = [];
+
         foreach ($this->request->get('service') as $serviceId => $serviceValueId) {
             if (! is_null($serviceValueId)) {
                 $service = Service::find($serviceId);
@@ -87,12 +89,18 @@ class GeneralDataFormRequest extends FormRequest
             // data about usage of the building
             'resident_count' => 'required|numeric',
             'cook_gas' => 'required|numeric',
-            'thermostat_high' => 'nullable|numeric',
-            'thermostat_low' => 'nullable|numeric|between:0,'.$this->request->get('thermostat_high'),
+            //'thermostat_high' => 'nullable|numeric|min:10|max:30|gte:thermostat_low',
+	        //'thermostat_low' => 'nullable|numeric|min:10|max:30|lte:thermostat_low',
+	        // Note the bail validator. We do this to prevent messages like
+	        // "Thermostat high must be between 8 and 30" or "Thermostat low must be between 10 and 100"
+	        // because the request variable is used for the between.
+	        // In a later Laravel version, the gte and lte validators can probably be used.
+	        'thermostat_high' => 'nullable|numeric|min:10|max:30|bail|between:10,30',
+            'thermostat_low' => 'nullable|numeric|min:10|max:30|bail|between:10,'.max(10, $this->request->get('thermostat_high')),
             'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
             'heating_second_floor' => 'required|numeric|exists:building_heatings,id',
             'water_comfort' => 'numeric|exists:comfort_level_tap_waters,id',
-            'amount_electricity' => 'nullable|numeric',
+            'amount_electricity' => 'required|numeric',
             'amount_gas' => 'required|numeric',
             'motivation.*' => 'numeric',
         ];

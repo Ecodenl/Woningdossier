@@ -35,7 +35,7 @@
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
                                 @foreach($interests as $interest)
-                                    <option @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))  selected="selected" @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                    <option @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))  selected="selected" @elseif(Auth::user()->getInterestedType('measure_application', $measureApplication->id) != null && Auth::user()->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id) selected @elseif($interest->calculate_value == 4) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                 @endforeach
                             </select>
 
@@ -59,22 +59,12 @@
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                                 </label>
-                                {{--<div class="input-group">--}}
-                                    {{--<div class="input-group-btn">--}}
-                                        {{--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>--}}
-                                        {{--<ul class="dropdown-menu">--}}
-                                            {{--<li><a href="#">Action</a></li>--}}
-                                            {{--<li><a href="#">Another action</a></li>21--}}
-                                            {{--<li class="divider"></li>--}}
-                                            {{--<li><a href="#">Separated link</a></li>--}}
-                                        {{--</ul>--}}
-                                    {{--</div>--}}
-                                    <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
-                                        @foreach($insulatedGlazings as $insulateGlazing)
-                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
-                                        @endforeach
-                                    </select>
-                                {{--</div>--}}
+
+                                <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
+                                    @foreach($insulatedGlazings as $insulateGlazing)
+                                        <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
+                                    @endforeach
+                                </select>
 
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulated_glazing_id-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -297,11 +287,11 @@
                         <label for="" class="control-label">
                             <i data-toggle="collapse" data-target="#building_paintwork_statuses.last_painted_year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('woningdossier.cooperation.tool.insulated-glazing.paint-work.last-paintjob')
-                        </label> <span>*</span>
+                        </label>
 
                         <div class="input-group">
                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
-                            <input required type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
+                            <input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">
                         </div>
 
                         <div id="building_paintwork_statuses.last_painted_year" class="collapse alert alert-info remove-collapse-space alert-top-space">

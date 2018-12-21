@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\UserCreated;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -137,6 +138,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Cooperation::class);
     }
+
 
     /**
      * Returns the interests off a user.

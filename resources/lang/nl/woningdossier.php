@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'navbar' => [
-        'language' => 'Taal',
+	'navbar' => [
+	    'input_source' => 'Invul bron',
+		'language' => 'Taal',
         'languages' => [
             'nl' => 'Nederlands',
             'en' => 'Engels',

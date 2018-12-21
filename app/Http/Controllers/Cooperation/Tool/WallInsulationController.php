@@ -47,7 +47,7 @@ class WallInsulationController extends Controller
     public function index()
     {
 
-        $steps = Step::orderBy('order')->get();
+
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
 

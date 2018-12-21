@@ -25,10 +25,7 @@ class WoningdossierServiceProvider extends ServiceProvider
             $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
             // get the steps from a cooperation that are active and ordered on the order column from the pivot table
-            $steps = $cooperation->steps()
-                ->orderBy('cooperation_steps.order')
-                ->where('cooperation_steps.is_active', '1')
-                ->get();
+            $steps = $cooperation->getActiveOrderedSteps();
 
             $view->with('steps', $steps);
         });

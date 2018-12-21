@@ -60,7 +60,7 @@ class RoofInsulationController extends Controller
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
         $roofTypes = RoofType::all();
-        $steps = Step::orderBy('order')->get();
+
         $currentRoofTypes = $building->roofTypes;
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
 

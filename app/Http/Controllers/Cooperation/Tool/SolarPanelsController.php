@@ -49,7 +49,7 @@ class SolarPanelsController extends Controller
     {
         $typeIds = [7];
 
-        $steps = Step::orderBy('order')->get();
+
 
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;

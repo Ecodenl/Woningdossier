@@ -29,7 +29,7 @@ class VentilationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        $steps = Step::orderBy('order')->get();
+
 
         return view('cooperation.tool.ventilation-information.index', compact('steps'));
     }

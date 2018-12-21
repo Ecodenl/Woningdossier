@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\Cooperation.
@@ -71,6 +72,16 @@ class Cooperation extends Model
         return false;
     }
 
+
+    /**
+     * get the active steps ordered on the order column
+     *
+     * @return mixed
+     */
+    public function getActiveOrderedSteps(): Collection
+    {
+        return $this->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
+    }
 
 
 	public function getRouteKeyName()

@@ -79,7 +79,7 @@ class GeneralDataController extends Controller
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
         $motivations = Motivation::orderBy('order')->get();
         $energyHabit = $buildingOwner->energyHabit;
-        $steps = Step::orderBy('order')->get();
+
         $energyHabitForMe = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->where('user_id', $buildingOwner->id)->get();
         $step = $this->step;
 

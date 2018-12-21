@@ -16,6 +16,11 @@
                             </div>
                             <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['users.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.index'])) active @endif"><a  href="{{route('cooperation.admin.cooperation.cooperation-admin.index', ['role' => \Spatie\Permission\Models\Role::find(session('role_id'))->name])}}">@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.home')</a></li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.steps.index'])) active @endif">
+                                    <a href="{{route('cooperation.admin.cooperation.cooperation-admin.steps.index')}}">
+                                        @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.step')
+                                    </a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.users.index', 'cooperation.admin.cooperation.cooperation-admin.users.create'])) active @endif"><a  href="{{route('cooperation.admin.cooperation.cooperation-admin.users.index')}}">@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.users')</a></li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.assign-role.index'])) active @endif"><a  href="{{route('cooperation.admin.cooperation.cooperation-admin.assign-roles.index')}}">@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.assign-role')</a></li>
                             </ul>

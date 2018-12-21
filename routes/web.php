@@ -206,14 +206,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
                         Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-                });
+                    });
 
-				Route::resource('example-buildings', 'ExampleBuildingController');
-				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+                    Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
+                       Route::get('', 'StepController@index')->name('index');
+                       Route::post('set-active', 'StepController@setActive')->name('set-aciv');
+                    });
 
+				    Route::resource('example-buildings', 'ExampleBuildingController');
+				    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+
+				    Route::get('home', 'CooperationAdminController@index')->name('index');
 					// needs to be the last route due to the param
                     //Route::get('{role_name?}', 'CooperationAdminController@index')->name('index');
-				    Route::get('home', 'CooperationController@index')->name('index');
                 });
 
             });

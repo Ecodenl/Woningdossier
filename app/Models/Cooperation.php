@@ -42,6 +42,18 @@ class Cooperation extends Model
         return $this->hasOne(CooperationStyle::class);
     }
 
+    /**
+     * Get all the steps from the cooperation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function steps()
+    {
+        return $this->belongsToMany(Step::class, 'cooperation_steps');
+    }
+
+
+
 	public function getRouteKeyName()
 	{
 		return 'slug';

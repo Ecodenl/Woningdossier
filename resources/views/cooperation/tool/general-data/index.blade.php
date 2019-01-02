@@ -2,12 +2,6 @@
 
 @section('step_title', __('woningdossier.cooperation.tool.general-data.title'))
 
-{{--
-@push('css')
-    <link rel="stylesheet" href="{{asset('css/datepicker/bootstrap-datepicker3.css')}}">
-@endpush
---}}
-
 @section('step_content')
 
 
@@ -412,6 +406,7 @@
                         @else
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra.value'])
+                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
                                 <input type="text" id="{{ $service->short }}" class="form-control" value="{{ old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.value')) }}" name="service[{{ $service->id }}]">
                                 {{--<input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">--}}
                             @endcomponent
@@ -535,8 +530,8 @@
 
                         @if ($errors->has('resident_count'))
                             <span class="help-block">
-                        <strong>{{ $errors->first('resident_count') }}</strong>
-                    </span>
+                                <strong>{{ $errors->first('resident_count') }}</strong>
+                            </span>
                         @endif
                     </div>
                 </div>
@@ -868,6 +863,14 @@
                             </span>
                         @endif
                     </div>
+                </div>
+                <div class="col-sm-12">
+                    <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
+                    @if(isset($energyHabitForMe) && $energyHabitForMe->first()->hasCoachInputSource())
+                        @component('cooperation.tool.components.alert')
+                            {{$energyHabitForMe->where('input_source_id', $coachInputSource->id)->first()->living_situation_extra}}
+                        @endcomponent
+                    @endif
                 </div>
             </div>
 

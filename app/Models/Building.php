@@ -62,7 +62,7 @@ class Building extends Model
     ];
 
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id',
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension',
     ];
 
     public static function boot() {
@@ -96,10 +96,6 @@ class Building extends Model
         });
     }
 
-    public function buildingNotes()
-    {
-        return $this->hasMany('App\Models\BuildingNotes');
-	}
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -122,6 +118,16 @@ class Building extends Model
     public function buildingFeatures()
     {
         return $this->hasOne(BuildingFeature::class);
+    }
+
+    /**
+     * Return all the building notes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingNotes()
+    {
+        return $this->hasMany(BuildingNotes::class);
     }
 
     /**

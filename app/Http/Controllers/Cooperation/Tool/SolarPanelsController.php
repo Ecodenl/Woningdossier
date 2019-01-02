@@ -19,6 +19,7 @@ use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;

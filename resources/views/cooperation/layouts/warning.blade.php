@@ -10,8 +10,8 @@
         @endforeach
         </ul>
     @else
-            {{ session('warning') }}
-    @endif
+            {!!  session('warning') !!}
+        @endif
 
     </div>
 @endif

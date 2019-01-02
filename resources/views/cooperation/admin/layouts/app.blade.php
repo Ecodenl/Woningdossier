@@ -139,5 +139,6 @@
 <script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
 
 @stack('js')
+{{--additional js code here--}}
 </body>
 </html>

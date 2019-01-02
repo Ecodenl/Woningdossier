@@ -81,6 +81,7 @@ class GeneralDataController extends Controller
         $motivations = Motivation::orderBy('order')->get();
         $energyHabit = $buildingOwner->energyHabit;
         $steps = Step::orderBy('order')->get();
+        $energyHabitForMe = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->where('user_id', $buildingOwner->id)->get();
         $step = $this->step;
 
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
@@ -88,7 +89,7 @@ class GeneralDataController extends Controller
 
 
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step', 'userInterestsForMe',
+            'building', 'step', 'buildingOwner', 'energyHabitForMe', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',

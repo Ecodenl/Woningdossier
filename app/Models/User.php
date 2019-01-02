@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
+use App\Events\UserCreated;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -106,6 +107,16 @@ class User extends Authenticatable
         return $this->hasOne(UserEnergyHabit::class);
     }
 
+    /**
+     * Return all the building notes a user has created
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingNotes()
+    {
+        return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
+    }
+
     public function progress()
     {
         return $this->hasMany(UserProgress::class);
@@ -138,6 +149,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Cooperation::class);
     }
+
 
     /**
      * Returns the interests off a user.

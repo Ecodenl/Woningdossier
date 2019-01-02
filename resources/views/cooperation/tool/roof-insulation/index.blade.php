@@ -23,7 +23,7 @@
                                             @if(in_array($roofType->id, old('building_roof_types',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id') ])))
                                                checked="checked"
                                             @endif
-                                        {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) || ($currentRoofTypes->contains('roof_type_id', $roofType->id))) checked @endif--}}
+                                        {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) || ($currentRoofTypes->contains('roof_type_id', $roofType->id)) || $features->roof_type_id == $roofType->id) checked @endif--}}
                                         >
                                         {{ $roofType->name }}
                                     </label>
@@ -340,10 +340,22 @@
 
                                         @if ($errors->has('building_roof_types.'.$roofCat.'.extra.comment'))
                                             <span class="help-block">
-                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
-                            </span>
+                                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
+                                            </span>
                                         @endif
                                     </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    {{--loop through all the insulated glazings with ALL the input sources--}}
+                                    @foreach ($currentCategorizedRoofTypesForMe[$roofCat] as $currentRoofTypeForMe)
+                                        <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
+                                        @if($currentRoofTypeForMe->input_source_id == $coachInputSource->id && array_key_exists('comment', $currentRoofTypeForMe->extra))
+                                            @component('cooperation.tool.components.alert')
+                                                {{$currentRoofTypeForMe->extra['comment']}}
+                                            @endcomponent
+                                            @break
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
 

@@ -67,7 +67,6 @@
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     @lang('woningdossier.cooperation.tool.insulated-glazing.current-glass')
                                 </label>
-
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
                                     <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
@@ -448,6 +447,18 @@
                             </span>
                         @endif
                     </div>
+                </div>
+                <div class="col-sm-12">
+                    {{--loop through all the insulated glazings with ALL the input sources--}}
+                    @foreach ($buildingInsulatedGlazingsForMe as $buildingInsulatedGlazingForMe)
+                        <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
+                        @if($buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first() instanceof \App\Models\BuildingInsulatedGlazing && array_key_exists('comment', $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra))
+                            @component('cooperation.tool.components.alert')
+                                {{$buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra['comment']}}
+                            @endcomponent
+                            @break
+                        @endif
+                    @endforeach
                 </div>
             </div>
 

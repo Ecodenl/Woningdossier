@@ -72,7 +72,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
+                            <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall') </label><span> *</span>
                             <label class="radio-inline">
                                     <input type="radio" name="cavity_wall" @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 1) checked @endif value="1">@lang('woningdossier.cooperation.radiobutton.yes')
                                 {{--<input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
@@ -426,6 +426,7 @@
                 </div>
             </div>
 
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
@@ -443,8 +444,17 @@
                             </span>
                         @endif
 
-
                     </div>
+                </div>
+                <div class="col-sm-12">
+                    <?php
+                        $coachInputSource = App\Models\InputSource::findByShort('coach');
+                    ?>
+                    @if(isset($buildingFeaturesForMe) && $buildingFeaturesForMe->first()->hasCoachInputSource() && !is_null($buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info))
+                        @component('cooperation.tool.components.alert')
+                            {{$buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info}}
+                        @endcomponent
+                    @endif
                 </div>
             </div>
         </div>

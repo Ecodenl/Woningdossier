@@ -256,7 +256,6 @@
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
                             <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment')        </label>
                             <?php
-
                                 $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : "";
                             ?>
 
@@ -273,6 +272,17 @@
                             @endif
 
                         </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <?php
+                            $coachInputSource = App\Models\InputSource::findByShort('coach');
+                            $coachInput = $buildingElementsForMe->where('input_source_id', $coachInputSource->id)->where('element_id', $crawlspace->id)->first()
+                        ?>
+                        @if(!is_null($coachInput) && $coachInput->hasCoachInputSource() && array_key_exists('comment', $coachInput->extra))
+                            @component('cooperation.tool.components.alert')
+                                {{$coachInput->extra['comment']}}
+                            @endcomponent
+                        @endif
                     </div>
                 </div>
 
@@ -375,6 +385,7 @@
                     </div>
                 </div>
             @endif
+
 
 
             <div class="row" id="no-crawlspace-error">

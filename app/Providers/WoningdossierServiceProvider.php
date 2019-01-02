@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Cooperation;
 use App\Models\Interest;
+use App\Models\UserActionPlanAdvice;
+use App\Observers\UserActionPlanAdviceObserver;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider
@@ -21,6 +23,8 @@ class WoningdossierServiceProvider extends ServiceProvider
         });
 
         \View::creator('*', CooperationComposer::class);
+
+        UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
     }
 
     /**

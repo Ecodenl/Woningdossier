@@ -36,11 +36,7 @@ class PrivateMessage extends Model
 
     public static function isConversationRequestConnectedToCoach($conversationRequest)
     {
-        if ($conversationRequest->status == self::STATUS_LINKED_TO_COACH) {
-            return true;
-        }
-
-        return false;
+        return $conversationRequest->status == self::STATUS_LINKED_TO_COACH;
     }
 
     /**
@@ -137,12 +133,15 @@ class PrivateMessage extends Model
     /**
      * Return the sender information
      *
-     * @param $messageId
-     * @return mixed|static
+     * @param int $messageId
+     * @return User|null
      */
     public function getSender($messageId)
     {
         $senderId = $this->find($messageId)->from_user_id;
+        if (empty($senderId)){
+        	return null;
+        }
 
         $sender = User::find($senderId);
 
@@ -152,17 +151,50 @@ class PrivateMessage extends Model
     /**
      * Return info about the receiver of the message
      *
-     * @param $messageId
-     * @return mixed|static
+     * @param int $messageId
+     * @return User|null
      */
     public function getReceiver($messageId)
     {
         $receiverId = $this->find($messageId)->to_user_id;
+        if (empty($receiverId)){
+        	return null;
+        }
 
         $receiver = User::find($receiverId);
 
         return $receiver;
     }
+
+	/**
+	 * Returns the receiving cooperation of this private message
+	 *
+	 * @return Cooperation|null
+	 */
+    public function getReceivingCooperation()
+    {
+    	$receivingCooperationId = $this->to_cooperation_id;
+    	if (empty($receivingCooperationId)){
+    		return null;
+	    }
+
+	    return Cooperation::find($receivingCooperationId);
+    }
+
+	/**
+	 * Returns the receiving cooperation of this private message
+	 *
+	 * @return Cooperation|null
+	 */
+	public function getSendingCooperation()
+	{
+		$sendingCooperationId = $this->from_cooperation_id;
+		if (empty($sendingCooperationId)){
+			return null;
+		}
+
+		return Cooperation::find($sendingCooperationId);
+	}
 
     /**
      * Check if its the user his message

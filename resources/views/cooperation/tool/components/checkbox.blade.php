@@ -14,7 +14,7 @@
                 $inputName = $inputValue->name;
             }
         ?>
-        @if($inputValue->id == $value)
+        @if(!is_null($value) && $inputValue->id == $value)
             <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputName}}</a></li>
         @endif
     @endforeach

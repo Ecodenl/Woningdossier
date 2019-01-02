@@ -105,6 +105,7 @@ class LoginController extends Controller
 		    // if the user only has one role we can set the session with his role id on the login
 		    if ($user->roles->count() == 1) {
 		        $building = $user->buildings()->first();
+
 		        // we cant query on the Spatie\Role model so we first get the result on the "original model"
                 $role = Role::findByName($user->roles->first()->name);
                 // get the input source
@@ -133,22 +134,21 @@ class LoginController extends Controller
 		// user surpasses their maximum number of attempts they will get locked out.
 		$this->incrementLoginAttempts($request);
 
-		return $this->sendFailedLoginResponse($request);
-	}
-
-    /**
-     * Send the response after the user was authenticated.
-     *
-     * @param $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    protected function sendLoginResponse ($request)
-    {
-        $request->session()->regenerate();
-
-        $this->clearLoginAttempts($request);
-
-        //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
-	    return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
+        return $this->sendFailedLoginResponse($request);
     }
+
+//    /**
+//     * Send the response after the user was authenticated.
+//     *
+//     * @param $request
+//     * @return \Illuminate\Http\RedirectResponse
+//     */
+//    protected function sendLoginResponse ($request)
+//    {
+//        $request->session()->regenerate();
+//
+//        $this->clearLoginAttempts($request);
+//
+//        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
+//    }
 }

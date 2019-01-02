@@ -33,6 +33,7 @@ class SwitchRoleController extends Controller
 			return null;
 		}
 
+		\Log::debug("Switching roles from " . $request->session()->get('role_id', "") . " to " . $role->id);
 		$request->session()->put('role_id', $role->id);
 
 		// set the Auth user sessions

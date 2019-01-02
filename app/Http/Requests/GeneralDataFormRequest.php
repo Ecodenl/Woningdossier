@@ -95,8 +95,8 @@ class GeneralDataFormRequest extends FormRequest
 	        // "Thermostat high must be between 8 and 30" or "Thermostat low must be between 10 and 100"
 	        // because the request variable is used for the between.
 	        // In a later Laravel version, the gte and lte validators can probably be used.
-	        'thermostat_high' => 'nullable|numeric|min:10|max:30|bail|between:'.$this->request->get('thermostat_low') .',30',
-            'thermostat_low' => 'nullable|numeric|min:10|max:30|bail|between:0,'.$this->request->get('thermostat_high'),
+	        'thermostat_high' => 'nullable|numeric|min:10|max:30|bail|between:10,30',
+            'thermostat_low' => 'nullable|numeric|min:10|max:30|bail|between:10,'.max(10, $this->request->get('thermostat_high')),
             'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
             'heating_second_floor' => 'required|numeric|exists:building_heatings,id',
             'water_comfort' => 'numeric|exists:comfort_level_tap_waters,id',

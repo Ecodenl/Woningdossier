@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Admin\Cooperation\Coordinator;
 
-use App\Rules\AlphaSpace;
 use App\Rules\HouseNumber;
 use App\Rules\PostalCode;
+use App\Rules\AlphaSpace;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CoachRequest extends FormRequest

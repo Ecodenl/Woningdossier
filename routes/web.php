@@ -35,14 +35,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 			Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
-			// my account
+            // my account
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 
 			    Route::get('', 'MyAccountController@index')->name('index');
 				Route::resource('settings', 'SettingsController', ['only' => ['index', 'store', ]]);
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
                 Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
-
 
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
 
@@ -65,10 +64,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
 
 			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
+			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
 
 			    Route::post('', 'ConversationRequestController@store')->name('store');
 			    Route::post('/edit', 'ConversationRequestController@update')->name('update');
-			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
 
 //			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
 //			        Route::resource('', 'CoachController');
@@ -193,8 +192,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 
 					// needs to be the last route due to the param
-					Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
-				});
+					//Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
+					Route::get('home', 'CoordinatorController@index')->name('index');
+                });
 
 				Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
 
@@ -221,7 +221,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 					Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
 					// needs to be the last route due to the param
-                    Route::get('{role_name?}', 'CooperationAdminController@index')->name('index');
+                    //Route::get('{role_name?}', 'CooperationAdminController@index')->name('index');
+				    Route::get('home', 'CooperationController@index')->name('index');
                 });
 
 			});
@@ -251,9 +252,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('', 'ConnectToResidentController@index')->name('index');
                     Route::get('{userId}', 'ConnectToResidentController@create')->name('create');
                     Route::post('', 'ConnectToResidentController@store')->name('store');
-                });// needs to be the last route due to the param
-				Route::get('{role_name?}', 'CoachController@index')->name('index');
-			});
+                });
+
+
+                // needs to be the last route due to the param
+			    //Route::get('{role_name?}', 'CoachController@index')->name('index');
+				Route::get('home', 'CoachController@index')->name('index');
+            });
 
 			// auth
 			Route::group(['namespace' => 'Auth'], function(){
@@ -273,5 +278,5 @@ Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('lo
 //Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');
 
 Route::get('/', function () {
-	return view('welcome');
+    return view('welcome');
 })->name('index');

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Events\UserCreated;
 use App\Helpers\HoomdossierSession;
+use App\Events\UserCreated;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -172,6 +172,7 @@ class User extends Authenticatable
     public function getInterestedType($type, $interestedInId)
     {
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+
     }
 
     /**
@@ -306,4 +307,17 @@ class User extends Authenticatable
         return false;
 	}
 
+    /**
+     * Check if the logged in user is filling the tool for someone else.
+     *
+     * @return bool
+     */
+    public function isFillingToolForOtherBuilding() : bool
+    {
+        if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
+            return true;
+        }
+
+        return false;
+    }
 }

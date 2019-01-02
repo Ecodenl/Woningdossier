@@ -20,7 +20,7 @@ return [
 				'header' => 'Als welke rol wilt u doorgaan ?',
 				'text'   => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
 			],
-        'coach'        => [
+        'coach' => [
 				'side-nav' => [
 					'label'               => 'Coach menu',
 					'index'               => 'Home',
@@ -79,7 +79,7 @@ return [
 					'fill-for-user'       => [
 						'warning' => 'Er is iets fout gegaan, probeer het later opnieuw'
 					],
-					'header'              => 'Gebouwen waar u toegangt tot heeft',
+					'header'              => 'Gebouwen waar u toegang toe heeft',
 					'details'             => [
 						'index' => [
 							'header' => 'Details van het gebouw',
@@ -143,7 +143,6 @@ return [
 					],
 				],
 			],
-		//],
 
 		'cooperation' => [
 			'coordination'      => [
@@ -254,6 +253,27 @@ return [
 						'success' => 'Rollen zijn bijgewerkt'
 					],
 				],
+                'reports' => [
+                    'title' => 'Rapportages',
+                    'description' => 'Rapportage downloads',
+
+                    'download' => [
+	                    'by-year' => 'Actieplan per jaar',
+	                    'by-measure' => 'Actieplan per maatregel',
+                    ],
+                    'csv-columns' => [
+	                    'first-name' => 'Voornaam',
+	                    'last-name' => 'Achternaam',
+	                    'email' => 'Email',
+	                    'phonenumber' => 'Telefoonnummer',
+	                    'mobilenumber' => 'Mobiel nummer',
+	                    'street' => 'Straat',
+	                    'house-number' => 'Huis nummer',
+	                    'city' => 'Woonplaats',
+	                    'zip-code' => 'Postcode',
+	                    'country-code' => 'Landcode',
+                    ],
+                ],
 			],
 			'coordinator' => [
 				'side-nav'              => [
@@ -466,8 +486,6 @@ return [
 						]
 
 					],
-				],
-			//],
 		],
 	],
 			],
@@ -674,7 +692,7 @@ return [
 			],
 		],
 
-		'store'  => [
+            'store'  => [
 			'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
 		],
 		'update' => [
@@ -1039,48 +1057,62 @@ return [
 			'energy-saving-measures' => 'Energiebesparende maatregelen',
 			'maintenance-measures'   => 'Onderhoud',
 
-			'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
-			'no-year'          => 'Geen jaartal',
-			'download'         => 'Download hier je actieplan',
+                'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
+                'no-year' => 'Geen jaartal',
+                'download' => 'Download hier je actieplan',
 
-			'conversation-requests'                => [
-				'take-action'    => 'Actie ondernemen',
-				'request'        => 'Coachgesprek aanvragen',
-				'update-request' => 'Aanvraag bijwerken',
-//                    'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
-				'disabled'       => 'Niet beschikbaar'
-			],
-			'conversation-requests-request'        => 'Coachgesprek aanvraag',
-			'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
+				'coach-comments' => [
+					'title' => 'Opmerkingen die door de coach zijn geplaatst',
+					'general-data' => 'Algemene gegevens',
+					'wall-insulation' => 'Gevelisolatie',
+					'floor-insulation' => 'Vloerisolatie',
+					'insulated-glazing' => 'Isolerende beglazing',
+					'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
+					'roof-insulation-plat-dak' => 'Dakisolatie - Plat dak',
+					'high-efficiency-boiler' => 'HR Ketel',
+				],
 
-			'csv-columns'           => [
-				'year-or-planned'     => 'Jaar / gepland jaar',
-				'interest'            => 'Interesse',
-				'measure'             => 'Maatregel',
-				'costs'               => 'Kosten',
-				'savings-gas'         => 'Besparing m3 gas',
-				'savings-electricity' => 'Besparing kWh elektra',
-				'savings-costs'       => 'Besparing in euro',
-				'advice-year'         => 'Geadviseerd jaar',
-				'planned-year'        => 'Planning',
-				'costs-advice-year'   => 'Kosten in geadviseerd jaar',
-			],
-			'columns'               => [
-				'more-info'           => 'Meer info',
-				'interest'            => 'Interesse',
-				'measure'             => 'Maatregel',
-				'costs'               => 'Kosten',
-				'savings-gas'         => 'Besparing m<sup>3</sup> gas',
-				'savings-electricity' => 'Besparing kWh elektra',
-				'savings-costs'       => 'Besparing in euro',
-				'advice-year'         => 'Geadviseerd',
-				'planned-year'        => 'Planning',
-				'take-action'         => 'Actie',
-				'more-information'    => 'Meer info',
-				'quotation'           => 'Vraag offerte aan',
-				'help-question'       => 'Hulpvraag'
-			],
-		],
+				'conversation-requests' => [
+					'take-action' => 'Actie ondernemen',
+					'request' => 'Coachgesprek aanvragen',
+					'update-request' => 'Coachgesprek aanvraag bijwerken',
+					'disabled' => 'Niet beschikbaar'
+				],
+				'conversation-requests-request' => 'Coachgesprek aanvraag',
+				'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
+
+
+				'csv-columns' => [
+                    'year-or-planned' => 'Jaar / gepland jaar',
+                    'interest' => 'Interesse',
+                    'measure' => 'Maatregel',
+                    'costs' => 'Kosten',
+                    'savings-gas' => 'Besparing m3 gas',
+                    'savings-electricity' => 'Besparing kWh elektra',
+                    'savings-costs' => 'Besparing in euro',
+                    'advice-year' => 'Geadviseerd jaar',
+                    'planned-year' => 'Planning',
+                    'costs-advice-year' => 'Kosten in geadviseerd jaar',
+                ],
+                'columns' => [
+                    'more-info' => 'Meer info',
+                    'interest' => 'Interesse',
+                    'measure' => 'Maatregel',
+                    'costs' => 'Kosten',
+                    'savings-gas' => 'Besparing m<sup>3</sup> gas',
+                    'savings-electricity' => 'Besparing kWh elektra',
+                    'savings-costs' => 'Besparing in euro',
+                    'advice-year' => 'Geadviseerd',
+                    'planned-year' => 'Planning',
+                    'take-action' => 'Actie',
+                    'more-information' => 'Meer info',
+                    'quotation' => 'Vraag offerte aan',
+                    'help-question' => 'Hulpvraag'
+                ],
+                'conversation-requests' => [
+                    'update-request' => 'Aanvraag bijwerken'
+                ]
+            ],
 
 		'ventilation-information' => [
 			'title'       => 'Informatie pagina over ventilatie.',

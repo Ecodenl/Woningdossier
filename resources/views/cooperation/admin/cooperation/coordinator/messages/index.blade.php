@@ -15,7 +15,13 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{$mainMessage->getReceiver($mainMessage->id)->first_name. ' ' .$mainMessage->getReceiver($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
+                                                @if($mainMessage->getSender($mainMessage->id) instanceof \App\Models\User)
+                                                {{ $mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name }} - {{ $mainMessage->title }}
+                                                @elseif($mainMessage->getReceivingCooperation() instanceof \App\Models\Cooperation)
+                                                {{ $mainMessage->getReceivingCooperation()->name }} - {{ $mainMessage->title }}
+                                                @else
+                                                {{ $mainMessage->title }}
+                                                @endif
                                             </strong>
 
                                             <small class="pull-right text-muted">

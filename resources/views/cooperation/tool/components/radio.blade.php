@@ -9,7 +9,7 @@
                     $value = $userInputValue->$userInputColumn;
                 }
             ?>
-            @if($inputValue == $value)
+            @if(!is_null($value) && $inputValue == $value)
                 <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
             @endif
         @endforeach

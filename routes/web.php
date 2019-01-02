@@ -146,10 +146,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
 
-                    Route::group(['prefix' => 'coaches', 'as' => 'coach.'], function () {
-                        Route::get('', 'CoachController@index')->name('index');
-                        Route::get('create', 'CoachController@create')->name('create');
-                        Route::post('create', 'CoachController@store')->name('store');
+                    Route::group(['prefix' => 'users', 'as' => 'user.'], function () {
+                        Route::get('', 'UserController@index')->name('index');
+                        Route::get('create', 'UserController@create')->name('create');
+                        Route::post('create', 'UserController@store')->name('store');
 //                        Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
                     });
 

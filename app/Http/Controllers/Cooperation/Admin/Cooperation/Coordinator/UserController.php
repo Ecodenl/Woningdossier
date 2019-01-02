@@ -15,21 +15,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Notifications\Messages\MailMessage;
 use Spatie\Permission\Models\Role;
 
-class CoachController extends Controller
+class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
         $users = $cooperation->users()->role('coach')->where('id', '!=', \Auth::id())->get();
         $roles = Role::all();
 
-        return view('cooperation.admin.cooperation.coordinator.coach.index', compact('roles', 'users'));
+        return view('cooperation.admin.cooperation.coordinator.user.index', compact('roles', 'users'));
     }
 
     public function create()
     {
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
 
-        return view('cooperation.admin.cooperation.coordinator.coach.create', compact('roles'));
+        return view('cooperation.admin.cooperation.coordinator.user.create', compact('roles'));
     }
 
 
@@ -124,8 +124,8 @@ class CoachController extends Controller
         \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation, $user));
 
         return redirect()
-            ->route('cooperation.admin.cooperation.coordinator.coach.index')
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.coach.store.success'));
+            ->route('cooperation.admin.cooperation.coordinator.user.index')
+            ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.store.success'));
     }
 
     public function destroy(Cooperation $cooperation, $userId)
@@ -174,6 +174,6 @@ class CoachController extends Controller
 
         $user->delete();
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.coach.destroy.success'));
+        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.destroy.success'));
     }
 }

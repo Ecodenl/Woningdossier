@@ -134,7 +134,7 @@
         $(document).ready(function () {
 
             $(".roles").select2({
-                placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.create.form.select-role')",
+                placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.user.create.form.select-role')",
                 maximumSelectionLength: Infinity
             });
         });

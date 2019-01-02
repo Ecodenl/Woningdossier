@@ -18,37 +18,37 @@ trait GetValueTrait {
         static::addGlobalScope(new GetValueScope);
     }
 
-    /**
-     * Check if the current model has a coach input source
-     *
-     * @return bool
-     */
-    public function hasCoachInputSource(): bool
-    {
-        // get the coach input source
-        $coachInputSource = InputSource::findByShort('coach');
-
-        // check if the current model has a coach input source
-        if ($this->withOutGlobalScope(GetValueScope::class)->where('input_source_id', $coachInputSource->id)->first() instanceof $this) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the coach input
-     *
-     * @return mixed
-     */
-    public function scopeCoachInput($query)
-    {
-        $coachInputSource = InputSource::findByShort('coach');
-        // just to be sure.
-        if ($this->hasCoachInputSource()) {
-            return $query->withOutGlobalScope(GetValueScope::class)->where('input_source_id', $coachInputSource->id);
-        }
-    }
+//    /**
+//     * Check if the current model has a coach input source
+//     *
+//     * @return bool
+//     */
+//    public function hasCoachInputSource(): bool
+//    {
+//        // get the coach input source
+//        $coachInputSource = InputSource::findByShort('coach');
+//
+//        // check if the current model has a coach input source
+//        if ($this->withOutGlobalScope(GetValueScope::class)->where('input_source_id', $coachInputSource->id)->first() instanceof $this) {
+//            return true;
+//        }
+//
+//        return false;
+//    }
+//
+//    /**
+//     * Get the coach input
+//     *
+//     * @return mixed
+//     */
+//    public function scopeCoachInput($query)
+//    {
+//        $coachInputSource = InputSource::findByShort('coach');
+//        // just to be sure.
+//        if ($this->hasCoachInputSource()) {
+//            return $query->withOutGlobalScope(GetValueScope::class)->where('input_source_id', $coachInputSource->id);
+//        }
+//    }
 
     /**
      * Get the correct value / row from a building_ table

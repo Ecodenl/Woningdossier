@@ -965,6 +965,39 @@
                     </div>
                 </div>
             </div>
+                @if(\App\Models\BuildingService::hasCoachInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('resident'))
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group add-space">
+                                <?php
+                                $coachInputSource = \App\Models\BuildingService::getCoachInput($userEnergyHabitsForMe);
+                                $comment = $coachInputSource->living_situation_extra;
+                                ?>
+                                <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('general-data.data-about-usage.additional-info.title')}} ({{$coachInputSource->getInputSourceName()}})
+                                </label>
+
+                                <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                @elseif(\App\Models\BuildingService::hasResidentInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('coach'))
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group add-space">
+                                <?php
+                                $residentInputSource = \App\Models\BuildingService::getResidentInput($userEnergyHabitsForMe);
+                                $comment = $residentInputSource->living_situation_extra;
+                                ?>
+                                <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('general-data.data-about-usage.additional-info.title')}} ({{$residentInputSource->getInputSourceName()}})
+                                </label>
+
+                                <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                     <div class="row">
                         <div class="col-sm-12">
@@ -1048,42 +1081,42 @@
                             </div>
                         </div>
                     </div>
+                    @if(\App\Models\BuildingService::hasCoachInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('resident'))
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group add-space">
+                                    <?php
+                                    $coachInputSource = \App\Models\BuildingService::getCoachInput($userEnergyHabitsForMe);
+                                    $comment = $coachInputSource->motivation_extra;
+                                    ?>
+                                    <label for="" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                        {{\App\Helpers\Translation::translate('general-data.motivation-extra.title')}} ({{$coachInputSource->getInputSourceName()}})
+                                    </label>
 
+                                    <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif(\App\Models\BuildingService::hasResidentInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('coach'))
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group add-space">
+                                    <?php
+                                    $residentInputSource = \App\Models\BuildingService::getResidentInput($userEnergyHabitsForMe);
+                                    $comment = $residentInputSource->motivation_extra;
+                                    ?>
+                                    <label for="" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                        {{\App\Helpers\Translation::translate('general-data.motivation-extra.title')}} ({{$residentInputSource->getInputSourceName()}})
+                                    </label>
+
+                                    <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
-        @if(\App\Models\BuildingService::hasCoachInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('resident'))
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput($userEnergyHabitsForMe);
-                            $comment = $coachInputSource->living_situation_extra;
-                        ?>
-                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
-                        </label>
 
-                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                    </div>
-                </div>
-            </div>
-        @elseif(\App\Models\BuildingService::hasResidentInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('coach'))
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <?php
-                            $residentInputSource = \App\Models\BuildingService::getResidentInput($userEnergyHabitsForMe);
-                            $comment = $residentInputSource->living_situation_extra;
-                        ?>
-                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
-                        </label>
-
-                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                    </div>
-                </div>
-            </div>
-        @endif
 
                 <div class="row">
                     <div class="col-md-12">

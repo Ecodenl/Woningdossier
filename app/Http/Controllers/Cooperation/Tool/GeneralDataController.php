@@ -45,8 +45,8 @@ class GeneralDataController extends Controller
 
     public function __construct(Request $request)
     {
-//        $slug = str_replace('/tool/', '', $request->getRequestUri());
-//        $this->step = Step::where('slug', $slug)->first();
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
     }
 
     /**
@@ -56,7 +56,6 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
-        \Auth::logout();
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
 

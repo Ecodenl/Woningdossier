@@ -9,17 +9,20 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Passwords\PasswordBroker;
+use Illuminate\Auth\Passwords\TokenRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Password;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->users()->role('coach')->where('id', '!=', \Auth::id())->get();
+        $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.coordinator.user.index', compact('roles', 'users'));
@@ -56,6 +59,7 @@ class UserController extends Controller
 
     public function store(Cooperation $cooperation, CoachRequest $request)
     {
+
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');
         $email = $request->get('email', '');
@@ -75,7 +79,6 @@ class UserController extends Controller
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $email,
-                'confirm_token' => str_random(60),
                 'password' => bcrypt(Str::randomPassword()),
             ]
         );
@@ -120,13 +123,32 @@ class UserController extends Controller
         // assign the roles to the user
         $user->assignRole($roles);
 
-        // send a mail to the user
-        \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation, $user));
+        $this->sendAccountConfirmationMail($cooperation, $request);
 
         return redirect()
             ->route('cooperation.admin.cooperation.coordinator.user.index')
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.store.success'));
     }
+
+
+    /**
+     * Send the mail to the created user
+     *
+     * @param Cooperation $cooperation
+     * @param Request $request
+     */
+    public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
+    {
+        $user = User::where('email', $request->get('email'))->first();
+
+        $token = app('auth.password.broker')->createToken($user);
+
+        // send a mail to the user
+        \Mail::to($user->email)->sendNow(new UserCreatedEmail($cooperation, $user, $token));
+
+    }
+
+
 
     public function destroy(Cooperation $cooperation, $userId)
     {

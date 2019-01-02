@@ -63,7 +63,7 @@ class CoachRequest extends FormRequest
             'first_name' => ['required', new AlphaSpace()],
             'last_name' => ['required', new AlphaSpace()],
             'password' => 'nullable|min:6',
-            'email' => 'required|email|unique:users,email',
+//            'email' => 'required|email|unique:users,email',
             'roles' => 'required|exists:roles,id',
 
             'postal_code' => $postalCodeRule ,

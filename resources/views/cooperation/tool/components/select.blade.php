@@ -21,7 +21,7 @@
     @foreach($inputValues as $inputValue)
         @foreach($userInputValues as $userInputValue)
             <?php
-            if (isset($userInputModel) && $userInputModel == true) {
+            if (isset($userInputModel) && $userInputModel == true && !is_null($userInputValue->$userInputModel)) {
                 $value = $userInputValue->$userInputModel->$userInputColumn;
             } else {
                 if (strpos($userInputColumn, ".") !== false) {

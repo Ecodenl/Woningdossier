@@ -8354,8 +8354,13 @@ button.close {
   padding-top: 0;
 }
 
-.glyphicon {
+.glyphicon-text {
   top: 3px;
+}
+
+.nav-tabs li.active a {
+  background-color: #30815f;
+  color: white;
 }
 
 /**
@@ -8478,6 +8483,29 @@ ul.progress-list li.not-available a:focus img {
   margin-top: -45px;
 }
 
+.choose-roles-panel:hover {
+  -webkit-box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+          box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+#sidebar .panel-title {
+  font-size: 16px;
+}
+
+#sidebar .sidebar li.active a {
+  color: white;
+}
+
+#current-building-status .dropdown-menu {
+  border-radius: 0px;
+}
+
+#current-building-status .dropdown-menu li a {
+  color: inherit;
+  padding: 3px 20px;
+  font-weight: normal;
+}
+
 .chat {
   list-style: none;
   margin: 0;
@@ -8535,14 +8563,5 @@ ul.progress-list li.not-available a:focus img {
 #take-action .dropdown-menu li label {
   padding: 3px 20px;
   font-weight: normal;
-}
-
-.choose-roles-panel:hover {
-  -webkit-box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-          box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-}
-
-#sidebar li.active a {
-  color: white;
 }
 

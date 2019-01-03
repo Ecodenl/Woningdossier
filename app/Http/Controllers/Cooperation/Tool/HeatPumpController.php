@@ -9,7 +9,7 @@ use App\Models\Cooperation;
 use App\Models\HeatSource;
 use App\Models\PresentHeatPump;
 use App\Models\Step;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class HeatPumpController extends Controller

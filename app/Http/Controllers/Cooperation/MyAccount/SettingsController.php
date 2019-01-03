@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
+use App\Services\UserService;
 
 class SettingsController extends Controller
 {
@@ -86,11 +88,18 @@ class SettingsController extends Controller
         // remove the progress from a user
         $user->progress()->delete();
 
+        HoomdossierSession::destroy();
+
         return redirect()->back()->with('success', __('woningdossier.cooperation.my-account.settings.form.reset-file.success'));
     }
 
     // Delete account
     public function destroy()
     {
+        $user = \Auth::user();
+
+        UserService::deleteUser($user);
+
+        return redirect(url(''));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\GetValueTrait;
+use App\Traits\GetMyValuesTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -67,10 +68,12 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingFeature extends Model
 {
     use GetValueTrait;
+    use GetMyValuesTrait;
 
     protected $fillable = [
         'element_values',
         'plastered_wall_surface',
+        'building_id',
         'wall_joints',
         'cavity_wall',
         'contaminated_wall_joints',
@@ -78,18 +81,25 @@ class BuildingFeature extends Model
         'insulation_wall_surface',
         'damage_paintwork',
         'additional_info',
+        'building_layers',
         'surface',
         'floor_surface',
+        'monument',
+        'insulation_surface',
         'build_year',
         'input_source_id',
         'facade_plastered_painted',
+        'facade_plastered_surface_id',
+        'facade_damaged_paintwork_id',
         'window_surface',
+	    'roof_type_id',
     ];
 
     public function building()
     {
         return $this->belongsTo(Building::class);
     }
+
 
     public function buildingCategory()
     {

@@ -22,7 +22,6 @@ class AddInputSourceIdToBuildingTables extends Migration
             'building_appliances',
             'building_pv_panels',
             'building_paintwork_statuses',
-            'building_permissions',
             'devices',
             'building_roof_types',
             'building_heaters',

@@ -6,7 +6,7 @@ use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
 
 class VentilationController extends Controller

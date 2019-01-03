@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Building.
@@ -53,9 +55,46 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Building extends Model
 {
-    public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid',
+    use SoftDeletes;
+
+    protected $dates = [
+        'deleted_at'
     ];
+
+    public $fillable = [
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension',
+    ];
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($building) {
+            $building->user_id = null;
+            $building->country_code = 'nl';
+            $building->example_building_id = null;
+            $building->primary = false;
+            $building->save();
+
+            // delete the services from a building
+            $building->buildingServices()->withoutGlobalScope(GetValueScope::class)->delete();
+            // delete the elements from a building
+            $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->delete();
+            // remove the features from a building
+            $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->delete();
+            // remove the roof types from a building
+            $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->delete();
+            // remove the heater from a building
+            $building->heater()->withoutGlobalScope(GetValueScope::class)->delete();
+            // remove the solar panels from a building
+            $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->delete();
+            // remove the insulated glazings from a building
+            $building->currentInsulatedGlazing()->withoutGlobalScope(GetValueScope::class)->delete();
+            // remove the paintwork from a building
+            $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->delete();
+            // remove the user usage from a building
+            $building->userUsage()->withoutGlobalScope(GetValueScope::class)->delete();
+        });
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -79,6 +118,16 @@ class Building extends Model
     public function buildingFeatures()
     {
         return $this->hasOne(BuildingFeature::class);
+    }
+
+    /**
+     * Return all the building notes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingNotes()
+    {
+        return $this->hasMany(BuildingNotes::class);
     }
 
     /**
@@ -162,6 +211,22 @@ class Building extends Model
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->first(['building_elements.*']);
     }
+
+    /**
+     * Almost the same as getBuildingElement($short) except this returns all the input
+     *
+     * @param $query
+     * @param $short
+     * @return mixed
+     */
+    public function getBuildingElementsForMe($short)
+    {
+        return $this->buildingElements()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->select(['building_elements.*'])->get();
+    }
+
 
     /**
      * @param string $short
@@ -250,6 +315,21 @@ class Building extends Model
     public function roofTypes()
     {
         return $this->hasMany(BuildingRoofType::class);
+    }
+
+    /**
+     * Get all the statuses for a building
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingCoachStatuses()
+    {
+        return $this->hasMany(BuildingCoachStatus::class);
+    }
+
+    public function buildingPermissions()
+    {
+        return $this->hasMany(BuildingPermission::class);
     }
 
     /**

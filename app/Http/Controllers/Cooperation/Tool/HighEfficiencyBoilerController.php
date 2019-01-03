@@ -21,8 +21,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -43,24 +42,30 @@ class HighEfficiencyBoilerController extends Controller
     {
         $typeIds = [4];
 
-        $user = \Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
         $habit = $user->energyHabit;
+        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
+
         $steps = Step::orderBy('order')->get();
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
-        $installedBoiler = BuildingService::where('service_id', $boiler->id)->where('building_id', Auth::user()->buildings()->first()->id)->first();
+        $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
+        $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
 
         return view('cooperation.tool.hr-boiler.index', compact(
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
-            'typeIds',
+            'typeIds', 'installedBoilerForMe', 'energyHabitsForMe',
             'steps'));
     }
 
     public function calculate(Request $request)
     {
-        $user = \Auth::user();
+
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $result = [
             'savings_gas' => 0,
@@ -134,7 +139,7 @@ class HighEfficiencyBoilerController extends Controller
         $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : '';
         $comment = $request->input('comment', '');
 
-        BuildingService::updateOrCreate(
+        BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'service_id' => $buildingServiceId,
@@ -151,7 +156,7 @@ class HighEfficiencyBoilerController extends Controller
         $gasUsage = isset($habits['gas_usage']) ? $habits['gas_usage'] : '';
         $residentCount = isset($habits['resident_count']) ? $habits['resident_count'] : '';
 
-        UserEnergyHabit::updateOrCreate(
+        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id' => $user->id,
             ],
@@ -178,12 +183,15 @@ class HighEfficiencyBoilerController extends Controller
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
@@ -191,7 +199,7 @@ class HighEfficiencyBoilerController extends Controller
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->year = $results['replace_year'];
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

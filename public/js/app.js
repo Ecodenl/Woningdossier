@@ -104,6 +104,9 @@ $.ajaxSetup({
 //    el: '#app'
 //});
 
+var baseUrl = window.location.origin;
+var fillAddressUrl = baseUrl + "/fill-address";
+
 $("#register #street").focusin(function () {
     var postalCode = $("#register #postal_code");
     var number = $("#register #number");
@@ -114,7 +117,7 @@ $("#register #street").focusin(function () {
 
     $.ajax({
         method: 'get',
-        url: 'fill-address',
+        url: fillAddressUrl,
         data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
         beforeSend: function beforeSend() {
             street.addClass("loading");
@@ -130,6 +133,9 @@ $("#register #street").focusin(function () {
             houseNumberExtension.val(address.house_number_extension);
             addressId.val(address.id);
             city.val(address.city);
+        },
+        fail: function fail(xhr, textStatus, errorThrown) {
+            console.log(xhr, textStatus, errorThrown);
         },
         dataType: 'json'
     });

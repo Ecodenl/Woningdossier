@@ -22,8 +22,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class FloorInsulationController extends Controller
 {
@@ -42,12 +41,13 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
-
         $typeIds = [4];
         /** @var Building $building */
-        $building = \Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
+        $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
+
         $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
@@ -62,15 +62,18 @@ class FloorInsulationController extends Controller
             $crawlspacePresent = 1; // now
         }
 
-        $buildingElement = Auth::user()->buildings()->first()->buildingElements;
+        $buildingElement = $building->buildingElements;
+        $buildingElementsForMe = BuildingElement::forMe()->get();
 
         $buildingFeatures = $building->buildingFeatures;
+        $buildingFeaturesForMe = BuildingFeature::forMe()->get();
         $steps = Step::orderBy('order')->get();
+
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
-            'crawlspace', 'buildingCrawlspace', 'typeIds',
-            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement'
+            'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingElementForMe', 'buildingFeaturesForMe', 'buildingElementsForMe',
+            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
         ));
     }
 
@@ -79,8 +82,8 @@ class FloorInsulationController extends Controller
         /**
          * @var Building
          */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
 
         $result = [
             'savings_gas' => 0,
@@ -124,15 +127,10 @@ class FloorInsulationController extends Controller
 
         if ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 45) {
             $advice = Temperature::FLOOR_INSULATION_FLOOR;
-            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 30) {
             $advice = Temperature::FLOOR_INSULATION_BOTTOM;
-            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.bottom');
-	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } else {
             $advice = Temperature::FLOOR_INSULATION_RESEARCH;
-            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.research');
-	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         }
 
 	    $insulationAdvice = MeasureApplication::byShort($advice);
@@ -172,7 +170,7 @@ class FloorInsulationController extends Controller
         $elements = $request->input('element', '');
 
         foreach ($elements as $elementId => $elementValueId) {
-            BuildingElement::updateOrCreate(
+            BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
                     'building_id' => $buildingId,
                     'element_id' => $elementId,
@@ -195,11 +193,11 @@ class FloorInsulationController extends Controller
         $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : '';
         $comment = $request->input('comment', '');
 
-        BuildingElement::updateOrCreate(
+        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'element_id' => $buildingElementId,
-                'input_source_id' => $buildingId
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'element_value_id' => $heightCrawlspace,
@@ -212,7 +210,7 @@ class FloorInsulationController extends Controller
         );
         $floorSurface = $request->input('building_features', '');
 
-        BuildingFeature::updateOrCreate(
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -241,10 +239,12 @@ class FloorInsulationController extends Controller
     protected function saveAdvices(Request $request)
     {
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         $elements = $request->input('element');
+
         if (array_key_exists($floorInsulation->id, $elements)) {
             $floorInsulationValue = ElementValue::where('element_id',
                 $floorInsulation->id)->where('id',
@@ -262,7 +262,7 @@ class FloorInsulationController extends Controller
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                        $actionPlanAdvice->user()->associate(Auth::user());
+                        $actionPlanAdvice->user()->associate($user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($this->step);
                         $actionPlanAdvice->save();

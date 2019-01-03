@@ -19,7 +19,7 @@ class AdminController extends Controller
 
             $roleName = $user->getRoleNames()->first();
 
-            return redirect(url(RoleHelper::getUrlByRoleName($roleName)));
+            return redirect()->route('cooperation.admin.switch-role', $roleName);
         }
     	return view('cooperation.admin.choose-roles', compact('user'));
     }

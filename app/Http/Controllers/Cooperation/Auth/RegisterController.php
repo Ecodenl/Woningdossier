@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
+use App\Models\Role;
 use App\Models\User;
 use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
@@ -47,7 +48,8 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        // middle ware on auth routes instead on controller
+//        $this->middleware('guest');
     }
 
     /**
@@ -131,8 +133,9 @@ class RegisterController extends Controller
             'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
         ]);
 
-        $address = new Building($data);
-        $address->user()->associate($user)->save();
+
+    	$address = new Building($data);
+    	$address->user()->associate($user)->save();
 
         $features->building()->associate($address)->save();
 
@@ -167,15 +170,20 @@ class RegisterController extends Controller
             $user->confirm_token = null;
             $user->save();
 
+            // give the user the role resident
+            $residentRole = Role::findByName('resident');
+            $user->roles()->attach($residentRole);
+
             return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
         }
     }
 
     public function fillAddress(Request $request)
     {
-        $postalCode = trim(strip_tags($request->get('postal_code', '')));
-        $number = trim(strip_tags($request->get('number', '')));
-        $extension = trim(strip_tags($request->get('house_number_extension', '')));
+
+    	$postalCode = trim(strip_tags($request->get('postal_code', '')));
+    	$number = trim(strip_tags($request->get('number', '')));
+    	$extension = trim(strip_tags($request->get('house_number_extension', '')));
 
         $options = $this->getAddressData($postalCode, $number);
 

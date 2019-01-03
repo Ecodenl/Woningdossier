@@ -9,7 +9,7 @@
                 <div class="col-sm-12">
                     <form action="{{route('cooperation.admin.coach.buildings.update')}}" method="post">
                         <input type="hidden" name="building_id" value="{{$building->id}}">
-                        <input type="hidden" name="building_coach_status" value="">
+                        <input type="hidden" name="building_coach_status" value="{{\App\Models\BuildingCoachStatus::getCurrentStatusKey($building->id)}}">
                         {{csrf_field()}}
                         <div class="form-group">
                             <label>@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.status')</label>
@@ -23,7 +23,7 @@
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         @foreach(__('woningdossier.cooperation.admin.coach.buildings.index.table.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
                                             <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
-                                            <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::currentStatus($buildingCoachStatusKey)->first() instanceof \App\Models\BuildingCoachStatus) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
+                                            <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
                                         @endforeach
                                     </ul>
                                 </div><!-- /btn-group -->
@@ -32,7 +32,7 @@
                         <div class="form-group">
                             <label>@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.appointment-date')</label>
                             <div class='input-group date' id="appointmentdate">
-                                <input name="appointment_date" type='text' class="form-control" value="{{$buildingCoachStatus->appointment_date}}" />
+                                <input name="appointment_date" type='text' class="form-control" value="{{isset($buildingCoachStatus) ? $buildingCoachStatus->appointment_date : ""}}" />
                                 <span class="input-group-addon">
                                    <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -51,12 +51,9 @@
     <script>
         // not needed with the format option
         // just to be sure.
-        var defaultDate = moment('{{$buildingCoachStatus->appointment_date}}').format("YYYY-MM-DD HH:mm:ss");
-        console.log(defaultDate);
         $('#appointmentdate').datetimepicker({
             format: "YYYY-MM-DD HH:mm:ss",
             locale: '{{app()->getLocale()}}',
-            defaultDate: defaultDate
 
         });
 
@@ -78,7 +75,6 @@
                 $(input).val(inputValPrefix + $(this).text().trim());
             });
 
-            $(status).trigger('click');
 
 
 

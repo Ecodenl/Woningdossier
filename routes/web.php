@@ -28,7 +28,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 		    Auth::routes();
         });
 
-
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );

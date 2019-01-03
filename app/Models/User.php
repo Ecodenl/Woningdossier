@@ -107,6 +107,16 @@ class User extends Authenticatable
         return $this->hasOne(UserEnergyHabit::class);
     }
 
+    /**
+     * Return all the building notes a user has created
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingNotes()
+    {
+        return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
+    }
+
     public function progress()
     {
         return $this->hasMany(UserProgress::class);
@@ -162,6 +172,7 @@ class User extends Authenticatable
     public function getInterestedType($type, $interestedInId)
     {
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+
     }
 
     /**
@@ -295,4 +306,18 @@ class User extends Authenticatable
 
         return false;
 	}
+
+    /**
+     * Check if the logged in user is filling the tool for someone else.
+     *
+     * @return bool
+     */
+    public function isFillingToolForOtherBuilding() : bool
+    {
+        if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
+            return true;
+        }
+
+        return false;
+    }
 }

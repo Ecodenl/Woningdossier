@@ -1053,17 +1053,28 @@ return [
                 'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
 
-                'conversation-requests' => [
-                    'take-action' => 'Actie ondernemen',
-                    'request' => 'Coachgesprek aanvragen',
-                    'update-request' => 'Coachgesprek aanvraag bijwerken',
-//                    'disabled' => 'U heeft al antwoord op uw aanvraag, als deze aanvraag is afgehandeld kunt u een nieuwe indienen'
-                    'disabled' => 'Niet beschikbaar'
-                ],
-                'conversation-requests-request' => 'Coachgesprek aanvraag',
-                'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
+				'coach-comments' => [
+					'title' => 'Opmerkingen die door de coach zijn geplaatst',
+					'general-data' => 'Algemene gegevens',
+					'wall-insulation' => 'Gevelisolatie',
+					'floor-insulation' => 'Vloerisolatie',
+					'insulated-glazing' => 'Isolerende beglazing',
+					'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
+					'roof-insulation-plat-dak' => 'Dakisolatie - Plat dak',
+					'high-efficiency-boiler' => 'HR Ketel',
+				],
 
-                'csv-columns' => [
+				'conversation-requests' => [
+					'take-action' => 'Actie ondernemen',
+					'request' => 'Coachgesprek aanvragen',
+					'update-request' => 'Coachgesprek aanvraag bijwerken',
+					'disabled' => 'Niet beschikbaar'
+				],
+				'conversation-requests-request' => 'Coachgesprek aanvraag',
+				'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
+
+
+				'csv-columns' => [
                     'year-or-planned' => 'Jaar / gepland jaar',
                     'interest' => 'Interesse',
                     'measure' => 'Maatregel',

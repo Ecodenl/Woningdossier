@@ -12,7 +12,7 @@
                 $compareValue = $userInputValue->$userInputColumn;
             }
             ?>
-            @if($key == $compareValue)
+            @if(!is_null($compareValue) && $key == $compareValue)
                 <li class="change-input-value" data-input-value="{{$key}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
             @endif
         @endforeach
@@ -40,7 +40,7 @@
             }
 
             ?>
-            @if($inputValue->id == $value)
+            @if(!is_null($value) && $inputValue->id == $value)
                 <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputName}}</a></li>
             @endif
         @endforeach

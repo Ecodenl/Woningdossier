@@ -16,15 +16,10 @@ class CreateBuildingNotesTable extends Migration
         Schema::create('building_notes', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('street')->default('');
-            $table->string('number')->default('');
-            $table->string('extension')->default('');
-            $table->string('city')->default('');
-            $table->string('postal_code')->default('');
-            $table->string('country_code', 2)->default('nl');
-            $table->string('bag_addressid')->default('');
-
             $table->longText('note');
+
+            $table->integer('coach_id')->unsigned()->nullable();
+            $table->foreign('coach_id')->references('id')->on('users')->onDelete('set null');
 
             $table->integer('building_id')->unsigned()->nullable();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');

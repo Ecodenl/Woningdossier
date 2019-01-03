@@ -20,10 +20,11 @@
                             {{\App\Helpers\Translation::translate('solar-panels.electra-usage.title')}}
                         </label>
 
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                             <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                             <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
-                        </div>
+                        @endcomponent
 
                         <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('solar-panels.electra-usage.help')}}
@@ -289,7 +290,7 @@
                 }
             });
 
-            $("select, input[type=radio], input[type=number]").change(formChange);
+            $("select, input[type=radio], input[type=text]").change(formChange);
 
             function formChange(){
                 var form = $(this).closest("form").serialize();

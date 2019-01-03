@@ -98,10 +98,10 @@ class InsulatedGlazingController extends Controller
                 // get current situation
                 $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
 
-                $currentInsulatedGlazingInput = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
+                $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (!$currentInsulatedGlazingInput->isEmpty()) {
-                    $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInput;
+                if (!$currentInsulatedGlazingInputs->isEmpty()) {
+                    $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
@@ -154,7 +154,7 @@ class InsulatedGlazingController extends Controller
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         foreach ($results['measure'] as $measureId => $data) {
             if (array_key_exists('costs', $data) && $data['costs'] > 0) {

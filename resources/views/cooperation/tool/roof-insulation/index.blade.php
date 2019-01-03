@@ -349,10 +349,22 @@
 
                                         @if ($errors->has('building_roof_types.'.$roofCat.'.extra.comment'))
                                             <span class="help-block">
-                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
-                            </span>
+                                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
+                                            </span>
                                         @endif
                                     </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    {{--loop through all the insulated glazings with ALL the input sources--}}
+                                    @foreach ($currentCategorizedRoofTypesForMe[$roofCat] as $currentRoofTypeForMe)
+                                        <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
+                                        @if($currentRoofTypeForMe->input_source_id == $coachInputSource->id && array_key_exists('comment', $currentRoofTypeForMe->extra))
+                                            @component('cooperation.tool.components.alert')
+                                                {{$currentRoofTypeForMe->extra['comment']}}
+                                            @endcomponent
+                                            @break
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
 
@@ -442,6 +454,41 @@
                 </div>
             </div>
         </div>
+        @foreach(['flat', 'pitched'] as $roofCat)
+            @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('resident'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                            <?php
+                                $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentCategorizedRoofTypesForMe[$roofCat]));
+                                $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}}, @lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title'))
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @elseif(\App\Models\BuildingService::hasResidentInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('coach'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space">
+                            <?php
+                                $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentCategorizedRoofTypesForMe[$roofCat]));
+                                $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}}, @lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title'))
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">

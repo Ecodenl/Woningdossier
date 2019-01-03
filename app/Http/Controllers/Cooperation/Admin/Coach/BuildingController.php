@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Coach;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
+use App\Models\BuildingNotes;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use Carbon\Carbon;
@@ -19,15 +20,41 @@ class BuildingController extends Controller
 {
     public function index()
     {
-        $buildingPermissions = \Auth::user()->buildingPermissions;
+        // @note, no need to do a withThrashed.
+
+        // get the buildings from the notes
+        $buildingsFromNotes = \DB::table('building_notes')
+            ->where('building_notes.coach_id', '=', \Auth::id())
+            ->leftJoin('buildings', 'buildings.id', '=', 'building_notes.building_id')
+            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
+            ->select('buildings.*', 'users.first_name', 'users.last_name')
+            ->distinct()
+            ->get();
+
+//        $buildingsFromNotes = BuildingNotes::where('coach_id', \Auth::id())->with(['building' => function ($query) {
+//            $query->withTrashed();
+//        }])->get();
+
+        // get the buildings from the buildings permissions
+        $buildingsFromPermissions = \DB::table('building_permissions')
+            ->where('building_permissions.user_id', '=', \Auth::id())
+            ->leftJoin('buildings', 'buildings.id', '=', 'building_permissions.building_id')
+            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
+            ->select('buildings.*', 'users.first_name', 'users.last_name')
+            ->distinct()
+            ->get();
+
+        // merge the results and make them unique
+        $buildings = $buildingsFromNotes->merge($buildingsFromPermissions)->unique();
+
         $buildingCoachStatuses = BuildingCoachStatus::all();
 
-        return view('cooperation.admin.coach.buildings.index', compact('buildingPermissions', 'buildingCoachStatuses'));
+        return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildingCoachStatuses'));
     }
 
     public function edit(Cooperation $cooperation, $buildingId)
     {
-        $building = Building::find($buildingId);
+        $building = Building::withTrashed()->find($buildingId);
         // do a check if the user has access to this building
         if (\Auth::user()->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
             $buildingCoachStatus = BuildingCoachStatus::where('building_id', $buildingId)->first();
@@ -45,12 +72,10 @@ class BuildingController extends Controller
         $appointmentDateFormated = Carbon::parse($appointmentDate)->format('Y-m-d H:i:s');
         $buildingId = $request->get('building_id');
 
-        BuildingCoachStatus::updateOrCreate(
+        BuildingCoachStatus::create(
             [
                 'coach_id' => \Auth::id(),
-                'building_id' => $buildingId
-            ],
-            [
+                'building_id' => $buildingId,
                 'appointment_date' => $appointmentDateFormated,
                 'status' => $buildingCoachStatus,
             ]

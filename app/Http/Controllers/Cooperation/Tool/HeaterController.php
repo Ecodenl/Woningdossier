@@ -60,6 +60,7 @@ class HeaterController extends Controller
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
         /** @var UserEnergyHabit|null $habits */
         $habits = $user->energyHabit;
+        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $currentComfort = null;
         if ($habits instanceof UserEnergyHabit) {
             $currentComfort = $habits->comfortLevelTapWater;
@@ -68,7 +69,7 @@ class HeaterController extends Controller
         $currentHeatersForMe = $building->heater()->forMe()->get();
 
         return view('cooperation.tool.heater.index', compact(
-            'comfortLevels', 'collectorOrientations', 'typeIds',
+            'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
             'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
         ));
     }
@@ -244,7 +245,7 @@ class HeaterController extends Controller
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();

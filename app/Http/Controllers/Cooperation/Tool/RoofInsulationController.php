@@ -12,6 +12,7 @@ use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoofInsulationFormRequest;
 use App\Models\Building;
+use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingRoofType;
@@ -60,7 +61,7 @@ class RoofInsulationController extends Controller
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
         $roofTypes = RoofType::all();
-        $steps = Step::orderBy('order')->get();
+
         $currentRoofTypes = $building->roofTypes;
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
 
@@ -100,11 +101,9 @@ class RoofInsulationController extends Controller
 
 
         return view('cooperation.tool.roof-insulation.index', compact(
-        	'building', 'features', 'roofTypes', 'steps', 'typeIds',
-	        'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses',
-	        'roofInsulation', 'currentRoofTypesForMe', 'heatings',
-	        'measureApplications', 'currentCategorizedRoofTypes',
-	        'currentCategorizedRoofTypesForMe'));
+            'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
+             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
+             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
 
     protected function getRoofTypeCategory(RoofType $roofType)
@@ -484,7 +483,6 @@ class RoofInsulationController extends Controller
                             'roof_type_id' => $request->input('building_features.roof_type_id'),
                         ]
                     );
-
                     // insert the new ones
                     BuildingRoofType::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
@@ -515,6 +513,13 @@ class RoofInsulationController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

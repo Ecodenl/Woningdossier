@@ -12,30 +12,29 @@
 */
 
 Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function () {
-    Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
-        Route::get('/', function () {
-            return view('cooperation.welcome');
-        }
-        )->name('welcome');
+	Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
+		Route::get('/', function () {
+			return view('cooperation.welcome');
+		}
+		)->name('welcome');
 
 		Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 		Route::get( 'confirm',
-            'Auth\RegisterController@confirm' )->name( 'confirm' );
+			'Auth\RegisterController@confirm' )->name( 'confirm' );
 
 		Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
-		// Login, forgot password etc.
-        Route::group(['middleware' => 'guest'], function () {
+//		 Login, forgot password etc.
+//        Route::group(['middleware' => 'guest'], function () {
 		    Auth::routes();
-        });
+//        });
 
 		// Logged In Section
 		Route::group(['middleware' => 'auth'], function(){
 			Route::get( 'home', 'HomeController@index' )->name( 'home' );
-			Route::get('help', 'HelpController@index')->name('help.index');
 			Route::get('measures', 'MeasureController@index')->name('measures.index');
 			Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
-            // my account
+			// my account
 			Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function() {
 
 			    Route::get('', 'MyAccountController@index')->name('index');
@@ -48,6 +47,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				    Route::get('', 'MessagesController@index')->name('index');
 				    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
 				    Route::post('edit', 'MessagesController@store')->name('store');
+				    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
 
 				    Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
 
@@ -86,117 +86,158 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
 			// the tool
+            Route::group(['prefix' => 'import', 'as' => 'import.'], function () {
+                Route::post('', 'ImportController@copy')->name('copy');
+            });
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
+
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                // todo
+	            Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
+	            // todo end
+                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+
+				Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
+                    Route::post('', 'QuestionnaireController@store')->name('store');
+                });
 
                 Route::group(['middleware' => 'filled-step:general-data'], function(){
 
-                    // Extra pages with downloadable or information content.
-                    Route::group(['namespace' => 'Information'], function () {
-                        Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
-                    });
+					// Extra pages with downloadable or information content.
+					Route::group(['namespace' => 'Information'], function () {
+						Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+					});
 
-				    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+					Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
 
-                    // Wall Insulation
-	                Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
-	                Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
+					// Wall Insulation
+					Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
+					Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
 
-	                // Insulated glazing
-	                Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-	                Route::post('insulated-glazing/calculate', 'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
+					// Insulated glazing
+					Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+					Route::post('insulated-glazing/calculate', 'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
 
-	                // Floor Insulation
-	                Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-	                Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+					// Floor Insulation
+					Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
+					Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
 
-	                // Roof Insulation
-	                Route::resource('roof-insulation', 'RoofInsulationController');
-	                Route::post('roof-insulation/calculate', 'RoofInsulationController@calculate')->name('roof-insulation.calculate');
+					// Roof Insulation
+					Route::resource('roof-insulation', 'RoofInsulationController');
+					Route::post('roof-insulation/calculate', 'RoofInsulationController@calculate')->name('roof-insulation.calculate');
 
-	                // HR boiler
-	                Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
-	                Route::post('high-efficiency-boiler/calculate', 'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
+					// HR boiler
+					Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
+					Route::post('high-efficiency-boiler/calculate', 'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
 
-	                // Solar panels
-	                Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
-	                Route::post('solar-panels/calculate', 'SolarPanelsController@calculate')->name('solar-panels.calculate');
+					// Solar panels
+					Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
+					Route::post('solar-panels/calculate', 'SolarPanelsController@calculate')->name('solar-panels.calculate');
 
-	                // Heater (solar boiler)
-	                Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
-	                Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
-                });
+					// Heater (solar boiler)
+					Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
+					Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
+				});
 
 
 
 				Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
 				Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
 				Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
-            });
-        });
+			});
+		});
 
-        // todo add admin middleware checking ACLs
-        Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
+		// todo add admin middleware checking ACLs
+		Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function(){
 
-            Route::get('/', 'AdminController@index')->name('index');
-            Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
+			Route::get('/', 'AdminController@index')->name('index');
+			Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
 			Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
 
-                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
+				Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
+
+					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                        Route::get('', 'ReportController@index')->name('index');
+                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                        Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('download.questionnaire-results');
+
+                    });
 
                     Route::group(['prefix' => 'coaches', 'as' => 'coach.'], function () {
                         Route::get('', 'CoachController@index')->name('index');
                         Route::get('create', 'CoachController@create')->name('create');
                         Route::post('create', 'CoachController@store')->name('store');
-//                        Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
+                        //Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
+					});
+
+					Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {
+					    Route::get('', 'BuildingAccessController@index')->name('index');
+					    Route::get('{buildingId}', 'BuildingAccessController@edit')->name('edit');
+					    Route::delete('destroy', 'BuildingAccessController@destroy')->name('destroy');
                     });
 
-                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
                         Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
 
                     });
 
-                    Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
+                    Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');
                         Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
-                    Route::group(['prefix' => 'gespreks-aanvragen', 'as' => 'conversation-requests.'], function () {
+                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
+                        Route::get('', 'QuestionnaireController@index')->name('index');
+                        Route::post('', 'QuestionnaireController@update')->name('update');
+                        Route::get('create', 'QuestionnaireController@create')->name('create');
+                        Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
+                        Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
+
+                        Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
+                        Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
+                        Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
+                    });
+
+                    Route::group(['prefix' => 'conversation-requests', 'as' => 'conversation-requests.'], function () {
                         Route::get('', 'ConversationRequestsController@index')->name('index');
-                        Route::get('gespreks-aanvraag/{messageId}', 'ConversationRequestsController@show')->name('show');
+                        Route::get('request/{messageId}', 'ConversationRequestsController@show')->name('show');
                     });
 
-                    Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {
+                    Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
                         Route::get('', 'MessagesController@index')->name('index');
-                        Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
-                        Route::post('bericht', 'MessagesController@store')->name('store');
+                        Route::get('message/{messageId}', 'MessagesController@edit')->name('edit');
+                        Route::post('message', 'MessagesController@store')->name('store');
                     });
 
-                    Route::group(['prefix' => 'verbind-met-coach', 'as' => 'connect-to-coach.'], function () {
+                    Route::group(['prefix' => 'connect-to-coach', 'as' => 'connect-to-coach.'], function () {
                         Route::get('','ConnectToCoachController@index')->name('index');
-                        Route::get('koppelen/{senderId}','ConnectToCoachController@create')->name('create');
+                        Route::get('connect/{privateMessageId}','ConnectToCoachController@create')->name('create');
+                        Route::get('consult-coach/{privateMessageId}','ConnectToCoachController@talkToCoachCreate')->name('talk-to-coach.create');
+                        Route::post('consult-coach','ConnectToCoachController@talkToCoachStore')->name('talk-to-coach.store');
+//                        Route::post('message-and-connect', 'ConnectToCoachController@storeWithMessageToCoach')->name('store-with-message-to-coach');
                         Route::post('', 'ConnectToCoachController@store')->name('store');
                     });
 
-                    // needs to be the last route due to the param
-                    //Route::get('{role_name?}', 'CoordinatorController@index')->name('index');
-	                Route::get('home', 'CoordinatorController@index')->name('index');
+
+					// needs to be the last route due to the param
+					Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
-			    Route::group(['prefix' => 'cooperatie-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
+				Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
 
-                    Route::group(['prefix' => 'rollen-toewijzen', 'as' => 'assign-roles.'], function () {
+                    Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');
                         Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
                     });
 
-			        Route::group(['prefix' => 'gebruikers', 'as' => 'users.'], function () {
+			        Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
 			            Route::get('', 'UserController@index')->name('index');
 			            Route::get('create', 'UserController@create')->name('create');
 			            Route::post('', 'UserController@store')->name('store');
@@ -206,21 +247,25 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
                         Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-                });
+                    });
 
-				Route::resource('example-buildings', 'ExampleBuildingController');
-				Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+                    Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
+                       Route::get('', 'StepController@index')->name('index');
+                       Route::post('set-active', 'StepController@setActive')->name('set-active');
+                    });
+
+				    Route::resource('example-buildings', 'ExampleBuildingController');
+				    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
 					// needs to be the last route due to the param
-                    //Route::get('{role_name?}', 'CooperationAdminController@index')->name('index');
-				    Route::get('home', 'CooperationController@index')->name('index');
+				    Route::get('home', 'CooperationAdminController@index')->name('index');
                 });
 
-            });
+			});
 
 			Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
 
-			    Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
+				Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
 			        Route::get('', 'BuildingController@index')->name('index');
 			        Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
 			        Route::post('edit', 'BuildingController@update')->name('update');
@@ -233,25 +278,24 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     });
                 });
 
-                Route::group(['prefix' => 'berichten', 'as' => 'messages.'], function () {
+				Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('bericht/{messageId}', 'MessagesController@edit')->name('edit');
-                    Route::post('bericht', 'MessagesController@store')->name('store');
+                    Route::get('message/{messageId}', 'MessagesController@edit')->name('edit');
+                    Route::post('message', 'MessagesController@store')->name('store');
+                    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
-                Route::group(['prefix' => 'verbinden-met-bewoner', 'as' => 'connect-to-resident.'], function () {
+                Route::group(['prefix' => 'connect-to-resident', 'as' => 'connect-to-resident.'], function () {
                     Route::get('', 'ConnectToResidentController@index')->name('index');
                     Route::get('{userId}', 'ConnectToResidentController@create')->name('create');
                     Route::post('', 'ConnectToResidentController@store')->name('store');
                 });
 
-
                 // needs to be the last route due to the param
-			    //Route::get('{role_name?}', 'CoachController@index')->name('index');
 				Route::get('home', 'CoachController@index')->name('index');
             });
 
-            // auth
+			// auth
 			Route::group(['namespace' => 'Auth'], function(){
 				Route::get('login', 'LoginController@showLoginForm')->name('login');
 				Route::post('login', 'LoginController@login');

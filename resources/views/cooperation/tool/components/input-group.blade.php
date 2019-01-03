@@ -6,10 +6,10 @@
             @switch($inputType)
                 @case('select')
                     @include('cooperation.tool.components.select', [
-                        'customInputValueColumn' => isset($customInputValueColumn)  ? $customInputValueColumn : "",
+                        'customInputValueColumn' => isset($customInputValueColumn) ? $customInputValueColumn : null,
                         'userInputValues' => $userInputValues,
                         'userInputColumn' => $userInputColumn,
-                        'userInputModel' => isset($userInputModel) ? $userInputModel : "",
+                        'userInputModel' => isset($userInputModel) ? $userInputModel : null,
                         'inputValues' => $inputValues,
                     ])
                     @break

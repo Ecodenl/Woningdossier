@@ -21,10 +21,6 @@ class InputSource extends Model
      */
     public function isResident(): bool
     {
-        if ($this->short == "resident") {
-            return true;
-        }
-
-        return false;
+    	return $this->short == self::RESIDENT_SHORT;
     }
 }

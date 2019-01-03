@@ -133,14 +133,44 @@ class HoomdossierSession extends Session {
      *
      * @param Building $building
      */
-    public static function setBuilding(Building $building): void
+    public static function setBuilding(Building $building)
     {
         self::setHoomdossierSession('building_id', $building->id);
     }
 
+	/**
+	 * Returns the set role_id.
+	 *
+	 * @return int|null
+	 */
     public static function getRole()
     {
         return self::getHoomdossierSession('role_id');
+    }
+
+    public static function currentRole($column = 'name') : string
+    {
+    	$roleId = self::getRole();
+		if (!empty($roleId)){
+			$role = Role::find($roleId);
+			if ($role instanceof Role){
+				$result = $role->getAttribute($column);
+				if (!empty($result)){
+					return $result;
+				}
+			}
+		}
+		return "";
+    }
+
+	/**
+	 * Returns whether or not this session contains a current role.
+	 *
+	 * @return bool
+	 */
+    public static function hasRole() : bool
+    {
+    	return !empty(self::getRole());
     }
 
     /**
@@ -166,15 +196,15 @@ class HoomdossierSession extends Session {
     /**
      * Get the building id
      *
-     * @return int
+     * @return int|null
      */
-    public static function getBuilding(): int
+    public static function getBuilding()
     {
         return self::getHoomdossierSession('building_id');
     }
 
     /**
-     * Return the hoomdossier sessions
+     * Return the Hoomdossier session data
      *
      * @return array
      */

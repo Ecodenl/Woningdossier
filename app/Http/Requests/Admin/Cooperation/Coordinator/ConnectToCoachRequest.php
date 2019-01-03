@@ -25,8 +25,8 @@ class ConnectToCoachRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|max:125',
-            'message' => 'required',
+//            'title' => 'required|max:125',
+//            'message' => 'required',
             'coach' => ['required', 'exists:users,id', new isUserMemberOfCooperation],
         ];
     }

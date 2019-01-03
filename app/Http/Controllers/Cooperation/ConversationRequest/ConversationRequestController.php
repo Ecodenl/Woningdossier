@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
@@ -51,21 +52,24 @@ class ConversationRequestController extends Controller
     public function edit(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
 
-        if ($option != PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
-            return redirect()->back();
-        }
 
-        // we get the intended message so if users wrote half a book they not lose it
-        $intendedMessage = session('intendedMessage');
+        return redirect()->route('cooperation.my-account.messages.requests.index');
 
-        $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
-        if (!$myOpenCoachConversationRequest instanceof PrivateMessage){
-        	return redirect()->route('cooperation.conversation-requests.index');
-        }
-
-        $selectedOption = $option;
-
-        return view('cooperation.conversation-requests.edit', compact('myOpenCoachConversationRequest', 'selectedOption', 'intendedMessage'));
+//        if ($option != PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+//            return redirect()->back();
+//        }
+//
+//        // we get the intended message so if users wrote half a book they not lose it
+//        $intendedMessage = session('intendedMessage');
+//
+//        $myOpenCoachConversationRequest = PrivateMessage::myOpenCoachConversationRequest()->first();
+//        if (!$myOpenCoachConversationRequest instanceof PrivateMessage){
+//        	return redirect()->route('cooperation.conversation-requests.index');
+//        }
+//
+//        $selectedOption = $option;
+//
+//        return view('cooperation.conversation-requests.edit', compact('myOpenCoachConversationRequest', 'selectedOption', 'intendedMessage'));
     }
 
     /**
@@ -78,7 +82,7 @@ class ConversationRequestController extends Controller
     public function update(ConversationRequest $request, Cooperation $cooperation)
     {
         $user = \Auth::user();
-        $cooperationId = session('cooperation');
+        $cooperationId = HoomdossierSession::getCooperation();
 
         $message = $request->get('message', '');
         $action = $request->get('action', '');
@@ -97,7 +101,7 @@ class ConversationRequestController extends Controller
             ]
         );
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.update.success', ['url' => route('cooperation.my-account.messages.requests.index', ['cooperation' => $cooperation->slug])]));
+        return redirect()->back()->with('success', __('woningdossier.cooperation.conversation-requests.update.success', ['url' => route('cooperation.my-account.messages.requests.index', compact('cooperation'))]));
     }
 
 
@@ -136,7 +140,7 @@ class ConversationRequestController extends Controller
         }
 
         $user = \Auth::user();
-        $cooperationId = session('cooperation');
+        $cooperationId = HoomdossierSession::getCooperation();
 
         PrivateMessage::create(
             [
@@ -145,7 +149,7 @@ class ConversationRequestController extends Controller
                 'message' => $message,
                 'to_cooperation_id' => $cooperationId,
                 'from_user_id' => $user->id,
-                'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
+                'status' => PrivateMessage::STATUS_APPLICATION_SENT,
                 'request_type' => $action,
 	            'allow_access' => $allowAccess,
             ]
@@ -153,7 +157,7 @@ class ConversationRequestController extends Controller
 
         $cooperation = Cooperation::find($cooperationId);
 
-        return redirect()->route('cooperation.tool.my-plan.index')->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.index', ['cooperation' => $cooperation->slug])]));
+        return redirect()->route('cooperation.tool.my-plan.index')->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.messages.requests.index', compact('cooperation'))]));
     }
 
 }

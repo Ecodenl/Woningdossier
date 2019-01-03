@@ -12,7 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('css/datepicker/datetimepicker.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/datepicker/datetimepicker.min.css') }}">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
     @endif
@@ -64,6 +64,12 @@
                         </ul>
                     </li>
                 </ul>
+
+                @if(\App\Helpers\HoomdossierSession::getRole())
+                    @hasrole('coach|coordinator|cooperation-admin|super-admin|superuser')
+                        <a href="{{ route('cooperation.tool.index') }}" class="btn btn-warning navbar-btn">Naar tool</a>
+                    @endhasrole
+                @endif
             @endif
 
             <!-- Right Side Of Navbar -->

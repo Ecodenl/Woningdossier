@@ -54,7 +54,7 @@ class HeaterController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
-        $steps = Step::orderBy('order')->get();
+
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
@@ -70,7 +70,7 @@ class HeaterController extends Controller
 
         return view('cooperation.tool.heater.index', compact('building',
             'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
-            'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
+            'currentComfort', 'currentHeater', 'habits',  'currentHeatersForMe'
         ));
     }
 
@@ -209,6 +209,7 @@ class HeaterController extends Controller
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
+        $comment = $request->get('comment');
 
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -218,6 +219,7 @@ class HeaterController extends Controller
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
                 'angle' => $angle,
+                'comment' => $comment
             ]
         );
 
@@ -232,7 +234,14 @@ class HeaterController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)

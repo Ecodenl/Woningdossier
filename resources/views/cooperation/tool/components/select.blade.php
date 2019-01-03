@@ -29,7 +29,7 @@
     @foreach($userInputValues as $userInputValue)
         @foreach($inputValues as $inputValue)
             <?php
-            if (isset($userInputModel) && $userInputModel == true) {
+            if ($userInputModel instanceof \Illuminate\Database\Eloquent\Model) {
             	if (!$userInputValue->$userInputModel instanceof \Illuminate\Database\Eloquent\Model){
             		$value = null;
                 }

@@ -42,9 +42,11 @@ class Cooperation extends Model
         return $this->hasOne(CooperationStyle::class);
     }
 
-	public function getRouteKeyName() {
+	public function getRouteKeyName()
+	{
 		return 'slug';
 	}
+
     /**
      * Return the coaches from the current cooperation
      *

@@ -118,15 +118,17 @@ class MyPlanController extends Controller
 						'interested' => $advice->planned,
                         'advice_id' => $advice->id,
                         'measure' => $advice->measureApplication->measure_name,
-                        'measure_short' => $advice->measureApplication->short,
-                        'costs' => Calculator::indexCosts($advice->costs, $costYear),
-                        'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
-                        'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
-                        'savings_money' => is_null($advice->savings_money) ? 0 : Calculator::indexCosts($advice->savings_money, $costYear),
-                    ];
-                }
-            }
-        }
+						'measure_short' => $advice->measureApplication->short,
+						// In the table the costs are indexed based on the advice year
+						// Now re-index costs based on user planned year in the personal plan
+						'costs' => Calculator::indexCosts($advice->costs, $costYear),
+						'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
+						'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
+						'savings_money' => is_null($advice->savings_money) ? 0 : Calculator::indexCosts($advice->savings_money, $costYear),
+					];
+				}
+			}
+		}
 
         ksort($sortedAdvices);
 

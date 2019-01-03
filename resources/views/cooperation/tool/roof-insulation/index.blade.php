@@ -179,7 +179,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{-- Had class .cover-zinc not used in js, does not seem neseserie --}}
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">

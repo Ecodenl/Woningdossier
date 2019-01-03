@@ -13,11 +13,13 @@ use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
 use App\Models\BuildingPvPanel;
 use App\Models\Cooperation;
+use App\Models\Element;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\Service;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
@@ -75,10 +77,15 @@ class SolarPanelsController extends Controller
             'year' => null,
         ];
 
-
-
+<<<<<<<<< Temporary merge branch 1
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
+=========
+
+
+        $user = \Auth::user();
+        $building = $user->buildings()->first();
+>>>>>>>>> Temporary merge branch 2
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);
@@ -175,7 +182,6 @@ class SolarPanelsController extends Controller
         $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
-        $comment = $request->get('comment');
 
         BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -187,7 +193,6 @@ class SolarPanelsController extends Controller
                 'number' => $number,
                 'pv_panel_orientation_id' => $orientation,
                 'angle' => $angle,
-                'comment' => $comment
             ]
         );
 

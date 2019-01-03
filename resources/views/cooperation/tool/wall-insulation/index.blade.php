@@ -14,9 +14,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
 
-                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label">
-                            <i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.title')}} </label>
+                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.title')}}</label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
@@ -76,7 +74,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}} </label><span> *</span>
+                            <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}} </label><span> *</span>
                             <label class="radio-inline">
                                 <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
                             </label>

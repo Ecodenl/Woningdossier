@@ -94,7 +94,8 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'number'])
-                            <input type="text" min="0" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.solar-panels.amount')</span>
+                            <input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
                         @endcomponent
 
                         <div id="number-info" class="collapse alert alert-info remove-collapse-space alert-top-space">

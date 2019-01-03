@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\Str;
 use App\Models\Translation;
 use Illuminate\Console\Command;
 use Ramsey\Uuid\Uuid;
 
-class importTranslations extends Command
+class ImportTranslations extends Command
 {
     /**
      * The name and signature of the console command.
@@ -43,7 +44,7 @@ class importTranslations extends Command
         $importFile = storage_path('app/public/translations-import.csv');
 
         // csv to associative array
-        $csvRows = csv_to_array($importFile, ',', false);
+        $csvRows = CsvHelper::toArray($importFile, ',', false);
 
         // update for the translatable uuid.php file
         $uuidTranslatableData = [];
@@ -71,7 +72,7 @@ class importTranslations extends Command
                 $short = $csvRow[3];
 
                 // if the uuid key does not exist or the uuid is empty create a new one
-                if (array_key_exists(4, $csvRow) && $csvRow != "") {
+                if (array_key_exists(4, $csvRow) && $csvRow[4] != "") {
                     $translationUuidHelpKey = $csvRow[4];
                 } else {
                     $translationUuidHelpKey = Str::uuid();
@@ -146,6 +147,8 @@ class importTranslations extends Command
 
         $updateCounter = 0;
         $createCounter = 0;
+        $updateHelpTextCounter = 0;
+        $updateTitleTextCounter = 0;
 
         foreach ($updateHelpTranslations as $updateHelpTranslation) {
             $helpTranslation = Translation::where('key', $updateHelpTranslation['key'])->first();
@@ -158,11 +161,13 @@ class importTranslations extends Command
                 // ifso update it
                 if ($updateHelpTranslation['translation'] != $helpTranslation->translation) {
                     $updateCounter++;
+                    $updateHelpTextCounter++;
                     Translation::where('key', $updateHelpTranslation['key'])->update([
                         'key' => $updateHelpTranslation['key'],
                         'language' => $updateHelpTranslation['language'],
                         'translation' => $updateHelpTranslation['translation']
                     ]);
+                    $this->line($updateHelpTranslation['translation']);
                 }
 
             } else {
@@ -185,6 +190,7 @@ class importTranslations extends Command
                 // ifso update it
                 if ($updateTitleTranslation['translation'] != $titleTranslation->translation) {
                     $updateCounter++;
+                    $updateTitleTextCounter++;
                     Translation::where('key', $updateTitleTranslation['key'])->update([
                         'key' => $updateTitleTranslation['key'],
                         'language' => $updateTitleTranslation['language'],
@@ -204,6 +210,7 @@ class importTranslations extends Command
 
         $this->line("Created counter: {$createCounter}");
         $this->line("Update counter: {$updateCounter}");
+        $this->line("Update helptext counter: {$updateHelpTextCounter}", "fg=green");
 
 
 
@@ -225,7 +232,7 @@ class importTranslations extends Command
         }
 
         // filepath of the uuid translation file
-        $this->line('Writing the uuid translatable file...', "fg=blue");
+        $this->line('Writing the uuid translatable file...', "fg=green");
         $translationPath = resource_path('lang/nl/uuid.php');
         $translationFile = fopen($translationPath, 'w');
 

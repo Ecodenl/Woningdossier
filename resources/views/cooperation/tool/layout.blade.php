@@ -4,22 +4,71 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
+                <?php
+                    if(!isset($building)) {
+                        $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
+                    }
+                ?>
                 @if (Auth::user()->buildings->first()->id != \App\Helpers\HoomdossierSession::getBuilding())
-                    <div class="alert alert-success alert-dismissible show" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        U bewerkt nu de tool namens {{\App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name}}.
-                        <br>
-                        U ziet nu de gegevens die de {{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name}} heeft ingevuld.
+                    <div class="col-sm-6">
+                        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                            @lang('woningdossier.cooperation.tool.filling-for', [
+                                'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
+                                'last_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->last_name,
+                                'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
+                            ])
+                        @endcomponent
                     </div>
+                    <div class="col-sm-6">
+                        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                            @lang('woningdossier.cooperation.tool.current-building-address', [
+                                'street' => $building->street,
+                                'number' => $building->number,
+                                'extension' => $building->extension,
+                                'zip_code' => $building->postal_code,
+                                'city' => $building->city
+                            ])
+                        @endcomponent
+                    </div>
+                @else
 
+                    @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                        @lang('woningdossier.cooperation.tool.current-building-address', [
+                            'street' => $building->street,
+                            'number' => $building->number,
+                            'extension' => $building->extension,
+                            'zip_code' => $building->postal_code,
+                            'city' => $building->city
+                        ])
+                    @endcomponent
                 @endif
+
                 @include('cooperation.tool.progress')
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
+                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident') || app()->environment() == "local")
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form id="copy-coach-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-left">
+                                <input type="hidden" name="input_source" value="coach">
+                                {{csrf_field()}}
+                                <button class="btn btn-primary">
+                                    @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                </button>
+                            </form>
+
+                            <form id="copy-example-coach-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-right">
+                                <input type="hidden" name="input_source" value="example-building">
+                                {{csrf_field()}}
+                                <button class="btn btn-primary">
+                                    Neem voorbeeldwoning antwoorden over
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endif
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
@@ -58,7 +107,24 @@
         $('#submit-form-top-right').click(function () {
             // There will only be 1 form inside the panel body, submit it
             $('.panel-body form button[type=submit]').click();
-        })
+        });
+
+        $('#copy-coach-input').on('submit', function (event) {
+            if(confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
+
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
+        $('#copy-example-coach-input').on('submit', function (event) {
+            if(confirm('Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.')) {
+
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

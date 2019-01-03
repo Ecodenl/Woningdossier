@@ -12,7 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('css/datepicker/datetimepicker.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/datepicker/datetimepicker.min.css') }}">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
     @endif
@@ -64,6 +64,12 @@
                         </ul>
                     </li>
                 </ul>
+
+                @if(\App\Helpers\HoomdossierSession::getRole())
+                    @hasrole('coach|coordinator|cooperation-admin|super-admin|superuser')
+                        <a href="{{ route('cooperation.tool.index') }}" class="btn btn-warning navbar-btn">Naar tool</a>
+                    @endhasrole
+                @endif
             @endif
 
             <!-- Right Side Of Navbar -->
@@ -82,11 +88,13 @@
                                     @lang('woningdossier.cooperation.admin.navbar.current-role') {{ Auth::user()->getHumanReadableRoleName(Auth::user()->getRoleNames()->first()) }}
                                 </a>
                             </li>
-                        @else
+                        @elseif(\App\Helpers\HoomdossierSession::getRole())
                             <li class="dropdown">
+                                @if(\App\Helpers\HoomdossierSession::hasRole())
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                    @lang('woningdossier.cooperation.admin.navbar.current-role') {{\Spatie\Permission\Models\Role::find(session('role_id'))->human_readable_name}}<span class="caret"></span>
+                                    @lang('woningdossier.cooperation.admin.navbar.current-role') {{ \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name }}<span class="caret"></span>
                                 </a>
+                                @endif
 
                                 <ul class="dropdown-menu">
                                     @foreach(Auth::user()->roles()->orderBy('level', 'DESC')->get() as $role)

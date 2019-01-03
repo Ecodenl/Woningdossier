@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait GetMyValuesTrait {
 
@@ -20,14 +21,13 @@ trait GetMyValuesTrait {
         return $query->withoutGlobalScope(GetValueScope::class)->where('building_id', HoomdossierSession::getBuilding());
     }
 
-    /**
-     * Get the input Sources
-     *
-     * @return InputSource
-     */
+	/**
+	 *
+	 * @return BelongsTo
+	 */
     public function inputSource()
     {
-        return $this->belongsTo('App\Models\InputSource');
+        return $this->belongsTo(InputSource::class);
     }
 
 
@@ -108,20 +108,5 @@ trait GetMyValuesTrait {
     {
         return $this->inputSource()->first()->name;
     }
-
-//
-//    /**
-//     * Almost the same as getBuildingElement($short) except this returns all the input
-//     *
-//     * @param $query
-//     * @param $short
-//     * @return mixed
-//     */
-//    public function scopeBuildingElementsForMe($query, $short)
-//    {
-//        return $query->forMe()->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-//            ->where('e.short', $short)->select(['building_elements.*']);
-//    }
-
 
 }

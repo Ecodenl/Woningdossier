@@ -15,6 +15,9 @@ class InboxService
      */
     public static function setRead($mainMessageId)
     {
+
+        $mainMessage = PrivateMessage::find($mainMessageId);
+
         PrivateMessage::conversation($mainMessageId)->where('to_user_id', \Auth::id())->update([
             'to_user_read' => true
         ]);

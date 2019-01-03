@@ -6,12 +6,18 @@
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'element'])
+
+        {{--{{dd($floorInsulation)}}--}}
+
+        @include('cooperation.tool.includes.interested', [
+            'type' => 'element', 'buildingElements' => $floorInsulation, 'buildingElement' => 'floor-insulation'
+        ])
+
 
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('floor-insulation.intro.title.title')}}</h4>
+                    @include('cooperation.layouts.section-title', ['translationKey' => 'floor-insulation.intro.title'])
                 </div>
             </div>
             <div class="row">
@@ -19,7 +25,7 @@
                     <div class="form-group add-space{{ $errors->has('element.' . $floorInsulation->id) ? ' has-error' : '' }}">
 
                         <label for="element_{{ $floorInsulation->id }}" class="control-label">
-                            <i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> 
+                            <i data-toggle="collapse" data-target="#floor-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('floor-insulation.floor-insulation.title')}}
                         </label>
 
@@ -28,7 +34,7 @@
                             <div id="floor-insulation-options">
                                 <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
                                     @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
-                                        <option
+                                        <option data-calculate-value="{{$elementValue->calculate_value}}"
                                                 @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
                                                 selected="selected"
                                                 {{-- TODO: Remove the element_values ? --}}
@@ -60,6 +66,8 @@
                     </div>
                 </div>
             </div>
+
+        <div id="hideable">
 
             <div id="answers">
 
@@ -104,7 +112,7 @@
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
-                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.unknown.title')}}</p>
+                                    <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.unknown')</p>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +160,7 @@
 
                                 <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
                                     <div class="alert alert-warning show" role="alert">
-                                        <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
+                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
                                     </div>
                                 </div>
 
@@ -180,6 +188,14 @@
                                     </select>
                                 @endcomponent
 
+                                <div class="col-sm-12">
+                                    <div class="form-group add-space">
+                                        <div id="crawlspace-height-info" class="collapse alert alert-info remove-collapse-space">
+                                            {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.help')}}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 @if ($errors->has('building_elements.' . $crawlspace->id .'.element_value_id'))
                                     <span class="help-block">
                                     <strong>{{ $errors->first('building_elements.' . $crawlspace->id .'.element_value_id') }}</strong>
@@ -187,12 +203,6 @@
                                 @endif
                             </div>
                         </div>
-
-                            <div class="form-group add-space">
-                                <div id="crawlspace-height-info" class="collapse alert alert-info remove-collapse-space">
-                                    {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.help')}}
-                                </div>
-                            </div>
                     </div>
                 </div>
                 <div class="row crawlspace-accessible">
@@ -248,6 +258,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -274,9 +285,9 @@
                     <div class="col-sm-12">
                         <?php
                             $coachInputSource = App\Models\InputSource::findByShort('coach');
-                            $coachInput = $buildingElementsForMe->where('input_source_id', $coachInputSource->id)->where('element_id', $crawlspace->id)->first()
+                            $coachInput = \App\Models\BuildingElement::getCoachInput($buildingElementsForMe);
                         ?>
-                        @if(!is_null($coachInput) && $coachInput->hasCoachInputSource() && array_key_exists('comment', $coachInput->extra))
+                        @if(($coachInput instanceof \App\Models\BuildingElement && is_array($coachInput->extra)) && array_key_exists('comment', $coachInput->extra))
                             @component('cooperation.tool.components.alert')
                                 {{$coachInput->extra['comment']}}
                             @endcomponent
@@ -300,52 +311,21 @@
 
                     <div id="costs" class="row">
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">m3 / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                    <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
-
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
                         </div>
                     </div>
                 </div>
@@ -389,7 +369,7 @@
             <div class="row" id="no-crawlspace-error">
                 <div class="col-md-12">
                     <div class="alert alert-danger show" role="alert">
-                        <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title')}}</p>
+                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.no-crawlspace')</p>
                     </div>
                 </div>
             </div>
@@ -397,13 +377,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">@lang('general.download.title')}}</div>
+                        <div class="panel-heading">@lang('default.buttons.download')</div>
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a></li>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')))))}}</a></li>
-                                <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Vloerisolatie.pdf"; ?>
-                                <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
 
                             </ol>
                         </div>
@@ -454,6 +432,18 @@
             }
 
             function formChange(){
+
+                var interestedCalculateValue = $('#interest_element_{{$floorInsulation->id}} option:selected').data('calculate-value');
+                var elementCalculateValue = $('#element_{{$floorInsulation->id}} option:selected').data('calculate-value');
+
+                if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
+                    $('#hideable').hide();
+                    $('#floor-insulation-info-alert').find('.alert').removeClass('hide')
+                } else {
+                    $('#hideable').show();
+                    $('#floor-insulation-info-alert').find('.alert').addClass('hide')
+                }
+
                 var form = $(this).closest("form").serialize();
                 $.ajax({
                     type: "POST",

@@ -20,7 +20,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($users as $user)
+                            @foreach($buildingsFromBuildingCoachStatuses as $building)
+                                <?php $user = \App\Models\User::find($building->user_id) ?>
                                 <tr>
                                     <td>{{$user->first_name}}</td>
                                     <td>{{$user->last_name}}</td>

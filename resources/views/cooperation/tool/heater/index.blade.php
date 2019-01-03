@@ -23,6 +23,7 @@
                             <i data-toggle="collapse" data-target="#water-comfort-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.title')}}
                         </label>
+
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $comfortLevels, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                             <select id="user_energy_habits_water_comfort_id" class="form-control" name="user_energy_habits[water_comfort_id]">
@@ -105,6 +106,58 @@
                 </div>
 
             </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
+
+                        <textarea id="additional-info" class="form-control" name="comment">{{old('comment', isset($currentHeater) ? $currentHeater->comment : '')}}</textarea>
+
+                        <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
+                        </div>
+
+                        @if ($errors->has('comment'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('comment') }}</strong>
+                            </span>
+                        @endif
+
+                    </div>
+                </div>
+            </div>
+            @if(\App\Models\BuildingService::hasCoachInputSource($currentHeatersForMe) && Auth::user()->hasRole('resident'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space">
+                            <?php
+                            $coachInputSource = \App\Models\BuildingService::getCoachInput($currentHeatersForMe);
+                            $comment = $coachInputSource->comment;
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                            </label>
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @elseif(\App\Models\BuildingService::hasResidentInputSource($currentHeatersForMe) && Auth::user()->hasRole('coach'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space">
+                            <?php
+                            $residentInputSource = \App\Models\BuildingService::getResidentInput($currentHeatersForMe);
+                            $comment = $residentInputSource->comment;
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
             <div id="estimated-usage">
                 <hr>
@@ -170,73 +223,55 @@
 
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('heater.indication-for-costs.production-heat.title')}}</label>
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#production-heat-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('heater.indication-for-costs.production-heat.title')}}
+                            </label>
                             <div class="input-group">
                                 <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="production_heat" class="form-control disabled" disabled="" value="0">
                             </div>
+                            <div id="production-heat-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('heater.indication-for-costs.production-heat.help')}}
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('heater.indication-for-costs.percentage-consumption.title')}}</label>
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#percentage-consumption-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('heater.indication-for-costs.percentage-consumption.title')}}
+                            </label>
                             <div class="input-group">
                                 <span class="input-group-addon">%</span>
                                 <input type="text" id="percentage_consumption" class="form-control disabled" disabled="" value="0">
                             </div>
+                            <div id="percentage-consumption-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('heater.indication-for-costs.percentage-consumption.title')}}
+                            </div>
                         </div>
                     </div>
 
                 </div>
 
+                </div>
                 <div class="row">
-
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title') }} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">€ / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.indicative-costs')
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs..comparable-rent.title')}}</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.comparable-rent')
                     </div>
                 </div>
             </div>
@@ -264,7 +299,6 @@
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Zonneboiler.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Zonneboiler.pdf')))))}}</a></li>
-                                <li><a download="" href="{{asset('storage/hoomdossier-assets/Invul_hulp_Zonneboiler.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Invul_hulp_Zonneboiler.pdf')))))}}</a></li>
                             </ol>
                         </div>
                     </div>

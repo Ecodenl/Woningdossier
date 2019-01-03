@@ -59,6 +59,23 @@ trait GetMyValuesTrait {
             return $inputSourcesForMe->where('input_source_id', $coachInputSource->id)->first();
         }
     }
+
+    /**
+     * Get the resident input from a collection that comes from the forMe() scope
+     *
+     * @param Collection $inputSourcesForMe
+     * @return mixed
+     */
+    public static function getResidentInput(Collection $inputSourcesForMe)
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        if (self::hasResidentInputSource($inputSourcesForMe)) {
+            return $inputSourcesForMe->where('input_source_id', $residentInputSource->id)->first();
+        }
+
+    }
+
     /**
      * Get a input source name
      *

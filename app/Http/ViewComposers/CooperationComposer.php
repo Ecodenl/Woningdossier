@@ -16,8 +16,5 @@ class CooperationComposer
 
 	    $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
 	    $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
-
-
-    }
-
+	}
 }

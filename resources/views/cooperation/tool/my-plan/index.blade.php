@@ -168,7 +168,6 @@
         });
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
-
                 var form = $(this).closest("form").serialize();
                 $.ajax({
                     type: "POST",
@@ -276,8 +275,8 @@
                     advicedYear = getPlannedYear(measureApplicationShort);
                     plannedYearInput.val(advicedYear)
                 } else {
-                    plannedYearInput.val("");
-                }
+                plannedYearInput.val("");
+            }
         });
 
             function checkCoupledMeasuresAndMaintenance() {

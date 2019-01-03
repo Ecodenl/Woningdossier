@@ -82,13 +82,11 @@
                             {{\App\Helpers\Translation::translate('heater.angle.title')}}
                         </label>
 
-
-                        <?php $angles = [20, 30, 40, 45, 50, 60, 70, 75, 90]  ?>
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => array_combine($angles, $angles), 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'angle'])
+                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\Heater\KeyFigures::getAngles(), 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'angle'])
                             <span class="input-group-addon">&deg;</span>
                             <select id="building_heaters_angle" class="form-control" name="building_heaters[angle]">
-                                @foreach($angles as $angle)
+                                @foreach(\App\Helpers\KeyFigures\Heater\KeyFigures::getAngles() as $angle)
                                     <option @if(old('building_heaters.angle', \App\Helpers\Hoomdossier::getMostCredibleValue($building->heater(), 'angle')) == $angle) selected @endif value="{{ $angle }}">{{ $angle }}</option>
                                 @endforeach
                             </select>

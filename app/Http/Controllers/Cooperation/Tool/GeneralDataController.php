@@ -99,7 +99,7 @@ class GeneralDataController extends Controller
 
         return view('cooperation.tool.general-data.index', compact(
             'building', 'step',  'buildingOwner',
-            'coachEnergyHabitRemarks', 'userInterestsForMe',
+	        'coachEnergyHabitRemarks', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',

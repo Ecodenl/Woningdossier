@@ -89,7 +89,7 @@
                 } else {
                     event.preventDefault();
                 }
-            })
+            });
         })
     </script>
 @endpush

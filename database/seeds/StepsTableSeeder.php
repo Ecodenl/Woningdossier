@@ -110,5 +110,16 @@ class StepsTableSeeder extends Seeder
                 'order' => $step['order'],
             ]);
         }
+
+        $allCooperations = \App\Models\Cooperation::all();
+
+        $steps = \App\Models\Step::all();
+
+        foreach ($allCooperations as $cooperation) {
+            foreach ($steps as $step) {
+                $cooperation->steps()->attach($step);
+                $cooperation->steps()->updateExistingPivot($step->id, ['order' => $step->order]);
+            }
+        }
     }
 }

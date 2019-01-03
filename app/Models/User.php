@@ -320,4 +320,40 @@ class User extends Authenticatable
 
         return false;
     }
+
+    /**
+     * Determine if the model has not (one of) the given role(s).
+     *
+     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     *
+     * @return bool
+     */
+    public function hasNotRole($roles): bool
+    {
+        return !$this->hasRole($roles);
+    }
+
+    /**
+     * Check if a user has multiple roles
+     *
+     * @return bool
+     */
+    public function hasMultipleRoles(): bool
+    {
+        if ($this->getRoleNames()->count() > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the user has one role
+     *
+     * @return bool
+     */
+    public function hasNotMultipleRoles(): bool
+    {
+        return !$this->hasMultipleRoles();
+    }
 }

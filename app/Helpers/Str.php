@@ -34,7 +34,7 @@ class Str {
      *
      * @return bool
      */
-    public static function isValidUuid($uuid)
+    public static function isValidUuid($uuid) : bool
     {
         if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
             return false;
@@ -51,7 +51,7 @@ class Str {
      * @param $guid
      * @return bool
      */
-    public static function isValidGuid($guid)
+    public static function isValidGuid($guid) : bool
     {
         if (preg_match('/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i', $guid)) {
             return true;
@@ -107,22 +107,6 @@ class Str {
         }
 
         return (string) implode($password); // password returns array so implode it
-    }
-
-    /**
-     * Check if a given string is a valid UUID.
-     *
-     * @param string $uuid The string to check
-     *
-     * @return bool
-     */
-    public static function isValidUuid($uuid): bool
-    {
-        if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
-            return false;
-        }
-
-        return true;
     }
 
 }

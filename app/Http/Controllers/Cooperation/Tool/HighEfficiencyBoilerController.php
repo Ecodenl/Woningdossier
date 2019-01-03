@@ -55,7 +55,7 @@ class HighEfficiencyBoilerController extends Controller
         $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
 
-        return view('cooperation.tool.hr-boiler.index', compact(
+        return view('cooperation.tool.hr-boiler.index', compact('building',
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
             'typeIds', 'installedBoilerForMe', 'energyHabitsForMe',
             'steps'));

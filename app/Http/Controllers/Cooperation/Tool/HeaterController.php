@@ -68,7 +68,7 @@ class HeaterController extends Controller
         $currentHeater = $building->heater;
         $currentHeatersForMe = $building->heater()->forMe()->get();
 
-        return view('cooperation.tool.heater.index', compact(
+        return view('cooperation.tool.heater.index', compact('building',
             'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
             'currentComfort', 'currentHeater', 'habits',  'currentHeatersForMe'
         ));

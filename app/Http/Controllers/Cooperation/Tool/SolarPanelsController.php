@@ -47,10 +47,7 @@ class SolarPanelsController extends Controller
     {
         $typeIds = [7];
 
-
-
         $building = Building::find(HoomdossierSession::getBuilding());
-        $user = $building->user;
 
         $amountElectricity = ($user->energyHabit instanceof UserEnergyHabit) ? $user->energyHabit->amount_electricity : 0;
 
@@ -59,8 +56,10 @@ class SolarPanelsController extends Controller
         $buildingPvPanelsForMe = $building->pvPanels()->forMe()->get();
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
         return view('cooperation.tool.solar-panels.index',
-            compact('pvPanelOrientations', 'amountElectricity', 'energyHabitsForMe',
-                'buildingPvPanels',  'typeIds', 'buildingPvPanelsForMe'
+            compact(
+            	'building', 'pvPanelOrientations', 'amountElectricity',
+	            'energyHabitsForMe', 'buildingPvPanels',  'typeIds',
+	            'buildingPvPanelsForMe'
             )
         );
     }

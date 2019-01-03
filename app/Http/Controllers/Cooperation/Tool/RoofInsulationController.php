@@ -70,7 +70,6 @@ class RoofInsulationController extends Controller
         $heatings = BuildingHeating::all();
         $measureApplications = $this->getMeasureApplicationsAdviceMap();
 
-
         $currentCategorizedRoofTypes = [
             'flat' => [],
             'pitched' => [],
@@ -102,10 +101,9 @@ class RoofInsulationController extends Controller
 
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes',  'typeIds',
-             'buildingFeaturesForMe', 'currentRoofTypesForMe',
-             'currentCategorizedRoofTypesForMe', 'currentRoofTypes', 'roofTileStatuses',
-             'roofInsulation', 'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
+            'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
+             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
+             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
 
     protected function getRoofTypeCategory(RoofType $roofType)

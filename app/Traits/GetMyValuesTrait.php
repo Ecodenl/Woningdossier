@@ -17,7 +17,11 @@ trait GetMyValuesTrait {
      */
     public function scopeForMe($query)
     {
-        return $query->withoutGlobalScope(GetValueScope::class)->where('building_id', HoomdossierSession::getBuilding());
+        return $query->withoutGlobalScope(GetValueScope::class)
+                     ->where('building_id', HoomdossierSession::getBuilding())
+	                 ->join('input_sources', $this->getTable() . ".input_source_id", "=", "input_sources.id")
+	                 ->orderBy("input_sources.order", "ASC")
+	                 ->select([$this->getTable() . ".*"]);
     }
     /**
      *

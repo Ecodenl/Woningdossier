@@ -20,6 +20,9 @@
                         ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
                             <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
                                 @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
+
+                                    <option data-calculate-value="{{$elementValue->calculate_value}}" @if(old('element.' . $facadeInsulation->element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $facadeInsulation->element->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                    {{--
                                     <option data-calculate-value="{{$elementValue->calculate_value}}"
                                             @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
                                                 selected="selected"
@@ -27,7 +30,7 @@
                                                 selected="selected"
                                             @endif
                                             value="{{ $elementValue->id }}">{{ $elementValue->value }}
-                                    </option>
+                                    </option>--}}
                                 @endforeach
                             </select>
                         @endcomponent
@@ -76,13 +79,14 @@
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
                             <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}} </label><span> *</span>
                             <label class="radio-inline">
-                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
+                                    <input type="radio" name="cavity_wall" @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
+                                {{--<input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "2") checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title') }}
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title') }}
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="cavity_wall" @if(old('cavity_wall') == "0") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "0") checked @endif value="0">{{\App\Helpers\Translation::translate('general.options.radio.unknown.title') }}
+                                <input type="radio" name="cavity_wall" @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 0) checked @endif value="0">{{\App\Helpers\Translation::translate('general.options.radio.unknown.title') }}
                             </label>
                         @endcomponent
                         <br>
@@ -101,22 +105,21 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
-
-                    @component('cooperation.tool.components.input-group',
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
+                        @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 3], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
                             <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.title')}} </label> <span> *</span>
 
                             <label class="radio-inline">
-                                <input class="is-painted" @if(old('facade_plastered_painted') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "1") checked @endif type="radio" name="facade_plastered_painted" value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
+                                <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 1) checked @endif type="radio" name="facade_plastered_painted" value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
                             </label>
                             <label class="radio-inline">
-                                <input @if(old('facade_plastered_painted') == "2") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "2") checked @endif type="radio" name="facade_plastered_painted" value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title') }}
+                                <input @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 2) checked @endif type="radio" name="facade_plastered_painted" value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title') }}
                             </label>
                             <label class="radio-inline">
-                                <input class="is-painted" @if(old('facade_plastered_painted') == "3") checked @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_painted == "3") checked @endif type="radio" name="facade_plastered_painted" value="3">{{\App\Helpers\Translation::translate('general.options.radio.unknown.title') }}
+                                <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 3) checked @endif type="radio" name="facade_plastered_painted" value="3">{{\App\Helpers\Translation::translate('general.options.radio.unknown.title') }}
                             </label>
                         @endcomponent
                     <br>
@@ -145,7 +148,8 @@
                         ['inputType' => 'select', 'inputValues' => $facadePlasteredSurfaces, 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_surface_id'])
                             <select id="facade_plastered_surface_id" class="form-control" name="facade_plastered_surface_id">
                                 @foreach($facadePlasteredSurfaces as $facadePlasteredSurface)
-                                    <option @if(old('facade_plastered_surface_id') == $facadePlasteredSurface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_surface_id == $facadePlasteredSurface->id ) selected @endif value="{{ $facadePlasteredSurface->id }}">{{ $facadePlasteredSurface->name }}</option>
+                                    <option @if(old('facade_plastered_surface_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_surface_id'))  == $facadePlasteredSurface->id) selected="selected" @endif value="{{ $facadePlasteredSurface->id }}">{{ $facadePlasteredSurface->name }}</option>
+                                        {{--<option @if(old('facade_plastered_surface_id') == $facadePlasteredSurface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_plastered_surface_id == $facadePlasteredSurface->id ) selected @endif value="{{ $facadePlasteredSurface->id }}">{{ $facadePlasteredSurface->name }}</option>--}}
                                 @endforeach
                             </select>
                         @endcomponent
@@ -173,7 +177,8 @@
                         @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $facadeDamages, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'facade_damaged_paintwork_id'])
                                 <select id="facade_damaged_paintwork_id" class="form-control" name="facade_damaged_paintwork_id">
                                     @foreach($facadeDamages as $facadeDamage)
-                                        <option @if(old('facade_damaged_paintwork_id') == $facadeDamage->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_damaged_paintwork_id == $facadeDamage->id ) selected  @endif value="{{ $facadeDamage->id }}">{{ $facadeDamage->name }}</option>
+                                            <option @if(old('facade_damaged_paintwork_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_damaged_paintwork_id'))  == $facadeDamage->id) selected="selected" @endif value="{{ $facadeDamage->id }}">{{ $facadeDamage->name }}</option>
+                                        {{--<option @if(old('facade_damaged_paintwork_id') == $facadeDamage->id) selected @elseif(isset($buildingFeature) && $buildingFeature->facade_damaged_paintwork_id == $facadeDamage->id ) selected  @endif value="{{ $facadeDamage->id }}">{{ $facadeDamage->name }}</option>--}}
                                     @endforeach
                                 </select>
                             @endcomponent
@@ -207,7 +212,8 @@
                         ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_joints'])
                             <select id="wall_joints" class="form-control" name="wall_joints">
                                 @foreach($surfaces as $surface)
-                                    <option @if(old('wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                    <option @if(old('wall_joints', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_joints'))  == $surface->id) selected="selected" @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                    {{--<option @if(old('wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>--}}
                                 @endforeach
                             </select>
                         @endcomponent
@@ -265,7 +271,7 @@
 
                         @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface'])
-                            <input id="wall_surface" type="text" name="wall_surface" value="@if(old('wall_surface')){{ old('wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->wall_surface, 1) }}@endif" class="form-control" >
+                            <input id="wall_surface" type="text" name="wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}" class="form-control" >
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                             @endcomponent
 
@@ -288,7 +294,7 @@
 
                             @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface'])
-                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="@if(old('insulation_wall_surface')){{ old('insulation_wall_surface') }}@elseif(isset($buildingFeature)){{ \App\Helpers\NumberFormatter::format($buildingFeature->insulation_wall_surface, 1) }}@endif" class="form-control" >
+                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}" class="form-control" >
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                             @endcomponent
 

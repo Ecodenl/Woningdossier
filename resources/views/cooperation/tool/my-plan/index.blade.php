@@ -104,14 +104,9 @@
             @endforeach
                     </tbody>
                 </table>
-                @if(\App\Models\PrivateMessage::hasUserResponseToConversationRequest())
-                    <a disabled="" class="disabled btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.disabled')</a>
-                @elseif(isset($privateMessage))
-                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => 'none'])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.update-request')</a>
-                @else
-                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => 'none'])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
-                @endif
+                <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
             </div>
+
         </div>
     @endforeach
     </form>
@@ -123,19 +118,6 @@
             <ul id="years">
 
             </ul>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">@lang('default.buttons.download')</div>
-                <div class="panel-body">
-                    <ol>
-                        <li><a download="" href="{{ asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf')))))}}</a></li>
-                    </ol>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -198,18 +180,18 @@
                             var slugYear = year;
                             var header = "<h1>" + year + "</h1>";
 
-                            var table = "<table class=\"table table-responsive\"><thead><tr><th>@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.help-question')</th><th></th></tr></thead><tbody> " ;
+                            var table = "<table class=\"table table-responsive\"><thead><tr><th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th><th style=\"width: 62%\">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.take-action')</th></tr></thead><tbody>";
                             var totalCosts = 0;
                             var totalSavingsGas = 0;
                             var totalSavingsElectricity = 0;
                             var totalSavingsMoney = 0;
 
-                            $.each(steps, function(stepName, stepMeasures){
+                            $.each(steps, function (stepName, stepMeasures) {
 
                                 $.each(stepMeasures, function (i, stepData) {
 
                                 if (stepData.interested) {
-                                    $("#advice-"+stepData.advice_id+"-planned").attr('checked', true)
+                                    $("#advice-" + stepData.advice_id + "-planned").attr('checked', true)
                                 }
 
                                 totalCosts += parseFloat(stepData.costs);
@@ -217,28 +199,24 @@
                                 totalSavingsElectricity += parseFloat(stepData.savings_electricity);
                                 totalSavingsMoney += parseFloat(stepData.savings_money);
 
-                                var slug = stepName.replace( /\s+/g, '');
+                                var slug = stepName.replace(/\s+/g, '');
 
-                                    table += "<tr> <td> <a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td></tr>";
-                                    table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'> </td>" +
-                                    "<td> <div class='input-group'> <div class='input-group-btn'> <button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button> <button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'> <span class='caret'></span> </button> <ul class='dropdown-menu'>  <li> <a href='{{url('aanvragen/coach_conversation')}}'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.coach_conversation')</span> </a> </li><li> <a href='{{url('aanvragen/more_information')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.more_information') </span> </a> </li><li> <a href='{{url('aanvragen/quotation')}}/"+stepData.measure_short+"'> <span>@lang('woningdossier.cooperation.conversation-requests.index.form.options.quotation')</span> </a> </li></ul> </div></div></td></tr>";
+                                    table += "<tr><td><a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"><i class=\"glyphicon glyphicon-chevron-down\"></i></a></td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td><div class='input-group'><div class='input-group-btn'><button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button><button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'><span class='caret'></span> </button> <ul class='dropdown-menu'><li><a href='{{ url('request/coach-conversation') }}'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION)</span></a></li><li><a href='{{ url('request/more-information') }}/"+stepData.measure_short+"'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION)</span></a></li><li><a href='{{ url('request/other') }}/"+stepData.measure_short+"'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_OTHER)</span></a></li></ul></div></div></td></tr>";
+                                    table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'></td></tr>";
                             });
 
                         });
 
-                            // total calculation
+                        // total calculation
                         table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + slugYear + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td colspan='1'></td></tr>";
                         table += "<tr class='collapse' id='total-costs-" + slugYear + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'> </td></tr>";
-
 
                         table += "</tbody></table>";
 
                         $("ul#years").append("<li>" + header + table + "</li>");
                     });
 
-
-
-                        // toggle cheveron for the personal plan
+                    // toggle chevron for the personal plan
                     $('.turn-on-click').on('click', function () {
                         $(this).toggleClass('clicked');
 
@@ -251,31 +229,32 @@
                         }
                     });
 
-
                         @if(App::environment('local'))
-                        console.log(data);
+                            console.log(data);
                         @endif
-
-                        checkCoupledMeasuresAndMaintenance();
 
                         $('.take-action').click(function () {
                             window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
                         });
-                }
-            });
+
+                    checkCoupledMeasuresAndMaintenance();
+
+                    }
+                });
+
         });
         // Trigger the change event so it will load the data
         $('form').find('*').filter(':input:visible:first').trigger('change');
 
         $('#warning-modal').on('shown.bs.modal', function (e) {
-            var clicked = $(e.relatedTarget);
-            var icon = clicked.find('i.glyphicon');
-            $(this).find('.modal-body').html('<p>' + icon.attr('title') + '</p>');
-        });
+                var clicked = $(e.relatedTarget);
+                var icon = clicked.find('i.glyphicon');
+                $(this).find('.modal-body').html('<p>' + icon.attr('title') + '</p>');
+            });
 
-        // Toggle chevron op open / close
-        $('a[data-target*=more]').on('click', function () {
-            $(this).toggleClass('clicked');
+            // Toggle chevron op open / close
+            $('a[data-target*=more]').on('click', function () {
+                $(this).toggleClass('clicked');
 
                 if ($(this).hasClass('clicked')) {
                     $(this).find('i').css("transform", "rotate(-180deg)");
@@ -287,16 +266,15 @@
             });
 
             $(".interested-checker").click(function(){
-
-            // get the planned year input
-            var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
-            var advicedYear;
+                // get the planned year input
+                var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
+                var advicedYear;
                 var measureApplicationShort = $(this).parent().parent().find('.measure_short').val();
 
                 if (getPlanned(measureApplicationShort)) {
                     advicedYear = getPlannedYear(measureApplicationShort);
                     plannedYearInput.val(advicedYear)
-            } else {
+                } else {
                 plannedYearInput.val("");
             }
         });

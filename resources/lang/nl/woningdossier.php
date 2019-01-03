@@ -10,17 +10,40 @@ return [
 		],
 	],
 	'cooperation' => [
+		'navbar' => [
+			'start' => 'Start'
+		],
 		'admin' => [
 			'navbar' => [
 				'current-role'      => 'Uw huidge rol:',
 				'reports'           => 'Rapportages',
 				'example-buildings' => 'Example buildings'
 			],
-			'choose-roles' => [
-				'header' => 'Als welke rol wilt u doorgaan ?',
-				'text'   => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
+
+	        'custom-fields' => [
+	            'index' => [
+	                'rules' => [
+	                    'numeric' => 'Getal',
+                        'string' => 'Tekst',
+                    ],
+                    'optional-rules' => [
+                        'numeric' => [
+                            'between' => 'Tussen',
+                            'min' => 'Minimale grootte'
+                        ],
+                        'string' => [
+                            'email' => 'E-mailadres',
+                            'max' => 'Maximaal aantal letters'
+                        ],
+                    ],
+                ],
+            ],
+
+            'choose-roles' => [
+                'header' => 'Als welke rol wilt u doorgaan ?',
+                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
 			],
-        'coach' => [
+            'coach' => [
 				'side-nav' => [
 					'label'               => 'Coach menu',
 					'index'               => 'Home',
@@ -47,6 +70,7 @@ return [
 
 				'buildings' => [
 					'index'               => [
+					    'no-appointment' => 'Nog geen afspraak',
 						'table' => [
 							'columns'        => [
 								'street'      => 'Straatnaam',
@@ -59,75 +83,87 @@ return [
 							'status'         => 'Kies status',
 							'current-status' => 'Huidige status:',
 							'options'        => [
-								\App\Models\BuildingCoachStatus::STATUS_IN_CONSIDERATION => 'In behandeling',
 								\App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
 								\App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
-							],
-						],
-					],
-					'edit'                => [
-						'header' => 'Bewerk de status van het gebouw',
-						'form'   => [
-							'status'           => 'Status',
-							'appointment-date' => 'Tijdstip van afspraak',
-							'submit'           => 'Opslaan'
-						],
-					],
-					'set-building-status' => [
-						'success' => 'Status is gekoppeld aan het gebouw',
-					],
-					'fill-for-user'       => [
-						'warning' => 'Er is iets fout gegaan, probeer het later opnieuw'
-					],
-					'header'              => 'Gebouwen waar u toegang toe heeft',
-					'details'             => [
-						'index' => [
-							'header' => 'Details van het gebouw',
-							'form'   => [
-								'submit' => 'Toevoegen',
-							]
-						]
-					],
-				],
-				'messages'  => [
-					'index' => [
-						'header' => 'Uw berichten / chats',
+								\App\Models\BuildingCoachStatus::STATUS_ACTIVE           => 'Actief',
+                            \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',],
+                        ],
+                    ],
+                    'edit' => [
+                        'header' => 'Bewerk de status van het gebouw',
+                        'form' => [
+                            'status' => 'Status',
+                            'appointment-date' => 'Tijdstip van afspraak',
+                            'submit' => 'Opslaan',
+                            'options'        => [
+                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
+                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
+                                \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',
+                                \App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
+                            ],
+                        ],
+                    ],
+                    'set-building-status' => [
+                        'success' => 'Status is gekoppeld aan het gebouw',
+                    ],
+                    'fill-for-user' => [
+                        'warning' => 'Er is iets fout gegaan, probeer het later opnieuw'
+                    ],
+                    'header' => 'Gebouwen waar u toegang toe heeft',
 
-						'filter' => [
-							'residents'    => 'Filter op gesprekken met bewoners',
-							'coordinators' => 'Filter op gesprekken met coordinatoren',
-						],
-					],
-					'edit'  => [
-						'header' => 'U gesprek met :firstName :lastName',
-						'send'   => 'Verstuur'
-					]
-				],
+                    'details' => [
+                        'index' => [
+                            'header' => 'Details van het gebouw',
+                            'form' => [
+                                'submit' => 'Toevoegen',
+                            ]
+                        ]
+                    ],
+                ],
+                'messages' => [
+	                'index' => [
+		                'header' => 'Uw berichten / chats',
 
-				'connect-to-resident' => [
-					'index'  => [
-						'header' => 'Bewoners waarmee u een gesprek kunt beginnen',
-						'table'  => [
-							'columns' => [
-								'first-name'         => 'Voornaam',
-								'last-name'          => 'Achternaam',
-								'email'              => 'Email',
-								'actions'            => 'Acties',
-								'start-conversation' => 'Start gesprek met bewoner',
-							]
-						],
-					],
-					'create' => [
-						'header' => 'Een gesprek beginnen met :firstName :lastName',
-						'form'   => [
-							'message'      => [
-								'label'       => 'Bericht aan de bewoner',
-								'placeholder' => 'Vul hier uw bericht in voor de bewoner'
-							],
-							'request-type' => [
-								'label'       => 'Waar wilde de bewoner het over hebben ?',
-								'placeholder' => 'Selecteer optie'
-							],
+		                'filter' => [
+			                'residents' => 'Filter op gesprekken met bewoners',
+			                'coordinators' => 'Filter op gesprekken met coordinatoren',
+		                ],
+	                ],
+	                'edit' => [
+		                'header' => 'U gesprek met :firstName :lastName',
+		                'send' => 'Verstuur'
+	                ]
+                ],
+
+                'connect-to-resident' => [
+	                'index' => [
+		                'header' => 'Bewoners waarmee u een gesprek kunt beginnen',
+		                'table' => [
+			                'columns' => [
+				                'first-name' => 'Voornaam',
+				                'last-name' => 'Achternaam',
+				                'email' => 'Email',
+				                'actions' => 'Acties',
+				                'start-conversation' => 'Start gesprek met bewoner',
+			                ]
+		                ],
+	                ],
+	                'create' => [
+		                'header' => 'Een gesprek beginnen met :firstName :lastName',
+		                'form' => [
+			                'title' => [
+						        'label' => 'Onderwerp van het gesprek',
+                                'placeholder' => 'Vul hier het onderwerp van het gesprek in',
+                            ],
+							'message' => [
+				                'label' => 'Bericht aan de bewoner',
+				                'placeholder' => 'Vul hier uw bericht in voor de bewoner'
+			                ],
+			                'request-type' => [
+				                'label' => 'Waar wilde de bewoner het over hebben ?',
+				                'placeholder' => 'Selecteer optie'
+			                ],
 
 
 							'options' => [
@@ -144,15 +180,16 @@ return [
 				],
 			],
 
-		'cooperation' => [
-			'coordination'      => [
-				'header' => 'Welkom',
-				'text'   => 'U kunt hier verschillende dingen doen.'
-			],
-			'cooperation-admin' => [
+			'cooperation' => [
+				'coordination'      => [
+					'header' => 'Welkom',
+					'text'   => 'U kunt hier verschillende dingen doen.'
+				],
+				'cooperation-admin' => [
 
 				'side-nav' => [
 					'label'       => 'Coöperatie admin menu',
+					'step' => 'Stappen',
 					'home'        => 'Home',
 					'users'       => 'Gebruikers van uw coöperatie',
 					'create-user' => 'Voeg een gebruiker toe',
@@ -174,7 +211,19 @@ return [
 					],
 				],
 
-				'users' => [
+				'steps' => [
+                        'index' => [
+                            'header' => 'Stappen die u kunt beheren',
+                            'table' => [
+                                'columns' => [
+                                    'name' => 'Stap naam',
+                                    'active' => 'Actief',
+                                ]
+                            ]
+                        ]
+                    ],
+
+                    'users' => [
 					'index'  => [
 						'header' => 'Overzicht van alle gebruikers binnen uw coöperatie',
 
@@ -253,48 +302,86 @@ return [
 						'success' => 'Rollen zijn bijgewerkt'
 					],
 				],
+
                 'reports' => [
                     'title' => 'Rapportages',
                     'description' => 'Rapportage downloads',
 
                     'download' => [
-	                    'by-year' => 'Actieplan per jaar',
-	                    'by-measure' => 'Actieplan per maatregel',
+                        'by-year' => 'Actieplan per jaar',
+                        'by-measure' => 'Actieplan per maatregel',
                     ],
                     'csv-columns' => [
-	                    'first-name' => 'Voornaam',
-	                    'last-name' => 'Achternaam',
-	                    'email' => 'Email',
-	                    'phonenumber' => 'Telefoonnummer',
-	                    'mobilenumber' => 'Mobiel nummer',
-	                    'street' => 'Straat',
-	                    'house-number' => 'Huis nummer',
-	                    'city' => 'Woonplaats',
-	                    'zip-code' => 'Postcode',
-	                    'country-code' => 'Landcode',
+                        'first-name' => 'Voornaam',
+                        'last-name' => 'Achternaam',
+                        'email' => 'Email',
+                        'phonenumber' => 'Telefoonnummer',
+                        'mobilenumber' => 'Mobiel nummer',
+                        'street' => 'Straat',
+                        'house-number' => 'Huis nummer',
+                        'city' => 'Woonplaats',
+                        'zip-code' => 'Postcode',
+                        'country-code' => 'Landcode',
                     ],
                 ],
-			],
-			'coordinator' => [
-				'side-nav'              => [
-					'reports'      => 'Rapporten',
-					'label'            => 'Coördinator menu',
-					'messages'         => 'Berichten menu',
-					'home'             => 'Home',
-					'assign-roles'     => 'Rollen toewijzen',
-					'coach'        => 'Coaches',
-					'add-user'         => 'Voeg Coach / Bewoner toe',
-					'my-messages'      => 'Uw berichten',
-					'connect-to-coach' => 'Openstaande aanvragen',
-				],
-				'reports'  => [
-					'title'       => 'Rapportages',
-					'description' => 'Rapportage downloads',
+
+                ],
+
+                'coordinator' => [
+                    'side-nav' => [
+                        'reports' => 'Rapporten',
+                        'label' => 'Coördinator menu',
+                        'home' => 'Home',
+                        'assign-roles' => 'Rollen toewijzen',
+                        'coach' => 'Coaches',
+                        'add-user' => 'Voeg Coach / Bewoner toe'
+                    ],
+                    'building-access' => [
+	                    'index' => [
+		                    'header' => 'Bewoners die de woning hebben vrijgegeven',
+		                    'no-appointment' => 'Nog geen afspraak',
+		                    'table' => [
+			                    'columns'        => [
+				                    'street'      => 'Straatnaam',
+				                    'city'        => 'Stad',
+				                    'owner'       => 'Eigenaar',
+				                    'actions'     => 'Acties',
+				                    'status'      => 'Status',
+				                    'appointment' => 'Datum van afspraak'
+			                    ],
+			                    'status'         => 'Kies status',
+			                    'current-status' => 'Huidige status:',
+			                    'options'        => [
+				                    \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
+				                    \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
+				                    \App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
+				                    \App\Models\BuildingCoachStatus::STATUS_ACTIVE           => 'Actief',
+				                    \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',
+			                    ],
+		                    ],
+	                    ],
+	                    'edit' => [
+		                    'header' => 'Gebruikers die toegang hebben tot gebouw :street :postal_code',
+		                    'table' => [
+			                    'columns'        => [
+				                    'actions' => 'Acties',
+				                    'name' => 'Naam',
+				                    'email' => 'Email'
+			                    ],
+		                    ],
+	                    ],
+	                    'destroy' => [
+		                    'success' => 'Toegang is ontzegd',
+	                    ]
+                    ],
+                    'reports' => [
+                        'title' => 'Rapportages',
+                        'description' => 'Rapportage downloads',
 
 					'download'    => [
 						'by-year'    => 'Actieplan per jaar',
 						'by-measure' => 'Actieplan per maatregel',
-					],
+					'download-questionnaire-results' => 'Download de antwoorden van de bewoners op de custom vragenlijsten'],
 					'csv-columns' => [
 						'first-name'   => 'Voornaam',
 						'last-name'    => 'Achternaam',
@@ -306,9 +393,9 @@ return [
 						'city'         => 'Woonplaats',
 						'zip-code'     => 'Postcode',
 						'country-code' => 'Landcode',
-					],
+
 				],
-				'messages'              => [
+				],'messages'              => [
 					'index' => [
 						'header' => 'Uw berichten'
 					],
@@ -337,7 +424,7 @@ return [
 								'type-request'     => 'Type aanvraag',
 								'first-name'       => 'Voornaam',
 								'last-name'        => 'Achternaam',
-								'email'            => 'E-mail adres',
+								'email'            => 'E-mail adres','requested-on'     => 'Aangevraagd op',
 								'role'             => 'Huidige rollen van gebruiker',
 								'actions'          => 'Acties'
 							]
@@ -422,7 +509,7 @@ return [
 						'success' => 'Rollen zijn bijgewerkt'
 					],
 				],
-				'coach'                 => [
+				'user'                 => [
 					'index' => [
 						'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
 
@@ -472,7 +559,42 @@ return [
 						'success' => 'Gebruiker is verwijderd'
 					]
 				],
-				'index'                 => [
+				'questionnaires' => [
+                        'index' => [
+                            'header' => 'Alle vragenlijsten voor uw cooperatie',
+                            'table' => [
+                                'columns' => [
+                                    'questionnaire-name' => 'Vragenlijst naam',
+                                    'step' => 'Komt na stap',
+                                    'active' => 'Actief',
+                                    'actions' => 'Acties',
+                                    'see-results' => 'Bekijk resultaten',
+                                    'edit' => 'Bewerk vragenlijst',
+                                ]
+                            ],
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Selectievakjes',
+                                'checkbox' => 'Meerkeuze',
+                                'date' => 'Datum',
+                            ],
+                        ],
+                        'edit' => [
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Meerkeuze',
+                                'date' => 'Datum',
+                                'checkbox' => 'Selectievakjes'
+                            ],
+                            'add-validation' => 'Voeg validatie toe',
+                            'success' => 'Vragenlijst is bijgewerkt'
+                        ]
+                    ],
+                    'index'                 => [
 					'header' => 'Alle gebruikers van uw coöperatie',
 					'text'   => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
 
@@ -485,10 +607,15 @@ return [
 							'actions'    => 'Acties'
 						]
 
-					],
-		],
-	],
-			],
+                        ],
+                        'create' => [
+                            'leave-creation-tool' => 'Keer terug naar overzicht',
+                            'leave-creation-tool-warning' => 'Letop!, alle wijzigingen zullen verloren gaan. U hiervoor gemaakte formulier is niet meer terug te krijgen'
+                        ]
+                    ],
+                ],
+            ],
+        ],
 
 	'radiobutton' => [
 		'not-important' => 'Niet van toepassing',
@@ -503,10 +630,68 @@ return [
 		'unknown' => 'Onbekend',
 	],
 	'home'        => [
-		'disclaimer' => [
-			'title'       => 'Disclaimer voor het gebruik van de tool.',
-			'panel-title' => 'Disclaimer',
-			'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363" target="_blank">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>',
+		'tabs' => [
+                'start' => 'Start',
+                'disclaimer' => 'Disclaimer',
+			'bugreport' => 'Bugreport',
+                'messages' => 'Berichten',
+                'settings' => 'Instellingen',
+                'privacy' => 'Privacy'
+            ],
+			'start' => [
+			'best-user' => '<b>Beste gebruiker</b>, <br><br> Hartelijk welkom in uw Hoomdossier! Hier kunt u de huidige situatie van uw woning in kaart brengen, kijken welke energiebesparende maatregelen interessant voor u kunnen zijn en het onderhoud van uw woning plannen:',
+                'get-started' => 'Meteen aan de slag!',
+                'by' => 'Het Hoomdossier wordt u aangeboden door :cooperation om u bij de verduurzaming van uw woning te ondersteunen. Mocht u vragen hebben over energiebesparende maatregelen, lopende wijkacties of hulp nodig hebben bij het invullen van het Hoomdossier, dan kunt u hier contact opnemen met uw coöperatie:',
+                'contact' => 'Contact opnemen met :cooperation',
+                'feedback' => 'Het Hoomdossier wordt continu doorontwikkeld en verbeterd. Praktijkervaringen van gebruikers zijn hierbij een belangrijke informatiebron om het pakket steeds verder te verbeteren. Als u opmerkingen en of vragen over het Hoomdossier heeft of iets niet naar verwachting werkt kunt u uw feedback hier geven:',
+                'give-feedback' => 'Feedback geven op het Hoomdossier',
+            ],
+            'privacy' => [
+                'description' => '<b>Privacy statement</b>
+                                <br>
+                                <br>
+                                De gegevens in het Hoomdossier worden uitsluitend gedeeld met de coöperatie :cooperation.
+
+                                We gaan zorgvuldig met uw gegevens om en beloven u dat:
+                                <ul>
+                                    <li>we uw gegevens uitsluitend gebruiken om u te kunnen adviseren en ondersteunen bij  het opstellen en uitvoeren van projecten voor het verduurzamen van uw woning;</li>
+                                    <li>we uw persoonsgegevens nooit zullen delen met derden (bijvoorbeeld bedrijven) zonder dat u uw aanvullende toestemming hebt gegeven;</li>
+                                    <li>wanneer we gegevens  gebruiken t.b.v. analyses of rapportages, deze nooit tot uw individuele gegevens terug te herleiden zijn.</li>
+                                </ul>
+                                <br>
+                                <br>
+                                U kunt toestemming geven aan de coöperatie :cooperation om uw dossier op afstand in te zien en u bij het invullen te helpen. Een dergelijke toestemming kan op elk moment ingetrokken worden en geldt uitsluitend voor de gegevens van het Basisadvies, uw accountgegevens en het berichtenverkeer met de coöperatie.
+                                <br>
+                                <br>
+                                U hebt de mogelijkheid om uw account te verwijderen of om alle toegevoegde informatie te wissen onder behoud van het account. Een dergelijke actie betekent dat al uw gegevens uit het Hoomdossier worden verwijderd.
+                                <br>
+                                <br>
+                                Gegevens die in het Hoomdossier opgeslagen worden:
+                                <br>
+                                <br>
+                                In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn.
+                                <br>
+                                <br>
+                                De volgende gegevens worden in het Hoomdossier opgeslagen:
+                                <br>
+                                <br>
+                                <ul>
+                                    <li>NAW gegevens</li>
+                                    <li>Algemene gegevens van de woning</li>
+                                    <li>Welke energiebesparende maatregelen al zijn genomen</li>
+                                    <li>Interesse voor een maatregel (Ja/nee)</li>
+                                    <li>Gegevens over het gebruik van de woning</li>
+                                    <li>Indicatieve kosten van te nemen maatregelen</li>
+                                    <li>Indicatie van besparing gas per maatregel</li>
+                                    <li>Indicatie van besparing elektra per maatregel</li>
+                                    <li>Indicatieve financiële besparing per maatregel</li>
+                                    <li>Indicatieve CO2 besparing per maatregel</li>
+                                    <li>Geadviseerd uitvoeringsjaar</li>
+                                    <li>Zelf ingevuld uitvoeringsjaar</li>
+                                </ul>'
+            ],
+            'disclaimer' => [
+                'description' => '<b>Disclaimer</b><br><br>Het woondossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het woondossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het woondossier gebruiken als basis voor een keukentafelgesprek of een professioneel advies.<br><br>Er kan geen garantie aan de resultaten van het woondossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. De essentie van het rekenen met het woondossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.',
 		],
 	],
 	'help'        => [
@@ -704,7 +889,8 @@ return [
 
 	],
 	'tool'                  => [
-
+	    'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',
+	    'filling-for' => 'U bewerkt de woning van :first_name :last_name als :input_source_name.',
 		'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
 
 		'unit' => [
@@ -724,6 +910,12 @@ return [
 		'title' => 'Basisadvies',
 
 		'general-data'    => [
+			'coach-input' => [
+                'copy' => [
+                    'title' => 'Neem coach antwoorden over',
+                    'help' => 'Weet u zeker dat u alle antwoorden van de coach wil overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de coach.'
+                ]
+            ],
 			'title' => 'Algemene gegevens',
 
 			'name-address-data' => [
@@ -822,7 +1014,7 @@ return [
 			],
 
 			'alert' => [
-				'description' => 'Let op, geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
+				'description' => 'Let op: geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
 			],
 
 			'insulation-advice' => [
@@ -832,7 +1024,7 @@ return [
 				'research'        => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
 			],
 
-			'indication-for-costs' => [
+			'intcation-for-costs' => [
 				'title'            => 'Indicatie voor kosten en baten voor deze maatregel',
 				'gas-savings'      => 'Gasbesparing',
 				'co2-savings'      => 'CO<sub>2</sub> Besparing',
@@ -1057,32 +1249,32 @@ return [
 			'energy-saving-measures' => 'Energiebesparende maatregelen',
 			'maintenance-measures'   => 'Onderhoud',
 
-                'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
-                'no-year' => 'Geen jaartal',
-                'download' => 'Download hier je actieplan',
+			'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
+			'no-year'          => 'Geen jaartal',
+			'download'         => 'Download hier je actieplan',
 
-				'coach-comments' => [
-					'title' => 'Opmerkingen die door de coach zijn geplaatst',
-					'general-data' => 'Algemene gegevens',
-					'wall-insulation' => 'Gevelisolatie',
-					'floor-insulation' => 'Vloerisolatie',
-					'insulated-glazing' => 'Isolerende beglazing',
-					'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
-					'roof-insulation-plat-dak' => 'Dakisolatie - Plat dak',
-					'high-efficiency-boiler' => 'HR Ketel',
-				],
+                'coach-comments' => [
+                    'title' => 'Opmerkingen die door de coach zijn geplaatst',
+                    'general-data' => 'Algemene gegevens',
+                    'wall-insulation' => 'Gevelisolatie',
+                    'floor-insulation' => 'Vloerisolatie',
+                    'insulated-glazing' => 'Isolerende beglazing',
+                    'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
+                    'roof-insulation-plat-dak' => 'Dakisolatie - Plat dak',
+                    'high-efficiency-boiler' => 'HR Ketel',
+                ],
 
-				'conversation-requests' => [
-					'take-action' => 'Actie ondernemen',
-					'request' => 'Coachgesprek aanvragen',
-					'update-request' => 'Coachgesprek aanvraag bijwerken',
-					'disabled' => 'Niet beschikbaar'
-				],
-				'conversation-requests-request' => 'Coachgesprek aanvraag',
-				'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
+                'conversation-requests' => [
+                    'take-action' => 'Actie ondernemen',
+                    'request' => 'Coachgesprek aanvragen',
+                    'update-request' => 'Coachgesprek aanvraag bijwerken',
+                    'disabled' => 'Niet beschikbaar'
+                ],
+                'conversation-requests-request' => 'Coachgesprek aanvraag',
+                'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
 
 
-				'csv-columns' => [
+                'csv-columns' => [
                     'year-or-planned' => 'Jaar / gepland jaar',
                     'interest' => 'Interesse',
                     'measure' => 'Maatregel',
@@ -1092,27 +1284,21 @@ return [
                     'savings-costs' => 'Besparing in euro',
                     'advice-year' => 'Geadviseerd jaar',
                     'planned-year' => 'Planning',
-                    'costs-advice-year' => 'Kosten in geadviseerd jaar',
+	                'costs-advice-year' => 'Kosten in geadviseerd jaar',
                 ],
-                'columns' => [
-                    'more-info' => 'Meer info',
-                    'interest' => 'Interesse',
-                    'measure' => 'Maatregel',
-                    'costs' => 'Kosten',
-                    'savings-gas' => 'Besparing m<sup>3</sup> gas',
-                    'savings-electricity' => 'Besparing kWh elektra',
-                    'savings-costs' => 'Besparing in euro',
-                    'advice-year' => 'Geadviseerd',
-                    'planned-year' => 'Planning',
-                    'take-action' => 'Actie',
-                    'more-information' => 'Meer info',
-                    'quotation' => 'Vraag offerte aan',
-                    'help-question' => 'Hulpvraag'
-                ],
-                'conversation-requests' => [
-                    'update-request' => 'Aanvraag bijwerken'
-                ]
-            ],
+				'columns' => [
+					'more-info' => 'Meer info',
+					'interest' => 'Interesse',
+					'measure' => 'Maatregel',
+					'costs' => 'Kosten',
+					'savings-gas' => 'Besparing m<sup>3</sup> gas',
+					'savings-electricity' => 'Besparing kWh elektra',
+					'savings-costs' => 'Besparing in euro',
+					'advice-year' => 'Geadviseerd',
+					'planned-year' => 'Planning',
+					'take-action' => 'Actie ondernemen',
+				],
+			],
 
 		'ventilation-information' => [
 			'title'       => 'Informatie pagina over ventilatie.',

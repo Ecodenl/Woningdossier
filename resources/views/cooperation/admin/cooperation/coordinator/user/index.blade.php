@@ -3,8 +3,8 @@
 @section('coordinator_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.header')
-            <a href="{{route('cooperation.admin.cooperation.coordinator.coach.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+            @lang('woningdossier.cooperation.admin.cooperation.coordinator.user.index.header')
+            <a href="{{route('cooperation.admin.cooperation.coordinator.user.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
 
         <div class="panel-body">
@@ -13,11 +13,11 @@
                     <table id="table" class="table table-striped table-bordered compact nowrap table-responsive">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.first-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.last-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.email')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.role')</th>
-{{--                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.actions')</th>--}}
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.user.index.table.columns.first-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.user.index.table.columns.last-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.user.index.table.columns.email')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.user.index.table.columns.role')</th>
+{{--                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.user.index.table.columns.actions')</th>--}}
                         </tr>
                         </thead>
                         <tbody>
@@ -34,7 +34,7 @@
                                     ?>
                                 </td>
                                 {{--<td>--}}
-                                    {{--<form action="{{route('cooperation.admin.cooperation.coordinator.coach.destroy', ['userId' => $user->id])}}" method="post">--}}
+                                    {{--<form action="{{route('cooperation.admin.cooperation.coordinator.user.destroy', ['userId' => $user->id])}}" method="post">--}}
                                         {{--{{csrf_field()}}--}}
                                         {{--<button type="submit" class="btn remove btn-danger"><span class="glyphicon glyphicon-trash"></span></button>--}}
                                     {{--</form>--}}

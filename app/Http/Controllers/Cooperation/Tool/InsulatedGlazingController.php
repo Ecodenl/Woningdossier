@@ -62,7 +62,7 @@ class InsulatedGlazingController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
-        $steps = Step::orderBy('order')->get();
+
 
         $interests = Interest::orderBy('order')->get();
 
@@ -134,7 +134,7 @@ class InsulatedGlazingController extends Controller
         $myBuildingElements = BuildingElement::forMe()->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'steps', 'interests', 'myBuildingElements',
+            'building',  'interests', 'myBuildingElements',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
@@ -484,6 +484,13 @@ class InsulatedGlazingController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

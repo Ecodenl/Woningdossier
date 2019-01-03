@@ -50,8 +50,8 @@
 
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
-                                    <label for="">@lang('woningdossier.cooperation.conversation-requests.edit.form.message')</label>
-                                    <textarea name="message" class="form-control">@if(isset($intendedMessage)){{ $intendedMessage }}@elseif(isset($myOpenCoachConversationRequest)){{ $myOpenCoachConversationRequest->message }} @else @lang('woningdossier.cooperation.conversation-requests.coach.edit.form.message') @endif </textarea>
+                                    <label for="message">@lang('woningdossier.cooperation.conversation-requests.edit.form.message')</label>
+                                    <textarea id="message" name="message" class="form-control">@if(isset($intendedMessage)){{ $intendedMessage }}@elseif(isset($myOpenCoachConversationRequest)){{ $myOpenCoachConversationRequest->message }} @else @lang('woningdossier.cooperation.conversation-requests.coach.edit.form.message') @endif </textarea>
 
                                     @if ($errors->has('message'))
                                         <span class="help-block">
@@ -103,15 +103,15 @@
             var inputPrefix = '@lang('woningdossier.cooperation.conversation-requests.edit.form.selected-option')';
 
 
-            var coachConversationTranslation = '{{__('woningdossier.cooperation.conversation-requests.edit.form.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION)}}';
+            var coachConversationTranslation = '{{ __('woningdossier.cooperation.conversation-requests.edit.form.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) }}';
 
             $(dropdown).change(function () {
 
 
                 var radioLabel = $('input[type=radio]:checked').parent().text().trim();
 
-                if (coachConversationTranslation != radioLabel) {
-                    window.location = '{{url('/aanvragen')}}' + '/' + $('input[type=radio]:checked').val()
+                if (coachConversationTranslation !== radioLabel) {
+                    window.location = '{{ url('/aanvragen') }}' + '/' + $('input[type=radio]:checked').val()
                 }
 
                 // we lower the case after the check is done, otherwise it would fail in any case
@@ -127,9 +127,9 @@
             // if so submit, else do nuthing
             $('form').on('submit', function () {
 
-                if ($('input[name=allow_access]').is(':checked')  == false) {
+                if ($('input[name=allow_access]').is(':checked')  === false) {
 
-                    if (confirm('Weet u zeker dat u geen toesteming wilt geven ?')) {
+                    if (confirm('Weet u zeker dat u geen toesteming wilt geven?')) {
 
                     } else {
                        event.preventDefault();

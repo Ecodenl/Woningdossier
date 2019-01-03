@@ -32,85 +32,34 @@ class ConnectToCoachController extends Controller
      * Show the coordinator the form to connect a coach to a resident that has an open request
      *
      * @param Cooperation $cooperation
-     * @param $senderId
+     * @param $privateMessageId
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Cooperation $cooperation, $senderId)
+    public function create(Cooperation $cooperation, $privateMessageId)
     {
-        $privateMessage = PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->first();
+        $privateMessage = PrivateMessage::openCooperationConversationRequests()->find($privateMessageId);
 
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches', 'senderId'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches'));
     }
 
 
     /**
-     * Send a message to the selected coach
+     * Connect a coach to a building and resident
      *
      * @param Cooperation $cooperation
      * @param ConnectToCoachRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function storeWithMessageToCoach(Cooperation $cooperation, ConnectToCoachRequest $request)
+    public function store(Cooperation $cooperation, ConnectToCoachRequest $request)
     {
         $coach = $request->get('coach', '');
-        $message = $request->get('message');
-        $title = $request->get('title', '');
-        $senderId = $request->get('sender_id', "");
-
+        $senderId = $request->get('sender_id', '');
+        $privateMessageId = $request->get('private_message_id', '');
 
         // the resident now has a coach to talk to, so the conversation request is done.
-        PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->update([
-            'status' => PrivateMessage::STATUS_LINKED_TO_COACH
-        ]);
-
-        // the receiver of the message
-        $toUser = $cooperation->users()->find($coach);
-
-        // TODO: create a function that does the same as this, but without the message
-        // so a coordinator can attach a coach to a resident in one click
-        PrivateMessage::create(
-            [
-                'title' => $title,
-                'request_type' => PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION,
-                'message' => $message,
-                'from_cooperation_id' => $cooperation->id,
-                'to_user_id' => $toUser->id,
-                'from_user_id' => \Auth::id(),
-            ]
-        );
-
-        $residentBuilding = Building::where('user_id', $senderId)->first();
-
-        // give the coach permission to the resident his building
-        BuildingPermission::create([
-            'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
-        ]);
-
-        // do not attach a status yet, the coach can do this himself in his gui
-        BuildingCoachStatus::create([
-            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_IN_CONSIDERATION
-        ]);
-
-        return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
-    }
-
-    /**
-     * Send a message to the selected coach
-     *
-     * @param Cooperation $cooperation
-     * @param ConnectToCoachRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function storeWithoutMessageToCoach(Cooperation $cooperation, ConnectToCoachRequest $request)
-    {
-        $coach = $request->get('coach', '');
-        $senderId = $request->get('sender_id', "");
-
-
-        // the resident now has a coach to talk to, so the conversation request is done.
-        PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->update([
+        PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
             'status' => PrivateMessage::STATUS_LINKED_TO_COACH
         ]);
 
@@ -119,30 +68,39 @@ class ConnectToCoachController extends Controller
 
         $residentBuilding = Building::where('user_id', $senderId)->first();
 
-        // give the coach permission to the resident his building
-        BuildingPermission::create([
-            'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
-        ]);
+        $privateMessage = PrivateMessage::find($privateMessageId);
+
+        if ($privateMessage->allow_access) {
+            // give the coach permission to the resident his building
+            BuildingPermission::create([
+                'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
+            ]);
+        }
 
         BuildingCoachStatus::create([
-            'coach_id' => $toUser->id, 'building_id' => $residentBuilding->id, 'status' => BuildingCoachStatus::STATUS_IN_CONSIDERATION
+            'coach_id' => $toUser->id,
+            'building_id' => $residentBuilding->id,
+            'status' => BuildingCoachStatus::STATUS_ACTIVE,
+            'private_message_id' => $privateMessageId
         ]);
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }
+
+
 
     /**
      * When the coordinator decides to message the coach before attaching anything to the user
      *
      * @param Cooperation $cooperation
-     * @param integer $senderId
+     * @param integer $privateMessageId
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function talkToCoachCreate(Cooperation $cooperation, $senderId)
+    public function talkToCoachCreate(Cooperation $cooperation, $privateMessageId)
     {
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach', compact('coaches', 'senderId'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.talk-to-coach', compact('coaches', 'privateMessageId'));
     }
 
     /**
@@ -157,11 +115,11 @@ class ConnectToCoachController extends Controller
         $coach = $request->get('coach', '');
         $message = $request->get('message');
         $title = $request->get('title', '');
-        $senderId = $request->get('sender_id', "");
+        $privateMessageId = $request->get('private_message_id', '');
 
         // When a coordinator starts a message with a coach through a specific conversation request
         // we update the status of that request to "in consideration"
-        PrivateMessage::openCooperationConversationRequests()->where('from_user_id', $senderId)->update([
+        PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
             'status' => PrivateMessage::STATUS_IN_CONSIDERATION
         ]);
 

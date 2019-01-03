@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
+use App\Models\InputSource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -98,36 +101,55 @@ class LoginController extends Controller
         }
 
 		if ($this->attemptLogin($request)) {
-		    $user = \Auth::user();
 
+		    $user = \Auth::user();
 		    // if the user only has one role we can set the session with his role id on the login
 		    if ($user->roles->count() == 1) {
-                $role = $user->roles()->first();
+		        $building = $user->buildings()->first();
 
-                session()->put('role_id', $role->id);
+		        // we cant query on the Spatie\Role model so we first get the result on the "original model"
+                $role = Role::findByName($user->roles->first()->name);
+                // get the input source
+                $inputSource = $role->inputSource;
+
+                // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
+		        if (!$role->inputSource instanceof InputSource) {
+		            $inputSource = InputSource::findByShort('resident');
+                }
+
+                HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
 
 			    $this->redirectTo = RoleHelper::getUrlByRole( $role );
             }
 			else {
-				// get highest role and redirect to the corresponding route / url
-				$role = $user->roles()->orderBy('level', 'DESC')->first();
-
-				if ($role->level >= 5){
-					$this->redirectTo = '/admin';
-				}
-				else {
-					$this->redirectTo = RoleHelper::getUrlByRole( $role );
-				}
+				// if the user has multiple roles, always redirect them to the switch role.
+                $this->redirectTo = '/admin';
 			}
+
 
 			return $this->sendLoginResponse($request);
 		}
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
+		// If the login attempt was unsuccessful we will increment the number of attempts
+		// to login and redirect the user back to the login form. Of course, when this
+		// user surpasses their maximum number of attempts they will get locked out.
+		$this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
     }
+
+//    /**
+//     * Send the response after the user was authenticated.
+//     *
+//     * @param $request
+//     * @return \Illuminate\Http\RedirectResponse
+//     */
+//    protected function sendLoginResponse ($request)
+//    {
+//        $request->session()->regenerate();
+//
+//        $this->clearLoginAttempts($request);
+//
+//        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
+//    }
 }

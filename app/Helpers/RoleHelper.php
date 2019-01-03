@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-
 use Spatie\Permission\Models\Role;
 
 class RoleHelper
@@ -24,8 +23,7 @@ class RoleHelper
 				        [ 'role_name' => $roleName ] );
 			        break;
 		        case 'coordinator':
-			        return route( 'cooperation.admin.cooperation.coordinator.index',
-				        [ 'role_name' => $roleName ] );
+			        return route( 'cooperation.admin.cooperation.coordinator.index');
 			        break;
 		        case 'coach':
 			        return route( 'cooperation.admin.coach.index',

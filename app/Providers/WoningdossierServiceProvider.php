@@ -4,7 +4,10 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\CooperationComposer;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Interest;
+use App\Models\UserActionPlanAdvice;
+use App\Observers\UserActionPlanAdviceObserver;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider
@@ -23,7 +26,13 @@ class WoningdossierServiceProvider extends ServiceProvider
             $view->with('interests', Interest::orderBy('order')->get());
         });
 
+        \View::composer('*', function ($view) {
+            $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
+        });
+
         \View::creator('*', CooperationComposer::class);
+
+        UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
     }
 
     /**

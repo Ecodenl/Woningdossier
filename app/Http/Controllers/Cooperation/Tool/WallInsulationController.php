@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
@@ -22,10 +24,10 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class WallInsulationController extends Controller
 {
@@ -49,11 +51,13 @@ class WallInsulationController extends Controller
 
         $steps = Step::orderBy('order')->get();
         /** @var Building $building */
-        $building = \Auth::user()->buildings()->first();
-        // todo should use short here
+        $building = Building::find(HoomdossierSession::getBuilding());
+
         $facadeInsulation = $building->getBuildingElement('wall-insulation');
         $buildingFeature = $building->buildingFeatures;
         $buildingElements = $facadeInsulation->element;
+
+        $buildingFeaturesForMe = BuildingFeature::withoutGlobalScope(GetValueScope::class)->forMe()->get();
 
         /** @var BuildingElement $houseInsulation */
         $surfaces = FacadeSurface::orderBy('order')->get();
@@ -65,7 +69,8 @@ class WallInsulationController extends Controller
         return view('cooperation.tool.wall-insulation.index', compact(
             'steps', 'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
-            'facadePlasteredSurfaces', 'facadeDamages', 'buildingElements'
+            'facadePlasteredSurfaces', 'facadeDamages',
+	        'buildingElements', 'buildingFeaturesForMe'
         ));
     }
 
@@ -78,9 +83,13 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-        $user = Auth::user();
 
-        $interests = $request->input('interest', '');
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
+
+        $interests = $request->input('interest', []);
         UserInterest::saveUserInterests($user, $interests);
 
         // Get all the values from the form
@@ -95,61 +104,66 @@ class WallInsulationController extends Controller
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
 
-        // get the user buildingfeature
-        $building = $user->buildings()->first();
-        $buildingFeatures = $building->buildingFeatures();
-
         // Element id's and values
         $elementId = key($wallInsulationQualities);
         $elementValueId = reset($wallInsulationQualities);
 
         // Save the wall insulation
-        BuildingElement::updateOrCreate(
+        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
                 'element_id' => $elementId,
+
             ],
             [
                 'element_value_id' => $elementValueId,
             ]
         );
 
-        // Update the building feature table with some fresh data
-        $buildingFeatures->update([
-            'facade_plastered_surface_id' => $plasteredWallSurface,
-            'wall_joints' => $wallJoints,
-            'cavity_wall' => $cavityWall,
-            'contaminated_wall_joints' => $wallJointsContaminated,
-            'wall_surface' => $wallSurface,
-            'insulation_wall_surface' => $insulationWallSurface,
-            'facade_damaged_paintwork_id' => $damagedPaintwork,
-            'additional_info' => $additionalInfo,
-            'facade_plastered_painted' => $facadePlasteredOrPainted,
-        ]);
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
+            ],
+            [
+                'facade_plastered_surface_id' => $plasteredWallSurface,
+                'wall_joints' => $wallJoints,
+                'cavity_wall' => $cavityWall,
+                'contaminated_wall_joints' => $wallJointsContaminated,
+                'wall_surface' => $wallSurface,
+                'insulation_wall_surface' => $insulationWallSurface,
+                'facade_damaged_paintwork_id' => $damagedPaintwork,
+                'additional_info' => $additionalInfo,
+                'facade_plastered_painted' => $facadePlasteredOrPainted,
+            ]
+        );
+
 
         // Save progress
         $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
     }
 
     protected function saveAdvices(Request $request)
     {
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();
@@ -168,7 +182,7 @@ class WallInsulationController extends Controller
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -182,8 +196,8 @@ class WallInsulationController extends Controller
         /**
          * @var Building
          */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
         $energyHabits = $user->energyHabit;
 
         $cavityWall = $request->get('cavity_wall', -1);

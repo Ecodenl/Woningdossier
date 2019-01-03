@@ -82,7 +82,7 @@ class GeneralDataController extends Controller
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
         $motivations = Motivation::orderBy('order')->get();
         $energyHabit = $buildingOwner->energyHabit;
-        $steps = Step::orderBy('order')->get();
+
 
         // Get possible remarks from the coach on energy habits
         $coachSource = InputSource::findByShort('coach');
@@ -90,7 +90,6 @@ class GeneralDataController extends Controller
                                        ->where('user_id', $buildingOwner->id)
                                        ->where('input_source_id', $coachSource->id)
                                        ->first();
-
         $step = $this->step;
 
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
@@ -104,7 +103,7 @@ class GeneralDataController extends Controller
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
-            'steps', 'motivations', 'energyHabit', 'services'
+             'motivations', 'energyHabit', 'services'
         ));
     }
 

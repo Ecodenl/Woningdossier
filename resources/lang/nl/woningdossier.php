@@ -186,6 +186,7 @@ return [
 
 				'side-nav' => [
 					'label'       => 'Coöperatie admin menu',
+					'step' => 'Stappen',
 					'home'        => 'Home',
 					'users'       => 'Gebruikers van uw coöperatie',
 					'create-user' => 'Voeg een gebruiker toe',
@@ -207,7 +208,19 @@ return [
 					],
 				],
 
-				'users' => [
+				'steps' => [
+                        'index' => [
+                            'header' => 'Stappen die u kunt beheren',
+                            'table' => [
+                                'columns' => [
+                                    'name' => 'Stap naam',
+                                    'active' => 'Actief',
+                                ]
+                            ]
+                        ]
+                    ],
+
+                    'users' => [
 					'index'  => [
 						'header' => 'Overzicht van alle gebruikers binnen uw coöperatie',
 

@@ -47,7 +47,7 @@ class HighEfficiencyBoilerController extends Controller
         $habit = $user->energyHabit;
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
 
-        $steps = Step::orderBy('order')->get();
+
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         $boilerTypes = $boiler->values()->orderBy('order')->get();

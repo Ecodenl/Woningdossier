@@ -35,9 +35,9 @@ class HeatPumpController extends Controller
         $heatpumpTypes = PresentHeatPump::all();
         $buildingCurrentHeatings = BuildingCurrentHeating::all();
         $heatSources = HeatSource::all();
-        $steps = Step::orderBy('order')->get();
 
-        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes', 'steps', 'heatSources', 'buildingCurrentHeatings'));
+
+        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes',  'heatSources', 'buildingCurrentHeatings'));
     }
 
     /**

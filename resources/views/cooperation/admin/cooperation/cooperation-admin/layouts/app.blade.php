@@ -1,6 +1,7 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
+
     <div class="container">
         <div class="row">
             @include('cooperation.admin.cooperation.sidebar-menu')

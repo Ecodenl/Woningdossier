@@ -91,7 +91,7 @@ class StepHelper
     public static function getNextStep(Step $current): array
     {
         // get all the steps
-        $steps = Step::orderBy('order')->get();
+        $steps = Cooperation::find(HoomdossierSession::getCooperation())->getActiveOrderedSteps();
         // create new collection for the completed steps
         $completedSteps = collect();
 

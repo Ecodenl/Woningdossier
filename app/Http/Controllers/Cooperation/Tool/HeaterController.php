@@ -54,7 +54,7 @@ class HeaterController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
-        $steps = Step::orderBy('order')->get();
+
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
@@ -70,7 +70,7 @@ class HeaterController extends Controller
 
         return view('cooperation.tool.heater.index', compact(
             'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
-            'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
+            'currentComfort', 'currentHeater', 'habits',  'currentHeatersForMe'
         ));
     }
 

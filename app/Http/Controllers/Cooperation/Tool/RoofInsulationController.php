@@ -61,7 +61,7 @@ class RoofInsulationController extends Controller
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
         $roofTypes = RoofType::all();
-        $steps = Step::orderBy('order')->get();
+
         $currentRoofTypes = $building->roofTypes;
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
 
@@ -102,8 +102,8 @@ class RoofInsulationController extends Controller
 
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps', 'typeIds',
-             'interest', 'buildingFeaturesForMe', 'currentRoofTypesForMe',
+            'features', 'roofTypes',  'typeIds',
+             'buildingFeaturesForMe', 'currentRoofTypesForMe',
              'currentCategorizedRoofTypesForMe', 'currentRoofTypes', 'roofTileStatuses',
              'roofInsulation', 'heatings', 'measureApplications', 'currentCategorizedRoofTypes'));
     }

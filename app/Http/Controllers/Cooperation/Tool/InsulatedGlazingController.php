@@ -62,7 +62,7 @@ class InsulatedGlazingController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
-        $steps = Step::orderBy('order')->get();
+
 
         $interests = Interest::orderBy('order')->get();
 
@@ -134,7 +134,7 @@ class InsulatedGlazingController extends Controller
         $myBuildingElements = BuildingElement::forMe()->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'steps', 'interests', 'myBuildingElements',
+            'building',  'interests', 'myBuildingElements',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'

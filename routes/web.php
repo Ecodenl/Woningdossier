@@ -243,15 +243,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			            Route::post('', 'UserController@store')->name('store');
                     });
 
-					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-						Route::get('', 'ReportController@index')->name('index');
-						Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
-						Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                        Route::get('', 'ReportController@index')->name('index');
+                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                    });
 
-					});
+                    Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
+                       Route::get('', 'StepController@index')->name('index');
+                       Route::post('set-active', 'StepController@setActive')->name('set-active');
+                    });
 
-					Route::resource('example-buildings', 'ExampleBuildingController');
-					Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+				    Route::resource('example-buildings', 'ExampleBuildingController');
+				    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
 					// needs to be the last route due to the param
 				    Route::get('home', 'CooperationAdminController@index')->name('index');

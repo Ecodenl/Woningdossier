@@ -49,7 +49,6 @@ class WallInsulationController extends Controller
 
 	    $typeIds = [3];
 
-        $steps = Step::orderBy('order')->get();
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
 
@@ -67,7 +66,7 @@ class WallInsulationController extends Controller
         $interests = Interest::orderBy('order')->get();
 
         return view('cooperation.tool.wall-insulation.index', compact(
-            'steps', 'building', 'facadeInsulation',
+             'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
 	        'buildingElements'

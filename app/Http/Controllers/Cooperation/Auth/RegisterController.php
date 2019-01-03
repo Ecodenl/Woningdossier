@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
+use App\Models\Role;
 use App\Models\User;
 use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
@@ -169,6 +170,10 @@ class RegisterController extends Controller
             $user->confirm_token = null;
             $user->save();
 
+            // give the user the role resident
+            $residentRole = Role::findByName('resident');
+            $user->roles()->attach($residentRole);
+
             return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
         }
     }
@@ -192,14 +197,14 @@ class RegisterController extends Controller
                 if (! empty($houseNumberExtension) && ! empty($extension)) {
                     $newDist = levenshtein(strtolower($houseNumberExtension), strtolower($extension), 1, 10, 1);
                 }
-                if (is_null($dist) || isset($newDist) && $newDist < $dist) {
+                if ((is_null($dist) || isset($newDist) && $newDist < $dist) && is_array($option)) {
                     // best match
                     $result = [
-                        'id'                     => md5($option['bag_adresid']),
-                        'street'                 => $option['straat'],
-                        'number'                 => $option['huisnummer'],
+                        'id'                     => array_key_exists('bag_adresid', $option) ? md5($option['bag_adresid']) : "",
+                        'street'                 => array_key_exists('straat', $option) ? $option['straat'] : "",
+                        'number'                 => array_key_exists('huisnummer', $option) ? $option['huisnummer'] : "",
                         'house_number_extension' => $houseNumberExtension,
-                        'city'                   => $option['woonplaats'],
+                        'city'                   => array_key_exists('woonplaats', $option) ? $option['woonplaats'] : "",
                     ];
                     $dist = $newDist;
                 }

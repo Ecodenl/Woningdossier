@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait GetMyValuesTrait {
 
@@ -20,11 +21,10 @@ trait GetMyValuesTrait {
         return $query->withoutGlobalScope(GetValueScope::class)->where('building_id', HoomdossierSession::getBuilding());
     }
 
-    /**
-     * Get the input Sources
-     *
-     * @return InputSource
-     */
+	/**
+	 *
+	 * @return BelongsTo
+	 */
     public function inputSource()
     {
         return $this->belongsTo(InputSource::class);
@@ -40,10 +40,27 @@ trait GetMyValuesTrait {
      */
     public static function hasCoachInputSource(Collection $inputSourcesForMe): bool
     {
-//        dd($inputSourcesForMe);
         $coachInputSource = InputSource::findByShort('coach');
 
         if ($inputSourcesForMe->contains('input_source_id', $coachInputSource->id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check on a collection that comes from the forMe() scope if it contains a
+     * Resident input source.
+     *
+     * @param Collection $inputSourcesForMe
+     * @return bool
+     */
+    public static function hasResidentInputSource(Collection $inputSourcesForMe): bool
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        if ($inputSourcesForMe->contains('input_source_id', $residentInputSource->id)) {
             return true;
         }
 
@@ -65,6 +82,22 @@ trait GetMyValuesTrait {
         }
 
     }
+    
+    /**
+     * Get the resident input from a collection that comes from the forMe() scope
+     *
+     * @param Collection $inputSourcesForMe
+     * @return mixed
+     */
+    public static function getResidentInput(Collection $inputSourcesForMe)
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        if (self::hasResidentInputSource($inputSourcesForMe)) {
+            return $inputSourcesForMe->where('input_source_id', $residentInputSource->id)->first();
+        }
+
+    }
 
     /**
      * Get a input source name
@@ -75,19 +108,5 @@ trait GetMyValuesTrait {
     {
         return $this->inputSource()->first()->name;
     }
-//
-//    /**
-//     * Almost the same as getBuildingElement($short) except this returns all the input
-//     *
-//     * @param $query
-//     * @param $short
-//     * @return mixed
-//     */
-//    public function scopeBuildingElementsForMe($query, $short)
-//    {
-//        return $query->forMe()->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-//            ->where('e.short', $short)->select(['building_elements.*']);
-//    }
-
 
 }

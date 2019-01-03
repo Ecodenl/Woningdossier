@@ -6,10 +6,12 @@
 @section('step_content')
 
     <?php
+        // we only need this for the titles above the main inputs
+        // we dont want a title above the hr3p-frames
         $titles = [
             7 => 'glass-in-lead',
-            8 => 'place-hr-only-glass',
-            9 => 'place-hr-with-frame',
+            8 => 'hrpp-glass-only',
+            9 => 'hrpp-glass-frames',
         ];
     ?>
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
@@ -30,14 +32,16 @@
 
                 <div class="row">
                     <div class="col-sm-12">
+                        {{-- since there is no title / subtitle for the hr3p --}}
                         @if(array_key_exists($measureApplication->id, $titles))
-                            <h4>{{\App\Helpers\Translation::translate('insulated-glazing.subtitles.'.$titles[$measureApplication->id].'.title')}}</h4>
+                            <h4>{{\App\Helpers\Translation::translate('insulated-glazing.subtitles.'.$measureApplication->short.'.title')}}</h4>
                         @endif
+
                         <div class="form-group add-space {{$errors->has('user_interests.'.$measureApplication->id) ? 'has-error' : '' }}">
                             <label class=" control-label">
                                 <i data-toggle="collapse" data-target="#user_interests_{{ $measureApplication->id }}-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                {{\App\Helpers\Translation::translate('insulated-glazing.interested-in.title.title', ['measure' => lcfirst($measureApplication->measure_name)]) }}
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.title') }}
                             </label>
 
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
@@ -56,9 +60,8 @@
                                 @endforeach
                             </select>
 
-                            <div id="user_interests_{{ $measureApplication->id }}-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('insulated-glazing.interested-in.title.help')}}
+                            <div id="user_interests_{{ $measureApplication->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.help') }}
                             </div>
 
                             @if ($errors->has('user_interests.' . $measureApplication->id))
@@ -72,9 +75,8 @@
                         <div class=" col-sm-3 ">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.current-glass.title')}}
+                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title')}}
                                 </label>
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
@@ -85,9 +87,8 @@
                                     </select>
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.current-glass.help')}} }}
+                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'))
@@ -100,9 +101,8 @@
                         <div class=" col-sm-3 ">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.heated-rooms.title')}}
+                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title')}}
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
@@ -114,9 +114,8 @@
                                 </select>
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.heated-rooms.help')}}
+                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'))
@@ -126,12 +125,11 @@
                                 @endif
                             </div>
                         </div>
-                        <div class=" col-sm-3 ">
+                        <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.m2.title')}}
+                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.title')}}
                                 </label> <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
@@ -139,9 +137,8 @@
                                     <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.m2.help')}}
+                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2'))
@@ -156,7 +153,7 @@
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.total-windows.title')}}
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.title')}}
                                 </label> <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
@@ -165,7 +162,7 @@
                                 @endcomponent
                                 <div id="building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                    {{\App\Helpers\Translation::translate('insulated-glazing.total-windows.help')}}
+                                    {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.help')}}
                                 </div>
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.windows'))
@@ -455,16 +452,33 @@
                     @endforeach
                 </div>
             </div>
+
             @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentMeasureBuildingInsulatedGlazingForMe)) && Auth::user()->hasRole('resident'))
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
                             <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
-                            $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
+                                $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
+                                $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
                             ?>
                             <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
+                            </label>
+
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            @elseif(\App\Models\BuildingService::hasResidentInputSource(collect($currentMeasureBuildingInsulatedGlazingForMe)) && Auth::user()->hasRole('coach'))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space">
+                            <?php
+                                $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
+                                $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
+                            ?>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
                             </label>
 
                             <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
@@ -476,63 +490,32 @@
 
         <div id="indication-for-costs">
             <hr>
-            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('general.costs.cost-and-benefits.title')}}</h4>
+            @include('cooperation.layouts.section-title', ['translationKey' => 'general.costs.cost-and-benefits'])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
-
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rate.title')}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
                 </div>
             </div>
         </div>
 
         <div id="taking-into-account">
             <hr>
-            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('insulated-glazing.taking-into-account.title.title')}}</h4>
+            @include('cooperation.layouts.section-title', ['translationKey' => 'insulated-glazing.taking-into-account.title'])
 
             <div class="row">
                 <div class="col-sm-6">
@@ -635,14 +618,17 @@
             });
 
             $('.user-interest').change(function() {
-                $('.user-interest option:selected').each(function() {
-                    $userInterest = $(this); // the input field
-                    if ($userInterest.text() === "Geen actie" || $userInterest.text() === "Niet mogelijk") {
-                        $userInterest.parent().parent().parent().next().hide();
-                    } else {
-                        $userInterest.parent().parent().parent().next().show();
-                    }
-                });
+
+                // the input field
+                var userInterest = $(this);
+                // the text from the selected interested option
+                var userInterestText = userInterest.find('option:selected').text().trim();
+
+                if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
+                    userInterest.parent().parent().parent().find('.values').hide();
+                } else {
+                    userInterest.parent().parent().parent().find('.values').show();
+                }
             });
             // Trigger the change event so it will load the data
             //$("select, input[type=radio], input[type=text]").trigger('change');

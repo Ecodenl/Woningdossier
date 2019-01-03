@@ -28,6 +28,15 @@ class HoomdossierSession extends Session {
     }
 
     /**
+     * Destroy the hoomdossier sessions
+     */
+    public static function destroy()
+    {
+//        self::forget(['hoomdossier_session.role_id', 'hoomdossier_session.building_id', 'hoomdossier_session.input_source_id', 'hoomdossier_session.input_source_value_id']);
+        self::forget(['hoomdossier_session']);
+    }
+
+    /**
      * Set the Cooperation id
      *
      * @param Cooperation $cooperation
@@ -142,6 +151,16 @@ class HoomdossierSession extends Session {
 			}
 		}
 		return "";
+    }
+
+	/**
+	 * Returns whether or not this session contains a current role.
+	 *
+	 * @return bool
+	 */
+    public static function hasRole() : bool
+    {
+    	return !empty(self::getRole());
     }
 
     /**

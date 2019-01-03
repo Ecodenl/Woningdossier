@@ -9,7 +9,7 @@
     ?>
     @if(isset($needsFormat) && $needsFormat == true)
         <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{\App\Helpers\NumberFormatter::format($value, 1)}}</a></li>
-    @else
+    @else(!is_null($value))
         <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$value}}</a></li>
     @endif
 @endforeach

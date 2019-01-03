@@ -68,17 +68,13 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-__webpack_require__(8);
-__webpack_require__(9);
-__webpack_require__(10);
-module.exports = __webpack_require__(11);
+module.exports = __webpack_require__(8);
 
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -104,51 +100,6 @@ __webpack_require__(2);
 
 var baseUrl = window.location.origin;
 var fillAddressUrl = baseUrl + "/fill-address";
-
-$(document).ready(function () {
-
-    $('.input-source-group').on('click', 'li.change-input-value', function (event) {
-
-        // so it will not jump to the top of the page.
-        event.preventDefault();
-
-        var dataInputValue = $(this).data('input-value');
-
-        // find the selected option
-        var inputSourceGroup = $(this).parent().parent().parent();
-        var inputType = inputSourceGroup.find('input').attr('type');
-
-        if (inputType === undefined) {
-            // check if it's a select
-            inputType = inputSourceGroup.find('select').length === 1 ? 'select' : undefined;
-        }
-
-        // check if the input is a "input" and not a select
-        if ((typeof inputType === 'undefined' ? 'undefined' : _typeof(inputType)) !== undefined) {
-
-            switch (inputType) {
-                case "text":
-                    inputSourceGroup.find('input[type=text]').val(dataInputValue);
-                    break;
-                case "radio":
-                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('checked');
-                    inputSourceGroup.find('input[type=radio][value=' + dataInputValue + ']').attr('checked', true);
-                    break;
-                case "checkbox":
-                    inputSourceGroup.find('input[type=checkbox]:checked').removeAttr('selected');
-                    inputSourceGroup.find('input[value=' + dataInputValue + ']').attr('selected', true);
-                    break;
-                case "select":
-                    inputSourceGroup.find('select').val(dataInputValue);
-                    break;
-                default:
-                    //inputSourceGroup.find('select option:selected').removeAttr('selected');
-                    //inputSourceGroup.find('select option[value='+dataInputValue+']').attr('selected', true);
-                    break;
-            }
-        }
-    });
-});
 
 $("#register #street").focusin(function () {
     var postalCode = $("#register #postal_code");
@@ -30160,24 +30111,6 @@ if (typeof jQuery === 'undefined') {
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

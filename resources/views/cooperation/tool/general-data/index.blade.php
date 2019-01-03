@@ -8,46 +8,8 @@
           action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
-            <div id="example-building" class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                    <label for="example_building_id" class=" control-label">
-                        <i data-toggle="collapse" data-target="#example-building-info"
-                           class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                        {{\App\Helpers\Translation::translate('general-data.building-type.example-building-type.title')}}
-                    </label>
-                    <select id="example_building_id" class="form-control" name="example_building_id">
-                        @foreach($exampleBuildings as $exampleBuilding)
-                            <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
-                                    selected="selected"
-                                    @elseif($exampleBuilding->id == old('example_building_id'))
-                                    selected="selected"
-                                    @endif
-                                    value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
-                        @endforeach
-                        <option value=""
-                                @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >{{\App\Helpers\Translation::translate('general-data.example-building.no-match.title')}}</option>
-                    </select>
-
-                    @if ($errors->has('example_building_id'))
-                        <span class="help-block">
-                    <strong>{{ $errors->first('example_building_id') }}</strong>
-                </span>
-                    @endif
-                </div>
-
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
-                            {{\App\Helpers\Translation::translate('general-data.building-type.example-building-type.help')}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
             <div id="building-type" class="col-md-12">
-                <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('general-data.building-type.title.title')}} </h4>
+                @include('cooperation.tool.includes.interested', ['translationKey' => 'general-data.building-type.title'])
 
                 <div class="row">
                     <div class="col-md-6">
@@ -114,6 +76,41 @@
                                 <strong>{{ $errors->first('build_year') }}</strong>
                             </span>
                             @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="example-building" class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
+                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.building-type.example-building-type')</label>
+                            <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
+                                @foreach($exampleBuildings as $exampleBuilding)
+                                    <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
+                                            selected="selected"
+                                            @elseif($exampleBuilding->id == old('example_building_id'))
+                                            selected="selected"
+                                            @elseif ($building->example_building_id == $exampleBuilding->id)
+                                                    selected="selected"
+                                            @endif
+                                            value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
+                                @endforeach
+                                <option value="" @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                            </select>
+
+                            @if ($errors->has('example_building_id'))
+                                <span class="help-block">
+                    <strong>{{ $errors->first('example_building_id') }}</strong>
+                </span>
+                            @endif
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group add-space">
+                                <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
+                                    I would like to have some help full information right here!
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -289,9 +286,9 @@
                                        @elseif(old('monument') == "0") checked @endif>{{\App\Helpers\Translation::translate('general.options.radio.unknown.title')}}
                                 </label>
 
-                            <div id="is-monument-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('general-data.building-type.is-monument.help')}}
-                            </div>
+                                <div id="is-monument-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{\App\Helpers\Translation::translate('general-data.building-type.is-monument.help')}}
+                                </div>
 
                                 @if ($errors->has('monument'))
                                     <span class="help-block">
@@ -327,9 +324,20 @@
         </div>
 
         <div id="energy-saving-measures">
-            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('general-data.energy-saving-measures.title.title')}} </h4>
+            @include('cooperation.layouts.section-title', [
+                'translationKey' => 'general-data.energy-saving-measures.title',
+                'infoAlertId' => 'energy-saving-measures-info'
+            ])
 
             @foreach($elements as $i => $element)
+                <?php
+                /** @var $elementInterestForCurrentUser holds the interest for the current inputsource for a resident */
+                $elementInterestForCurrentUser = $userInterestsForMe
+                    ->where('interested_in_type', 'element')
+                    ->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())
+                    ->where('interested_in_id', $element->id)
+                    ->first();
+                ?>
                 @if ($i % 2 == 0)
                     <div class="row">
                         @endif
@@ -369,16 +377,28 @@
                         @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
                             <div class="col-sm-2">
                                 <div class="form-group add-space{{ $errors->has('user_interest.element.' . $element->id) ? ' has-error' : '' }}">
-                                    <label for="user_interest_element_{{ $element->id }}"
-                                           class="control-label small-text">{{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
-                                        <span>*</span></label>
+                                    <label for="element_interested_{{ $element->id }}-info" class="control-label small-text" style="font-size:12px;">
+                                        <i data-toggle="collapse" data-target="#element_interested_{{ $element->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                        {{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
+                                        <span>*</span>
+                                    </label>
 
-@component('cooperation.tool.components.input-group',
-                                ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'element')->where('interested_in_id', $element->id),  'userInputColumn' => 'interest_id'])                                <select id="user_interest_element_{{ $element->id }}" class="form-control" name="user_interest[element][{{ $element->id }}]" >
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'element')->where('interested_in_id', $element->id),  'userInputColumn' => 'interest_id'])
+                                <select id="user_interest_element_{{ $element->id }}" class="form-control" name="user_interest[element][{{ $element->id }}]" >
                                     @foreach($interests as $interest)
-                                        <option @if($interest->id == old('user_interest.element.'. $element->id . ']')) selected @elseif(Auth::user()->getInterestedType('element', $element->id) != null && Auth::user()->getInterestedType('element', $element->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+
+                                        <option @if($interest->id == old('user_interest.element.'. $element->id . ']'))
+                                                selected
+                                                @elseif($elementInterestForCurrentUser instanceof \App\Models\UserInterest &&
+                                                $elementInterestForCurrentUser->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                     @endforeach
-                                </select>@endcomponent
+                                </select>
+                                @endcomponent
+
+                                @component('cooperation.tool.components.alert', ['collapsable' => true, 'id' => 'element_interested_'.$element->id.'-info', 'alertType' => 'info'])
+                                    {{ \App\Helpers\Translation::translate('general.interested-in-improvement.help') }}
+                                @endcomponent
 
                                     @if ($errors->has('user_interest.element.' . $element->id))
                                         <span class="help-block">
@@ -401,118 +421,126 @@
 
 
         @foreach($services as $i => $service)
-            @if ( ($i % 2 == 0 && $service->short != "boiler") || $service->short == 'total-sun-panels')
+            <?php
+            /** @var $serviceInterestForCurrentUser holds the interest for the current inputsource for a resident */
+            $serviceInterestForCurrentUser = $userInterestsForMe
+                ->where('interested_in_type', 'service')
+                ->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())
+                ->where('interested_in_id', $service->id)
+                ->first();
+            ?>
+                @if ( ($i % 2 == 0 && $service->short != "boiler") || $service->short == 'total-sun-panels')
                 <div class="row" id="service_row_{{$service->id}}">
-                    @elseif(strpos($service->name, 'geventileerd'))
-                </div>
+            @elseif(strpos($service->name, 'geventileerd'))
+                </div><div class="row">
+            @endif
+            @if($service->short == "hr-boiler")
                 <div class="row">
-                    @endif
-                    @if($service->short == "hr-boiler")
-                        <div class="row">
-                            @endif
-                            <div class="col-sm-4">
-                                <div class="form-group add-space{{ $errors->has('service.'.$service->id) ? ' has-error' : '' }}">
-                                    <label for="{{$service->short}}" class="control-label">
-                                        <i data-toggle="collapse" data-target="#service_{{ $service->id }}-info"
-                                           class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                                           aria-expanded="false"></i>
-                                        {{ $service->name }}
-                                    </label>
-                                    {{-- This will check if the service has values, if so we need an selectbox and ifnot textbox --}}
-                                    @if($service->values()->where('service_id', $service->id)->first() != null)
+            @endif
+                <div class="col-sm-4">
+                    <div class="form-group add-space{{ $errors->has('service.'.$service->id) ? ' has-error' : '' }}">
+                        <label for="{{$service->short}}" class="control-label">
+                            <i data-toggle="collapse" data-target="#service_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            {{ $service->name }}
+                        </label>
+                        {{-- This will check if the service has values, if so we need an selectbox and ifnot textbox --}}
+                        @if($service->values()->where('service_id', $service->id)->first() != null)
 
-                                        <?php
-                                        $selectedSV = old('service.' . $service->id, null);
-                                        if (is_null($selectedSV)) {
-                                            $buildServ = $building->buildingServices()->where('service_id', $service->id)->first();
-                                            if ($buildServ instanceof \App\Models\BuildingService) {
-                                                $selectedSV = $buildServ->service_value_id;
-                                            }
-                                        }
-                                        if (is_null($selectedSV)) {
-                                            /** @var \App\Models\Service $service */
-                                            $sv = $service->values()->where('is_default', true)->first();
-                                            if ($sv instanceof \App\Models\ServiceValue) {
-                                                $selectedSV = $sv->id;
-                                            }
-                                        }
-                                        ?>
+                            <?php
+                                $selectedSV = old('service.' . $service->id, null);
+                                if (is_null($selectedSV)){
+                                	$buildServ = $building->buildingServices()->where('service_id', $service->id)->first();
+                                	if ($buildServ instanceof \App\Models\BuildingService){
+                                		$selectedSV = $buildServ->service_value_id;
+                                    }
+                                }
+                                if (is_null($selectedSV)){
+                                	/** @var \App\Models\Service $service */
+                                	$sv = $service->values()->where('is_default', true)->first();
+                                	if ($sv instanceof \App\Models\ServiceValue){
+                                		$selectedSV = $sv->id;
+                                    }
+                                }
+                            ?>
 
 
-                                        @component('cooperation.tool.components.input-group',
-                                        ['inputType' => 'select', 'inputValues' => $service->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
-                                            <select id="{{$service->short}}" class="form-control"
-                                                    name="service[{{ $service->id }}]">
-                                                @foreach($service->values()->orderBy('order')->get() as $serviceValue)
-                                                    <option @if($serviceValue->id == $selectedSV) selected="selected"
-                                                            @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
-                                                    {{--<option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>--}}
-                                                @endforeach
-                                            </select>
-                                        @endcomponent
-                                    @else
-                                        @component('cooperation.tool.components.input-group',
-                                        ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra.value'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
-                                <input type="text" id="{{ $service->short }}" class="form-control"
-                                                   value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif"
-                                                   name="service[{{ $service->id }}]">
-                                        @endcomponent
-                                    @endif
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $service->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
+                                <select id="{{$service->short}}" class="form-control" name="service[{{ $service->id }}]">
+                                    @foreach($service->values()->orderBy('order')->get() as $serviceValue)
+                                        <option @if($serviceValue->id == $selectedSV) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                    {{--<option @if(old('service.'.$service->id) == $serviceValue->id) selected="selected" @elseif($building->buildingServices()->where('service_id', $service->id)->first() != null && $building->buildingServices()->where('service_id', $service->id)->first()->service_value_id == $serviceValue->id) selected @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>--}}
+                                    @endforeach
+                                </select>
+                            @endcomponent
+                        @else
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra.value'])
+                                <input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">
+                            @endcomponent
+                        @endif
 
-                                    <div id="service_{{ $service->id }}-info"
-                                         class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                        {{ $service->info }}
-                                    </div>
+                        <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{ $service->info }}
+                        </div>
 
-                                    @if ($errors->has('service.' . $service->id))
-                                        <span class="help-block">
+                        @if ($errors->has('service.' . $service->id))
+                            <span class="help-block">
                                 <strong>{{ $errors->first('service.' . $service->id) }}</strong>
                             </span>
                                     @endif
-                                </div>
-                            </div>
-                            {{-- interest is not asked for current boiler --}}
-                            @if($service->short != 'boiler')
-                                <div class="col-sm-2">
-                                    <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
-                                        <label for="user_interest_service_{{ $service->id }}"
-                                               class="control-label small-text">{{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}</label>
-                                        <span>*</span>
+                    </div>
+                </div>
+                {{-- interest is not asked for current boiler --}}
+                @if($service->short != 'boiler')
+                <div class="col-sm-2">
+                    <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
+                        <label for="user_interest_service_{{ $service->id }}" class="control-label small-text" style="font-size:12px;">
+                            <i data-toggle="collapse" data-target="#service_interested_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            {{ \App\Helpers\Translation::translate('general.interested-in-improvement.title') }}
+                        </label> <span>*</span>
 
-@component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'service')->where('interested_in_id', $service->id),  'userInputColumn' => 'interest_id'])                        <select id="user_interest_service_{{ $service->id }}" class="form-control" name="user_interest[service][{{ $service->id }}]" >
-                            @foreach($interests as $interest)
-                                <option @if($interest->id == old('user_interest.service.' . $service->id )) selected @elseif(Auth::user()->getInterestedType('service', $service->id) != null && Auth::user()->getInterestedType('service', $service->id)->interest_id == $interest->id) selected @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
-                            @endforeach
-                        </select>@endcomponent
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'service')->where('interested_in_id', $service->id),  'userInputColumn' => 'interest_id'])                        <select id="user_interest_service_{{ $service->id }}" class="form-control"
+                                                name="user_interest[service][{{ $service->id }}]">
+                                            @foreach($interests as $interest)
+                                                <option @if($interest->id == old('user_interest.service.' . $service->id )) selected
+                                                        @elseif($serviceInterestForCurrentUser instanceof \App\Models\UserInterest &&
+                                        $serviceInterestForCurrentUser->interest_id == $interest->id) selected
+                                                        @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
+                                            @endforeach
+                                        </select>@endcomponent
+                        @component('cooperation.tool.components.alert', ['collapsable' => true, 'id' => 'service_interested_'.$service->id.'-info', 'alertType' => 'info'])
+                            {{ \App\Helpers\Translation::translate('general.interested-in-improvement.help') }}
+                        @endcomponent
 
-                                        @if ($errors->has('user_interest.service.' . $service->id))
-                                            <span class="help-block">
+
+                        @if ($errors->has('user_interest.service.' . $service->id))
+                            <span class="help-block">
                             <strong>{{ $errors->first('user_interest.service.' . $service->id) }}</strong>
                         </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
+                        @endif
+                    </div>
+                </div>
+                @endif
 
                             @if(strpos($service->name, 'geventileerd') || $service->short == "total-sun-panels")
                                 <div class="col-sm-6 {{ $errors->has(''.$service->id.'.extra') ? ' show' : '' }}">
 
                                     <div id="{{$service->id.'-extra'}}"
-                                         class="form-group add-space{{ $errors->has(''.$service->id.'.extra') ? ' has-error' : '' }}">
-                                        <label for="service_{{ $service->id }}" class="control-label">
-                                            <i data-toggle="collapse"
-                                               data-target="#service_{{ $service->id }}-extra-info"
-                                               class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                                               aria-expanded="false"></i>
-                                            @if(strpos($service->name, 'geventileerd'))
-                                                {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.title')}}
-                                            @elseif($service->short == 'total-sun-panels')
-                                                {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.sun-panel.if-yes.title')}}
-                                            @endif
+                             class="form-group add-space{{ $errors->has(''.$service->id.'.extra') ? ' has-error' : '' }}">
+                            <label for="service_{{ $service->id }}" class="control-label">
+                                <i data-toggle="collapse"
+                                   data-target="#service_{{ $service->id }}-extra-info"
+                                   class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
+                                   aria-expanded="false"></i>
+                                @if(strpos($service->name, 'geventileerd'))
+                                    {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.title')}}
+                                @elseif($service->short == 'total-sun-panels')
+                                    {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.solar-panels.if-yes.title')}}
+                                @endif
 
-                                        </label>
+                            </label>
 
                                         <?php
                                         if (isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['year'])) {
@@ -528,10 +556,10 @@
                                                    value="@if(old($service->id.'.extra.year')){{ old($service->id.'.extra.year') }}@elseif(isset($year)){{ $year }}@endif">
                                         @endcomponent
 
-                                        <div id="service_{{ $service->id }}-extra-info"
-                                             class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.help')}}
-                                        </div>
+                            <div id="service_{{ $service->id }}-extra-info"
+                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.help')}}
+                            </div>
 
                                         @if ($errors->has($service->id.'.extra'))
                                             <span class="help-block">
@@ -558,15 +586,18 @@
 
 
 
-                <div id="data-about-usage">
-
-                    <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('general-data.data-about-usage.title.title')}}</h4>
+            <div id="data-about-usage">
+                @include('cooperation.layouts.section-title', [
+                    'translationKey' => 'general-data.data-about-usage.title',
+                    'infoAlertId' => 'data-about-usage-info'
+                ])
             <div class="row">
                 <div class="col-sm-6">
 
                     <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
                         <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.total-citizens.title')}}
                                 </label> <span>*</span>
+
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'resident_count'])
                         <input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>
@@ -576,29 +607,35 @@
                         {{\App\Helpers\Translation::translate('general-data.data-about-usage.total-citizens.help')}}
                     </div>
 
-                    @if ($errors->has('resident_count'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('resident_count') }}</strong>
-                        </span>
+                        @if ($errors->has('resident_count'))
+                            <span class="help-block">
+                        <strong>{{ $errors->first('resident_count') }}</strong>
+                    </span>
                     @endif
                 </div>
             </div>
 
                 <div class="col-sm-6">
 
-                    <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
-                        <label for="cook_gas" class=" control-label">
-                            <i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.cooked-on-gas')
-                        </label> <span>*</span>
-
-                        <div class="input-group input-source-group">
-                            <label class="radio-inline">
-                                <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 2 ) checked @endif value="2">@lang('woningdossier.cooperation.radiobutton.no')
-                            </label>
-                            <div class="input-group-btn">
+                            <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
+                                <label for="cook_gas" class=" control-label">
+                                    <i data-toggle="collapse" data-target="#cooked-on-gas-info"
+                                       class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
+                                       aria-expanded="false"></i>
+                                    {{\App\Helpers\Translation::translate('general-data.data-about-usage.cooked-on-gas.title')}}
+                                </label> <span>*</span><div class="input-group input-source-group">
+                                <br>
+                                        <label class="radio-inline">
+                                    <input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked
+                                           @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked
+                                           @endif  value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title')}}
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="cook_gas" @if(old('cook_gas') == 2) checked
+                                           @elseif(isset($energyHabit) && $energyHabit->cook_gas == 2 ) checked
+                                           @endif value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title')}}
+                                </label>
+                                        <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     @foreach($userEnergyHabitsForMe as $userInputValue)
@@ -622,14 +659,14 @@
                         {{\App\Helpers\Translation::translate('general-data.data-about-usage.cooked-on-gas.help')}}
                     </div>
 
-                        @if ($errors->has('cook_gas'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('cook_gas') }}</strong>
-                            </span>
-                        @endif
+                                @if ($errors->has('cook_gas'))
+                                    <span class="help-block">
+                            <strong>{{ $errors->first('cook_gas') }}</strong>
+                        </span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
                     <div class="row">
                         <div class="col-sm-6">
@@ -639,10 +676,13 @@
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.thermostat-highest.title')}}
                                 </label>
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_high', 'needsFormat' => true])    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
-                            <input type="text" id="thermostat_high" class="form-control" value="@if(!empty(old('thermostat_high'))){{ old('thermostat_high', 20) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_high, 1) }}@else{{ \App\Helpers\NumberFormatter::format(20, 1) }}@endif" name="thermostat_high">
-                        @endcomponent
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_high', 'needsFormat' => true])
+                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
+                                    <input type="text" id="thermostat_high" class="form-control"
+                                           value="@if(!empty(old('thermostat_high'))){{ old('thermostat_high', 20) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_high, 1) }}@else{{ \App\Helpers\NumberFormatter::format(20, 1) }}@endif"
+                                           name="thermostat_high">
+                                @endcomponent
 
                                 <div id="thermostat-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.thermostat-highest.help')}}
@@ -665,10 +705,12 @@
                                                                                       aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.thermostat-lowest.title')}}
                                 </label>
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_low', 'needsFormat' => true])    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
-                            <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(!empty(old('thermostat_low'))){{ old('thermostat_low', 16) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_low, 1) }}@else{{ \App\Helpers\NumberFormatter::format(16, 1) }}@endif">
-                        @endcomponent
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_low', 'needsFormat' => true])
+                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
+                                    <input id="thermostat_low" type="text" class="form-control" name="thermostat_low"
+                                           value="@if(!empty(old('thermostat_low'))){{ old('thermostat_low', 16) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_low, 1) }}@else{{ \App\Helpers\NumberFormatter::format(16, 1) }}@endif">
+                                @endcomponent
 
                                 <div id="thermostat-low-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -693,37 +735,26 @@
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.max-hours-thermostat-highest.title')}}
                                 </label>
 
-
-                        <?php $hours =  range(1, 24)?>
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $hours, 'userInputValues' => $userEnergyHabitsForMe, 'userInputModel' => 'UserEnergyHabit', 'userInputColumn' => 'hours_high'])
-                            <span class="input-group-addon">Uren</span>
-                            <select id="hours_high" class="form-control" name="hours_high">
-                                @foreach($hours as $hour)
-                                    <option @if($hour === old('hours_high')) selected
-
-                                            @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected
-                                            @elseif(isset($energyHabit) && $energyHabit->hours_high === null)  @if($hour == 12) selected
-                                            @endif @endif value="{{ $hour }}">{{ $hour }}</option>
-
-                                            {{-- Accept sync else if beneath --}}
-{{--                                @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) --}}
-                                            {{--selected --}}
-                                            {{--@elseif(!isset($energyHabit) && $hour == 12) selected @endif value="{{ $hour }}">{{ $hour }}</option>--}}
-
-                                @endforeach
-                                <option @if($hour === old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">
-                                    @lang('woningdossier.cooperation.radiobutton.not-important')
-                                </option>
-                            </select>
-                        @endcomponent
-                        <div id="hours-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('general-data.data-about-usage.max-hours-thermostat-highest.help')}}
-                        </div>
-                        @if ($errors->has('hours_high'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('hours_high') }}</strong>
-                            </span>
+                                <?php $hours =  range(1, 24)?>
+                                @component('cooperation.tool.components.input-group',
+                                ['inputType' => 'select', 'inputValues' => $hours, 'userInputValues' => $userEnergyHabitsForMe, 'userInputModel' => 'UserEnergyHabit', 'userInputColumn' => 'hours_high'])
+                                    <span class="input-group-addon">Uren</span>
+                                    <select id="hours_high" class="form-control" name="hours_high">
+                                        @foreach($hours as $hour)
+                                            <option @if($hour === old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == $hour) selected @elseif(!isset($energyHabit) && $hour == 12) selected @endif value="{{ $hour }}">{{ $hour }}</option>
+                                        @endforeach
+                                        <option @if($hour === old('hours_high')) selected @elseif(isset($energyHabit) && $energyHabit->hours_high == 0) selected @endif value="0">
+                                            @lang('woningdossier.cooperation.radiobutton.not-important')
+                                        </option>
+                                    </select>
+                                @endcomponent
+                                <div id="hours-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{ \App\Helpers\Translation::translate('general-data.data-about-usage.max-hours-thermostat-highest.help') }}
+                                </div>
+                                @if ($errors->has('hours_high'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('hours_high') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
@@ -738,28 +769,30 @@
 
                                 <?php
 
-                            $selectedHFF = old('heating_first_floor', null);
-                            $selectedHFFColumn = 'heating_first_floor';if (is_null($selectedHFF)){
-                            	if(isset($energyHabit)){
-		                            $selectedHFFColumn = 'heating_first_floor';
+                                $selectedHFF = old('heating_first_floor', null);
+                                $selectedHFFColumn = 'heating_first_floor';if (is_null($selectedHFF)) {
+                                    if (isset($energyHabit)) {
+                                        $selectedHFFColumn = 'heating_first_floor';
 		                            $selectedHFF = $energyHabit->heating_first_floor;
+                                    }
                                 }
-                            }
-                            if (is_null($selectedHFF)){
-                            	$selectedHeating = $buildingHeatings->where('is_default', '=', true)->first();
-                                if ($selectedHeating instanceof \App\Models\BuildingHeating){$selectedHFFColumn = 'id';
-	                                $selectedHFF = $selectedHeating->id;
+                                if (is_null($selectedHFF)) {
+                                    $selectedHeating = $buildingHeatings->where('is_default', '=', true)->first();
+                                    if ($selectedHeating instanceof \App\Models\BuildingHeating) {
+                                    	$selectedHFFColumn = 'id';
+                                        $selectedHFF = $selectedHeating->id;
+                                    }
                                 }
-                            }
 
                                 ?>
 
-                        @component('cooperation.tool.components.input-group',
+                                @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $buildingHeatings, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => $selectedHFFColumn])<select id="heating_first_floor" class="form-control" name="heating_first_floor">
-                            @foreach($buildingHeatings as $buildingHeating)
-                                <option @if(!is_null($selectedHFF) && $buildingHeating->id == $selectedHFF) selected="selected" @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
-                            @endforeach
-                        </select>@endcomponent
+                                    @foreach($buildingHeatings as $buildingHeating)
+                                        <option @if(!is_null($selectedHFF) && $buildingHeating->id == $selectedHFF) selected="selected"
+                                                @endif value="{{ $buildingHeating->id}}">{{ $buildingHeating->name }}</option>
+                                    @endforeach
+                                </select>@endcomponent
 
                                 <div id="heating-first-floor-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -787,28 +820,29 @@
 
                                 <?php
 
-	                    $selectedHSF = old('heating_second_floor', null);
-	$selectedHSFColumn = 'heating_second_floor';                    if (is_null($selectedHSF)){
-		                    if(isset($energyHabit)){
-			                    $selectedHSFColumn = 'heating_second_floor';
+                                $selectedHSF = old('heating_second_floor', null);
+            $selectedHSFColumn = 'heating_second_floor';                    if (is_null($selectedHSF)) {
+                                    if (isset($energyHabit)) {
+                                        $selectedHSFColumn = 'heating_second_floor';
 			                    $selectedHSF = $energyHabit->heating_second_floor;
-		                    }
-	                    }
-	                    if (is_null($selectedHSF)){
-		                    $selectedHeating = $buildingHeatings->where('is_default', '=', true)->first();
-		                    if ($selectedHeating instanceof \App\Models\BuildingHeating){$selectedHSFColumn = 'id';
-			                    $selectedHSF = $selectedHeating->id;
-		                    }
-	                    }
+                                    }
+                                }
+                                if (is_null($selectedHSF)) {
+                                    $selectedHeating = $buildingHeatings->where('is_default', '=', true)->first();
+                                    if ($selectedHeating instanceof \App\Models\BuildingHeating) {$selectedHSFColumn = 'id';
+                                        $selectedHSF = $selectedHeating->id;
+                                    }
+                                }
 
                                 ?>
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $buildingHeatings, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => $selectedHSFColumn])<select id="heating_second_floor" class="form-control" name="heating_second_floor" >
-                            @foreach($buildingHeatings as $buildingHeating)
-                                <option @if(!is_null($selectedHSF) && $buildingHeating->id == $selectedHSF) selected="selected" @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
-                            @endforeach
-                        </select>@endcomponent
+                                @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $buildingHeatings, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => $selectedHSFColumn])<select id="heating_second_floor" class="form-control" name="heating_second_floor">
+                                    @foreach($buildingHeatings as $buildingHeating)
+                                        <option @if(!is_null($selectedHSF) && $buildingHeating->id == $selectedHSF) selected="selected"
+                                                @endif value="{{ $buildingHeating->id }}">{{ $buildingHeating->name }}</option>
+                                    @endforeach
+                                </select>@endcomponent
 
                                 <div id="heating-second-floor-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -859,11 +893,13 @@
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.electricity-consumption-past-year.title')}} <span>*</span></label>
 
-                        @component('cooperation.tool.components.input-group',
+                                @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
-                            <input id="amount_electricity" requiredtype="text" value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif" class="form-control" name="amount_electricity"required>
-                        @endcomponent
+                                    <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
+                                    <input id="amount_electricity" required type="text"
+                                           value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif"
+                                           class="form-control" name="amount_electricity" required>
+                                @endcomponent
 
                                 <div id="amount-electricity-info"
                                      class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -887,13 +923,17 @@
                                     <span>*</span></label>
 
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_gas'])    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.cubic-meters.title')}}</span>
-                            <input id="amount_gas" type="text" value="@if(old('amount_gas') != ""){{ old('amount_gas') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_gas }}@endif" class="form-control" name="amount_gas" required>
-                        @endcomponent
+                        ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_gas'])
+                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.cubic-meters.title')}}</span>
+                                    <input id="amount_gas" type="text"
+                                           value="@if(old('amount_gas') != ""){{ old('amount_gas') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_gas }}@endif"
+                                           class="form-control" name="amount_gas" required>
+                                @endcomponent
 
-                        <div id="amount-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('general-data.data-about-usage.gas-usage-past-year.help')}}
-                        </div>
+                                <div id="amount-gas-info"
+                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    {{\App\Helpers\Translation::translate('general-data.data-about-usage.gas-usage-past-year.help')}}
+                                </div>
 
 
                                 @if ($errors->has('amount_gas'))
@@ -930,18 +970,47 @@
                         @endif
                     </div>
                 </div>
-                @if($coachEnergyHabitRemarks instanceof \App\Models\UserEnergyHabit && !empty($coachEnergyHabitRemarks->living_situation_extra))
-                <div class="col-sm-12">
-                        @component('cooperation.tool.components.alert')
-                            {{ $coachEnergyHabitRemarks->living_situation_extra }}
-                        @endcomponent
-                </div>
-                @endif
             </div>
+                @if(\App\Models\BuildingService::hasCoachInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('resident'))
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group add-space">
+                                <?php
+                                $coachInputSource = \App\Models\BuildingService::getCoachInput($userEnergyHabitsForMe);
+                                $comment = $coachInputSource->living_situation_extra;
+                                ?>
+                                <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('general-data.data-about-usage.additional-info.title')}} ({{$coachInputSource->getInputSourceName()}})
+                                </label>
+
+                                <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                @elseif(\App\Models\BuildingService::hasResidentInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('coach'))
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group add-space">
+                                <?php
+                                $residentInputSource = \App\Models\BuildingService::getResidentInput($userEnergyHabitsForMe);
+                                $comment = $residentInputSource->living_situation_extra;
+                                ?>
+                                <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('general-data.data-about-usage.additional-info.title')}} ({{$residentInputSource->getInputSourceName()}})
+                                </label>
+
+                                <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                     <div class="row">
                         <div class="col-sm-12">
-                            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('general-data.motivation.title.title')}} </h4>
+                            @include('cooperation.layouts.section-title', [
+                                'translationKey' => 'general-data.motivation.title',
+                                'infoAlertId' => 'motivation-info'
+                            ])
                         </div>
 
                         {{-- Start at 1 so the translation will too. --}}
@@ -976,10 +1045,11 @@
                                         @endif
 
 
-                            </select>
-                            <div id="motivation-{{ $i }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('general-data.motivation.priority.help')}}
-                            </div>
+                                    </select>
+                                    <div id="motivation-{{ $i }}-info"
+                                         class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                        {{\App\Helpers\Translation::translate('general-data.motivation.priority.help')}}
+                                    </div>
 
                                     @if ($errors->has('motivation.'.$i))
                                         <span class="help-block">
@@ -1017,38 +1087,42 @@
                             </div>
                         </div>
                     </div>
+                    @if(\App\Models\BuildingService::hasCoachInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('resident'))
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group add-space">
+                                    <?php
+                                    $coachInputSource = \App\Models\BuildingService::getCoachInput($userEnergyHabitsForMe);
+                                    $comment = $coachInputSource->motivation_extra;
+                                    ?>
+                                    <label for="" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                        {{\App\Helpers\Translation::translate('general-data.motivation-extra.title')}} ({{$coachInputSource->getInputSourceName()}})
+                                    </label>
 
+                                    <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif(\App\Models\BuildingService::hasResidentInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('coach'))
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group add-space">
+                                    <?php
+                                    $residentInputSource = \App\Models\BuildingService::getResidentInput($userEnergyHabitsForMe);
+                                    $comment = $residentInputSource->motivation_extra;
+                                    ?>
+                                    <label for="" class=" control-label"><i data-toggle="collapse" data-target="#motivation-extra-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                        {{\App\Helpers\Translation::translate('general-data.motivation-extra.title')}} ({{$residentInputSource->getInputSourceName()}})
+                                    </label>
+
+                                    <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
-        @if(\App\Models\BuildingService::hasCoachInputSource($userEnergyHabitsForMe) && Auth::user()->hasRole('resident'))
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput($userEnergyHabitsForMe);
-                            $comment = $coachInputSource->living_situation_extra;
-                        ?>
-                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
-                        </label>
 
-                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                    </div>
-                </div>
-            </div>
-        @endif<div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">{{\App\Helpers\Translation::translate('general.download.title')}}</div>
-                    <div class="panel-body">
-                        <ol>
-                            <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Algemene_gegevens.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
 
                 <div class="row">
                     <div class="col-md-12">
@@ -1072,13 +1146,85 @@
         $(document).ready(function () {
 
             $(window).keydown(function (event) {
-                if (event.keyCode == 13) {
+                if (event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
             });
 
-            // Check if the house ventialtion is mechanic
+            // todo
+
+            $('#building_type_id').change( function() {
+                var buildingTypeId = $('#building_type_id').val();
+                $.ajax({
+                    type: "GET",
+                    url: '{{route('cooperation.tool.general-data.example-building-type', ['cooperation' => $cooperation])}}',
+                    data: {
+                        building_type_id: buildingTypeId
+                    },
+                    success: function (data) {
+                        // try to remove the old options wheter there is new information or not
+                        $('#example_building_id option').remove();
+                        // add a new empty option
+                        $('#example_building_id').append($("<option></option>").attr('selected', true).text("---"));
+                        if (data.length) {
+                            // remove the old options so we don't get any duplicates or false options
+                            $.each(data, function(index, exampleBuilding) {
+                                var exampleBuildingName = exampleBuilding.real_name;
+                                var exampleBuildingId = exampleBuilding.id;
+                                $('#example_building_id').append($("<option></option>").attr("value", exampleBuildingId).text(exampleBuildingName));
+                            });
+                        } else {
+                        }
+                    }
+                });
+            });
+            // if the user changes the build year trigger the example building cause different years have different content
+            $('#build_year').change(function () {
+                $('#example_building_id option').trigger('change');
+            });
+
+            var previous_eb = $("select#example_building_id").val();
+
+            $("select#example_building_id").on('focus', function () {
+                // Store the current value on focus and on change
+                previous_eb = this.value;
+            }).change(function() {
+                // Do something with the previous value after the change
+                var buildYear = $("input[name='build_year']").val();
+                if (buildYear === ""){
+                    @if(App::environment('local'))
+                    console.log("Can't select example building: build year is empty");
+                    @endif
+                    $(this).val(previous_eb);
+                }
+                else {
+                    if (this.value !== previous_eb ){
+                        if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                            @if(App::environment('local'))
+                            console.log("Let's save it. EB id: " + this.value + " build year: " + buildYear);
+                            @endif
+
+                            $.ajax({
+                                type: "POST",
+                                url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                                data: { example_building_id: this.value, build_year: buildYear },
+                                success: function(data){
+                                    location.reload();
+                                }
+                            });
+
+
+                            // Make sure the previous value is updated
+                            previous_eb = this.value;
+                        } else {
+                            $(this).val(previous_eb);
+                        }
+                    }
+                }
+            });
+
+            // Check if the house ventilation is mechanic
             $(document).change('#house-ventilation', function () {
 
                 // Housse ventilation
@@ -1086,17 +1232,17 @@
 
                 // text wont change, id's will
                 if (houseVentilation === "Mechanisch" || houseVentilation === "Decentraal mechanisch") {
-                    $('#house-ventilation').parent().parent().next().next().show();
+                    $('#house-ventilation').parent().parent().parent().next().next().show();
                 } else {
-                    $('#house-ventilation').parent().parent().next().next().hide();
-                    $('#house-ventilation').parent().parent().next().next().find('input').val("");
+                    $('#house-ventilation').parent().parent().parent().next().next().hide();
+                    $('#house-ventilation').parent().parent().parent().next().next().find('input').val("");
                 }
             });
 
             // check if a user is interested in a sun panel
             $(document).change('#total-sun-panels', function () {
                 var input = $("#total-sun-panels");
-                var totalSunPanels = input.val();
+                var totalSunPanels = parseInt(input.val());
                 var extraField =  input.parent().parent().parent().next().next();
 
                 if (totalSunPanels > 0) {
@@ -1109,16 +1255,18 @@
             });
 
             $(document).change('#hr-boiler', function () {
-                if ($('#hr-boiler').val() == 13) {
+                if (parseInt($('#hr-boiler').val()) === 13) {
                     // hide the input for the type of boiler
-                    $('#boiler').parent().hide();
+                    //$('#boiler').parent().hide();
                     // Hide the interest input
-                    $('#boiler').parent().parent().next().hide();
+                    //$('#boiler').parent().parent().next().hide();
+                    $('#boiler').parent().parent().parent().hide();
 
                 } else {
-                    $('#boiler').parent().show();
+                    //$('#boiler').parent().show();
                     // Hide the interest input
-                    $('#boiler').parent().parent().next().show();
+                    //$('#boiler').parent().parent().next().show();
+                    $('#boiler').parent().parent().parent().show();
                 }
             });
 

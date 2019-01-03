@@ -17,6 +17,7 @@ use App\Models\ComfortLevelTapWater;
 use App\Models\Cooperation;
 use App\Models\HeaterComponentCost;
 use App\Models\HeaterSpecification;
+use App\Models\Interest;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
@@ -26,6 +27,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +60,7 @@ class HeaterController extends Controller
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
         /** @var UserEnergyHabit|null $habits */
         $habits = $user->energyHabit;
+        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $currentComfort = null;
         if ($habits instanceof UserEnergyHabit) {
             $currentComfort = $habits->comfortLevelTapWater;
@@ -66,7 +69,7 @@ class HeaterController extends Controller
         $currentHeatersForMe = $building->heater()->forMe()->get();
 
         return view('cooperation.tool.heater.index', compact(
-            'comfortLevels', 'collectorOrientations', 'typeIds',
+            'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
             'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
         ));
     }
@@ -82,6 +85,7 @@ class HeaterController extends Controller
                 'size_boiler' => 0,
                 'size_collector' => 0,
             ],
+            'year' => null,
             'production_heat' => 0,
             'percentage_consumption' => 0,
             'savings_gas' => 0,
@@ -93,6 +97,7 @@ class HeaterController extends Controller
 
         $comfortLevelId = $request->input('user_energy_habits.water_comfort_id', 0);
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
+        $interests = $request->input('interest', '');
 
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
@@ -146,6 +151,19 @@ class HeaterController extends Controller
 
                 $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
+                foreach ($interests as $type => $interestTypes) {
+                    foreach ($interestTypes as $typeId => $interestId) {
+                        $interest = Interest::find($interestId);
+                    }
+                }
+
+                $currentYear = Carbon::now()->year;
+                if ($interest->calculate_value == 1) {
+                    $result['year'] = $currentYear;
+                } elseif ($interest->calculate_value == 2) {
+                    $result['year'] = $currentYear + 5;
+                }
+
                 if ($helpFactor >= 0.84) {
                     $result['performance'] = [
                         'alert' => 'success',
@@ -191,6 +209,7 @@ class HeaterController extends Controller
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
+        $comment = $request->get('comment');
 
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -200,6 +219,7 @@ class HeaterController extends Controller
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
                 'angle' => $angle,
+                'comment' => $comment
             ]
         );
 
@@ -227,7 +247,7 @@ class HeaterController extends Controller
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();

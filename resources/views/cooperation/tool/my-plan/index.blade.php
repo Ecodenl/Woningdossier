@@ -8,10 +8,24 @@
 
     <div class="row">
         <div class="col-md-12">
-            {{--<h1>@lang('woningdossier.cooperation.tool.my-plan.title')</h1>--}}
             <p>@lang('woningdossier.cooperation.tool.my-plan.description')</p>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#messagesModal">@lang('woningdossier.cooperation.tool.my-plan.coach-comments.title')</button>
         </div>
     </div>
+
+
+
+    @component('cooperation.tool.components.modal', ['id' => 'messagesModal'])
+        @slot('title')
+            @lang('woningdossier.cooperation.tool.my-plan.coach-comments.title')
+        @endslot
+
+        @foreach($coachComments as $stepName => $coachComment)
+            <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
+            <p>{{$coachComment}}</p>
+            <hr>
+        @endforeach
+    @endcomponent
 
     <form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
         {{ csrf_field() }}
@@ -107,19 +121,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">@lang('default.buttons.download')</div>
-                <div class="panel-body">
-                    <ol>
-                        <li><a download="" href="{{ asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf') }}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Invul_hulp_Actieplan.pdf')))))}}</a></li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <hr>
 
     <div class="row">
@@ -153,21 +154,20 @@
 <script>
 
     $(document).ready(function() {
-            const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
-            const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
+        const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
+        const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
 
-            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
-            const REPLACE_TILES = "replace-tiles";
+        const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
+        const REPLACE_TILES = "replace-tiles";
 
-            $(window).keydown(function(event){
-                if(event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
-
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
@@ -257,14 +257,15 @@
             $('a[data-target*=more]').on('click', function () {
                 $(this).toggleClass('clicked');
 
-            if ($(this).hasClass('clicked')) {
-                $(this).find('i').css("transform", "rotate(-180deg)");
-                $(this).find('i').css("transition", "1s");
-            } else {
-                $(this).find('i').css("transform", "rotate(0deg)");
-                $(this).find('i').css("transition", "1s");
-            }
+                if ($(this).hasClass('clicked')) {
+                    $(this).find('i').css("transform", "rotate(-180deg)");
+                    $(this).find('i').css("transition", "1s");
+                } else {
+                    $(this).find('i').css("transform", "rotate(0deg)");
+                    $(this).find('i').css("transition", "1s");
+                }
             });
+
             $(".interested-checker").click(function(){
                 // get the planned year input
                 var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
@@ -274,9 +275,9 @@
                 if (getPlanned(measureApplicationShort)) {
                     advicedYear = getPlannedYear(measureApplicationShort);
                     plannedYearInput.val(advicedYear)
-            } else {
-                plannedYearInput.val("");
-            }
+                } else {
+                    plannedYearInput.val("");
+                }
         });
 
             function checkCoupledMeasuresAndMaintenance() {

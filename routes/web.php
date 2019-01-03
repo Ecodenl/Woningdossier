@@ -64,10 +64,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 			Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
 
 			    Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
+			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
 
 			    Route::post('', 'ConversationRequestController@store')->name('store');
 			    Route::post('/edit', 'ConversationRequestController@update')->name('update');
-			    Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
 
 //			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
 //			        Route::resource('', 'CoachController');
@@ -86,14 +86,17 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
 			// the tool
+            Route::group(['prefix' => 'import', 'as' => 'import.'], function () {
+                Route::post('', 'ImportController@copy')->name('copy');
+            });
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
             	Route::get('/', 'ToolController@index')->name('index');
 
-
-            	Route::post('copy-coach-input', 'CoachInputController@copy')->name('coach-input.copy');
-//            	Route::get('remove-coach-input', 'CoachInputController@remove')->name('coach-input.remove');
-
                 Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                // todo
+	            Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
+	            // todo end
+                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
 
 				Route::group(['middleware' => 'filled-step:general-data'], function(){
 
@@ -158,6 +161,12 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 						//Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
 					});
 
+					Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {
+					    Route::get('', 'BuildingAccessController@index')->name('index');
+					    Route::get('{buildingId}', 'BuildingAccessController@edit')->name('edit');
+					    Route::delete('destroy', 'BuildingAccessController@destroy')->name('destroy');
+                    });
+
 					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
@@ -196,7 +205,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 					Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
-				Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin']], function () {
+				Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
 
                     Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
                         Route::get('','AssignRoleController@index')->name('index');

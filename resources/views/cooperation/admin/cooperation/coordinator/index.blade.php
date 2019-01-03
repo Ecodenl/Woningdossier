@@ -43,6 +43,8 @@
 
 @push('css')
     <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/datatables.min.css')}}">
+@endpush
+
 @push('js')
     <script>
         $(document).ready(function () {

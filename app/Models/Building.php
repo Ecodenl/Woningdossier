@@ -62,7 +62,7 @@ class Building extends Model
     ];
 
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension'
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension',
     ];
 
     public static function boot() {
@@ -316,4 +316,20 @@ class Building extends Model
     {
         return $this->hasMany(BuildingRoofType::class);
     }
+
+    /**
+     * Get all the statuses for a building
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingCoachStatuses()
+    {
+        return $this->hasMany(BuildingCoachStatus::class);
+    }
+
+    public function buildingPermissions()
+    {
+        return $this->hasMany(BuildingPermission::class);
+    }
+
 }

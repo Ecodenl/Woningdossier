@@ -105,6 +105,7 @@ class LoginController extends Controller
 		    // if the user only has one role we can set the session with his role id on the login
 		    if ($user->roles->count() == 1) {
 		        $building = $user->buildings()->first();
+
 		        // we cant query on the Spatie\Role model so we first get the result on the "original model"
                 $role = Role::findByName($user->roles->first()->name);
                 // get the input source
@@ -148,6 +149,7 @@ class LoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
+        //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
+	    return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
     }*/
 }

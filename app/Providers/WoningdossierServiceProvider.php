@@ -107,10 +107,6 @@ class WoningdossierServiceProvider extends ServiceProvider
 		    $view->with('currentStep', $step);
 	    });
 
-        \View::composer('*', function ($view) {
-            $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
-        });
-
         \View::creator('*', CooperationComposer::class);
 
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);

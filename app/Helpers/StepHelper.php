@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Cooperation;
+use App\Models\Questionnaire;
 use App\Models\Step;
 use Illuminate\Support\Facades\Redirect;
 
@@ -84,9 +85,10 @@ class StepHelper
     /**
      * Get the next step for a user where the user shows interest in.
      *
-     * @return string
+     * @param Step $current
+     * @return array
      */
-    public static function getNextStep(Step $current): string
+    public static function getNextStep(Step $current): array
     {
         // get all the steps
         $steps = Step::orderBy('order')->get();
@@ -95,15 +97,43 @@ class StepHelper
 
         $currentFound = false;
 
+
+        // before we check for other pets we want to check if the current step has additional questionnaires
+        // if it does and the user did not finish those we redirect to that tab
+        if ($current->hasQuestionnaires()) {
+
+            // get the questionnaires for the current step  & the user his completed questionnaires
+            $questionnairesForCurrentStep = $current->questionnaires;
+            $userCompletedQuestionnaires = \Auth::user()->completedQuestionnaires;
+
+
+            // now get the non completed questionnaires for this step & user
+            $nonCompletedQuestionnairesForCurrentStep = $questionnairesForCurrentStep->filter(function ($questionnaire) use ($userCompletedQuestionnaires) {
+                return !$userCompletedQuestionnaires->find($questionnaire) instanceof Questionnaire;
+            });
+
+            // we should not take the first one i guess, should be on order based, but there is no order in the questionnaire table
+            $nextQuestionnaire = $nonCompletedQuestionnairesForCurrentStep->first();
+
+
+            // and return it with the tab id
+            if ($nextQuestionnaire instanceof Questionnaire) {
+                return ['route' => 'cooperation.tool.' . $current->slug . '.index', 'tab_id' => 'questionnaire-' . $nextQuestionnaire->id];
+            }
+        }
+
+        // the step does not have custom questionnaires or the user does not have uncompleted questionnaires left for that step.
+        // so we will redirect them to a next step.
+
         // remove the completed steps from the steps
         foreach ($steps as $step) {
-            if ($step != $current && ! $currentFound) {
+            if ($step->id != $current->id && ! $currentFound) {
                 $completedStep = $steps->search(function ($item) use ($step) {
                     return $item->id == $step->id;
                 });
 
                 $completedSteps->push($steps->pull($completedStep));
-            } elseif ($step == $current) {
+            } elseif ($step->id == $current->id) {
                 $currentFound = true;
 
                 $completedStep = $steps->search(function ($item) use ($step) {
@@ -112,19 +142,8 @@ class StepHelper
 
                 $completedSteps->push($steps->pull($completedStep));
             }
-
-            /*
-            if (\Auth::user()->hasCompleted($step)) {
-                // get the completed step
-                // $completedStep is the index of the collection item, so we can pull it from the steps itself
-                $completedStep = $steps->search(function ($item) use ($step) {
-                    return $item->id == $step->id;
-                });
-
-                $completedSteps->push($steps->pull($completedStep));
-            }
-            */
         }
+
 
         // since we pulled the completed steps of the collection
         $nonCompletedSteps = $steps;
@@ -134,11 +153,11 @@ class StepHelper
             if (self::hasInterestInStep($nonCompletedStep)) {
                 $routeName = 'cooperation.tool.'.$nonCompletedStep->slug.'.index';
 
-                return $routeName;
+                return ['route' => $routeName, 'tab_id' => ''];
             }
         }
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan
-        return 'cooperation.tool.my-plan.index';
+        return ['route' => 'cooperation.tool.my-plan.index', 'tab_id' => ''];
     }
 }

@@ -98,7 +98,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 	            // todo end
                 Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
 
-				Route::group(['middleware' => 'filled-step:general-data'], function(){
+				Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
+                    Route::post('', 'QuestionnaireController@store')->name('store');
+                });
+
+                Route::group(['middleware' => 'filled-step:general-data'], function(){
 
 					// Extra pages with downloadable or information content.
 					Route::group(['namespace' => 'Information'], function () {
@@ -154,11 +158,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 				Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
 
-					Route::group(['prefix' => 'coaches', 'as' => 'coach.'], function () {
-						Route::get('', 'CoachController@index')->name('index');
-						Route::get('create', 'CoachController@create')->name('create');
-						Route::post('create', 'CoachController@store')->name('store');
-						//Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
+					Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                        Route::get('', 'ReportController@index')->name('index');
+                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                        Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('download.questionnaire-results');
+
+                    });
+
+                    Route::group(['prefix' => 'coaches', 'as' => 'coach.'], function () {
+                        Route::get('', 'CoachController@index')->name('index');
+                        Route::get('create', 'CoachController@create')->name('create');
+                        Route::post('create', 'CoachController@store')->name('store');
+                        //Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
 					});
 
 					Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {
@@ -178,6 +190,18 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('','AssignRoleController@index')->name('index');
                         Route::get('edit/{userId}','AssignRoleController@edit')->name('edit');
                         Route::post('edit/{userId}','AssignRoleController@update')->name('update');
+                    });
+
+                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
+                        Route::get('', 'QuestionnaireController@index')->name('index');
+                        Route::post('', 'QuestionnaireController@update')->name('update');
+                        Route::get('create', 'QuestionnaireController@create')->name('create');
+                        Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
+                        Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
+
+                        Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
+                        Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
+                        Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
                     });
 
                     Route::group(['prefix' => 'conversation-requests', 'as' => 'conversation-requests.'], function () {

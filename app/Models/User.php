@@ -334,4 +334,19 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function completedQuestionnaires()
+    {
+        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
+	}
+
+    /**
+     * Complete a questionnaire for a user
+     *
+     * @param Questionnaire $questionnaire
+     */
+    public function completeQuestionnaire(Questionnaire $questionnaire)
+    {
+        $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
+	}
 }

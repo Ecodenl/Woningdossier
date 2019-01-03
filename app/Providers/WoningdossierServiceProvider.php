@@ -96,6 +96,13 @@ class WoningdossierServiceProvider extends ServiceProvider
             $view->with('currentStep', $step);
         });
 
+        \View::composer('cooperation.tool.*', function ($view) {
+            $slug = str_replace(['tool', '/'], '', request()->getRequestUri());
+            $step = Step::where('slug', $slug)->first();
+
+            $view->with('currentStep', $step);
+        });
+
         \View::creator('*', CooperationComposer::class);
 
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);

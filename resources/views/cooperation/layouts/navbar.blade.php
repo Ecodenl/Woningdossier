@@ -28,35 +28,38 @@
         @if(App::environment() == 'local') {{-- currently only for local --}}
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
+                @if(count(config('woningdossier.supported_locales')) > 1)
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                         @lang('woningdossier.navbar.language')<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        @foreach(config('woningdossier.supported_locales') as $locale)
-                            @if(app()->getLocale() != $locale)
-                                <li>
-                                    <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
-                                </li>
+
+                            @foreach(config('woningdossier.supported_locales') as $locale)
+                                @if(app()->getLocale() != $locale)
+                                    <li>
+                                        <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
+                                    </li>
+                                @endif
+                            @endforeach
+                    </ul>
+                </li>
+                @endif
+                @auth
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                        @lang('woningdossier.navbar.input_source')<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach($inputSources as $inputSource)
+                            @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
+                            <li>
+                                <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
+                            </li>
                             @endif
                         @endforeach
                     </ul>
                 </li>
-                @auth
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                            @lang('woningdossier.navbar.input_source')<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            @foreach($inputSources as $inputSource)
-                                @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
-                                    <li>
-                                        <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    </li>
                 @endauth
             </ul>
         @endif

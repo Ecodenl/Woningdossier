@@ -48,7 +48,7 @@ class GeneralDataController extends Controller
 
     public function __construct(Request $request)
     {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $slug = str_replace(['tool' , '/'], '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
     }
 
@@ -364,6 +364,13 @@ class GeneralDataController extends Controller
         \Auth::user()->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

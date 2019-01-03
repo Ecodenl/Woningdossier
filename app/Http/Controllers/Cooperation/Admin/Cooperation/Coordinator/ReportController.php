@@ -2,17 +2,104 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
-use App\Http\Controllers\Controller;
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\MeasureApplication;
+use App\Models\Question;
+use App\Models\Questionnaire;
+use App\Models\QuestionOption;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
+use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        return view('cooperation.admin.cooperation.cooperation-admin.reports.index');
+        return view('cooperation.admin.cooperation.coordinator.reports.index');
+    }
+
+    /**
+     * Download the reports of the questionnaires
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function downloadQuestionnaireResults()
+    {
+
+        $questionnaires = Questionnaire::all();
+        $rows = [];
+
+        // we only want to query on the buildings that belong to the cooperation of the current user
+        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+
+        // get the users from the current cooperation that have the resident role
+        $usersFromCooperation = $currentCooperation->users()->role('resident')->with('buildings')->get();
+
+        foreach ($questionnaires as $questionnaire) {
+
+            foreach ($usersFromCooperation as $user) {
+                $building = $user->buildings()->first();
+
+                $questionAnswersForCurrentQuestionnaire = \DB::table('questionnaires')
+                    ->where('questionnaires.id', $questionnaire->id)
+                    ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
+                    ->leftJoin('translations', function ($leftJoin) {
+                        $leftJoin->on('questions.name', '=', 'translations.key')
+                            ->where('language', '=', app()->getLocale());
+                    })
+                    ->leftJoin('questions_answers', function ($leftJoin) use ($building) {
+                        $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
+                            ->where('questions_answers.building_id', '=', $building->id);
+                    })
+                    ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name')
+                    ->get();
+
+
+                foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
+
+                    $answer = $questionAnswerForCurrentQuestionnaire->answer;
+                    $currentQuestion = Question::find($questionAnswerForCurrentQuestionnaire->question_id);
+
+                    // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
+                    if ($currentQuestion->hasQuestionOptions()) {
+                        $questionOptionAnswer = [];
+
+                        // explode on array since some questions are multi select
+                        $explodedAnswers = explode('|', $answer);
+
+                        foreach ($explodedAnswers as $explodedAnswer) {
+
+                            // check if the current question has options
+                            // the question can contain a int but can be a answer to a question like "How old are you"
+                            if ($currentQuestion->hasQuestionOptions()) {
+                                $questionOption = QuestionOption::find($explodedAnswer);
+                                array_push($questionOptionAnswer, $questionOption->name);
+                            }
+                        }
+
+                        // the questionOptionAnswer can be empty if the the if statements did not pass
+                        // so we check that before assigning it.
+                        if (!empty($questionOptionAnswer)) {
+                            // implode it
+                            $answer = implode($questionOptionAnswer, '|');
+                        }
+
+                    }
+                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
+                }
+            }
+        }
+
+
+        $headers = [];
+        if (!empty($rows)) {
+            $headers = array_keys(array_first($rows));
+        }
+
+        // and export the great results !
+        return CsvExportService::export($headers, $rows, 'questionnaire-results');
     }
 
     public function downloadByYear()
@@ -57,33 +144,32 @@ class ReportController extends Controller
                 $postalCode = $building->postal_code;
                 $countryCode = $building->country_code;
 
+            $firstName = $user->first_name;
+            $lastName = $user->last_name;
+            $email = $user->email;
+            $phoneNumber = $user->phone_number;
+            $mobileNumber = $user->mobile;
 
-                $firstName = $user->first_name;
-                $lastName = $user->last_name;
-                $email = $user->email;
-                $phoneNumber = $user->phone_number;
-                $mobileNumber = $user->mobile;
+            // set the personal userinfo
+            $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
 
-                // set the personal userinfo
-                $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
+            // set all the years in range
+            for ($startYear = $thisYear; $startYear <= ($thisYear + 100); ++$startYear) {
+                $row[$key][$startYear] = '';
+            }
 
-                // set all the years in range
-                for ($startYear = $thisYear; $startYear <= ($thisYear + 100); ++$startYear) {
-                    $row[$key][$startYear] = '';
+            // get the user measures / advices
+            foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
+                $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+                $measureName = $actionPlanAdvice->measureApplication->measure_name;
+
+                if (is_null($plannedYear)) {
+                    $plannedYear = $actionPlanAdvice->getAdviceYear();
                 }
 
-                // get the user measures / advices
-                foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
-                    $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
-                    $measureName = $actionPlanAdvice->measureApplication->measure_name;
-
-                    if (is_null($plannedYear)) {
-                        $plannedYear = $actionPlanAdvice->getAdviceYear();
-                    }
-
-                    // create a new array with the measures for the user connected to the planned year
-                    $allUserMeasures[$plannedYear][] = $measureName;
-                }
+                // create a new array with the measures for the user connected to the planned year
+                $allUserMeasures[$plannedYear][] = $measureName;
+            }
 
                 // loop through the user measures and add them to the row
                 foreach ($allUserMeasures as $year => $userMeasures) {

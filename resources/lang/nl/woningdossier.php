@@ -16,9 +16,29 @@ return [
 				'reports'           => 'Rapportages',
 				'example-buildings' => 'Example buildings'
 			],
-			'choose-roles' => [
-				'header' => 'Als welke rol wilt u doorgaan ?',
-				'text'   => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
+
+	        'custom-fields' => [
+	            'index' => [
+	                'rules' => [
+	                    'numeric' => 'Getal',
+                        'string' => 'Tekst',
+                    ],
+                    'optional-rules' => [
+                        'numeric' => [
+                            'between' => 'Tussen',
+                            'min' => 'Minimale grootte'
+                        ],
+                        'string' => [
+                            'email' => 'E-mailadres',
+                            'max' => 'Maximaal aantal letters'
+                        ],
+                    ],
+                ],
+            ],
+
+            'choose-roles' => [
+                'header' => 'Als welke rol wilt u doorgaan ?',
+                'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen'
 			],
             'coach'        => [
 				'side-nav' => [
@@ -266,81 +286,100 @@ return [
 						'success' => 'Rollen zijn bijgewerkt'
 					],
 				],
-			],
-			'coordinator' => [
-				'side-nav'              => [
-					'reports'      => 'Rapporten',
-					'label'            => 'Coördinator menu',
-                    'buildings' => 'Gebouwen',
-					'messages'         => 'Berichten menu',
-					'home'             => 'Home',
-					'assign-roles'     => 'Rollen toewijzen',
-					'coach'        => 'Coaches',
-					'add-user'         => 'Voeg Coach / Bewoner toe',
-					'my-messages'      => 'Uw berichten',
-					'connect-to-coach' => 'Openstaande aanvragen',
-				],
-                'building-access' => [
-                    'index' => [
-                        'header' => 'Bewoners die de woning hebben vrijgegeven',
-                        'no-appointment' => 'Nog geen afspraak',
-                        'table' => [
-                            'columns'        => [
-                                'street'      => 'Straatnaam',
-                                'city'        => 'Stad',
-                                'owner'       => 'Eigenaar',
-                                'actions'     => 'Acties',
-                                'status'      => 'Status',
-                                'appointment' => 'Datum van afspraak'
-                            ],
-                            'status'         => 'Kies status',
-                            'current-status' => 'Huidige status:',
-                            'options'        => [
-                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
-                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
-                                \App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
-                                \App\Models\BuildingCoachStatus::STATUS_ACTIVE           => 'Actief',
-                                \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',
-                            ],
-                        ],
+
+                'reports' => [
+                    'title' => 'Rapportages',
+                    'description' => 'Rapportage downloads',
+
+                    'download' => [
+                        'by-year' => 'Actieplan per jaar',
+                        'by-measure' => 'Actieplan per maatregel',
                     ],
-                    'edit' => [
-                        'header' => 'Gebruikers die toegang hebben tot gebouw :street :postal_code',
-                        'table' => [
-                            'columns'        => [
-                                'actions' => 'Acties',
-                                'name' => 'Naam',
-                                'email' => 'Email'
-                            ],
-                        ],
+                    'csv-columns' => [
+                        'first-name' => 'Voornaam',
+                        'last-name' => 'Achternaam',
+                        'email' => 'Email',
+                        'phonenumber' => 'Telefoonnummer',
+                        'mobilenumber' => 'Mobiel nummer',
+                        'street' => 'Straat',
+                        'house-number' => 'Huis nummer',
+                        'city' => 'Woonplaats',
+                        'zip-code' => 'Postcode',
+                        'country-code' => 'Landcode',
                     ],
-                    'destroy' => [
-                        'success' => 'Toegang is ontzegd',
-                    ]
                 ],
 
-				'reports'  => [
-					'title'       => 'Rapportages',
-					'description' => 'Rapportage downloads',
+                ],
 
-					'download'    => [
-						'by-year'    => 'Actieplan per jaar',
-						'by-measure' => 'Actieplan per maatregel',
-					],
-					'csv-columns' => [
-						'first-name'   => 'Voornaam',
-						'last-name'    => 'Achternaam',
-						'email'        => 'Email',
-						'phonenumber'  => 'Telefoonnummer',
-						'mobilenumber' => 'Mobiel nummer',
-						'street'       => 'Straat',
-						'house-number' => 'Huis nummer',
-						'city'         => 'Woonplaats',
-						'zip-code'     => 'Postcode',
-						'country-code' => 'Landcode',
-					],
-				],
-				'messages'              => [
+                'coordinator' => [
+                    'side-nav' => [
+                        'reports' => 'Rapporten',
+                        'label' => 'Coördinator menu',
+                        'home' => 'Home',
+                        'assign-roles' => 'Rollen toewijzen',
+                        'coach' => 'Coaches',
+                        'add-user' => 'Voeg Coach / Bewoner toe'
+                    ],
+                    'building-access' => [
+	                    'index' => [
+		                    'header' => 'Bewoners die de woning hebben vrijgegeven',
+		                    'no-appointment' => 'Nog geen afspraak',
+		                    'table' => [
+			                    'columns'        => [
+				                    'street'      => 'Straatnaam',
+				                    'city'        => 'Stad',
+				                    'owner'       => 'Eigenaar',
+				                    'actions'     => 'Acties',
+				                    'status'      => 'Status',
+				                    'appointment' => 'Datum van afspraak'
+			                    ],
+			                    'status'         => 'Kies status',
+			                    'current-status' => 'Huidige status:',
+			                    'options'        => [
+				                    \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT      => 'Afspraak is gemaakt',
+				                    \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT  => 'Nieuwe afspraak',
+				                    \App\Models\BuildingCoachStatus::STATUS_DONE             => 'Afgehandeld',
+				                    \App\Models\BuildingCoachStatus::STATUS_ACTIVE           => 'Actief',
+				                    \App\Models\BuildingCoachStatus::STATUS_REMOVED          => 'Verwijderd',
+			                    ],
+		                    ],
+	                    ],
+	                    'edit' => [
+		                    'header' => 'Gebruikers die toegang hebben tot gebouw :street :postal_code',
+		                    'table' => [
+			                    'columns'        => [
+				                    'actions' => 'Acties',
+				                    'name' => 'Naam',
+				                    'email' => 'Email'
+			                    ],
+		                    ],
+	                    ],
+	                    'destroy' => [
+		                    'success' => 'Toegang is ontzegd',
+	                    ]
+                    ],
+                    'reports' => [
+                        'title' => 'Rapportages',
+                        'description' => 'Rapportage downloads',
+
+                        'download' => [
+                            'by-year' => 'Actieplan per jaar',
+                            'by-measure' => 'Actieplan per maatregel',
+                            'download-questionnaire-results' => 'Download de antwoorden van de bewoners op de custom vragenlijsten'
+                        ],
+                        'csv-columns' => [
+                            'first-name' => 'Voornaam',
+                            'last-name' => 'Achternaam',
+                            'email' => 'Email',
+                            'phonenumber' => 'Telefoonnummer',
+                            'mobilenumber' => 'Mobiel nummer',
+                            'street' => 'Straat',
+                            'house-number' => 'Huis nummer',
+                            'city' => 'Woonplaats',
+                            'zip-code' => 'Postcode',
+                            'country-code' => 'Landcode',
+                        ],
+                    ],'messages'              => [
 					'index' => [
 						'header' => 'Uw berichten'
 					],
@@ -381,7 +420,6 @@ return [
 						\App\Models\PrivateMessage::REQUEST_TYPE_OTHER   => 'Anders...',
 						\App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION          => 'Offerte',
 						\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
-
 
 					],
 					'create' => [
@@ -505,7 +543,42 @@ return [
 						'success' => 'Gebruiker is verwijderd'
 					]
 				],
-				'index'                 => [
+				'questionnaires' => [
+                        'index' => [
+                            'header' => 'Alle vragenlijsten voor uw cooperatie',
+                            'table' => [
+                                'columns' => [
+                                    'questionnaire-name' => 'Vragenlijst naam',
+                                    'step' => 'Komt na stap',
+                                    'active' => 'Actief',
+                                    'actions' => 'Acties',
+                                    'see-results' => 'Bekijk resultaten',
+                                    'edit' => 'Bewerk vragenlijst',
+                                ]
+                            ],
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Selectievakjes',
+                                'checkbox' => 'Meerkeuze',
+                                'date' => 'Datum',
+                            ],
+                        ],
+                        'edit' => [
+                            'types' => [
+                                'text' => 'Kort antwoord',
+                                'textarea' => 'Alinea',
+                                'select' => 'Dropdownmenu',
+                                'radio' => 'Meerkeuze',
+                                'date' => 'Datum',
+                                'checkbox' => 'Selectievakjes'
+                            ],
+                            'add-validation' => 'Voeg validatie toe',
+                            'success' => 'Vragenlijst is bijgewerkt'
+                        ]
+                    ],
+                    'index'                 => [
 					'header' => 'Alle gebruikers van uw coöperatie',
 					'text'   => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
 
@@ -519,6 +592,10 @@ return [
 						]
 
                         ],
+                        'create' => [
+                            'leave-creation-tool' => 'Keer terug naar overzicht',
+                            'leave-creation-tool-warning' => 'Letop!, alle wijzigingen zullen verloren gaan. U hiervoor gemaakte formulier is niet meer terug te krijgen'
+                        ]
                     ],
                 ],
             ],

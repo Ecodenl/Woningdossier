@@ -42,4 +42,19 @@ class Step extends Model
         // for now, we keep it in kees.
 //        static::addGlobalScope(new CooperationScope());
     }
+
+    public function questionnaires()
+    {
+        return $this->hasMany(Questionnaire::class);
+    }
+
+    public function hasQuestionnaires()
+    {
+        if ($this->questionnaires()->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

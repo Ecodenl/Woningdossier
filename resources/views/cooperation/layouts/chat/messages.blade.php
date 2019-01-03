@@ -3,8 +3,6 @@
         <div class="panel-collapse " id="collapseOne">
             <ul class="chat">
                 {{$slot}}
-
-
             </ul>
         </div>
     </div>
@@ -32,7 +30,6 @@
             }
 
         }, 1000);
-
 
     </script>
 @endpush

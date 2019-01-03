@@ -47,12 +47,14 @@ class WallInsulationController extends Controller
     public function index()
     {
 
+	    $typeIds = [3];
 
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
 
-        $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
+        $facadeInsulation = $building->getBuildingElement('wall-insulation');
         $buildingFeature = $building->buildingFeatures;
+        $buildingElements = $facadeInsulation->element;
 
         $buildingFeaturesForMe = BuildingFeature::withoutGlobalScope(GetValueScope::class)->forMe()->get();
 
@@ -66,7 +68,8 @@ class WallInsulationController extends Controller
         return view('cooperation.tool.wall-insulation.index', compact(
              'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
-            'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe'
+            'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
+	        'buildingElements'
         ));
     }
 
@@ -139,9 +142,17 @@ class WallInsulationController extends Controller
         // Save progress
         $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
+
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)

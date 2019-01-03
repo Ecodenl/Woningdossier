@@ -13,9 +13,12 @@ class AddAppointmentDateToBuildingCoachStatuses extends Migration
      */
     public function up()
     {
-        Schema::table('building_coach_statuses', function (Blueprint $table) {
-            $table->dateTime('appointment_date')->nullable()->after('status');
-        });
+    	if (!Schema::hasColumn('building_coach_statuses', 'appointment_date')) {
+		    Schema::table( 'building_coach_statuses',
+			    function ( Blueprint $table ) {
+				    $table->dateTime( 'appointment_date' )->nullable()->after( 'status' );
+			    } );
+	    }
     }
 
     /**

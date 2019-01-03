@@ -35,10 +35,10 @@
                                         <p>
                                             @if($mainMessage->hasUserUnreadMessages())
                                                 <strong>
-                                                    {{$mainMessage->message}}
+                                                    {{ $mainMessage->message }}
                                                 </strong>
                                             @else
-                                                {{$mainMessage->message}}
+                                                {{ $mainMessage->message }}
                                             @endif
                                         </p>
                                     </div>

@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait GetMyValuesTrait {
     /**
@@ -19,10 +20,9 @@ trait GetMyValuesTrait {
         return $query->withoutGlobalScope(GetValueScope::class)->where('building_id', HoomdossierSession::getBuilding());
     }
     /**
-     * Get the input Sources
      *
-     * @return InputSource
-     */
+	 * @return BelongsTo
+	 */
     public function inputSource()
     {
         return $this->belongsTo(InputSource::class);
@@ -64,4 +64,5 @@ trait GetMyValuesTrait {
     {
         return $this->inputSource()->first()->name;
     }
+
 }

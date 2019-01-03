@@ -19,7 +19,6 @@ use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
-use App\Models\Role;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
@@ -27,8 +26,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use App\Scopes\GetValueScope;
+use Illuminate\Http\Request; use App\Scopes\GetValueScope;
 
 class SolarPanelsController extends Controller
 {
@@ -79,10 +77,7 @@ class SolarPanelsController extends Controller
             'year' => null,
         ];
 
-
-
         $building = Building::find(HoomdossierSession::getBuilding());
-        $user = $building->user;
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);
@@ -198,7 +193,14 @@ class SolarPanelsController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)

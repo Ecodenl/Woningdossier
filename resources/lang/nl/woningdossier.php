@@ -506,7 +506,7 @@ return [
 						'success' => 'Rollen zijn bijgewerkt'
 					],
 				],
-				'coach'                 => [
+				'user'                 => [
 					'index' => [
 						'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
 

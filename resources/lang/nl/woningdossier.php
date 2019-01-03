@@ -825,7 +825,7 @@ return [
                     'research' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
                 ],
 
-                'indication-for-costs' => [
+                'intcation-for-costs' => [
                     'title' => 'Indicatie voor kosten en baten voor deze maatregel',
                     'gas-savings' => 'Gasbesparing',
                     'co2-savings' => 'CO<sub>2</sub> Besparing',

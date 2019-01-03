@@ -5,3 +5,12 @@
 .glyphicon-text {
   top: 3px;
 }
+
+.nav-tabs {
+  li.active {
+    a {
+      background-color: $brand-primary;
+      color: white;
+    }
+  }
+}

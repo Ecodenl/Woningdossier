@@ -10,6 +10,9 @@ return [
 		],
 	],
 	'cooperation' => [
+		'navbar' => [
+			'start' => 'Start'
+		],
 		'admin' => [
 			'navbar' => [
 				'current-role'      => 'Uw huidge rol:',
@@ -627,10 +630,68 @@ return [
 			'unknown' => 'Onbekend',
 		],
 		'home'        => [
-			'disclaimer' => [
-				'title'       => 'Disclaimer voor het gebruik van de tool.',
-				'panel-title' => 'Disclaimer',
-				'description' => '<b>Beste gebruiker,</b><br><br>Het Hoomdossier is ontwikkeld door Coöperatie Hoom om u te ondersteunen bij het verduurzamen van uw woning. Het Hoomdossier bevindt zich nog in de testfase en wordt op dit moment op vier plekken in Nederland getest. Om de software zo snel mogelijk te verbeteren en nog beter bruikbaar te maken stellen we uw feedback zeer op prijs. Mocht u fouten tegenkomen, opmerkingen of wensen hebben, klik dan <a href="https://form.jotformeu.com/81345355694363" target="_blank">hier.</a> <br><br>In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn. <br><br>Op basis van deze berekeningen kunt u zelf een stappenplan voor de komende jaren opstellen en bijhouden. De gegevens uit dit stappenplan worden gedeeld met uw coöperatie om u zo goed mogelijk bij de uitvoering van het plan te helpen. Onderaan dit tekst kunt u zien welke gegevens uit het Hoomdossier gedeeld worden. Alle overige gegevens zijn uitsluitend via uw account voor u zelf zichtbaar en aanpasbaar.<br><br><b>Dit kunt u van het Hoomdossier verwachten:</b><ul><li>De huidige situatie van uw woning in beeld brengen.</li><li>Per maatregel wordt een indicatie gegeven over de te verwachten kosten en baten.</li><li>U kunt een actieplan voor de komende jaren opstellen en deze bijhouden.</li><li>Er worden ook een aantal onderhoudsmaatregelen meegenomen, zoals schilderwerk en het vervangen van de cv-installatie.</li><li>Er wordt een samenvatting van het actieplan naar de coöperatie gestuurd.</li> Met deze gegevens kan de coöperatie bijvoorbeeld collectieve inkoopacties organiseren.</li></ul><b>Dit kan het Hoomdossier niet:</b><ul><li>Advies geven over specifieke situaties (bijvoorbeeld over welk type warmtepomp er moet komen of bouwkundig advies geven).</li><li>Het (definitief) vaststellen of een bepaalde maatregel technisch mogelijk en uitvoerbaar is.</li><li>Advies geven over comfortverbetering.</li><li>Tot op de komma de kosten en baten van een maatregel uitrekenen. De berekeningen zijn een benadering.</li></ul><br>Het Hoomdossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het Hoomdossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het Hoomdossier gebruiken als basis voor een Basisadviesgesprek of een professioneel advies. <br><br>Er kan geen garantie aan de resultaten van het Hoomdossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. <u>De essentie van het rekenen met het Hoomdossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.</u><br><br>Gegevens die met de coöperatie gedeeld worden:<br><br><ul><li>Voornaam en achternaam<li>Straat en huisnummer</li><li>Postcode plaats</li><li>E-mail adres</li><li>Telefoonnummer</li></ul><br>Van alle maatregelen die in uw actieplan staan worden de volgende gegevens gedeeld:<ul><li>Naam maatregel</li><li>Interesse (Ja/nee)</li><li>Indicatieve kosten</li><li>Indicatieve besparing gas</li><li>Indicatieve besparing elektra</li><li>Indicatieve besparing €</li><li>Geadviseerd uitvoeringsjaar</li><li>Zelf ingevuld uitvoeringsjaar</li></ul>',
+			'tabs' => [
+                'start' => 'Start',
+                'disclaimer' => 'Disclaimer',
+				'bugreport' => 'Bugreport',
+                'messages' => 'Berichten',
+                'settings' => 'Instellingen',
+                'privacy' => 'Privacy'
+            ],
+            'start' => [
+				'best-user' => '<b>Beste gebruiker</b>, <br><br> Hartelijk welkom in uw Hoomdossier! Hier kunt u de huidige situatie van uw woning in kaart brengen, kijken welke energiebesparende maatregelen interessant voor u kunnen zijn en het onderhoud van uw woning plannen:',
+                'get-started' => 'Meteen aan de slag!',
+                'by' => 'Het Hoomdossier wordt u aangeboden door :cooperation om u bij de verduurzaming van uw woning te ondersteunen. Mocht u vragen hebben over energiebesparende maatregelen, lopende wijkacties of hulp nodig hebben bij het invullen van het Hoomdossier, dan kunt u hier contact opnemen met uw coöperatie:',
+                'contact' => 'Contact opnemen met :cooperation',
+                'feedback' => 'Het Hoomdossier wordt continu doorontwikkeld en verbeterd. Praktijkervaringen van gebruikers zijn hierbij een belangrijke informatiebron om het pakket steeds verder te verbeteren. Als u opmerkingen en of vragen over het Hoomdossier heeft of iets niet naar verwachting werkt kunt u uw feedback hier geven:',
+                'give-feedback' => 'Feedback geven op het Hoomdossier',
+            ],
+            'privacy' => [
+                'description' => '<b>Privacy statement</b>
+                                <br>
+                                <br>
+                                De gegevens in het Hoomdossier worden uitsluitend gedeeld met de coöperatie :cooperation.
+
+                                We gaan zorgvuldig met uw gegevens om en beloven u dat:
+                                <ul>
+                                    <li>we uw gegevens uitsluitend gebruiken om u te kunnen adviseren en ondersteunen bij  het opstellen en uitvoeren van projecten voor het verduurzamen van uw woning;</li>
+                                    <li>we uw persoonsgegevens nooit zullen delen met derden (bijvoorbeeld bedrijven) zonder dat u uw aanvullende toestemming hebt gegeven;</li>
+                                    <li>wanneer we gegevens  gebruiken t.b.v. analyses of rapportages, deze nooit tot uw individuele gegevens terug te herleiden zijn.</li>
+                                </ul>
+                                <br>
+                                <br>
+                                U kunt toestemming geven aan de coöperatie :cooperation om uw dossier op afstand in te zien en u bij het invullen te helpen. Een dergelijke toestemming kan op elk moment ingetrokken worden en geldt uitsluitend voor de gegevens van het Basisadvies, uw accountgegevens en het berichtenverkeer met de coöperatie.
+                                <br>
+                                <br>
+                                U hebt de mogelijkheid om uw account te verwijderen of om alle toegevoegde informatie te wissen onder behoud van het account. Een dergelijke actie betekent dat al uw gegevens uit het Hoomdossier worden verwijderd.
+                                <br>
+                                <br>
+                                Gegevens die in het Hoomdossier opgeslagen worden:
+                                <br>
+                                <br>
+                                In het Hoomdossier worden gegevens over uw woning, uw energieverbruik en uw gebruiksgedrag opgeslagen. De gegevens worden gebruikt om u te adviseren welke energiebesparende maatregelen u kunt nemen in uw woning en wat de indicatieve kosten en baten van deze maatregelen zijn.
+                                <br>
+                                <br>
+                                De volgende gegevens worden in het Hoomdossier opgeslagen:
+                                <br>
+                                <br>
+                                <ul>
+                                    <li>NAW gegevens</li>
+                                    <li>Algemene gegevens van de woning</li>
+                                    <li>Welke energiebesparende maatregelen al zijn genomen</li>
+                                    <li>Interesse voor een maatregel (Ja/nee)</li>
+                                    <li>Gegevens over het gebruik van de woning</li>
+                                    <li>Indicatieve kosten van te nemen maatregelen</li>
+                                    <li>Indicatie van besparing gas per maatregel</li>
+                                    <li>Indicatie van besparing elektra per maatregel</li>
+                                    <li>Indicatieve financiële besparing per maatregel</li>
+                                    <li>Indicatieve CO2 besparing per maatregel</li>
+                                    <li>Geadviseerd uitvoeringsjaar</li>
+                                    <li>Zelf ingevuld uitvoeringsjaar</li>
+                                </ul>'
+            ],
+            'disclaimer' => [
+                'description' => '<b>Disclaimer</b><br><br>Het woondossier maakt gebruik van formules en vergelijkingen die een benadering zijn van de werkelijkheid. Hoewel het woondossier dus wel inzicht geeft in de potentiele impact van energiebesparende maatregelen, kan het een persoonlijk advies op maat niet vervangen. In overleg met uw coöperatie kunt u het woondossier gebruiken als basis voor een keukentafelgesprek of een professioneel advies.<br><br>Er kan geen garantie aan de resultaten van het woondossier ontleend worden ten aanzien van de daadwerkelijke energieprestaties, berekende energiegebruik of besparingen. De essentie van het rekenen met het woondossier is het krijgen van inzicht in consequenties van het nemen van maatregelen.',
 			],
 		],
 		'help'        => [
@@ -1192,28 +1253,28 @@ return [
 			'no-year'          => 'Geen jaartal',
 			'download'         => 'Download hier je actieplan',
 
-				'coach-comments' => [
-					'title' => 'Opmerkingen die door de coach zijn geplaatst',
-					'general-data' => 'Algemene gegevens',
-					'wall-insulation' => 'Gevelisolatie',
-					'floor-insulation' => 'Vloerisolatie',
-					'insulated-glazing' => 'Isolerende beglazing',
-					'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
-					'roof-insulation-plat-dak' => 'Dakisolatie - Plat dak',
-					'high-efficiency-boiler' => 'HR Ketel',
-				],
+                'coach-comments' => [
+                    'title' => 'Opmerkingen die door de coach zijn geplaatst',
+                    'general-data' => 'Algemene gegevens',
+                    'wall-insulation' => 'Gevelisolatie',
+                    'floor-insulation' => 'Vloerisolatie',
+                    'insulated-glazing' => 'Isolerende beglazing',
+                    'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
+                    'roof-insulation-plat-dak' => 'Dakisolatie - Plat dak',
+                    'high-efficiency-boiler' => 'HR Ketel',
+                ],
 
-				'conversation-requests' => [
-					'take-action' => 'Actie ondernemen',
-					'request' => 'Coachgesprek aanvragen',
-					'update-request' => 'Coachgesprek aanvraag bijwerken',
-					'disabled' => 'Niet beschikbaar'
-				],
-				'conversation-requests-request' => 'Coachgesprek aanvraag',
-				'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
+                'conversation-requests' => [
+                    'take-action' => 'Actie ondernemen',
+                    'request' => 'Coachgesprek aanvragen',
+                    'update-request' => 'Coachgesprek aanvraag bijwerken',
+                    'disabled' => 'Niet beschikbaar'
+                ],
+                'conversation-requests-request' => 'Coachgesprek aanvraag',
+                'conversation-requests-request-update' => 'Coachgesprek aanvraag bijwerken',
 
 
-				'csv-columns' => [
+                'csv-columns' => [
                     'year-or-planned' => 'Jaar / gepland jaar',
                     'interest' => 'Interesse',
                     'measure' => 'Maatregel',

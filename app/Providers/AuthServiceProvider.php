@@ -33,5 +33,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Gate::define('access-admin', 'App\Policies\UserPolicy@accessAdmin');
     }
 }

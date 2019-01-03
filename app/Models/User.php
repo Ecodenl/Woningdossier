@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\HoomdossierSession;
 use App\Events\UserCreated;
+use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -299,6 +299,20 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\BuildingPermission');
 	}
 
+    /**
+     * Check if a user had permissions for a specific building
+     *
+     * @param $buildingId
+     * @return bool
+     */
+    public function hasBuildingPermission($buildingId) : bool
+    {
+        if ($this->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
+            return true;
+        }
+        return false;
+	}
+
     public function isBuildingOwner(Building $building)
     {
         if ($this->buildings()->find($building->id) instanceof Building) {
@@ -321,4 +335,19 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function completedQuestionnaires()
+    {
+        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
+	}
+
+    /**
+     * Complete a questionnaire for a user
+     *
+     * @param Questionnaire $questionnaire
+     */
+    public function completeQuestionnaire(Questionnaire $questionnaire)
+    {
+        $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
+	}
 }

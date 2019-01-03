@@ -14,12 +14,12 @@
                         <input type="hidden" name="receiver_id" value="{{$receiver->id}}">
                         <div class="row">
                             <div class="col-sm-6">
-                                <div class="form-group" {{ $errors->has('message') ? ' has-error' : '' }}>
-                                    <label for="message">@lang('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.message.label')</label>
-                                    <textarea name="message" id="" class="form-control">@lang('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.message.placeholder')</textarea>
-                                    @if ($errors->has('message'))
+                                <div class="form-group" {{ $errors->has('title') ? ' has-error' : '' }}>
+                                    <label for="title">@lang('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.title.label')</label>
+                                    <input name="title" id="" class="form-control" placeholder="{{old('title', __('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.title.placeholder'))}}">
+                                    @if ($errors->has('title'))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first('message') }}</strong>
+                                            <strong>{{ $errors->first('title') }}</strong>
                                         </span>
                                     @endif
                                 </div>
@@ -27,18 +27,12 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <div class="form-group" {{ $errors->has('conversation-request-type') ? ' has-error' : '' }}>
-                                    <label for="conversation-request-type">@lang('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.request-type.label')</label>
-                                    <select name="conversation-request-type" class="conversation-request-type form-control" id="conversation-request-type" >
-                                        @foreach(__('woningdossier.cooperation.conversation-requests.edit.form.options') as $value => $label)
-                                            <option value="{{$value}}">{{$label}}</option>
-                                        @endforeach
-                                    </select>
-
-
-                                    @if ($errors->has('conversation-request-type'))
+                                <div class="form-group" {{ $errors->has('message') ? ' has-error' : '' }}>
+                                    <label for="message">@lang('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.message.label')</label>
+                                    <textarea name="message" id="" class="form-control">{{old('message', __('woningdossier.cooperation.admin.coach.connect-to-resident.create.form.message.placeholder'))}}</textarea>
+                                    @if ($errors->has('message'))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first('conversation-request-type') }}</strong>
+                                            <strong>{{ $errors->first('message') }}</strong>
                                         </span>
                                     @endif
                                 </div>
@@ -59,21 +53,14 @@
 
 
 
-@push('css')
-    <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
 @push('js')
-    <script src="{{asset('js/select2.js')}}"></script>
 
     <script>
 
         $(document).ready(function () {
-
-            $(".conversation-request-type").select2({
-                placeholder: "@lang('woningdossier.cooperation.admin.connect-to-resident.create.form.request-type.placeholder')",
-            });
+            $('form').disableAutoFill();
         });
 
-        $('form').disableAutoFill();
     </script>
 @endpush
 

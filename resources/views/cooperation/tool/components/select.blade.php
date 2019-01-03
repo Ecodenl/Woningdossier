@@ -1,8 +1,16 @@
-{{-- TODO: could use some improvement, do not know how atm--}}
+<?php
+    // sort the incoming collection based on input source order
+    if (is_array($userInputValues)){
+    	$userInputValues = collect($userInputValues);
+    }
+    $userInputValues = $userInputValues->sortBy(function($a){
+	    return $a->inputSource->order;
+    });
+?>
 @if(is_array($inputValues) && $customInputValueColumn == false)
-    @foreach($inputValues as $key => $inputValue)
-        @foreach($userInputValues as $userInputValue)
-            {{--we use array get, we cant use it like $userInputValue->$userInputColumn--}}
+    @foreach($userInputValues as $userInputValue)
+        @foreach($inputValues as $key => $inputValue)
+            {{-- We use array get, we cant use it like $userInputValue->$userInputColumn --}}
             <?php
             // check if the input column has dots, ifso we need to use the array get function
             // else its a property that we can access
@@ -13,16 +21,21 @@
             }
             ?>
             @if(!is_null($compareValue) && $key == $compareValue)
-                <li class="change-input-value" data-input-value="{{$key}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputValue}}</a></li>
+                <li class="change-input-value" data-input-value="{{ $key }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputValue }}</a></li>
             @endif
         @endforeach
     @endforeach
 @else
-    @foreach($inputValues as $inputValue)
-        @foreach($userInputValues as $userInputValue)
+    @foreach($userInputValues as $userInputValue)
+        @foreach($inputValues as $inputValue)
             <?php
-            if (isset($userInputModel) && $userInputModel == true && !is_null($userInputValue->$userInputModel)) {
-                $value = $userInputValue->$userInputModel->$userInputColumn;
+            if ($userInputModel instanceof \Illuminate\Database\Eloquent\Model) {
+            	if (!$userInputValue->$userInputModel instanceof \Illuminate\Database\Eloquent\Model){
+            		$value = null;
+                }
+            	else {
+                    $value = $userInputValue->$userInputModel->$userInputColumn;
+            	}
             } else {
                 if (strpos($userInputColumn, ".") !== false) {
                     $value = array_get($userInputValue, $userInputColumn);
@@ -38,10 +51,9 @@
             } else {
                 $inputName = $inputValue->name;
             }
-
             ?>
             @if(!is_null($value) && $inputValue->id == $value)
-                <li class="change-input-value" data-input-value="{{$inputValue->id}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$inputName}}</a></li>
+                <li class="change-input-value" data-input-value="{{ $inputValue->id }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
             @endif
         @endforeach
     @endforeach

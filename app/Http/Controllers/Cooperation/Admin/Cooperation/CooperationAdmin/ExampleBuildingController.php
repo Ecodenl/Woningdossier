@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingHeating;
@@ -16,6 +17,7 @@ use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
+use App\Models\Role;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
@@ -32,8 +34,14 @@ class ExampleBuildingController extends Controller
      */
     public function index()
     {
-        $exampleBuildings = ExampleBuilding::orderBy('cooperation_id', 'asc')
-                                           ->orderBy('order', 'asc')->get();
+    	$exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
+		                                        ->orderBy('order', 'asc');
+
+    	if (stristr(HoomdossierSession::currentRole(), 'super') === false){
+			$exampleBuildingsQuery->forMyCooperation();
+	    }
+
+		$exampleBuildings = $exampleBuildingsQuery->get();
 
         return view('cooperation.admin.cooperation.cooperation-admin.example-buildings.index', compact('exampleBuildings'));
     }
@@ -110,7 +118,7 @@ class ExampleBuildingController extends Controller
             }
         }
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', 'This example building was added');
+        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', 'This example building was added');
     }
 
     /**
@@ -134,6 +142,7 @@ class ExampleBuildingController extends Controller
      */
     public function edit(Cooperation $cooperation, $id)
     {
+    	/** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
@@ -195,12 +204,12 @@ class ExampleBuildingController extends Controller
         $boiler = Service::where('short', 'boiler')->first();
 
         // Common
-        $interests = Interest::orderBy('order')->get();
-        $interestOptions = $this->createOptions($interests);
+        //$interests = Interest::orderBy('order')->get();
+        //$interestOptions = $this->createOptions($interests);
 
         $structure = [
             'general-data' => [
-                'surface' => [
+                'building_features.surface' => [
                     'label' => __('woningdossier.cooperation.tool.general-data.building-type.what-user-surface'),
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
@@ -208,22 +217,27 @@ class ExampleBuildingController extends Controller
                 // user interests
             ],
             'wall-insulation' => [
-                'user_interest.element.'.$wallInsulation->id => [
+                /*'user_interest.element.'.$wallInsulation->id => [
                     'label' => 'Interest in '.$wallInsulation->name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ],
+                ],*/
                 'element.'.$wallInsulation->id => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.filled-insulation'),
                     'type' => 'select',
                     'options' => $this->createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
-                'wall_surface' => [
+                'building_features.wall_surface' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.facade-surface'),
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-                'cavity_wall' => [
+	            /*'insulation_wall_surface' => [
+	            	'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface'),
+		            'type' => 'text',
+		            'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
+	            ],*/
+                'building_features.cavity_wall' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall'),
                     'type' => 'select',
                     'options' => [
@@ -232,7 +246,7 @@ class ExampleBuildingController extends Controller
                         2 => __('woningdossier.cooperation.radiobutton.no'),
                     ],
                 ],
-                'facade_plastered_painted' => [
+                'building_features.facade_plastered_painted' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.is-facade-plastered-painted'),
                     'type' => 'select',
                     'options' => [
@@ -241,17 +255,17 @@ class ExampleBuildingController extends Controller
                         3 => __('woningdossier.cooperation.radiobutton.mostly'),
                     ],
                 ],
-                'facade_damaged_paintwork_id' => [
+                'building_features.facade_damaged_paintwork_id' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.damage-paintwork'),
                     'type' => 'select',
                     'options' => $this->createOptions($facadeDamages),
                 ],
-                'wall_joints' => [
+                'building_features.wall_joints' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.flushing'),
                     'type' => 'select',
                     'options' => $this->createOptions($surfaces),
                 ],
-                'contaminated_wall_joints' => [
+                'building_features.contaminated_wall_joints' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.if-facade-dirty'),
                     'type' => 'select',
                     'options' => $this->createOptions($surfaces),
@@ -259,17 +273,17 @@ class ExampleBuildingController extends Controller
             ],
             'insulated-glazing' => [
                 // will be filled in later
-                'building_elements.'.$crackSealing->id.'.crack-sealing' => [
+                'element.'.$crackSealing->id => [
                     'label' => __('woningdossier.cooperation.tool.insulated-glazing.moving-parts-quality'),
                     'type' => 'select',
                     'options' => $this->createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
                 ],
-                'window_surface' => [
+                'building_features.window_surface' => [
                     'label' => __('woningdossier.cooperation.tool.insulated-glazing.windows-surface'),
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-                'building_elements.'.$frames->id.'.frames' => [
+                'element.'.$frames->id => [
                     'label' => __('woningdossier.cooperation.tool.insulated-glazing.paint-work.which-frames'),
                     'type' => 'select',
                     'options' => $this->createOptions($frames->values()->orderBy('order')->get(), 'value'),
@@ -291,43 +305,43 @@ class ExampleBuildingController extends Controller
                 ],
             ],
             'floor-insulation' => [
-                'user_interest.element.'.$floorInsulation->id => [
+                /*'user_interest.element.'.$floorInsulation->id => [
                     'label' => 'Interest in '.$floorInsulation->name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ],
+                ],*/
                 'element.'.$floorInsulation->id => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.floor-insulation'),
                     'type' => 'select',
                     'options' => $this->createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
-                'floor_surface' => [
+                'building_features.floor_surface' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.floor-surface'),
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-                'building_elements.crawlspace' => [
+                'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.title'),
                     'type' => 'select',
                     'options' => __('woningdossier.cooperation.option'),
                 ],
-                'building_elements.'.$crawlspace->id.'.extra' => [
+                'element.'.$crawlspace->id.'.extra.access' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.title'),
                     'type' => 'select',
                     'options' => __('woningdossier.cooperation.option'),
                 ],
-                'building_elements.'.$crawlspace->id.'.element_value_id' => [
+                'element.'.$crawlspace->id.'.element_value_id' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.crawlspace-height'),
                     'type' => 'select',
                     'options' => $this->createOptions($crawlspace->values()->orderBy('order')->get(), 'value'),
                 ],
             ],
             'roof-insulation' => [
-                'user_interest.element.'.$roofInsulation->id => [
+                /*'user_interest.element.'.$roofInsulation->id => [
                     'label' => 'Interest in '.$roofInsulation->name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ],
+                ],*/
                 'building_features.roof_type_id' => [
                     'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.main-roof'),
                     'type' => 'select',
@@ -338,12 +352,12 @@ class ExampleBuildingController extends Controller
             'high-efficiency-boiler' => [
                 // no use for user interest here..
 
-                'building_services.'.$boiler->id.'.service_value_id' => [
+                'service.'.$boiler->id.'.service_value_id' => [
                     'label' => __('woningdossier.cooperation.tool.boiler.boiler-type'),
                     'type' => 'select',
                     'options' => $this->createOptions($boiler->values()->orderBy('order')->get(), 'value'),
                 ],
-                'building_services.'.$boiler->id.'.extra' => [
+                'service.'.$boiler->id.'.extra' => [
                     'label' => __('woningdossier.cooperation.tool.boiler.boiler-placed-date'),
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.year'),
@@ -360,6 +374,7 @@ class ExampleBuildingController extends Controller
 //		    ],
         ];
 
+        /*
         // From GeneralDataController
         $interestElements = Element::whereIn('short', [
             'living-rooms-windows', 'sleeping-rooms-windows',
@@ -373,6 +388,7 @@ class ExampleBuildingController extends Controller
                 'options' => $interestOptions,
             ];
         }
+        */
 
         // Insulated glazing
         $igShorts = [
@@ -383,11 +399,11 @@ class ExampleBuildingController extends Controller
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['user_interests.'.$measureApplication->id] = [
+                /*$structure['insulated-glazing']['user_interests.'.$measureApplication->id] = [
                     'label' => 'Interest in '.$measureApplication->measure_name,
                     'type' => 'select',
                     'options' => $interestOptions,
-                ];
+                ];*/
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.insulated_glazing_id'] = [
                     'label' => $measureApplication->measure_name.': '.__('woningdossier.cooperation.tool.insulated-glazing.current-glass'),
                     'type' => 'select',
@@ -411,43 +427,56 @@ class ExampleBuildingController extends Controller
         }
 
         // Roof insulation
-        foreach (['pitched', 'flat'] as $roofCat) {
-            $structure['roof-insulation']['building_roof_types.'.$roofCat.'.element_value_id'] = [
-                'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated'),
+	    // have to refactor this
+	    // pitched = 1
+	    // flat = 2
+	    $pitched = new \stdClass();
+        $pitched->id = 1;
+        $pitched->short = 'pitched';
+        $flat = new \stdClass();
+        $flat->id = 2;
+        $flat->short = 'flat';
+	    $roofTypes1 = collect([$pitched, $flat]);
+
+	    // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
+
+        foreach ($roofTypes1 as $roofType) {
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.element_value_id'] = [
+                'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.is-'.$roofType->short.'-roof-insulated'),
                 'type' => 'select',
                 'options' => $this->createOptions($roofInsulation->values, 'value'),
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofCat.'.surface'] = [
-                'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.'.$roofCat.'-roof-surface'),
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.roof_surface'] = [
+                'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.'.$roofType->short.'-roof-surface'),
                 'type' => 'text',
                 'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofCat.'.extra.zinc_replaced_date'] = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
                 'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.zinc-replaced'),
                 'type' => 'text',
                 'unit' => __('woningdossier.cooperation.tool.unit.year'),
             ];
-            if ('flat' == $roofCat) {
-                $structure['roof-insulation']['building_roof_types.'.$roofCat.'.extra.bitumen_replaced_date'] = [
+            if ('flat' == $roofType->short) {
+                $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.bitumen_replaced_date'] = [
                     'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.bitumen-insulated'),
                     'type'  => 'text',
                     'unit'  => __('woningdossier.cooperation.tool.unit.year'),
                 ];
             }
-            if ('pitched' == $roofCat) {
-                $structure['roof-insulation']['building_roof_types.'.$roofCat.'.extra.tiles_condition'] = [
+            if ('pitched' == $roofType->short) {
+                $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.tiles_condition'] = [
                     'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.in-which-condition-tiles'),
                     'type' => 'select',
                     'options' => $this->createOptions($roofTileStatuses),
                 ];
             }
-            $structure['roof-insulation']['building_roof_types.'.$roofCat.'.extra.measure_application_id'] = [
-                'label' => __('woningdossier.cooperation.tool.roof-insulation.'.$roofCat.'-roof.insulate-roof'),
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.measure_application_id'] = [
+                'label' => __('woningdossier.cooperation.tool.roof-insulation.'.$roofType->short.'-roof.insulate-roof'),
                 'type' => 'select',
-                'options' => $this->createOptions(collect($roofInsulationMeasureApplications[$roofCat]), 'measure_name'),
+                'options' => $this->createOptions(collect($roofInsulationMeasureApplications[$roofType->short]), 'measure_name'),
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofCat.'.building_heating_id'] = [
-                'label' => __('woningdossier.cooperation.tool.roof-insulation.'.$roofCat.'-roof.situation'),
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.building_heating_id'] = [
+                'label' => __('woningdossier.cooperation.tool.roof-insulation.'.$roofType->short.'-roof.situation'),
                 'type' => 'select',
                 'options' => $this->createOptions($heatings),
             ];
@@ -512,6 +541,7 @@ class ExampleBuildingController extends Controller
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+            $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {
                     // addition
@@ -528,7 +558,7 @@ class ExampleBuildingController extends Controller
         }
         $exampleBuilding->save();
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
+        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
     }
 
     protected function array_undot($content)

@@ -47,7 +47,7 @@ class HighEfficiencyBoilerController extends Controller
         $habit = $user->energyHabit;
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
 
-        $steps = Step::orderBy('order')->get();
+
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         $boilerTypes = $boiler->values()->orderBy('order')->get();
@@ -55,7 +55,7 @@ class HighEfficiencyBoilerController extends Controller
         $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
 
-        return view('cooperation.tool.hr-boiler.index', compact(
+        return view('cooperation.tool.hr-boiler.index', compact('building',
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
             'typeIds', 'installedBoilerForMe', 'energyHabitsForMe',
             'steps'));
@@ -171,7 +171,14 @@ class HighEfficiencyBoilerController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)

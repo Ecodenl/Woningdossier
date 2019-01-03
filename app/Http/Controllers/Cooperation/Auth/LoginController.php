@@ -101,7 +101,6 @@ class LoginController extends Controller
         }
 
 		if ($this->attemptLogin($request)) {
-
 		    $user = \Auth::user();
 
 		    // get the first building from the user
@@ -138,21 +137,22 @@ class LoginController extends Controller
 		// user surpasses their maximum number of attempts they will get locked out.
 		$this->incrementLoginAttempts($request);
 
-        return $this->sendFailedLoginResponse($request);
-    }
+		return $this->sendFailedLoginResponse($request);
+	}
 
-//    /**
-//     * Send the response after the user was authenticated.
-//     *
-//     * @param $request
-//     * @return \Illuminate\Http\RedirectResponse
-//     */
-//    protected function sendLoginResponse ($request)
-//    {
-//        $request->session()->regenerate();
-//
-//        $this->clearLoginAttempts($request);
-//
-//        return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
-//    }
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    /*protected function sendLoginResponse ($request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
+	    return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
+    }*/
 }

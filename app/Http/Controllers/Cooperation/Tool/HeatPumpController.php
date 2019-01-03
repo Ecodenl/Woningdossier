@@ -35,9 +35,9 @@ class HeatPumpController extends Controller
         $heatpumpTypes = PresentHeatPump::all();
         $buildingCurrentHeatings = BuildingCurrentHeating::all();
         $heatSources = HeatSource::all();
-        $steps = Step::orderBy('order')->get();
 
-        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes', 'steps', 'heatSources', 'buildingCurrentHeatings'));
+
+        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes',  'heatSources', 'buildingCurrentHeatings'));
     }
 
     /**
@@ -61,7 +61,14 @@ class HeatPumpController extends Controller
         Auth::user()->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     /**

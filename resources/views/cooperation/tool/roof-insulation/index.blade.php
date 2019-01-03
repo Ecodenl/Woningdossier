@@ -9,7 +9,7 @@
         @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div class="row">
             <div id="current-situation" class="col-md-12">
-                <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.title.title')}}</h4>
+                @include('cooperation.layouts.section-title', ['translationKey' => 'roof-insulation.title'])
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -23,7 +23,13 @@
                                 @foreach($roofTypes as $roofType)
                                     <label class="checkbox-inline">
                                         <input data-calculate-value="{{$roofType->calculate_value}}" type="checkbox" name="building_roof_types[]" value="{{ $roofType->id }}"
-                                        @if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) || ($currentRoofTypes->contains('roof_type_id', $roofType->id)) || $features->roof_type_id == $roofType->id) checked @endif>
+                                            @if(in_array($roofType->id, old('building_roof_types',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id') ])))
+                                               checked="checked"
+                                            @endif
+                                        {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
+                                        ($currentRoofTypes->contains('roof_type_id', $roofType->id)) ||
+                                        ($features->roofType->id == $roofType->id)) checked @endif--}}
+                                        >
                                         {{ $roofType->name }}
                                     </label>
                                 @endforeach
@@ -49,17 +55,19 @@
                 <div class="if-roof">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group add-space {{$errors->has('building_features.roof_type_id') ? ' has-error' : ''}}">
+                            <div class="form-group add-space {{ $errors->has('building_features.roof_type_id') ? ' has-error' : '' }}">
 
                                 <label for="main_roof" class="control-label"><i data-toggle="collapse" data-target="#main-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                                    {{\App\Helpers\Translation::translate('roof-insulation.current-situation.main-roof.title')}}</label>
+                                    {{\App\Helpers\Translation::translate('roof-insulation.current-situation.main-roof.title')}}
+                                </label>
 
-                                @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id', 'additionalConditionColumn' => true])
+                                {{--@component('cooperation.tool.components.input-group', ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id', 'additionalConditionColumn' => true])--}}
+                                @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
                                     <select id="main_roof" class="form-control" name="building_features[roof_type_id]">
                                         @foreach($roofTypes as $roofType)
                                             @if($roofType->calculate_value < 5)
-                                            <option @if($roofType->id == old('building_features.roof_type_id') || ($features->roof_type_id == $roofType->id)) selected @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
+                                                <option @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected" @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
+                                            {{--<option @if($roofType->id == old('building_features.roof_type_id') || ($features->roof_type_id == $roofType->id)) selected @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>--}}
                                             @endif
                                         @endforeach
                                     </select>
@@ -77,7 +85,10 @@
                         </div>
                     </div>
 
-                    @foreach(['flat', 'pitched'] as $roofCat)
+                    {{--@foreach(['flat', 'pitched'] as $roofCat)--}}
+                    @foreach($roofTypes->where('calculate_value', '<', 5) as $roofType)
+
+                        <?php $roofCat = $roofType->short; ?>
 
                         <div class="{{ $roofCat }}-roof">
 
@@ -86,17 +97,20 @@
                                 <div class="col-sm-12 col-md-12">
                                     <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.element_value_id') ? ' has-error' : '' }}">
 
-                                        <label for="flat_roof_insulation" class="control-label">
+                                        <label for="{{ $roofCat }}_roof_insulation" class="control-label">
                                             <i data-toggle="collapse" data-target="#{{ $roofCat }}-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                             {{\App\Helpers\Translation::translate('roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated.title')}}</label>
 
-                                        <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][element_value_id]" >
+                                        @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofInsulation->values, 'userInputValues' => $building->roofTypes()->where('roof_type_id', $roofType->id)->forMe()->get(), 'userInputColumn' => 'element_value_id'])
+                                        <select id="{{ $roofCat }}_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][element_value_id]" >
                                             @foreach($roofInsulation->values as $insulation)
                                                 @if($insulation->calculate_value < 6)
-                                                    <option data-calculate-value="{{$insulation->calculate_value}}" @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
+                                                    <option @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'element_value_id'))) selected="selected" @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
+                                                    {{--<option data-calculate-value="{{$insulation->calculate_value}}" @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>--}}
                                                 @endif
                                             @endforeach
                                         </select>
+                                        @endcomponent
 
                                         <div id="{{ $roofCat }}-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                             {{\App\Helpers\Translation::translate('roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated.title')}}
@@ -112,7 +126,7 @@
 {{--                                    @foreach($roofInsulation->values as $insulation)--}}
 {{--                                        @if(isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)--}}
 {{--                                            @if(($insulation->calculate_value == 3 || $insulation->calculate_value == 4) && $interest->calculate_value <= 2)--}}
-                                                @component('cooperation.tool.components.alert', ['type' => 'info', 'hide' => true])
+                                                @component('cooperation.tool.components.alert', ['alertType' => 'info', 'hide' => true])
                                                     Hoe veel u met deze maatregel kunt besparen hangt ervan wat de isolatiewaarde van de huidige isolatielaag is.
                                                     Voor het uitrekenen van de daadwerkelijke besparing bij het na- isoleren van een reeds geïsoleerde gevel/vloer/dak is aanvullend en gespecialiseerd advies nodig.
                                                 @endcomponent
@@ -134,7 +148,8 @@
                                             @component('cooperation.tool.components.input-group',
                                             ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'roof_surface'])
                                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                                <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">
+                                                <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_surface')) }}">
+                                            {{--<input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">--}}
                                             @endcomponent
 
                                             <div id="{{ $roofCat }}-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -158,34 +173,36 @@
                                             @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'insulation_roof_surface'])
                                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                                <input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">
+                                                <input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
+                                            {{--<input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">--}}
                                             @endcomponent
 
                                             <div id="{{ $roofCat }}-insulation_roof_surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                                 {{\App\Helpers\Translation::translate("roof-insulation.current-situation.insulation-".$roofCat."-roof-surface.help")}}
                                             </div>
 
-                                            @if ($errors->has('building_roof_types.' . $roofCat . '.insulation_roof_surface'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.insulation_roof_surface') }}</strong>
-                                                </span>
-                                            @endif
+                                        @if ($errors->has('building_roof_types.' . $roofCat . '.insulation_roof_surface'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.insulation_roof_surface') }}</strong>
+                                            </span>
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
 
-
-                                <div class="row cover-zinc">
+                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') ? ' has-error' : '' }}">
-                                            <label for="zinc-replaced" class="control-label"><i data-toggle="collapse" data-target="#zinc-{{$roofCat}}-replaced-date" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.zinc-replaced.title')}}
-                                        </label>
+                                            <label for="zinc-replaced" class="control-label">
+                                                <i data-toggle="collapse" data-target="#zinc-{{$roofCat}}-replaced-date" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                                {{\App\Helpers\Translation::translate('roof-insulation.current-situation.zinc-replaced.title')}}
+                                            </label>
 
                                             @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.zinc_replaced_date'])
                                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
-                                                <input  type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ isset($currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date'] : old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}">
+                                                <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.zinc_replaced_date')) }}">
+                                            {{--<input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]" value="{{ isset($currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['zinc_replaced_date'] : old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date') }}">--}}
                                             @endcomponent
 
                                             <div id="zinc-{{$roofCat}}-replaced-date" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -199,21 +216,22 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
+    </div>                            </div>
                                 <div class="row cover-bitumen">
                                     <div class="col-md-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date') ? ' has-error' : '' }}">
                                             <label for="bitumen-replaced" class=" control-label"><i data-toggle="collapse" data-target="#bitumen-replaced-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('roof-insulation.current-situation.bitumen-insulated.title')}}</label>
 
                                             <?php
-                                            $default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date']) && $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] : '';
+                                            //$default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date']) && $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['bitumen_replaced_date'] : '';
                                             ?>
 
                                             @component('cooperation.tool.components.input-group',
                                             ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.bitumen_replaced_date'])
                                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
                                                 <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
-                                                    value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', $default) }}">
+                                                    value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.bitumen_replaced_date')) }}">
+                                            {{--<input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]" value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', $default) }}">--}}
                                             @endcomponent
 
                                             <div id="bitumen-replaced-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
@@ -240,15 +258,18 @@
                                                 {{\App\Helpers\Translation::translate('roof-insulation.current-situation.in-which-condition-tiles.title')}}</label>
 
                                                 <?php
-                                                    $default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition']) && $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] : '';
+                                                    //$default = (isset($currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition']) && $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] != 1) ? $currentCategorizedRoofTypes[$roofCat]['extra']['tiles_condition'] : '';
                                                 ?>
 
                                                 @component('cooperation.tool.components.input-group',
-                                            ['inputType' => 'select', 'inputValues' => $roofTileStatuses, 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'extra.tiles_condition'])<select  id="tiles_condition" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][tiles_condition]" >
+                                            ['inputType' => 'select', 'inputValues' => $roofTileStatuses, 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'extra.tiles_condition'])
+                                                <select  id="tiles_condition" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][tiles_condition]" >
                                                     @foreach($roofTileStatuses as $roofTileStatus)
-                                                        <option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra.tiles_condition', $default)) selected  @endif value="{{ $roofTileStatus->id }}">{{ $roofTileStatus->name }}</option>
+                                                        <option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra.tiles_condition', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.tiles_condition'))) selected="selected" @endif value="{{ $roofTileStatus->id }}">{{ $roofTileStatus->name }}</option>
+                                                        {{--<option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra.tiles_condition', $default)) selected  @endif value="{{ $roofTileStatus->id }}">{{ $roofTileStatus->name }}</option>--}}
                                                     @endforeach
-                                                </select>@endcomponent
+                                                </select>
+                                            @endcomponent
 
                                                 <div id="tiles-condition-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                                     {{\App\Helpers\Translation::translate('roof-insulation.current-situation.in-which-condition-tiles.help')}}
@@ -279,12 +300,17 @@
                                             ?>
 
                                             @component('cooperation.tool.components.input-group',
-                                        ['inputType' => 'select', 'inputValues' => $measureApplications[$roofCat], 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'extra.measure_application_id', 'customInputValueColumn' => 'measure_name'])<select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][measure_application_id]">
-                                                    <option value="0" @if($default == 0) selected @endif>{{\App\Helpers\Translation::translate('roof-insulation.measure-application.no.title')}}</option>
-                                                @foreach($measureApplications[$roofCat] as $measureApplication)
-                                                    <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
-                                                @endforeach
-                                            </select>@endcomponent
+                                            ['inputType' => 'select', 'inputValues' => $measureApplications[$roofCat], 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'extra.measure_application_id', 'customInputValueColumn' => 'measure_name'])
+                                                <select id="flat_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][measure_application_id]">
+                                                    <option value="0" @if($default == 0) selected @endif>
+                                                        {{\App\Helpers\Translation::translate('roof-insulation.measure-application.no.title')}}
+                                                    </option>
+                                                    @foreach($measureApplications[$roofCat] as $measureApplication)
+                                                        <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.measure_application_id'))) selected="selected" @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
+                                                    {{--<option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>--}}
+                                                    @endforeach
+                                                </select>
+                                            @endcomponent
 
                                             <div id="{{ $roofCat }}-interested-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                                 {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.insulate-roof.help')}}
@@ -304,14 +330,16 @@
                                             {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'-roof.situation.title')}}</label>
 
                                             <?php
-                                            $default = isset($currentCategorizedRoofTypes[$roofCat]['building_heating_id']) ? $currentCategorizedRoofTypes[$roofCat]['building_heating_id'] : 0;
+                                            //$default = isset($currentCategorizedRoofTypes[$roofCat]['building_heating_id']) ? $currentCategorizedRoofTypes[$roofCat]['building_heating_id'] : 0;
                                             ?>
 
                                             @component('cooperation.tool.components.input-group',
-                                        ['inputType' => 'select', 'inputValues' => $heatings, 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'building_heating_id'])<select id="flat_roof_situation" class="form-control" name="building_roof_types[{{ $roofCat }}][building_heating_id]" >
+                                        ['inputType' => 'select', 'inputValues' => $heatings, 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat] ,'userInputColumn' => 'building_heating_id'])
+                                            <select id="flat_roof_situation" class="form-control" name="building_roof_types[{{ $roofCat }}][building_heating_id]" >
                                                 @foreach($heatings as $heating)
                                                     @if($heating->calculate_value < 5)
-                                                    <option @if($heating->id == old('building_roof_types.' . $roofCat . '.building_heating_id', $default)) selected @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
+                                                        <option @if($heating->id == old('building_roof_types.' . $roofCat . '.building_heating_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'building_heating_id'))) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
+                                                    {{--<option @if($heating->id == old('building_roof_types.' . $roofCat . '.building_heating_id', $default)) selected @endif value="{{ $heating->id }}">{{ $heating->name }}</option>--}}
                                                     @endif
                                                 @endforeach
                                             </select>@endcomponent
@@ -332,7 +360,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.'.$roofCat.'.extra.comment') ? ' has-error' : '' }}">
                                             <label for="" class="control-label">
-                                                <i data-toggle="collapse" data-target="#comments-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                                <i data-toggle="collapse" data-target="#comments-{{$roofCat}}-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                                 {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
                                             </label>
 
@@ -343,17 +371,18 @@
 
                                             <textarea name="building_roof_types[{{ $roofCat }}][extra][comment]" id="" class="form-control">{{ $default }}</textarea>
 
-                                            <div id="comments-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                            <div id="comments-{{$roofCat}}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                                 {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
                                             </div>
 
-                                            @if ($errors->has('building_roof_types.'.$roofCat.'.extra.comment'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
-                                                </span>
-                                            @endif
+                                        @if ($errors->has('building_roof_types.'.$roofCat.'.extra.comment'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('building_roof_types.'.$roofCat.'.extra.comment') }}</strong>
+                                            </span>
+                                        @endif
                                         </div>
                                     </div>
+                                </div>
                                 <div class="col-sm-12">
                                     {{--loop through all the insulated glazings with ALL the input sources--}}
                                     @foreach ($currentCategorizedRoofTypesForMe[$roofCat] as $currentRoofTypeForMe)
@@ -367,111 +396,94 @@
                                     @endforeach
                                 </div>
                             </div>
-                            </div>
+                        </div>
 
                     @endforeach
 
-
                     @foreach(['flat', 'pitched'] as $roofCat)
-                        <div class="costs {{ $roofCat }}-roof">
-                            <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.costs.title.title')}}</h4>
-                            <div class="{{$roofCat}}-hideable">
-                                <div class="row">
+                        <div class="costs {{ $roofCat }}-roof col-md-12">
 
-                                    <div class="col-md-4">
-                                        <div class="form-group add-space">
-                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.cubic-meters') / @lang('woningdossier.cooperation.tool.unit.year')</span>
-                                                <input type="text" id="{{ $roofCat }}_savings_gas" class="form-control disabled" disabled="" value="0">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group add-space">
-                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                                <input type="text" id="{{ $roofCat }}_savings_co2" class="form-control disabled" disabled="" value="0">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group add-space">
-                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                                <input type="text" id="{{ $roofCat }}_savings_money" class="form-control disabled" disabled="" value="0">
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    @include('cooperation.layouts.section-title', [
+                                        'translationKey' => 'roof-insulation.'.$roofCat.'.costs.title',
+                                        'infoAlertId' => $roofCat.'costs-info'
+                                    ])
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group add-space">
-                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs-insulation.title')}}</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                                <input type="text" id="{{ $roofCat }}_cost_indication" class="form-control disabled" disabled="" value="0">
-                                            </div>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 {{$roofCat}}-hideable">
+                                    @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                                </div>
+
+                                <div class="col-md-4 {{$roofCat}}-hideable">
+                                    @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                                </div>
+                                <div class="col-md-4 {{$roofCat}}-hideable">
+                                    @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat])
                                 </div>
                             </div>
 
                             <div class="row">
+                                <div class="col-md-4 {{$roofCat}}-hideable">
+                                    @include('cooperation.layouts.indication-for-costs.indicative-costs', ['id' => $roofCat])
+                                </div>
                                 <div class="col-md-4">
                                     <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.indicative-costs-replacement.title')}}</label>
+                                        <label class="control-label">
+                                            <i data-toggle="collapse" data-target="#{{$roofCat}}-indicative-costs-replacement-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.indicative-costs-replacement.title')}}
+                                        </label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                             <input type="text" id="{{ $roofCat }}_replace_cost" class="form-control disabled" disabled="" value="0">
                                         </div>
+                                        <div id="{{$roofCat}}-indicative-costs-replacement-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.indicative-costs-replacement.help')}}
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group add-space @if($roofCat == 'pitched') cover-tiles @endif">
-                                        <label class="control-label">{{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.indicative-replacement.year.title')}}</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 @if($roofCat == 'pitched') cover-tiles @endif">
+                                    <div class="form-group add-space">
+                                        <label class="control-label">
+                                            <i data-toggle="collapse" data-target="#{{$roofCat}}-indicative-replacement-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.indicative-replacement.year.title')}}
+                                        </label>
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                             <input type="text" id="{{ $roofCat }}_replace_year" class="form-control disabled" disabled="" value="">
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="{{$roofCat}}-hideable">
-
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group add-space">
-                                            <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                                <input type="text" id="{{ $roofCat }}_interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                                            </div>
+                                        <div id="{{$roofCat}}-indicative-replacement-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                            {{\App\Helpers\Translation::translate('roof-insulation.'.$roofCat.'.indicative-replacement.year.help')}}
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4 {{$roofCat}}-hideable">
+                                    @include('cooperation.layouts.indication-for-costs.comparable-rent', ['id' => $roofCat])
+                                </div>
                             </div>
                         </div>
+
                     @endforeach
+
                 </div>
-            </div>
-        </div>
-        @foreach(['flat', 'pitched'] as $roofCat)
-            @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('resident'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                            <?php
-                                $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentCategorizedRoofTypesForMe[$roofCat]));
-                                $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
-                            ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}}, @lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title'))
-                            </label>
+
+            @foreach(['flat', 'pitched'] as $roofCat)
+                @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('resident'))
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                                <?php
+                                    $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentCategorizedRoofTypesForMe[$roofCat]));
+                                    $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
+                                ?>
+                                <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}}, @lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title'))
+                                </label>
 
                             <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
                         </div>
@@ -481,10 +493,10 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group add-space">
-                            <?php
-                                $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentCategorizedRoofTypesForMe[$roofCat]));
-                                $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
-                            ?>
+						    <?php
+						    $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentCategorizedRoofTypesForMe[$roofCat]));
+						    $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
+						    ?>
                             <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}}, @lang('woningdossier.cooperation.tool.roof-insulation.' . $roofCat . '-roof.title'))
                             </label>
@@ -502,9 +514,6 @@
                     <div class="panel-body">
                         <ol>
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')))))}}</a></li>
-                            <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Dakisolatie.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
-
                         </ol>
                     </div>
                 </div>

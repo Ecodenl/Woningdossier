@@ -92,6 +92,7 @@ class BuildingFeature extends Model
         'facade_plastered_surface_id',
         'facade_damaged_paintwork_id',
         'window_surface',
+	    'roof_type_id',
     ];
 
     public function building()

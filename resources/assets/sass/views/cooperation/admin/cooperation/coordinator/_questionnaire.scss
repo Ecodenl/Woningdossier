@@ -1,0 +1,7 @@
+.ui-sortable {
+  .ui-sortable-handle {
+    &:hover, &:focus {
+      cursor: move;
+    }
+  }
+}

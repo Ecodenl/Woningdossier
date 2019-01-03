@@ -12,7 +12,7 @@
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('floor-insulation.intro.title.title')}}</h4>
+                    @include('cooperation.layouts.section-title', ['translationKey' => 'floor-insulation.intro.title'])
                 </div>
             </div>
             <div class="row">
@@ -29,16 +29,17 @@
                             <div id="floor-insulation-options">
                                 <select id="element_{{ $floorInsulation->id }}" class="form-control" name="element[{{ $floorInsulation->id }}]">
                                     @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
+                                        <option data-calculate-value="{{$elementValue->calculate_value}}" @if(old('element.' . $floorInsulation->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $floorInsulation->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                        {{--<option
                                         <option data-calculate-value="{{$elementValue->calculate_value}}"
                                                 @if(old('element.' . $floorInsulation->id . '') && $floorInsulation->id == old('element.' . $floorInsulation->id . ''))
                                                 selected="selected"
-                                                {{-- TODO: Remove the element_values ? --}}
                                                 @elseif(isset($buildingFeature->element_values) && $elementValue->id == $buildingFeature->element_values)
                                                 selected="selected"
                                                 @elseif(isset($buildingInsulation->element_value_id) && $elementValue->id == $buildingInsulation->element_value_id)
                                                 selected="selected"
                                                 @endif
-                                                value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                                value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>--}}
                                     @endforeach
                                 </select>
                             </div>
@@ -80,12 +81,13 @@
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.has_crawlspace'])<select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
                                     @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                        <option @if(old('building_elements.crawlspace') == $i) selected
+                                        <option @if(old('building_elements.crawlspace', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.has_crawlspace')) == $i) selected="selected" @endif value="{{ $i }}">{{ $option }}</option>
+                                        {{--<option @if(old('building_elements.crawlspace') == $i) selected
                                                 @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                             && is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                             && array_key_exists('has_crawlspace', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                             && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['has_crawlspace'] == $i ) selected
-                                                @endif value="{{ $i }}">{{ $option }}</option>
+                                                @endif value="{{ $i }}">{{ $option }}</option>--}}
                                     @endforeach
                                 </select>@endcomponent
 
@@ -107,7 +109,7 @@
 
                                 <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                     <div class="alert alert-warning show" role="alert">
-                                        <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.unknown.title')}}</p>
+                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.unknown')</p>
                                     </div>
                                 </div>
                             </div>
@@ -127,12 +129,13 @@
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.access'])<select id="crawlspace_access" class="form-control" name="building_elements[{{ $crawlspace->id }}][extra]">
                                     @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                        <option @if(old('building_elements.crawlspace_access') == $option) selected
+                                        <option @if(old('building_elements.crawlspace_access', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.access')) == $i) selected="selected" @endif value="{{ $i }}">{{ $option }}</option>
+                                            {{--<option @if(old('building_elements.crawlspace_access') == $option) selected
                                                 @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                 &&is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                 && array_key_exists('access', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                 && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['access'] == $i) selected
-                                                @endif value="{{ $i }}">{{ $option }}</option>
+                                                @endif value="{{ $i }}">{{ $option }}</option>--}}
                                     @endforeach
                                 </select>@endcomponent
 
@@ -153,7 +156,8 @@
 
                                     <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
                                         <div class="alert alert-warning show" role="alert">
-                                            <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
+                                            {{--<p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>--}}
+                                            <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
                                         </div>
                                     </div>
 
@@ -171,26 +175,30 @@
                                     @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'element_value_id'])<select id="crawlspace_height" class="form-control" name="building_elements[{{ $crawlspace->id }}][element_value_id]">
                                         @foreach($crawlspace->values as $crawlHeight)
-                                            <option @if(old('crawlspace_height') == $crawlHeight->id) selected
+                                            <option @if(old('crawlspace_height', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'element_value_id')) == $crawlHeight->id) selected="selected" @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
+                                            {{--<option @if(old('crawlspace_height') == $crawlHeight->id) selected
                                                     @elseif(
                                                 isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
                                                 && $buildingElement->where('element_id', $crawlspace->id)->first()->element_value_id == $crawlHeight->id)
                                                     selected
-                                                @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
+                                                @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>--}}
                                         @endforeach
                                     </select>@endcomponent
 
-                                    @if ($errors->has('building_elements.' . $crawlspace->id .'.element_value_id'))
-                                        <span class="help-block">
-                                        <strong>{{ $errors->first('building_elements.' . $crawlspace->id .'.element_value_id') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
+
+                            <div class="col-sm-12">
 
                             <div class="form-group add-space">
                                     <div id="crawlspace-height-info" class="collapse alert alert-info remove-collapse-space">
-                                        {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.help')}}
+                                        {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.help')}}</div>
+                                    </div>
+                                </div>
+
+                                @if ($errors->has('building_elements.' . $crawlspace->id .'.element_value_id'))
+                                    <span class="help-block">
+                                    <strong>{{ $errors->first('building_elements.' . $crawlspace->id .'.element_value_id') }}</strong>
+                                </span>
+                                @endif
                                 </div>
                             </div>
                         </div>
@@ -207,7 +215,8 @@
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat'])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">
+                                    <input id="floor_surface" type="text" name="building_features[floor_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'floor_surface')),1) }}" class="form-control" >
+                                {{--<input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">--}}
                                 @endcomponent
                                 @if ($errors->has('building_features.surface'))
                                     <span class="help-block">
@@ -231,7 +240,8 @@
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
                                     <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">
+                                    <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_surface')),1) }}" class="form-control" >
+                                {{--<input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">--}}
                                 @endcomponent
                                 @if ($errors->has('building_features.insulation_surface'))
                                     <span class="help-block">
@@ -274,9 +284,9 @@
                     <div class="col-sm-12">
                         <?php
                             $coachInputSource = App\Models\InputSource::findByShort('coach');
-                            $coachInput = $buildingElementsForMe->where('input_source_id', $coachInputSource->id)->where('element_id', $crawlspace->id)->first()
+                            $coachInput = \App\Models\BuildingElement::getCoachInput($buildingElementsForMe);
                         ?>
-                        @if(!is_null($coachInput) && $coachInput->hasCoachInputSource() && array_key_exists('comment', $coachInput->extra))
+                        @if(($coachInput instanceof \App\Models\BuildingElement && is_array($coachInput->extra)) && array_key_exists('comment', $coachInput->extra))
                             @component('cooperation.tool.components.alert')
                                 {{$coachInput->extra['comment']}}
                             @endcomponent
@@ -300,52 +310,21 @@
 
                     <div id="costs" class="row">
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.gas.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">m3 / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.co2.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.kg.title')}} / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.savings-in-euro.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.indicative-costs.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                    <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
-                                </div>
-                            </div>
-
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group add-space">
-                                <label class="control-label">{{\App\Helpers\Translation::translate('general.costs.comparable-rent.title')}}</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">% / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                                    <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                                </div>
-                            </div>
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
                         </div>
                     </div>
                 </div>
@@ -389,7 +368,7 @@
             <div class="row" id="no-crawlspace-error">
                 <div class="col-md-12">
                     <div class="alert alert-danger show" role="alert">
-                        <p>{{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title')}}</p>
+                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.no-crawlspace')</p>
                     </div>
                 </div>
             </div>
@@ -397,13 +376,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">@lang('general.download.title')}}</div>
+                        <div class="panel-heading">@lang('default.buttons.download')</div>
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a></li>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')))))}}</a></li>
-                                <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Vloerisolatie.pdf"; ?>
-                                <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
 
                             </ol>
                         </div>

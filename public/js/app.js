@@ -68,7 +68,10 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(8);
+__webpack_require__(8);
+__webpack_require__(9);
+__webpack_require__(10);
+module.exports = __webpack_require__(11);
 
 
 /***/ }),
@@ -91,6 +94,12 @@ __webpack_require__(2);
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 
 //Vue.component('example', require('./components/Example.vue'));
 
@@ -30111,6 +30120,24 @@ if (typeof jQuery === 'undefined') {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

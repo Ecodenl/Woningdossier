@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
+use App\Models\InputSource;
+use App\Models\Role;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
@@ -37,6 +43,44 @@ class ResetPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    protected function resetPassword($user, $password)
+    {
+        $user->password = \Hash::make($password);
+
+        $user->setRememberToken(Str::random(60));
+
+        $user->save();
+
+        event(new PasswordReset($user));
+
+        // get the first building from the user
+        $building = $user->buildings()->first();
+
+        // we cant query on the Spatie\Role model so we first get the result on the "original model"
+        $role = Role::findByName($user->roles->first()->name);
+
+        // get the input source
+        $inputSource = $role->inputSource;
+
+        // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
+        if (!$role->inputSource instanceof InputSource) {
+            $inputSource = InputSource::findByShort('resident');
+        }
+
+        // set the required sessions
+        HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
+
+        // set the redirect url
+        if ($user->roles->count() == 1) {
+            $this->redirectTo = RoleHelper::getUrlByRole( $role );
+        }
+        else {
+            $this->redirectTo = '/admin';
+        }
+
+        $this->guard()->login($user);
     }
 
     /**

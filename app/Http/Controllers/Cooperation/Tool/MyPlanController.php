@@ -10,23 +10,21 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
+use App\Scopes\GetValueScope;
 
 class MyPlanController extends Controller
 {
-
-	public function index()
+    public function index()
     {
-        $privateMessage = PrivateMessage::myConversationRequest()->first();
-
-		$user = \Auth::user();
+        $user = \Auth::user();
 		$advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
         $coachComments = UserActionPlanAdvice::getAllCoachComments();
 
-        $steps = Step::orderBy('order')->get();
+
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'steps', 'coachComments', 'privateMessage'
+            'advices', 'coachComments'
         ));
     }
 
@@ -78,7 +76,7 @@ class MyPlanController extends Controller
         $userPlanData = array_flatten($userPlanData, 1);
 
         return CsvExportService::export($headers, $userPlanData, 'my-plan');
-    }
+	}
 
     public function store(Request $request)
     {

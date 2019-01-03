@@ -61,7 +61,7 @@ class RoofInsulationController extends Controller
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
         $roofTypes = RoofType::all();
-        $steps = Step::orderBy('order')->get();
+
         $currentRoofTypes = $building->roofTypes;
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
 
@@ -69,7 +69,6 @@ class RoofInsulationController extends Controller
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $heatings = BuildingHeating::all();
         $measureApplications = $this->getMeasureApplicationsAdviceMap();
-
 
         $currentCategorizedRoofTypes = [
             'flat' => [],
@@ -102,7 +101,7 @@ class RoofInsulationController extends Controller
 
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'features', 'roofTypes', 'steps', 'typeIds', 'buildingFeaturesForMe',
+            'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
              'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
@@ -512,6 +511,13 @@ class RoofInsulationController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

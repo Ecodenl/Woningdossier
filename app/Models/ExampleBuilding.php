@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -102,8 +103,7 @@ class ExampleBuilding extends Model
         return $this->contents()
                     ->where('build_year', '<=', $year)
                     ->orderBy('build_year')
-                    ->take(1)
-                    ->get();
+                    ->first();
     }
 
     /**
@@ -136,8 +136,22 @@ class ExampleBuilding extends Model
      */
     public function scopeForMyCooperation($query)
     {
-        $cooperationId = \Session::get('cooperation', 0);
+        $cooperationId = !empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
         return $query->where('cooperation_id', '=', $cooperationId);
     }
+
+	/**
+	 * Scope a query to only include buildings for my cooperation.
+	 *
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 *
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeForAnyOrMyCooperation($query)
+	{
+		$cooperationId = \Session::get('cooperation', 0);
+
+		return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
+	}
 }

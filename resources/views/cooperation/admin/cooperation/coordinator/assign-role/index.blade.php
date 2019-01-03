@@ -14,7 +14,7 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.index.table.columns.last-name')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.index.table.columns.email')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.index.table.columns.role')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.coach.index.table.columns.actions')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.user.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>

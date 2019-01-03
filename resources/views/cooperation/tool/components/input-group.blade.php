@@ -1,4 +1,3 @@
-
 <div class="input-group input-source-group">
     {{ $slot }}
     <div class="input-group-btn">
@@ -7,10 +6,10 @@
             @switch($inputType)
                 @case('select')
                     @include('cooperation.tool.components.select', [
-                        'customInputValueColumn' => isset($customInputValueColumn)  ? $customInputValueColumn : "",
+                        'customInputValueColumn' => isset($customInputValueColumn) ? $customInputValueColumn : null,
                         'userInputValues' => $userInputValues,
                         'userInputColumn' => $userInputColumn,
-                        'userInputModel' => isset($userInputModel) ? $userInputModel : "",
+                        'userInputModel' => isset($userInputModel) ? $userInputModel : null,
                         'inputValues' => $inputValues,
                     ])
                     @break
@@ -18,7 +17,8 @@
                     @include('cooperation.tool.components.input', [
                         'userInputValues' => $userInputValues,
                         'userInputColumn' => $userInputColumn,
-                        'needsFormat' => isset($needsFormat) ? true : false
+                        'needsFormat' => isset($needsFormat) ? true : false,
+                        'decimals' => $decimals ?? null,
                     ])
                     @break
                 @default

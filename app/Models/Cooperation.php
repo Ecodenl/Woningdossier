@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\Cooperation.
@@ -41,6 +42,47 @@ class Cooperation extends Model
     {
         return $this->hasOne(CooperationStyle::class);
     }
+
+    /**
+     * Get all the steps from the cooperation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function steps()
+    {
+        return $this->belongsToMany(Step::class, 'cooperation_steps')->withPivot('order', 'is_active');
+    }
+
+    /**
+     * Check if the cooperation has a active step
+     *
+     * @param Step $step
+     * @return bool
+     */
+    public function isStepActive(Step $step): bool
+    {
+        $cooperationSteps = $this->steps();
+        $cooperationStep = $cooperationSteps->find($step->id);
+        if ($cooperationStep instanceof Step) {
+            if ($cooperationStep->pivot->is_active) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * get the active steps ordered on the order column
+     *
+     * @return mixed
+     */
+    public function getActiveOrderedSteps(): Collection
+    {
+        return $this->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
+    }
+
 
 	public function getRouteKeyName()
 	{

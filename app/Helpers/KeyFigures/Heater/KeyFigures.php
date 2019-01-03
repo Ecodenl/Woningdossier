@@ -12,6 +12,21 @@ use App\Models\UserEnergyHabit;
 
 class KeyFigures
 {
+
+	const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
+
+	protected static $angles = [
+		20 => 20,
+		30 => 30,
+		40 => 40,
+		45 => 45,
+		50 => 50,
+		60 => 60,
+		70 => 70,
+		75 => 75,
+		90 => 90,
+	];
+
     /**
      * @param $zipcode
      *
@@ -92,4 +107,8 @@ class KeyFigures
 		}
 		return 6.4;
     }
+
+	public static function getAngles(){
+		return self::$angles;
+	}
 }

@@ -12,7 +12,7 @@
 
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('app.name', 'Laravel') }}
+                {{ config('app.name', 'Hoomdossier') }}
             </a>
         </div>
 
@@ -28,35 +28,38 @@
         @if(App::environment() == 'local') {{-- currently only for local --}}
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
+                @if(count(config('woningdossier.supported_locales')) > 1)
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                         @lang('woningdossier.navbar.language')<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        @foreach(config('woningdossier.supported_locales') as $locale)
-                            @if(app()->getLocale() != $locale)
-                                <li>
-                                    <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
-                                </li>
+
+                            @foreach(config('woningdossier.supported_locales') as $locale)
+                                @if(app()->getLocale() != $locale)
+                                    <li>
+                                        <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
+                                    </li>
+                                @endif
+                            @endforeach
+                    </ul>
+                </li>
+                @endif
+                @auth
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                        @lang('woningdossier.navbar.input_source')<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach($inputSources as $inputSource)
+                            @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
+                            <li>
+                                <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
+                            </li>
                             @endif
                         @endforeach
                     </ul>
                 </li>
-                @auth
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                            @lang('woningdossier.navbar.input_source')<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            @foreach($inputSources as $inputSource)
-                                @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
-                                    <li>
-                                        <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    </li>
                 @endauth
             </ul>
         @endif
@@ -67,59 +70,52 @@
                     <li><a href="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">@lang('auth.login.form.header')</a></li>
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
+                    <li><a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a></li>
                     <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
                     @if (!Auth::user()->isFillingToolForOtherBuilding())
-                        <li><a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}"><span class="glyphicon glyphicon-envelope"></span> <span class="badge">{{$myUnreadMessages->count()}}</span></a></li>
-                        <li><a href="{{ route('cooperation.help.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.help.title')</a></li>
+
+                        @if(Auth::user()->hasNotMultipleRoles() && Auth::user()->hasRole('resident'))
+                            <li>
+                                <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
+                                    <span class="glyphicon glyphicon-envelope"></span>
+                                    <span class="badge">{{$myUnreadMessages->count()}}</span>
+                                </a>
+                            </li>
+                        @elseif(Auth::user()->can('access-admin'))
+                            <li>
+                                <a href="{{route('cooperation.admin.index')}}">
+                                    <span class="glyphicon glyphicon-envelope"></span>
+                                    <span class="badge">{{$myUnreadMessages->count()}}</span>
+                                </a>
+                            </li>
+                        @endif
+
                         <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>
-                        <li><a href="{{ url('/home') }}">@lang('woningdossier.cooperation.disclaimer.title')</a></li>
 
-                    @if(Auth::user()->getRoleNames()->count() == 1 && Auth::user()->getRoleNames()->first() == "resident")
-                        <li>
-                            <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessages->count()}}</span>
-                            </a>
-                        </li>
-                    @elseif(Auth::user()->getRoleNames()->count() == 1)
-                        <li>
-                            <a href="{{route('cooperation.admin.index', ['role' => Auth::user()->getRoleNames()->first()])}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessages->count()}}</span>
-                            </a>
-                        </li>
-                    @else
-                        <li>
-                            <a href="{{route('cooperation.admin.index')}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessages->count()}}</span>
-                            </a>
-                        </li>
-                    @endif
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
-                            </a>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                                    {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
+                                </a>
 
-                            <ul class="dropdown-menu">
-                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
-                                {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
-                                <li>
-                                    <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"
-                                       onclick="event.preventDefault();
-                                                         document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
+                                    {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
+                                    <li>
+                                        <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"
+                                           onclick="event.preventDefault();
+                                                             document.getElementById('logout-form').submit();">
+                                            Logout
+                                        </a>
 
-                                    <form id="logout-form" action="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
-                                </li>
-                                <li>
-                                    <span class="pull-right" style="padding-right:.5em;line-height:100%;"><small>v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif</small></span>
-                                </li>
-                            </ul>
-                        </li>
+                                        <form id="logout-form" action="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}" method="POST" style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <span class="pull-right" style="padding-right:.5em;line-height:100%;"><small>v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif</small></span>
+                                    </li>
+                                </ul>
+                            </li>
                     @endif
                 @endguest
             </ul>

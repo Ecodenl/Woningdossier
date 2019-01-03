@@ -133,9 +133,8 @@ class RegisterController extends Controller
             'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
         ]);
 
-
-    	$address = new Building($data);
-    	$address->user()->associate($user)->save();
+        $address = new Building($data);
+        $address->user()->associate($user)->save();
 
         $features->building()->associate($address)->save();
 

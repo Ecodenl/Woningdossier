@@ -77,15 +77,7 @@ class SolarPanelsController extends Controller
             'year' => null,
         ];
 
-<<<<<<<<< Temporary merge branch 1
         $building = Building::find(HoomdossierSession::getBuilding());
-        $user = $building->user;
-=========
-
-
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
->>>>>>>>> Temporary merge branch 2
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);

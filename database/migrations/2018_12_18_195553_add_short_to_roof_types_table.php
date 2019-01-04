@@ -39,7 +39,6 @@ class AddShortToRoofTypesTable extends Migration
             $roofTypeResult = DB::table('roof_types')->where('calculate_value', $roofType['calculate_value'])->first();
             if ($roofTypeResult instanceof stdClass) {
 
-                unset($roofType['names']);
                 DB::table('roof_types')
                     ->where('calculate_value', $roofType['calculate_value'])
                     ->update($roofType);

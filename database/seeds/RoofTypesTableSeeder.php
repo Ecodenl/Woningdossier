@@ -30,7 +30,7 @@ class RoofTypesTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Geen roof man',
+                    'nl' => 'Geen dak',
                 ],
                 'order' => 4,
                 'calculate_value' => 5,
@@ -39,37 +39,22 @@ class RoofTypesTableSeeder extends Seeder
         ];
 
         foreach ($roofTypes as $roofType) {
-            $roofTypeResult = DB::table('roof_types')->where('calculate_value', $roofType['calculate_value'])->first();
-            if (!$roofTypeResult instanceof stdClass) {
-                $uuid = \App\Helpers\Str::uuid();
-                foreach ($roofType['names'] as $locale => $name) {
-                    \DB::table('translations')->insert([
-                        'key'         => $uuid,
-                        'language'    => $locale,
-                        'translation' => $name,
-                    ]);
-                }
 
-                \DB::table('roof_types')->insert([
-                    'calculate_value' => $roofType['calculate_value'],
-                    'order' => $roofType['order'],
-                    'name' => $uuid,
-                    'short' => $roofType['short']
+            $uuid = \App\Helpers\Str::uuid();
+            foreach ($roofType['names'] as $locale => $name) {
+                \DB::table('translations')->insert([
+                    'key'         => $uuid,
+                    'language'    => $locale,
+                    'translation' => $name,
                 ]);
-            } else {
-                // update
-                foreach ($roofType['names'] as $locale => $name) {
-                    DB::table('translations')
-                        ->where('key', $roofTypeResult->name)
-                        ->where('language', $locale)
-                        ->update(['translation' => $name]);
-                }
-
-                unset($roofType['names']);
-                DB::table('roof_types')
-                    ->where('calculate_value', $roofType['calculate_value'])
-                    ->update($roofType);
             }
+
+            \DB::table('roof_types')->insert([
+                'calculate_value' => $roofType['calculate_value'],
+                'order' => $roofType['order'],
+                'name' => $uuid,
+                'short' => $roofType['short']
+            ]);
         }
     }
 }

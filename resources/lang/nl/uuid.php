@@ -60,6 +60,12 @@
 
                 ],
 
+            "title" => 
+                [
+                    "help" => '86927ac6-6928-44e2-95ec-776d03382eee',
+                    "title" => '299701e0-dbb1-4127-8dc5-f396b0d188a3',
+                ],
+
             "energy-saving-measures" => 
                 [
                     "house-ventilation" => 
@@ -400,6 +406,12 @@
                             "title" => 'cfabc4de-53a2-43f3-86a8-ef41060c618f',
                         ],
 
+                    "pieces" => 
+                        [
+                            "help" => 'c86cd9d4-7536-42e7-8f45-48b714374c9d',
+                            "title" => 'd8486b47-4003-40c5-aa06-9c05d2b06936',
+                        ],
+
                     "kg" => 
                         [
                             "help" => '7861ce73-3bc4-4d26-a8ea-7d31ea543c82',
@@ -450,6 +462,12 @@
 
     "wall-insulation" => 
         [
+            "title" => 
+                [
+                    "help" => '131649e7-8353-4b08-b17e-f20591bdf71e',
+                    "title" => '4e8001a7-b4e4-4400-97d8-f244ebb4b190',
+                ],
+
             "intro" => 
                 [
                     "build-year-post-1985" => 
@@ -660,6 +678,12 @@
                             "title" => '38cab637-34cd-431d-afc9-72b2fe262e10',
                         ],
 
+                ],
+
+            "title" => 
+                [
+                    "help" => '724b50b5-fc9a-48be-bc8d-8fc54759c587',
+                    "title" => '5956c73b-987f-4d40-9098-20ef2c44b70d',
                 ],
 
             "hrpp-glass-only" => 
@@ -942,6 +966,12 @@
                 [
                     "help" => '3bcfab37-e526-4c97-acd7-83243130228b',
                     "title" => '41ffccd1-2fc1-4e58-8405-fc3698f97e7e',
+                ],
+
+            "title" => 
+                [
+                    "help" => '78918979-ce5b-4973-83ff-2a06abe1d57c',
+                    "title" => 'efbf48fb-d8ac-479f-ad70-9c0567d24355',
                 ],
 
             "intro" => 

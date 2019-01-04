@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.insulated-glazing.title'))
+@section('step_title', \App\Helpers\Translation::translate('insulated-glazing.title.title'))
 
 
 @section('step_content')

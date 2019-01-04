@@ -333,6 +333,7 @@ return [
                         'label' => 'Coördinator menu',
                         'home' => 'Home',
                         'my-messages' => 'Mijn berichten',
+                        'questionnaire' => 'Vragenlijsten',
                         'connect-to-coach' => 'Gewbouw toewijzen',
                         'assign-roles' => 'Rollen toewijzen',
                         'messages' => 'Berichten',

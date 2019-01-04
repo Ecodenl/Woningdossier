@@ -92,9 +92,9 @@ class BuildingCoachStatus extends Model
         return "";
     }
 
-
     public static function hasCoachAccess()
     {
+        \Log::info('the '. __METHOD__. 'has been used');
         // the coach can talk to a resident if there is a coach status where the active status is higher then the deleted status
         $buildingCoachStatusActive = self::where('building_coach_statuses.coach_id', '=', \Auth::id())
             ->where('status', '=', self::STATUS_ACTIVE)->count();

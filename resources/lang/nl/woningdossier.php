@@ -722,7 +722,8 @@ return [
 
         'my-account' => [
             'side-nav' => [
-                'label' => 'Berichten centrum',
+                'label' => 'Mijn account',
+                'import' => 'Import centrum',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',
             ],
@@ -733,6 +734,11 @@ return [
 
                 'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',
                 'messages' => 'Berichten <span class="glyphicon glyphicon-envelope">',
+            ],
+            'import-center' => [
+                'header' => 'Import centrum',
+                'text' => 'Welkom bij het import centrum.',
+
             ],
 
             'messages' => [

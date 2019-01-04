@@ -22,9 +22,11 @@ use App\Models\FacadeSurface;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\ToolSetting;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\ToolSettingService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -108,7 +110,7 @@ class WallInsulationController extends Controller
         $elementValueId = reset($wallInsulationQualities);
 
         // Save the wall insulation
-        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+        $buildingElement = BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -120,7 +122,8 @@ class WallInsulationController extends Controller
             ]
         );
 
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+
+        $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -139,6 +142,7 @@ class WallInsulationController extends Controller
         );
 
 
+
         // Save progress
         $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
@@ -151,6 +155,8 @@ class WallInsulationController extends Controller
         if (!empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
+
+        ToolSettingService::setChanged($buildingId, $buildingElement, $buildingFeature);
 
         return redirect($url);
     }

@@ -42,6 +42,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 				Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
                 Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
 
+                Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
+                    Route::get('', 'ImportCenterController@index')->name('index');
+                });
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
 
 				    Route::get('', 'MessagesController@index')->name('index');

@@ -15,6 +15,18 @@
                                 </h4>
                             </div>
                             <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['my-account'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.import-center.index')}}">
+                                        @lang('woningdossier.cooperation.my-account.side-nav.import')
+                                    </a>
+                                </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.requests.index', 'cooperation.my-account.messages.requests.edit']))  active @endif">
+                                    <a href="{{route('cooperation.my-account.messages.requests.index')}}">
+                                        @lang('woningdossier.cooperation.my-account.side-nav.my-requests')
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['my-account'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.index', 'cooperation.my-account.messages.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.messages.index')}}">
                                         @lang('woningdossier.cooperation.my-account.side-nav.my-messages')

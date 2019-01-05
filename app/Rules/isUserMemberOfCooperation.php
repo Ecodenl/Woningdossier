@@ -14,15 +14,15 @@ class isUserMemberOfCooperation implements Rule
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Determine if the validation rule passes.
-     * Passes if the given user id has a relation with the current cooperation
+     * Passes if the given user id has a relation with the current cooperation.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed  $value
+     *
      * @return bool
      */
     public function passes($attribute, $value)
@@ -32,6 +32,7 @@ class isUserMemberOfCooperation implements Rule
         if ($currentCooperation->users()->find($value) instanceof User) {
             return true;
         }
+
         return false;
     }
 

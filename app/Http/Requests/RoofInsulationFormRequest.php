@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class RoofInsulationFormRequest extends FormRequest
 {
     use ValidatorTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *

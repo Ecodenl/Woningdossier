@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
+use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingHeating;
@@ -20,7 +20,6 @@ use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\PvPanelOrientation;
-use App\Models\Role;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
@@ -37,14 +36,14 @@ class ExampleBuildingController extends Controller
      */
     public function index()
     {
-    	$exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
-		                                        ->orderBy('order', 'asc');
+        $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
+                                                ->orderBy('order', 'asc');
 
-    	if (stristr(HoomdossierSession::currentRole(), 'super') === false){
-			$exampleBuildingsQuery->forMyCooperation();
-	    }
+        if (false === stristr(HoomdossierSession::currentRole(), 'super')) {
+            $exampleBuildingsQuery->forMyCooperation();
+        }
 
-		$exampleBuildings = $exampleBuildingsQuery->get();
+        $exampleBuildings = $exampleBuildingsQuery->get();
 
         return view('cooperation.admin.cooperation.cooperation-admin.example-buildings.index', compact('exampleBuildings'));
     }
@@ -145,7 +144,7 @@ class ExampleBuildingController extends Controller
      */
     public function edit(Cooperation $cooperation, $id)
     {
-    	/** @var ExampleBuilding $exampleBuilding */
+        /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
@@ -206,11 +205,11 @@ class ExampleBuildingController extends Controller
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         //$solarPanels = Service::where('short', 'total-sun-panels')->first();
-        $solarPanelsOptionsPeakPower = ['' => '-', ] + SolarPanelsKeyFigures::getPeakPowers();
-        $solarPanelsOptionsAngle = ['' => '-', ] + SolarPanelsKeyFigures::getAngles();
+        $solarPanelsOptionsPeakPower = ['' => '-'] + SolarPanelsKeyFigures::getPeakPowers();
+        $solarPanelsOptionsAngle = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
 
         //$heater = Service::where('short', 'sun-boiler')->first();
-	    $heaterOptionsAngle = ['' => '-', ] + HeaterKeyFigures::getAngles();
+        $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
 
         // Common
         //$interests = Interest::orderBy('order')->get();
@@ -241,11 +240,11 @@ class ExampleBuildingController extends Controller
                     'type' => 'text',
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-	            'building_features.insulation_wall_surface' => [
-	            	'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface'),
-		            'type' => 'text',
-		            'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
-	            ],
+                'building_features.insulation_wall_surface' => [
+                    'label' => __('woningdossier.cooperation.tool.wall-insulation.optional.insulation-wall-surface'),
+                    'type' => 'text',
+                    'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
+                ],
                 'building_features.cavity_wall' => [
                     'label' => __('woningdossier.cooperation.tool.wall-insulation.intro.has-cavity-wall'),
                     'type' => 'select',
@@ -330,11 +329,11 @@ class ExampleBuildingController extends Controller
                     'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
                 'building_features.insulation_surface' => [
-	                'label' => __('woningdossier.cooperation.tool.floor-insulation.insulation-surface'),
-	                'type' => 'text',
-	                'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
+                    'label' => __('woningdossier.cooperation.tool.floor-insulation.insulation-surface'),
+                    'type' => 'text',
+                    'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
                 ],
-                'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
+                'element.'.$crawlspace->id.'.extra.has_crawlspace' => [
                     'label' => __('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.title'),
                     'type' => 'select',
                     'options' => __('woningdossier.cooperation.option'),
@@ -380,41 +379,40 @@ class ExampleBuildingController extends Controller
 //		    'heat-pump' => [
 //
 //		    ],
-		    'solar-panels' => [
-				'building_pv_panels.peak_power' => [
-					'label' => __('woningdossier.cooperation.tool.solar-panels.peak-power'),
-					'type' => 'select',
-					'options' => $solarPanelsOptionsPeakPower,
-				],
-			    'building_pv_panels.number' => [
-				    'label' => __('woningdossier.cooperation.tool.solar-panels.number'),
-				    'type' => 'text',
-					'unit' => __('woningdossier.cooperation.tool.unit.pieces'),
-			    ],
-			    'building_pv_panels.pv_panel_orientation_id' => [
-				    'label' => __('woningdossier.cooperation.tool.solar-panels.pv-panel-orientation-id'),
-				    'type' => 'select',
-				    'options' => $this->createOptions(PvPanelOrientation::orderBy('order')->get()),
-			    ],
-				'building_pv_panels.angle' => [
-					'label' => __('woningdossier.cooperation.tool.solar-panels.angle'),
-					'type' => 'select',
-					'options' => $solarPanelsOptionsAngle,
-				],
-
-		    ],
-		    'heater' => [
-			    'building_heaters.pv_panel_orientation_id' => [
-				    'label' => __('woningdossier.cooperation.tool.heater.pv-panel-orientation-id'),
-				    'type' => 'select',
-				    'options' => $this->createOptions(PvPanelOrientation::orderBy('order')->get()),
-			    ],
-			    'building_heaters.angle' => [
-				    'label' => __('woningdossier.cooperation.tool.heater.angle'),
-				    'type' => 'select',
-				    'options' => $heaterOptionsAngle,
-			    ],
-		    ],
+            'solar-panels' => [
+                'building_pv_panels.peak_power' => [
+                    'label' => __('woningdossier.cooperation.tool.solar-panels.peak-power'),
+                    'type' => 'select',
+                    'options' => $solarPanelsOptionsPeakPower,
+                ],
+                'building_pv_panels.number' => [
+                    'label' => __('woningdossier.cooperation.tool.solar-panels.number'),
+                    'type' => 'text',
+                    'unit' => __('woningdossier.cooperation.tool.unit.pieces'),
+                ],
+                'building_pv_panels.pv_panel_orientation_id' => [
+                    'label' => __('woningdossier.cooperation.tool.solar-panels.pv-panel-orientation-id'),
+                    'type' => 'select',
+                    'options' => $this->createOptions(PvPanelOrientation::orderBy('order')->get()),
+                ],
+                'building_pv_panels.angle' => [
+                    'label' => __('woningdossier.cooperation.tool.solar-panels.angle'),
+                    'type' => 'select',
+                    'options' => $solarPanelsOptionsAngle,
+                ],
+            ],
+            'heater' => [
+                'building_heaters.pv_panel_orientation_id' => [
+                    'label' => __('woningdossier.cooperation.tool.heater.pv-panel-orientation-id'),
+                    'type' => 'select',
+                    'options' => $this->createOptions(PvPanelOrientation::orderBy('order')->get()),
+                ],
+                'building_heaters.angle' => [
+                    'label' => __('woningdossier.cooperation.tool.heater.angle'),
+                    'type' => 'select',
+                    'options' => $heaterOptionsAngle,
+                ],
+            ],
         ];
 
         /*
@@ -470,18 +468,18 @@ class ExampleBuildingController extends Controller
         }
 
         // Roof insulation
-	    // have to refactor this
-	    // pitched = 1
-	    // flat = 2
-	    $pitched = new \stdClass();
+        // have to refactor this
+        // pitched = 1
+        // flat = 2
+        $pitched = new \stdClass();
         $pitched->id = 1;
         $pitched->short = 'pitched';
         $flat = new \stdClass();
         $flat->id = 2;
         $flat->short = 'flat';
-	    $roofTypes1 = collect([$pitched, $flat]);
+        $roofTypes1 = collect([$pitched, $flat]);
 
-	    // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
+        // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
 
         foreach ($roofTypes1 as $roofType) {
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.element_value_id'] = [
@@ -494,11 +492,11 @@ class ExampleBuildingController extends Controller
                 'type' => 'text',
                 'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
             ];
-	        $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.insulation_roof_surface'] = [
-		        'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.insulation-'.$roofType->short.'-roof-surface'),
-		        'type' => 'text',
-		        'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
-	        ];
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.insulation_roof_surface'] = [
+                'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.insulation-'.$roofType->short.'-roof-surface'),
+                'type' => 'text',
+                'unit' => __('woningdossier.cooperation.tool.unit.square-meters'),
+            ];
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
                 'label' => __('woningdossier.cooperation.tool.roof-insulation.current-situation.zinc-replaced'),
                 'type' => 'text',

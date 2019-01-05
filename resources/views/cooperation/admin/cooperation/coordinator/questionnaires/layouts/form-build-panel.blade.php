@@ -1,4 +1,4 @@
-<?php $questionsApplicableForValidation = ['text', 'textarea'] ?>
+<?php $questionsApplicableForValidation = ['text', 'textarea']; ?>
 <div class="form-builder ui-sortable-handle panel panel-default" @isset($id) id="{{$id}}" @endisset>
     <div class="panel-heading">
         @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.types.'.$question->type)

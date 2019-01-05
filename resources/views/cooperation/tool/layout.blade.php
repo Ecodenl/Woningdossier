@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <?php
-                    if(!isset($building)) {
+                    if (! isset($building)) {
                         $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
                     }
                 ?>

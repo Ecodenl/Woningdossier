@@ -1,9 +1,9 @@
 <?php
 /**
- * @var $infoAlertId
+ * @var
  * Id to trigger a collapsable alert with info about a given section
  * @var $translationKey
- * The key for the uuid.php translation file WITHOUT the .title or .help on the ending, we concat this later on.
+ *                      The key for the uuid.php translation file WITHOUT the .title or .help on the ending, we concat this later on.
  */
 ?>
 

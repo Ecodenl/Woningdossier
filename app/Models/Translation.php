@@ -29,14 +29,15 @@ class Translation extends Model
     ];
 
     /**
-     * Return the translation from a key / uuid
+     * Return the translation from a key / uuid.
      *
      * @param $key
+     *
      * @return mixed|string
      */
     public static function getTranslationFromKey($key): string
     {
-        if (self::where('key', $key)->first() instanceof Translation) {
+        if (self::where('key', $key)->first() instanceof self) {
             return (string) self::where('key', $key)->first()->translation;
         }
 

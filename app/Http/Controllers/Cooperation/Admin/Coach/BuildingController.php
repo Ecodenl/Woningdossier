@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingNotes;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
-use Carbon\Carbon;
 use App\Models\InputSource;
 use App\Models\Role;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 
 class BuildingController extends Controller
@@ -31,9 +31,9 @@ class BuildingController extends Controller
 //            ->distinct()
 //            ->get();
 //
-////        $buildingsFromNotes = BuildingNotes::where('coach_id', \Auth::id())->with(['building' => function ($query) {
-////            $query->withTrashed();
-////        }])->get();
+        ////        $buildingsFromNotes = BuildingNotes::where('coach_id', \Auth::id())->with(['building' => function ($query) {
+        ////            $query->withTrashed();
+        ////        }])->get();
 //
 //        // get the buildings from the buildings permissions
 //        $buildingsFromPermissions = \DB::table('building_permissions')
@@ -73,16 +73,14 @@ class BuildingController extends Controller
         return view('cooperation.admin.coach.buildings.edit', compact('building', 'buildingCoachStatus', 'buildingCoachStatuses'));
     }
 
-
     public function update(Request $request)
     {
-
         $buildingCoachStatus = $request->get('building_coach_status', '');
         $appointmentDate = $request->get('appointment_date', null);
         $privateMessageId = $request->get('private_message_id');
 
         $appointmentDateFormated = null;
-        if (!empty($appointmentDate)) {
+        if (! empty($appointmentDate)) {
             $appointmentDateFormated = Carbon::parse($appointmentDate)->format('Y-m-d H:i:s');
         }
         $buildingId = $request->get('building_id');
@@ -98,15 +96,14 @@ class BuildingController extends Controller
         );
 
         return redirect()->route('cooperation.admin.coach.buildings.index')->with('success', __('woningdossier.cooperation.admin.coach.buildings.set-building-status.success'));
-
-
     }
 
     /**
-     * Set the sessions and after that redirect them to the tool
+     * Set the sessions and after that redirect them to the tool.
      *
      * @param Cooperation $cooperation
      * @param $buildingId
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function fillForUser(Cooperation $cooperation, $buildingId)
@@ -114,7 +111,7 @@ class BuildingController extends Controller
         // The building the coach wants to edit
         $building = Building::find($buildingId);
         // get the owner of the building
-        $user = User::find($building->user_id);;
+        $user = User::find($building->user_id);
         // we cant query on the Spatie\Role model so we first get the result on the "original model"
         $role = Role::findByName($user->roles->first()->name);
         // set the input source value to the coach itself
@@ -124,7 +121,7 @@ class BuildingController extends Controller
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
         // or if the role is not a resident, we gonna throw them back.
-        if (!$inputSourceValue instanceof InputSource || !$inputSource instanceof InputSource && $inputSource->isResident()) {
+        if (! $inputSourceValue instanceof InputSource || ! $inputSource instanceof InputSource && $inputSource->isResident()) {
             return redirect()->back()->with('warning', __('woningdossier.cooperation.admin.coach.buildings.fill-for-user.warning'));
         }
 

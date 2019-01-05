@@ -29,5 +29,5 @@ return [
             'no-right-roles' => 'U heeft niet de rechten om deze pagina te bezoeken.',
         ],
     ],
-    'new-message' => 'Nieuwe berichten'
+    'new-message' => 'Nieuwe berichten',
 ];

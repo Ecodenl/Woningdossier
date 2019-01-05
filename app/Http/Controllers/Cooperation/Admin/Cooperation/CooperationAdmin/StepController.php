@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class StepController extends Controller
 {
@@ -18,16 +18,15 @@ class StepController extends Controller
     }
 
     /**
-     * Set the active status for a cooperation step
+     * Set the active status for a cooperation step.
      *
-     * @param Request $request
+     * @param Request     $request
      * @param Cooperation $cooperation
      */
     public function setActive(Request $request, Cooperation $cooperation)
     {
         $stepId = $request->get('step_id');
-        $active = $request->get('step_active') == "true" ? true : false;
-
+        $active = 'true' == $request->get('step_active') ? true : false;
 
         // get the cooperation steps query
         $cooperationStepsQuery = $cooperation->steps();
@@ -37,6 +36,5 @@ class StepController extends Controller
             // update the pivot table / cooperation_step
             $cooperationStepsQuery->updateExistingPivot($cooperationStep->id, ['is_active' => $active]);
         }
-
     }
 }

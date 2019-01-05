@@ -9,7 +9,7 @@ use App\Models\Cooperation;
 use App\Models\HeatSource;
 use App\Models\PresentHeatPump;
 use App\Models\Step;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HeatPumpController extends Controller
@@ -36,8 +36,7 @@ class HeatPumpController extends Controller
         $buildingCurrentHeatings = BuildingCurrentHeating::all();
         $heatSources = HeatSource::all();
 
-
-        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes',  'heatSources', 'buildingCurrentHeatings'));
+        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes', 'heatSources', 'buildingCurrentHeatings'));
     }
 
     /**
@@ -64,7 +63,7 @@ class HeatPumpController extends Controller
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
-        if (!empty($nextStep['tab_id'])) {
+        if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
 

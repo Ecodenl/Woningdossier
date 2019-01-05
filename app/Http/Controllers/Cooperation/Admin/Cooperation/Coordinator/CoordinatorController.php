@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
-use App\Helpers\RoleHelper;
-use App\Models\Cooperation;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
+use App\Models\Cooperation;
 
 class CoordinatorController extends Controller
 {

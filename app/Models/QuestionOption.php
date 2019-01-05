@@ -10,6 +10,6 @@ class QuestionOption extends Model
     use TranslatableTrait;
 
     protected $fillable = [
-        'question_id', 'name'
+        'question_id', 'name',
     ];
 }

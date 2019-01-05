@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\GetValueTrait;
 use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -92,14 +92,13 @@ class BuildingFeature extends Model
         'facade_plastered_surface_id',
         'facade_damaged_paintwork_id',
         'window_surface',
-	    'roof_type_id',
+        'roof_type_id',
     ];
 
     public function building()
     {
         return $this->belongsTo(Building::class);
     }
-
 
     public function buildingCategory()
     {

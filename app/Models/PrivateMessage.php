@@ -3,26 +3,23 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\Observers\PrivateMessageObserver;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 class PrivateMessage extends Model
 {
+    const STATUS_LINKED_TO_COACH = 'gekoppeld aan coach';
+    const STATUS_IN_CONSIDERATION = 'in behandeling';
+    const STATUS_APPLICATION_SENT = 'aanvraag verzonden';
 
-    const STATUS_LINKED_TO_COACH = "gekoppeld aan coach";
-    const STATUS_IN_CONSIDERATION = "in behandeling";
-    const STATUS_APPLICATION_SENT = "aanvraag verzonden";
-
-    const REQUEST_TYPE_COACH_CONVERSATION = "coach-conversation";
-    const REQUEST_TYPE_MORE_INFORMATION = "more-information";
-    const REQUEST_TYPE_QUOTATION = "quotation";
-    const REQUEST_TYPE_OTHER = "other";
+    const REQUEST_TYPE_COACH_CONVERSATION = 'coach-conversation';
+    const REQUEST_TYPE_MORE_INFORMATION = 'more-information';
+    const REQUEST_TYPE_QUOTATION = 'quotation';
+    const REQUEST_TYPE_OTHER = 'other';
 
     protected $fillable = [
-    	'message', 'from_user_id', 'to_user_id', 'from_cooperation_id',
-	    'to_cooperation_id', 'status', 'main_message', 'title',
-	    'request_type', 'allow_access',
+        'message', 'from_user_id', 'to_user_id', 'from_cooperation_id',
+        'to_cooperation_id', 'status', 'main_message', 'title',
+        'request_type', 'allow_access',
     ];
 
     /**
@@ -34,19 +31,19 @@ class PrivateMessage extends Model
         'is_completed' => 'boolean',
         'from_user_read' => 'boolean',
         'to_user_read' => 'boolean',
-	    'allow_access' => 'boolean',
+        'allow_access' => 'boolean',
     ];
-
 
     public static function isConversationRequestConnectedToCoach($conversationRequest)
     {
-        return $conversationRequest->status == self::STATUS_LINKED_TO_COACH;
+        return self::STATUS_LINKED_TO_COACH == $conversationRequest->status;
     }
 
     /**
-     * Scope a query to return the open conversation requests based on the cooperation id
+     * Scope a query to return the open conversation requests based on the cooperation id.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeOpenCooperationConversationRequests($query)
@@ -58,7 +55,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to return the messages that are sent to a user / coach
+     * Scope a query to return the messages that are sent to a user / coach.
      *
      * @return PrivateMessage
      */
@@ -68,7 +65,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to return the current open conversation requests
+     * Scope a query to return the current open conversation requests.
      *
      * @return PrivateMessage
      */
@@ -80,9 +77,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to return the coach conversation request
+     * Scope a query to return the coach conversation request.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeMyCoachConversationRequest($query)
@@ -102,9 +100,8 @@ class PrivateMessage extends Model
             ->where('status', self::STATUS_IN_CONSIDERATION);
     }
 
-
     /**
-     * Scope a query to return the full conversation between a coach and a user based on the main message
+     * Scope a query to return the full conversation between a coach and a user based on the main message.
      *
      * @return $this
      */
@@ -114,9 +111,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get the main messages for a person who will receives messages
+     * Get the main messages for a person who will receives messages.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeMainMessages($query)
@@ -125,9 +123,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get the main messages for a person who sended / created the message
+     * Get the main messages for a person who sended / created the message.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeMyCreatedMessages($query)
@@ -136,9 +135,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Return the sender information
+     * Return the sender information.
      *
      * @param int $messageId
+     *
      * @return User|null
      */
 //    public function getSender($messageId)
@@ -168,17 +168,19 @@ class PrivateMessage extends Model
 
         return null;
     }
+
     /**
-     * Return info about the receiver of the message
+     * Return info about the receiver of the message.
      *
      * @param int $messageId
+     *
      * @return User|null
      */
     public function getReceiver($messageId)
     {
         $receiverId = $this->find($messageId)->to_user_id;
-        if (empty($receiverId)){
-        	return null;
+        if (empty($receiverId)) {
+            return null;
         }
 
         $receiver = User::find($receiverId);
@@ -186,38 +188,38 @@ class PrivateMessage extends Model
         return $receiver;
     }
 
-	/**
-	 * Returns the receiving cooperation of this private message
-	 *
-	 * @return Cooperation|null
-	 */
+    /**
+     * Returns the receiving cooperation of this private message.
+     *
+     * @return Cooperation|null
+     */
     public function getReceivingCooperation()
     {
-    	$receivingCooperationId = $this->to_cooperation_id;
-    	if (empty($receivingCooperationId)){
-    		return null;
-	    }
+        $receivingCooperationId = $this->to_cooperation_id;
+        if (empty($receivingCooperationId)) {
+            return null;
+        }
 
-	    return Cooperation::find($receivingCooperationId);
+        return Cooperation::find($receivingCooperationId);
     }
 
-	/**
-	 * Returns the receiving cooperation of this private message
-	 *
-	 * @return Cooperation|null
-	 */
-	public function getSendingCooperation()
-	{
-		$sendingCooperationId = $this->from_cooperation_id;
-		if (empty($sendingCooperationId)){
-			return null;
-		}
+    /**
+     * Returns the receiving cooperation of this private message.
+     *
+     * @return Cooperation|null
+     */
+    public function getSendingCooperation()
+    {
+        $sendingCooperationId = $this->from_cooperation_id;
+        if (empty($sendingCooperationId)) {
+            return null;
+        }
 
-		return Cooperation::find($sendingCooperationId);
-	}
+        return Cooperation::find($sendingCooperationId);
+    }
 
     /**
-     * Check if its the user his message
+     * Check if its the user his message.
      *
      * @return bool
      */
@@ -231,23 +233,23 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Returns the opposite from isMyMessage()
+     * Returns the opposite from isMyMessage().
      *
      * @return bool
      */
-    public function isNotMyMessage() : bool
+    public function isNotMyMessage(): bool
     {
-        return !$this->isMyMessage();
+        return ! $this->isMyMessage();
     }
 
     /**
-     * Check if the user has response to his conversation request
+     * Check if the user has response to his conversation request.
      *
      * @return bool
      */
     public static function hasUserResponseToConversationRequest()
     {
-        if (self::myConversationRequest()->first() != null && self::myConversationRequest()->first()->status == self::STATUS_LINKED_TO_COACH) {
+        if (null != self::myConversationRequest()->first() && self::STATUS_LINKED_TO_COACH == self::myConversationRequest()->first()->status) {
             return true;
         }
 
@@ -255,13 +257,13 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the user has response to his coach conversation request
+     * Check if the user has response to his coach conversation request.
      *
      * @return bool
      */
     public static function hasUserResponseToCoachConversationRequest()
     {
-        if (self::myCoachConversationRequest()->first() != null && self::myCoachConversationRequest()->first()->status == self::STATUS_LINKED_TO_COACH) {
+        if (null != self::myCoachConversationRequest()->first() && self::STATUS_LINKED_TO_COACH == self::myCoachConversationRequest()->first()->status) {
             return true;
         }
 
@@ -269,9 +271,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to get the unread messages from a user
+     * Scope a query to get the unread messages from a user.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeUnreadMessages($query)
@@ -279,13 +282,12 @@ class PrivateMessage extends Model
         return $query->where('to_user_id', \Auth::id())->where('to_user_read', false);
     }
 
-
     /**
-     * Check if a message is the main message
+     * Check if a message is the main message.
      *
      * @return bool
      */
-    public function isMainMessage() : bool
+    public function isMainMessage(): bool
     {
         if (empty($this->main_message)) {
             return true;
@@ -295,11 +297,11 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the main message is read
+     * Check if the main message is read.
      *
      * @return bool
      */
-    public function isMainMessageRead() : bool
+    public function isMainMessageRead(): bool
     {
         // if its set to 1 it wil return true;
         // if the to user read is set to 0 it will return false
@@ -307,48 +309,45 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Returns the opposite of isMainMessageRead();
+     * Returns the opposite of isMainMessageRead();.
      *
      * @return bool
      */
-    public function isMainMessageUnread() : bool
+    public function isMainMessageUnread(): bool
     {
-        return !$this->isMainMessageRead();
+        return ! $this->isMainMessageRead();
     }
 
     /**
-     * Check if the user has unread messages based on the main message
+     * Check if the user has unread messages based on the main message.
      *
      * @return bool
      */
-    public function hasUserUnreadMessages() : bool
+    public function hasUserUnreadMessages(): bool
     {
         $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
 
         // $asnwers will be empty when there is no response to the main message
         if ($answers->isNotEmpty()) {
-
             return $answers->contains('to_user_read', false);
-        } else if ($this->isMainMessage()) {
+        } elseif ($this->isMainMessage()) {
             // we check if the main message is unread and if its not our message, you have always read your own message.
             // unless your blind.
             return $this->isMainMessageUnread() && $this->isNotMyMessage();
         } else {
-            \Log::debug(__FUNCTION__ .'Came to the else for message id: '. $this->id);
+            \Log::debug(__FUNCTION__.'Came to the else for message id: '.$this->id);
         }
-
     }
-
 
     /**
      * Check wheter a conversation request has been read, this can only be used on conversation requests
-     * Cause we search on cooperation id and not on user id
+     * Cause we search on cooperation id and not on user id.
      *
      * @return bool
      */
     public function isConversationRequestRead()
     {
-        if ($this->to_cooperation_id == session('cooperation') && $this->to_user_read == true) {
+        if ($this->to_cooperation_id == session('cooperation') && true == $this->to_user_read) {
             return true;
         }
 
@@ -356,13 +355,13 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the message is a conversation request
+     * Check if the message is a conversation request.
      *
      * @return bool
      */
-    public function isConversationRequest() : bool
+    public function isConversationRequest(): bool
     {
-        if (!empty($this->request_type)) {
+        if (! empty($this->request_type)) {
             return true;
         }
 
@@ -370,18 +369,16 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the request is a coach conversation request
+     * Check if the request is a coach conversation request.
      *
      * @return bool
      */
     public function isCoachRequestConversation()
     {
-        if ($this->request_type == self::REQUEST_TYPE_COACH_CONVERSATION) {
+        if (self::REQUEST_TYPE_COACH_CONVERSATION == $this->request_type) {
             return true;
         }
 
         return false;
     }
-
-
 }

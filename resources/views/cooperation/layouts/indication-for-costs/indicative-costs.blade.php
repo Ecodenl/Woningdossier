@@ -1,5 +1,5 @@
 <?php
-    if(isset($id)) {
+    if (isset($id)) {
         $infoAlertId = $id.'indicative-costs-info';
     } else {
         $infoAlertId = 'indicative-costs-info';

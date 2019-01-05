@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class CooperationStep extends Model
 {
     protected $fillable = [
-        'is_active', 'order'
+        'is_active', 'order',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 }

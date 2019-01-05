@@ -14,32 +14,32 @@ class KeyFigures
     const COST_KWH = 0.23; // euro
     const COST_WP = 1.50; // euro
 
-	protected static $angles = [
-		10 => 10,
-		15 => 15,
-		20 => 20,
-		30 => 30,
-		40 => 40,
-		45 => 45,
-		50 => 50,
-		60 => 60,
-		70 => 70,
-		75 => 75,
-		90 => 90,
-	];
+    protected static $angles = [
+        10 => 10,
+        15 => 15,
+        20 => 20,
+        30 => 30,
+        40 => 40,
+        45 => 45,
+        50 => 50,
+        60 => 60,
+        70 => 70,
+        75 => 75,
+        90 => 90,
+    ];
 
-	protected static $peakPowers = [
-		260 => 260,
-		265 => 265,
-		270 => 270,
-		275 => 275,
-		280 => 280,
-		285 => 285,
-		290 => 290,
-		295 => 295,
-		300 => 300,
-		330 => 330,
-	];
+    protected static $peakPowers = [
+        260 => 260,
+        265 => 265,
+        270 => 270,
+        275 => 275,
+        280 => 280,
+        285 => 285,
+        290 => 290,
+        295 => 295,
+        300 => 300,
+        330 => 330,
+    ];
 
     /**
      * @param $zipcode
@@ -65,12 +65,13 @@ class KeyFigures
             ->where('angle', $angle)->first();
     }
 
-    public static function getAngles(){
-    	return self::$angles;
+    public static function getAngles()
+    {
+        return self::$angles;
     }
 
-    public static function getPeakPowers(){
-    	return self::$peakPowers;
+    public static function getPeakPowers()
+    {
+        return self::$peakPowers;
     }
-
 }

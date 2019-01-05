@@ -32,7 +32,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingPvPanel extends Model
 {
-
     use GetValueTrait;
     use GetMyValuesTrait;
 

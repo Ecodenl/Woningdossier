@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <?php $building = $user->buildings->first() ?>
+                    <?php $building = $user->buildings->first(); ?>
                     <div class="panel-heading">
                         @lang('woningdossier.cooperation.my-account.settings.form.index.header')
                     </div>

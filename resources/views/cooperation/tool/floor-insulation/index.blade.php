@@ -269,7 +269,7 @@
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
                             <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}        </label>
                             <?php
-                                $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : "";
+                                $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : '';
                             ?>
 
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>

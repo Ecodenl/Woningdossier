@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class Role extends \Spatie\Permission\Models\Role
 {
     /**
-     * Return the input source for the role
+     * Return the input source for the role.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

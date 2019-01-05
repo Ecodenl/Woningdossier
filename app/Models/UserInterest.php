@@ -34,14 +34,15 @@ class UserInterest extends Model
     use GetValueTrait;
 
     protected $fillable = [
-        'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id'
+        'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',
     ];
-
 
     /**
      * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id
+     * The UserEnergyHabit uses the user_id instead off the building_id.
+     *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeForMe($query)
@@ -51,9 +52,8 @@ class UserInterest extends Model
         return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
     }
 
-
     /**
-     * Get the input Sources
+     * Get the input Sources.
      *
      * @return InputSource
      */
@@ -63,7 +63,7 @@ class UserInterest extends Model
     }
 
     /**
-     * Get a input source name
+     * Get a input source name.
      *
      * @return InputSource name
      */

@@ -2,22 +2,18 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
-use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Coach\ConnectToResidentRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
-use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class ConnectToResidentController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-
         $buildingsFromBuildingCoachStatuses = \DB::table('building_coach_statuses')
             ->where('building_coach_statuses.coach_id', '=', \Auth::id())
             ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
@@ -38,11 +34,8 @@ class ConnectToResidentController extends Controller
             // the coach does not have access to that building
             if ($buildingCoachStatusRemoved >= $buildingCoachStatusActive) {
                 $buildingsFromBuildingCoachStatuses->forget($key);
-
             }
-
         }
-
 
 //        $users = \DB::table('building_coach_statuses')
 //            ->where('building_coach_statuses.coach_id', '=', \Auth::id())
@@ -50,8 +43,6 @@ class ConnectToResidentController extends Controller
 //            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
 //            ->select('buildings.*', 'users.first_name', 'users.last_name')
 //            ->get()->unique('id');
-
-
 
         return view('cooperation.admin.coach.connect-to-resident.index', compact('cooperation', 'buildingsFromBuildingCoachStatuses'));
     }
@@ -72,7 +63,6 @@ class ConnectToResidentController extends Controller
         $title = $request->get('title', '');
         $message = $request->get('message', '');
         $receiverId = $request->get('receiver_id', '');
-
 
         // we start the conversation between the resident and coach
         $newMessage = PrivateMessage::create(

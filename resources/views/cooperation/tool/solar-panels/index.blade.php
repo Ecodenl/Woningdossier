@@ -145,7 +145,7 @@
                             {{\App\Helpers\Translation::translate('solar-panels.angle.title')}}
                         </label>
 
-                        <?php \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles();  ?>
+                        <?php \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(); ?>
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'angle'])
                             <span class="input-group-addon">&deg;</span>

@@ -54,7 +54,7 @@
 
             @foreach($stepAdvices as $stepSlug => $advicesForStep)
                 @foreach($advicesForStep as $advice)
-	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
+	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first(); ?>
                     <tr>
                         <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]" value="{{$measureType}}">
                         <input type="hidden" class="measure_short" value="{{$advice->measureApplication->short}}">

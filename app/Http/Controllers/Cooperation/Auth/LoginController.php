@@ -100,10 +100,10 @@ class LoginController extends Controller
             }
         }
 
-		if ($this->attemptLogin($request)) {
-		    $user = \Auth::user();
+        if ($this->attemptLogin($request)) {
+            $user = \Auth::user();
 
-		    // get the first building from the user
+            // get the first building from the user
             $building = $user->buildings()->first();
 
             // we cant query on the Spatie\Role model so we first get the result on the "original model"
@@ -113,7 +113,7 @@ class LoginController extends Controller
             $inputSource = $role->inputSource;
 
             // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-            if (!$role->inputSource instanceof InputSource) {
+            if (! $role->inputSource instanceof InputSource) {
                 $inputSource = InputSource::findByShort('resident');
             }
 
@@ -121,26 +121,24 @@ class LoginController extends Controller
             HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
 
             // set the redirect url
-            if ($user->roles->count() == 1) {
-			    $this->redirectTo = RoleHelper::getUrlByRole( $role );
-            }
-			else {
+            if (1 == $user->roles->count()) {
+                $this->redirectTo = RoleHelper::getUrlByRole($role);
+            } else {
                 $this->redirectTo = '/admin';
-			}
+            }
 
+            return $this->sendLoginResponse($request);
+        }
 
-			return $this->sendLoginResponse($request);
-		}
-
-		// If the login attempt was unsuccessful we will increment the number of attempts
-		// to login and redirect the user back to the login form. Of course, when this
-		// user surpasses their maximum number of attempts they will get locked out.
-		$this->incrementLoginAttempts($request);
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
     }
 
-    /**
+    /*
      * Send the response after the user was authenticated.
      *
      * @param $request
@@ -153,6 +151,6 @@ class LoginController extends Controller
         $this->clearLoginAttempts($request);
 
         //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
-	    return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
+        return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
     }*/
 }

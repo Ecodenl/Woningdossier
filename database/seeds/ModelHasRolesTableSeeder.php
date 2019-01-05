@@ -18,7 +18,7 @@ class ModelHasRolesTableSeeder extends Seeder
             [
                 'name' => 'super-admin',
                 'human_readable_name' => 'Super admin',
-	            'level' => 100,
+                'level' => 100,
             ]
         );
         \Spatie\Permission\Models\Role::updateOrCreate(
@@ -28,7 +28,7 @@ class ModelHasRolesTableSeeder extends Seeder
             [
                 'name' => 'superuser',
                 'human_readable_name' => 'Super user',
-	            'level' => 90,
+                'level' => 90,
             ]
         );
 
@@ -39,7 +39,7 @@ class ModelHasRolesTableSeeder extends Seeder
             [
                 'name' => 'cooperation-admin',
                 'human_readable_name' => 'Coöperatie admin',
-	            'level' => 20,
+                'level' => 20,
             ]
         );
         \Spatie\Permission\Models\Role::updateOrCreate(
@@ -49,7 +49,7 @@ class ModelHasRolesTableSeeder extends Seeder
             [
                 'name' => 'coach',
                 'human_readable_name' => 'Coach',
-	            'level' => 5,
+                'level' => 5,
             ]
         );
         \Spatie\Permission\Models\Role::updateOrCreate(
@@ -59,7 +59,7 @@ class ModelHasRolesTableSeeder extends Seeder
             [
                 'name' => 'resident',
                 'human_readable_name' => 'Bewoner',
-	            'level' => 1,
+                'level' => 1,
             ]
         );
         \Spatie\Permission\Models\Role::updateOrCreate(
@@ -69,7 +69,7 @@ class ModelHasRolesTableSeeder extends Seeder
             [
                 'name' => 'coordinator',
                 'human_readable_name' => 'Coördinator',
-	            'level' => 15,
+                'level' => 15,
             ]
         );
 
@@ -77,9 +77,9 @@ class ModelHasRolesTableSeeder extends Seeder
 
         $users = \App\Models\User::where('is_admin', 1)->get();
         foreach ($users as $user) {
-        	if (!$user->hasRole($superAdmin)) {
-		        $user->assignRole( $superAdmin );
-	        }
+            if (! $user->hasRole($superAdmin)) {
+                $user->assignRole($superAdmin);
+            }
         }
     }
 }

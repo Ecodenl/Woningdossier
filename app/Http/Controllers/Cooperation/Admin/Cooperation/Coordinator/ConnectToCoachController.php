@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\ConnectToCoachRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -11,28 +12,29 @@ use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class ConnectToCoachController extends Controller
 {
     /**
-     * Show the coordinator all open conversation requests
+     * Show the coordinator all open conversation requests.
      *
      * @param Cooperation $cooperation
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation)
     {
         $openConversations = PrivateMessage::openCooperationConversationRequests()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.index', compact( 'openConversations'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.index', compact('openConversations'));
     }
 
     /**
-     * Show the coordinator the form to connect a coach to a resident that has an open request
+     * Show the coordinator the form to connect a coach to a resident that has an open request.
      *
      * @param Cooperation $cooperation
      * @param $privateMessageId
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create(Cooperation $cooperation, $privateMessageId)
@@ -44,12 +46,12 @@ class ConnectToCoachController extends Controller
         return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches'));
     }
 
-
     /**
-     * Connect a coach to a building and resident
+     * Connect a coach to a building and resident.
      *
-     * @param Cooperation $cooperation
+     * @param Cooperation           $cooperation
      * @param ConnectToCoachRequest $request
+     *
      * @return RedirectResponse
      */
     public function store(Cooperation $cooperation, ConnectToCoachRequest $request)
@@ -60,7 +62,7 @@ class ConnectToCoachController extends Controller
 
         // the resident now has a coach to talk to, so the conversation request is done.
         PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
-            'status' => PrivateMessage::STATUS_LINKED_TO_COACH
+            'status' => PrivateMessage::STATUS_LINKED_TO_COACH,
         ]);
 
         // the receiver of the message
@@ -73,7 +75,7 @@ class ConnectToCoachController extends Controller
         if ($privateMessage->allow_access) {
             // give the coach permission to the resident his building
             BuildingPermission::create([
-                'user_id' => $toUser->id, 'building_id' => $residentBuilding->id
+                'user_id' => $toUser->id, 'building_id' => $residentBuilding->id,
             ]);
         }
 
@@ -81,19 +83,18 @@ class ConnectToCoachController extends Controller
             'coach_id' => $toUser->id,
             'building_id' => $residentBuilding->id,
             'status' => BuildingCoachStatus::STATUS_ACTIVE,
-            'private_message_id' => $privateMessageId
+            'private_message_id' => $privateMessageId,
         ]);
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }
 
-
-
     /**
-     * When the coordinator decides to message the coach before attaching anything to the user
+     * When the coordinator decides to message the coach before attaching anything to the user.
      *
      * @param Cooperation $cooperation
-     * @param integer $privateMessageId
+     * @param int         $privateMessageId
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function talkToCoachCreate(Cooperation $cooperation, $privateMessageId)
@@ -104,10 +105,11 @@ class ConnectToCoachController extends Controller
     }
 
     /**
-     * Send a message to a coach without attaching anything to the user
+     * Send a message to a coach without attaching anything to the user.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
+     *
      * @return RedirectResponse
      */
     public function talkToCoachStore(Cooperation $cooperation, Request $request)
@@ -120,7 +122,7 @@ class ConnectToCoachController extends Controller
         // When a coordinator starts a message with a coach through a specific conversation request
         // we update the status of that request to "in consideration"
         PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
-            'status' => PrivateMessage::STATUS_IN_CONSIDERATION
+            'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
         ]);
 
         // the receiver of the message, in this case a coach

@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Question;
-use App\Models\QuestionOption;
 use App\Models\Questionnaire;
+use App\Models\QuestionOption;
 use App\Models\Step;
 use App\Models\Translation;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Ramsey\Uuid\Uuid;
 
 class QuestionnaireController extends Controller
@@ -30,27 +30,27 @@ class QuestionnaireController extends Controller
 
         $this->authorize('edit', $questionnaire);
 
-	    $steps = Step::orderBy('order')->get();
+        $steps = Step::orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.coordinator.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
     }
 
     public function create()
     {
-	    $steps = Step::orderBy('order')->get();
+        $steps = Step::orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.coordinator.questionnaires.create', compact('steps'));
     }
 
-
     /**
-     * Return the validation for the current question
+     * Return the validation for the current question.
      *
      * @param array $requestQuestion
      * @param array $validation
+     *
      * @return array
      */
-    protected function getValidationForCurrentQuestion(array $requestQuestion, array $validation) : array
+    protected function getValidationForCurrentQuestion(array $requestQuestion, array $validation): array
     {
         // first check if the requestquestion has a guid
         if (array_key_exists('guid', $requestQuestion)) {
@@ -58,7 +58,7 @@ class QuestionnaireController extends Controller
             if (array_key_exists($requestQuestion['guid'], $validation)) {
                 return $validation[$requestQuestion['guid']];
             }
-        } else if (array_key_exists('question_id', $requestQuestion)) {
+        } elseif (array_key_exists('question_id', $requestQuestion)) {
             if (array_key_exists($requestQuestion['question_id'], $validation)) {
                 return $validation[$requestQuestion['question_id']];
             }
@@ -67,36 +67,35 @@ class QuestionnaireController extends Controller
         return [];
     }
 
-
     /**
-     * Returns the validation rule in a array
+     * Returns the validation rule in a array.
      *
      * @param array $requestQuestion
      * @param array $validation
+     *
      * @return array
      */
-    protected function getValidationRule(array $requestQuestion, array $validation) : array
+    protected function getValidationRule(array $requestQuestion, array $validation): array
     {
         // get the validation for the current question
         $validationForCurrentQuestion = $this->getValidationForCurrentQuestion($requestQuestion, $validation);
 
-        if (!empty($validationForCurrentQuestion)) {
-
+        if (! empty($validationForCurrentQuestion)) {
             // built the validation rule array
             $validationRule = [
                 $validationForCurrentQuestion['main-rule'] => [
-                    $validationForCurrentQuestion['sub-rule']  => []
-                ]
+                    $validationForCurrentQuestion['sub-rule']  => [],
+                ],
             ];
 
             // first check if there are sub rule check values
             if (array_key_exists('sub-rule-check-value', $validationForCurrentQuestion)) {
-
                 // if so, push them inside the sub-rule array
                 foreach ($validationForCurrentQuestion['sub-rule-check-value'] as $subRuleCheckValue) {
                     array_push($validationRule[$validationForCurrentQuestion['main-rule']][$validationForCurrentQuestion['sub-rule']], $subRuleCheckValue);
                 }
             }
+
             return $validationRule;
         }
 
@@ -104,16 +103,15 @@ class QuestionnaireController extends Controller
     }
 
     /**
-     * Create a question
+     * Create a question.
      *
-     * @param int $questionnaireId
-     * @param array $requestQuestion
+     * @param int    $questionnaireId
+     * @param array  $requestQuestion
      * @param string $questionType
-     * @param bool $questionHasOptions
+     * @param bool   $questionHasOptions
      */
     protected function createQuestion(int $questionnaireId, array $requestQuestion, string $questionType, array $validation, $order, bool $questionHasOptions = false)
     {
-
         $required = false;
 
         if (array_key_exists('required', $requestQuestion)) {
@@ -130,7 +128,7 @@ class QuestionnaireController extends Controller
                 'order' => $order,
                 'required' => $required,
                 'validation' => $this->getValidationRule($requestQuestion, $validation),
-                'questionnaire_id' => $questionnaireId
+                'questionnaire_id' => $questionnaireId,
             ]);
 
             // multiple translations can be available
@@ -144,7 +142,7 @@ class QuestionnaireController extends Controller
                 Translation::create([
                     'key' => $uuid,
                     'translation' => $question,
-                    'language' => $locale
+                    'language' => $locale,
                 ]);
             }
 
@@ -155,22 +153,19 @@ class QuestionnaireController extends Controller
                 }
             }
         }
-
     }
 
-
     /**
-     * Create the options for a question
+     * Create the options for a question.
      *
      * Creates question option and 2 translations
      *
-     * @param array $newOptions
+     * @param array    $newOptions
      * @param Question $question
      */
     protected function createQuestionOptions(array $newOptions, Question $question)
     {
-        if (!$this->isEmptyTranslation($newOptions)) {
-
+        if (! $this->isEmptyTranslation($newOptions)) {
             $optionNameUuid = Str::uuid();
             // for every option we need to create a option input
             QuestionOption::create([
@@ -179,10 +174,8 @@ class QuestionnaireController extends Controller
             ]);
 
             if ($this->isNotEmptyTranslation($newOptions)) {
-
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($newOptions as $locale => $translation) {
-
                     if (empty($translation)) {
                         $translation = current(array_filter($newOptions));
                     }
@@ -190,21 +183,20 @@ class QuestionnaireController extends Controller
                     Translation::create([
                         'key' => $optionNameUuid,
                         'translation' => $translation,
-                        'language' => $locale
+                        'language' => $locale,
                     ]);
                 }
             }
         }
     }
 
-
     /**
-     * Update a question, if the question has options we will update the question options as well
+     * Update a question, if the question has options we will update the question options as well.
      *
-     * @param int $questionId
+     * @param int   $questionId
      * @param array $editedQuestion
      * @param array $validation
-     * @param bool $questionHasOptions
+     * @param bool  $questionHasOptions
      */
     protected function updateQuestion(int $questionId, array $editedQuestion, array $validation, $order, bool $questionHasOptions = false)
     {
@@ -222,7 +214,6 @@ class QuestionnaireController extends Controller
             'required' => $required,
         ]);
 
-
         if ($this->isNotEmptyTranslation($editedQuestion['question'])) {
             // multiple translations can be available
             foreach ($editedQuestion['question'] as $locale => $question) {
@@ -238,11 +229,10 @@ class QuestionnaireController extends Controller
         }
     }
 
-
     /**
-     * Update the options from a question
+     * Update the options from a question.
      *
-     * @param array $editedQuestion
+     * @param array    $editedQuestion
      * @param Question $question
      */
     public function updateQuestionOptions(array $editedQuestion, $question)
@@ -251,9 +241,7 @@ class QuestionnaireController extends Controller
         // however, if a new option to a existing question is added, we set a uuid.
         // so if the $questionOptionId = a valid uuid we need to create a new QuestionOption and the translations.
         foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
-
             if (Str::isValidUuid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
-
                 // if the uuid is valid a pomp it to a array and create new question options
                 $allNewOptions = collect($editedQuestion['options'])->filter(function ($value, $key) {
                     return Str::isValidUuid($key);
@@ -263,7 +251,6 @@ class QuestionnaireController extends Controller
                 foreach ($allNewOptions as $newOptions) {
                     $this->createQuestionOptions($newOptions, $question);
                 }
-
             } elseif ($this->isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
@@ -276,18 +263,18 @@ class QuestionnaireController extends Controller
         }
     }
 
-
     /**
      * Update the questionnaire and questions
-     * if there are new questions create those toes
+     * if there are new questions create those toes.
      *
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(QuestionnaireRequest $request)
     {
-
         // get the data for the questionnaire
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
@@ -295,7 +282,6 @@ class QuestionnaireController extends Controller
 
         // find the current questionnaire
         $questionnaire = Questionnaire::find($questionnaireId);
-
 
         $this->authorize('update', $questionnaire);
         // update the step
@@ -316,9 +302,8 @@ class QuestionnaireController extends Controller
         $validation = $request->get('validation', []);
 
         if ($request->has('questions')) {
-
             foreach ($request->get('questions') as $key => $allRequestQuestion) {
-                $order++;
+                ++$order;
 
                 // if the key is a valid uuid, we know it is a new question
                 // existing questions will have a questionId as key
@@ -327,22 +312,22 @@ class QuestionnaireController extends Controller
                     $requestQuestion = $allRequestQuestion;
 
                     switch ($questionType) {
-                        case ('text'):
+                        case 'text':
                             $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
                             break;
-                        case('select'):
+                        case 'select':
                             $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
                             break;
-                        case('date'):
+                        case 'date':
                             $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
                             break;
-                        case('radio'):
-                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
+                        case 'radio':
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
                             break;
-                        case('checkbox'):
-                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order,true);
+                        case 'checkbox':
+                            $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
                             break;
-                        case('textarea'):
+                        case 'textarea':
                             $this->createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
                             break;
                     }
@@ -352,22 +337,22 @@ class QuestionnaireController extends Controller
                     $editedQuestion = $allRequestQuestion;
 
                     switch ($editedQuestionType) {
-                        case ('text'):
+                        case 'text':
                             $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
                             break;
-                        case ('select'):
+                        case 'select':
                             $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
                             break;
-                        case ('date'):
+                        case 'date':
                             $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
                             break;
-                        case ('radio'):
+                        case 'radio':
                             $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
                             break;
-                        case ('checkbox'):
+                        case 'checkbox':
                             $this->updateQuestion($questionId, $editedQuestion, $validation, $order, true);
                             break;
-                        case ('textarea'):
+                        case 'textarea':
                             $this->updateQuestion($questionId, $editedQuestion, $validation, $order);
                             break;
                     }
@@ -381,11 +366,13 @@ class QuestionnaireController extends Controller
     }
 
     /**
-     * Store a questionnaire, after this the user will get redirected to the edit page and he can add questions to the questionnaire
+     * Store a questionnaire, after this the user will get redirected to the edit page and he can add questions to the questionnaire.
      *
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Exception
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(QuestionnaireRequest $request)
     {
@@ -400,11 +387,10 @@ class QuestionnaireController extends Controller
             'name' => $questionnaireNameKey,
             'step_id' => $stepId,
             'cooperation_id' => HoomdossierSession::getCooperation(),
-            'is_active' => false
+            'is_active' => false,
         ]);
 
         if ($this->isNotEmptyTranslation($questionnaireNameTranslations)) {
-
             foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
                 if (empty($questionnaireNameTranslation)) {
                     $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
@@ -421,11 +407,13 @@ class QuestionnaireController extends Controller
     }
 
     /**
-     * Detele a question (softdelete)
+     * Detele a question (softdelete).
      *
      * @param Request $request
-     * @return int
+     *
      * @throws \Exception
+     *
+     * @return int
      */
     public function deleteQuestion(Cooperation $cooperation, $questionId)
     {
@@ -440,12 +428,14 @@ class QuestionnaireController extends Controller
     }
 
     /**
-     * Delete a question option
+     * Delete a question option.
      *
      * @param Cooperation $cooperation
      * @param $questionId
      * @param $questionOptionId
+     *
      * @throws \Exception
+     *
      * @return int
      */
     public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId)
@@ -463,33 +453,36 @@ class QuestionnaireController extends Controller
     }
 
     /**
-     * Check if the translations from the request are empty
+     * Check if the translations from the request are empty.
      *
      * @param $translations
+     *
      * @return bool
      */
-    protected function isEmptyTranslation(array $translations) : bool
+    protected function isEmptyTranslation(array $translations): bool
     {
-        foreach($translations as $locale => $translation) {
-            if (!is_null($translation)) {
+        foreach ($translations as $locale => $translation) {
+            if (! is_null($translation)) {
                 return false;
             }
         }
+
         return true;
     }
 
-    protected function isNotEmptyTranslation(array $translations) : bool
+    protected function isNotEmptyTranslation(array $translations): bool
     {
-        return !$this->isEmptyTranslation($translations);
+        return ! $this->isEmptyTranslation($translations);
     }
 
-
     /**
-     * Set the active status from a questionnaire
+     * Set the active status from a questionnaire.
      *
      * @param Request $request
-     * @return mixed
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return mixed
      */
     public function setActive(Request $request)
     {
@@ -499,7 +492,7 @@ class QuestionnaireController extends Controller
 
         $this->authorize('setActiveStatus', $questionnaire);
 
-        if ($active == "true") {
+        if ('true' == $active) {
             $active = true;
         } else {
             $active = false;
@@ -509,6 +502,5 @@ class QuestionnaireController extends Controller
         $questionnaire->save();
 
         return $questionnaireId;
-
     }
 }

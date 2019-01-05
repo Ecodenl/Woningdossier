@@ -36,7 +36,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingRoofType extends Model
 {
-
     use GetValueTrait;
     use GetMyValuesTrait;
 

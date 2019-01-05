@@ -9,13 +9,11 @@ use App\Models\PrivateMessage;
 
 class PrivateMessageObserver
 {
-
     public function updating(PrivateMessage $privateMessage)
     {
         if ($privateMessage->isDirty('allow_access')) {
             // the user turned the access for his hoomdossier on
             if ($privateMessage->allow_access) {
-
                 $senderId = $privateMessage->from_user_id;
                 $buildingFromSender = Building::where('user_id', $senderId)->first();
                 $buildingId = $buildingFromSender->id;
@@ -27,7 +25,6 @@ class PrivateMessageObserver
 
                 // check if the coach has permission to talk to a resident
                 foreach ($uniqueBuildingCoachStatuses as $key => $buildingCoachStatus) {
-
                     // the coach can talk to a resident if there is a coach status where the active status is higher then the deleted status
                     $buildingCoachStatusActive = BuildingCoachStatus::where('coach_id', '=', $buildingCoachStatus->coach_id)
                         ->where('building_id', '=', $buildingId)
@@ -43,7 +40,6 @@ class PrivateMessageObserver
                         // we remove the building coach status that the user already removed in the past
                         $uniqueBuildingCoachStatuses->forget($key);
                     }
-
                 }
 
                 $coachesWithAccessToResidentBuildingStatuses = $uniqueBuildingCoachStatuses;
@@ -52,10 +48,10 @@ class PrivateMessageObserver
                 foreach ($coachesWithAccessToResidentBuildingStatuses as $coachWithAccessToResidentBuildingStatus) {
                     BuildingPermission::create([
                         'user_id' => $coachWithAccessToResidentBuildingStatus->coach_id,
-                        'building_id' => $coachWithAccessToResidentBuildingStatus->building_id
+                        'building_id' => $coachWithAccessToResidentBuildingStatus->building_id,
                     ]);
                 }
-            } else if (!$privateMessage->allow_access) {
+            } elseif (! $privateMessage->allow_access) {
                 // the user wants to revoke the access for all the connected coaches.
 
                 $senderId = $privateMessage->from_user_id;

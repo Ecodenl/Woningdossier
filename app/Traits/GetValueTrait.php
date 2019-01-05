@@ -2,12 +2,10 @@
 
 namespace App\Traits;
 
-use App\Helpers\HoomdossierSession;
-use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 
-trait GetValueTrait {
-
+trait GetValueTrait
+{
     /**
      * Boot the scope.
      *
@@ -15,7 +13,6 @@ trait GetValueTrait {
      */
     public static function bootGetValueTrait()
     {
-        static::addGlobalScope(new GetValueScope);
+        static::addGlobalScope(new GetValueScope());
     }
-
 }

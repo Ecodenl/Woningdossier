@@ -1,12 +1,12 @@
 <?php
-    if(isset($id)) {
+    if (isset($id)) {
         $infoAlertId = $id.'_co2-info';
     } else {
         $infoAlertId = 'co2-info';
     }
-    
+
     // if the step is not given, fallback to the default translation
-    if (!isset($step)) {
+    if (! isset($step)) {
         $step = 'general';
     }
 ?>

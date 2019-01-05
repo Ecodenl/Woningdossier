@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreatePrivateMessagesTable extends Migration
 {
@@ -22,7 +22,7 @@ class CreatePrivateMessagesTable extends Migration
 
             $table->text('message');
 
-            $table->integer('from_user_id')->unsigned()->nullable()->default(null);;
+            $table->integer('from_user_id')->unsigned()->nullable()->default(null);
             $table->foreign('from_user_id')->references('id')->on('users')->onDelete('cascade');
             $table->boolean('from_user_read')->default(false);
 

@@ -24,7 +24,7 @@ class AssignRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'roles' => 'required|exists:roles,id'
+            'roles' => 'required|exists:roles,id',
         ];
     }
 }

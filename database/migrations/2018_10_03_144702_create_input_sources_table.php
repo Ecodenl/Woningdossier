@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateInputSourcesTable extends Migration
 {
@@ -23,23 +23,23 @@ class CreateInputSourcesTable extends Migration
 
         $inputSources = [
             [
-                'name' => "Bewoner",
-                'short' => "resident",
+                'name' => 'Bewoner',
+                'short' => 'resident',
                 'order' => 1,
             ],
             [
-                'name' => "Voorbeeld woning",
-                'short' => "example-building",
+                'name' => 'Voorbeeld woning',
+                'short' => 'example-building',
                 'order' => 2,
             ],
             [
-                'name' => "Coach",
-                'short' => "coach",
+                'name' => 'Coach',
+                'short' => 'coach',
                 'order' => 3,
             ],
             [
-                'name' => "Coöperatie",
-                'short' => "cooperation",
+                'name' => 'Coöperatie',
+                'short' => 'cooperation',
                 'order' => 4,
             ],
         ];

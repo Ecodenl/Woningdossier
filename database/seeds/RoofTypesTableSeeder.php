@@ -39,7 +39,6 @@ class RoofTypesTableSeeder extends Seeder
         ];
 
         foreach ($roofTypes as $roofType) {
-
             $uuid = \App\Helpers\Str::uuid();
             foreach ($roofType['names'] as $locale => $name) {
                 \DB::table('translations')->insert([
@@ -53,7 +52,7 @@ class RoofTypesTableSeeder extends Seeder
                 'calculate_value' => $roofType['calculate_value'],
                 'order' => $roofType['order'],
                 'name' => $uuid,
-                'short' => $roofType['short']
+                'short' => $roofType['short'],
             ]);
         }
     }

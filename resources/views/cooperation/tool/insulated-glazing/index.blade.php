@@ -23,7 +23,7 @@
                     <hr>
                 @endif
                 <?php
-                    if(array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
+                    if (array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
                         $currentMeasureBuildingInsulatedGlazingForMe = $buildingInsulatedGlazingsForMe[$measureApplication->id];
                     } else {
                         $currentMeasureBuildingInsulatedGlazingForMe = [];
@@ -330,7 +330,7 @@
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
-                                        <?php $notNull = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null; ?>
+                                        <?php $notNull = null != $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first(); ?>
                                         @if ($notNull && $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
                                             <li><a href="#">{{$myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->getInputSourceName()}}: {{$woodElement->value}}</a></li>
                                         @endif
@@ -439,7 +439,7 @@
                         <?php
                             // We do this because we store the comment with every glazing
                             $glazingWithComment = collect($buildingInsulatedGlazings)->where('extra', '!=', null)->first();
-                            $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
+                            $comment = ! is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
                         ?>
 
                         <textarea name="comment" id="" class="form-control">{{ $comment }}</textarea>

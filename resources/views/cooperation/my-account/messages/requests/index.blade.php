@@ -24,7 +24,7 @@
                                             </strong>
 
                                             <small class="pull-right text-muted">
-                                                <?php $time = \Carbon\Carbon::parse($conversationRequest->created_at) ?>
+                                                <?php $time = \Carbon\Carbon::parse($conversationRequest->created_at); ?>
                                                 <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
                                             </small>
                                         </div>

@@ -44,7 +44,7 @@ class Cooperation extends Model
     }
 
     /**
-     * Get all the steps from the cooperation
+     * Get all the steps from the cooperation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -54,9 +54,10 @@ class Cooperation extends Model
     }
 
     /**
-     * Check if the cooperation has a active step
+     * Check if the cooperation has a active step.
      *
      * @param Step $step
+     *
      * @return bool
      */
     public function isStepActive(Step $step): bool
@@ -72,9 +73,8 @@ class Cooperation extends Model
         return false;
     }
 
-
     /**
-     * get the active steps ordered on the order column
+     * get the active steps ordered on the order column.
      *
      * @return mixed
      */
@@ -83,14 +83,13 @@ class Cooperation extends Model
         return $this->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
     }
 
-
-	public function getRouteKeyName()
-	{
-		return 'slug';
-	}
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     /**
-     * Return the coaches from the current cooperation
+     * Return the coaches from the current cooperation.
      *
      * @return $this
      */
@@ -105,10 +104,10 @@ class Cooperation extends Model
             ->join('users', 'cooperation_user.user_id', '=', 'users.id');
 
         return $query;
-	}
+    }
 
     /**
-     * Return the residents from the current cooperation
+     * Return the residents from the current cooperation.
      *
      * @return $this
      */
@@ -125,13 +124,12 @@ class Cooperation extends Model
 //        ->leftJoin('model_has_roles', 'cooperation_user.user_id', '=', 'model_has_roles.model_id')
 //        ->where('model_has_roles.role_id', '=', 5)
 //        ->leftJoin('users', 'cooperation_user.user_id', '=', 'users.id');
-
-	}
+    }
 
     public function getCoordinators()
     {
         $users = $this->users()->role('coordinator');
 
         return $users;
-	}
+    }
 }

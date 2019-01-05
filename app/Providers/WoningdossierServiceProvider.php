@@ -2,20 +2,13 @@
 
 namespace App\Providers;
 
-use App\Helpers\HoomdossierSession;
 use App\Http\ViewComposers\CooperationComposer;
 use App\Http\ViewComposers\ToolComposer;
-use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
-use App\Models\Interest;
 use App\Models\PrivateMessage;
-use App\Models\Step;
-use App\Models\User;
-use App\Observers\PrivateMessageObserver;
 use App\Models\UserActionPlanAdvice;
+use App\Observers\PrivateMessageObserver;
 use App\Observers\UserActionPlanAdviceObserver;
-use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class WoningdossierServiceProvider extends ServiceProvider
@@ -27,12 +20,11 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-	    PrivateMessage::observe(PrivateMessageObserver::class);
+        PrivateMessage::observe(PrivateMessageObserver::class);
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
 
-	    \View::creator('cooperation.tool.*', ToolComposer::class);
+        \View::creator('cooperation.tool.*', ToolComposer::class);
         \View::creator('*', CooperationComposer::class);
-
     }
 
     /**
@@ -42,7 +34,6 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         $this->app->bind('Cooperation', function () {
             $cooperation = null;
             if (\Session::has('cooperation')) {

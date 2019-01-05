@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.admin.layouts.components.chat-messages')
-                        <?php $time = \Carbon\Carbon::parse($privateMessage->created_at) ?>
+                        <?php $time = \Carbon\Carbon::parse($privateMessage->created_at); ?>
 
                         <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
                             <div class="chat-body clearfix">

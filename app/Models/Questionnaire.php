@@ -11,12 +11,13 @@ class Questionnaire extends Model
     use TranslatableTrait;
 
     protected $fillable = [
-        'name', 'step_id', 'cooperation_id', 'is_active'
+        'name', 'step_id', 'cooperation_id', 'is_active',
     ];
 
     protected $casts = [
-        'is_active' => 'bool'
+        'is_active' => 'bool',
     ];
+
     /**
      * The "booting" method of the model.
      *
@@ -30,7 +31,7 @@ class Questionnaire extends Model
     }
 
     /**
-     * Return the step that belongs to this questionnaire
+     * Return the step that belongs to this questionnaire.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -40,7 +41,7 @@ class Questionnaire extends Model
     }
 
     /**
-     * Return the cooperation that belongs to this questionnaire
+     * Return the cooperation that belongs to this questionnaire.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -50,20 +51,21 @@ class Questionnaire extends Model
     }
 
     /**
-     * Check if the questionnaire is active
+     * Check if the questionnaire is active.
      *
      * @return bool
      */
-    public function isActive() : bool
+    public function isActive(): bool
     {
         if ($this->is_active) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Return all the questions from the questionnaire
+     * Return all the questions from the questionnaire.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

@@ -13,30 +13,30 @@
                 '1',
             ],
             'floor-insulation' => [
-                '4'
+                '4',
             ],
             'roof-insulation' => [
-                '5'
+                '5',
             ],
         ],
         'service' => [
             'high-efficiency-boiler' => [
-                '4'
+                '4',
             ],
             'heat-pump' => [
                 '1',
-                '2'
+                '2',
             ],
             'solar-panels' => [
-                '7'
+                '7',
             ],
             'heater' => [
-                '3'
+                '3',
             ],
             'ventilation-information' => [
-                '6'
+                '6',
             ],
-        ]
+        ],
     ];
 
     ?>

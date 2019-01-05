@@ -55,7 +55,7 @@ class UserActionPlanAdvice extends Model
     public $fillable = [
         'user_id', 'measure_application_id', // old
         'costs', 'savings_gas', 'savings_electricity', 'savings_money',
-        'year', 'planned', 'planned_year', 'input_source_id'
+        'year', 'planned', 'planned_year', 'input_source_id',
     ];
 
     /**
@@ -69,8 +69,10 @@ class UserActionPlanAdvice extends Model
 
     /**
      * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id
+     * The UserEnergyHabit uses the user_id instead off the building_id.
+     *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeForMe($query)
@@ -79,7 +81,6 @@ class UserActionPlanAdvice extends Model
 
         return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
     }
-
 
     /**
      * Scope a query to only include results for the particular step.
@@ -95,7 +96,7 @@ class UserActionPlanAdvice extends Model
     }
 
     /**
-     * Get the input Sources
+     * Get the input Sources.
      *
      * @return BelongsTo
      */
@@ -105,7 +106,7 @@ class UserActionPlanAdvice extends Model
     }
 
     /**
-     * Get a input source name
+     * Get a input source name.
      *
      * @return InputSource name
      */
@@ -139,7 +140,6 @@ class UserActionPlanAdvice extends Model
         /** @var UserActionPlanAdvice $advice */
         foreach ($advices as $advice) {
             if ($advice->step instanceof Step) {
-
                 /** @var MeasureApplication $measureApplication */
                 $measureApplication = $advice->measureApplication;
 
@@ -162,20 +162,21 @@ class UserActionPlanAdvice extends Model
         }
 
         ksort($result);
+
         return $result;
     }
 
     /**
-     * Get all the comments that are saved in multiple tables
+     * Get all the comments that are saved in multiple tables.
      *
      * @return Collection
      */
-    public static function getAllCoachComments() : Collection
+    public static function getAllCoachComments(): Collection
     {
         $building = Building::find(HoomdossierSession::getInputSource());
         $allInputForMe = collect();
         $coachComments = collect();
-        $comment = "";
+        $comment = '';
 
         /* General-data */
         $userEnergyHabitForMe = UserEnergyHabit::forMe()->get();
@@ -203,9 +204,7 @@ class UserActionPlanAdvice extends Model
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
         $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
 
-
         foreach ($allInputForMe as $step => $inputForMe) {
-
             // get the coach his input from the collection
             $coachInputSource = InputSource::findByShort('coach');
             // get the coach answers
@@ -213,8 +212,7 @@ class UserActionPlanAdvice extends Model
 
             // loop through them and extract the comments from them
             foreach ($coachInputs as $coachInput) {
-                if (!is_null($coachInput)) {
-
+                if (! is_null($coachInput)) {
                     if (is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra)) {
                         $comment = $coachInput->extra['comment'];
                     } elseif (array_key_exists('additional_info', $coachInput->attributes)) {
@@ -229,12 +227,9 @@ class UserActionPlanAdvice extends Model
                     } else {
                         // comment as key, yes. Comments will be unique.
                         $coachComments->put($step, $comment);
-
                     }
                 }
             }
-
-
         }
 
         $coachComments = $coachComments->unique();

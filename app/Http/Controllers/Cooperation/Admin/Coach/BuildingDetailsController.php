@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Http\Controllers\Controller;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\BuildingNotes;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class BuildingDetailsController extends Controller
 {
@@ -19,8 +18,6 @@ class BuildingDetailsController extends Controller
         // get the matching building
         $building = Building::withTrashed()->find($buildingId);
 
-
-
         return view('cooperation.admin.coach.buildings.details.index', compact('buildingNotes', 'building'));
     }
 
@@ -28,7 +25,6 @@ class BuildingDetailsController extends Controller
     {
         $note = strip_tags($request->get('note'));
         $buildingId = $request->get('building_id');
-
 
         BuildingNotes::create([
             'note' => $note,

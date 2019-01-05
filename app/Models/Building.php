@@ -58,17 +58,18 @@ class Building extends Model
     use SoftDeletes;
 
     protected $dates = [
-        'deleted_at'
+        'deleted_at',
     ];
 
     public $fillable = [
         'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension',
     ];
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
 
-        static::deleting(function($building) {
+        static::deleting(function ($building) {
             $building->user_id = null;
             $building->country_code = 'nl';
             $building->example_building_id = null;
@@ -121,7 +122,7 @@ class Building extends Model
     }
 
     /**
-     * Return all the building notes
+     * Return all the building notes.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -213,10 +214,11 @@ class Building extends Model
     }
 
     /**
-     * Almost the same as getBuildingElement($short) except this returns all the input
+     * Almost the same as getBuildingElement($short) except this returns all the input.
      *
      * @param $query
      * @param $short
+     *
      * @return mixed
      */
     public function getBuildingElementsForMe($short)
@@ -226,7 +228,6 @@ class Building extends Model
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->select(['building_elements.*'])->get();
     }
-
 
     /**
      * @param string $short
@@ -318,7 +319,7 @@ class Building extends Model
     }
 
     /**
-     * Get all the statuses for a building
+     * Get all the statuses for a building.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -333,7 +334,7 @@ class Building extends Model
     }
 
     /**
-     * Get all the answers for the building
+     * Get all the answers for the building.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

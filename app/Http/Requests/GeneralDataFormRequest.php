@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\HoomdossierSession;
 use App\Models\Motivation;
 use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Factory;
 
 class GeneralDataFormRequest extends FormRequest
 {
@@ -27,14 +25,10 @@ class GeneralDataFormRequest extends FormRequest
 
     public function getValidatorInstance()
     {
-
         $this->decimals(['surface', 'thermostat_high', 'thermostat_low']);
 
         return parent::getValidatorInstance();
     }
-
-
-
 
     /**
      * Get the validation rules that apply to the request.
@@ -43,7 +37,7 @@ class GeneralDataFormRequest extends FormRequest
      */
     public function rules()
     {
-    	$serviceRules = [];
+        $serviceRules = [];
 
         foreach ($this->request->get('service') as $serviceId => $serviceValueId) {
             if (! is_null($serviceValueId)) {
@@ -90,12 +84,12 @@ class GeneralDataFormRequest extends FormRequest
             'resident_count' => 'required|numeric',
             'cook_gas' => 'required|numeric',
             //'thermostat_high' => 'nullable|numeric|min:10|max:30|gte:thermostat_low',
-	        //'thermostat_low' => 'nullable|numeric|min:10|max:30|lte:thermostat_low',
-	        // Note the bail validator. We do this to prevent messages like
-	        // "Thermostat high must be between 8 and 30" or "Thermostat low must be between 10 and 100"
-	        // because the request variable is used for the between.
-	        // In a later Laravel version, the gte and lte validators can probably be used.
-	        'thermostat_high' => 'nullable|numeric|min:10|max:30|bail|between:10,30',
+            //'thermostat_low' => 'nullable|numeric|min:10|max:30|lte:thermostat_low',
+            // Note the bail validator. We do this to prevent messages like
+            // "Thermostat high must be between 8 and 30" or "Thermostat low must be between 10 and 100"
+            // because the request variable is used for the between.
+            // In a later Laravel version, the gte and lte validators can probably be used.
+            'thermostat_high' => 'nullable|numeric|min:10|max:30|bail|between:10,30',
             'thermostat_low' => 'nullable|numeric|min:10|max:30|bail|between:10,'.max(10, $this->request->get('thermostat_high')),
             'heating_first_floor' => 'required|numeric|exists:building_heatings,id',
             'heating_second_floor' => 'required|numeric|exists:building_heatings,id',

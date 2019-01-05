@@ -136,22 +136,22 @@ class ExampleBuilding extends Model
      */
     public function scopeForMyCooperation($query)
     {
-        $cooperationId = !empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
+        $cooperationId = ! empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
         return $query->where('cooperation_id', '=', $cooperationId);
     }
 
-	/**
-	 * Scope a query to only include buildings for my cooperation.
-	 *
-	 * @param \Illuminate\Database\Eloquent\Builder $query
-	 *
-	 * @return \Illuminate\Database\Eloquent\Builder
-	 */
-	public function scopeForAnyOrMyCooperation($query)
-	{
-		$cooperationId = \Session::get('cooperation', 0);
+    /**
+     * Scope a query to only include buildings for my cooperation.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeForAnyOrMyCooperation($query)
+    {
+        $cooperationId = \Session::get('cooperation', 0);
 
-		return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
-	}
+        return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
+    }
 }

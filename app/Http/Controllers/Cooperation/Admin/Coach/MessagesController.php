@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -12,7 +13,6 @@ use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
 use App\Services\MessageService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class MessagesController extends Controller
 {
@@ -29,7 +29,7 @@ class MessagesController extends Controller
 
     public function edit(Cooperation $cooperation, $mainMessageId)
     {
-	    $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
+        $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
 
         $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
 
@@ -37,7 +37,6 @@ class MessagesController extends Controller
 
         return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'mainMessageId'));
     }
-
 
     public function store(Cooperation $cooperation, MessagesRequest $request)
     {
@@ -77,6 +76,5 @@ class MessagesController extends Controller
         BuildingCoachStatusService::revokeAccess($fromId, $building->id, $privateMessageRequestId);
 
         return redirect()->back();
-
     }
 }

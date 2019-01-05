@@ -26,7 +26,7 @@ class MessageRequest extends FormRequest
     {
         return [
             'message' => 'required',
-            'receiver_id' => ['required', new isUserMemberOfCooperation()]
+            'receiver_id' => ['required', new isUserMemberOfCooperation()],
         ];
     }
 }

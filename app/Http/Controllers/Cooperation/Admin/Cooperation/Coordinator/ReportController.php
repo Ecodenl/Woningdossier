@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
@@ -11,7 +12,6 @@ use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
-use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
@@ -21,13 +21,12 @@ class ReportController extends Controller
     }
 
     /**
-     * Download the reports of the questionnaires
+     * Download the reports of the questionnaires.
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
     public function downloadQuestionnaireResults()
     {
-
         $questionnaires = Questionnaire::all();
         $rows = [];
 
@@ -38,7 +37,6 @@ class ReportController extends Controller
         $usersFromCooperation = $currentCooperation->users()->role('resident')->with('buildings')->get();
 
         foreach ($questionnaires as $questionnaire) {
-
             foreach ($usersFromCooperation as $user) {
                 $building = $user->buildings()->first();
 
@@ -56,9 +54,7 @@ class ReportController extends Controller
                     ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name')
                     ->get();
 
-
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
-
                     $answer = $questionAnswerForCurrentQuestionnaire->answer;
                     $currentQuestion = Question::find($questionAnswerForCurrentQuestionnaire->question_id);
 
@@ -70,7 +66,6 @@ class ReportController extends Controller
                         $explodedAnswers = explode('|', $answer);
 
                         foreach ($explodedAnswers as $explodedAnswer) {
-
                             // check if the current question has options
                             // the question can contain a int but can be a answer to a question like "How old are you"
                             if ($currentQuestion->hasQuestionOptions()) {
@@ -81,20 +76,18 @@ class ReportController extends Controller
 
                         // the questionOptionAnswer can be empty if the the if statements did not pass
                         // so we check that before assigning it.
-                        if (!empty($questionOptionAnswer)) {
+                        if (! empty($questionOptionAnswer)) {
                             // implode it
                             $answer = implode($questionOptionAnswer, '|');
                         }
-
                     }
                     $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
                 }
             }
         }
 
-
         $headers = [];
-        if (!empty($rows)) {
+        if (! empty($rows)) {
             $headers = array_keys(array_first($rows));
         }
 
@@ -144,32 +137,32 @@ class ReportController extends Controller
                 $postalCode = $building->postal_code;
                 $countryCode = $building->country_code;
 
-            $firstName = $user->first_name;
-            $lastName = $user->last_name;
-            $email = $user->email;
-            $phoneNumber = $user->phone_number;
-            $mobileNumber = $user->mobile;
+                $firstName = $user->first_name;
+                $lastName = $user->last_name;
+                $email = $user->email;
+                $phoneNumber = $user->phone_number;
+                $mobileNumber = $user->mobile;
 
-            // set the personal userinfo
-            $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
+                // set the personal userinfo
+                $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
 
-            // set all the years in range
-            for ($startYear = $thisYear; $startYear <= ($thisYear + 100); ++$startYear) {
-                $row[$key][$startYear] = '';
-            }
-
-            // get the user measures / advices
-            foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
-                $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
-                $measureName = $actionPlanAdvice->measureApplication->measure_name;
-
-                if (is_null($plannedYear)) {
-                    $plannedYear = $actionPlanAdvice->getAdviceYear();
+                // set all the years in range
+                for ($startYear = $thisYear; $startYear <= ($thisYear + 100); ++$startYear) {
+                    $row[$key][$startYear] = '';
                 }
 
-                // create a new array with the measures for the user connected to the planned year
-                $allUserMeasures[$plannedYear][] = $measureName;
-            }
+                // get the user measures / advices
+                foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
+                    $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+                    $measureName = $actionPlanAdvice->measureApplication->measure_name;
+
+                    if (is_null($plannedYear)) {
+                        $plannedYear = $actionPlanAdvice->getAdviceYear();
+                    }
+
+                    // create a new array with the measures for the user connected to the planned year
+                    $allUserMeasures[$plannedYear][] = $measureName;
+                }
 
                 // loop through the user measures and add them to the row
                 foreach ($allUserMeasures as $year => $userMeasures) {
@@ -206,7 +199,6 @@ class ReportController extends Controller
             __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.country-code'),
         ];
 
-
         // get all the measures
         $measures = MeasureApplication::all();
 
@@ -221,7 +213,6 @@ class ReportController extends Controller
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
-
                 $street = $building->street;
                 $number = $building->number;
                 $city = $building->city;

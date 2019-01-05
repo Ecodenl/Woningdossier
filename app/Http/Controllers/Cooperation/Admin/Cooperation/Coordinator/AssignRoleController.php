@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\AssignRoleRequest;
 use App\Models\Cooperation;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 
 class AssignRoleController extends Controller
@@ -20,7 +19,6 @@ class AssignRoleController extends Controller
 
     public function edit(Cooperation $cooperation, $userId)
     {
-
         // find the user by id, we will always start from the cooperation.
         $user = $cooperation->users()->findOrFail($userId);
 
@@ -37,7 +35,6 @@ class AssignRoleController extends Controller
 
     public function update(Cooperation $cooperation, $userId, AssignRoleRequest $request)
     {
-
         $user = $cooperation->users()->findOrFail($userId);
 
         $roleIds = $request->get('roles', '');

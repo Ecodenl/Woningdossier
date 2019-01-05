@@ -11,7 +11,6 @@ class PrivateMessagesTableSeeder extends Seeder
      */
     public function run()
     {
-
         // well create a new "coach"
         \App\Models\User::create([
             'first_name' => 'Coach',

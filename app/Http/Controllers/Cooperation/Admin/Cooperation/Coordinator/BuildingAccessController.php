@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class BuildingAccessController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-
         // i apologize for this variable naming.
         $results = \DB::table('cooperations')
             ->where('cooperations.id', '=', $cooperation->id)
@@ -28,7 +27,6 @@ class BuildingAccessController extends Controller
 
         // filter the result set
         $filteredResults = $results->filter(function ($result) use ($results) {
-
             // i dont know how to name this variable at all.
             $residents = $results->where('user_id', $result->user_id);
 
@@ -41,7 +39,6 @@ class BuildingAccessController extends Controller
                 return $result;
             }
         })->unique('user_id');
-
 
         $buildingCoachStatuses = BuildingCoachStatus::all();
 

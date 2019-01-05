@@ -20,8 +20,9 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -47,7 +48,6 @@ class HighEfficiencyBoilerController extends Controller
         $habit = $user->energyHabit;
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
 
-
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         $boilerTypes = $boiler->values()->orderBy('order')->get();
@@ -63,7 +63,6 @@ class HighEfficiencyBoilerController extends Controller
 
     public function calculate(Request $request)
     {
-
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
@@ -94,8 +93,8 @@ class HighEfficiencyBoilerController extends Controller
                 if (array_key_exists('extra', $options)) {
                     $year = $options['extra'];
 
-	                $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
-					//$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();
+                    $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
+                    //$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();
                     //$measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
 
                     $amountGas = $request->input('habit.gas_usage', null);
@@ -143,7 +142,7 @@ class HighEfficiencyBoilerController extends Controller
             [
                 'building_id' => $buildingId,
                 'service_id' => $buildingServiceId,
-                'input_source_id' => $inputSourceId
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'service_value_id' => $serviceValue,
@@ -174,7 +173,7 @@ class HighEfficiencyBoilerController extends Controller
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
-        if (!empty($nextStep['tab_id'])) {
+        if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
 

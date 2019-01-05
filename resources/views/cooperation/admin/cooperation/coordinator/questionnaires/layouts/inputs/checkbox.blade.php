@@ -1,6 +1,6 @@
 <label for="">Vraag</label>
 @foreach(config('woningdossier.supported_locales') as $locale)
-    <?php $translation =  $question->getTranslation('name', $locale) instanceof \App\Models\Translation ? $question->getTranslation('name', $locale)->translation : "" ?>
+    <?php $translation = $question->getTranslation('name', $locale) instanceof \App\Models\Translation ? $question->getTranslation('name', $locale)->translation : ''; ?>
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">{{$locale}}</span>
@@ -11,11 +11,11 @@
 
 <?php $questionOptionCount = 0; ?>
 @foreach($question->questionOptions as $questionOption)
-    <?php $questionOptionCount++ ?>
+    <?php $questionOptionCount++; ?>
     <label for="">Optie {{$questionOptionCount}}</label>
     <div class="option-group">
         @foreach(config('woningdossier.supported_locales') as $locale)
-            <?php $translation = $questionOption->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionOption->getTranslation('name', $locale)->translation : "" ?>
+            <?php $translation = $questionOption->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionOption->getTranslation('name', $locale)->translation : ''; ?>
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon">{{$locale}}</span>

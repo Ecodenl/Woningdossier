@@ -48,11 +48,11 @@ class LoginController extends Controller
         return view('cooperation.admin.auth.login');
     }
 
-
     /**
-     * Logout the user
+     * Logout the user.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function logout(Request $request)
@@ -62,7 +62,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
 
         return redirect()->route('cooperation.home');
-	}
+    }
 
     /**
      * Get the needed authorization credentials from the request.

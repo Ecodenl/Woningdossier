@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateCooperationStepsTable extends Migration
 {
@@ -15,10 +15,10 @@ class CreateCooperationStepsTable extends Migration
     {
         Schema::create('cooperation_steps', function (Blueprint $table) {
             $table->increments('id');
-            
+
             $table->integer('cooperation_id')->unsigned();
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('restrict');
-            
+
             $table->integer('step_id')->unsigned();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('restrict');
 

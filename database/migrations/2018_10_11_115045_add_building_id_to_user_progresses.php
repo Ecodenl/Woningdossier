@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddBuildingIdToUserProgresses extends Migration
 {
@@ -23,7 +23,6 @@ class AddBuildingIdToUserProgresses extends Migration
             $userProgress->building_id = $building->id;
             $userProgress->save();
         }
-
     }
 
     /**
@@ -33,6 +32,5 @@ class AddBuildingIdToUserProgresses extends Migration
      */
     public function down()
     {
-        //
     }
 }

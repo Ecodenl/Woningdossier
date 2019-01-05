@@ -56,5 +56,4 @@ class Step extends Model
 
         return false;
     }
-
 }

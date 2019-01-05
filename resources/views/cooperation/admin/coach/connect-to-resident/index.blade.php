@@ -21,7 +21,7 @@
                         </thead>
                         <tbody>
                             @foreach($buildingsFromBuildingCoachStatuses as $building)
-                                <?php $user = \App\Models\User::find($building->user_id) ?>
+                                <?php $user = \App\Models\User::find($building->user_id); ?>
                                 <tr>
                                     <td>{{$user->first_name}}</td>
                                     <td>{{$user->last_name}}</td>

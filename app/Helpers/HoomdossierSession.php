@@ -8,16 +8,15 @@ use App\Models\InputSource;
 use App\Models\Role;
 use Illuminate\Support\Facades\Session;
 
-class HoomdossierSession extends Session {
-
-
+class HoomdossierSession extends Session
+{
     /**
      * Set all the required values.
      *
-     * @param Building $building
+     * @param Building    $building
      * @param InputSource $inputSource
      * @param InputSource $inputSourceValue
-     * @param Role $role
+     * @param Role        $role
      */
     public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
     {
@@ -28,7 +27,7 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Destroy the hoomdossier sessions
+     * Destroy the hoomdossier sessions.
      */
     public static function destroy()
     {
@@ -37,7 +36,7 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Set the Cooperation id
+     * Set the Cooperation id.
      *
      * @param Cooperation $cooperation
      */
@@ -47,7 +46,7 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Check if the cooperation session is set
+     * Check if the cooperation session is set.
      *
      * @return bool
      */
@@ -77,9 +76,10 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Get a value from the Hoomdossier session
+     * Get a value from the Hoomdossier session.
      *
      * @param $key
+     *
      * @return mixed
      */
     public static function getHoomdossierSession($key)
@@ -87,18 +87,18 @@ class HoomdossierSession extends Session {
         return self::get('hoomdossier_session.'.$key);
     }
 
-	/**
-	 * Returns whether or not this session contains a current role.
-	 *
-	 * @return bool
-	 */
-	public static function hasRole() : bool
-	{
-		return !empty(self::getRole());
-	}
+    /**
+     * Returns whether or not this session contains a current role.
+     *
+     * @return bool
+     */
+    public static function hasRole(): bool
+    {
+        return ! empty(self::getRole());
+    }
 
     /**
-     * Set the role
+     * Set the role.
      *
      * @param Role $role
      */
@@ -108,7 +108,8 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Set the input source value id
+     * Set the input source value id.
+     *
      * @NOTE: this is not the same as the input source, this input source will be used to get the right values for the form.
      *
      * @param InputSource $inputSource
@@ -119,17 +120,17 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Set the input source id
+     * Set the input source id.
      *
      * @param InputSource $inputSource
      */
     public static function setInputSource(InputSource $inputSource)
     {
-    	self::setHoomdossierSession( 'input_source_id', $inputSource->id );
+        self::setHoomdossierSession('input_source_id', $inputSource->id);
     }
 
     /**
-     * Set the building id
+     * Set the building id.
      *
      * @param Building $building
      */
@@ -138,33 +139,34 @@ class HoomdossierSession extends Session {
         self::setHoomdossierSession('building_id', $building->id);
     }
 
-	/**
-	 * Returns the set role_id.
-	 *
-	 * @return int|null
-	 */
+    /**
+     * Returns the set role_id.
+     *
+     * @return int|null
+     */
     public static function getRole()
     {
         return self::getHoomdossierSession('role_id');
     }
 
-    public static function currentRole($column = 'name') : string
+    public static function currentRole($column = 'name'): string
     {
-    	$roleId = self::getRole();
-		if (!empty($roleId)){
-			$role = Role::find($roleId);
-			if ($role instanceof Role){
-				$result = $role->getAttribute($column);
-				if (!empty($result)){
-					return $result;
-				}
-			}
-		}
-		return "";
+        $roleId = self::getRole();
+        if (! empty($roleId)) {
+            $role = Role::find($roleId);
+            if ($role instanceof Role) {
+                $result = $role->getAttribute($column);
+                if (! empty($result)) {
+                    return $result;
+                }
+            }
+        }
+
+        return '';
     }
 
     /**
-     * Get the input source id
+     * Get the input source id.
      *
      * @return int
      */
@@ -175,7 +177,8 @@ class HoomdossierSession extends Session {
 
     /**
      * Get the input source value id
-     * Read the NOTE @setInputSourceValue
+     * Read the NOTE @setInputSourceValue.
+     *
      * @return int
      */
     public static function getInputSourceValue(): int
@@ -184,7 +187,7 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Get the building id
+     * Get the building id.
      *
      * @return int|null
      */
@@ -194,7 +197,7 @@ class HoomdossierSession extends Session {
     }
 
     /**
-     * Return the Hoomdossier session data
+     * Return the Hoomdossier session data.
      *
      * @return array
      */

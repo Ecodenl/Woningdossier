@@ -18,15 +18,15 @@ class FilledStep
      */
     public function handle($request, Closure $next, $step)
     {
-        $debugMsg = "For this step, the ".$step." should be filled";
+        $debugMsg = 'For this step, the '.$step.' should be filled';
         $prev = Step::where('order', $step)->first();
         if (! \Auth::user()->hasCompleted($prev)) {
-            \Log::debug($debugMsg . ".. And it wasn't. So, redirecting to that step..");
+            \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
             $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
             return redirect('/tool/'.$prev->slug.'/')->with(compact('cooperation'));
         }
-        \Log::debug($debugMsg . ".. And it was :-)");
+        \Log::debug($debugMsg.'.. And it was :-)');
 
         return $next($request);
     }

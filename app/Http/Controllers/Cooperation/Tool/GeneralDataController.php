@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -25,7 +24,6 @@ use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
-use App\Models\Role;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -36,12 +34,10 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use App\Scopes\GetValueScope;
 use App\Services\ExampleBuildingService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class GeneralDataController extends Controller
 {
@@ -49,7 +45,7 @@ class GeneralDataController extends Controller
 
     public function __construct(Request $request)
     {
-        $slug = str_replace(['tool' , '/'], '', $request->getRequestUri());
+        $slug = str_replace(['tool', '/'], '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
     }
 
@@ -84,7 +80,6 @@ class GeneralDataController extends Controller
         $motivations = Motivation::orderBy('order')->get();
         $energyHabit = $buildingOwner->energyHabit;
 
-
         // Get possible remarks from the coach on energy habits
         $coachSource = InputSource::findByShort('coach');
         $coachEnergyHabitRemarks = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)
@@ -96,10 +91,9 @@ class GeneralDataController extends Controller
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->get();
 
-
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step',  'buildingOwner',
-	        'coachEnergyHabitRemarks', 'userInterestsForMe',
+            'building', 'step', 'buildingOwner',
+            'coachEnergyHabitRemarks', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
@@ -109,46 +103,50 @@ class GeneralDataController extends Controller
     }
 
     // todo
-	/**
-	 * return the example buildings based on the building types
-	 *
-	 * @param Request $request
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	public function exampleBuildingType(Request $request)
-	{
-		$buildingTypeId = $request->get('building_type_id', '');
-		$exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
-		// loop through all the example buildings so we can add the "real name" to the examplebuilding
-		foreach ($exampleBuildings as $exampleBuilding) {
-			$exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
-		}
-		return response()->json($exampleBuildings);
-	}
-	// todo end
+
+    /**
+     * return the example buildings based on the building types.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function exampleBuildingType(Request $request)
+    {
+        $buildingTypeId = $request->get('building_type_id', '');
+        $exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
+        // loop through all the example buildings so we can add the "real name" to the examplebuilding
+        foreach ($exampleBuildings as $exampleBuilding) {
+            $exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
+        }
+
+        return response()->json($exampleBuildings);
+    }
+
+    // todo end
 
     public function applyExampleBuilding(Request $request)
     {
         $building = Building::find(HoomdossierSession::getBuilding());
 
-	    $exampleBuildingId = $request->get('example_building_id', null);
-	    $buildYear = $request->get('build_year', null);
-	    if (!is_null($exampleBuildingId) && !is_null($buildYear)){
-		    $exampleBuildingId = $request->get('example_building_id', null);
-		    if (! is_null($exampleBuildingId)) {
-			    $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id',
-				    $exampleBuildingId)->first();
-			    if ($exampleBuilding instanceof ExampleBuilding) {
-				    $building->exampleBuilding()->associate($exampleBuilding);
-				    $building->save();
-				    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+        $exampleBuildingId = $request->get('example_building_id', null);
+        $buildYear = $request->get('build_year', null);
+        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            $exampleBuildingId = $request->get('example_building_id', null);
+            if (! is_null($exampleBuildingId)) {
+                $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id',
+                    $exampleBuildingId)->first();
+                if ($exampleBuilding instanceof ExampleBuilding) {
+                    $building->exampleBuilding()->associate($exampleBuilding);
+                    $building->save();
+                    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
-				    return response()->json();
-			    }
-		    }
-	    }
-	    // Something went wrong!
-	    return response()->json([], 500);
+                    return response()->json();
+                }
+            }
+        }
+        // Something went wrong!
+        return response()->json([], 500);
     }
 
     /**
@@ -189,8 +187,6 @@ class GeneralDataController extends Controller
             ]
         );
 
-
-
         $energyLabel = EnergyLabel::find($request->get('energy_label_id'));
         $features->energyLabel()->associate($energyLabel);
 
@@ -230,12 +226,11 @@ class GeneralDataController extends Controller
             $elementInterestId = $request->input('user_interest.element.'.$elementId.'', '');
 
             if ($element instanceof Element && $elementValue instanceof ElementValue) {
-
                 BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [
                         'element_id' => $element->id,
                         'input_source_id' => $inputSourceId,
-                        'building_id' => $buildingId
+                        'building_id' => $buildingId,
                     ],
                     [
                         'element_value_id' => $elementValue->id,
@@ -273,7 +268,6 @@ class GeneralDataController extends Controller
             $serviceInterestId = $request->input('user_interest.service.'.$serviceId.'', '');
 
             if ($service instanceof Service) {
-
                 $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [
                         'service_id' => $service->id,
@@ -367,7 +361,7 @@ class GeneralDataController extends Controller
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
-        if (!empty($nextStep['tab_id'])) {
+        if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
 

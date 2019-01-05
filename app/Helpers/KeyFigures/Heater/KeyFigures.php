@@ -12,20 +12,19 @@ use App\Models\UserEnergyHabit;
 
 class KeyFigures
 {
+    const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
 
-	const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
-
-	protected static $angles = [
-		20 => 20,
-		30 => 30,
-		40 => 40,
-		45 => 45,
-		50 => 50,
-		60 => 60,
-		70 => 70,
-		75 => 75,
-		90 => 90,
-	];
+    protected static $angles = [
+        20 => 20,
+        30 => 30,
+        40 => 40,
+        45 => 45,
+        50 => 50,
+        60 => 60,
+        70 => 70,
+        75 => 75,
+        90 => 90,
+    ];
 
     /**
      * @param $zipcode
@@ -51,7 +50,7 @@ class KeyFigures
     /**
      * Get the key figure for the current water consumption.
      *
-     * @param UserEnergyHabit $habit
+     * @param UserEnergyHabit      $habit
      * @param ComfortLevelTapWater $comfortLevel
      *
      * @return KeyFigureConsumptionTapWater|null
@@ -64,7 +63,7 @@ class KeyFigures
     }
 
     /**
-     * @param int $waterConsumption
+     * @param int   $waterConsumption
      * @param float $helpFactor
      *
      * @return array
@@ -75,45 +74,49 @@ class KeyFigures
 
         // the water consumption comes from the key_figure_consumption_tap_waters, the max resident is 8 after that there is no waterconsumption thing
         // and if thats empty we can calc anything so return empty array
-        if (!$initialHeater instanceof HeaterSpecification) {
+        if (! $initialHeater instanceof HeaterSpecification) {
             return [];
         }
-	    $relativeCollectorSize = $initialHeater->collector * (1/$helpFactor);
-	    \Log::debug("Heater: Relative collector size: " . $relativeCollectorSize);
+        $relativeCollectorSize = $initialHeater->collector * (1 / $helpFactor);
+        \Log::debug('Heater: Relative collector size: '.$relativeCollectorSize);
 
-	    $advisedSize = self::getAdvisedCollectorSize($relativeCollectorSize);
-	    \Log::debug("Heater: Advised collector size: " . $advisedSize);
+        $advisedSize = self::getAdvisedCollectorSize($relativeCollectorSize);
+        \Log::debug('Heater: Advised collector size: '.$advisedSize);
 
-	    return [
-	    	'boiler' => $initialHeater->boiler,
-		    'collector' => $advisedSize,
-		    'production_heat' => $initialHeater->savings,
-	    ];
+        return [
+            'boiler' => $initialHeater->boiler,
+            'collector' => $advisedSize,
+            'production_heat' => $initialHeater->savings,
+        ];
     }
 
-	/**
-	 * Return the advised collector size based on the relative collector size
-	 * @param float $relativeCollectorSize
-	 *
-	 * @return float
-	 */
-    public static function getAdvisedCollectorSize($relativeCollectorSize){
-		if ($relativeCollectorSize <= 2){
-			return 1.6;
-		}
-		if ($relativeCollectorSize < 2.9){
-			return 2.5;
-		}
-		if ($relativeCollectorSize < 4.1){
-			return 3.2;
-		}
-		if ($relativeCollectorSize < 5.6){
-			return 4.8;
-		}
-		return 6.4;
+    /**
+     * Return the advised collector size based on the relative collector size.
+     *
+     * @param float $relativeCollectorSize
+     *
+     * @return float
+     */
+    public static function getAdvisedCollectorSize($relativeCollectorSize)
+    {
+        if ($relativeCollectorSize <= 2) {
+            return 1.6;
+        }
+        if ($relativeCollectorSize < 2.9) {
+            return 2.5;
+        }
+        if ($relativeCollectorSize < 4.1) {
+            return 3.2;
+        }
+        if ($relativeCollectorSize < 5.6) {
+            return 4.8;
+        }
+
+        return 6.4;
     }
 
-	public static function getAngles(){
-		return self::$angles;
-	}
+    public static function getAngles()
+    {
+        return self::$angles;
+    }
 }

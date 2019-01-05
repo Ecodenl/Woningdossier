@@ -48,8 +48,7 @@ class WallInsulationController extends Controller
      */
     public function index()
     {
-
-	    $typeIds = [3];
+        $typeIds = [3];
 
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
@@ -71,7 +70,7 @@ class WallInsulationController extends Controller
              'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
-	        'buildingElements'
+            'buildingElements'
         ));
     }
 
@@ -84,7 +83,6 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
         $buildingId = $building->id;
@@ -115,7 +113,6 @@ class WallInsulationController extends Controller
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
                 'element_id' => $elementId,
-
             ],
             [
                 'element_value_id' => $elementValueId,
@@ -141,8 +138,6 @@ class WallInsulationController extends Controller
             ]
         );
 
-
-
         // Save progress
         $this->saveAdvices($request);
         \Auth::user()->complete($this->step);
@@ -152,7 +147,7 @@ class WallInsulationController extends Controller
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
-        if (!empty($nextStep['tab_id'])) {
+        if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
 
@@ -230,18 +225,18 @@ class WallInsulationController extends Controller
         if (1 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_JOINTS;
             //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
-	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
+            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif (2 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_FACADE;
             //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
-	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
+            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif (0 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_RESEARCH;
             //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.research');
-	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
+            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         }
         $insulationAdvice = MeasureApplication::byShort($advice);
-	    $result['insulation_advice'] = $insulationAdvice->measure_name;
+        $result['insulation_advice'] = $insulationAdvice->measure_name;
 
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);
@@ -297,8 +292,7 @@ class WallInsulationController extends Controller
         $isPlastered = 2 != (int) $request->get('facade_plastered_painted', 2);
 
         if ($isPlastered) {
-
-        	$measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();
+            $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();
             //$measureApplication = MeasureApplication::translated('measure_name', 'Gevelschilderwerk op stuk- of metselwerk', 'nl')->first(['measure_applications.*']);
             $surfaceId = $request->get('facade_plastered_surface_id');
             $facadePlasteredSurface = FacadePlasteredSurface::find($surfaceId);

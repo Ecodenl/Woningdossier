@@ -5,13 +5,13 @@ namespace App\Services;
 use App\Models\PrivateMessage;
 use Illuminate\Http\Request;
 
-class MessageService {
-
-
+class MessageService
+{
     /**
-     * Create a new message between a user and user
+     * Create a new message between a user and user.
      *
      * @param Request $request
+     *
      * @return bool
      */
     public static function create(Request $request)
@@ -25,7 +25,7 @@ class MessageService {
                 'message' => $message,
                 'from_user_id' => \Auth::id(),
                 'to_user_id' => $receiverId,
-                'main_message' => $mainMessageId
+                'main_message' => $mainMessageId,
             ]
         );
 

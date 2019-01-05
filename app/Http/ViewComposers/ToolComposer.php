@@ -12,21 +12,19 @@ use Illuminate\View\View;
 
 class ToolComposer
 {
-
     public function create(View $view)
     {
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $view->with('cooperation', app()->make('Cooperation'));
-		$view->with('cooperationStyle', app()->make('CooperationStyle'));
+        $view->with('cooperationStyle', app()->make('CooperationStyle'));
 
-	    $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
-	    $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
+        $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
+        $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
 
-	    $view->with('steps', $cooperation->getActiveOrderedSteps());
-	    $view->with('interests', Interest::orderBy('order')->get());
+        $view->with('steps', $cooperation->getActiveOrderedSteps());
+        $view->with('interests', Interest::orderBy('order')->get());
 
-	    $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
-
+        $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
     }
 }

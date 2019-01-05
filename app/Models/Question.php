@@ -12,25 +12,25 @@ class Question extends Model
     use TranslatableTrait, SoftDeletes;
 
     protected $fillable = [
-        'name', 'type', 'order', 'required', 'questionnaire_id', 'validation'
+        'name', 'type', 'order', 'required', 'questionnaire_id', 'validation',
     ];
 
     protected $dates = [
-        'deleted_at'
+        'deleted_at',
     ];
     protected $casts = [
         'required' => 'bool',
-        'validation' => 'array'
+        'validation' => 'array',
     ];
 
     /**
-     * Check if a question is required
+     * Check if a question is required.
      *
      * @return bool
      */
-    public function isRequired() : bool
+    public function isRequired(): bool
     {
-        if ($this->required == true) {
+        if (true == $this->required) {
             return true;
         }
 
@@ -38,26 +38,27 @@ class Question extends Model
     }
 
     /**
-     * Check if a question has validation
+     * Check if a question has validation.
      *
      * @return bool
      */
-    public function hasValidation() : bool
+    public function hasValidation(): bool
     {
-        if (is_array($this->validation) && !empty($this->validation)) {
+        if (is_array($this->validation) && ! empty($this->validation)) {
             return true;
         }
 
         return false;
     }
+
     /**
-     * Check if a question has validation
+     * Check if a question has validation.
      *
      * @return bool
      */
-    public function hasNoValidation() : bool
+    public function hasNoValidation(): bool
     {
-        return !$this->hasValidation();
+        return ! $this->hasValidation();
     }
 
     /**
@@ -71,7 +72,7 @@ class Question extends Model
     }
 
     /**
-     * Check if a question has a question option
+     * Check if a question has a question option.
      *
      * @return bool
      */
@@ -80,11 +81,12 @@ class Question extends Model
         if ($this->questionOptions()->first() instanceof QuestionOption) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Return all the answers for a question
+     * Return all the answers for a question.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -94,7 +96,7 @@ class Question extends Model
     }
 
     /**
-     * Return the answer on a question for a building and input source
+     * Return the answer on a question for a building and input source.
      *
      * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
      */
@@ -112,7 +114,7 @@ class Question extends Model
     }
 
     /**
-     * Get the questionnaire from a question
+     * Get the questionnaire from a question.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

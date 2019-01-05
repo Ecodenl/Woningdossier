@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddRoleLevelField extends Migration
 {
@@ -13,10 +13,10 @@ class AddRoleLevelField extends Migration
      */
     public function up()
     {
-	    Schema::table('roles', function (Blueprint $table) {
-			$table->integer('level')->default(1); // bewoner
-	    });
-	    Artisan::call('db:seed', array('--class' => 'ModelHasRolesTableSeeder'));
+        Schema::table('roles', function (Blueprint $table) {
+            $table->integer('level')->default(1); // bewoner
+        });
+        Artisan::call('db:seed', ['--class' => 'ModelHasRolesTableSeeder']);
     }
 
     /**
@@ -26,8 +26,8 @@ class AddRoleLevelField extends Migration
      */
     public function down()
     {
-	    Schema::table('roles', function (Blueprint $table) {
-		    $table->dropColumn('level');
-	    });
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('level');
+        });
     }
 }

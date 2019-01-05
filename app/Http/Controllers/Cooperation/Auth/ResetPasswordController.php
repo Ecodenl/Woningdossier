@@ -65,7 +65,7 @@ class ResetPasswordController extends Controller
         $inputSource = $role->inputSource;
 
         // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-        if (!$role->inputSource instanceof InputSource) {
+        if (! $role->inputSource instanceof InputSource) {
             $inputSource = InputSource::findByShort('resident');
         }
 
@@ -73,10 +73,9 @@ class ResetPasswordController extends Controller
         HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
 
         // set the redirect url
-        if ($user->roles->count() == 1) {
-            $this->redirectTo = RoleHelper::getUrlByRole( $role );
-        }
-        else {
+        if (1 == $user->roles->count()) {
+            $this->redirectTo = RoleHelper::getUrlByRole($role);
+        } else {
             $this->redirectTo = '/admin';
         }
 

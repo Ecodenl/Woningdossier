@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class BuildingPermission extends Model
@@ -19,7 +18,7 @@ class BuildingPermission extends Model
     ];
 
     /**
-     * Return the building from the permission
+     * Return the building from the permission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

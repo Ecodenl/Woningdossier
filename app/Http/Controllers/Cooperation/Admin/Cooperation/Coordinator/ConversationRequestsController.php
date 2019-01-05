@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class ConversationRequestsController extends Controller
 {
@@ -17,10 +16,11 @@ class ConversationRequestsController extends Controller
     }
 
     /**
-     * Show the coordinator a message and set it as read
+     * Show the coordinator a message and set it as read.
      *
      * @param Cooperation $cooperation
      * @param $messageId
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(Cooperation $cooperation, $messageId)
@@ -31,5 +31,4 @@ class ConversationRequestsController extends Controller
 
         return view('cooperation.admin.cooperation.coordinator.conversation-requests.show', compact('privateMessage'));
     }
-
 }

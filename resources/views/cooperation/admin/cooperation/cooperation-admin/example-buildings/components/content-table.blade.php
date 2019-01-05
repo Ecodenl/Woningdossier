@@ -5,7 +5,7 @@ $fkey = $content instanceof \App\Models\ExampleBuildingContent ? $content->id : 
 
 // build year only
 // full html array
-$fname = 'content[' . $fkey . '][build_year]';
+$fname = 'content['.$fkey.'][build_year]';
 $fvalKey = str_replace('[', '.', $fname);
 // fallback value for old functions
 $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->build_year : '';
@@ -43,13 +43,13 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
             @foreach($formFields as $formFieldName => $rowData)
 
 	            <?php
-	                // full html array
-	                $fname = 'content[' . $fkey . '][content][' . $step . '][' . $formFieldName . ']';
-	                // laravel dotted notation
-	                $fvalKey = str_replace('[', '.', $fname);
-	                // fallback value for old functions
-	                $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($step . '.' . $formFieldName) : '';
-	            ?>
+                    // full html array
+                    $fname = 'content['.$fkey.'][content]['.$step.']['.$formFieldName.']';
+                    // laravel dotted notation
+                    $fvalKey = str_replace('[', '.', $fname);
+                    // fallback value for old functions
+                    $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($step.'.'.$formFieldName) : '';
+                ?>
 
             <tr>
                 <td>

@@ -1,6 +1,6 @@
 <label for="">Vraag</label>
 @foreach(config('woningdossier.supported_locales') as $locale)
-    <?php $translation =  $question->getTranslation('name', $locale) instanceof \App\Models\Translation ? $question->getTranslation('name', $locale)->translation : "" ?>
+    <?php $translation = $question->getTranslation('name', $locale) instanceof \App\Models\Translation ? $question->getTranslation('name', $locale)->translation : ''; ?>
     <div class="form-group">
         <div class="input-group">
             <span class="input-group-addon">{{$locale}}</span>

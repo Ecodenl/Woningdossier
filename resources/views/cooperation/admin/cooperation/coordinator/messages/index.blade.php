@@ -28,7 +28,7 @@
                                                 @if($mainMessage->hasUserUnreadMessages())
                                                     <span class="label label-primary">@lang('default.new-message')</span>
                                                 @endif
-                                                <?php $time = \Carbon\Carbon::parse($mainMessage->created_at) ?>
+                                                <?php $time = \Carbon\Carbon::parse($mainMessage->created_at); ?>
                                                 <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
                                             </small>
                                         </div>

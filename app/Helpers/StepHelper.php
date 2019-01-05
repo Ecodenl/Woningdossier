@@ -86,6 +86,7 @@ class StepHelper
      * Get the next step for a user where the user shows interest in.
      *
      * @param Step $current
+     *
      * @return array
      */
     public static function getNextStep(Step $current): array
@@ -97,28 +98,24 @@ class StepHelper
 
         $currentFound = false;
 
-
         // before we check for other pets we want to check if the current step has additional questionnaires
         // if it does and the user did not finish those we redirect to that tab
         if ($current->hasQuestionnaires()) {
-
             // get the questionnaires for the current step  & the user his completed questionnaires
             $questionnairesForCurrentStep = $current->questionnaires;
             $userCompletedQuestionnaires = \Auth::user()->completedQuestionnaires;
 
-
             // now get the non completed questionnaires for this step & user
             $nonCompletedQuestionnairesForCurrentStep = $questionnairesForCurrentStep->filter(function ($questionnaire) use ($userCompletedQuestionnaires) {
-                return !$userCompletedQuestionnaires->find($questionnaire) instanceof Questionnaire;
+                return ! $userCompletedQuestionnaires->find($questionnaire) instanceof Questionnaire;
             });
 
             // we should not take the first one i guess, should be on order based, but there is no order in the questionnaire table
             $nextQuestionnaire = $nonCompletedQuestionnairesForCurrentStep->first();
 
-
             // and return it with the tab id
             if ($nextQuestionnaire instanceof Questionnaire) {
-                return ['route' => 'cooperation.tool.' . $current->slug . '.index', 'tab_id' => 'questionnaire-' . $nextQuestionnaire->id];
+                return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
             }
         }
 
@@ -143,7 +140,6 @@ class StepHelper
                 $completedSteps->push($steps->pull($completedStep));
             }
         }
-
 
         // since we pulled the completed steps of the collection
         $nonCompletedSteps = $steps;

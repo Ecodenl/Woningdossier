@@ -301,9 +301,9 @@
                                         <?php
                                         // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
                                         $value = $userInputValue->monument;
-                                        if ($value === 1) {
+                                        if (1 === $value) {
                                             $trans = __('woningdossier.cooperation.radiobutton.yes');
-                                        } elseif($value === 2) {
+                                        } elseif (2 === $value) {
                                             $trans = __('woningdossier.cooperation.radiobutton.no');
                                         } else {
                                             $trans = __('woningdossier.cooperation.radiobutton.unknown');
@@ -442,18 +442,18 @@
                         @if($service->values()->where('service_id', $service->id)->first() != null)
 
                             <?php
-                                $selectedSV = old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'service_value_id'));
+                                $selectedSV = old('service.'.$service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'service_value_id'));
                                 /*if (is_null($selectedSV)){
                                 	$buildServ = $building->buildingServices()->where('service_id', $service->id)->first();
                                 	if ($buildServ instanceof \App\Models\BuildingService){
                                 		$selectedSV = $buildServ->service_value_id;
                                     }
                                 }*/
-                                if (is_null($selectedSV)){
-                                	/** @var \App\Models\Service $service */
-                                	$sv = $service->values()->where('is_default', true)->first();
-                                	if ($sv instanceof \App\Models\ServiceValue){
-                                		$selectedSV = $sv->id;
+                                if (is_null($selectedSV)) {
+                                    /** @var \App\Models\Service $service */
+                                    $sv = $service->values()->where('is_default', true)->first();
+                                    if ($sv instanceof \App\Models\ServiceValue) {
+                                        $selectedSV = $sv->id;
                                     }
                                 }
                             ?>
@@ -639,9 +639,9 @@
                                         <?php
                                             // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
                                             $value = $userInputValue->cook_gas;
-                                            if ($value === 1) {
+                                            if (1 === $value) {
                                                 $trans = __('woningdossier.cooperation.radiobutton.yes');
-                                            } elseif($value === 2) {
+                                            } elseif (2 === $value) {
                                                 $trans = __('woningdossier.cooperation.radiobutton.no');
                                             }
                                         ?>
@@ -775,25 +775,24 @@
                                 <?php
 
                                 $bhDefault = $buildingHeatings->where('is_default', '=', true)->first();
-                            if ($bhDefault instanceof \App\Models\BuildingHeating){
+                            if ($bhDefault instanceof \App\Models\BuildingHeating) {
                                 $defaultHFF = $bhDefault->id;
                             }
 
                             $selectedHFF = old('heating_first_floor', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'heating_first_floor', $defaultHFF));
 
-                            //
                             /*
                             $selectedHFF = old('heating_first_floor', null);
                                 $selectedHFFColumn = 'heating_first_floor';if (is_null($selectedHFF)) {
                                     if (isset($energyHabit)) {
                                         $selectedHFFColumn = 'heating_first_floor';
-		                            $selectedHFF = $energyHabit->heating_first_floor;
+                                    $selectedHFF = $energyHabit->heating_first_floor;
                                     }
                                 }
                                 if (is_null($selectedHFF)) {
                                     $selectedHeating = $buildingHeatings->where('is_default', '=', true)->first();
                                     if ($selectedHeating instanceof \App\Models\BuildingHeating) {
-                                    	$selectedHFFColumn = 'id';
+                                        $selectedHFFColumn = 'id';
                                         $selectedHFF = $selectedHeating->id;
                                     }
                                 }
@@ -834,14 +833,13 @@
                                 <?php
 
                                 $bhDefault = $buildingHeatings->where('is_default', '=', true)->first();
-	                    if ($bhDefault instanceof \App\Models\BuildingHeating){
-		                    $defaultHSF = $bhDefault->id;
-	                    }
+                        if ($bhDefault instanceof \App\Models\BuildingHeating) {
+                            $defaultHSF = $bhDefault->id;
+                        }
 
-	                    $selectedHSF = old('heating_second_floor', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'heating_second_floor', $defaultHSF));
+                        $selectedHSF = old('heating_second_floor', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'heating_second_floor', $defaultHSF));
 
-
-	                    /*
+                        /*
                     $selectedHSF = old('heating_second_floor', null);
                     $selectedHSFColumn = 'heating_second_floor';
                     if (is_null($selectedHSF)){

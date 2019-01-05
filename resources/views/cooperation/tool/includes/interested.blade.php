@@ -2,7 +2,7 @@
     @foreach($typeIds as $typeId)
 
         <?php
-            if($type == "service") {
+            if ('service' == $type) {
                 $typeName = \App\Models\Service::find($typeId)->name;
             } else {
                 $typeName = \App\Models\Element::find($typeId)->name;

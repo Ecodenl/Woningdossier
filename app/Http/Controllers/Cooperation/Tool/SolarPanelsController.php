@@ -13,20 +13,19 @@ use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
 use App\Models\BuildingPvPanel;
 use App\Models\Cooperation;
-use App\Models\Element;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
 
 class SolarPanelsController extends Controller
 {
@@ -53,11 +52,12 @@ class SolarPanelsController extends Controller
         $buildingPvPanels = $building->pvPanels;
         $buildingPvPanelsForMe = $building->pvPanels()->forMe()->get();
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
+
         return view('cooperation.tool.solar-panels.index',
             compact(
-            	'building', 'pvPanelOrientations',
-	            'energyHabitsForMe', 'buildingPvPanels',  'typeIds',
-	            'buildingPvPanelsForMe'
+                'building', 'pvPanelOrientations',
+                'energyHabitsForMe', 'buildingPvPanels', 'typeIds',
+                'buildingPvPanelsForMe'
             )
         );
     }
@@ -115,12 +115,11 @@ class SolarPanelsController extends Controller
             }
 
             $currentYear = Carbon::now()->year;
-            if ($interest->calculate_value == 1) {
+            if (1 == $interest->calculate_value) {
                 $result['year'] = $currentYear;
-            } elseif ($interest->calculate_value == 2) {
+            } elseif (2 == $interest->calculate_value) {
                 $result['year'] = $currentYear + 5;
             }
-
         }
 
         if ($helpFactor >= 0.84) {
@@ -152,7 +151,6 @@ class SolarPanelsController extends Controller
      */
     public function store(SolarPanelFormRequest $request)
     {
-
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
         $buildingId = $building->id;
@@ -193,7 +191,7 @@ class SolarPanelsController extends Controller
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
-        if (!empty($nextStep['tab_id'])) {
+        if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
 

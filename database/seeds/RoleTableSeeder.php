@@ -20,6 +20,5 @@ class RoleTableSeeder extends Seeder
         $cooperationInputSource = \App\Models\InputSource::where('short', 'cooperation')->first();
         DB::table('roles')->where('name', 'coordinator')->update(['input_source_id' => $cooperationInputSource->id]);
         DB::table('roles')->where('name', 'cooperation-admin')->update(['input_source_id' => $cooperationInputSource->id]);
-
     }
 }

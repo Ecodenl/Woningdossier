@@ -3,18 +3,14 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\Str;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\CoachRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Passwords\PasswordBroker;
-use Illuminate\Auth\Passwords\TokenRepositoryInterface;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Password;
 use Spatie\Permission\Models\Role;
 
@@ -35,22 +31,24 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.coordinator.user.create', compact('roles'));
     }
 
-
-    protected function getAddressData($postalCode, $number, $pointer = null){
-        \Log::debug($postalCode . " " . $number . " " . $pointer);
+    protected function getAddressData($postalCode, $number, $pointer = null)
+    {
+        \Log::debug($postalCode.' '.$number.' '.$pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (!is_null($pointer)){
-            foreach ($response as $addrInfo){
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])){
+        if (! is_null($pointer)) {
+            foreach ($response as $addrInfo) {
+                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];
                     \Log::debug(json_encode($addrInfo));
+
                     return $addrInfo;
                 }
             }
+
             return [];
         }
 
@@ -59,7 +57,6 @@ class UserController extends Controller
 
     public function store(Cooperation $cooperation, CoachRequest $request)
     {
-
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');
         $email = $request->get('email', '');
@@ -71,7 +68,6 @@ class UserController extends Controller
         $street = strip_tags($request->get('street', ''));
         $city = trim(strip_tags($request->get('city')));
         $addressId = $request->get('addressid', null);
-
 
         // create the new user
         $user = User::create(
@@ -130,12 +126,11 @@ class UserController extends Controller
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.store.success'));
     }
 
-
     /**
-     * Send the mail to the created user
+     * Send the mail to the created user.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
     {
@@ -145,10 +140,7 @@ class UserController extends Controller
 
         // send a mail to the user
         \Mail::to($user->email)->sendNow(new UserCreatedEmail($cooperation, $user, $token));
-
     }
-
-
 
     public function destroy(Cooperation $cooperation, $userId)
     {
@@ -156,7 +148,6 @@ class UserController extends Controller
 
         // only remove the example building id from the building
         if ($user->buildings()->first() instanceof Building) {
-
             $building = $user->buildings()->first();
             $building->example_building_id = null;
             $building->save();

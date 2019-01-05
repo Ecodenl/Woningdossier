@@ -13,11 +13,11 @@ class PermissionsTableSeeder extends Seeder
     {
         \Spatie\Permission\Models\Permission::updateOrCreate(
             [
-                'name' => 'assign role coach and resident'
+                'name' => 'assign role coach and resident',
             ],
             [
                 'name' => 'assign role coach and resident',
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ]
         );
     }

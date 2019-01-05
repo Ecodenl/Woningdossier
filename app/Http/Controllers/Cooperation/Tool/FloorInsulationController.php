@@ -21,8 +21,9 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
 
 class FloorInsulationController extends Controller
 {
@@ -68,12 +69,10 @@ class FloorInsulationController extends Controller
         $buildingFeatures = $building->buildingFeatures;
         $buildingFeaturesForMe = BuildingFeature::forMe()->get();
 
-
-
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingElementForMe', 'buildingFeaturesForMe', 'buildingElementsForMe',
-            'crawlspacePresent',  'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
+            'crawlspacePresent', 'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
         ));
     }
 
@@ -133,8 +132,8 @@ class FloorInsulationController extends Controller
             $advice = Temperature::FLOOR_INSULATION_RESEARCH;
         }
 
-	    $insulationAdvice = MeasureApplication::byShort($advice);
-	    $result['insulation_advice'] = $insulationAdvice->measure_name;
+        $insulationAdvice = MeasureApplication::byShort($advice);
+        $result['insulation_advice'] = $insulationAdvice->measure_name;
 
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         if (array_key_exists($floorInsulation->id, $elements)) {
@@ -174,7 +173,7 @@ class FloorInsulationController extends Controller
                 [
                     'building_id' => $buildingId,
                     'element_id' => $elementId,
-                    'input_source_id' => $inputSourceId
+                    'input_source_id' => $inputSourceId,
                 ],
                 [
                     'element_value_id' => $elementValueId,
@@ -229,7 +228,7 @@ class FloorInsulationController extends Controller
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
-        if (!empty($nextStep['tab_id'])) {
+        if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
 

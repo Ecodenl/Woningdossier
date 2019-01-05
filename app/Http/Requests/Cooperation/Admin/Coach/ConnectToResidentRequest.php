@@ -4,7 +4,6 @@ namespace App\Http\Requests\Cooperation\Admin\Coach;
 
 use App\Rules\isUserMemberOfCooperation;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ConnectToResidentRequest extends FormRequest
 {

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddCommentColumnsToVariousTables extends Migration
 {
@@ -15,7 +15,7 @@ class AddCommentColumnsToVariousTables extends Migration
     {
         $tables = [
             'building_pv_panels',
-            'building_heaters'
+            'building_heaters',
         ];
 
         foreach ($tables as $table) {
@@ -34,7 +34,7 @@ class AddCommentColumnsToVariousTables extends Migration
     {
         $tables = [
             'building_pv_panels',
-            'building_heaters'
+            'building_heaters',
         ];
 
         foreach ($tables as $table) {

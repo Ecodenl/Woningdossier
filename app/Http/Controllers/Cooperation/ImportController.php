@@ -28,7 +28,8 @@ class ImportController extends Controller
         ];
         
         $tablesWithUserId = [
-            'user_energy_habits'
+            'user_energy_habits',
+            'user_interests'
         ];
 
         // input sources

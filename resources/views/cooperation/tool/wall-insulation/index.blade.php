@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.wall-insulation.intro.title'))
+@section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
 
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">

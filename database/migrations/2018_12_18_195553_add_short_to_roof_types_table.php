@@ -20,23 +20,31 @@ class AddShortToRoofTypesTable extends Migration
 		    } );
         }
 
-	    $updates = [
-	    	[
-	    		'attributes' => [ 'calculate_value' => 1, ],
-			    'values' => [ 'short' => 'pitched', ],
-		    ],
-		    [
-			    'attributes' => [ 'calculate_value' => 3, ],
-			    'values' => [ 'short' => 'flat', ],
-		    ],
-		    [
-			    'attributes' => [ 'calculate_value' => 5, ],
-			    'values' => [ 'short' => 'none', ],
-		    ],
-	    ];
-	    foreach($updates as $update){
-		    DB::table('roof_types')->updateOrInsert($update['attributes'], $update['values']);
-	    }
+        $roofTypes = [
+            [
+                'calculate_value' => 1,
+                'short' => 'pitched',
+            ],
+            [
+                'calculate_value' => 3,
+                'short' => 'flat',
+            ],
+            [
+                'calculate_value' => 5,
+                'short' => 'none',
+            ],
+        ];
+
+        foreach ($roofTypes as $roofType) {
+            $roofTypeResult = DB::table('roof_types')->where('calculate_value', $roofType['calculate_value'])->first();
+            if ($roofTypeResult instanceof stdClass) {
+
+                DB::table('roof_types')
+                    ->where('calculate_value', $roofType['calculate_value'])
+                    ->update($roofType);
+            }
+        }
+
     }
 
     /**

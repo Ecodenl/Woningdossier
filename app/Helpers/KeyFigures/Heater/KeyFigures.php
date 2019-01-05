@@ -73,6 +73,11 @@ class KeyFigures
     {
         $initialHeater = HeaterSpecification::where('liters', $waterConsumption)->first();
 
+        // the water consumption comes from the key_figure_consumption_tap_waters, the max resident is 8 after that there is no waterconsumption thing
+        // and if thats empty we can calc anything so return empty array
+        if (!$initialHeater instanceof HeaterSpecification) {
+            return [];
+        }
 	    $relativeCollectorSize = $initialHeater->collector * (1/$helpFactor);
 	    \Log::debug("Heater: Relative collector size: " . $relativeCollectorSize);
 

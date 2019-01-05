@@ -54,8 +54,6 @@ class HeaterController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
-
-
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
         /** @var UserEnergyHabit|null $habits */

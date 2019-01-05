@@ -31,6 +31,7 @@ trait GetMyValuesTrait {
     {
         return $this->belongsTo(InputSource::class);
     }
+
     /**
      * Check on a collection that comes from the forMe() scope if it contains a
      * Coach input source.
@@ -46,6 +47,23 @@ trait GetMyValuesTrait {
         }
         return false;
     }
+
+    /**
+     * Check on a collection that comes from the forMe() scope if it contains a
+     * resident input source.
+     *tom
+     * @param Collection $inputSourcesForMe
+     * @return bool
+     */
+    public static function hasResidentInputSource(Collection $inputSourcesForMe): bool
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+        if ($inputSourcesForMe->contains('input_source_id', $residentInputSource->id)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Get the coach input from a collection that comes from the forMe() scope
      *

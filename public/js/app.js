@@ -78,6 +78,7 @@ module.exports = __webpack_require__(11);
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -95,20 +96,66 @@ __webpack_require__(2);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-});
-
 //Vue.component('example', require('./components/Example.vue'));
 
 //const app = new Vue({
 //    el: '#app'
 //});
 
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 var baseUrl = window.location.origin;
 var fillAddressUrl = baseUrl + "/fill-address";
+
+$(document).ready(function () {
+
+    $('.input-source-group').on('click', 'li.change-input-value', function (event) {
+
+        // so it will not jump to the top of the page.
+        event.preventDefault();
+
+        var dataInputValue = $(this).data('input-value');
+
+        // find the selected option
+        var inputSourceGroup = $(this).parent().parent().parent();
+        var inputType = inputSourceGroup.find('input').attr('type');
+
+        if (inputType === undefined) {
+            // check if it's a select
+            inputType = inputSourceGroup.find('select').length === 1 ? 'select' : undefined;
+        }
+
+        // check if the input is a "input" and not a select
+        if ((typeof inputType === 'undefined' ? 'undefined' : _typeof(inputType)) !== undefined) {
+            switch (inputType) {
+                case "text":
+                    inputSourceGroup.find('input[type=text]').val(dataInputValue);
+                    break;
+                case "radio":
+                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('checked');
+                    inputSourceGroup.find('input[type=radio][value=' + dataInputValue + ']').attr('checked', true);
+                    break;
+                case "checkbox":
+                    inputSourceGroup.find('input[type=checkbox]:checked').removeAttr('selected');
+                    inputSourceGroup.find('input[value=' + dataInputValue + ']').attr('selected', true);
+                    break;
+                case "select":
+                    inputSourceGroup.find('select').val(dataInputValue);
+                    break;
+                default:
+                    //inputSourceGroup.find('select option:selected').removeAttr('selected');
+                    //inputSourceGroup.find('select option[value='+dataInputValue+']').attr('selected', true);
+                    break;
+            }
+
+            $('form').find('*').filter(':input:visible:first').trigger('change');
+        }
+    });
+});
 
 $("#register #street").focusin(function () {
     var postalCode = $("#register #postal_code");

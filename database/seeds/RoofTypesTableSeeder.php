@@ -14,43 +14,32 @@ class RoofTypesTableSeeder extends Seeder
         $roofTypes = [
             [
                 'names' => [
-                    //'nl' => 'Hellend dak met dakpannen',
                     'nl' => 'Hellend dak',
                 ],
                 'order' => 0,
                 'calculate_value' => 1,
+                'short' => 'pitched',
             ],
-//	        [
-//		        'names' => [
-//			        'nl' => 'Hellend dak met bitumen',
-//		        ],
-//		        'order' => 1,
-//		        'calculate_value' => 2,
-//	        ],
             [
                 'names' => [
                     'nl' => 'Plat dak',
                 ],
                 'order' => 2,
                 'calculate_value' => 3,
+                'short' => 'flat',
             ],
-//	        [
-//		        'names' => [
-//			        'nl' => 'Plat dak met zink',
-//		        ],
-//		        'order' => 3,
-//		        'calculate_value' => 4,
-//	        ],
             [
                 'names' => [
                     'nl' => 'Geen dak',
                 ],
                 'order' => 4,
                 'calculate_value' => 5,
+                'short' => 'none',
             ],
         ];
 
         foreach ($roofTypes as $roofType) {
+
             $uuid = \App\Helpers\Str::uuid();
             foreach ($roofType['names'] as $locale => $name) {
                 \DB::table('translations')->insert([
@@ -64,6 +53,7 @@ class RoofTypesTableSeeder extends Seeder
                 'calculate_value' => $roofType['calculate_value'],
                 'order' => $roofType['order'],
                 'name' => $uuid,
+                'short' => $roofType['short']
             ]);
         }
     }

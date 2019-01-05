@@ -60,6 +60,12 @@
 
                 ],
 
+            "title" => 
+                [
+                    "help" => '86927ac6-6928-44e2-95ec-776d03382eee',
+                    "title" => '299701e0-dbb1-4127-8dc5-f396b0d188a3',
+                ],
+
             "energy-saving-measures" => 
                 [
                     "house-ventilation" => 
@@ -278,6 +284,22 @@
                     "title" => 'b5281893-290b-452b-887f-a4417852f5f3',
                 ],
 
+            "costs" => 
+                [
+                    "gas" => 
+                        [
+                            "help" => '25f04c59-6e25-40b4-b7fb-9a85e68b2ea5',
+                            "title" => 'd588f836-680f-4470-8272-12675a996ef2',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => 'ba53680e-0325-4672-881a-67ea171d4d9c',
+                            "title" => 'd50ef920-5823-47f1-ae2a-499a99a09436',
+                        ],
+
+                ],
+
         ],
 
     "general" => 
@@ -384,6 +406,12 @@
                             "title" => 'cfabc4de-53a2-43f3-86a8-ef41060c618f',
                         ],
 
+                    "pieces" => 
+                        [
+                            "help" => 'c86cd9d4-7536-42e7-8f45-48b714374c9d',
+                            "title" => 'd8486b47-4003-40c5-aa06-9c05d2b06936',
+                        ],
+
                     "kg" => 
                         [
                             "help" => '7861ce73-3bc4-4d26-a8ea-7d31ea543c82',
@@ -434,6 +462,12 @@
 
     "wall-insulation" => 
         [
+            "title" => 
+                [
+                    "help" => '131649e7-8353-4b08-b17e-f20591bdf71e',
+                    "title" => '4e8001a7-b4e4-4400-97d8-f244ebb4b190',
+                ],
+
             "intro" => 
                 [
                     "build-year-post-1985" => 
@@ -592,6 +626,22 @@
 
                 ],
 
+            "costs" => 
+                [
+                    "gas" => 
+                        [
+                            "help" => 'a9e68370-50ae-4e02-a959-72e7e8cdd547',
+                            "title" => '8ecb6ba7-306a-46ca-bc08-760e59a03860',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => '7bbbbbe3-f965-4164-b493-01263262324f',
+                            "title" => 'df88f5ff-bde3-47f0-ae6c-0201d32f7e01',
+                        ],
+
+                ],
+
         ],
 
     "insulated-glazing" => 
@@ -628,6 +678,12 @@
                             "title" => '38cab637-34cd-431d-afc9-72b2fe262e10',
                         ],
 
+                ],
+
+            "title" => 
+                [
+                    "help" => '724b50b5-fc9a-48be-bc8d-8fc54759c587',
+                    "title" => '5956c73b-987f-4d40-9098-20ef2c44b70d',
                 ],
 
             "hrpp-glass-only" => 
@@ -886,6 +942,22 @@
 
                 ],
 
+            "costs" => 
+                [
+                    "gas" => 
+                        [
+                            "help" => '66fc1d47-62d2-4606-8e15-1b9221792e91',
+                            "title" => '159a6065-8c81-4c38-89b9-5628641bb79a',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => '2c21d6cc-fd6a-4bb9-ab98-b8dea143dd6d',
+                            "title" => 'ed560757-7034-47c1-8026-77237e819893',
+                        ],
+
+                ],
+
         ],
 
     "floor-insulation" => 
@@ -894,6 +966,12 @@
                 [
                     "help" => '3bcfab37-e526-4c97-acd7-83243130228b',
                     "title" => '41ffccd1-2fc1-4e58-8405-fc3698f97e7e',
+                ],
+
+            "title" => 
+                [
+                    "help" => '78918979-ce5b-4973-83ff-2a06abe1d57c',
+                    "title" => 'efbf48fb-d8ac-479f-ad70-9c0567d24355',
                 ],
 
             "intro" => 
@@ -978,6 +1056,22 @@
                         [
                             "help" => '440f4762-4c55-4ffa-a8e5-62e682266012',
                             "title" => '9d88a900-8eec-440a-9215-f6f6a681e3c5',
+                        ],
+
+                ],
+
+            "costs" => 
+                [
+                    "gas" => 
+                        [
+                            "help" => 'c5d60622-1274-46bb-87ec-934752bace6a',
+                            "title" => '30f36e23-455d-478f-80bc-e2a7fbbfea01',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => '3b852466-188b-4121-8872-ffb3c70c3826',
+                            "title" => 'a463cb73-f791-4348-8df6-7b2370129243',
                         ],
 
                 ],
@@ -1126,6 +1220,18 @@
                                     "title" => '3679d8de-4008-4c60-bf99-ab81576055b5',
                                 ],
 
+                            "gas" => 
+                                [
+                                    "help" => '57a51f70-4886-46cf-b17f-de9f311a4e69',
+                                    "title" => '80ffd312-4ffd-4379-93c0-eb3607e2bbfc',
+                                ],
+
+                            "co2" => 
+                                [
+                                    "help" => '3824a1e1-d34f-4eda-9c28-b639d4708fa3',
+                                    "title" => 'ac51c60f-3464-4353-a091-9e58313f0815',
+                                ],
+
                         ],
 
                     "indicative-costs-replacement" => 
@@ -1154,6 +1260,18 @@
                                 [
                                     "help" => '112eb0c2-848a-4cde-8efa-069750b2a09a',
                                     "title" => '96a128ff-3061-42dc-892b-d07a9cdcfb8e',
+                                ],
+
+                            "gas" => 
+                                [
+                                    "help" => 'd61fbfda-1afd-402a-9857-a03ce64a4f82',
+                                    "title" => '4eeac01a-f46f-4563-9f28-f240f04ef3e2',
+                                ],
+
+                            "co2" => 
+                                [
+                                    "help" => '9602c864-c152-4d7e-82a7-25f70d5b2409',
+                                    "title" => '06e3dee0-5770-4d1c-b290-ea1b41916150',
                                 ],
 
                         ],
@@ -1202,6 +1320,22 @@
                 [
                     "help" => 'c3cbabfb-b076-4b3c-9bb1-61a0fb2a3dc6',
                     "title" => 'ac056ace-683b-4d36-b95e-d7925bdaacf5',
+                ],
+
+            "costs" => 
+                [
+                    "gas" => 
+                        [
+                            "help" => '6bc3d19b-3b39-41d6-9495-a0c946ca4da3',
+                            "title" => '72fb2bda-c86a-4011-9fce-ca599f425548',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => '09874026-140d-49f0-b5b0-842ff0ea4972',
+                            "title" => '63b155d5-e296-45b1-aef0-296dff98e680',
+                        ],
+
                 ],
 
             "boiler-placed-date" => 
@@ -1302,6 +1436,22 @@
 
                 ],
 
+            "costs" => 
+                [
+                    "gas" => 
+                        [
+                            "help" => '1c1d0c57-a77a-4e07-8dc1-140ab175356b',
+                            "title" => 'fd1f6745-9e94-44a9-bb59-290690fe6bc3',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => '3b429f18-72dd-4849-93c9-5c8e23d0cd72',
+                            "title" => 'c1a7e87d-74c3-4d85-ac2c-3c1190527e95',
+                        ],
+
+                ],
+
         ],
 
     "heater" => 
@@ -1380,6 +1530,22 @@
                 [
                     "help" => '2fee54e4-68c5-44f6-965f-fb12c243d7df',
                     "title" => 'bbfcec90-c1e5-4813-952f-217719a074cd',
+                ],
+
+            "costs" => 
+                [
+                    "gas" => 
+                        [
+                            "help" => '01df3e45-31f5-4447-8660-6ada7bd1a463',
+                            "title" => 'ddbb555f-272a-4eaa-8be1-32bf772fe7df',
+                        ],
+
+                    "co2" => 
+                        [
+                            "help" => '72b95a87-1996-43ae-b982-7826bbce8a53',
+                            "title" => '039590d4-9302-4b1e-a0dd-f55d8e7f1f1f',
+                        ],
+
                 ],
 
             "estimated-usage" => 

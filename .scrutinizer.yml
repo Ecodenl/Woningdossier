@@ -101,6 +101,9 @@ checks:
         argument_type_checks: true
 
 build:
+    dependencies:
+        before:
+            - mysql -uroot -e 'CREATE DATABASE scrutinizer'
     environment:
         php: '7.1'
         mysql: '5.7'

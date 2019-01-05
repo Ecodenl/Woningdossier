@@ -104,6 +104,7 @@ build:
     dependencies:
         before:
             - mysql -uroot -e 'CREATE DATABASE scrutinizer'
+            - php artisan migrate:fresh --seed
     environment:
         php: '7.1'
         mysql: '5.7'

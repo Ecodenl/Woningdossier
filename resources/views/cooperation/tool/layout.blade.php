@@ -31,16 +31,43 @@
                         @endcomponent
                     </div>
                 @else
-
-                    @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
-                        @lang('woningdossier.cooperation.tool.current-building-address', [
-                            'street' => $building->street,
-                            'number' => $building->number,
-                            'extension' => $building->extension,
-                            'zip_code' => $building->postal_code,
-                            'city' => $building->city
-                        ])
-                    @endcomponent
+                    @if(\App\Helpers\HoomdossierSession::isUserComparingInputSources())
+                        <form id="copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}" action="{{route('cooperation.import.copy')}}" method="post">
+                            <input type="hidden" name="input_source" value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
+                            {{csrf_field()}}
+                        </form>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                                    @lang('woningdossier.cooperation.tool.is-user-comparing-input-sources', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
+                                    <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-sm btn-primary pull-right">
+                                        @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                    </a>
+                                @endcomponent
+                            </div>
+                            <div class="col-sm-6">
+                                @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                                    @lang('woningdossier.cooperation.tool.current-building-address', [
+                                        'street' => $building->street,
+                                        'number' => $building->number,
+                                        'extension' => $building->extension,
+                                        'zip_code' => $building->postal_code,
+                                        'city' => $building->city
+                                    ])
+                                @endcomponent
+                            </div>
+                        </div>
+                    @else
+                        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                            @lang('woningdossier.cooperation.tool.current-building-address', [
+                                'street' => $building->street,
+                                'number' => $building->number,
+                                'extension' => $building->extension,
+                                'zip_code' => $building->postal_code,
+                                'city' => $building->city
+                            ])
+                        @endcomponent
+                    @endif
                 @endif
 
                 @include('cooperation.tool.progress')
@@ -164,6 +191,41 @@
                 return false;
             }
         });
+
+        $(document).ready(compareInputSourceValues());
+
+        function isUserComparingInputSources()
+        {
+            var isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}'
+            if (isUserComparingInputSources) {
+                return true;
+            }
+            return false;
+        }
+        function compareInputSourceValues() {
+            if (isUserComparingInputSources()) {
+                console.log('sdfsd');
+                var formGroups = $('.form-group');
+
+                $(formGroups).each(function () {
+                    var formGroup = $(this);
+                    var ul = formGroup.find('ul');
+                    // get the value from the current user
+                    var userInputValue = formGroup.find('.form-control').val();
+                    // get the value from the compare input source
+                    var compareInputSourceValue = ul.find('li[data-input-source-short="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}"]').attr('data-input-value');
+
+                    if (typeof compareInputSourceValue !== "undefined") {
+
+                        if (userInputValue !== compareInputSourceValue) {
+                            formGroup.find('.form-control').css({'background-color': 'red', 'color': 'white'});
+                        }
+                    }
+
+                })
+            }
+        }
+
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

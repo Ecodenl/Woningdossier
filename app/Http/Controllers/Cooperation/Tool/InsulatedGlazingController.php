@@ -30,6 +30,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
+use App\Services\ToolSettingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -426,17 +427,19 @@ class InsulatedGlazingController extends Controller
             // Get the first key for the woodElementId
             $woodElementId = key($request->input('building_elements.wood-elements'));
 
+
+            $currentWoodElementsQuery = BuildingElement::where('element_id', $woodElementId)
+                ->where('building_id', $buildingId)
+                ->where('input_source_id', $inputSourceId);
+
             // Check if there are wood elements drop them
-            if (BuildingElement::where('element_id', $woodElementId)->where('building_id', $buildingId)->where('input_source_id', $inputSourceId)->count() > 0) {
-                BuildingElement::where('element_id', $woodElementId)
-                    ->where('building_id', $buildingId)
-                    ->where('input_source_id', $inputSourceId)
-                    ->delete();
+            if ($currentWoodElementsQuery->count() > 0) {
+                $currentWoodElementsQuery->delete();
             }
 
             // Save the woodElements
             foreach ($woodElements as $woodElementValueId) {
-                BuildingElement::create(
+                $buildingElement = BuildingElement::create(
                     [
                         'building_id' => $buildingId,
                         'input_source_id' => $inputSourceId,
@@ -449,7 +452,7 @@ class InsulatedGlazingController extends Controller
 
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
-        BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+        $buildingPaintworkStatus = BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -463,7 +466,7 @@ class InsulatedGlazingController extends Controller
 
         // Save the window surface to the building feature
         $windowSurface = $request->get('window_surface', '');
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+        $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,

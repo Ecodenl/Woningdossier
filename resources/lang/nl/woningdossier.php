@@ -724,9 +724,13 @@ return [
                 'messages' => 'Berichten <span class="glyphicon glyphicon-envelope">',
             ],
             'import-center' => [
-                'header' => 'Import centrum',
-                'text' => 'Welkom bij het import centrum.',
+                'index' => [
+                    'header' => 'Import centrum',
+                    'text' => 'Welkom bij het import centrum.',
 
+                    'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
+                    'show-differences' => 'Toon de verschillen met mijn data',
+                ]
             ],
 
             'messages' => [
@@ -883,6 +887,7 @@ return [
             'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',
             'filling-for' => 'U bewerkt de woning van :first_name :last_name als :input_source_name.',
             'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
+            'is-user-comparing-input-sources' => 'U bent nu de data aan het vergelijken, de velden die rood zijn gemarkeerd bevat een andere waarde',
 
             'unit' => [
                 'year' => 'jaar',

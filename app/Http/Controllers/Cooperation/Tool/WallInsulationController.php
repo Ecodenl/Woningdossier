@@ -151,8 +151,6 @@ class WallInsulationController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
-        ToolSettingService::setChanged($buildingId, $buildingElement, $buildingFeature);
-
         return redirect($url);
     }
 

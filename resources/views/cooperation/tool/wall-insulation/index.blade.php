@@ -522,7 +522,7 @@
     <script>
         $(document).ready(function(){
             $(window).keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
@@ -533,18 +533,6 @@
                    $('#painted-options').show();
                } else {
                    $('#painted-options').hide();
-               }
-
-               var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
-               var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
-
-               if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
-                   $('.hideable').hide();
-                   $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
-               } else {
-                   $('.hideable').show();
-                   $('#wall-insulation-info-alert').find('.alert').addClass('hide');
-
                }
 
                var form = $(this).closest("form").serialize();
@@ -628,6 +616,9 @@
                           $("span#paint_wall_year").html(contentYear);
 
                       }
+
+                      checkInterestAndCurrentInsulation();
+
                       @if(App::environment('local'))
                         console.log(data);
                       @endif
@@ -636,7 +627,7 @@
             });
 
             // Trigger the change event so it will load the data
-            $('form').find('*').filter(':input:visible:first').trigger('change');
+            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
 
 
         });
@@ -646,6 +637,19 @@
                 $('#insulation_wall_surface').val($('#wall_surface').val())
             }
         });
+
+        function checkInterestAndCurrentInsulation(){
+            var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
+            var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
+
+            if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
+                $('.hideable').hide();
+                $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
+            } else {
+                $('.hideable').show();
+                $('#wall-insulation-info-alert').find('.alert').addClass('hide');
+            }
+        }
 
     </script>
 @endpush

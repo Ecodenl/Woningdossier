@@ -39,10 +39,19 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
-                                    @lang('woningdossier.cooperation.tool.is-user-comparing-input-sources', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
-                                    <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                        @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
-                                    </a>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            @lang('woningdossier.cooperation.tool.is-user-comparing-input-sources', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-block btn-sm btn-primary pull-right">
+                                                @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                            </a>
+                                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->short])}}" class="btn btn-block btn-sm btn-primary pull-right">
+                                                Stop vergelijking
+                                            </a>
+                                        </div>
+                                    </div>
                                 @endcomponent
                             </div>
                             <div class="col-sm-6">
@@ -76,28 +85,6 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident') || app()->environment() == "local")
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <form id="copy-coach-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-left">
-                                <input type="hidden" name="input_source" value="coach">
-                                {{csrf_field()}}
-                                <button class="btn btn-primary">
-                                    @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
-                                </button>
-                            </form>
-
-                            <form id="copy-example-building-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-right">
-                                <input type="hidden" name="input_source" value="example-building">
-                                {{csrf_field()}}
-                                <button class="btn btn-primary">
-                                    Neem voorbeeldwoning antwoorden over
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @endif
-
                 @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                     <ul class="nav nav-tabs">
                         <li class="active">

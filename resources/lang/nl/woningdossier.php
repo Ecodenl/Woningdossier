@@ -729,6 +729,7 @@ return [
                     'text' => 'Welkom bij het import centrum.',
 
                     'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
+                    'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
                     'show-differences' => 'Toon de verschillen met mijn data',
                 ]
             ],

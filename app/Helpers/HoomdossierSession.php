@@ -277,6 +277,6 @@ class HoomdossierSession extends Session
      */
     public static function getAll(): array
     {
-        return self::get('hoomdossier_session');
+        return (array) self::get('hoomdossier_session');
     }
 }

@@ -24,7 +24,7 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
             }
         ?>
         @if(!is_null($value) && $inputValue->id == $value)
-            <li class="change-input-value" data-input-value="{{ $inputValue->id }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
+            <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource()->first()->short}}" data-input-value="{{ $inputValue->id }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
         @endif
     @endforeach
 @endforeach

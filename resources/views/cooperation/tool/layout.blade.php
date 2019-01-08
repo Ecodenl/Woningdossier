@@ -189,23 +189,41 @@
             }
             return false;
         }
+        function inputType(input)
+        {
+            return input.prop('type');
+        }
         function compareInputSourceValues() {
             if (isUserComparingInputSources()) {
-                console.log('sdfsd');
-                var formGroups = $('.form-group');
+                var formGroups = $('.input-source-group');
 
                 $(formGroups).each(function () {
                     var formGroup = $(this);
                     var ul = formGroup.find('ul');
                     // get the value from the current user
                     var userInputValue = formGroup.find('.form-control').val();
+                    var bestCssUGGSDesignStyle = {'background-color': 'red', 'color': 'white'};
                     // get the value from the compare input source
                     var compareInputSourceValue = ul.find('li[data-input-source-short="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}"]').attr('data-input-value');
 
                     if (typeof compareInputSourceValue !== "undefined") {
 
                         if (userInputValue !== compareInputSourceValue) {
-                            formGroup.find('.form-control').css({'background-color': 'red', 'color': 'white'});
+                            var input = formGroup.find('input');
+
+
+                            switch (inputType(input)) {
+                                case 'radio':
+                                    input.parent().css(bestCssUGGSDesignStyle);
+                                    break;
+                                case 'checkbox':
+                                    console.log('hoi');
+                                    input.parent().css(bestCssUGGSDesignStyle);
+                                    break;
+                                default:
+                                    formGroup.find('.form-control').css(bestCssUGGSDesignStyle);
+                                    break;
+                            }
                         }
                     }
 

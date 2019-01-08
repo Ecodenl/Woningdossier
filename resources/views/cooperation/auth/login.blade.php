@@ -5,6 +5,11 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            @if(session()->has('account_connected'))
+                @component('cooperation.tool.components.alert')
+                    {{session('account_connected')}}
+                @endcomponent
+            @endif
             <div class="panel panel-default">
                 <div class="panel-heading">@lang('auth.login.form.header')</div>
 

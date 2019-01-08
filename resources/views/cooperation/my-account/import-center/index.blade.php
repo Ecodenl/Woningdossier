@@ -25,7 +25,9 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                                        @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                                        @lang('woningdossier.cooperation.my-account.import-center.index.copy-data',
+                                                            ['input_source_name' => $toolSetting->inputSource->name
+                                                        ])
                                                     </a>
                                                     <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->inputSource->short])}}" class="btn btn-sm btn-primary pull-right">
                                                         @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')

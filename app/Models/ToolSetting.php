@@ -50,4 +50,15 @@ class ToolSetting extends Model
     {
         return $this->belongsTo(InputSource::class, 'changed_input_source_id');
     }
+
+    /**
+     * Return the tool settings where has_changed is true
+     *
+     * @param int $buildingId
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getUndoneChangedSettings(int $buildingId)
+    {
+        return self::getChangedSettings($buildingId)->where('has_changed', true);
+    }
 }

@@ -385,4 +385,5 @@ class User extends Authenticatable
     {
         $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
     }
+
 }

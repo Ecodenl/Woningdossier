@@ -727,7 +727,7 @@ return [
                 'index' => [
                     'header' => 'Import centrum',
                     'text' => 'Welkom bij het import centrum.',
-
+                    'copy-data' => 'Neem :input_source_name antwoorden over',
                     'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
                     'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
                     'show-differences' => 'Toon de verschillen met mijn data',

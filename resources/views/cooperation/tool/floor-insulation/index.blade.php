@@ -259,7 +259,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row additional-info">
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
                             <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}        </label>
@@ -398,6 +398,7 @@
                 </div>
             </div>
         </div>
+        </div>
     </form>
 @endsection
 
@@ -406,9 +407,8 @@
 
         $(document).ready(function() {
 
-
             $(window).keydown(function(event){
-                if(event.keyCode == 13) {
+                if(event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
@@ -436,11 +436,12 @@
                 var elementCalculateValue = $('#element_{{$floorInsulation->id}} option:selected').data('calculate-value');
 
                 if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
+                    // insulation already present and there's interest
                     $('#hideable').hide();
-                    $('#floor-insulation-info-alert').find('.alert').removeClass('hide')
+                    $('#floor-insulation-info-alert').find('.alert').removeClass('hide');
                 } else {
                     $('#hideable').show();
-                    $('#floor-insulation-info-alert').find('.alert').addClass('hide')
+                    $('#floor-insulation-info-alert').find('.alert').addClass('hide');
                 }
 
                 var form = $(this).closest("form").serialize();
@@ -484,8 +485,6 @@
                             $("#crawlspace-unknown-error").hide();
                         }
 
-
-
                         @if(App::environment('local'))
                         console.log(data);
                         @endif
@@ -506,8 +505,8 @@
 
             }
 
-            $('form').find('*').filter(':input:visible:first').trigger('change');
-
+            //$('form').find('*').filter(':input:visible:first').trigger('change');
+            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
 
         });
 

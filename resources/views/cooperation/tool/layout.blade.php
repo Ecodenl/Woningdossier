@@ -31,16 +31,52 @@
                         @endcomponent
                     </div>
                 @else
-
-                    @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
-                        @lang('woningdossier.cooperation.tool.current-building-address', [
-                            'street' => $building->street,
-                            'number' => $building->number,
-                            'extension' => $building->extension,
-                            'zip_code' => $building->postal_code,
-                            'city' => $building->city
-                        ])
-                    @endcomponent
+                    @if(\App\Helpers\HoomdossierSession::isUserComparingInputSources())
+                        <form id="copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}" action="{{route('cooperation.import.copy')}}" method="post">
+                            <input type="hidden" name="input_source" value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
+                            {{csrf_field()}}
+                        </form>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            @lang('woningdossier.cooperation.tool.is-user-comparing-input-sources', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-block btn-sm btn-primary pull-right">
+                                                @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                            </a>
+                                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->short])}}" class="btn btn-block btn-sm btn-primary pull-right">
+                                                Stop vergelijking
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endcomponent
+                            </div>
+                            <div class="col-sm-6">
+                                @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                                    @lang('woningdossier.cooperation.tool.current-building-address', [
+                                        'street' => $building->street,
+                                        'number' => $building->number,
+                                        'extension' => $building->extension,
+                                        'zip_code' => $building->postal_code,
+                                        'city' => $building->city
+                                    ])
+                                @endcomponent
+                            </div>
+                        </div>
+                    @else
+                        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                            @lang('woningdossier.cooperation.tool.current-building-address', [
+                                'street' => $building->street,
+                                'number' => $building->number,
+                                'extension' => $building->extension,
+                                'zip_code' => $building->postal_code,
+                                'city' => $building->city
+                            ])
+                        @endcomponent
+                    @endif
                 @endif
 
                 @include('cooperation.tool.progress')
@@ -49,28 +85,6 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident') || app()->environment() == "local")
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <form id="copy-coach-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-left">
-                                <input type="hidden" name="input_source" value="coach">
-                                {{csrf_field()}}
-                                <button class="btn btn-primary">
-                                    @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
-                                </button>
-                            </form>
-
-                            <form id="copy-example-building-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-right">
-                                <input type="hidden" name="input_source" value="example-building">
-                                {{csrf_field()}}
-                                <button class="btn btn-primary">
-                                    Neem voorbeeldwoning antwoorden over
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @endif
-
                 @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                     <ul class="nav nav-tabs">
                         <li class="active">
@@ -164,6 +178,73 @@
                 return false;
             }
         });
+
+        $(document).ready(compareInputSourceValues());
+
+        function isUserComparingInputSources()
+        {
+            var isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}'
+            if (isUserComparingInputSources) {
+                return true;
+            }
+            return false;
+        }
+        function inputType(input)
+        {
+            return input.prop('type');
+        }
+        function compareInputSourceValues() {
+            if (isUserComparingInputSources()) {
+                var formGroups = $('.input-source-group');
+
+                $(formGroups).each(function () {
+                    var formGroup = $(this);
+                    var ul = formGroup.find('ul');
+                    // get the value from the current user
+                    var userInputValues = [];
+                    var input = formGroup.find('input');
+
+                    switch (inputType(input)) {
+                        case 'radio':
+                            userInputValues.push(formGroup.find('input[type=radio]:checked').val());
+                            break;
+                        case 'checkbox':
+                            formGroup.find('input[type=checkbox]:checked').each(function() {
+                                userInputValues.push($(this).val());
+                            });
+                            break;
+                        default:
+                            userInputValues.push(formGroup.find('.form-control').val());
+                            break;
+                    }
+
+
+                    var bestCssUGGSDesignStyle = {'background-color': 'red', 'color': 'white'};
+                    // get the value from the compare input source
+                    var compareInputSourceValue = ul.find('li[data-input-source-short="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}"]').attr('data-input-value');
+
+                    if (typeof compareInputSourceValue !== "undefined") {
+
+                        if (!userInputValues.includes(compareInputSourceValue)) {
+
+                            switch (inputType(input)) {
+                                case 'radio':
+                                    input.parent().css(bestCssUGGSDesignStyle);
+                                    break;
+                                case 'checkbox':
+                                    input.parent().css(bestCssUGGSDesignStyle);
+                                    break;
+                                default:
+                                    formGroup.find('.form-control').css(bestCssUGGSDesignStyle);
+                                    break;
+                            }
+                        }
+                    }
+
+                })
+            }
+        }
+
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

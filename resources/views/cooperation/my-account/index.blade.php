@@ -1,9 +1,9 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.my-account.layouts.app')
 
-@section('content')
+@section('my_account_content')
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-9">
                 <div class="panel panel-default">
                     <div class="panel-heading">@lang('woningdossier.cooperation.my-account.index.header')</div>
 
@@ -13,17 +13,9 @@
                                 @lang('woningdossier.cooperation.my-account.index.text')
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.my-account.index.messages')</a>
-                                <a href="{{route('cooperation.my-account.settings.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">@lang('woningdossier.cooperation.my-account.index.settings')</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 @endsection

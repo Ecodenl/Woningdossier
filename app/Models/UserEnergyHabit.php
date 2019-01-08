@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
+use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -60,7 +61,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserEnergyHabit extends Model
 {
-    use GetValueTrait;
+    use GetValueTrait, ToolSettingTrait;
 
     protected $fillable = [
         'user_id',

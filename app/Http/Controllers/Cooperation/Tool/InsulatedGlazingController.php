@@ -30,6 +30,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
+use App\Services\ToolSettingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -452,7 +453,7 @@ class InsulatedGlazingController extends Controller
         BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
+                'input_source_id' => $inputSourceId
             ],
             [
                 'last_painted_year' => $paintWorkStatuses['last_painted_year'],
@@ -466,10 +467,10 @@ class InsulatedGlazingController extends Controller
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
+                'input_source_id' => $inputSourceId
             ],
             [
-                'window_surface' => $windowSurface,
+                'window_surface' => $windowSurface
             ]
         );
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -31,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserInterest extends Model
 {
-    use GetValueTrait;
+    use GetValueTrait, ToolSettingTrait;
 
     protected $fillable = [
         'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',

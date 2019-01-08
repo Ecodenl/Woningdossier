@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -47,7 +48,7 @@ class Hoomdossier
                 // skip this one
                 continue;
             }
-            if ('resident' == $inputSourceShort) {
+            if ($inputSourceShort == InputSource::RESIDENT_SHORT) {
                 // no matter what
                 return $value;
             }

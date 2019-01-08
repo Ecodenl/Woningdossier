@@ -314,15 +314,6 @@
                                             checked="checked"
                                             @endif
                                             type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" value="{{$woodElement->id}}" name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">
-                                    {{--
-                                    <input
-                                            @if(old('building_elements.wood-elements.'.$woodElements->id.''.$woodElement->id.''))
-                                            checked
-                                            @elseif($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null
-                                            && $building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
-                                            checked
-                                            @endif
-                                            type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}" value="{{$woodElement->id}}" name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">--}}
                                     {{ $woodElement->value }}
                                 </label>
                             @endforeach
@@ -330,9 +321,14 @@
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
-                                        <?php $notNull = null != $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first(); ?>
-                                        @if ($notNull && $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
-                                            <li><a href="#">{{$myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->getInputSourceName()}}: {{$woodElement->value}}</a></li>
+                                        <?php
+                                            $myWoodElement = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first();
+                                            $notNull = null != $myWoodElement;
+                                        ?>
+                                        @if ($notNull && $myWoodElement->element_value_id == $woodElement->id)
+                                            <li class="change-input-value" data-input-value="{{$woodElement->id}}" data-input-source-short="{{$myWoodElement->inputSource()->first()->short}}">
+                                                <a href="#">{{$myWoodElement->getInputSourceName()}}: {{$woodElement->value}}</a>
+                                            </li>
                                         @endif
                                     @endforeach
                                 </ul>

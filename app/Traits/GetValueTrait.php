@@ -14,5 +14,6 @@ trait GetValueTrait
     public static function bootGetValueTrait()
     {
         static::addGlobalScope(new GetValueScope());
+
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Events\UserCreated;
 use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -108,7 +107,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Return all the building notes a user has created
+     * Return all the building notes a user has created.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -150,7 +149,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Cooperation::class);
     }
 
-
     /**
      * Returns the interests off a user.
      *
@@ -172,7 +170,6 @@ class User extends Authenticatable
     public function getInterestedType($type, $interestedInId)
     {
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
-
     }
 
     /**
@@ -283,34 +280,37 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the human readable role name based on the role name
+     * Get the human readable role name based on the role name.
      *
      * @param $roleName
+     *
      * @return mixed
      */
     public function getHumanReadableRoleName($roleName)
     {
         return $this->roles()->where('name', $roleName)->first()->human_readable_name;
-	}
+    }
 
     public function buildingPermissions()
     {
         return $this->hasMany('App\Models\BuildingPermission');
-	}
+    }
 
     /**
-     * Check if a user had permissions for a specific building
+     * Check if a user had permissions for a specific building.
      *
      * @param $buildingId
+     *
      * @return bool
      */
-    public function hasBuildingPermission($buildingId) : bool
+    public function hasBuildingPermission($buildingId): bool
     {
         if ($this->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
             return true;
         }
+
         return false;
-	}
+    }
 
     public function isBuildingOwner(Building $building)
     {
@@ -319,14 +319,14 @@ class User extends Authenticatable
         }
 
         return false;
-	}
+    }
 
     /**
      * Check if the logged in user is filling the tool for someone else.
      *
      * @return bool
      */
-    public function isFillingToolForOtherBuilding() : bool
+    public function isFillingToolForOtherBuilding(): bool
     {
         if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
             return true;
@@ -335,13 +335,54 @@ class User extends Authenticatable
         return false;
     }
 
+    /**
+     * Determine if the model has not (one of) the given role(s).
+     *
+     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     *
+     * @return bool
+     */
+    public function hasNotRole($roles): bool
+    {
+        return ! $this->hasRole($roles);
+    }
+
+    /**
+     * Check if a user has multiple roles.
+     *
+     * @return bool
+     */
+    public function hasMultipleRoles(): bool
+    {
+        if ($this->getRoleNames()->count() > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the user has one role.
+     *
+     * @return bool
+     */
+    public function hasNotMultipleRoles(): bool
+    {
+        return ! $this->hasMultipleRoles();
+    }
+
     public function completedQuestionnaires()
     {
         return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
-	}
+    }
 
+    /**
+     * Complete a questionnaire for a user.
+     *
+     * @param Questionnaire $questionnaire
+     */
     public function completeQuestionnaire(Questionnaire $questionnaire)
     {
-        $this->completedQuestionnaires()->attach($questionnaire);
-	}
+        $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
+    }
 }

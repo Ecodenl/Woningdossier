@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddShortToRoofTypesTable extends Migration
 {
@@ -13,30 +13,35 @@ class AddShortToRoofTypesTable extends Migration
      */
     public function up()
     {
-	    if ( ! Schema::hasColumn( 'roof_types', 'short' ) ) {
-
-	        Schema::table( 'roof_types', function ( Blueprint $table ) {
-			    $table->string( 'short' )->after( 'name' );
-		    } );
+        if (! Schema::hasColumn('roof_types', 'short')) {
+            Schema::table('roof_types', function (Blueprint $table) {
+                $table->string('short')->after('name');
+            });
         }
 
-	    $updates = [
-	    	[
-	    		'attributes' => [ 'calculate_value' => 1, ],
-			    'values' => [ 'short' => 'pitched', ],
-		    ],
-		    [
-			    'attributes' => [ 'calculate_value' => 3, ],
-			    'values' => [ 'short' => 'flat', ],
-		    ],
-		    [
-			    'attributes' => [ 'calculate_value' => 5, ],
-			    'values' => [ 'short' => 'none', ],
-		    ],
-	    ];
-	    foreach($updates as $update){
-		    DB::table('roof_types')->updateOrInsert($update['attributes'], $update['values']);
-	    }
+        $roofTypes = [
+            [
+                'calculate_value' => 1,
+                'short' => 'pitched',
+            ],
+            [
+                'calculate_value' => 3,
+                'short' => 'flat',
+            ],
+            [
+                'calculate_value' => 5,
+                'short' => 'none',
+            ],
+        ];
+
+        foreach ($roofTypes as $roofType) {
+            $roofTypeResult = DB::table('roof_types')->where('calculate_value', $roofType['calculate_value'])->first();
+            if ($roofTypeResult instanceof stdClass) {
+                DB::table('roof_types')
+                    ->where('calculate_value', $roofType['calculate_value'])
+                    ->update($roofType);
+            }
+        }
     }
 
     /**
@@ -46,8 +51,8 @@ class AddShortToRoofTypesTable extends Migration
      */
     public function down()
     {
-        Schema::table('roof_types', function(Blueprint $table){
-        	$table->dropColumn('short');
+        Schema::table('roof_types', function (Blueprint $table) {
+            $table->dropColumn('short');
         });
     }
 }

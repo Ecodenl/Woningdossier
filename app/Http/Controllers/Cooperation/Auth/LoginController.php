@@ -100,44 +100,45 @@ class LoginController extends Controller
             }
         }
 
-		if ($this->attemptLogin($request)) {
-		    $user = \Auth::user();
-		    // if the user only has one role we can set the session with his role id on the login
-		    if ($user->roles->count() == 1) {
-		        $building = $user->buildings()->first();
+        if ($this->attemptLogin($request)) {
+            $user = \Auth::user();
 
-		        // we cant query on the Spatie\Role model so we first get the result on the "original model"
-                $role = Role::findByName($user->roles->first()->name);
-                // get the input source
-                $inputSource = $role->inputSource;
+            // get the first building from the user
+            $building = $user->buildings()->first();
 
-                // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-		        if (!$role->inputSource instanceof InputSource) {
-		            $inputSource = InputSource::findByShort('resident');
-                }
+            // we cant query on the Spatie\Role model so we first get the result on the "original model"
+            $role = Role::findByName($user->roles->first()->name);
 
-                HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
+            // get the input source
+            $inputSource = $role->inputSource;
 
-			    $this->redirectTo = RoleHelper::getUrlByRole( $role );
+            // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
+            if (! $role->inputSource instanceof InputSource) {
+                $inputSource = InputSource::findByShort('resident');
             }
-			else {
-				// if the user has multiple roles, always redirect them to the switch role.
+
+            // set the required sessions
+            HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
+
+            // set the redirect url
+            if (1 == $user->roles->count()) {
+                $this->redirectTo = RoleHelper::getUrlByRole($role);
+            } else {
                 $this->redirectTo = '/admin';
-			}
+            }
 
+            return $this->sendLoginResponse($request);
+        }
 
-			return $this->sendLoginResponse($request);
-		}
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
 
-		// If the login attempt was unsuccessful we will increment the number of attempts
-		// to login and redirect the user back to the login form. Of course, when this
-		// user surpasses their maximum number of attempts they will get locked out.
-		$this->incrementLoginAttempts($request);
+        return $this->sendFailedLoginResponse($request);
+    }
 
-		return $this->sendFailedLoginResponse($request);
-	}
-
-    /**
+    /*
      * Send the response after the user was authenticated.
      *
      * @param $request
@@ -150,6 +151,6 @@ class LoginController extends Controller
         $this->clearLoginAttempts($request);
 
         //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
-	    return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
+        return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
     }*/
 }

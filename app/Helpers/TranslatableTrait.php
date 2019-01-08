@@ -24,6 +24,19 @@ trait TranslatableTrait
     }
 
     /**
+     * Delete translations.
+     *
+     * @param string $key model attribute name
+     *
+     * @throws \Exception
+     */
+    public function deleteTranslations(string $key)
+    {
+        $translationUuid = parent::getAttribute($key);
+        Translation::where('key', $translationUuid)->delete();
+    }
+
+    /**
      * Check if a given string is a valid UUID.
      *
      * @param string $uuid The string to check
@@ -56,7 +69,6 @@ trait TranslatableTrait
 
         return $translation->translation;
     }
-
 
     public function getTranslations($key)
     {
@@ -148,15 +160,14 @@ trait TranslatableTrait
                     ->join('translations', $this->getTable().'.'.$attribute, '=', 'translations.key');
     }
 
-
     /**
-     * Return all the translations that are available in a collection
+     * Return all the translations that are available in a collection.
      *
      * @param string $attribute default 'name' since this is the most common used field
      *
      * @return Collection
      */
-    public function getAllTranslations(string $attribute = 'name') : Collection
+    public function getAllTranslations(string $attribute = 'name'): Collection
     {
         // we use parent::getAttribute or it would return the translated text
         return Translation::where('key', parent::getAttribute($attribute))->get();

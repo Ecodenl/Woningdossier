@@ -5,7 +5,7 @@
             <br>
             <?php
                 // explode it on pipe | and create a collection from it.
-                $answers =  collect(explode('|', $question->getAnswerForCurrentInputSource()))
+                $answers = collect(explode('|', $question->getAnswerForCurrentInputSource()));
             ?>
             @foreach($question->questionOptions as $option)
                 <label class="checkbox-inline">

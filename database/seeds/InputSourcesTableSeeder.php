@@ -13,23 +13,23 @@ class InputSourcesTableSeeder extends Seeder
     {
         $inputSources = [
             [
-                'name' => "Bewoner",
-                'short' => "resident",
+                'name' => 'Bewoner',
+                'short' => 'resident',
                 'order' => 1,
             ],
             [
-                'name' => "Voorbeeld woning",
-                'short' => "example-building",
+                'name' => 'Voorbeeld woning',
+                'short' => 'example-building',
                 'order' => 2,
             ],
             [
-                'name' => "Coach",
-                'short' => "coach",
+                'name' => 'Coach',
+                'short' => 'coach',
                 'order' => 3,
             ],
             [
-                'name' => "Coöperatie",
-                'short' => "cooperation",
+                'name' => 'Coöperatie',
+                'short' => 'cooperation',
                 'order' => 4,
             ],
         ];

@@ -31,7 +31,7 @@ class BuildingHeater extends Model
     use GetMyValuesTrait;
 
     protected $fillable = [
-        'building_id', 'input_source_id', 'pv_panel_orientation_id', 'angle',
+        'building_id', 'input_source_id', 'pv_panel_orientation_id', 'angle', 'comment',
     ];
 
     public function building()

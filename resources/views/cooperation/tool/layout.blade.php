@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <?php
-                    if(!isset($building)) {
+                    if (! isset($building)) {
                         $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
                     }
                 ?>
@@ -49,16 +49,28 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident'))
-                    <form id="copy-coach-input" action="{{route('cooperation.tool.coach-input.copy')}}" method="post">
-                        {{csrf_field()}}
-                        <button class="btn btn-primary">
-                            @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
-                        </button>
-                    </form>
+                @if(in_array(Route::currentRouteName(), ['cooperation.tool.general-data.index']) && Auth::user()->hasRole('resident') || app()->environment() == "local")
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form id="copy-coach-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-left">
+                                <input type="hidden" name="input_source" value="coach">
+                                {{csrf_field()}}
+                                <button class="btn btn-primary">
+                                    @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                </button>
+                            </form>
+
+                            <form id="copy-example-building-input" action="{{route('cooperation.import.copy')}}" method="post" class="pull-right">
+                                <input type="hidden" name="input_source" value="example-building">
+                                {{csrf_field()}}
+                                <button class="btn btn-primary">
+                                    Neem voorbeeldwoning antwoorden over
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 @endif
-            </div>
-            <div class="col-md-12">
+
                 @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                     <ul class="nav nav-tabs">
                         <li class="active">
@@ -111,14 +123,6 @@
 
 @push('js')
     <script>
-        $('#copy-coach-input').on('submit', function (event) {
-            if(confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
-
-            } else {
-                event.preventDefault();
-                return false;
-            }
-        });
 
         $(document).ready(function () {
             // get the current url
@@ -142,6 +146,23 @@
         $('#submit-main-form').click(function () {
             // submit the main form / tool tab
             $('.panel#main-tab form button[type=submit]').click();
+        });
+
+        $('#copy-coach-input').on('submit', function (event) {
+            if(confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
+
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
+        $('#copy-example-building-input').on('submit', function (event) {
+            if(confirm('Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.')) {
+
+            } else {
+                event.preventDefault();
+                return false;
+            }
         });
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>

@@ -4,16 +4,17 @@ namespace App\Helpers;
 
 use Ramsey\Uuid\Uuid;
 
-class Str {
-    const CHARACTERS = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+class Str
+{
+    const CHARACTERS = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
 
-	/**
-	 * Uuid generation wrapping. Laravel < 5.6 uses Ramsey\Uuid. From 5.6 it is
-	 * put in the \Illuminate\Support\Str helper.
+    /**
+     * Uuid generation wrapping. Laravel < 5.6 uses Ramsey\Uuid. From 5.6 it is
+     * put in the \Illuminate\Support\Str helper.
      *
-	 * @return string
-	 */
-    public static function uuid() : string
+     * @return string
+     */
+    public static function uuid(): string
     {
         $laravel = app();
         if (version_compare($laravel::VERSION, '5.6.0') < 0) {
@@ -34,7 +35,7 @@ class Str {
      *
      * @return bool
      */
-    public static function isValidUuid($uuid)
+    public static function isValidUuid($uuid): bool
     {
         if (! is_string($uuid) || (1 !== preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid))) {
             return false;
@@ -44,14 +45,15 @@ class Str {
     }
 
     /**
-     * Check if a given string is a valid GUID
+     * Check if a given string is a valid GUID.
      *
      * https://stackoverflow.com/questions/1253373/php-check-for-valid-guid/#answer-1515456
      *
      * @param $guid
+     *
      * @return bool
      */
-    public static function isValidGuid($guid)
+    public static function isValidGuid($guid): bool
     {
         if (preg_match('/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i', $guid)) {
             return true;
@@ -61,16 +63,18 @@ class Str {
     }
 
     /**
-     * Check if a string contains a pipe
+     * Check if a string contains a pipe.
      *
      * @param $string
+     *
      * @return bool
      */
-    public static function isPiped($string) : bool
+    public static function isPiped($string): bool
     {
         if (count(explode('|', $string)) > 1) {
             return true;
         }
+
         return false;
     }
 
@@ -96,18 +100,16 @@ class Str {
      *
      * @return string
      */
-    public static function randomPassword() : string
+    public static function randomPassword(): string
     {
         $password = [];
-        $characterLength = strlen(self::CHARACTERS) -1;
+        $characterLength = strlen(self::CHARACTERS) - 1;
 
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $n = rand(0, $characterLength);
             $password[] = self::CHARACTERS[$n];
         }
 
         return (string) implode($password); // password returns array so implode it
     }
-
 }
-

@@ -1,13 +1,18 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.floor-insulation.intro.title'))
+@section('step_title', \App\Helpers\Translation::translate('floor-insulation.title.title'))
 
 
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
-        @include('cooperation.tool.includes.interested', ['type' => 'element', 'buildingElements' => $floorInsulation, ])
+        {{--{{dd($floorInsulation)}}--}}
+
+        @include('cooperation.tool.includes.interested', [
+            'type' => 'element', 'buildingElements' => $floorInsulation, 'buildingElement' => 'floor-insulation'
+        ])
+
 
         <div id="floor-insulation">
             <div class="row">
@@ -62,22 +67,19 @@
                 </div>
             </div>
 
-            @include('cooperation.tool.includes.savings-alert', ['buildingElement' => 'floor-insulation'])
+        <div id="hideable">
 
-            <div id="hideable">
+            <div id="answers">
 
-                <div id="answers">
-
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div id="has-no-crawlspace"
-                                 class="form-group add-space{{ $errors->has('building_elements.crawlspace') ? ' has-error' : '' }}">
-                                <label for="has_crawlspace" class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_elements-crawlspace-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.title')}}
-                                </label>
-
-                                @component('cooperation.tool.components.input-group',
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="has-no-crawlspace"
+                             class="form-group add-space{{ $errors->has('building_elements.crawlspace') ? ' has-error' : '' }}">
+                            <label for="has_crawlspace" class=" control-label">
+                                <i data-toggle="collapse" data-target="#building_elements-crawlspace-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.title')}}
+                            </label>
+                            @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.has_crawlspace'])
                                 <select id="has_crawlspace" class="form-control" name="building_elements[crawlspace]">
                                     @foreach(__('woningdossier.cooperation.option') as $i => $option)
@@ -92,40 +94,40 @@
                                 </select>
                             @endcomponent
 
-                                <div class="col-sm-12">
-                                    <div class="form-group add-space">
-                                        <div id="building_elements-crawlspace-info" class="collapse alert alert-info remove-collapse-space">
-                                            {{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.help')}}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                @if ($errors->has('building_elements.crawlspace'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('building_elements.crawlspace') }}</strong>
-                                    </span>
-                                @endif
-
-
-
-                                <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
-                                    <div class="alert alert-warning show" role="alert">
-                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.unknown')</p>
+                            <div class="col-sm-12">
+                                <div class="form-group add-space">
+                                    <div id="building_elements-crawlspace-info" class="collapse alert alert-info remove-collapse-space">
+                                        {{\App\Helpers\Translation::translate('floor-insulation.has-crawlspace.help')}}
                                     </div>
                                 </div>
                             </div>
+
+                            @if ($errors->has('building_elements.crawlspace'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('building_elements.crawlspace') }}</strong>
+                                </span>
+                            @endif
+                            
+                            
+
+                            <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
+                                <div class="alert alert-warning show" role="alert">
+                                    <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.unknown')</p>
+                                </div>
+                            </div>
                         </div>
-
-
                     </div>
-                    <div id="crawlspace-wrapper" class="crawlspace-accessible">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6">
-                                <div id="has-crawlspace-access" class="form-group add-space {{ $errors->has('building_elements.' . $crawlspace->id .'.extra') ? ' has-error' : '' }}">
-                                    <label for="crawlspace_access" class="control-label">
-                                        <i data-toggle="collapse" data-target="#crawlspace-access-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                        {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.title')}}
-                                    </label>
+
+
+                </div>
+                <div id="crawlspace-wrapper" class="crawlspace-accessible">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div id="has-crawlspace-access" class="form-group add-space {{ $errors->has('building_elements.' . $crawlspace->id .'.extra') ? ' has-error' : '' }}">
+                                <label for="crawlspace_access" class="control-label">
+                                    <i data-toggle="collapse" data-target="#crawlspace-access-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.title')}}
+                                </label>
 
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.access'])
@@ -142,39 +144,39 @@
                                     </select>
                                 @endcomponent
 
-                                    <div class="col-sm-12">
-                                        <div class="form-group add-space">
-                                            <div id="crawlspace-access-info"
-                                                 class="collapse alert alert-info remove-collapse-space">
-                                                {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.help')}}
-                                            </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group add-space">
+                                        <div id="crawlspace-access-info"
+                                             class="collapse alert alert-info remove-collapse-space">
+                                            {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.help')}}
                                         </div>
                                     </div>
-
-                                    @if ($errors->has('building_elements.' . $crawlspace->id .'.extra'))
-                                        <span class="help-block">
-                                        <strong>{{ $errors->first('building_elements.' . $crawlspace->id .'.extra') }}</strong>
-                                    </span>
-                                    @endif
-
-                                    <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
-                                        <div class="alert alert-warning show" role="alert">
-                                            <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
-                                        </div>
-                                    </div>
-
                                 </div>
+
+                                @if ($errors->has('building_elements.' . $crawlspace->id .'.extra'))
+                                    <span class="help-block">
+                                    <strong>{{ $errors->first('building_elements.' . $crawlspace->id .'.extra') }}</strong>
+                                </span>
+                                @endif
+
+                                <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
+                                    <div class="alert alert-warning show" role="alert">
+                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
+                                    </div>
+                                </div>
+
                             </div>
+                        </div>
 
 
-                            <div class="col-sm-12 col-md-6">
-                                <div class="form-group add-space{{ $errors->has('building_elements.' . $crawlspace->id .'.element_value_id') ? ' has-error' : '' }}">
-                                    <label for="crawlspace_height" class=" control-label">
-                                        <i data-toggle="collapse" data-target="#crawlspace-height-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                        {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.title')}}
-                                    </label>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group add-space{{ $errors->has('building_elements.' . $crawlspace->id .'.element_value_id') ? ' has-error' : '' }}">
+                                <label for="crawlspace_height" class=" control-label">
+                                    <i data-toggle="collapse" data-target="#crawlspace-height-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    {{\App\Helpers\Translation::translate('floor-insulation.crawlspace-height.title')}}
+                                </label>
 
-                                    @component('cooperation.tool.components.input-group',
+                                @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'element_value_id'])
                                     <select id="crawlspace_height" class="form-control" name="building_elements[{{ $crawlspace->id }}][element_value_id]">
                                         @foreach($crawlspace->values as $crawlHeight)
@@ -209,17 +211,17 @@
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_features.floor_surface') ? ' has-error' : '' }}">
 
-                                <label for="surface" class=" control-label">
-                                    <i data-toggle="collapse" data-target="#floor-surface-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('floor-insulation.surface.title')}}
-                                </label>
-                                @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat'])
+                            <label for="surface" class=" control-label">
+                                <i data-toggle="collapse" data-target="#floor-surface-info"
+                                   class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('floor-insulation.surface.title')}}
+                            </label>
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat'])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="floor_surface" type="text" name="building_features[floor_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'floor_surface')),1) }}" class="form-control" >
+                                <input id="floor_surface" type="text" name="building_features[floor_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'floor_surface')),1) }}" class="form-control" >
                                 {{--<input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">--}}
-                                @endcomponent
+                            @endcomponent
                             @if ($errors->has('building_features.surface'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('building_features.floor_surface') }}</strong>
@@ -235,17 +237,17 @@
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_features.insulation_surface') ? ' has-error' : '' }}">
 
-                                <label for="insulation_floor_surface" class=" control-label">
-                                    <i data-toggle="collapse" data-target="#floor-insulation-surface-info"
-                                       class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                    {{\App\Helpers\Translation::translate('floor-insulation.insulation-surface.title')}}
-                                </label>
-                                @component('cooperation.tool.components.input-group',
+                            <label for="insulation_floor_surface" class=" control-label">
+                                <i data-toggle="collapse" data-target="#floor-insulation-surface-info"
+                                   class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('floor-insulation.insulation-surface.title')}}
+                            </label>
+                            @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
-                                    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_surface')),1) }}" class="form-control" >
+                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
+                                <input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_surface')),1) }}" class="form-control" >
                                 {{--<input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">--}}
-                                @endcomponent
+                            @endcomponent
                             @if ($errors->has('building_features.insulation_surface'))
                                 <span class="help-block">
                                 <strong>{{ $errors->first('building_features.insulation_surface') }}</strong>
@@ -254,20 +256,20 @@
                         </div>
 
                         <div class="form-group add-space">
-                                <div id="floor-insulation-surface-info" class="collapse alert alert-info remove-collapse-space">
-                                    {{\App\Helpers\Translation::translate('floor-insulation.insulation-surface.help')}}
-                                </div>
+                            <div id="floor-insulation-surface-info" class="collapse alert alert-info remove-collapse-space">
+                                {{\App\Helpers\Translation::translate('floor-insulation.insulation-surface.help')}}
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
                             <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}        </label>
                             <?php
-                                $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : "";
+                                $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : '';
                             ?>
 
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>

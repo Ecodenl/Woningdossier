@@ -26,7 +26,7 @@
                                     <?php
                                         $user->roles->map(function ($role) {
                                             echo ucfirst($role->human_readable_name).', ';
-                                        })
+                                        });
                                     ?>
                                 </td>
                             </tr>
@@ -43,6 +43,8 @@
 
 @push('css')
     <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/datatables.min.css')}}">
+@endpush
+
 @push('js')
     <script>
         $(document).ready(function () {

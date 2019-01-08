@@ -8358,6 +8358,11 @@ button.close {
   top: 3px;
 }
 
+.nav-tabs li.active a {
+  background-color: #30815f;
+  color: white;
+}
+
 /**
   Helper classes for the html markup
  */

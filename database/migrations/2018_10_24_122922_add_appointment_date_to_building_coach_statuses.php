@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddAppointmentDateToBuildingCoachStatuses extends Migration
 {
@@ -13,12 +13,12 @@ class AddAppointmentDateToBuildingCoachStatuses extends Migration
      */
     public function up()
     {
-    	if (!Schema::hasColumn('building_coach_statuses', 'appointment_date')) {
-		    Schema::table( 'building_coach_statuses',
-			    function ( Blueprint $table ) {
-				    $table->dateTime( 'appointment_date' )->nullable()->after( 'status' );
-			    } );
-	    }
+        if (! Schema::hasColumn('building_coach_statuses', 'appointment_date')) {
+            Schema::table('building_coach_statuses',
+                function (Blueprint $table) {
+                    $table->dateTime('appointment_date')->nullable()->after('status');
+                });
+        }
     }
 
     /**

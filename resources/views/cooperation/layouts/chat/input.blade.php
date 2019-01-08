@@ -2,25 +2,24 @@
 
     // Get the last message and check if the user was sender or receiver
     /**
-     * @var \Illuminate\Support\Collection $privateMessages
-     * @var \App\Models\PrivateMessage $lastMessage
+     * @var \Illuminate\Support\Collection
+     * @var \App\Models\PrivateMessage     $lastMessage
      */
     $lastMessage = $privateMessages->sortByDesc('created_at')->first();
     $receiverId = null;
 
     // Coach conversation requests cannot be answered
-    if(!in_array($lastMessage->request_type, [\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])){
-        if(is_null($receiverId) && $lastMessage->to_user_id == Auth::id()){
+    if (! in_array($lastMessage->request_type, [\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])) {
+        if (is_null($receiverId) && $lastMessage->to_user_id == Auth::id()) {
             $receiverId = $lastMessage->from_user_id;
         }
-        if (is_null($receiverId) && $lastMessage->from_user_id == Auth::id()){
+        if (is_null($receiverId) && $lastMessage->from_user_id == Auth::id()) {
             $receiverId = $lastMessage->to_user_id;
         }
-        if (is_null($receiverId) && in_array(\App\Helpers\HoomdossierSession::currentRole(), ['coordinator', 'cooperation-admin'])){
-            if ($lastMessage->from_cooperation_id == \App\Helpers\HoomdossierSession::getCooperation()){
+        if (is_null($receiverId) && in_array(\App\Helpers\HoomdossierSession::currentRole(), ['coordinator', 'cooperation-admin'])) {
+            if ($lastMessage->from_cooperation_id == \App\Helpers\HoomdossierSession::getCooperation()) {
                 $receiverId = $lastMessage->to_user_id;
-            }
-            elseif($lastMessage->to_cooperation_id == \App\Helpers\HoomdossierSession::getCooperation()){
+            } elseif ($lastMessage->to_cooperation_id == \App\Helpers\HoomdossierSession::getCooperation()) {
                 $receiverId = $lastMessage->from_user_id;
             }
         }

@@ -22,10 +22,10 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Scopes\GetValueScope;
 
 class SolarPanelsController extends Controller
 {
@@ -46,18 +46,18 @@ class SolarPanelsController extends Controller
     {
         $typeIds = [7];
 
-        $steps = Step::orderBy('order')->get();
-
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
         $buildingPvPanels = $building->pvPanels;
         $buildingPvPanelsForMe = $building->pvPanels()->forMe()->get();
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
+
         return view('cooperation.tool.solar-panels.index',
             compact(
-            	'building', 'pvPanelOrientations', 'energyHabitsForMe',
-                'buildingPvPanels', 'steps', 'typeIds', 'buildingPvPanelsForMe'
+                'building', 'pvPanelOrientations',
+                'energyHabitsForMe', 'buildingPvPanels', 'typeIds',
+                'buildingPvPanelsForMe'
             )
         );
     }
@@ -74,10 +74,7 @@ class SolarPanelsController extends Controller
             'year' => null,
         ];
 
-
-
         $building = Building::find(HoomdossierSession::getBuilding());
-        $user = $building->user;
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);
@@ -118,12 +115,11 @@ class SolarPanelsController extends Controller
             }
 
             $currentYear = Carbon::now()->year;
-            if ($interest->calculate_value == 1) {
+            if (1 == $interest->calculate_value) {
                 $result['year'] = $currentYear;
-            } elseif ($interest->calculate_value == 2) {
+            } elseif (2 == $interest->calculate_value) {
                 $result['year'] = $currentYear + 5;
             }
-
         }
 
         if ($helpFactor >= 0.84) {
@@ -155,7 +151,6 @@ class SolarPanelsController extends Controller
      */
     public function store(SolarPanelFormRequest $request)
     {
-
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
         $buildingId = $building->id;
@@ -193,7 +188,14 @@ class SolarPanelsController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)

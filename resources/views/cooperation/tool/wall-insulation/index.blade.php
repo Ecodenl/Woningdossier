@@ -1,22 +1,20 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.wall-insulation.intro.title'))
+@section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
 
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         <div id="intro">
-
-            @include('cooperation.tool.includes.interested', ['type' => 'element', 'buildingElements' => $buildingElements,])
-
+            @include('cooperation.tool.includes.interested', [
+                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
+            ])
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
 
-                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label">
-                            <i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.title')}} </label>
+                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="collapse" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.title')}}</label>
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
@@ -54,9 +52,6 @@
                 </div>
             </div>
         </div>
-
-        @include('cooperation.tool.includes.savings-alert', ['buildingElement' => 'wall-insulation'])
-
         <div class="hideable">
 
             @if(isset($building->buildingFeatures->build_year))
@@ -82,7 +77,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                        <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}} </label><span> *</span>
+                            <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}} </label><span> *</span>
                             <label class="radio-inline">
                                     <input type="radio" name="cavity_wall" @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
                                 {{--<input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
@@ -110,11 +105,10 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
-
-                    @component('cooperation.tool.components.input-group',
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
+                        @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio', 'inputValues' => [1, 2, 3], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
                             <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.title')}} </label> <span> *</span>
 
@@ -276,10 +270,10 @@
 
 
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface'])
+                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface'])
                             <input id="wall_surface" type="text" name="wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}" class="form-control" >
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                        @endcomponent
+                            @endcomponent
 
                             <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 {{\App\Helpers\Translation::translate('wall-insulation.optional.facade-surface.help')}}
@@ -300,9 +294,9 @@
 
                             @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface'])
-                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}" class="form-control" >
-                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                        @endcomponent
+                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}" class="form-control" >
+                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
+                            @endcomponent
 
                             <div id="wall-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 {{\App\Helpers\Translation::translate('wall-insulation.optional.insulated-surface.help')}}
@@ -317,23 +311,22 @@
                 </div>
             </div>
 
-            <div class="hideable">
-                <div class="row" id="advice-help">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-info" role="alert">
-                            <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
-                            <p id="insulation-advice"></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" id="cavity-wall-alert" style="display: none;">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-warning" role="alert">
-                            <b><p>@lang('woningdossier.cooperation.tool.wall-insulation.alert.description')</p></b>
-                        </div>
+            <div class="row" id="advice-help">
+                <div class="col-sm-12 col-md-8 col-md-offset-2">
+                    <div class="alert alert-info" role="alert">
+                        <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
+                        <p id="insulation-advice"></p>
                     </div>
                 </div>
             </div>
+            <div class="row" id="cavity-wall-alert" style="display: none;">
+                <div class="col-sm-12 col-md-8 col-md-offset-2">
+                    <div class="alert alert-warning" role="alert">
+                        <b><p>@lang('woningdossier.cooperation.tool.wall-insulation.alert.description')</p></b>
+                    </div>
+                </div>
+            </div>
+
 
 
 
@@ -545,17 +538,16 @@
                var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
                var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-               if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
+               if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
                    $('.hideable').hide();
-                   $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
+                   $('#wall-insulation-info-alert').find('.alert').removeClass('hide')
                } else {
                    $('.hideable').show();
-                   $('#wall-insulation-info-alert').find('.alert').addClass('hide');
-
+                   $('#wall-insulation-info-alert').find('.alert').addClass('hide')
                }
 
                var form = $(this).closest("form").serialize();
-               $.ajax({
+              $.ajax({
                   type: "POST",
                   url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                   data: form,
@@ -639,9 +631,8 @@
                         console.log(data);
                       @endif
                   }
-               });
+              })
             });
-
             // Trigger the change event so it will load the data
             $('form').find('*').filter(':input:visible:first').trigger('change');
 

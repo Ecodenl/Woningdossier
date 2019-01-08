@@ -1,10 +1,10 @@
 <?php
     // sort the incoming collection based on input source order
-    if (is_array($userInputValues)){
-    	$userInputValues = collect($userInputValues);
+    if (is_array($userInputValues)) {
+        $userInputValues = collect($userInputValues);
     }
-    $userInputValues = $userInputValues->sortBy(function($a){
-	    return $a->inputSource->order;
+    $userInputValues = $userInputValues->sortBy(function ($a) {
+        return $a->inputSource->order;
     });
 ?>
 @if(is_array($inputValues) && $customInputValueColumn == false)
@@ -14,7 +14,7 @@
             <?php
             // check if the input column has dots, ifso we need to use the array get function
             // else its a property that we can access
-            if (strpos($userInputColumn, '.') !== false) {
+            if (false !== strpos($userInputColumn, '.')) {
                 $compareValue = array_get($userInputValue, $userInputColumn);
             } else {
                 $compareValue = $userInputValue->$userInputColumn;
@@ -30,23 +30,22 @@
         @foreach($inputValues as $inputValue)
             <?php
             if ($userInputModel instanceof \Illuminate\Database\Eloquent\Model) {
-            	if (!$userInputValue->$userInputModel instanceof \Illuminate\Database\Eloquent\Model){
-            		$value = null;
-                }
-            	else {
+                if (! $userInputValue->$userInputModel instanceof \Illuminate\Database\Eloquent\Model) {
+                    $value = null;
+                } else {
                     $value = $userInputValue->$userInputModel->$userInputColumn;
-            	}
+                }
             } else {
-                if (strpos($userInputColumn, ".") !== false) {
+                if (false !== strpos($userInputColumn, '.')) {
                     $value = array_get($userInputValue, $userInputColumn);
                 } else {
                     $value = $userInputValue->$userInputColumn;
                 }
             }
 
-            if (isset($customInputValueColumn) && $customInputValueColumn == true) {
+            if (isset($customInputValueColumn) && true == $customInputValueColumn) {
                 $inputName = $inputValue->$customInputValueColumn;
-            } else if (array_key_exists('value', $inputValue->attributesToArray())) {
+            } elseif (array_key_exists('value', $inputValue->attributesToArray())) {
                 $inputName = $inputValue->value;
             } else {
                 $inputName = $inputValue->name;

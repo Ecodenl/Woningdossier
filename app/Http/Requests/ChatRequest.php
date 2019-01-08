@@ -24,7 +24,7 @@ class ChatRequest extends FormRequest
     public function rules()
     {
         return [
-            'message' => 'required'
+            'message' => 'required',
         ];
     }
 }

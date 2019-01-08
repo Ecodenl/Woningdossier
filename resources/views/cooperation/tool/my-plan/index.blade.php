@@ -54,7 +54,7 @@
 
             @foreach($stepAdvices as $stepSlug => $advicesForStep)
                 @foreach($advicesForStep as $advice)
-	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first() ?>
+	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first(); ?>
                     <tr>
                         <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]" value="{{$measureType}}">
                         <input type="hidden" class="measure_short" value="{{$advice->measureApplication->short}}">
@@ -154,22 +154,20 @@
 <script>
 
     $(document).ready(function() {
-            const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
-            const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
+        const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
+        const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
 
-            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
-            const REPLACE_TILES = "replace-tiles";
+        const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
+        const REPLACE_TILES = "replace-tiles";
 
-            $(window).keydown(function(event){
-                if(event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
-
-
                 var form = $(this).closest("form").serialize();
                 $.ajax({
                     type: "POST",
@@ -258,14 +256,15 @@
             $('a[data-target*=more]').on('click', function () {
                 $(this).toggleClass('clicked');
 
-            if ($(this).hasClass('clicked')) {
-                $(this).find('i').css("transform", "rotate(-180deg)");
-                $(this).find('i').css("transition", "1s");
-            } else {
-                $(this).find('i').css("transform", "rotate(0deg)");
-                $(this).find('i').css("transition", "1s");
-            }
+                if ($(this).hasClass('clicked')) {
+                    $(this).find('i').css("transform", "rotate(-180deg)");
+                    $(this).find('i').css("transition", "1s");
+                } else {
+                    $(this).find('i').css("transform", "rotate(0deg)");
+                    $(this).find('i').css("transition", "1s");
+                }
             });
+
             $(".interested-checker").click(function(){
                 // get the planned year input
                 var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
@@ -275,7 +274,7 @@
                 if (getPlanned(measureApplicationShort)) {
                     advicedYear = getPlannedYear(measureApplicationShort);
                     plannedYearInput.val(advicedYear)
-            } else {
+                } else {
                 plannedYearInput.val("");
             }
         });

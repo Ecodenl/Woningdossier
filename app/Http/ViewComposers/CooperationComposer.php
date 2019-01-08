@@ -8,16 +8,12 @@ use Illuminate\View\View;
 
 class CooperationComposer
 {
-
     public function create(View $view)
     {
-
         $view->with('cooperation', app()->make('Cooperation'));
-		$view->with('cooperationStyle', app()->make('CooperationStyle'));
+        $view->with('cooperationStyle', app()->make('CooperationStyle'));
 
-	    $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
-	    $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
-
-
+        $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
+        $view->with('myUnreadMessages', PrivateMessage::unreadMessages()->get());
     }
 }

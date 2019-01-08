@@ -32,11 +32,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingPvPanel extends Model
 {
-
     use GetValueTrait;
     use GetMyValuesTrait;
 
-    protected $fillable = ['building_id', 'input_source_id', 'peak_power', 'number', 'pv_panel_orientation_id', 'angle'];
+    protected $fillable = ['building_id', 'input_source_id', 'peak_power', 'number', 'pv_panel_orientation_id', 'angle', 'comment'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

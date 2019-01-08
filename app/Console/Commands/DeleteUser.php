@@ -39,26 +39,25 @@ class DeleteUser extends Command
      */
     public function handle()
     {
-    	// Note: the range cannot contain spaces like "1 - 2" as this would
-	    // result in an error on the command: it would see multiple arguments.
+        // Note: the range cannot contain spaces like "1 - 2" as this would
+        // result in an error on the command: it would see multiple arguments.
         $userIds = trim($this->argument('user'));
 
-        if(stristr($userIds, '-') === false){
-        	$userIds = array((int) $userIds);
-        }
-        else {
-            list($from, $to) = explode("-", $userIds);
+        if (false === stristr($userIds, '-')) {
+            $userIds = [(int) $userIds];
+        } else {
+            list($from, $to) = explode('-', $userIds);
             $userIds = range($from, $to);
         }
 
-        foreach($userIds as $userId){
-        	$user = User::find($userId);
-        	if ($user instanceof User) {
-        		\Log::warning("Deleting user " . $user->id);
-		        UserService::deleteUser($user);
-		        \Log::info("User " . $user->id .  " was deleted");
-		        $this->info("User " . $user->id .  " was deleted");
-        	}
+        foreach ($userIds as $userId) {
+            $user = User::find($userId);
+            if ($user instanceof User) {
+                \Log::warning('Deleting user '.$user->id);
+                UserService::deleteUser($user);
+                \Log::info('User '.$user->id.' was deleted');
+                $this->info('User '.$user->id.' was deleted');
+            }
         }
 
         return;

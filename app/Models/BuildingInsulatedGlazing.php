@@ -35,58 +35,59 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereWindows( $value )
  * @mixin \Eloquent
  */
-class BuildingInsulatedGlazing extends Model {
-	use GetValueTrait;
-	use GetMyValuesTrait;
-	/**
-	 * The attributes that should be cast to native types.
-	 *
-	 * @var array
-	 */
-	protected $casts = [
-		'extra' => 'array',
-	];
+class BuildingInsulatedGlazing extends Model
+{
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'extra' => 'array',
+    ];
 
-	protected $fillable = [
-		'building_id',
-		'input_source_id',
-		'measure_application_id',
-		'insulating_glazing_id',
-		'building_heating_id',
-		'm2',
-		'windows',
-		'extra'
-	];
+    protected $fillable = [
+        'building_id',
+        'input_source_id',
+        'measure_application_id',
+        'insulating_glazing_id',
+        'building_heating_id',
+        'm2',
+        'windows',
+        'extra',
+    ];
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function measureApplication()
-	{
-		return $this->belongsTo( MeasureApplication::class );
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function measureApplication()
+    {
+        return $this->belongsTo(MeasureApplication::class);
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function insulatedGlazing()
-	{
-		return $this->belongsTo( InsulatingGlazing::class );
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function insulatedGlazing()
+    {
+        return $this->belongsTo(InsulatingGlazing::class);
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function buildingHeating()
-	{
-		return $this->belongsTo( BuildingHeating::class );
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function buildingHeating()
+    {
+        return $this->belongsTo(BuildingHeating::class);
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function building()
-	{
-		return $this->belongsTo( Building::class );
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
 }

@@ -169,7 +169,7 @@
         var toolBox = $('#tool-box');
         var formGroupElement = '<div class="form-group"></div>';
         var inputGroupElement = '<div class="input-group"></div>';
-        var localeInputGroupAddon = '<span class="input-group-addon"></span>';
+        var inputGroupAddon = '<span class="input-group-addon"></span>';
         var optionGroupElement = '<div class="option-group"></div>';
 
         var requiredCheckboxLabel = $('<label>').addClass('control-label').text('Verplicht ');
@@ -240,6 +240,10 @@
                 // raging because i dont know why $(optionGroup).append(formGroup) does not work.
                 $(question).find('.option-group').last().append(formGroup);
 
+                var totalOptions = question.find('.option-group').length;
+
+                $(question).find('.option-group').last().prepend('<label> Optie '+totalOptions +'</label>');
+
 
                 var additionalTextInput = $('<input>').addClass('form-control option-text').attr({
                     placeholder: 'Optie toevoegen',
@@ -247,8 +251,13 @@
                     type: 'text'
                 });
 
-                formGroup.find('.input-group').append($(localeInputGroupAddon).append(locale));
+                // the remove cross that we will append next to the option
+                var removeOptionButton = $('<a>').addClass('text-danger');
+                var removeGlyphicon = $('<i>').addClass('glyphicon glyphicon-remove');
+
+                formGroup.find('.input-group').append($(inputGroupAddon).append(locale));
                 formGroup.find('.input-group').append(additionalTextInput);
+                formGroup.find('.input-group').append($(inputGroupAddon).append(removeOptionButton.append(removeGlyphicon)));
             });
         }
 
@@ -267,7 +276,7 @@
                     type: 'text'
                 });
 
-                formGroup.find('.input-group').append($(localeInputGroupAddon).append(locale));
+                formGroup.find('.input-group').append($(inputGroupAddon).append(locale));
                 formGroup.find('.input-group').append(textInput);
 
             });
@@ -620,12 +629,41 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{route('cooperation.admin.cooperation.coordinator.questionnaires.delete')}}',
-                    data: {question_id: questionId},
+                    url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-question')}}/'+questionId,
                     method: "DELETE"
                 });
 
                 $(this).parent().parent().parent().parent().parent().parent().remove();
+            }
+
+            return false;
+        });
+
+        /**
+         * Remove a option from a question
+         */
+        $('body').on('click', '.glyphicon-remove', function (event) {
+            event.preventDefault();
+            var currentOptionGroup = $(this).parent().parent().parent().parent().parent();
+            var question = currentOptionGroup.parent();
+            var questionId = question.find('.question_id').val();
+            var questionOptionId = currentOptionGroup.find('.question_option_id').val();
+
+            console.log(currentOptionGroup, question);
+
+            if (confirm('Dit verwijderd de optie van deze vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
+
+                if (typeof questionId !== "undefined" || typeof questionOptionId !== "undefined") {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-option')}}/'+questionId+'/'+questionOptionId,
+                        method: "DELETE"
+                    });
+                }
+
+                currentOptionGroup.remove();
             }
 
             return false;

@@ -1,4 +1,4 @@
-<?php $questionsApplicableForValidation = ['text', 'textarea'] ?>
+<?php $questionsApplicableForValidation = ['text', 'textarea']; ?>
 <div class="form-builder ui-sortable-handle panel panel-default" @isset($id) id="{{$id}}" @endisset>
     <div class="panel-heading">
         @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.edit.types.'.$question->type)
@@ -26,10 +26,12 @@
                         @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
                         @break
                     @case('radio')
-                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.radio', ['question' => $question])
+                        {{--@include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.radio', ['question' => $question])--}}
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
                         @break
                     @case('checkbox')
-                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.checkbox', ['question' => $question])
+                        @include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.select', ['question' => $question])
+                        {{--@include('cooperation.admin.cooperation.coordinator.questionnaires.layouts.inputs.checkbox', ['question' => $question])--}}
                         @break
 
                 @endswitch

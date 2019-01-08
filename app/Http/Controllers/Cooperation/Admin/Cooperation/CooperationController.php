@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
-use App\Models\Cooperation;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
+use App\Models\Cooperation;
 
 class CooperationController extends Controller
 {

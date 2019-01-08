@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\Str;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\UsersRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Cooperation;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -23,6 +22,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->orWhere('name', 'coordinator')->get();
+
         return view('cooperation.admin.cooperation.cooperation-admin.users.create', compact('roles'));
     }
 
@@ -53,7 +53,6 @@ class UserController extends Controller
 
         // assign the roles to the user
         $user->assignRole($roles);
-
 
         // send a mail to the user
         \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation));

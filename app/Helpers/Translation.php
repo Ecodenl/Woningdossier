@@ -2,12 +2,13 @@
 
 namespace App\Helpers;
 
-class Translation  {
-
+class Translation
+{
     /**
-     * Get the translation from the translations table based on uuid
+     * Get the translation from the translations table based on uuid.
      *
      * @param $uuid
+     *
      * @return mixed|string
      */
     protected static function getTranslationFromUuid($uuid)
@@ -16,7 +17,6 @@ class Translation  {
     }
 
     /**
-     *
      * Well here it is.
      *
      * Get a translation from the translations table through the uuid translatable file
@@ -24,14 +24,14 @@ class Translation  {
      * If it does not exist, we get the given key returned.
      *
      * @param string $translationString
-     * @param array $replaceArray
+     * @param array  $replaceArray
+     *
      * @return array|mixed|null|string
      */
     public static function translate(string $translationString, array $replaceArray = []): string
     {
-
         // Key to the uuid.php translatable file.
-        $translationFileKey = "uuid.".str_replace("'", '', $translationString);
+        $translationFileKey = 'uuid.'.str_replace("'", '', $translationString);
 
         // Get the uuid from the translation file key
         $translationUuidKey = __($translationFileKey);
@@ -53,7 +53,6 @@ class Translation  {
                         $value,
                     ],
                     $translation);
-
             }
 
             return $translation;

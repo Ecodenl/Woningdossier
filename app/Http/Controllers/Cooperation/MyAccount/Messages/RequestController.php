@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Cooperation\MyAccount\Messages;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\PrivateMessage;
+use Illuminate\Http\Request;
 
 class RequestController extends Controller
 {
@@ -24,14 +24,13 @@ class RequestController extends Controller
 
         return view('cooperation.my-account.messages.requests.edit', compact('conversationRequest'));
 
-	    //$conversation = PrivateMessage::conversation($requestMessageId)->get();
+        //$conversation = PrivateMessage::conversation($requestMessageId)->get();
 
-	    //return view('cooperation.my-account.messages.requests.edit', compact('conversation'));
+        //return view('cooperation.my-account.messages.requests.edit', compact('conversation'));
     }
 
     public function update(Request $request, Cooperation $cooperation, $requestMessageId)
     {
-
         $request->validate([
             'message' => 'required',
         ]);
@@ -42,13 +41,12 @@ class RequestController extends Controller
         $cooperationId = HoomdossierSession::getCooperation();
         $allowAccess = empty($request->get('allow_access', '')) ? false : true;
 
-
         $conversationRequest->update(
             [
                 'message' => $message,
                 'to_cooperation_id' => $cooperationId,
                 'from_user_id' => $user->id,
-                'allow_access' => $allowAccess
+                'allow_access' => $allowAccess,
             ]
         );
 

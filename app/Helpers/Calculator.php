@@ -77,13 +77,13 @@ class Calculator
      * @param MeasureApplication $measure         The measure to apply
      * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
      * @param null|int           $applicationYear
-     * @param bool               $applyIndexing           Whether or not to apply indexing
+     * @param bool               $applyIndexing   Whether or not to apply indexing
      *
      * @return float|int
      */
     public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null, $applyIndexing = true)
     {
-    	self::debug(__METHOD__ . " for measure " . $measure->measure_name);
+        self::debug(__METHOD__.' for measure '.$measure->measure_name);
         if ($number <= 0) {
             return 0;
         }
@@ -100,17 +100,16 @@ class Calculator
         self::debug(__METHOD__.' Non indexed costs: '.$total.' = max('.$number.' * '.$measure->costs.', '.$measure->minimal_costs.')');
         // Apply indexing (general indexing which applies for measures)
 
-		if ($applyIndexing) {
-			$index = PriceIndexing::where( 'short', 'common' )->first();
-			// default = 2%
-			$costIndex = 2;
-			if ( $index instanceof PriceIndexing ) {
-				$costIndex = $index->percentage;
-			}
-		}
-		else {
-			$costIndex = 0;
-		}
+        if ($applyIndexing) {
+            $index = PriceIndexing::where('short', 'common')->first();
+            // default = 2%
+            $costIndex = 2;
+            if ($index instanceof PriceIndexing) {
+                $costIndex = $index->percentage;
+            }
+        } else {
+            $costIndex = 0;
+        }
 
         $totalIndexed = $total * pow((1 + ($costIndex / 100)), $yearFactor);
 
@@ -154,17 +153,18 @@ class Calculator
         return $costsIndexed;
     }
 
-	/**
-	 * Index costs. Basically this is 'reindexing' where the costs were indexed
-	 * for this year.
-	 *
-	 * @param float|int $costs
-	 * @param int $toYear
-	 *
-	 * @return float|int
-	 */
-    public static function indexCosts($costs, $toYear){
-    	return self::reindexCosts($costs, null, $toYear);
+    /**
+     * Index costs. Basically this is 'reindexing' where the costs were indexed
+     * for this year.
+     *
+     * @param float|int $costs
+     * @param int       $toYear
+     *
+     * @return float|int
+     */
+    public static function indexCosts($costs, $toYear)
+    {
+        return self::reindexCosts($costs, null, $toYear);
     }
 
     // in m3 per year

@@ -3,51 +3,52 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Helpers\Str;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\CoachRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\User;
-use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Password;
 use Spatie\Permission\Models\Role;
 
-class CoachController extends Controller
+class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->users()->role('coach')->where('id', '!=', \Auth::id())->get();
+        $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
         $roles = Role::all();
 
-        return view('cooperation.admin.cooperation.coordinator.coach.index', compact('roles', 'users'));
+        return view('cooperation.admin.cooperation.coordinator.user.index', compact('roles', 'users'));
     }
 
     public function create()
     {
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
 
-        return view('cooperation.admin.cooperation.coordinator.coach.create', compact('roles'));
+        return view('cooperation.admin.cooperation.coordinator.user.create', compact('roles'));
     }
 
-
-    protected function getAddressData($postalCode, $number, $pointer = null){
-        \Log::debug($postalCode . " " . $number . " " . $pointer);
+    protected function getAddressData($postalCode, $number, $pointer = null)
+    {
+        \Log::debug($postalCode.' '.$number.' '.$pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (!is_null($pointer)){
-            foreach ($response as $addrInfo){
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])){
+        if (! is_null($pointer)) {
+            foreach ($response as $addrInfo) {
+                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];
                     \Log::debug(json_encode($addrInfo));
+
                     return $addrInfo;
                 }
             }
+
             return [];
         }
 
@@ -68,14 +69,12 @@ class CoachController extends Controller
         $city = trim(strip_tags($request->get('city')));
         $addressId = $request->get('addressid', null);
 
-
         // create the new user
         $user = User::create(
             [
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $email,
-                'confirm_token' => str_random(60),
                 'password' => bcrypt(Str::randomPassword()),
             ]
         );
@@ -120,12 +119,27 @@ class CoachController extends Controller
         // assign the roles to the user
         $user->assignRole($roles);
 
-        // send a mail to the user
-        \Mail::to($email)->sendNow(new UserCreatedEmail($cooperation, $user));
+        $this->sendAccountConfirmationMail($cooperation, $request);
 
         return redirect()
-            ->route('cooperation.admin.cooperation.coordinator.coach.index')
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.coach.store.success'));
+            ->route('cooperation.admin.cooperation.coordinator.user.index')
+            ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.store.success'));
+    }
+
+    /**
+     * Send the mail to the created user.
+     *
+     * @param Cooperation $cooperation
+     * @param Request     $request
+     */
+    public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
+    {
+        $user = User::where('email', $request->get('email'))->first();
+
+        $token = app('auth.password.broker')->createToken($user);
+
+        // send a mail to the user
+        \Mail::to($user->email)->sendNow(new UserCreatedEmail($cooperation, $user, $token));
     }
 
     public function destroy(Cooperation $cooperation, $userId)
@@ -134,7 +148,6 @@ class CoachController extends Controller
 
         // only remove the example building id from the building
         if ($user->buildings()->first() instanceof Building) {
-
             $building = $user->buildings()->first();
             $building->example_building_id = null;
             $building->save();
@@ -174,6 +187,6 @@ class CoachController extends Controller
 
         $user->delete();
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.coach.destroy.success'));
+        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.destroy.success'));
     }
 }

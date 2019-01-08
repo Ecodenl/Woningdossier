@@ -39,8 +39,8 @@ class Step extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::addGlobalScope(new CooperationScope());
+        // for now, we keep it in kees.
+//        static::addGlobalScope(new CooperationScope());
     }
 
     public function questionnaires()
@@ -56,5 +56,4 @@ class Step extends Model
 
         return false;
     }
-
 }

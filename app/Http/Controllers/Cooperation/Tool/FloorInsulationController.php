@@ -21,8 +21,9 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
+use Illuminate\Http\Request;
 
 class FloorInsulationController extends Controller
 {
@@ -67,13 +68,11 @@ class FloorInsulationController extends Controller
 
         $buildingFeatures = $building->buildingFeatures;
         $buildingFeaturesForMe = BuildingFeature::forMe()->get();
-        $steps = Step::orderBy('order')->get();
-
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingElementForMe', 'buildingFeaturesForMe', 'buildingElementsForMe',
-            'crawlspacePresent', 'steps', 'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
+            'crawlspacePresent', 'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
         ));
     }
 
@@ -127,19 +126,14 @@ class FloorInsulationController extends Controller
 
         if ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 45) {
             $advice = Temperature::FLOOR_INSULATION_FLOOR;
-            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 30) {
             $advice = Temperature::FLOOR_INSULATION_BOTTOM;
-            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.bottom');
-	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } else {
             $advice = Temperature::FLOOR_INSULATION_RESEARCH;
-            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.floor-insulation.insulation-advice.research');
-	        //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         }
 
-	    $insulationAdvice = MeasureApplication::byShort($advice);
-	    $result['insulation_advice'] = $insulationAdvice->measure_name;
+        $insulationAdvice = MeasureApplication::byShort($advice);
+        $result['insulation_advice'] = $insulationAdvice->measure_name;
 
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         if (array_key_exists($floorInsulation->id, $elements)) {
@@ -179,7 +173,7 @@ class FloorInsulationController extends Controller
                 [
                     'building_id' => $buildingId,
                     'element_id' => $elementId,
-                    'input_source_id' => $inputSourceId
+                    'input_source_id' => $inputSourceId,
                 ],
                 [
                     'element_value_id' => $elementValueId,
@@ -231,7 +225,14 @@ class FloorInsulationController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)

@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
+use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -19,14 +20,14 @@ class QuestionnairePolicy
      */
     public function __construct()
     {
-        //
     }
 
     /**
-     * Check if the user is permitted to edit the questionnaire
+     * Check if the user is permitted to edit the questionnaire.
      *
-     * @param User $user
+     * @param User          $user
      * @param Questionnaire $questionnaire
+     *
      * @return bool
      */
     public function edit(User $user, Questionnaire $questionnaire)
@@ -43,10 +44,11 @@ class QuestionnairePolicy
     }
 
     /**
-     * Check if the user is permitted to set the active status of a questionnaire
+     * Check if the user is permitted to set the active status of a questionnaire.
      *
-     * @param User $user
+     * @param User          $user
      * @param Questionnaire $questionnaire
+     *
      * @return bool
      */
     public function setActiveStatus(User $user, Questionnaire $questionnaire)
@@ -56,9 +58,10 @@ class QuestionnairePolicy
     }
 
     /**
-     * Check if the user is permitted to create a new questionnaire
+     * Check if the user is permitted to create a new questionnaire.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function store(User $user)
@@ -79,4 +82,21 @@ class QuestionnairePolicy
         return $this->edit($user, $questionnaire);
     }
 
+    public function delete(User $user, Questionnaire $questionnaire)
+    {
+        $userCooperations = $user->cooperations()->get();
+        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+
+        // check if the user has the coordinator role and check the current cooperation
+        if ($user->hasRole('coordinator') && $userCooperations->contains($currentCooperation)) {
+            // and check if the questionnaire from the question has a relation with the cooperation
+            $cooperationFromQuestionnaire = $questionnaire->cooperation;
+
+            if ($cooperationFromQuestionnaire == $currentCooperation) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

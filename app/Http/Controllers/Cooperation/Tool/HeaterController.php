@@ -16,7 +16,6 @@ use App\Models\BuildingHeater;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Cooperation;
 use App\Models\HeaterComponentCost;
-use App\Models\HeaterSpecification;
 use App\Models\Interest;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\MeasureApplication;
@@ -27,10 +26,10 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; use App\Scopes\GetValueScope;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class HeaterController extends Controller
 {
@@ -54,8 +53,6 @@ class HeaterController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
-        $steps = Step::orderBy('order')->get();
-
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
         /** @var UserEnergyHabit|null $habits */
@@ -70,7 +67,7 @@ class HeaterController extends Controller
 
         return view('cooperation.tool.heater.index', compact('building',
             'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
-            'currentComfort', 'currentHeater', 'habits', 'steps', 'currentHeatersForMe'
+            'currentComfort', 'currentHeater', 'habits', 'currentHeatersForMe'
         ));
     }
 
@@ -103,7 +100,6 @@ class HeaterController extends Controller
         $user = $building->user;
         $habit = $user->energyHabit;
 
-
         if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
             if ($consumption instanceof KeyFigureConsumptionTapWater) {
@@ -112,33 +108,33 @@ class HeaterController extends Controller
                     'gas' => $consumption->energy_consumption,
                 ];
             }
-            \Log::debug("Heater: Current consumption: " . json_encode($result['consumption']));
+            \Log::debug('Heater: Current consumption: '.json_encode($result['consumption']));
 
-	        $angle = $request->input('building_heaters.angle', 0);
-	        $orientationId = $request->input('building_heaters.pv_panel_orientation_id', 0);
-	        $orientation = PvPanelOrientation::find($orientationId);
+            $angle = $request->input('building_heaters.angle', 0);
+            $orientationId = $request->input('building_heaters.pv_panel_orientation_id', 0);
+            $orientation = PvPanelOrientation::find($orientationId);
 
-	        $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
-	        \Log::debug("Heater: Location factor for " . $building->postal_code . " is " . $locationFactor->factor);
-	        $helpFactor = 0;
-	        if ($orientation instanceof PvPanelOrientation && $angle > 0) {
-		        $yield = KeyFigures::getYield( $orientation, $angle );
-		        \Log::debug( "Heater: Yield for " . $orientation->name . " at " . $angle . " degrees = " . $yield->yield );
-		        if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
-			        $helpFactor = $yield->yield * $locationFactor->factor;
-		        }
-	        }
-	        \Log::debug("Heater: helpfactor: " . $helpFactor);
+            $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
+            \Log::debug('Heater: Location factor for '.$building->postal_code.' is '.$locationFactor->factor);
+            $helpFactor = 0;
+            if ($orientation instanceof PvPanelOrientation && $angle > 0) {
+                $yield = KeyFigures::getYield($orientation, $angle);
+                \Log::debug('Heater: Yield for '.$orientation->name.' at '.$angle.' degrees = '.$yield->yield);
+                if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
+                    $helpFactor = $yield->yield * $locationFactor->factor;
+                }
+            }
+            \Log::debug('Heater: helpfactor: '.$helpFactor);
 
             $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water'], $helpFactor);
 
-	        if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists('collector', $systemSpecs)){
+            if (is_array($systemSpecs) && array_key_exists('boiler', $systemSpecs) && array_key_exists('collector', $systemSpecs)) {
                 $result['specs'] = [
                     'size_boiler' => $systemSpecs['boiler'],
                     'size_collector' => $systemSpecs['collector'],
                 ];
 
-                \Log::debug("Heater: For this water consumption you need this heater: " . json_encode($systemSpecs));
+                \Log::debug('Heater: For this water consumption you need this heater: '.json_encode($systemSpecs));
                 $result['production_heat'] = $systemSpecs['production_heat'];
                 $result['savings_gas'] = $result['production_heat'] / Kengetallen::gasKwhPerM3();
                 $result['percentage_consumption'] = isset($result['consumption']['gas']) ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;
@@ -158,9 +154,9 @@ class HeaterController extends Controller
                 }
 
                 $currentYear = Carbon::now()->year;
-                if ($interest->calculate_value == 1) {
+                if (1 == $interest->calculate_value) {
                     $result['year'] = $currentYear;
-                } elseif ($interest->calculate_value == 2) {
+                } elseif (2 == $interest->calculate_value) {
                     $result['year'] = $currentYear + 5;
                 }
 
@@ -195,8 +191,6 @@ class HeaterController extends Controller
      */
     public function store(HeaterFormRequest $request)
     {
-
-
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
         $buildingId = $building->id;
@@ -209,15 +203,17 @@ class HeaterController extends Controller
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
+        $comment = $request->get('comment');
 
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
                 'angle' => $angle,
+                'comment' => $comment,
             ]
         );
 
@@ -232,7 +228,14 @@ class HeaterController extends Controller
         $user->complete($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)

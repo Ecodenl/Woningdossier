@@ -7,8 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class QuestionnaireRequest extends FormRequest
 {
-
     protected $redirect;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -20,7 +20,7 @@ class QuestionnaireRequest extends FormRequest
     }
 
     /**
-     * Customize the error messages
+     * Customize the error messages.
      *
      * @return array
      */
@@ -41,15 +41,13 @@ class QuestionnaireRequest extends FormRequest
         return $attributes;
     }
 
-
     /**
-     * Make the rules for the questions
+     * Make the rules for the questions.
      *
      * @return array
      */
     public function makeRules()
     {
-
         $this->redirect = url()->previous().'/'.$this->request->get('tab_id', 'main-tab');
 
         $request = $this->request;
@@ -58,7 +56,6 @@ class QuestionnaireRequest extends FormRequest
 
         // loop through the questions
         foreach ($questions as $questionId => $questionAnswer) {
-
             // get the current question and the validation for that question
             $currentQuestion = Question::find($questionId);
             $validation = $currentQuestion->validation;
@@ -66,14 +63,14 @@ class QuestionnaireRequest extends FormRequest
             // nullable is still needed, in some cases the strings will be converted to null
             // if that happens sometimes would not work
             // see ConvertEmptyStringsToNull middleware class
-            $rule = "sometimes|nullable|";
+            $rule = 'sometimes|nullable|';
             // if its required add the required rule
             if ($currentQuestion->isRequired()) {
-                $rule .= "required|";
+                $rule .= 'required|';
             }
             foreach ($validation as $mainRule => $rules) {
                 // check if there is validation for the question
-                if (!empty($validation)) {
+                if (! empty($validation)) {
                     // let the concat start
                     $rule .= "{$mainRule}|";
 
@@ -86,8 +83,7 @@ class QuestionnaireRequest extends FormRequest
 
                     // remove the last "," from the rule and replace it with a pipe
                     $rule = rtrim($rule, ',');
-                    $rule .= "|";
-
+                    $rule .= '|';
                 }
             }
             $validationRules['questions.'.$questionId] = $rule;
@@ -104,6 +100,7 @@ class QuestionnaireRequest extends FormRequest
     public function rules()
     {
         $rules = $this->makeRules();
+
         return  $rules;
     }
 }

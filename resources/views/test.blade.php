@@ -41,7 +41,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
 
-<?php $id=0;?>
+<?php $id = 0; ?>
         // var formBuildPanel = '<div class="form-builder panel panel-default" ><div class="panel-body"><div class="row"><div class="col-sm-12">  </div></div></div></div>';
 
         {{--var formBuildPanel = '{{view('validation-options', compact('id'))}}';--}}

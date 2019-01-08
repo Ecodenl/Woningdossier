@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.boiler.title'))
+@section('step_title', \App\Helpers\Translation::translate('boiler.title.title'))
 
 
 @section('step_content')
@@ -23,6 +23,7 @@
                             <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ old('habit.gas_usage', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'amount_gas', 0)) }}">
                             {{--<input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">--}}
                         @endcomponent
+
                         <div id="current-gas-usage" class="collapse alert alert-info remove-collapse-space alert-top-space">
                             {{\App\Helpers\Translation::translate('boiler.current-gas-usage.help')}}
                         </div>
@@ -133,7 +134,6 @@
                                 if (Auth::user()->hasRole('resident')) {
                                     $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
                                 } elseif (Auth::user()->hasRole('coach')) {
-
                                     $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
 
                                     $default = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';

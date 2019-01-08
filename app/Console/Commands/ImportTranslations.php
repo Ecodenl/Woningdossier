@@ -66,18 +66,17 @@ class ImportTranslations extends Command
          * 5 = title-uuid
          */
         foreach ($csvRows as $csvKey => $csvRow) {
-
             // check if the short is empty
-            if ($csvRow[3] != "") {
+            if ('' != $csvRow[3]) {
                 $short = $csvRow[3];
 
                 // if the uuid key does not exist or the uuid is empty create a new one
-                if (array_key_exists(4, $csvRow) && $csvRow[4] != "") {
+                if (array_key_exists(4, $csvRow) && '' != $csvRow[4]) {
                     $translationUuidHelpKey = $csvRow[4];
                 } else {
                     $translationUuidHelpKey = Str::uuid();
                 }
-                if (array_key_exists(5, $csvRow) && $csvRow[5] != "") {
+                if (array_key_exists(5, $csvRow) && '' != $csvRow[5]) {
                     $translationUuidTitleKey = $csvRow[5];
                 } else {
                     $translationUuidTitleKey = Str::uuid();
@@ -87,30 +86,29 @@ class ImportTranslations extends Command
                 $updateHelpTranslations[] = [
                     'key' => $translationUuidHelpKey,
                     'language' => 'nl',
-                    'translation' => $csvRow[2]
+                    'translation' => $csvRow[2],
                 ];
 
                 // update for the title translations
                 $updateTitleTranslations[] = [
                     'language' => 'nl',
                     'key' => $translationUuidTitleKey,
-                    'translation' => $csvRow[1]
+                    'translation' => $csvRow[1],
                 ];
 
                 // update for the translatable uuid.php file
                 $uuidTranslatableData[] = [
-                    $short . ".help" => [
+                    $short.'.help' => [
                         'key' => $translationUuidHelpKey,
                         'language' => 'nl',
-                        'translation' => $csvRow[2]
+                        'translation' => $csvRow[2],
                     ],
-                    $short . ".title" => [
+                    $short.'.title' => [
                         'language' => 'nl',
                         'key' => $translationUuidTitleKey,
-                        'translation' => $csvRow[1]
-                    ]
+                        'translation' => $csvRow[1],
+                    ],
                 ];
-
 
                 $csvData[] = [
                     $csvRow[0],
@@ -130,7 +128,7 @@ class ImportTranslations extends Command
             'uitleg',
             'short',
             'help-uuid',
-            'title-uuid'
+            'title-uuid',
         ];
 
         $contents = $csvData;
@@ -160,23 +158,22 @@ class ImportTranslations extends Command
                 // check if the translation from the csv differs from the translation in the database
                 // ifso update it
                 if ($updateHelpTranslation['translation'] != $helpTranslation->translation) {
-                    $updateCounter++;
-                    $updateHelpTextCounter++;
+                    ++$updateCounter;
+                    ++$updateHelpTextCounter;
                     Translation::where('key', $updateHelpTranslation['key'])->update([
                         'key' => $updateHelpTranslation['key'],
                         'language' => $updateHelpTranslation['language'],
-                        'translation' => $updateHelpTranslation['translation']
+                        'translation' => $updateHelpTranslation['translation'],
                     ]);
                     $this->line($updateHelpTranslation['translation']);
                 }
-
             } else {
                 Translation::create([
                     'key' => $updateHelpTranslation['key'],
                     'language' => $updateHelpTranslation['language'],
-                    'translation' => $updateHelpTranslation['translation']
+                    'translation' => $updateHelpTranslation['translation'],
                 ]);
-                $createCounter++;
+                ++$createCounter;
             }
         }
         foreach ($updateTitleTranslations as $updateTitleTranslation) {
@@ -189,31 +186,27 @@ class ImportTranslations extends Command
                 // check if the translation from the csv differs from the translation in the database
                 // ifso update it
                 if ($updateTitleTranslation['translation'] != $titleTranslation->translation) {
-                    $updateCounter++;
-                    $updateTitleTextCounter++;
+                    ++$updateCounter;
+                    ++$updateTitleTextCounter;
                     Translation::where('key', $updateTitleTranslation['key'])->update([
                         'key' => $updateTitleTranslation['key'],
                         'language' => $updateTitleTranslation['language'],
-                        'translation' => $updateTitleTranslation['translation']
+                        'translation' => $updateTitleTranslation['translation'],
                     ]);
                 }
-
             } else {
                 Translation::create([
                     'key' => $updateTitleTranslation['key'],
                     'language' => $updateTitleTranslation['language'],
-                    'translation' => $updateTitleTranslation['translation']
+                    'translation' => $updateTitleTranslation['translation'],
                 ]);
-                $createCounter++;
+                ++$createCounter;
             }
         }
 
         $this->line("Created counter: {$createCounter}");
         $this->line("Update counter: {$updateCounter}");
-        $this->line("Update helptext counter: {$updateHelpTextCounter}", "fg=green");
-
-
-
+        $this->line("Update helptext counter: {$updateHelpTextCounter}", 'fg=green');
 
         // dot the array with the key as dot array and value as the translation uuid key
         $translationDottedFileArray = [];
@@ -232,16 +225,16 @@ class ImportTranslations extends Command
         }
 
         // filepath of the uuid translation file
-        $this->line('Writing the uuid translatable file...', "fg=green");
+        $this->line('Writing the uuid translatable file...', 'fg=green');
         $translationPath = resource_path('lang/nl/uuid.php');
         $translationFile = fopen($translationPath, 'w');
 
         // array to string
-        $translationFileContent =  "<?php return ". print_r($translationFileArray, true);
+        $translationFileContent = '<?php return '.print_r($translationFileArray, true);
         // strip, replace and lower the necessary things to get valid php
-        $translationFileContent =  str_replace(']', '"', $translationFileContent);
-        $translationFileContent =  str_replace('[', '"', $translationFileContent);
-        $translationFileContent =  strtolower($translationFileContent);
+        $translationFileContent = str_replace(']', '"', $translationFileContent);
+        $translationFileContent = str_replace('[', '"', $translationFileContent);
+        $translationFileContent = strtolower($translationFileContent);
 
         $translationFileContent = str_replace('array', '', $translationFileContent);
         $translationFileContent = str_replace('(', '[', $translationFileContent);
@@ -252,8 +245,7 @@ class ImportTranslations extends Command
         fwrite($translationFile, $translationFileContent);
         fclose($translationFile);
 
-        $this->line($createCounter." translations have been created and ".$updateCounter." have been updated.");
-        $this->line('Done!', "fg=green");
-
+        $this->line($createCounter.' translations have been created and '.$updateCounter.' have been updated.');
+        $this->line('Done!', 'fg=green');
     }
 }

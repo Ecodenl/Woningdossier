@@ -20,7 +20,7 @@
             @component('cooperation.layouts.chat.messages')
                 @forelse($privateMessages->sortBy('created_at') as $privateMessage)
 
-                    <?php $time = \Carbon\Carbon::parse($privateMessage->created_at) ?>
+                    <?php $time = \Carbon\Carbon::parse($privateMessage->created_at); ?>
 
                     <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
                         <div class="chat-body clearfix">

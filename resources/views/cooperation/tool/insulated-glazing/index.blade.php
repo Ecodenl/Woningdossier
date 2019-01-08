@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.insulated-glazing.title'))
+@section('step_title', \App\Helpers\Translation::translate('insulated-glazing.title.title'))
 
 
 @section('step_content')
@@ -23,7 +23,7 @@
                     <hr>
                 @endif
                 <?php
-                    if(array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
+                    if (array_key_exists($measureApplication->id, $buildingInsulatedGlazingsForMe)) {
                         $currentMeasureBuildingInsulatedGlazingForMe = $buildingInsulatedGlazingsForMe[$measureApplication->id];
                     } else {
                         $currentMeasureBuildingInsulatedGlazingForMe = [];
@@ -78,7 +78,6 @@
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title')}}
                                 </label>
-
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
                                     <select class="form-control" name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
@@ -331,7 +330,7 @@
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
-                                        <?php $notNull = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first() != null; ?>
+                                        <?php $notNull = null != $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first(); ?>
                                         @if ($notNull && $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->element_value_id == $woodElement->id)
                                             <li><a href="#">{{$myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first()->getInputSourceName()}}: {{$woodElement->value}}</a></li>
                                         @endif
@@ -440,7 +439,7 @@
                         <?php
                             // We do this because we store the comment with every glazing
                             $glazingWithComment = collect($buildingInsulatedGlazings)->where('extra', '!=', null)->first();
-                            $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
+                            $comment = ! is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
                         ?>
 
                         <textarea name="comment" id="" class="form-control">{{ $comment }}</textarea>
@@ -649,7 +648,6 @@
             });
             // Trigger the change event so it will load the data
             //$("select, input[type=radio], input[type=text]").trigger('change');
-            $('form').find('select.user-interest').trigger('change');
             $('form').find('*').filter(':input:visible:first').trigger('change');
         });
 

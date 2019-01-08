@@ -34,8 +34,8 @@ class CoachRequest extends FormRequest
                 array_push($postalCodeRule, 'required_if:roles.'.$inputKey.',5');
             }
         } else {
-             array_push($postalCodeRule, 'required_if:roles.0,5');
-             array_push($postalCodeRule, new PostalCode);
+            array_push($postalCodeRule, 'required_if:roles.0,5');
+            array_push($postalCodeRule, new PostalCode());
         }
 
         $houseNumberRule = [];
@@ -44,8 +44,8 @@ class CoachRequest extends FormRequest
                 array_push($houseNumberRule, 'required_if:roles.'.$inputKey.',5');
             }
         } else {
-             array_push($houseNumberRule, 'required_if:roles.0,5');
-             array_push($houseNumberRule, new HouseNumber);
+            array_push($houseNumberRule, 'required_if:roles.0,5');
+            array_push($houseNumberRule, new HouseNumber());
         }
 
         $roleRequiredIfRule = [];
@@ -54,21 +54,20 @@ class CoachRequest extends FormRequest
                 array_push($roleRequiredIfRule, 'required_if:roles.'.$inputKey.',5');
             }
         } else {
-             array_push($roleRequiredIfRule, 'required_if:roles.0,5');
+            array_push($roleRequiredIfRule, 'required_if:roles.0,5');
         }
 
         return [
             'first_name' => ['required', new AlphaSpace()],
             'last_name' => ['required', new AlphaSpace()],
             'password' => 'nullable|min:6',
-            'email' => 'required|email|unique:users,email',
+//            'email' => 'required|email|unique:users,email',
             'roles' => 'required|exists:roles,id',
 
-            'postal_code' => $postalCodeRule ,
+            'postal_code' => $postalCodeRule,
             'number' => $houseNumberRule,
             'street' => $roleRequiredIfRule,
-            'city' => $roleRequiredIfRule
-
+            'city' => $roleRequiredIfRule,
         ];
     }
 }

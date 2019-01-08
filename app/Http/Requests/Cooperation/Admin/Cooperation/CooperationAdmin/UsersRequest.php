@@ -28,7 +28,7 @@ class UsersRequest extends FormRequest
             'last_name' => 'required|alpha',
             'password' => 'nullable|min:6',
             'email' => 'required|email|unique:users,email',
-            'roles' => 'required|exists:roles,id'
+            'roles' => 'required|exists:roles,id',
         ];
     }
 }

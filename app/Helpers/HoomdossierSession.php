@@ -161,6 +161,7 @@ class HoomdossierSession extends Session
         self::setIsUserComparingInputSources(false);
         self::setCompareInputSourceShort(InputSource::find(self::getInputSource())->short);
     }
+
     /**
      * Get the compare input source.
      *

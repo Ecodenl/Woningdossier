@@ -10,11 +10,11 @@ trait ToolSettingTrait {
 
     public static function bootToolSettingTrait()
     {
-        static::creating(function (Model $model) {
+        static::created(function (Model $model) {
             ToolSettingService::setChanged(HoomdossierSession::getBuilding(), HoomdossierSession::getInputSource(),true);
         });
 
-        static::updating(function (Model $model) {
+        static::updated(function (Model $model) {
             ToolSettingService::setChanged(HoomdossierSession::getBuilding(), HoomdossierSession::getInputSource(), true);
         });
     }

@@ -219,7 +219,6 @@
                     }
 
 
-
                     var bestCssUGGSDesignStyle = {'background-color': 'red', 'color': 'white'};
                     // get the value from the compare input source
                     var compareInputSourceValue = ul.find('li[data-input-source-short="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}"]').attr('data-input-value');
@@ -233,7 +232,6 @@
                                     input.parent().css(bestCssUGGSDesignStyle);
                                     break;
                                 case 'checkbox':
-                                    console.log(userInputValues);
                                     input.parent().css(bestCssUGGSDesignStyle);
                                     break;
                                 default:

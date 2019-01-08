@@ -152,7 +152,8 @@ $(document).ready(function () {
                     break;
             }
 
-            $('form').find('*').filter(':input:visible:first').trigger('change');
+            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
+            //$('form').find('*').filter(':input:visible:first').trigger('change');
         }
     });
 });

@@ -216,7 +216,8 @@
                                             @endif
                                         </div>
                                     </div>
-    </div>                            </div>
+                                </div>
+                            </div>
                                 <div class="row cover-bitumen">
                                     <div class="col-md-12">
                                         <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date') ? ' has-error' : '' }}">
@@ -471,6 +472,7 @@
                     @endforeach
 
                 </div>
+        </div>
 
             @foreach(['flat', 'pitched'] as $roofCat)
                 @if(\App\Models\BuildingService::hasCoachInputSource(collect($currentCategorizedRoofTypesForMe[$roofCat])) && Auth::user()->hasRole('resident'))
@@ -536,9 +538,6 @@
     <script>
         $(document).ready(function() {
 
-            function hide() {
-
-            }
             $(window).keydown(function(event){
                 if(event.keyCode === 13) {
                     event.preventDefault();
@@ -658,7 +657,7 @@
                 });
             }
 
-            $('form').find('*').filter(':input:visible:first').trigger('change');
+            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
 
         });
 

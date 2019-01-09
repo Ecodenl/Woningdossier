@@ -12,7 +12,10 @@ class StepController extends Controller
     public function index(Cooperation $cooperation)
     {
         // since the general-data always need to be the first step and is always needed
-        $steps = $cooperation->steps()->orderBy('cooperation_steps.order')->where('slug', '!=', 'general-data')->get();
+        $steps = $cooperation->steps()->orderBy('cooperation_steps.order')
+            ->where('slug', '!=', 'general-data')
+            ->where('slug', '!=', 'building-detail')
+            ->get();
 
         return view('cooperation.admin.cooperation.cooperation-admin.steps.index', compact('steps'));
     }

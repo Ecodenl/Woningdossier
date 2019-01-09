@@ -12,11 +12,20 @@ use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\Step;
 use App\Scopes\GetValueScope;
+use App\Services\ExampleBuildingService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class BuildingDetailController extends Controller
 {
+    protected $step;
+
+    public function __construct(Request $request)
+    {
+        $slug = str_replace(['tool', '/'], '', $request->getRequestUri());
+        $this->step = Step::where('slug', $slug)->first();
+    }
+
     public function index(Request $request, Cooperation $cooperation)
     {
         $building = Building::find(HoomdossierSession::getBuilding());
@@ -31,7 +40,7 @@ class BuildingDetailController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
-
+        $buildYear = $request->get('build_year');
 
 
         $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
@@ -40,30 +49,63 @@ class BuildingDetailController extends Controller
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'build_year' => $request->get('build_year'),
+                'build_year' => $buildYear
             ]
         );
 
         $buildingType = BuildingType::find($request->get('building_type_id'));
-        dd($this->exampleBuildingType($buildingType));
         $features->buildingType()->associate($buildingType);
 
-        $exampleBuilding = $this->exampleBuildingType($buildingType);
+        $exampleBuilding = $this->getExampleBuildingByBuildingType($buildingType);
+
         if ($exampleBuilding instanceof ExampleBuilding) {
             $building->exampleBuilding()->associate($exampleBuilding);
             $building->save();
+            $this->applyExampleBuilding($exampleBuilding->id, $buildYear);
         }
+
+        // finish the step
+        \Auth::user()->complete($this->step);
+        return redirect()->route('cooperation.tool.general-data.index');
 
     }
 
-    public function exampleBuildingType($buildingTypeId)
+    /**
+     * Get a example building based on the building type
+     *
+     * @param BuildingType $buildingType
+     * @return ExampleBuilding|\Illuminate\Database\Eloquent\Builder
+     */
+    private function getExampleBuildingByBuildingType(BuildingType $buildingType)
     {
-        $exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
-        // loop through all the example buildings so we can add the "real name" to the examplebuilding
-        foreach ($exampleBuildings as $exampleBuilding) {
-            $exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
-        }
+        $exampleBuilding = ExampleBuilding::forMyCooperation()->where('building_type_id', $buildingType->id)->first();
+        return $exampleBuilding;
+    }
 
-        return response()->json($exampleBuildings);
+    /**
+     * Apply the example building
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function applyExampleBuilding($exampleBuildingId, $buildYear)
+    {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
+        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            if (! is_null($exampleBuildingId)) {
+                $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id',
+                    $exampleBuildingId)->first();
+                if ($exampleBuilding instanceof ExampleBuilding) {
+                    $building->exampleBuilding()->associate($exampleBuilding);
+                    $building->save();
+                    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+                    return response()->json();
+                }
+            }
+        }
+        // Something went wrong!
+        return response()->json([], 500);
     }
 }

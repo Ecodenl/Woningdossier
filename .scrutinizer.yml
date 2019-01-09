@@ -101,6 +101,10 @@ checks:
         argument_type_checks: true
 
 build:
+    dependencies:
+        before:
+            - mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS scrutinizer'
+#            - php artisan migrate:fresh --seed
     environment:
         php: '7.1'
         mysql: '5.7'

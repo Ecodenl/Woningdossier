@@ -179,8 +179,10 @@ $("#register #street").focusin(function () {
             var address = data;
             console.log(address);
             street.val(address.street);
-            number.val(address.number);
-            houseNumberExtension.val(address.house_number_extension);
+            if (address.street !== "") {
+                number.val(address.number);
+                houseNumberExtension.val(address.house_number_extension);
+            }
             addressId.val(address.id);
             city.val(address.city);
         },

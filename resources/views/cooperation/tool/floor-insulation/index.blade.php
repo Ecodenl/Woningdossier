@@ -414,35 +414,9 @@
                 }
             });
 
-            crawlspaceOptions();
-
-            $('#has_crawlspace').change(crawlspaceOptions);
             $("select, input[type=radio], input[type=text]").change(formChange);
 
-            function crawlspaceOptions(){
-                if ($("#has_crawlspace").val() === "no"){
-                    $(".crawlspace-accessible").hide();
-                    $("#no-crawlspace-error").show();
-                }
-                else {
-                    $(".crawlspace-accessible").show();
-                    $("#no-crawlspace-error").hide();
-                }
-            }
-
             function formChange(){
-
-                var interestedCalculateValue = $('#interest_element_{{$floorInsulation->id}} option:selected').data('calculate-value');
-                var elementCalculateValue = $('#element_{{$floorInsulation->id}} option:selected').data('calculate-value');
-
-                if ((elementCalculateValue == 3 || elementCalculateValue == 4) && interestedCalculateValue <= 2) {
-                    // insulation already present and there's interest
-                    $('#hideable').hide();
-                    $('#floor-insulation-info-alert').find('.alert').removeClass('hide');
-                } else {
-                    $('#hideable').show();
-                    $('#floor-insulation-info-alert').find('.alert').addClass('hide');
-                }
 
                 var form = $(this).closest("form").serialize();
                 $.ajax({
@@ -490,19 +464,65 @@
                         @endif
 
                         if ($("#floor-insulation-options select option:selected").text() == "Niet van toepassing") {
-                            $('#answers').hide();
                             $("input#savings_gas").val(Math.round(0));
                             $("input#savings_co2").val(Math.round(0));
                             $("input#savings_money").val(Math.round(0));
                             $("input#cost_indication").val(Math.round(0));
                             $("input#interest_comparable").val(0);
 
-                        } else {
-                            $('#answers').show();
                         }
+
+                        // Reset display: properties
+                        resetDisplays();
+                        // Apply crawlspace options
+                        crawlspaceOptions();
+                        // Apply interest options
+                        checkInterestAndCurrentInsulation();
                     }
                 });
 
+            }
+
+            function resetDisplays(){
+                $("#hideable").show();
+                $("#answers").show();
+                $("#has-no-crawlspace").show();
+            }
+
+            function crawlspaceOptions(){
+                if ($("#has_crawlspace").val() === "no"){
+                    $(".crawlspace-accessible").hide();
+                    $("#no-crawlspace-error").show();
+                }
+                else {
+                    $(".crawlspace-accessible").show();
+                    $("#no-crawlspace-error").hide();
+                }
+            }
+
+            function checkInterestAndCurrentInsulation(){
+                var interestedCalculateValue = $('#interest_element_{{$floorInsulation->id}} option:selected').data('calculate-value');
+                var elementCalculateValue = $('#element_{{$floorInsulation->id}} option:selected').data('calculate-value');
+
+                if (elementCalculateValue === 5){
+                    // nvt
+                    $(".crawlspace-accessible").hide();
+                    $("#has-no-crawlspace").hide();
+                    $("#no-crawlspace-error").hide();
+                    $('#floor-insulation-info-alert').find('.alert').addClass('hide');
+                }
+                else {
+                    if ((elementCalculateValue === 3 || elementCalculateValue === 4) && interestedCalculateValue <= 2) {
+                        // insulation already present and there's interest
+                        $('#hideable').hide();
+                        $('#floor-insulation-info-alert').find('.alert').removeClass('hide');
+                    } else {
+                        $('#hideable').show();
+                        //$("#has-no-crawlspace").show();
+                        //crawlspaceOptions();
+                        $('#floor-insulation-info-alert').find('.alert').addClass('hide');
+                    }
+                }
             }
 
             //$('form').find('*').filter(':input:visible:first').trigger('change');

@@ -88,52 +88,57 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::resource('building-details', 'BuildingDetailController', ['only' => ['index', 'store']]);
-                Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 // todo
                 Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
-                // todo end
                 Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+                // todo end
+                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
+
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
 
-                Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Extra pages with downloadable or information content.
-                    Route::group(['namespace' => 'Information'], function () {
-                        Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                Route::group(['middleware' => 'filled-step:building-detail'], function () {
+
+                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+
+                    Route::group(['middleware' => 'filled-step:general-data'], function () {
+                        // Extra pages with downloadable or information content.
+                        Route::group(['namespace' => 'Information'], function () {
+                            Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                        });
+
+                        Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+
+                        // Wall Insulation
+                        Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
+
+                        // Insulated glazing
+                        Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+                        Route::post('insulated-glazing/calculate', 'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
+
+                        // Floor Insulation
+                        Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+
+                        // Roof Insulation
+                        Route::resource('roof-insulation', 'RoofInsulationController');
+                        Route::post('roof-insulation/calculate', 'RoofInsulationController@calculate')->name('roof-insulation.calculate');
+
+                        // HR boiler
+                        Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
+                        Route::post('high-efficiency-boiler/calculate', 'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
+
+                        // Solar panels
+                        Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
+                        Route::post('solar-panels/calculate', 'SolarPanelsController@calculate')->name('solar-panels.calculate');
+
+                        // Heater (solar boiler)
+                        Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
+                        Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
                     });
-
-                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
-
-                    // Wall Insulation
-                    Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('wall-insulation/calculate', 'WallInsulationController@calculate')->name('wall-insulation.calculate');
-
-                    // Insulated glazing
-                    Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-                    Route::post('insulated-glazing/calculate', 'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
-
-                    // Floor Insulation
-                    Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
-
-                    // Roof Insulation
-                    Route::resource('roof-insulation', 'RoofInsulationController');
-                    Route::post('roof-insulation/calculate', 'RoofInsulationController@calculate')->name('roof-insulation.calculate');
-
-                    // HR boiler
-                    Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
-                    Route::post('high-efficiency-boiler/calculate', 'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
-
-                    // Solar panels
-                    Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
-                    Route::post('solar-panels/calculate', 'SolarPanelsController@calculate')->name('solar-panels.calculate');
-
-                    // Heater (solar boiler)
-                    Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
-                    Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
                 });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');

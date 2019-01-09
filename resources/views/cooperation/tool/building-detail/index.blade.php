@@ -1,10 +1,10 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', \App\Helpers\Translation::translate('general-data.title.title'))
+@section('step_title', \App\Helpers\Translation::translate('building-detail.title.title'))
 
 @section('step_content')
     <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.building-details.store', ['cooperation' => $cooperation]) }}">
+          action="{{ route('cooperation.tool.building-detail.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
             <div class="col-md-6">
@@ -13,7 +13,7 @@
                         <i data-toggle="collapse" data-target="#building-type-info"
                            class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                            aria-expanded="false"></i>
-                        {{\App\Helpers\Translation::translate('general-data.building-type.what-type.title')}}
+                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-type.title')}}
                     </label>
 
                     @component('cooperation.tool.components.input-group', [
@@ -37,7 +37,7 @@
 
                     <div id="building-type-info"
                          class="collapse alert alert-info remove-collapse-space alert-top-space">
-                        {{\App\Helpers\Translation::translate('general-data.building-type.what-type.help')}}
+                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-type.help')}}
                     </div>
                     @if ($errors->has('building_type_id'))
                         <span class="help-block">
@@ -51,7 +51,7 @@
                     <label for="build_year" class=" control-label">
                         <i data-toggle="collapse" data-target="#what-building-year-info"
                            class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                        {{\App\Helpers\Translation::translate('general-data.building-type.what-building-year.title')}}
+                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-building-year.title')}}
                         <span>*</span>
                     </label>
 
@@ -63,7 +63,7 @@
                     @endcomponent
 
                     <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                        {{\App\Helpers\Translation::translate('general-data.building-type.what-building-year.help')}}
+                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-building-year.help')}}
                     </div>
 
                     @if ($errors->has('build_year'))
@@ -71,6 +71,18 @@
                                 <strong>{{ $errors->first('build_year') }}</strong>
                             </span>
                     @endif
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr>
+                <div class="form-group add-space">
+                    <div class="">
+                        <button type="submit" class="pull-right btn btn-primary">
+                            @lang('default.buttons.next')
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

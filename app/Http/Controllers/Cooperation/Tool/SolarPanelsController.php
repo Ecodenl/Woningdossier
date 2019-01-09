@@ -169,6 +169,8 @@ class SolarPanelsController extends Controller
         $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
+        $comment = $request->get('comment', "");
+        $comment = is_null($comment) ? "" : $comment;
 
         BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -179,6 +181,7 @@ class SolarPanelsController extends Controller
                 'peak_power' => $peakPower,
                 'number' => $number,
                 'pv_panel_orientation_id' => $orientation,
+                'comment' => $comment,
                 'angle' => $angle,
             ]
         );

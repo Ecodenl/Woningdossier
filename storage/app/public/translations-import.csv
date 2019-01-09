@@ -1,4 +1,7 @@
 tabblad,veldnaam,uitleg,short,help-uuid,title-uuid
+"Building details","Woning details",,building-detail.title,03c7eef0-919f-464d-bbed-83a8af2f948e,93eba59e-49d7-4de9-885d-5e76c24a8d98
+"Building details","Wat is het woningtype?","Het woningtype wordt gebruikt als basis voor een aantal berekeningen en wordt daarom hier apart gevraagd. ",building-detail.building-type.what-type,a8e60dde-ff51-447e-8b9a-8bda81c3fc2e,fdb1d3e2-9ff1-42be-9c22-0da9f73633cf
+"Building details","Wat is het bouwjaar? ","Het bouwjaar wordt automatisch opgezocht in het Kadaster. Als het bouwjaar onjuist wordt weergegeven kunt u deze handmatig aanpassen. ",building-detail.building-type.what-building-year,5d52fb88-b794-4954-9743-885cb546963d,ddf88400-5870-48fd-98f8-2a158481b719
 "Algemene gegevens","Kies de best passende voorbeeldwoning","Uw coöperatie heeft misschien al een woning in haar bestand, die lijkt op uw woning. Hier kunt u een passende voorbeeldwoning kiezen.",general-data.building-type.example-building-type,67909be8-ff1e-46b2-a0ba-118d03890c20,f362589f-b17c-4b79-8c08-4978d8166f79
 "Algemene gegevens","Algemene gegevens",,general-data.title,86927ac6-6928-44e2-95ec-776d03382eee,299701e0-dbb1-4127-8dc5-f396b0d188a3
 "Algemene gegevens","Wat is het woningtype?","Het woningtype wordt gebruikt als basis voor een aantal berekeningen en wordt daarom hier apart gevraagd. ",general-data.building-type.what-type,a8e60dde-ff51-447e-8b9a-8bda81c3fc2e,fdb1d3e2-9ff1-42be-9c22-0da9f73633cf

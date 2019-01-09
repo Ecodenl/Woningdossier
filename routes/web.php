@@ -100,7 +100,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
 
                 Route::group(['middleware' => 'filled-step:building-detail'], function () {
-
                     Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {

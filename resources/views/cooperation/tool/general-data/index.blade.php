@@ -105,6 +105,95 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group add-space{{ $errors->has('roof_type_id') ? ' has-error' : '' }}">
+                            <label for="roof_type_id" class=" control-label">
+                                <i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                {{\App\Helpers\Translation::translate('general-data.building-type.type-roof.title')}}
+                            </label>
+
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
+                                <select id="roof_type_id" class="form-control" name="roof_type_id">
+                                    @foreach($roofTypes as $roofType)
+                                        <option
+                                                @if(old('roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id)
+                                                selected="selected"
+                                                @endif
+                                                value="{{ $roofType->id }}">{{ $roofType->name }}</option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
+
+                            <div id="roof-type-info"
+                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('general-data.building-type.type-roof.help')}}
+                            </div>
+
+                            @if ($errors->has('roof_type_id'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('roof_type_id') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group add-space{{ $errors->has('energy_label_id') ? ' has-error' : '' }}">
+                            <label for="energy_label_id" class=" control-label">
+                                <i data-toggle="collapse" data-target="#current-energy-label-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                {{\App\Helpers\Translation::translate('general-data.building-type.current-energy-label.title')}}
+                            </label>
+
+                            <?php
+
+                            // order:
+                            //  1) old value
+                            //  2) db value
+                            //  3) default (G)
+
+                            $selected = old('energy_label_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'energy_label_id'));
+
+                            /*
+                                if (is_null($selected)){
+                                	if (isset($building->buildingFeatures->energyLabel) && $building->buildingFeatures->energyLabel instanceof \App\Models\EnergyLabel){
+                                		$selected = $building->buildingFeatures->energyLabel->id;
+                                    }
+                                }
+                                */
+
+                            if (is_null($selected)) {
+                                $selectedLabelName = 'G';
+                            }
+                            ?>
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
+                                <select id="energy_label_id" class="form-control" name="energy_label_id">
+                                    @foreach($energyLabels as $energyLabel)
+                                        <option
+                                                @if(!is_null($selected) && $energyLabel->id == $selected)
+                                                selected="selected"
+                                                @elseif(isset($selectedLabelName) && $energyLabel->name == $selectedLabelName)
+                                                selected="selected"
+                                                @endif
+                                                value="{{ $energyLabel->id }}">{{ $energyLabel->name }}</option>
+                                    @endforeach
+                                </select>
+                            @endcomponent
+                            <div id="current-energy-label-info"
+                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('general-data.building-type.current-energy-label.help')}}
+                            </div>
+
+                            @if ($errors->has('energy_label_id'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('energy_label_id') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-12">
                         <div class="input-group input-source-group">
                             <div class="form-group add-space{{ $errors->has('monument') ? ' has-error' : '' }}">

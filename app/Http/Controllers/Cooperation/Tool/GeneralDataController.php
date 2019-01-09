@@ -180,7 +180,6 @@ class GeneralDataController extends Controller
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'build_year' => $request->get('build_year'),
                 'surface' => $request->get('surface'),
                 'monument' => $request->get('monument', 0),
                 'building_layers' => $request->get('building_layers'),
@@ -189,9 +188,6 @@ class GeneralDataController extends Controller
 
         $energyLabel = EnergyLabel::find($request->get('energy_label_id'));
         $features->energyLabel()->associate($energyLabel);
-
-        $buildingType = BuildingType::find($request->get('building_type_id'));
-        $features->buildingType()->associate($buildingType);
 
         $roofType = RoofType::find($request->get('roof_type_id'));
         $features->roofType()->associate($roofType);

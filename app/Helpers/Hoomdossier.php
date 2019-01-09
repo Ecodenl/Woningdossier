@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -37,7 +38,28 @@ class Hoomdossier
             'contaminated_wall_joints',
         ];
 
-        // treating them in order
+        // Always check my own input source first. If that is properly filled
+	    // return that.
+	    $myInputSource = InputSource::find(HoomdossierSession::getInputSource());
+
+	    if ($results->has($myInputSource->short)){
+	    	$value = $results->get($myInputSource->short);
+
+		    if (false !== stristr($column, 'surface') && $value <= 0) {
+			    // skip this one
+			    $value = null;
+		    }
+		    if (in_array($column, $falltroughColumns) && is_null($value)) {
+			    // skip this one
+			    $value = null;
+		    }
+		    if (! is_null($value) && '' !== $value) {
+			    return $value;
+		    }
+	    }
+
+        // .. My own input source was not (properly) filled.
+	    // Return the best match. Treat the results in order.
         foreach ($results as $inputSourceShort => $value) {
             if (false !== stristr($column, 'surface') && $value <= 0) {
                 // skip this one

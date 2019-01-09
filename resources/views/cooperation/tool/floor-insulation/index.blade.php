@@ -463,7 +463,7 @@
                         console.log(data);
                         @endif
 
-                        if ($("#floor-insulation-options select option:selected").text() == "Niet van toepassing") {
+                        if ($("#floor-insulation-options select option:selected").data('calculate-value') === 5) {
                             $("input#savings_gas").val(Math.round(0));
                             $("input#savings_co2").val(Math.round(0));
                             $("input#savings_money").val(Math.round(0));

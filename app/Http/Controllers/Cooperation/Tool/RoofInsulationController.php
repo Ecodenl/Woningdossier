@@ -470,11 +470,9 @@ class RoofInsulationController extends Controller
                         [
                             'building_id' => $buildingId,
                             'input_source_id' => $inputSourceId,
-                        ],
-                        [
-                            'roof_type_id' => $request->input('building_features.roof_type_id'),
-                        ]
-                    );
+                        ],[
+                        'roof_type_id' => $request->input('building_features.roof_type_id'),
+                    ]);
                     // insert the new ones
                     BuildingRoofType::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [

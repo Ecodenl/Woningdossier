@@ -422,7 +422,13 @@ class InsulatedGlazingController extends Controller
 
         $woodElements = $request->input('building_elements.wood-elements');
 
+        $woodElementCreateData = [];
         foreach ($woodElements as $woodElementId => $woodElementValueIds) {
+
+            // add the data we need to perform a create
+            foreach ($woodElementValueIds as $woodElementValueId) {
+                array_push($woodElementCreateData, ['element_value_id' => $woodElementValueId]);
+            }
 
             ModelService::deleteAndCreate(BuildingElement::class,
                 [
@@ -430,12 +436,10 @@ class InsulatedGlazingController extends Controller
                     'element_id' => $woodElementId,
                     'input_source_id' => $inputSourceId,
                 ],
-                [
-                    'element_value_id' => $woodElementValueIds
-                ]
+                $woodElementCreateData
             );
-
         }
+
 
 
 

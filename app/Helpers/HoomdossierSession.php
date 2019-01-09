@@ -82,12 +82,13 @@ class HoomdossierSession extends Session
      * Get a value from the Hoomdossier session.
      *
      * @param $key
+     * @param $default
      *
      * @return mixed
      */
-    public static function getHoomdossierSession($key)
+    public static function getHoomdossierSession($key, $default = null)
     {
-        return self::get('hoomdossier_session.'.$key);
+        return self::get('hoomdossier_session.'.$key, $default);
     }
 
     /**
@@ -246,7 +247,7 @@ class HoomdossierSession extends Session
      */
     public static function getIsUserComparingInputSources(): bool
     {
-        return self::getHoomdossierSession('is_user_comparing_input_sources');
+        return self::getHoomdossierSession('is_user_comparing_input_sources', false);
     }
 
     /**

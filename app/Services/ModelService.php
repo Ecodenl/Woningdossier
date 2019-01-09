@@ -27,7 +27,7 @@ class ModelService {
     public static function deleteAndCreate($model, array $attributes, array $values)
     {
         // make the model
-        $model = \App::make($model);
+        $model = new $model;
 
         // delete the old values
         $model->where($attributes)->delete();

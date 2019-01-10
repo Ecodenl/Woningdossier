@@ -47,6 +47,7 @@ class SolarPanelsController extends Controller
         $typeIds = [7];
 
         $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
         $buildingPvPanels = $building->pvPanels;
@@ -55,7 +56,7 @@ class SolarPanelsController extends Controller
 
         return view('cooperation.tool.solar-panels.index',
             compact(
-                'building', 'pvPanelOrientations',
+                'building', 'pvPanelOrientations', 'buildingOwner',
                 'energyHabitsForMe', 'buildingPvPanels', 'typeIds',
                 'buildingPvPanelsForMe'
             )

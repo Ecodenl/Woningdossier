@@ -26,6 +26,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\ModelService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -439,11 +440,9 @@ class RoofInsulationController extends Controller
         // the selected roof types for the current situation
         $roofTypes = $request->input('building_roof_types', []);
 
-        // remove the old answers
-        if (BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', HoomdossierSession::getInputSource())->count() > 0) {
-            BuildingRoofType::where('building_id', $buildingId)->where('input_source_id', HoomdossierSession::getInputSource())->delete();
-        }
 
+
+        $createData = array();
         foreach ($roofTypes as $i => $details) {
             if (is_numeric($i) && is_numeric($details)) {
                 $roofType = RoofType::find($details);
@@ -470,34 +469,39 @@ class RoofInsulationController extends Controller
                         [
                             'building_id' => $buildingId,
                             'input_source_id' => $inputSourceId,
-                        ],[
-                        'roof_type_id' => $request->input('building_features.roof_type_id'),
-                    ]);
-                    // insert the new ones
-                    BuildingRoofType::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                        [
-                            'building_id' => $buildingId,
-                            'input_source_id' => $inputSourceId,
-                            'roof_type_id' => $roofType->id,
                         ],
                         [
-                            'element_value_id' => $elementValueId,
-                            'roof_surface' => $roofSurface,
-                            'insulation_roof_surface' => $insulationRoofSurface,
-                            'building_heating_id' => $buildingHeating,
-                            'extra' => [
-                                'measure_application_id' => $extraMeasureApplication,
-                                'bitumen_replaced_date' => $extraBitumenReplacedDate,
-                                'zinc_replaced_date' => $extraZincReplacedDate,
-                                'tiles_condition' => $extraTilesCondition,
-                                'comment' => $comment,
-                            ],
+                            'roof_type_id' => $request->input('building_features.roof_type_id'),
                         ]
                     );
+
+
+                    array_push($createData,  [
+                        'roof_type_id' => $roofType->id,
+                        'element_value_id' => $elementValueId,
+                        'roof_surface' => $roofSurface,
+                        'insulation_roof_surface' => $insulationRoofSurface,
+                        'building_heating_id' => $buildingHeating,
+                        'extra' => [
+                            'measure_application_id' => $extraMeasureApplication,
+                            'bitumen_replaced_date' => $extraBitumenReplacedDate,
+                            'zinc_replaced_date' => $extraZincReplacedDate,
+                            'tiles_condition' => $extraTilesCondition,
+                            'comment' => $comment,
+                        ],
+                    ]);
+
                 }
             }
         }
 
+        ModelService::deleteAndCreate(BuildingRoofType::class,
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
+            ],
+            $createData
+        );
         // Save progress
         $this->saveAdvices($request);
         $user->complete($this->step);

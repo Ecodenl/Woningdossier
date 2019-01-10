@@ -13,27 +13,26 @@ class UserProgressUserIdToInputSourceId extends Migration
      */
     public function up()
     {
-//        Schema::table('user_progresses', function (Blueprint $table) {
-//
-//            // drop the foreign key
-//            $table->dropForeign(['user_id']);
-//            // might drop the column aswell
-//            $table->dropColumn('user_id');
-//
-//            $table->integer('input_source_id')->unsigned()->after('id');
-//
-//            // now add the foreign key
-//            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
-//
-//        });
-//
-//        // seed
-//        Schema::table('user_progresses', function (Blueprint $table) {
-//            // get the resident input source
-//            $residentInputSource = DB::table('input_sources')->where('short', 'resident')->first();
-//            // we just give them all the resident input source
-//            DB::table('user_progresses')->update(['input_source_id' => $residentInputSource->id]);
-//        });
+        Schema::table('user_progresses', function (Blueprint $table) {
+
+            // drop the foreign key
+            $table->dropForeign(['user_id']);
+            // might drop the column aswell
+            $table->dropColumn('user_id');
+
+            // add the input source id
+            $table->integer('input_source_id')->unsigned()->nullable()->after('id');
+            $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
+
+        });
+
+        // seed the data
+        Schema::table('user_progresses', function (Blueprint $table) {
+            // get the resident input source
+            $residentInputSource = DB::table('input_sources')->where('short', 'resident')->first();
+            // we just give them all the resident input source
+            DB::table('user_progresses')->update(['input_source_id' => $residentInputSource->id]);
+        });
     }
 
     /**
@@ -50,10 +49,14 @@ class UserProgressUserIdToInputSourceId extends Migration
             // rename it back
             $table->dropColumn('input_source_id');
 
-            // user columns
-            $table->integer('user_id')->unsigned()->after('id');
-            // and create a foreign key
+
+            $table->integer('user_id')->unsigned()->nullable()->after('id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+        });
+
+        // seed
+        Schema::table('user_progresses', function (Blueprint $table) {
 
             // get the data back
             // get the user_ids with the buildingid
@@ -69,5 +72,7 @@ class UserProgressUserIdToInputSourceId extends Migration
             }
 
         });
+
+
     }
 }

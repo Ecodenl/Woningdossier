@@ -89,9 +89,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::get('/', 'ToolController@index')->name('index');
 
                 // todo
-                Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
-                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+//                Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
                 // todo end
+                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
                 Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
 
 

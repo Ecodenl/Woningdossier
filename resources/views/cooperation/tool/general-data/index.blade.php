@@ -1108,38 +1108,6 @@
                 }
             });
 
-            // todo
-
-            $('#building_type_id').change( function() {
-                var buildingTypeId = $('#building_type_id').val();
-                $.ajax({
-                    type: "GET",
-                    url: '{{route('cooperation.tool.general-data.example-building-type', ['cooperation' => $cooperation])}}',
-                    data: {
-                        building_type_id: buildingTypeId
-                    },
-                    success: function (data) {
-                        // try to remove the old options wheter there is new information or not
-                        $('#example_building_id option').remove();
-                        // add a new empty option
-                        $('#example_building_id').append($("<option></option>").attr('selected', true).text("---"));
-                        if (data.length) {
-                            // remove the old options so we don't get any duplicates or false options
-                            $.each(data, function(index, exampleBuilding) {
-                                var exampleBuildingName = exampleBuilding.real_name;
-                                var exampleBuildingId = exampleBuilding.id;
-                                $('#example_building_id').append($("<option></option>").attr("value", exampleBuildingId).text(exampleBuildingName));
-                            });
-                        } else {
-                        }
-                    }
-                });
-            });
-            // if the user changes the build year trigger the example building cause different years have different content
-            $('#build_year').change(function () {
-                $('#example_building_id option').trigger('change');
-            });
-
             var previous_eb = $("select#example_building_id").val();
 
             $("select#example_building_id").on('focus', function () {

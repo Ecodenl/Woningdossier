@@ -20,7 +20,7 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                             <span class="input-group-addon">m<sup>3</sup></span>
-                            <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ old('habit.gas_usage', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'amount_gas', 0)) }}">
+                            <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ old('habit.gas_usage', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_gas', 0)) }}">
                             {{--<input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">--}}
                         @endcomponent
 
@@ -44,7 +44,7 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'resident_count'])
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ old('habit.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'resident_count', 0)) }}">
+                            <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ old('habit.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count', 0)) }}">
                             {{--<input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">--}}
                         @endcomponent
 

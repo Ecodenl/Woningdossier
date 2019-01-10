@@ -659,7 +659,9 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-option')}}/'+questionId+'/'+questionOptionId,
-                        method: "DELETE"
+                        //method: "DELETE"
+                        type: 'post',
+                        data: { _method: 'delete' }
                     });
                 }
 

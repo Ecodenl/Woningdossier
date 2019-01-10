@@ -42,7 +42,6 @@ class BuildingDetailController extends Controller
         $inputSourceId = HoomdossierSession::getInputSource();
         $buildYear = $request->get('build_year');
 
-
         $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
@@ -55,6 +54,7 @@ class BuildingDetailController extends Controller
 
         $buildingType = BuildingType::find($request->get('building_type_id'));
         $features->buildingType()->associate($buildingType);
+        $features->save();
 
         $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);
 

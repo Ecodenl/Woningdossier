@@ -28,7 +28,7 @@
                         ['inputType' => 'select', 'inputValues' => $comfortLevels, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                             <select id="user_energy_habits_water_comfort_id" class="form-control" name="user_energy_habits[water_comfort_id]">
                                 @foreach($comfortLevels as $comfortLevel)
-                                    <option @if(old('user_energy_habits.water_comfort_id', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'water_comfort_id')) == $comfortLevel->id) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>
+                                    <option @if(old('user_energy_habits.water_comfort_id', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'water_comfort_id')) == $comfortLevel->id) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>
                                     {{--<option @if(old('user_energy_habits.water_comfort_id') == $comfortLevel->id || ($habits instanceof \App\Models\UserEnergyHabit && $habits->water_comfort_id == $comfortLevel->id)) selected @endif value="{{ $comfortLevel->id }}">{{ $comfortLevel->name }}</option>--}}
                                 @endforeach
                             </select>

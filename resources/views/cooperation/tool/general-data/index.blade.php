@@ -598,7 +598,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'resident_count'])
-                            <input type="text" id="resident_count" class="form-control" value="{{ old('resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'resident_count')) }}" name="resident_count" required>
+                            <input type="text" id="resident_count" class="form-control" value="{{ old('resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count')) }}" name="resident_count" required>
                         {{--<input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>--}}
                         @endcomponent
 
@@ -626,11 +626,11 @@
                         <div class="input-group input-source-group">
                             <br>
                             <label class="radio-inline">
-                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title')}}
+                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title')}}
                                 {{--<input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title')}}
+                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title')}}
                             </label>
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
@@ -675,7 +675,7 @@
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_high', 'needsFormat' => true])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
-                            <input type="text" id="thermostat_high" class="form-control" value="{{ old('thermostat_high', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'thermostat_high', 20), 1)) }}" name="thermostat_high">
+                            <input type="text" id="thermostat_high" class="form-control" value="{{ old('thermostat_high', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'thermostat_high', 20), 1)) }}" name="thermostat_high">
                             {{--<input type="text" id="thermostat_high" class="form-control" value="@if(!empty(old('thermostat_high'))){{ old('thermostat_high', 20) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_high, 1) }}@else{{ \App\Helpers\NumberFormatter::format(20, 1) }}@endif"
                                            name="thermostat_high">--}}
                                 @endcomponent
@@ -704,7 +704,7 @@
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_low', 'needsFormat' => true])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
-                            <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="{{ old('thermostat_low', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'thermostat_low', 16), 1)) }}">
+                            <input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="{{ old('thermostat_low', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'thermostat_low', 16), 1)) }}">
                             {{--<input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(!empty(old('thermostat_low'))){{ old('thermostat_low', 16) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_low, 1) }}@else{{ \App\Helpers\NumberFormatter::format(16, 1) }}@endif">--}}
                                 @endcomponent
 
@@ -734,7 +734,7 @@
 
                         <?php
                             $hours = range(1, 24);
-                            $selectedHours = old('hours_high', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'hours_high', 12));
+                            $selectedHours = old('hours_high', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'hours_high', 12));
                             // We have to prepend the value so the key => value pairs are in order for the input group addon
                             $inputValues = $hours;
                             array_unshift($inputValues, __('woningdossier.cooperation.radiobutton.not-important'));
@@ -778,7 +778,7 @@
                                 $defaultHFF = $bhDefault->id;
                             }
 
-                            $selectedHFF = old('heating_first_floor', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'heating_first_floor', $defaultHFF));
+                            $selectedHFF = old('heating_first_floor', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'heating_first_floor', $defaultHFF));
 
                             /*
                             $selectedHFF = old('heating_first_floor', null);
@@ -836,7 +836,7 @@
                             $defaultHSF = $bhDefault->id;
                         }
 
-                        $selectedHSF = old('heating_second_floor', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'heating_second_floor', $defaultHSF));
+                        $selectedHSF = old('heating_second_floor', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'heating_second_floor', $defaultHSF));
 
                         /*
                     $selectedHSF = old('heating_second_floor', null);
@@ -892,7 +892,7 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $comfortLevelsTapWater, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])<select id="water_comfort" class="form-control" name="water_comfort" >
                             @foreach($comfortLevelsTapWater as $comfortLevelTapWater)
-                                <option @if(old('water_comfort', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'water_comfort_id')) == $comfortLevelTapWater->id) selected="selected" @endif value="{{ $comfortLevelTapWater->id }}">{{ $comfortLevelTapWater->name }}</option>
+                                <option @if(old('water_comfort', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'water_comfort_id')) == $comfortLevelTapWater->id) selected="selected" @endif value="{{ $comfortLevelTapWater->id }}">{{ $comfortLevelTapWater->name }}</option>
                                     {{--<option @if($comfortLevelTapWater->id == old('water_comfort')) selected @elseif(isset($energyHabit) && $energyHabit->water_comfort_id == $comfortLevelTapWater->id) selected @endif value="{{ $comfortLevelTapWater->id }}">{{ $comfortLevelTapWater->name }}</option>--}}
                             @endforeach
                         </select>@endcomponent
@@ -920,7 +920,7 @@
                                 @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                                     <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
-                                    <input id="amount_electricity" type="text" value="{{ old('amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'amount_electricity')) }}" class="form-control" name="amount_electricity" required>
+                                    <input id="amount_electricity" type="text" value="{{ old('amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_electricity')) }}" class="form-control" name="amount_electricity" required>
                             {{--<input id="amount_electricity" type="text"
                                            value="@if(old('amount_electricity') != ""){{ old('amount_electricity') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_electricity }}@endif"
                                            class="form-control" name="amount_electricity" required>--}}
@@ -950,7 +950,7 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.cubic-meters.title')}}</span>
-                            <input id="amount_gas" type="text" value="{{ old('amount_gas', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'amount_gas')) }}" class="form-control" name="amount_gas" required>
+                            <input id="amount_gas" type="text" value="{{ old('amount_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_gas')) }}" class="form-control" name="amount_gas" required>
                             {{--<input id="amount_gas" type="text" value="@if(old('amount_gas') != ""){{ old('amount_gas') }}@elseif(isset($energyHabit)){{ $energyHabit->amount_gas }}@endif"
                                            class="form-control" name="amount_gas" required>--}}
                                 @endcomponent
@@ -978,7 +978,7 @@
                                        data-target="#living-situation-extra-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.additional-info.title')}}</label>
-                        <textarea id="additional-info" class="form-control" name="living_situation_extra">{{ old('living_situation_extra', \App\Helpers\Hoomdossier::getMostCredibleValue(Auth::user()->energyHabit(), 'living_situation_extra')) }}</textarea>
+                        <textarea id="additional-info" class="form-control" name="living_situation_extra">{{ old('living_situation_extra', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'living_situation_extra')) }}</textarea>
                                 {{--<textarea id="additional-info" class="form-control"
                                           name="living_situation_extra">@if(old('living_situation_extra') != ""){{old('living_situation_extra')}}@elseif(isset($energyHabit)){{ $energyHabit->living_situation_extra }}@endif</textarea>--}}
 

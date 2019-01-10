@@ -54,6 +54,9 @@ return [
     'general-data' => [
         'may-not-be-filled' => 'Dit veld mag niet gevuld zijn onder deze omstandigheden',
     ],
+	'reset' => [
+		'inactive' => 'Uw wachtwoord is gereset, maar uw account is nog niet bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail.',
+	],
     'confirm' => [
         'success' => 'Uw account is bevestigd. U kunt nu inloggen met uw gebruikersnaam en wachtwoord.',
         'error' => 'Uw bevestigingslink is ongeldig. Is uw account wellicht al bevestigd?',

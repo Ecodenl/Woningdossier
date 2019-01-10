@@ -129,6 +129,37 @@ class Building extends Model
         ]);
     }
 
+    public function isInterestedInStep($type, $interestedInIds = [])
+    {
+        // the interest ids that people select when they do not have any interest
+        $noInterestIds = [4, 5];
+
+        $interestedIds = [];
+
+        if (! is_array($interestedInIds)) {
+            $interestedInIds = [$interestedInIds];
+        }
+
+        // go through the elementid and get the user interest id to put them into the array
+        foreach ($interestedInIds as $key => $interestedInId) {
+            if ($this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId)->interest_id);
+            }
+        }
+
+        // check if the user wants to do something with their glazing
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isNotInterestedInStep($type, $interestedInIds = [])
+    {
+        return !$this->isInterestedInStep($type, $interestedInIds);
+    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

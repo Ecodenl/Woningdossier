@@ -137,7 +137,7 @@ class WallInsulationController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        \$building->complete($this->step);
+        $building->complete($this->step);
 
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 

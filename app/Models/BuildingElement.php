@@ -59,4 +59,5 @@ class BuildingElement extends Model
     {
         return $this->belongsTo(ElementValue::class);
     }
+
 }

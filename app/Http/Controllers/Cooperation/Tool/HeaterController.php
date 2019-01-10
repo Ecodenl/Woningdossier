@@ -51,12 +51,12 @@ class HeaterController extends Controller
         $typeIds = [3];
 
         $building = Building::find(HoomdossierSession::getBuilding());
-        $user = $building->user;
+        $buildingOwner = $building->user;
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
         /** @var UserEnergyHabit|null $habits */
-        $habits = $user->energyHabit;
+        $habits = $buildingOwner->energyHabit;
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $currentComfort = null;
         if ($habits instanceof UserEnergyHabit) {
@@ -65,7 +65,7 @@ class HeaterController extends Controller
         $currentHeater = $building->heater;
         $currentHeatersForMe = $building->heater()->forMe()->get();
 
-        return view('cooperation.tool.heater.index', compact('building',
+        return view('cooperation.tool.heater.index', compact('building', 'buildingOwner',
             'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
             'currentComfort', 'currentHeater', 'habits', 'currentHeatersForMe'
         ));

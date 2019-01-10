@@ -93,16 +93,7 @@ class RegisterController extends Controller
      */
     public function register(RegisterFormRequest $request)
     {
-        //$this->validator($request->all())->validate();
-
         event(new Registered($user = $this->create($request->all())));
-
-        //$this->guard()->login($user);
-
-        /*
-        return $this->registered($request, $user)
-            ?: redirect($this->redirectPath())->with('success', trans('auth.register.form.message.success'));
-        */
 
         return redirect($this->redirectPath())->with('success', __('auth.register.form.message.success'));
     }
@@ -175,6 +166,62 @@ class RegisterController extends Controller
 
             return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
         }
+    }
+
+    /**
+     * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation
+     *
+     * @param Cooperation $cooperation
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkExistingEmail(Cooperation $cooperation, Request $request)
+    {
+        $email = $request->get('email');
+        $user = User::where('email', $email)->first();
+
+        $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
+
+        if ($user instanceof User) {
+            $response['email_exists'] = true;
+
+            // check if the is already attached
+            if ($user->cooperations->contains($cooperation)) {
+                $response['user_is_already_member_of_cooperation'] = true;
+            }
+
+            return response()->json($response);
+        } else {
+            return response()->json($response);
+        }
+    }
+
+    /**
+     * Connect the existing email to a cooperation
+     *
+     * @param Cooperation $cooperation
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function connectExistingAccount(Cooperation $cooperation, Request $request)
+    {
+        $email = $request->get('existing_email');
+        $user = User::where('email', $email)->first();
+
+        // okay, the user does exists
+        if ($user instanceof User) {
+
+            // check if the is already attached
+            if ($user->cooperations->contains($cooperation)) {
+                return redirect()->back();
+            }
+
+            $cooperation->users()->attach($user);
+            return redirect(url('login'))->with('account_connected', __('auth.register.form.message.account-connected'));
+        }
+
+        // user is playing, redirect them back
+        return redirect()->back();
     }
 
     public function fillAddress(Request $request)

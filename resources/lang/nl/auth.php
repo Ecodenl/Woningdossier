@@ -21,6 +21,9 @@ return [
             'connected-address'     => 'Adres:',
             'header'                => 'Registreren',
             'e-mail'                => 'E-mailadres',
+            'e-mail-exists'         => 'Het e-mailadres is al geregistreerd',
+            'already-member'        => 'U bent a lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
+            'connect'               => 'Koppelen aan deze coöperatie',
             'first_name'            => 'Voornaam',
             'last_name'             => 'Achternaam',
             'password'              => 'Wachtwoord',
@@ -37,6 +40,7 @@ return [
             'button'                => 'Registreren',
             'message'               => [
                 'success'           => 'Bedankt. We hebben een e-mail met een bevestigingslink naar u toegestuurd om uw registratie te voltooien.',
+                'account-connected' => 'Het account is gekoppeld, u kunt nu inloggen met het wachtwoord waar u mee inlogde bij uw vorige coöperatie.'
             ],
         ],
     ],

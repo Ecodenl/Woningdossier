@@ -12,7 +12,7 @@
             <div id="building-type" class="col-md-12">
                 @include('cooperation.tool.includes.interested', ['translationKey' => 'general-data.building-type.title'])
 
-
+                @if(count($exampleBuildings) > 0)
                 <div class="row">
                     <div id="example-building" class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
@@ -24,17 +24,17 @@
                                             @elseif($exampleBuilding->id == old('example_building_id'))
                                             selected="selected"
                                             @elseif ($building->example_building_id == $exampleBuilding->id)
-                                                    selected="selected"
+                                            selected="selected"
                                             @endif
                                             value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                 @endforeach
-                                <option value="" @if(empty(old('example_building_id', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                                <option value="" @if((empty(old('example_building_id', $building->example_building_id)) || !$exampleBuildings->contains('id', '=', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
                             </select>
 
                             @if ($errors->has('example_building_id'))
                                 <span class="help-block">
-                    <strong>{{ $errors->first('example_building_id') }}</strong>
-                </span>
+                                    <strong>{{ $errors->first('example_building_id') }}</strong>
+                                </span>
                             @endif
                         </div>
 
@@ -47,6 +47,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
                 <div class="row">
                     <div class="col-md-6">
@@ -1115,35 +1116,27 @@
                 previous_eb = this.value;
             }).change(function() {
                 // Do something with the previous value after the change
-                var buildYear = $("input[name='build_year']").val();
-                if (buildYear === ""){
-                    @if(App::environment('local'))
-                    console.log("Can't select example building: build year is empty");
-                    @endif
-                    $(this).val(previous_eb);
-                }
-                else {
-                    if (this.value !== previous_eb ){
-                        if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.generic.apply-are-you-sure')')) {
-                            @if(App::environment('local'))
-                            console.log("Let's save it. EB id: " + this.value + " build year: " + buildYear);
-                            @endif
+                //var buildYear = $("input[name='build_year']").val();
+                if (this.value !== previous_eb ){
+                    if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                        @if(App::environment('local'))
+                        console.log("Let's save it. EB id: " + this.value);
+                        @endif
 
-                            $.ajax({
-                                type: "POST",
-                                url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
-                                data: { example_building_id: this.value, build_year: buildYear },
-                                success: function(data){
-                                    location.reload();
-                                }
-                            });
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                            data: { example_building_id: this.value },
+                            success: function(data){
+                                location.reload();
+                            }
+                        });
 
 
-                            // Make sure the previous value is updated
-                            previous_eb = this.value;
-                        } else {
-                            $(this).val(previous_eb);
-                        }
+                        // Make sure the previous value is updated
+                        previous_eb = this.value;
+                    } else {
+                        $(this).val(previous_eb);
                     }
                 }
             });

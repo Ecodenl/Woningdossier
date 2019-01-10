@@ -100,10 +100,18 @@ class ExampleBuilding extends Model
      */
     public function getContentForYear($year)
     {
-        return $this->contents()
+        $content = $this->contents()
                     ->where('build_year', '<=', $year)
                     ->orderBy('build_year')
                     ->first();
+
+        if ($content instanceof ExampleBuildingContent){
+        	return $content;
+        }
+
+        return $this->contents()
+	        ->whereNull('build_year')
+	        ->first();
     }
 
     /**

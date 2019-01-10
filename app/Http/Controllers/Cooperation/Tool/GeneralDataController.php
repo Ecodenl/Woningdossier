@@ -62,8 +62,17 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
-        $interests = Interest::orderBy('order')->get();
+
+        //$exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
+	    $buildingType = $building->getBuildingType();
+	    $exampleBuildings = collect([]);
+	    if ($buildingType instanceof BuildingType) {
+		    $exampleBuildings = ExampleBuilding::forMyCooperation()->where( 'building_type_id',
+			    '=',
+			    $building->getBuildingType()->id )->get();
+	    }
+
+	    $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
@@ -87,7 +96,6 @@ class GeneralDataController extends Controller
                                        ->where('input_source_id', $coachSource->id)
                                        ->first();
         $step = $this->step;
-
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->get();
 
@@ -130,19 +138,31 @@ class GeneralDataController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $exampleBuildingId = $request->get('example_building_id', null);
-        $buildYear = $request->get('build_year', null);
-        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
-            $exampleBuildingId = $request->get('example_building_id', null);
-            if (! is_null($exampleBuildingId)) {
-                $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id',
-                    $exampleBuildingId)->first();
-                if ($exampleBuilding instanceof ExampleBuilding) {
-                    $building->exampleBuilding()->associate($exampleBuilding);
-                    $building->save();
-                    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
-                    return response()->json();
-                }
+        $buildYear = $building->getBuildYear();
+
+        // There is one strange option: "Er is geen passende voorbeeldwoning"
+        if (is_null($exampleBuildingId) && !is_null($buildYear)){
+        	// No fitting? Try to set the generic.
+	        $btype = $building->getBuildingType();
+	        if ($btype instanceof BuildingType) {
+		        $generic = ExampleBuilding::generic()->where( 'building_type_id', $btype->id )->first();
+		        if ( $generic instanceof ExampleBuilding ) {
+			        $exampleBuildingId = $generic->id;
+		        }
+	        }
+        	$building->example_building_id = null;
+        	$building->save();
+        }
+
+        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id', $exampleBuildingId)->first();
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                $building->exampleBuilding()->associate($exampleBuilding);
+                $building->save();
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+                return response()->json();
             }
         }
         // Something went wrong!

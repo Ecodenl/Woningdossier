@@ -103,17 +103,24 @@ class StepHelper
         // if it does and the user did not finish those we redirect to that tab
         if ($current->hasQuestionnaires()) {
 
-            // get the next questionnaire
-            $nextQuestionnaire = $current->questionnaires()
-                ->where('id', '!=', $currentQuestionnaire->id)
-                ->where('order', '>', $currentQuestionnaire->order)
-                ->orderBy('order')
-                ->first();
+            if ($currentQuestionnaire instanceof Questionnaire) {
 
-            // and return it with the tab id
-            if ($nextQuestionnaire instanceof Questionnaire) {
+                // get the next questionnaire
+                $nextQuestionnaire = $current->questionnaires()
+                    ->where('id', '!=', $currentQuestionnaire->id)
+                    ->where('order', '>', $currentQuestionnaire->order)
+                    ->orderBy('order')
+                    ->first();
+
+                // and return it with the tab id
+                if ($nextQuestionnaire instanceof Questionnaire) {
+                    return ['route' => 'cooperation.tool.' . $current->slug . '.index', 'tab_id' => 'questionnaire-' . $nextQuestionnaire->id];
+                }
+            } else {
+                $nextQuestionnaire = $current->questionnaires()->orderBy('order')->first();
                 return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
             }
+
         }
 
         // the step does not have custom questionnaires or the user does not have uncompleted questionnaires left for that step.

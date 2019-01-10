@@ -8,6 +8,18 @@
                     "title" => '93eba59e-49d7-4de9-885d-5e76c24a8d98',
                 ],
 
+            "intro" => 
+                [
+                    "help" => 'e48b717c-d332-4175-b3d0-12c9f93d6fa0',
+                    "title" => '2614849c-8411-4a30-855b-1f5a49fc00eb',
+                ],
+
+            "warning" => 
+                [
+                    "help" => 'c468bbe2-9210-442a-8fad-0d6911bb1ec9',
+                    "title" => '67c0be4e-eed4-4fbe-b842-ce43fc51591c',
+                ],
+
             "building-type" => 
                 [
                     "what-type" => 

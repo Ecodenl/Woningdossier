@@ -7,6 +7,9 @@
           action="{{ route('cooperation.tool.building-detail.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
+            <div class="col-md-12">
+                <p>{{ \App\Helpers\Translation::translate('building-detail.intro') }}</p>
+            </div>
             <div class="col-md-6">
                 <div class="form-group add-space{{ $errors->has('building_type_id') ? ' has-error' : '' }}">
                     <label for="building_type_id" class=" control-label">
@@ -88,3 +91,39 @@
         </div>
     </form>
 @endsection
+
+@push('js')
+    <script>
+        $(document).ready(function () {
+
+            $(window).keydown(function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            var previous_bt = "{{ $building->buildingFeatures()->forMe()->first()->building_type_id }}";
+
+            $("form.form-horizontal").on('submit', function () {
+                // Store the current value on focus and on change
+                var bt_now = $("select#building_type_id").val();
+
+                if (bt_now !== previous_bt){
+                    if (previous_bt === "" || confirm('{{ \App\Helpers\Translation::translate('building-detail.warning') }}')) {
+                        @if(App::environment('local'))
+                        console.log("Building Type was changed, but it was empty or a wanted change. Proceed.");
+                        @endif
+                    }
+                    else {
+                        // the dirty class by areYouSure is removed on submit.
+                        // set it back to prevent confusion for the user
+                        $(this).addClass('dirty');
+                        // don't submit
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+@endpush

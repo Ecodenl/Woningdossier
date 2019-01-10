@@ -1124,7 +1124,7 @@
                 }
                 else {
                     if (this.value !== previous_eb ){
-                        if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                        if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.generic.apply-are-you-sure')')) {
                             @if(App::environment('local'))
                             console.log("Let's save it. EB id: " + this.value + " build year: " + buildYear);
                             @endif

@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\Step;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 
 class StepHelper
@@ -86,13 +87,13 @@ class StepHelper
     }
 
     /**
-     * Get the next step for a user where the user shows interest in.
+     * Get the next step for a user where the user shows interest in or the next questionnaire for a user
      *
      * @param Step $current
-     *
+     * @param Questionnaire $currentQuestionnaire
      * @return array
      */
-    public static function getNextStep(Step $current): array
+    public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array
     {
         // get all the steps
         $steps = Cooperation::find(HoomdossierSession::getCooperation())->getActiveOrderedSteps();
@@ -104,22 +105,25 @@ class StepHelper
         // before we check for other pets we want to check if the current step has additional questionnaires
         // if it does and the user did not finish those we redirect to that tab
         if ($current->hasQuestionnaires()) {
-            // get the questionnaires for the current step  & the user his completed questionnaires
-            $questionnairesForCurrentStep = $current->questionnaires;
-            $userCompletedQuestionnaires = \Auth::user()->completedQuestionnaires;
 
-            // now get the non completed questionnaires for this step & user
-            $nonCompletedQuestionnairesForCurrentStep = $questionnairesForCurrentStep->filter(function ($questionnaire) use ($userCompletedQuestionnaires) {
-                return ! $userCompletedQuestionnaires->find($questionnaire) instanceof Questionnaire;
-            });
+            if ($currentQuestionnaire instanceof Questionnaire) {
 
-            // we should not take the first one i guess, should be on order based, but there is no order in the questionnaire table
-            $nextQuestionnaire = $nonCompletedQuestionnairesForCurrentStep->first();
+                // get the next questionnaire
+                $nextQuestionnaire = $current->questionnaires()
+                    ->where('id', '!=', $currentQuestionnaire->id)
+                    ->where('order', '>', $currentQuestionnaire->order)
+                    ->orderBy('order')
+                    ->first();
 
-            // and return it with the tab id
-            if ($nextQuestionnaire instanceof Questionnaire) {
+                // and return it with the tab id
+                if ($nextQuestionnaire instanceof Questionnaire) {
+                    return ['route' => 'cooperation.tool.' . $current->slug . '.index', 'tab_id' => 'questionnaire-' . $nextQuestionnaire->id];
+                }
+            } else {
+                $nextQuestionnaire = $current->questionnaires()->orderBy('order')->first();
                 return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
             }
+
         }
 
         // the step does not have custom questionnaires or the user does not have uncompleted questionnaires left for that step.

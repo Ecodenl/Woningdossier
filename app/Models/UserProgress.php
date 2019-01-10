@@ -22,7 +22,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserProgress extends Model
 {
-    public $fillable = ['user_id', 'step_id', 'building_id'];
+    public $fillable = [
+        'user_id', 'step_id', 'building_id', 'input_source_id'
+    ];
 
     public function steps()
     {

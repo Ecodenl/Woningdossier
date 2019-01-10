@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
@@ -15,8 +17,9 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-        $user = \Auth::user();
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
         $coachComments = UserActionPlanAdvice::getAllCoachComments();
 
         return view('cooperation.tool.my-plan.index', compact(

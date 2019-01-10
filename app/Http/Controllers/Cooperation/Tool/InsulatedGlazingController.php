@@ -471,7 +471,7 @@ class InsulatedGlazingController extends Controller
 
         $this->saveAdvices($request);
         // Save progress
-        $user->complete($this->step);
+        $building->complete($this->step);($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $nextStep = StepHelper::getNextStep($this->step);

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,7 +24,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserProgress extends Model
 {
-    public $fillable = ['user_id', 'step_id', 'building_id'];
+    use GetMyValuesTrait, GetValueTrait;
+
+    public $fillable = [
+        'user_id', 'step_id', 'building_id', 'input_source_id'
+    ];
 
     public function steps()
     {

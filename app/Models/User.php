@@ -131,15 +131,6 @@ class User extends Authenticatable
         return $this->hasMany(UserActionPlanAdvice::class);
     }
 
-    /**
-     * Returns the user progress.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function completedSteps()
-    {
-        return $this->hasMany(UserProgress::class);
-    }
 
     /**
      * The cooperations the user is associated with.
@@ -248,9 +239,10 @@ class User extends Authenticatable
 
     public function complete(Step $step)
     {
+        \Log::debug(__METHOD__ .' is still being used, this should not be');
         return UserProgress::firstOrCreate([
             'step_id' => $step->id,
-            'user_id' => \Auth::user()->id,
+            'input_source_id' => HoomdossierSession::getInputSource(),
             'building_id' => HoomdossierSession::getBuilding(),
         ]);
     }
@@ -264,7 +256,8 @@ class User extends Authenticatable
      */
     public function hasCompleted(Step $step)
     {
-        return $this->completedSteps()->where('step_id', $step->id)->where('building_id', HoomdossierSession::getBuilding())->count() > 0;
+        \Log::debug(__METHOD__ .'is still being used somewhere, this should not be');
+        return true;
     }
 
     /**

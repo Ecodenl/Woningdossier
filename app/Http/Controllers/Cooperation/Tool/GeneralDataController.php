@@ -355,7 +355,7 @@ class GeneralDataController extends Controller
         );
 
         // Save progress
-        \Auth::user()->complete($this->step);
+        $building->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
         $nextStep = StepHelper::getNextStep($this->step);

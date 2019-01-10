@@ -226,7 +226,7 @@ class HeaterController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        $user->complete($this->step);
+        $building->complete($this->step);($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $nextStep = StepHelper::getNextStep($this->step);

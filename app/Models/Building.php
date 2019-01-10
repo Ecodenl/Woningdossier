@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -96,6 +97,38 @@ class Building extends Model
             $building->userUsage()->withoutGlobalScope(GetValueScope::class)->delete();
         });
     }
+
+    public function hasCompleted(Step $step)
+    {
+        return $this->find(HoomdossierSession::getBuilding())
+                ->completedSteps()->where('step_id', $step->id)->count() > 0;
+    }
+    /**
+     * Returns the user progress.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function completedSteps()
+    {
+        return $this->hasMany(UserProgress::class);
+    }
+
+
+    /**
+     * Complete a step
+     *
+     * @param Step $step
+     * @return Model
+     */
+    public function complete(Step $step)
+    {
+        return UserProgress::firstOrCreate([
+            'step_id' => $step->id,
+            'input_source_id' => HoomdossierSession::getInputSource(),
+            'building_id' => HoomdossierSession::getBuilding(),
+        ]);
+    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

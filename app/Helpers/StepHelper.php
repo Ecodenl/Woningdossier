@@ -84,10 +84,10 @@ class StepHelper
     }
 
     /**
-     * Get the next step for a user where the user shows interest in.
+     * Get the next step for a user where the user shows interest in or the next questionnaire for a user
      *
      * @param Step $current
-     *
+     * @param Questionnaire $currentQuestionnaire
      * @return array
      */
     public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array

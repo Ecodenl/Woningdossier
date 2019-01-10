@@ -47,6 +47,7 @@ class SolarPanelsController extends Controller
         $typeIds = [7];
 
         $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
         $buildingPvPanels = $building->pvPanels;
@@ -55,7 +56,7 @@ class SolarPanelsController extends Controller
 
         return view('cooperation.tool.solar-panels.index',
             compact(
-                'building', 'pvPanelOrientations',
+                'building', 'pvPanelOrientations', 'buildingOwner',
                 'energyHabitsForMe', 'buildingPvPanels', 'typeIds',
                 'buildingPvPanelsForMe'
             )
@@ -169,6 +170,8 @@ class SolarPanelsController extends Controller
         $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
+        $comment = $request->get('comment', "");
+        $comment = is_null($comment) ? "" : $comment;
 
         BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -179,6 +182,7 @@ class SolarPanelsController extends Controller
                 'peak_power' => $peakPower,
                 'number' => $number,
                 'pv_panel_orientation_id' => $orientation,
+                'comment' => $comment,
                 'angle' => $angle,
             ]
         );

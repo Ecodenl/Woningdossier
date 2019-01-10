@@ -36,6 +36,7 @@ use App\Models\UserMotivation;
 use App\Models\Ventilation;
 use App\Scopes\GetValueScope;
 use App\Services\ExampleBuildingService;
+use App\Services\ModelService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
@@ -331,22 +332,22 @@ class GeneralDataController extends Controller
             }
         }
 
-        // Check if the user already has a motivation
-        if (UserMotivation::where('user_id', $user->id)->count() > 0) {
-            // if so drop the old ones
-            UserMotivation::where('user_id', $user->id)->delete();
-        }
+
+
+        $motivationCreateData = [];
         // get the motivations
         foreach ($request->get('motivation', []) as $key => $motivationId) {
-            // Then save the UserMotivation
-            UserMotivation::create(
-                [
-                    'user_id' => $buildingOwner->id,
-                    'motivation_id' => $motivationId,
-                    'order' => $key,
-                ]
-            );
+            $motivationCreateData[] = [
+                'motivation_id' => $motivationId,
+                'order' => $key,
+            ];
         }
+        ModelService::deleteAndCreate(UserMotivation::class,
+            [
+                'user_id' => $buildingOwner->id,
+            ],
+            $motivationCreateData
+        );
 
         UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [

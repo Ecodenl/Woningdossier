@@ -310,7 +310,7 @@
                                         }
                                         ?>
 
-                                        <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$trans}}</a></li>
+                                        <li class="change-input-value" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -625,9 +625,9 @@
 
                         <div class="input-group input-source-group">
                             <br>
-                        <label class="radio-inline">
-                            <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title')}}
-                            {{--<input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
+                            <label class="radio-inline">
+                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title')}}
+                                {{--<input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title')}}
@@ -645,8 +645,7 @@
                                                 $trans = __('woningdossier.cooperation.radiobutton.no');
                                             }
                                         ?>
-
-                                        <li class="change-input-value" data-input-value="{{$value}}"><a href="#">{{$userInputValue->getInputSourceName()}}: {{$trans}}</a></li>
+                                        <li class="change-input-value" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>

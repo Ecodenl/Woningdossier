@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Closure;
+use Doctrine\DBAL\Schema\View;
 
 class FilledStep
 {
@@ -30,7 +31,7 @@ class FilledStep
             \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
             $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-            return redirect('/tool/'.$prev->slug.'/')->with(compact('cooperation'));
+            return redirect('/tool/'.$step->slug.'/')->with(compact('cooperation'));
         }
         \Log::debug($debugMsg.'.. And it was :-)');
 

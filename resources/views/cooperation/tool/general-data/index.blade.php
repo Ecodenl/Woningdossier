@@ -12,76 +12,7 @@
             <div id="building-type" class="col-md-12">
                 @include('cooperation.tool.includes.interested', ['translationKey' => 'general-data.building-type.title'])
 
-                <!-- building type -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group add-space{{ $errors->has('building_type_id') ? ' has-error' : '' }}">
-                            <label for="building_type_id" class=" control-label">
-                                <i data-toggle="collapse" data-target="#building-type-info"
-                                   class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                                   aria-expanded="false"></i>
-                                {{\App\Helpers\Translation::translate('general-data.building-type.what-type.title')}}
-                            </label>
-
-                            @component('cooperation.tool.components.input-group', [
-                                'inputType' => 'select',
-                                'inputValues' => $buildingTypes,
-                                'userInputValues' => $building->buildingFeatures()->forMe()->get(),
-                                'userInputModel' => 'buildingType',
-                                'userInputColumn' => 'building_type_id'
-                            ])
-                                <select id="building_type_id" class="form-control" name="building_type_id">
-                                    @foreach($buildingTypes as $buildingType)
-                                        <option @if(old('building_type_id') && $buildingType->id == old('building_type_id'))
-                                                selected="selected"
-                                                @elseif(isset($building->buildingFeatures->buildingType) && $building->buildingFeatures->buildingType->id == $buildingType->id)
-                                                selected="selected"
-                                                @endif value="{{ $buildingType->id }}">{{ $buildingType->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @endcomponent
-
-                            <div id="building-type-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('general-data.building-type.what-type.help')}}
-                            </div>
-                            @if ($errors->has('building_type_id'))
-                                <span class="help-block">
-                                <strong>{{ $errors->first('building_type_id') }}</strong>
-                            </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group add-space{{ $errors->has('build_year') ? ' has-error' : '' }}">
-                            <label for="build_year" class=" control-label">
-                                <i data-toggle="collapse" data-target="#what-building-year-info"
-                                   class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                {{\App\Helpers\Translation::translate('general-data.building-type.what-building-year.title')}}
-                                <span>*</span>
-                            </label>
-
-                            @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'build_year'])
-                                <input id="build_year" type="text" class="form-control" name="build_year"
-                                       value="{{ old('build_year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year')) }}"
-                                       required autofocus>
-                            @endcomponent
-
-                            <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('general-data.building-type.what-building-year.help')}}
-                            </div>
-
-                            @if ($errors->has('build_year'))
-                                <span class="help-block">
-                                <strong>{{ $errors->first('build_year') }}</strong>
-                            </span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
+                @if(count($exampleBuildings) > 0)
                 <div class="row">
                     <div id="example-building" class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
@@ -93,17 +24,17 @@
                                             @elseif($exampleBuilding->id == old('example_building_id'))
                                             selected="selected"
                                             @elseif ($building->example_building_id == $exampleBuilding->id)
-                                                    selected="selected"
+                                            selected="selected"
                                             @endif
                                             value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                 @endforeach
-                                <option value="" @if(empty(old('example_building_id', $building->example_building_id)) && $building->complete($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                                <option value="" @if((empty(old('example_building_id', $building->example_building_id)) || !$exampleBuildings->contains('id', '=', $building->example_building_id)) && $building->complete($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
                             </select>
 
                             @if ($errors->has('example_building_id'))
                                 <span class="help-block">
-                    <strong>{{ $errors->first('example_building_id') }}</strong>
-                </span>
+                                    <strong>{{ $errors->first('example_building_id') }}</strong>
+                                </span>
                             @endif
                         </div>
 
@@ -116,6 +47,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
                 <div class="row">
                     <div class="col-md-6">
@@ -1173,38 +1105,6 @@
                 }
             });
 
-            // todo
-
-            $('#building_type_id').change( function() {
-                var buildingTypeId = $('#building_type_id').val();
-                $.ajax({
-                    type: "GET",
-                    url: '{{route('cooperation.tool.general-data.example-building-type', ['cooperation' => $cooperation])}}',
-                    data: {
-                        building_type_id: buildingTypeId
-                    },
-                    success: function (data) {
-                        // try to remove the old options wheter there is new information or not
-                        $('#example_building_id option').remove();
-                        // add a new empty option
-                        $('#example_building_id').append($("<option></option>").attr('selected', true).text("---"));
-                        if (data.length) {
-                            // remove the old options so we don't get any duplicates or false options
-                            $.each(data, function(index, exampleBuilding) {
-                                var exampleBuildingName = exampleBuilding.real_name;
-                                var exampleBuildingId = exampleBuilding.id;
-                                $('#example_building_id').append($("<option></option>").attr("value", exampleBuildingId).text(exampleBuildingName));
-                            });
-                        } else {
-                        }
-                    }
-                });
-            });
-            // if the user changes the build year trigger the example building cause different years have different content
-            $('#build_year').change(function () {
-                $('#example_building_id option').trigger('change');
-            });
-
             var previous_eb = $("select#example_building_id").val();
 
             $("select#example_building_id").on('focus', function () {
@@ -1212,35 +1112,27 @@
                 previous_eb = this.value;
             }).change(function() {
                 // Do something with the previous value after the change
-                var buildYear = $("input[name='build_year']").val();
-                if (buildYear === ""){
-                    @if(App::environment('local'))
-                    console.log("Can't select example building: build year is empty");
-                    @endif
-                    $(this).val(previous_eb);
-                }
-                else {
-                    if (this.value !== previous_eb ){
-                        if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
-                            @if(App::environment('local'))
-                            console.log("Let's save it. EB id: " + this.value + " build year: " + buildYear);
-                            @endif
+                //var buildYear = $("input[name='build_year']").val();
+                if (this.value !== previous_eb ){
+                    if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                        @if(App::environment('local'))
+                        console.log("Let's save it. EB id: " + this.value);
+                        @endif
 
-                            $.ajax({
-                                type: "POST",
-                                url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
-                                data: { example_building_id: this.value, build_year: buildYear },
-                                success: function(data){
-                                    location.reload();
-                                }
-                            });
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                            data: { example_building_id: this.value },
+                            success: function(data){
+                                location.reload();
+                            }
+                        });
 
 
-                            // Make sure the previous value is updated
-                            previous_eb = this.value;
-                        } else {
-                            $(this).val(previous_eb);
-                        }
+                        // Make sure the previous value is updated
+                        previous_eb = this.value;
+                    } else {
+                        $(this).val(previous_eb);
                     }
                 }
             });

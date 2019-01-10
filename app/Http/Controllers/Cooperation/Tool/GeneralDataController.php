@@ -63,8 +63,17 @@ class GeneralDataController extends Controller
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
-        $interests = Interest::orderBy('order')->get();
+
+        //$exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
+	    $buildingType = $building->getBuildingType();
+	    $exampleBuildings = collect([]);
+	    if ($buildingType instanceof BuildingType) {
+		    $exampleBuildings = ExampleBuilding::forMyCooperation()->where( 'building_type_id',
+			    '=',
+			    $building->getBuildingType()->id )->get();
+	    }
+
+	    $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
@@ -88,7 +97,6 @@ class GeneralDataController extends Controller
                                        ->where('input_source_id', $coachSource->id)
                                        ->first();
         $step = $this->step;
-
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->get();
 
@@ -102,48 +110,60 @@ class GeneralDataController extends Controller
              'motivations', 'energyHabit', 'services'
         ));
     }
-
-    // todo
-
-    /**
-     * return the example buildings based on the building types.
-     *
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function exampleBuildingType(Request $request)
-    {
-        $buildingTypeId = $request->get('building_type_id', '');
-        $exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
-        // loop through all the example buildings so we can add the "real name" to the examplebuilding
-        foreach ($exampleBuildings as $exampleBuilding) {
-            $exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
-        }
-
-        return response()->json($exampleBuildings);
-    }
-
-    // todo end
+//
+//    // todo
+//
+//    /**
+//     * return the example buildings based on the building types.
+//     *
+//     * @param Request $request
+//     *
+//     * @return \Illuminate\Http\JsonResponse
+//     */
+//    public function exampleBuildingType(Request $request)
+//    {
+//        $buildingTypeId = $request->get('building_type_id', '');
+//        $exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
+//        // loop through all the example buildings so we can add the "real name" to the examplebuilding
+//        foreach ($exampleBuildings as $exampleBuilding) {
+//            $exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
+//        }
+//
+//        return response()->json($exampleBuildings);
+//    }
+//
+//    // todo end
 
     public function applyExampleBuilding(Request $request)
     {
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $exampleBuildingId = $request->get('example_building_id', null);
-        $buildYear = $request->get('build_year', null);
-        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
-            $exampleBuildingId = $request->get('example_building_id', null);
-            if (! is_null($exampleBuildingId)) {
-                $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id',
-                    $exampleBuildingId)->first();
-                if ($exampleBuilding instanceof ExampleBuilding) {
-                    $building->exampleBuilding()->associate($exampleBuilding);
-                    $building->save();
-                    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
-                    return response()->json();
-                }
+        $buildYear = $building->getBuildYear();
+
+        // There is one strange option: "Er is geen passende voorbeeldwoning"
+        if (is_null($exampleBuildingId) && !is_null($buildYear)){
+        	// No fitting? Try to set the generic.
+	        $btype = $building->getBuildingType();
+	        if ($btype instanceof BuildingType) {
+		        $generic = ExampleBuilding::generic()->where( 'building_type_id', $btype->id )->first();
+		        if ( $generic instanceof ExampleBuilding ) {
+			        $exampleBuildingId = $generic->id;
+		        }
+	        }
+        	$building->example_building_id = null;
+        	$building->save();
+        }
+
+        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id', $exampleBuildingId)->first();
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                $building->exampleBuilding()->associate($exampleBuilding);
+                $building->save();
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+                return response()->json();
             }
         }
         // Something went wrong!
@@ -181,7 +201,6 @@ class GeneralDataController extends Controller
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'build_year' => $request->get('build_year'),
                 'surface' => $request->get('surface'),
                 'monument' => $request->get('monument', 0),
                 'building_layers' => $request->get('building_layers'),
@@ -190,9 +209,6 @@ class GeneralDataController extends Controller
 
         $energyLabel = EnergyLabel::find($request->get('energy_label_id'));
         $features->energyLabel()->associate($energyLabel);
-
-        $buildingType = BuildingType::find($request->get('building_type_id'));
-        $features->buildingType()->associate($buildingType);
 
         $roofType = RoofType::find($request->get('roof_type_id'));
         $features->roofType()->associate($roofType);

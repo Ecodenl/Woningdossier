@@ -64,7 +64,7 @@ class QuestionnaireController extends Controller
 
         \Auth::user()->completeQuestionnaire($questionnaire);
 
-        $nextStep = StepHelper::getNextStep($questionnaire->step);
+        $nextStep = StepHelper::getNextStep($questionnaire->step, $questionnaire);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

@@ -51,12 +51,12 @@ class HeaterController extends Controller
         $typeIds = [3];
 
         $building = Building::find(HoomdossierSession::getBuilding());
-        $user = $building->user;
+        $buildingOwner = $building->user;
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
         /** @var UserEnergyHabit|null $habits */
-        $habits = $user->energyHabit;
+        $habits = $buildingOwner->energyHabit;
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $currentComfort = null;
         if ($habits instanceof UserEnergyHabit) {
@@ -65,7 +65,7 @@ class HeaterController extends Controller
         $currentHeater = $building->heater;
         $currentHeatersForMe = $building->heater()->forMe()->get();
 
-        return view('cooperation.tool.heater.index', compact('building',
+        return view('cooperation.tool.heater.index', compact('building', 'buildingOwner',
             'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
             'currentComfort', 'currentHeater', 'habits', 'currentHeatersForMe'
         ));
@@ -203,7 +203,8 @@ class HeaterController extends Controller
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
-        $comment = $request->get('comment');
+        $comment = $request->get('comment', "");
+        $comment = is_null($comment) ? "" : $comment;
 
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [

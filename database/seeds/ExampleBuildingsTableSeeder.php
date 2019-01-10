@@ -22,85 +22,85 @@ class ExampleBuildingsTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Tussenwoning, drie bouwlagen en plat dak',
                 ],
-                'order' => 0,
+                'order' => 100,
             ],
             [
                 'names' => [
                     'nl' => 'Hoekwoning, drie bouwlagen en plat dak',
                 ],
-                'order' => 1,
+                'order' => 101,
             ],
             [
                 'names' => [
                     'nl' => 'Benedenwoning zonder opkamer (tussenwoning)',
                 ],
-                'order' => 2,
+                'order' => 102,
             ],
             [
                 'names' => [
                     'nl' => 'Benedenwoning zonder opkamer (hoekwoning)',
                 ],
-                'order' => 3,
+                'order' => 103,
             ],
             [
                 'names' => [
                     'nl' => 'Hoekhuis, twee bouwlagen en nieuwe dakopbouw',
                 ],
-                'order' => 6,
+                'order' => 106,
             ],
             [
                 'names' => [
                     'nl' => 'Tussenwoning, twee bouwlagen en nieuwe dakopbouw',
                 ],
-                'order' => 7,
+                'order' => 107,
             ],
             [
                 'names' => [
                     'nl' => 'Tussenwoning, twee bouwlagen en plat dak',
                 ],
-                'order' => 8,
+                'order' => 108,
             ],
             [
                 'names' => [
                     'nl' => 'Arbeidershuis, twee bouwlagen (tussenwoning)',
                 ],
-                'order' => 9,
+                'order' => 109,
             ],
             [
                 'names' => [
                     'nl' => 'Jaren \'30 tussenwoning met hellend dak',
                 ],
-                'order' => 10,
+                'order' => 110,
             ],
             [
                 'names' => [
                     'nl' => 'Jaren \'30 hoekwoning met hellend dak',
                 ],
-                'order' => 11,
+                'order' => 111,
             ],
             [
                 'names' => [
                     'nl' => 'Tussenwoning, drie bouwlagen en hellend dak',
                 ],
-                'order' => 12,
+                'order' => 112,
             ],
             [
                 'names' => [
                     'nl' => 'Hoekwoning, drie bouwlagen en hellend dak',
                 ],
-                'order' => 13,
+                'order' => 113,
             ],
             [
                 'names' => [
                     'nl' => 'Bovenwoning zonder opkamer (tussenwoning)',
                 ],
-                'order' => 4,
+                'order' => 104,
             ],
             [
                 'names' => [
                     'nl' => 'Bovenwoning zonder opkamer (hoekwoning)',
                 ],
-                'order' => 5,
+                'order' => 105,
             ],
         ];
 

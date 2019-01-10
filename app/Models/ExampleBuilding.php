@@ -154,4 +154,15 @@ class ExampleBuilding extends Model
 
         return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
     }
+
+	/**
+	 * Scope on only generic example buildings.
+	 *
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 *
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+    public function scopeGeneric($query){
+    	return $query->whereNull('cooperation_id');
+    }
 }

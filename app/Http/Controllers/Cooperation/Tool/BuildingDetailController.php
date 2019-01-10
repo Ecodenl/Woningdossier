@@ -56,12 +56,12 @@ class BuildingDetailController extends Controller
         $buildingType = BuildingType::find($request->get('building_type_id'));
         $features->buildingType()->associate($buildingType);
 
-        $exampleBuilding = $this->getExampleBuildingByBuildingType($buildingType);
+        $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);
 
         if ($exampleBuilding instanceof ExampleBuilding) {
             $building->exampleBuilding()->associate($exampleBuilding);
             $building->save();
-            $this->applyExampleBuilding($exampleBuilding->id, $buildYear);
+	        ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
         }
 
         // finish the step
@@ -76,36 +76,10 @@ class BuildingDetailController extends Controller
      * @param BuildingType $buildingType
      * @return ExampleBuilding|\Illuminate\Database\Eloquent\Builder
      */
-    private function getExampleBuildingByBuildingType(BuildingType $buildingType)
+    private function getGenericExampleBuildingByBuildingType(BuildingType $buildingType)
     {
-        $exampleBuilding = ExampleBuilding::forMyCooperation()->where('building_type_id', $buildingType->id)->first();
+        $exampleBuilding = ExampleBuilding::generic()->where('building_type_id', $buildingType->id)->first();
         return $exampleBuilding;
     }
 
-    /**
-     * Apply the example building
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    private function applyExampleBuilding($exampleBuildingId, $buildYear)
-    {
-        $building = Building::find(HoomdossierSession::getBuilding());
-
-        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
-            if (! is_null($exampleBuildingId)) {
-                $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id',
-                    $exampleBuildingId)->first();
-                if ($exampleBuilding instanceof ExampleBuilding) {
-                    $building->exampleBuilding()->associate($exampleBuilding);
-                    $building->save();
-                    ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
-
-                    return response()->json();
-                }
-            }
-        }
-        // Something went wrong!
-        return response()->json([], 500);
-    }
 }

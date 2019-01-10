@@ -710,8 +710,10 @@ return [
 
         'my-account' => [
             'side-nav' => [
+                'home' => 'Home',
                 'label' => 'Mijn account',
                 'import' => 'Import centrum',
+                'settings' => 'Instellingen',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',
             ],

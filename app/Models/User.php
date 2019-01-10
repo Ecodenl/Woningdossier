@@ -116,10 +116,12 @@ class User extends Authenticatable
         return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
     }
 
+    /*
     public function progress()
     {
         return $this->hasMany(UserProgress::class);
     }
+    */
 
     public function motivations()
     {

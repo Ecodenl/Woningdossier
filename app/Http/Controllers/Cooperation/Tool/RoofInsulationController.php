@@ -490,7 +490,6 @@ class RoofInsulationController extends Controller
                             'comment' => $comment,
                         ],
                     ]);
-
                 }
             }
         }

@@ -123,7 +123,8 @@
                         3 => \App\Helpers\Translation::translate('general.options.radio.unknown.title'),
                         ],
                         'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
-                            <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.title')}} </label> <span> *</span>
+
+                    <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.title')}} </label> <span> *</span>
 
                     <label class="radio-inline">
                         <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 1) checked @endif type="radio" name="facade_plastered_painted" value="1">{{ \App\Helpers\Translation::translate('general.options.radio.yes.title') }}

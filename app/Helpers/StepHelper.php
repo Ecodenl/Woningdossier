@@ -102,37 +102,13 @@ class StepHelper
         // before we check for other pets we want to check if the current step has additional questionnaires
         // if it does and the user did not finish those we redirect to that tab
         if ($current->hasQuestionnaires()) {
-            // get the questionnaires for the current step  & the user his completed questionnaires
-            $questionnairesForCurrentStep =  collect($current->questionnaires);
 
-            // we reject the current questionnaire from the questionnaires for the current step collection
-            $remainingQuestionnaires = $questionnairesForCurrentStep->reject(function ($questionnairesForCurrentStep) use ($currentQuestionnaire) {
-                return $questionnairesForCurrentStep->id == $currentQuestionnaire->id;
-            });
-
-
-            // the next questionnaire will be the one with the highest id,
-            $questionnaireWithHighestId = $remainingQuestionnaires->max('id');
-
-
-            $nextQuestionnaire = Questionnaire::find($questionnaireWithHighestId);
-
-
-
-
-
-
-
-
-            // just keep it in case if it needs to be added back.
-//            $userCompletedQuestionnaires = \Auth::user()->completedQuestionnaires;
-//            // now get the non completed questionnaires for this step & user
-//            $nonCompletedQuestionnairesForCurrentStep = $questionnairesForCurrentStep->filter(function ($questionnaire) use ($userCompletedQuestionnaires) {
-//                return ! $userCompletedQuestionnaires->find($questionnaire) instanceof Questionnaire;
-//            });
-
-            // we should not take the first one i guess, should be on order based, but there is no order in the questionnaire table
-            $nextQuestionnaire = $questionnairesForCurrentStep->next();
+            // get the next questionnaire
+            $nextQuestionnaire = $current->questionnaires()
+                ->where('id', '!=', $currentQuestionnaire->id)
+                ->where('order', '>', $currentQuestionnaire->order)
+                ->orderBy('order')
+                ->first();
 
             // and return it with the tab id
             if ($nextQuestionnaire instanceof Questionnaire) {

@@ -76,7 +76,13 @@
                     <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
 
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'radio', 'inputValues' => [1, 2, 0], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
+                        ['inputType' => 'radio',
+                        'inputValues' => [
+                            1 => \App\Helpers\Translation::translate('general.options.radio.yes.title'),
+                            2 => \App\Helpers\Translation::translate('general.options.radio.no.title'),
+                            0 => \App\Helpers\Translation::translate('general.options.radio.unknown.title'),
+                        ],
+                        'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
                             <label for="cavity_wall" class=" control-label"><i data-toggle="collapse" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}} </label><span> *</span>
                             <label class="radio-inline">
                                     <input type="radio" name="cavity_wall" @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
@@ -109,17 +115,23 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'radio', 'inputValues' => [1, 2, 3], 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
+                        ['inputType' => 'radio',
+                        'inputValues' => [
+                        1 => \App\Helpers\Translation::translate('general.options.radio.yes.title'),
+                        2 => \App\Helpers\Translation::translate('general.options.radio.no.title'),
+                        3 => \App\Helpers\Translation::translate('general.options.radio.unknown.title'),
+                        ],
+                        'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
                             <label for="facade_plastered_painted" class=" control-label"><i data-toggle="collapse" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.title')}} </label> <span> *</span>
 
                             <label class="radio-inline">
-                                <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 1) checked @endif type="radio" name="facade_plastered_painted" value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title') }}
+                                <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 1) checked @endif type="radio" name="facade_plastered_painted" value="1">{{ \App\Helpers\Translation::translate('general.options.radio.yes.title') }}
                             </label>
                             <label class="radio-inline">
-                                <input @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 2) checked @endif type="radio" name="facade_plastered_painted" value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title') }}
+                                <input @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 2) checked @endif type="radio" name="facade_plastered_painted" value="2">{{ \App\Helpers\Translation::translate('general.options.radio.no.title') }}
                             </label>
                             <label class="radio-inline">
-                                <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 3) checked @endif type="radio" name="facade_plastered_painted" value="3">{{\App\Helpers\Translation::translate('general.options.radio.unknown.title') }}
+                                <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 3) checked @endif type="radio" name="facade_plastered_painted" value="3">{{ \App\Helpers\Translation::translate('general.options.radio.unknown.title') }}
                             </label>
                         @endcomponent
                     <br>

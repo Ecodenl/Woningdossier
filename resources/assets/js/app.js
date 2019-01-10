@@ -42,6 +42,7 @@ $(document).ready(function () {
 
         // find the selected option
         var inputSourceGroup = $(this).parent().parent().parent();
+        //var inputSourceGroup = $(this).closest(".input-group.input-source-group");
         var inputType = inputSourceGroup.find('input').attr('type');
 
         if (inputType === undefined){
@@ -56,12 +57,12 @@ $(document).ready(function () {
                     inputSourceGroup.find('input[type=text]').val(dataInputValue);
                     break;
                 case "radio":
-                    inputSourceGroup.find('input[type=radio]:checked').removeAttr('checked');
-                    inputSourceGroup.find('input[type=radio][value='+dataInputValue+']').attr('checked', true);
+                    inputSourceGroup.find('input[type=radio]:checked').removeProp('checked');
+                    inputSourceGroup.find('input[type=radio][value='+dataInputValue+']').prop('checked', true);
                     break;
                 case "checkbox":
-                    inputSourceGroup.find('input[type=checkbox]:checked').removeAttr('selected');
-                    inputSourceGroup.find('input[value='+dataInputValue+']').attr('selected', true);
+                    inputSourceGroup.find('input[type=checkbox]:checked').removeProp('selected');
+                    inputSourceGroup.find('input[value='+dataInputValue+']').prop('selected', true);
                     break;
                 case "select":
                     inputSourceGroup.find('select').val(dataInputValue);
@@ -74,7 +75,6 @@ $(document).ready(function () {
 
             $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
             //$('form').find('*').filter(':input:visible:first').trigger('change');
-
         }
     });
 

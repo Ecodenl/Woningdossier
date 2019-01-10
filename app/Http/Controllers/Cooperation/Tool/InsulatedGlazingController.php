@@ -30,6 +30,8 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
+use App\Services\BuildingElementService;
+use App\Services\ModelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -418,34 +420,28 @@ class InsulatedGlazingController extends Controller
             }
         }
 
-        // Saving the wood building elements
-        // Get the wood elements
-        $woodElements = $request->input('building_elements.wood-elements.*.*');
+        $woodElements = $request->input('building_elements.wood-elements');
 
-        if (isset($woodElements)) {
-            // Get the first key for the woodElementId
-            $woodElementId = key($request->input('building_elements.wood-elements'));
+        $woodElementCreateData = [];
+        foreach ($woodElements as $woodElementId => $woodElementValueIds) {
 
-            // Check if there are wood elements drop them
-            if (BuildingElement::where('element_id', $woodElementId)->where('building_id', $buildingId)->where('input_source_id', $inputSourceId)->count() > 0) {
-                BuildingElement::where('element_id', $woodElementId)
-                    ->where('building_id', $buildingId)
-                    ->where('input_source_id', $inputSourceId)
-                    ->delete();
+            // add the data we need to perform a create
+            foreach ($woodElementValueIds as $woodElementValueId) {
+                array_push($woodElementCreateData, ['element_value_id' => $woodElementValueId]);
             }
 
-            // Save the woodElements
-            foreach ($woodElements as $woodElementValueId) {
-                BuildingElement::create(
-                    [
-                        'building_id' => $buildingId,
-                        'input_source_id' => $inputSourceId,
-                        'element_id' => $woodElementId,
-                        'element_value_id' => $woodElementValueId,
-                    ]
-                );
-            }
+            ModelService::deleteAndCreate(BuildingElement::class,
+                [
+                    'building_id' => $buildingId,
+                    'element_id' => $woodElementId,
+                    'input_source_id' => $inputSourceId,
+                ],
+                $woodElementCreateData
+            );
         }
+
+
+
 
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');

@@ -29,6 +29,7 @@ class ImportController extends Controller
         ];
 
         $tablesWithUserId = [
+            'user_action_plan_advices',
             'user_energy_habits',
             'user_interests',
         ];

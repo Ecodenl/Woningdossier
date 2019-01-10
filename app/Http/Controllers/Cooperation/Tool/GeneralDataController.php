@@ -92,7 +92,7 @@ class GeneralDataController extends Controller
         $userInterestsForMe = UserInterest::forMe()->get();
 
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step', 'buildingOwner',
+            'building', 'step',
             'coachEnergyHabitRemarks', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',

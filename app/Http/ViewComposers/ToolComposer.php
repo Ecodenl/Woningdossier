@@ -3,6 +3,7 @@
 namespace App\Http\ViewComposers;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Interest;
@@ -26,5 +27,7 @@ class ToolComposer
         $view->with('interests', Interest::orderBy('order')->get());
 
         $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
+
+        $view->with('buildingOwner', Building::find(HoomdossierSession::getBuilding())->user);
     }
 }

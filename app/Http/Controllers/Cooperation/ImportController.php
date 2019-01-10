@@ -19,6 +19,7 @@ class ImportController extends Controller
             'building_heaters',
             'building_features',
             'building_paintwork_statuses',
+            'user_progresses',
             'building_elements',
             'building_insulated_glazings',
             'building_services',

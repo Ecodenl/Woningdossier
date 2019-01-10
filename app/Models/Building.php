@@ -98,6 +98,12 @@ class Building extends Model
         });
     }
 
+    /**
+     * Check if a step is completed for a building with matching input source id
+     *
+     * @param Step $step
+     * @return bool
+     */
     public function hasCompleted(Step $step)
     {
         return $this->find(HoomdossierSession::getBuilding())
@@ -113,9 +119,8 @@ class Building extends Model
         return $this->hasMany(UserProgress::class);
     }
 
-
     /**
-     * Complete a step
+     * Complete a step for a building
      *
      * @param Step $step
      * @return Model
@@ -129,6 +134,13 @@ class Building extends Model
         ]);
     }
 
+    /**
+     * Check if a user is interested in a step
+     *
+     * @param string $type
+     * @param array $interestedInIds
+     * @return bool
+     */
     public function isInterestedInStep($type, $interestedInIds = [])
     {
         // the interest ids that people select when they do not have any interest
@@ -155,6 +167,13 @@ class Building extends Model
         return true;
     }
 
+    /**
+     * Check if a user is not interested in a step
+     *
+     * @param string $type
+     * @param array $interestedInIds
+     * @return bool
+     */
     public function isNotInterestedInStep($type, $interestedInIds = [])
     {
         return !$this->isInterestedInStep($type, $interestedInIds);

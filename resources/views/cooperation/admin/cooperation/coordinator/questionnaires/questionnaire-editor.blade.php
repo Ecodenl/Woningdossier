@@ -630,7 +630,10 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-question')}}/'+questionId,
-                    method: "DELETE"
+                    // CentOS + DirectAdmin retard-mode = crying with onions.
+                    //method: "DELETE"
+                    type: 'post',
+                    data: { _method: 'delete' }
                 });
 
                 $(this).parent().parent().parent().parent().parent().parent().remove();
@@ -659,6 +662,7 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-option')}}/'+questionId+'/'+questionOptionId,
+                        // CentOS + DirectAdmin retard-mode = crying with onions.
                         //method: "DELETE"
                         type: 'post',
                         data: { _method: 'delete' }

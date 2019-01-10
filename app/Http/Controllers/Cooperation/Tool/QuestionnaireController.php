@@ -27,34 +27,38 @@ class QuestionnaireController extends Controller
         $questionnaireId = $request->get('questionnaire_id');
         $questionnaire = Questionnaire::find($questionnaireId);
 
-        // the question answer can be a string or int.
-        // it does not matter how we save it. Later when retrieving the answers we determine how we should show them based on the question type
-        foreach ($questions as $questionId => $questionAnswer) {
-            // this will only be a array if the user can select multiple answers for one question.
-            // in the current state this will only be applied for a checkbox.
-            if (is_array($questionAnswer)) {
-                $answer = '';
 
-                // we pipe the answer, later on we can explode it and check it against the question ids
-                foreach ($questionAnswer as $qAnswer) {
-                    $answer .= "{$qAnswer}|";
+        if (is_array($questions) && !empty($questions)) {
+
+            // the question answer can be a string or int.
+            // it does not matter how we save it. Later when retrieving the answers we determine how we should show them based on the question type
+            foreach ($questions as $questionId => $questionAnswer) {
+                // this will only be a array if the user can select multiple answers for one question.
+                // in the current state this will only be applied for a checkbox.
+                if (is_array($questionAnswer)) {
+                    $answer = '';
+
+                    // we pipe the answer, later on we can explode it and check it against the question ids
+                    foreach ($questionAnswer as $qAnswer) {
+                        $answer .= "{$qAnswer}|";
+                    }
+                } else {
+                    $answer = $questionAnswer;
                 }
-            } else {
-                $answer = $questionAnswer;
-            }
 
-            // check if the answer is not empty
-            if (! empty($answer)) {
-                QuestionsAnswer::updateOrCreate(
-                    [
-                        'question_id' => $questionId,
-                        'building_id' => HoomdossierSession::getBuilding(),
-                        'input_source_id' => HoomdossierSession::getInputSource(),
-                    ],
-                    [
-                        'answer' => $answer,
-                    ]
-                );
+                // check if the answer is not empty
+                if (! empty($answer)) {
+                    QuestionsAnswer::updateOrCreate(
+                        [
+                            'question_id' => $questionId,
+                            'building_id' => HoomdossierSession::getBuilding(),
+                            'input_source_id' => HoomdossierSession::getInputSource(),
+                        ],
+                        [
+                            'answer' => $answer,
+                        ]
+                    );
+                }
             }
         }
 

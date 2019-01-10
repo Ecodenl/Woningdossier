@@ -227,6 +227,13 @@ class Building extends Model
         return $this->belongsTo(ExampleBuilding::class);
     }
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+    public function progress(){
+	    return $this->hasMany(UserProgress::class);
+    }
+
     /**
      * @return null|ExampleBuilding
      */

@@ -28,6 +28,9 @@ class ToolComposer
 
         $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
 
-        $view->with('buildingOwner', Building::find(HoomdossierSession::getBuilding())->user);
+        $currentBuilding = HoomdossierSession::getBuilding();
+        if (!is_null($currentBuilding)) {
+	        $view->with( 'buildingOwner', $currentBuilding->user );
+        }
     }
 }

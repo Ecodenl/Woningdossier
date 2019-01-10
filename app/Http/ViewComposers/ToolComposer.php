@@ -30,7 +30,10 @@ class ToolComposer
 
         $currentBuilding = HoomdossierSession::getBuilding();
         if (!is_null($currentBuilding)) {
-	        $view->with( 'buildingOwner', $currentBuilding->user );
+        	$building = Building::find($currentBuilding);
+        	if ($building instanceof Building) {
+		        $view->with( 'buildingOwner', $building->user );
+	        }
         }
     }
 }

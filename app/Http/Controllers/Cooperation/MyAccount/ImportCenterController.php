@@ -48,6 +48,7 @@ class ImportCenterController extends Controller
      */
     public function dismissNotification(Cooperation $cooperation, Request $request)
     {
+        // dissmis the noti
         $inputSource = InputSource::findByShort($request->get('input_source_short'));
 
         ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $inputSource->id, false);

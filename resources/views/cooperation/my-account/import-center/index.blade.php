@@ -46,7 +46,7 @@
                                                         ['input_source_name' => $toolSetting->inputSource->name
                                                     ])
                                                     <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                                        @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
+                                                        @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->inputSource->name])
                                                     </a>
                                                 </div>
                                             </div>

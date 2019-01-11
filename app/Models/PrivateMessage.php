@@ -19,7 +19,7 @@ class PrivateMessage extends Model
     protected $fillable = [
         'message', 'from_user_id', 'to_user_id', 'from_cooperation_id',
         'to_cooperation_id', 'status', 'main_message', 'title',
-        'request_type', 'allow_access',
+        'request_type', 'allow_access', 'building_id'
     ];
 
     /**
@@ -72,7 +72,8 @@ class PrivateMessage extends Model
     public function scopeMyConversationRequest($query)
     {
         return $query
-            ->where('from_user_id', \Auth::id())
+            ->where('request_type', '!=', null)
+            ->where('building_id', HoomdossierSession::getBuilding())
             ->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
@@ -91,13 +92,11 @@ class PrivateMessage extends Model
             ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION);
     }
 
-    public function scopeMyOpenCoachConversationRequest($query)
+    public function scopeMyOpenConversationRequest($query)
     {
         return $query
-            ->where('from_user_id', \Auth::id())
-            ->where('to_cooperation_id', session('cooperation'))
-            ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION)
-            ->where('status', self::STATUS_IN_CONSIDERATION);
+            ->where('building_id', HoomdossierSession::getBuilding())
+            ->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
     /**
@@ -105,9 +104,9 @@ class PrivateMessage extends Model
      *
      * @return $this
      */
-    public static function scopeConversation($query, $mainMessageId)
+    public static function scopeConversation($query, $buildingId)
     {
-        return $query->where('id', $mainMessageId)->orWhere('main_message', $mainMessageId);
+        return $query->where('building_id', $buildingId);
     }
 
     /**
@@ -155,18 +154,7 @@ class PrivateMessage extends Model
 
     public function getSender()
     {
-        $senderId = $this->from_user_id;
-        if (empty($senderId)) {
-            return null;
-        }
-
-        $sender = User::find($senderId);
-
-        if ($sender instanceof User) {
-            return $sender;
-        }
-
-        return null;
+        return $this->from_user;
     }
 
     /**
@@ -279,7 +267,7 @@ class PrivateMessage extends Model
      */
     public function scopeUnreadMessages($query)
     {
-        return $query->where('to_user_id', \Auth::id())->where('to_user_read', false);
+        return $query;
     }
 
     /**
@@ -325,18 +313,21 @@ class PrivateMessage extends Model
      */
     public function hasUserUnreadMessages(): bool
     {
-        $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
 
-        // $asnwers will be empty when there is no response to the main message
-        if ($answers->isNotEmpty()) {
-            return $answers->contains('to_user_read', false);
-        } elseif ($this->isMainMessage()) {
-            // we check if the main message is unread and if its not our message, you have always read your own message.
-            // unless your blind.
-            return $this->isMainMessageUnread() && $this->isNotMyMessage();
-        } else {
-            \Log::debug(__FUNCTION__.'Came to the else for message id: '.$this->id);
-        }
+        // new logic should be aplied here
+        return true;
+//        $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
+//
+//        // $asnwers will be empty when there is no response to the main message
+//        if ($answers->isNotEmpty()) {
+//            return $answers->contains('to_user_read', false);
+//        } elseif ($this->isMainMessage()) {
+//            // we check if the main message is unread and if its not our message, you have always read your own message.
+//            // unless your blind.
+//            return $this->isMainMessageUnread() && $this->isNotMyMessage();
+//        } else {
+//            \Log::debug(__FUNCTION__.'Came to the else for message id: '.$this->id);
+//        }
     }
 
     /**

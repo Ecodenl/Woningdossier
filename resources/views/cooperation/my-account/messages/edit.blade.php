@@ -26,11 +26,11 @@
                                 @if($privateMessage->isMyMessage())
 
                                     <small class="text-muted"><span class="glyphicon glyphicon-time"></span>{{$time->diffForHumans()}}</small>
-                                    <strong class="pull-right primary-font">{{$privateMessage->getSender()->first_name}}</strong>
+                                    <strong class="pull-right primary-font">{{$privateMessage->getSender()}}</strong>
 
                                 @else
 
-                                    <strong class="primary-font">{{$privateMessage->getSender()->first_name}}</strong>
+                                    <strong class="primary-font">{{$privateMessage->getSender()}}</strong>
                                     <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>{{$time->diffForHumans()}}</small>
 
                                 @endif

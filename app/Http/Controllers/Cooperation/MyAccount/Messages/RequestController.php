@@ -34,9 +34,8 @@ class RequestController extends Controller
         $request->validate([
             'message' => 'required',
         ]);
-        $conversationRequest = PrivateMessage::myConversationRequest()->find($requestMessageId);
+        $conversationRequest = PrivateMessage::find($requestMessageId);
 
-        $user = \Auth::user();
         $message = $request->get('message', $conversationRequest->message);
         $cooperationId = HoomdossierSession::getCooperation();
         $allowAccess = empty($request->get('allow_access', '')) ? false : true;
@@ -45,7 +44,6 @@ class RequestController extends Controller
             [
                 'message' => $message,
                 'to_cooperation_id' => $cooperationId,
-                'from_user_id' => $user->id,
                 'allow_access' => $allowAccess,
             ]
         );

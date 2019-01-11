@@ -23,11 +23,14 @@ class MessagesController extends Controller
         // TODO: create a query instead of the merg
         // gives a idea of how it should be
         // but really, TODO!
-        $mainMessages = PrivateMessage::where('is_completed', false)
-            ->where('main_message', null)
-            ->where('from_user_id', \Auth::id())
-            ->orWhere('to_cooperation_id', HoomdossierSession::getCooperation())->get()->merge(PrivateMessage::mainMessages()->get());
+//        $mainMessages = PrivateMessage::where('is_completed', false)
+//            ->where('main_message', null)
+//            ->where('from_user_id', \Auth::id())
+//            ->orWhere('to_cooperation_id', HoomdossierSession::getCooperation())->get()->merge(PrivateMessage::mainMessages()->get());
 
+        $mainMessages = PrivateMessage::where('building_id', HoomdossierSession::getBuilding())
+            ->where('to_cooperation_id', HoomdossierSession::getCooperation())
+            ->where('request_type', '!=', null)->get();
         return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'mainMessages'));
     }
 
@@ -35,9 +38,9 @@ class MessagesController extends Controller
     {
         $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
 
-        $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
+        $privateMessages = PrivateMessage::conversation(HoomdossierSession::getBuilding())->get();
 
-        InboxService::setRead($mainMessageId);
+//        InboxService::setRead($mainMessageId);
 
         return view('cooperation.my-account.messages.edit', compact('privateMessages', 'mainMessageId'));
     }

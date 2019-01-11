@@ -47,32 +47,34 @@ class UserPolicy
      */
     public function respond(User $user, $mainMessageId): bool
     {
-        $mainMessage = PrivateMessage::find($mainMessageId);
-        $receiveUser = User::find($mainMessage->to_user_id);
-        $sendUser = User::find($mainMessage->from_user_id);
-
-        if ($sendUser->can('access-admin') && $receiveUser->can('access-admin')) {
-            return true;
-        } else {
-            // if the to user id is empty, its probbaly a message thats send to the cooperation
-            if (empty($mainMessage->to_user_id)) {
-                return true;
-            }
-            // this is NOT the request to the cooperation.
-            // this is the mainMessage from the current chat with resident and coach
-            $building = Building::where('user_id', $mainMessage->to_user_id)->first();
-
-            // either the coach or the coordinator, or someone with a higher role then resident.
-            $fromId = $mainMessage->from_user_id;
-            // get the most recent building coach status
-            $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $fromId)->where('building_id', $building->id)->get()->last();
-
-            if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
-                return false;
-            }
-
-            return true;
-        }
+        // todo refactor
+        return true;
+//        $mainMessage = PrivateMessage::find($mainMessageId);
+//        $receiveUser = User::find($mainMessage->to_user_id);
+//        $sendUser = User::find($mainMessage->from_user_id);
+//
+//        if ($sendUser->can('access-admin') && $receiveUser->can('access-admin')) {
+//            return true;
+//        } else {
+//            // if the to user id is empty, its probbaly a message thats send to the cooperation
+//            if (empty($mainMessage->to_user_id)) {
+//                return true;
+//            }
+//            // this is NOT the request to the cooperation.
+//            // this is the mainMessage from the current chat with resident and coach
+//            $building = Building::where('user_id', $mainMessage->to_user_id)->first();
+//
+//            // either the coach or the coordinator, or someone with a higher role then resident.
+//            $fromId = $mainMessage->from_user_id;
+//            // get the most recent building coach status
+//            $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $fromId)->where('building_id', $building->id)->get()->last();
+//
+//            if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
+//                return false;
+//            }
+//
+//            return true;
+//        }
     }
 
     /**

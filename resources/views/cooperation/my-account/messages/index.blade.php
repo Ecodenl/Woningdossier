@@ -17,7 +17,7 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{ $mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name }} - {{ $mainMessage->title }}
+                                                {{ $mainMessage->getSender() }}
                                             </strong>
 
                                             <small class="pull-right text-muted">

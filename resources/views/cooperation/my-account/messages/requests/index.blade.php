@@ -19,7 +19,7 @@
 
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{$conversationRequest->getSender($conversationRequest->id)->first_name. ' ' .$conversationRequest->getSender($conversationRequest->id)->last_name}}
+                                                {{$conversationRequest->getSender()}}
                                                 - {{ $conversationRequest->title }}
                                             </strong>
 

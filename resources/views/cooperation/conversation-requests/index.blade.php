@@ -70,7 +70,7 @@
                                 <div class="col-sm-12">
                                     <label for="allow_access">
                                         <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
-                                        @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(session('cooperation'))->name])
+                                        @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
                                     </label>
                                     @if ($errors->has('allow_access'))
                                         <span class="help-block">

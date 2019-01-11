@@ -9,25 +9,6 @@ if (!isset($building)) {
 ?>
 
 {{--
-   if there are multiple input-source-notifications we set those to col-sm-6, so then we set the building notification on top to col-12
-   if there are no notifications then we do the same
---}}
-@if($totalChangedToolSettings > 1 || $totalChangedToolSettings == 0)
-    <div class="row">
-        <div class="col-sm-12">
-            @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
-                @lang('woningdossier.cooperation.tool.current-building-address', [
-                    'street' => $building->street,
-                    'number' => $building->number,
-                    'extension' => $building->extension,
-                    'zip_code' => $building->postal_code,
-                    'city' => $building->city
-                ])
-            @endcomponent
-        </div>
-    </div>
-@endif
-{{--
     Alerts that will show if the user (prob a coach or other admin role) is filling the tool for a resident
 --}}
 @if (Auth::user()->isFillingToolForOtherBuilding())
@@ -95,6 +76,19 @@ if (!isset($building)) {
     Alerts that will show when a resident / user is not comparing input sources
 --}}
 @elseif(\App\Helpers\HoomdossierSession::isUserNotComparingInputSources())
+    <div class="row">
+        <div class="col-sm-12">
+            @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
+                @lang('woningdossier.cooperation.tool.current-building-address', [
+                    'street' => $building->street,
+                    'number' => $building->number,
+                    'extension' => $building->extension,
+                    'zip_code' => $building->postal_code,
+                    'city' => $building->city
+                ])
+            @endcomponent
+        </div>
+    </div>
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
             <?php $toolSettingsLoopCount++ ?>
@@ -104,59 +98,24 @@ if (!isset($building)) {
             </form>
 
             {{--
-                If the there is only 1, we show 1 input source notification and one building notification
-            --}}
-            @if($totalChangedToolSettings == 1)
-                <div class="row">
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => true, 'classes' => 'input-source-notifications'])
-                            <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
-                                        ['input_source_name' => $toolSetting->inputSource->name
-                                    ])
-                                    <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                        @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
-                                    </a>
-                                </div>
-                            </div>
-                        @endcomponent
-                    </div>
-                    @if($totalChangedToolSettings == $totalChangedToolSettings)
-                        <div class="col-sm-6">
-                            @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
-                                @lang('woningdossier.cooperation.tool.current-building-address', [
-                                    'street' => $building->street,
-                                    'number' => $building->number,
-                                    'extension' => $building->extension,
-                                    'zip_code' => $building->postal_code,
-                                    'city' => $building->city
-                                ])
-                            @endcomponent
-                        </div>
-                    @endif
-                </div>
-            {{--
                 If there are more than one we will load all the input-source notifications, the building notification will be loaded on top of the page
              --}}
-            @elseif($totalChangedToolSettings > 1)
-                <div class="col-sm-6">
-                    @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => true, 'classes' => 'input-source-notifications'])
-                        <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
-                                    ['input_source_name' => $toolSetting->inputSource->name
-                                ])
-                                <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                    @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->inputSource->name])
-                                </a>
-                            </div>
+            <?php $col = 12 / $totalChangedToolSettings ?>
+            <div class="col-sm-{{$col}}">
+                @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => true, 'classes' => 'input-source-notifications'])
+                    <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
+                                ['input_source_name' => $toolSetting->inputSource->name
+                            ])
+                            <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
+                                @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->inputSource->name])
+                            </a>
                         </div>
-                    @endcomponent
-                </div>
-            @endif
+                    </div>
+                @endcomponent
+            </div>
         @endforeach
     </div>
 @endif
@@ -179,33 +138,6 @@ if (!isset($building)) {
 
                 // the input-source from the dismissed notification
                 var dismissedInputSourceShort = dismissedInputSourceNotification.find('.input-source-short').val();
-
-                // get the body
-                var body = $('body');
-
-                // all the building notificaitons
-                var buildingNotification = body.find('.building-notification');
-
-                // if the building notification parent has col 6, it was next to a input-source-notification.
-                // now the input-source-noti is removed, so we give the building the col-12
-                if (buildingNotification.parent().hasClass('col-sm-6')) {
-                    buildingNotification.parent().removeClass('col-sm-6').addClass('col-sm-12')
-
-                } else if(buildingNotification.parent().hasClass('col-sm-12')) {
-
-                    var inputSourceNotificationsRow = $('#input-source-notifications-row');
-
-                    // clone the building notification to the right column
-                    inputSourceNotificationsRow.find('.col-sm-6').each(function (index, col) {
-                        if ($(col).children().length === 0) {
-                            buildingNotification.clone().appendTo(col);
-                        }
-                    });
-
-                    // since we cloned the building notification we can remove it.
-                    buildingNotification.remove();
-
-                }
 
                 // send dataa
                 $.ajax({

@@ -11,7 +11,7 @@ class Questionnaire extends Model
     use TranslatableTrait;
 
     protected $fillable = [
-        'name', 'step_id', 'cooperation_id', 'is_active',
+        'name', 'step_id', 'cooperation_id', 'is_active', 'order'
     ];
 
     protected $casts = [

@@ -13,22 +13,22 @@ class AddOrderToQuestionnaires extends Migration
      */
     public function up()
     {
-        Schema::table('questionnaires', function (Blueprint $table) {
-            if (!Schema::hasColumn('questionnaires', 'order')) {
-                $table->integer('order')->after('cooperation_id')->default(0);
+	    if (!Schema::hasColumn('questionnaires', 'order')) {
+		    Schema::table( 'questionnaires',
+			    function ( Blueprint $table ) {
+
+				    $table->integer( 'order' )->after( 'cooperation_id' )->default( 0 );
+			    } );
+	    }
+
+        $steps = DB::table('steps')->get();
+
+        foreach ($steps as $step) {
+            $stepQuestionnaires = DB::table('questionnaires')->where('step_id', $step->id)->get();
+            foreach ($stepQuestionnaires as $order => $questionnaire) {
+                DB::table('questionnaires')->where('id', $questionnaire->id)->update(['order' => $order]);
             }
-
-            $steps = DB::table('steps')->get();
-
-            foreach ($steps as $step) {
-                $stepQuestionnaires = DB::table('questionnaires')->where('step_id', $step->id)->get();
-                foreach ($stepQuestionnaires as $order => $questionnaire) {
-                    DB::table('questionnaires')->where('id', $questionnaire->id)->update(['order' => $order]);
-                }
-            }
-
-        });
-
+        }
     }
 
     /**

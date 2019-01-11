@@ -7,6 +7,26 @@ if (!isset($building)) {
     $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
 }
 ?>
+
+{{--
+   if there are multiple input-source-notifications we set those to col-sm-6, so then we set the building notification on top to col-12
+   if there are no notifications then we do the same
+--}}
+@if($totalChangedToolSettings > 1 || $totalChangedToolSettings == 0)
+    <div class="row">
+        <div class="col-sm-12">
+            @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
+                @lang('woningdossier.cooperation.tool.current-building-address', [
+                    'street' => $building->street,
+                    'number' => $building->number,
+                    'extension' => $building->extension,
+                    'zip_code' => $building->postal_code,
+                    'city' => $building->city
+                ])
+            @endcomponent
+        </div>
+    </div>
+@endif
 {{--
     Alerts that will show if the user (prob a coach or other admin role) is filling the tool for a resident
 --}}
@@ -43,13 +63,14 @@ if (!isset($building)) {
     <div class="row">
         <div class="col-sm-6">
             @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'input-source-notifications'])
+                <input type="hidden" class="input-source-short" value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
                 <div class="row">
                     <div class="col-sm-6">
                         @lang('woningdossier.cooperation.tool.is-user-comparing-input-sources', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
                     </div>
                     <div class="col-sm-6">
                         <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-block btn-sm btn-primary pull-right">
-                            @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->inputSource->name])
+                            @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
                         </a>
                         <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->short])}}" class="btn btn-block btn-sm btn-primary pull-right">
                             Stop vergelijking
@@ -70,22 +91,10 @@ if (!isset($building)) {
             @endcomponent
         </div>
     </div>
+{{--
+    Alerts that will show when a resident / user is not comparing input sources
+--}}
 @elseif(\App\Helpers\HoomdossierSession::isUserNotComparingInputSources())
-    @if($totalChangedToolSettings > 1)
-        <div class="row">
-            <div class="col-sm-12">
-                @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
-                    @lang('woningdossier.cooperation.tool.current-building-address', [
-                        'street' => $building->street,
-                        'number' => $building->number,
-                        'extension' => $building->extension,
-                        'zip_code' => $building->postal_code,
-                        'city' => $building->city
-                    ])
-                @endcomponent
-            </div>
-        </div>
-    @endif
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
             <?php $toolSettingsLoopCount++ ?>
@@ -94,10 +103,14 @@ if (!isset($building)) {
                 {{csrf_field()}}
             </form>
 
+            {{--
+                If the there is only 1, we show 1 input source notification and one building notification
+            --}}
             @if($totalChangedToolSettings == 1)
                 <div class="row">
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => true, 'classes' => 'input-source-notifications'])
+                            <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">
                             <div class="row">
                                 <div class="col-sm-12">
                                     @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
@@ -124,9 +137,13 @@ if (!isset($building)) {
                         </div>
                     @endif
                 </div>
+            {{--
+                If there are more than one we will load all the input-source notifications, the building notification will be loaded on top of the page
+             --}}
             @elseif($totalChangedToolSettings > 1)
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => true, 'classes' => 'input-source-notifications'])
+                        <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">
                         <div class="row">
                             <div class="col-sm-12">
                                 @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
@@ -147,7 +164,21 @@ if (!isset($building)) {
 @push('js')
     <script>
         $(document).ready(function () {
-            $('.input-source-notifications').on('closed.bs.alert', function () {
+
+            // get the input source notifications
+            var inputSourceNotification = $('.input-source-notifications');
+            var dismissedInputSourceNotification;
+
+            // set the dismissedInputSource notification on close
+            inputSourceNotification.on('close.bs.alert', function () {
+                dismissedInputSourceNotification = $(this);
+            });
+
+            // now do some magic if the alert is closed.
+            inputSourceNotification.on('closed.bs.alert', function () {
+
+                // the input-source from the dismissed notification
+                var dismissedInputSourceShort = dismissedInputSourceNotification.find('.input-source-short').val();
 
                 // get the body
                 var body = $('body');
@@ -176,11 +207,15 @@ if (!isset($building)) {
 
                 }
 
+                // send dataa
+                $.ajax({
+                    url: '{{route('cooperation.my-account.import-center.dismiss-notification')}}',
+                    data: {input_source_short: dismissedInputSourceShort},
+                    method: 'post',
+                })
+
             });
         });
         
-        function dismissInputSourceNotification() {
-            console.log($(this));
-        }
     </script>
 @endpush

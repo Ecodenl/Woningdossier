@@ -28,6 +28,12 @@ class ToolComposer
 
         $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
 
-        $view->with('toolSettings', ToolSetting::getChangedSettings(HoomdossierSession::getBuilding()));
+        $buildingId = HoomdossierSession::getBuilding();
+        $changedSettings = collect([]);
+        if (!is_null($buildingId)){
+	        $changedSettings = ToolSetting::getChangedSettings($buildingId);
+        }
+	    $view->with('toolSettings', $changedSettings);
+
     }
 }

@@ -91,7 +91,7 @@ if (!isset($building)) {
     </div>
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
-            <?php $toolSettingsLoopCount++ ?>
+            <?php $toolSettingsLoopCount++; ?>
             <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post">
                 <input type="hidden" name="input_source" value="{{$toolSetting->inputSource->short}}">
                 {{csrf_field()}}
@@ -100,7 +100,7 @@ if (!isset($building)) {
             {{--
                 If there are more than one we will load all the input-source notifications, the building notification will be loaded on top of the page
              --}}
-            <?php $col = 12 / $totalChangedToolSettings ?>
+            <?php $col = 12 / $totalChangedToolSettings; ?>
             <div class="col-sm-{{$col}}">
                 @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => true, 'classes' => 'input-source-notifications'])
                     <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">

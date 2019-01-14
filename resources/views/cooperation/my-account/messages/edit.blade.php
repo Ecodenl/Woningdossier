@@ -38,7 +38,11 @@
             @endcomponent
         </div>
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => \App\Helpers\HoomdossierSession::getBuilding(), 'url' => route('cooperation.my-account.messages.store')])
+            @component('cooperation.layouts.chat.input', [
+                'privateMessages' => $privateMessages,
+                'buildingId' => \App\Helpers\HoomdossierSession::getBuilding(),
+                'url' => route('cooperation.my-account.messages.store')
+             ])
                 <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                     @lang('woningdossier.cooperation.my-account.messages.edit.chat.button')
                 </button>

@@ -38,52 +38,35 @@ class MessagesController extends Controller
         return view('cooperation.my-account.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants'));
     }
 
-    public function revokeAccess(Cooperation $cooperation, Request $request)
-    {
-        // todo, instead off a main message id use the building id and a user id
-        $currentChatMainMessage = $request->get('main_message_id');
-
-        // the resident himself cannot start a chat with a coach, resident or whatsoever.
-        // the main message is started from the coach or coordinator
-
-        // this is NOT the request to the cooperation.
-        $mainMessage = PrivateMessage::find($currentChatMainMessage);
-
-        // the building from the user / resident
-        $building = Building::where('user_id', $mainMessage->to_user_id)->first();
-
-        // either the coach or the coordinator, or someone with a higher role than resident.
-        $fromId = $mainMessage->from_user_id;
-
-        // get the most recent conversation between that user and coach
-        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $fromId)->where('building_id', $building->id)->get()->last();
-
-        $privateMessageRequestId = $buildingCoachStatus->private_message_id;
-
-        BuildingPermissionService::revokePermission($fromId, $building->id);
-
-        // no coach connected so the status goes back to in consideration, the coordinator can take further actions from now on.
-        PrivateMessage::find($privateMessageRequestId)->update(['status' => PrivateMessage::STATUS_IN_CONSIDERATION]);
-
-        // revoke the access for the coach to talk with the resident
-        BuildingCoachStatusService::revokeAccess($fromId, $building->id, $privateMessageRequestId);
-
-        $sender = User::find($fromId);
-
-        PrivateMessage::create([
-            'from_user_id' => \Auth::id(),
-            'to_cooperation_id' => HoomdossierSession::getCooperation(),
-            'title' => \Auth::user()->first_name.' heeft de toegang van coach '.$sender->first_name.' ontzegt.',
-            'message' => '',
-        ]);
-
-        return redirect()->back();
-    }
-
     public function store(ChatRequest $request)
     {
         MessageService::create($request);
 
         return redirect()->back();
     }
+
+    public function revokeAccess(Cooperation $cooperation, Request $request)
+    {
+        // get the group participant user id which is only a coach, but still
+        $groupParticipantUserId = $request->get('user_id');
+        // get the building owner id
+        $buildingOwnerId = $request->get('building_owner_id');
+
+        // the building from the user / resident
+        $building = Building::find($buildingOwnerId);
+
+
+        if ($building instanceof Building) {
+
+            // revoke the access for the coach to talk with the resident
+            BuildingPermissionService::revokePermission($groupParticipantUserId, $building->id);
+            BuildingCoachStatusService::revokeAccess($groupParticipantUserId, $building->id);
+
+            // TODO: create a message ? to notify some admin ?
+        }
+
+        return redirect()->back();
+    }
+
+
 }

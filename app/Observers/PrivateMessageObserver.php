@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\PrivateMessage;
+use App\Services\PrivateMessageViewService;
 
 class PrivateMessageObserver
 {
@@ -62,5 +63,10 @@ class PrivateMessageObserver
                 BuildingPermission::where('building_id', $buildingId)->delete();
             }
         }
+    }
+
+    public function created(PrivateMessage $privateMessage)
+    {
+        PrivateMessageViewService::create($privateMessage);
     }
 }

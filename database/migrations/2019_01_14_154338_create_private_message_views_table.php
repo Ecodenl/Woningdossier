@@ -25,7 +25,7 @@ class CreatePrivateMessageViewsTable extends Migration
             $table->integer('cooperation_id')->unsigned()->nullable();
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
 
-            $table->timestamp('read_at');
+            $table->dateTime('read_at');
 
             $table->timestamps();
         });

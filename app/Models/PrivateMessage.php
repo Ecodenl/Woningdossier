@@ -18,9 +18,8 @@ class PrivateMessage extends Model
     const REQUEST_TYPE_OTHER = 'other';
 
     protected $fillable = [
-        'message', 'from_user_id', 'to_user_id', 'from_cooperation_id',
-        'to_cooperation_id', 'status', 'main_message', 'title',
-        'request_type', 'allow_access', 'building_id'
+        'message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id',
+        'request_type', 'allow_access', 'building_id', 'from_user'
     ];
 
     /**
@@ -87,10 +86,6 @@ class PrivateMessage extends Model
     public function scopeMessageGroups($query)
     {
         $privateMessageIds = $this->privateMessagesIdsGroupedByBuildingId()->get();
-        dd($privateMessageIds);
-
-        dd($privateMessageIds);
-        dd(PrivateMessage::findMany(array_flatten($privateMessageIds)));
         $role = Role::find(HoomdossierSession::getRole());
         // we call it short
         $roleShort = $role->name;

@@ -48,9 +48,8 @@ class PrivateMessagesTableReorderColumns extends Migration
 
             }
 
-            $table->dropForeign(['from_user_id']);
             $table->dropForeign(['to_user_id']);
-            $table->dropColumn(['from_user_id', 'to_user_id']);
+            $table->dropColumn(['to_user_id']);
 
         });
 
@@ -68,9 +67,6 @@ class PrivateMessagesTableReorderColumns extends Migration
 
             $table->dropColumn('is_public');
             $table->string('title')->nullable()->default(null)->after('building_id');
-
-            $table->integer('from_user_id')->unsigned()->nullable()->default(null)->after('title');
-            $table->foreign('from_user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->integer('to_user_id')->unsigned()->nullable()->default(null)->after('from_user_id');
             $table->foreign('to_user_id')->references('id')->on('users')->onDelete('cascade');

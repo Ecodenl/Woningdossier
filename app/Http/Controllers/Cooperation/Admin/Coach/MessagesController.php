@@ -17,16 +17,6 @@ use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
-    public function index(Cooperation $cooperation)
-    {
-        $myCreatedMessages = PrivateMessage::myCreatedMessages()->get();
-
-        $mainMessages = PrivateMessage::mainMessages()->get();
-
-        $mainMessages = collect($mainMessages)->merge($myCreatedMessages)->unique('id');
-
-        return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
-    }
 
     public function edit(Cooperation $cooperation, $buildingId)
     {

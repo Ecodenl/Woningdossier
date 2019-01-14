@@ -10,7 +10,7 @@ class PrivateMessageView extends Model
         'private_message_id', 'user_id', 'cooperation_id', 'read_at'
     ];
 
-    protected $dates = [
-        'read_at'
+    protected $casts = [
+        'read_at' => 'datetime'
     ];
 }

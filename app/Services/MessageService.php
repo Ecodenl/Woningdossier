@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Building;
 use App\Models\PrivateMessage;
 use Illuminate\Http\Request;
 
@@ -17,17 +18,20 @@ class MessageService
     public static function create(Request $request)
     {
         $message = $request->get('message', '');
-        $receiverId = $request->get('receiver_id', '');
-        $mainMessageId = $request->get('main_message_id', '');
+        $buildingId = $request->get('building_id', '');
 
-        PrivateMessage::create(
-            [
-                'message' => $message,
-                'from_user_id' => \Auth::id(),
-                'to_user_id' => $receiverId,
-                'main_message' => $mainMessageId,
-            ]
-        );
+        $building = Building::find($buildingId);
+
+        // if the building exist create a message
+        if ($building instanceof Building) {
+            PrivateMessage::create(
+                [
+                    'from_user' => \Auth::user()->getFullName(),
+                    'message' => $message,
+                    'building_id' => $buildingId,
+                ]
+            );
+        }
 
         return true;
     }

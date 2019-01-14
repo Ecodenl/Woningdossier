@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Building;
@@ -27,15 +28,15 @@ class MessagesController extends Controller
         return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
     }
 
-    public function edit(Cooperation $cooperation, $mainMessageId)
+    public function edit(Cooperation $cooperation, $buildingId)
     {
-        $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
+        $privateMessages = PrivateMessage::conversation($buildingId)->get();
 
-        $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
+        $this->authorize('edit', $privateMessages->first());
 
-        InboxService::setRead($mainMessageId);
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
-        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'mainMessageId'));
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants'));
     }
 
     public function store(Cooperation $cooperation, MessagesRequest $request)

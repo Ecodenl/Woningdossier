@@ -13,9 +13,10 @@ class PrivateMessageObserver
     {
         if ($privateMessage->isDirty('allow_access')) {
             // the user turned the access for his hoomdossier on
+            // todo, refactor this.
+            // does not need alot of refactoring, but some old attributes are used.
             if ($privateMessage->allow_access) {
-                $senderId = $privateMessage->from_user_id;
-                $buildingFromSender = Building::where('user_id', $senderId)->first();
+                $buildingFromSender = Building::find($privateMessage->building_id);
                 $buildingId = $buildingFromSender->id;
 
                 // all the coach statuses for his building
@@ -54,8 +55,7 @@ class PrivateMessageObserver
             } elseif (! $privateMessage->allow_access) {
                 // the user wants to revoke the access for all the connected coaches.
 
-                $senderId = $privateMessage->from_user_id;
-                $buildingFromSender = Building::where('user_id', $senderId)->first();
+                $buildingFromSender = Building::find($privateMessage->building_id);
                 $buildingId = $buildingFromSender->id;
 
                 // delete all the building permissions for this building

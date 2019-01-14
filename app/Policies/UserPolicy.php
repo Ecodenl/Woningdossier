@@ -2,11 +2,13 @@
 
 namespace App\Policies;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Ramsey\Uuid\Uuid;
 
 class UserPolicy
 {
@@ -41,14 +43,34 @@ class UserPolicy
      * Check if a user is authorized to respond.
      *
      * @param User $user
-     * @param $mainMessageId
+     * @param $buildingId
      *
      * @return bool
      */
-    public function respond(User $user, $mainMessageId): bool
+    public function respond(User $user, $buildingId): bool
     {
         // todo refactor
-        return true;
+//        return true;
+
+        // we pass the building id from the chat
+        // so if if the building id is not like the building set in the sessions its prolly a admin
+        if ($buildingId != HoomdossierSession::getBuilding()) {
+
+        }
+
+        if ($user->can(['access-admin'])) {
+
+            if ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
+                return true;
+            } elseif($user->hasRole(['coordinator'])) {
+                return false;
+            }
+
+        } else {
+            // a resident can always respond
+            return true;
+
+        }
 //        $mainMessage = PrivateMessage::find($mainMessageId);
 //        $receiveUser = User::find($mainMessage->to_user_id);
 //        $sendUser = User::find($mainMessage->from_user_id);
@@ -104,6 +126,47 @@ class UserPolicy
         return false;
     }
 
+
+
+    /**
+     * Check if a user is allowed to participate in a group chat or not
+     *
+     * @param User $user
+     * @param $buildingId
+     * @return bool
+     */
+    public function participateInGroupChat(User $user, $buildingId): bool
+    {
+        // if the user is a coach and has a active building coach status, return true
+        if ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
+            return true;
+        } elseif ($user->hasRole('resident') && HoomdossierSession::getBuilding() == $buildingId) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Check if a user can remove a participant from the group chat
+     *
+     * @param User $user
+     * @param $buildingId
+     * @return bool
+     */
+    public function removeParticipantFromChat(User $user, User $groupParticipant): bool
+    {
+        // a coordinator can remove a coach from a conversation
+        // a resident can remove a coach from a conversation
+        if ($user->hasRole('coordinator') && $groupParticipant->hasRole(['resident'])) {
+            return true;
+        } elseif($user->hasRole('resident') && $groupParticipant->hasRole(['coach'])) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Check if a user is authorized to access a building.
      * We check if the user (that is an admin), is authorized to fill / has access to a other building.
@@ -116,7 +179,9 @@ class UserPolicy
     public function accessBuilding(User $user, $buildingId): bool
     {
         $buildingCoachStatus = BuildingCoachStatus::where('building_id', $buildingId)->where('coach_id', $user->id)->get()->last();
-        $conversationRequest = PrivateMessage::find($buildingCoachStatus->private_message_id);
+        $conversationRequest = PrivateMessage::where('building_id', $buildingId)
+            ->where('request_type','!=', null)
+            ->first();
 
         if ($user->can('access-admin') && ($user->hasBuildingPermission($buildingId) && $conversationRequest->allow_access)) {
             return true;

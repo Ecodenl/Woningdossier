@@ -22,6 +22,7 @@ class PrivateMessagesTableReorderColumns extends Migration
             $table->integer('building_id')->unsigned()->nullable()->default(null)->after('id');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');
             $table->string('from_user')->default("")->after('building_id');
+            $table->boolean('is_public')->nullable()->after('building_id');
 
 
 
@@ -65,6 +66,7 @@ class PrivateMessagesTableReorderColumns extends Migration
     {
         Schema::table('private_messages', function (Blueprint $table) {
 
+            $table->dropColumn('is_public');
             $table->string('title')->nullable()->default(null)->after('building_id');
 
             $table->integer('from_user_id')->unsigned()->nullable()->default(null)->after('title');
@@ -107,6 +109,7 @@ class PrivateMessagesTableReorderColumns extends Migration
 
             $table->dropForeign(['building_id']);
             $table->dropColumn(['building_id', 'from_user']);
+            $table->dropColumn('is_public');
         });
 
     }

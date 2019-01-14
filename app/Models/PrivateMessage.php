@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class PrivateMessage extends Model
 {
@@ -28,10 +29,8 @@ class PrivateMessage extends Model
      * @var array
      */
     protected $casts = [
-        'is_completed' => 'boolean',
-        'from_user_read' => 'boolean',
-        'to_user_read' => 'boolean',
         'allow_access' => 'boolean',
+        'is_public' => 'boolean',
     ];
 
     public static function isConversationRequestConnectedToCoach($conversationRequest)
@@ -54,6 +53,60 @@ class PrivateMessage extends Model
 //            ->where('status', self::STATUS_APPLICATION_SENT)->orWhere('status', self::STATUS_IN_CONSIDERATION);
     }
 
+    /**
+     * Return the private message ids based on the Auth user has permission to
+     *
+     * A "group" is defined by its building_id, one building_id has one group
+     * however, a coach or coordinator can access multiple groups. This because they need to talk to multiple residents / buildings
+     * in that case we return multiple private messages ids
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopePrivateMessagesIdsGroupedByBuildingId($query)
+    {
+        $role = Role::find(HoomdossierSession::getRole());
+        // we call it short
+        $roleShort = $role->name;
+
+        switch ($roleShort) {
+            case 'resident':
+                $query = $query
+                    ->where('building_id', HoomdossierSession::getBuilding())
+                    ->orderBy('created_at');
+
+            case 'coach':
+
+            case 'coordinator':
+
+        }
+
+        return $query;
+    }
+
+    public function scopeMessageGroups($query)
+    {
+        $privateMessageIds = $this->privateMessagesIdsGroupedByBuildingId()->get();
+        dd($privateMessageIds);
+
+        dd($privateMessageIds);
+        dd(PrivateMessage::findMany(array_flatten($privateMessageIds)));
+        $role = Role::find(HoomdossierSession::getRole());
+        // we call it short
+        $roleShort = $role->name;
+
+        switch ($roleShort) {
+            case 'resident':
+                $query
+                    ->where('building_id', HoomdossierSession::getBuilding())
+                    ->select('building_id')
+                    ->groupBy('building_id')->get();
+
+        }
+
+        return $query;
+    }
+    
     /**
      * Scope a query to return the messages that are sent to a user / coach.
      *
@@ -100,13 +153,13 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to return the full conversation between a coach and a user based on the main message.
+     * Scope a query to return the conversation ordered on created_at
      *
      * @return $this
      */
     public static function scopeConversation($query, $buildingId)
     {
-        return $query->where('building_id', $buildingId);
+        return $query->where('building_id', $buildingId)->orderBy('created_at');
     }
 
     /**
@@ -206,6 +259,44 @@ class PrivateMessage extends Model
         return Cooperation::find($sendingCooperationId);
     }
 
+
+    /**
+     * Get all the "group members"
+     * returns a collection of all the participants for a chat from a building
+     *
+     * @param $buildingId
+     * @param bool $publicConversation
+     *
+     * @return Collection
+     */
+    public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
+    {
+        // all the buildingCoachStatuses for a building
+        $buildingCoachStatuses = BuildingCoachStatus::where('building_id', $buildingId)->get();
+
+        // filter the coaches that have access to a building
+        $coachesWithAccess = $buildingCoachStatuses->filter(function ($buildingCoachStatus) {
+            return BuildingCoachStatus::hasCoachAccess($buildingCoachStatus->building_id, $buildingCoachStatus->coach_id);
+        })->unique('coach_id');
+
+        // create a collection of group members
+        $groupMembers = collect();
+
+        // if its a public conversation we push the building owner in it
+        if ($publicConversation) {
+            // get the owner of the building,
+            $groupMembers->push(Building::find($buildingId)->user);
+        }
+
+        // put the coaches with access to the groupmembers
+        foreach ($coachesWithAccess as $coachWithAccess) {
+            $groupMembers->push(User::find($coachWithAccess->coach_id));
+        }
+
+
+        return $groupMembers;
+    }
+
     /**
      * Check if its the user his message.
      *
@@ -213,10 +304,12 @@ class PrivateMessage extends Model
      */
     public function isMyMessage()
     {
-        if ($this->from_user_id == \Auth::id()) {
+        // since we dont save a user id in any sort of form, we need to check the full name.
+        $userFullName = \Auth::user()->first_name ." ". \Auth::user()->last_name;
+
+        if ($this->from_user == $userFullName) {
             return true;
         }
-
         return false;
     }
 

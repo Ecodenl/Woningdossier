@@ -160,6 +160,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Returns the first and last name, concatenated
+     *
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
      * Returns a specific interested row for a specific type.
      *
      * @param $type
@@ -320,6 +330,39 @@ class User extends Authenticatable
 
         return false;
     }
+
+
+    /**
+     * Check if a user is not removed from the building coach status table
+     *
+     * @param $buildingId
+     * @return bool
+     */
+    public function isRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        // get the last known coach status for the current coach
+        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)->where('building_id', $buildingId)->get()->last();
+
+        // if the coach his last known building status for the current building is removed
+        // we return true, the user either removed from the building
+        if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the opposite of the isRemovedFromBuildingCoachStatus function
+     *
+     * @param $buildingId
+     * @return bool
+     */
+    public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
+    }
+
 
     /**
      * Check if the logged in user is filling the tool for someone else.

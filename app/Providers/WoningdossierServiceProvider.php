@@ -6,8 +6,10 @@ use App\Http\ViewComposers\CooperationComposer;
 use App\Http\ViewComposers\ToolComposer;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Models\PrivateMessageView;
 use App\Models\UserActionPlanAdvice;
 use App\Observers\PrivateMessageObserver;
+use App\Observers\PrivateMessageViewObserver;
 use App\Observers\UserActionPlanAdviceObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +24,7 @@ class WoningdossierServiceProvider extends ServiceProvider
     {
         PrivateMessage::observe(PrivateMessageObserver::class);
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
+        PrivateMessageView::observe(PrivateMessageViewObserver::class);
 
         \View::creator('cooperation.tool.*', ToolComposer::class);
         \View::creator('*', CooperationComposer::class);

@@ -45,7 +45,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
+                    Route::get('edit', 'MessagesController@edit')->name('edit');
                     Route::post('edit', 'MessagesController@store')->name('store');
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
 
@@ -265,8 +265,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
 
                 Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
-                    Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('message/{messageId}', 'MessagesController@edit')->name('edit');
+//                    Route::get('', 'MessagesController@index')->name('index');
+                    Route::get('message/{buildingId}', 'MessagesController@edit')->name('edit');
                     Route::post('message', 'MessagesController@store')->name('store');
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });

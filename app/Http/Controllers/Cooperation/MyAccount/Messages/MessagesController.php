@@ -20,33 +20,27 @@ class MessagesController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        // TODO: create a query instead of the merg
-        // gives a idea of how it should be
-        // but really, TODO!
-//        $mainMessages = PrivateMessage::where('is_completed', false)
-//            ->where('main_message', null)
-//            ->where('from_user_id', \Auth::id())
-//            ->orWhere('to_cooperation_id', HoomdossierSession::getCooperation())->get()->merge(PrivateMessage::mainMessages()->get());
 
-        $mainMessages = PrivateMessage::where('building_id', HoomdossierSession::getBuilding())
-            ->where('to_cooperation_id', HoomdossierSession::getCooperation())
-            ->where('request_type', '!=', null)->get();
-        return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'mainMessages'));
+        return redirect(route('cooperation.my-account.messages.edit'));
+
+        return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'groups'));
     }
 
-    public function edit(Cooperation $cooperation, $mainMessageId)
+    public function edit(Cooperation $cooperation)
     {
-        $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
+        $buildingId = HoomdossierSession::getBuilding();
+        $privateMessages = PrivateMessage::conversation($buildingId)->get();
 
-        $privateMessages = PrivateMessage::conversation(HoomdossierSession::getBuilding())->get();
+        $this->authorize('edit', $privateMessages->first());
 
-//        InboxService::setRead($mainMessageId);
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
-        return view('cooperation.my-account.messages.edit', compact('privateMessages', 'mainMessageId'));
+        return view('cooperation.my-account.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants'));
     }
 
     public function revokeAccess(Cooperation $cooperation, Request $request)
     {
+        // todo, instead off a main message id use the building id and a user id
         $currentChatMainMessage = $request->get('main_message_id');
 
         // the resident himself cannot start a chat with a coach, resident or whatsoever.

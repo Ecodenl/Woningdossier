@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
-use App\Traits\GetMyValuesTrait;
 use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -83,7 +82,7 @@ class UserEnergyHabit extends Model
 
     /**
      * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id.
+     * The UserEnergyHabit uses the user_id instead of the building_id.
      *
      * @param $query
      *
@@ -96,20 +95,18 @@ class UserEnergyHabit extends Model
         return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
     }
 
-    /**
-     * Get the input Sources.
-     *
-     * @return InputSource
-     */
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
     public function inputSource()
     {
-        return $this->belongsTo('App\Models\InputSource');
+        return $this->belongsTo(InputSource::class);
     }
 
     /**
      * Get a input source name.
      *
-     * @return InputSource name
+     * @return string InputSource name
      */
     public function getInputSourceName()
     {

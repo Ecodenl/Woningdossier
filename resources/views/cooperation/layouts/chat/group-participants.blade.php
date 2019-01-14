@@ -19,17 +19,22 @@
                 var userId = $(this).find('span').data('user-id');
                 var buildingOwnerId = $(this).find('span').data('building-owner-id');
 
-                $.ajax({
-                    url: '{{route('cooperation.my-account.messages.revoke-access')}}',
-                    method: 'POST',
-                    data: {
-                        user_id: userId,
-                        building_owner_id: buildingOwnerId
-                    },
-                    success: function (data) {
+                var groupMember = $(this).parent();
 
-                    }
-                });
+                if (confirm('Are you sure')) {
+
+                    $.ajax({
+                        url: '{{route('cooperation.my-account.messages.revoke-access')}}',
+                        method: 'POST',
+                        data: {
+                            user_id: userId,
+                            building_owner_id: buildingOwnerId
+                        },
+                        success: function (data) {
+                            $(groupMember).remove();
+                        }
+                    });
+                }
             });
         });
     </script>

@@ -9,6 +9,7 @@
             }
 
             $userInterestsForMe = \App\Models\UserInterest::forMe()->get();
+            $buildingOwner = \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id);
         ?>
         <div class="row">
             <div class="col-sm-12">

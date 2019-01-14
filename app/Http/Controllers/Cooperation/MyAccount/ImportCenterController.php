@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\ToolSetting;
 use App\Http\Controllers\Controller;
+use App\Services\ToolSettingService;
+use Illuminate\Http\Request;
 
 class ImportCenterController extends Controller
 {
@@ -35,5 +38,19 @@ class ImportCenterController extends Controller
         HoomdossierSession::setIsUserComparingInputSources($compare);
 
         return redirect()->route('cooperation.tool.general-data.index');
+    }
+
+    /**
+     * Dismiss the notification from the tool pages / set the changed column to false.
+     *
+     * @param Cooperation $cooperation
+     * @param Request $request
+     */
+    public function dismissNotification(Cooperation $cooperation, Request $request)
+    {
+        // dissmis the noti
+        $inputSource = InputSource::findByShort($request->get('input_source_short'));
+
+        ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $inputSource->id, false);
     }
 }

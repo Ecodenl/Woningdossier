@@ -20,38 +20,23 @@
                             </form>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    @if($toolSetting->hasChanged())
-                                        @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => false])
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                                        @lang('woningdossier.cooperation.my-account.import-center.index.copy-data',
-                                                            ['input_source_name' => $toolSetting->inputSource->name
-                                                        ])
-                                                    </a>
-                                                    <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->inputSource->short])}}" class="btn btn-sm btn-primary pull-right">
-                                                        @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')
-                                                    </a>
-                                                    @lang('woningdossier.cooperation.my-account.import-center.index.other-source-new',
+                                    @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => false])
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
+                                                    @lang('woningdossier.cooperation.my-account.import-center.index.copy-data',
                                                         ['input_source_name' => $toolSetting->inputSource->name
                                                     ])
-                                                </div>
+                                                </a>
+                                                <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->inputSource->short])}}" class="btn btn-sm btn-primary pull-right">
+                                                    @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')
+                                                </a>
+                                                @lang('woningdossier.cooperation.my-account.import-center.index.other-source-new',
+                                                    ['input_source_name' => $toolSetting->inputSource->name
+                                                ])
                                             </div>
-                                        @endcomponent
-                                    @else
-                                        @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => false])
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
-                                                        ['input_source_name' => $toolSetting->inputSource->name
-                                                    ])
-                                                    <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                                        @lang('woningdossier.cooperation.tool.general-data.coach-input.copy.title')
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        @endcomponent
-                                    @endif
+                                        </div>
+                                    @endcomponent
                                 </div>
                             </div>
                         @endforeach

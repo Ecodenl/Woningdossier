@@ -9,6 +9,7 @@ use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\PrivateMessage;
 use App\Models\Step;
+use App\Models\ToolSetting;
 use Illuminate\View\View;
 
 class ToolComposer
@@ -27,6 +28,8 @@ class ToolComposer
         $view->with('interests', Interest::orderBy('order')->get());
 
         $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
+
+        $view->with('toolSettings', ToolSetting::getChangedSettings(HoomdossierSession::getBuilding()));
 
         $currentBuilding = HoomdossierSession::getBuilding();
         if (!is_null($currentBuilding)) {

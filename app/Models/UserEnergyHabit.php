@@ -91,7 +91,11 @@ class UserEnergyHabit extends Model
     {
         $building = Building::find(HoomdossierSession::getBuilding());
 
-        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
+	    return $query->withoutGlobalScope(GetValueScope::class)
+	                 ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')
+	                 ->orderBy('input_sources.order', 'ASC')
+	                 ->where('user_id', $building->user_id)
+	                 ->select([$this->getTable().'.*']);
     }
 
 	/**

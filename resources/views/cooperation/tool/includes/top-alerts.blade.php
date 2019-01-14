@@ -106,9 +106,12 @@ if (!isset($building)) {
                     <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">
                     <div class="row">
                         <div class="col-sm-12">
-                            @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
+                            @lang('woningdossier.cooperation.my-account.import-center.index.copy-data',
                                 ['input_source_name' => $toolSetting->inputSource->name
                             ])
+                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->inputSource->short])}}" class="btn btn-sm btn-primary pull-right">
+                                @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')
+                            </a>
                             <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
                                 @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->inputSource->name])
                             </a>

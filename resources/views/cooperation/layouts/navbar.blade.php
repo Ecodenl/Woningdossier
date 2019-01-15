@@ -78,14 +78,14 @@
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{$myUnreadMessagesCount}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
                                 </a>
                             </li>
                         @elseif(Auth::user()->can('access-admin'))
                             <li>
                                 <a href="{{route('cooperation.admin.index')}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{$myUnreadMessagesCount}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
                                 </a>
                             </li>
                         @endif

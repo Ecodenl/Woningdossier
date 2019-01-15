@@ -11,35 +11,73 @@
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.admin.layouts.components.chat-messages')
-                        @forelse($mainMessages->sortByDesc('created_at') as $mainMessage)
-                            <a href="{{ route('cooperation.admin.coach.messages.edit', ['messageId' => $mainMessage->id]) }}">
+                        @forelse($buildings as $building)
+                            <?php
+                                $publicPrivateMessage = \App\Models\PrivateMessage::forMyCooperation()->public()->conversation($building->id)->get()->last();
+                                $privatePrivateMessage = \App\Models\PrivateMessage::forMyCooperation()->private()->conversation($building->id)->get()->last();
+                            ?>
+                            @if($privatePrivateMessage instanceof \App\Models\PrivateMessage)
+                                <a href="{{ route('cooperation.admin.coach.messages.private.edit', ['buildingId' => $building->id]) }}">
+                                    <li class="left clearfix">
+                                        <div class="chat-body clearfix">
+                                            <div class="header">
+                                                <strong class="primary-font">
+                                                    {{ $privatePrivateMessage->getSender() }}
+                                                </strong>
+
+                                                <small class="pull-right text-muted">
+                                                    <span class="label label-warning">Deze chat is prive.</span>
+                                                    @if(\App\Models\PrivateMessageView::isMessageUnread($privatePrivateMessage))
+                                                        <span class="label label-primary">@lang('default.new-message')</span>
+                                                    @endif
+                                                    <?php $time = \Carbon\Carbon::parse($privatePrivateMessage->created_at); ?>
+                                                    <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
+                                                </small>
+                                            </div>
+                                            <p>
+                                                @if(\App\Models\PrivateMessageView::isMessageUnread($privatePrivateMessage))
+                                                    <strong>
+                                                        {{ $privatePrivateMessage->message }}
+                                                    </strong>
+                                                @else
+                                                    {{ $privatePrivateMessage->message }}
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </li>
+                                </a>
+                            @endif
+                            @if($publicPrivateMessage instanceof \App\Models\PrivateMessage)
+                                <a href="{{ route('cooperation.admin.coach.messages.public.edit', ['buildingId' => $building->id]) }}">
                                 <li class="left clearfix">
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{ $mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name}} - {{ $mainMessage->title }}
+                                                {{ $publicPrivateMessage->getSender() }}
                                             </strong>
 
                                             <small class="pull-right text-muted">
-                                                @if($mainMessage->hasUserUnreadMessages())
+                                                <span class="label label-danger">Deze chat is publiek.</span>
+                                                @if(\App\Models\PrivateMessageView::isMessageUnread($publicPrivateMessage))
                                                     <span class="label label-primary">@lang('default.new-message')</span>
                                                 @endif
-                                                <?php $time = \Carbon\Carbon::parse($mainMessage->created_at); ?>
+                                                <?php $time = \Carbon\Carbon::parse($publicPrivateMessage->created_at); ?>
                                                 <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
                                             </small>
                                         </div>
                                         <p>
-                                            @if($mainMessage->hasUserUnreadMessages())
+                                            @if(\App\Models\PrivateMessageView::isMessageUnread($publicPrivateMessage))
                                                 <strong>
-                                                    {{ $mainMessage->message }}
+                                                    {{ $publicPrivateMessage->message }}
                                                 </strong>
                                             @else
-                                                {{ $mainMessage->message }}
+                                                {{ $publicPrivateMessage->message }}
                                             @endif
                                         </p>
                                     </div>
                                 </li>
                             </a>
+                            @endif
 
                         @empty
                             @slot('additionalMessage')

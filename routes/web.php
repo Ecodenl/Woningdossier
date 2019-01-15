@@ -266,7 +266,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
 
                 Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
-//                    Route::get('', 'MessagesController@index')->name('index');
+                    Route::get('', 'MessagesController@index')->name('index');
                     Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
                     Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
                     Route::post('message', 'MessagesController@store')->name('store');

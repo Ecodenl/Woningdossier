@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\MessageRequest;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Services\InboxService;
@@ -17,9 +18,17 @@ class MessagesController extends Controller
 
     public function index()
     {
-        // for now.
-        return redirect()->route('cooperation.admin.cooperation.coordinator.building-access.index');
-//        return view('cooperation.admin.cooperation.coordinator.messages.index', compact('mainMessages'));
+        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
+            ->groupBy('building_id')
+            ->select('building_id')
+            ->get()
+            ->toArray();
+
+        $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
+
+        $buildings = Building::findMany($flattenedBuildingIds);
+
+        return view('cooperation.admin.cooperation.coordinator.messages.index', compact('buildings'));
     }
 
     public function publicGroup(Cooperation $cooperation, $buildingId)

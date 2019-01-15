@@ -20,6 +20,22 @@ use Illuminate\Http\Request;
 class MessagesController extends Controller
 {
 
+    public function index()
+    {
+        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
+            ->groupBy('building_id')
+            ->select('building_id')
+            ->get()
+            ->toArray();
+
+        $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
+
+        $buildings = Building::findMany($flattenedBuildingIds);
+
+
+        return view('cooperation.admin.coach.messages.index', compact('buildings'));
+    }
+
     public function publicGroup(Cooperation $cooperation, $buildingId)
     {
         $isPublic = true;

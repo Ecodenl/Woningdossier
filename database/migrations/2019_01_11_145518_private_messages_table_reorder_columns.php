@@ -18,9 +18,12 @@ class PrivateMessagesTableReorderColumns extends Migration
             // drop columns
             $table->dropColumn(['title', 'main_message', 'status', 'is_completed', 'from_user_read', 'to_user_read']);
 
-            // add the new columns
+//             add the new columns
             $table->integer('building_id')->unsigned()->nullable()->default(null)->after('id');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');
+
+            $table->dropForeign(['from_user_id']);
+            $table->foreign('from_user_id')->references('id')->on('users')->onDelete('set null');
 
             $table->string('from_user')->default("")->after('building_id');
 

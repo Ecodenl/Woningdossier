@@ -16,7 +16,7 @@
                 <div class="row">
                     <div id="example-building" class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{ \App\Helpers\Translation::translate('general-data.example-building.title') }}
+                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{ \App\Helpers\Translation::translate('general-data.example-building.title') }}</label>
                             <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                 @foreach($exampleBuildings as $exampleBuilding)
                                     <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)

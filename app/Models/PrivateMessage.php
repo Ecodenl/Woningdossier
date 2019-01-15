@@ -95,23 +95,28 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the group chat is private
+     * Determine if a private message is public
      *
-     * @param Collection | User $privateMessages
+     * @param PrivateMessage $privateMessage
      * @return bool
      */
-    public static function isGroupPublic($privateMessages): bool
+    public static function isPublic(PrivateMessage $privateMessage)
     {
-        if ($privateMessages instanceof Collection) {
-            if ($privateMessages->first()->is_public) {
-                return true;
-            }
-        } elseif($privateMessages instanceof PrivateMessage) {
-            if ($privateMessages->is_public) {
-                return true;
-            }
+        if ($privateMessage->is_public) {
+            return true;
         }
         return false;
+    }
+
+    /**
+     * Determine if a private message is private
+     *
+     * @param PrivateMessage $privateMessage
+     * @return bool
+     */
+    public static function isPrivate(PrivateMessage $privateMessage)
+    {
+        return !self::isPublic($privateMessage);
     }
 
 

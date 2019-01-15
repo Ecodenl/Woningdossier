@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -30,10 +31,16 @@ class PrivateMessageReceiverListener
     public function handle($event)
     {
         $groupParticipants = PrivateMessage::getGroupParticipants($event->privateMessage->building_id);
+        $buildingFromOwner = Building::find($event->privateMessage->building_id);
+        $privateMessage = PrivateMessage::find($event->privateMessage->id);
 
         // now we creat for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {
-            if ($groupParticipant->id != \Auth::id()) {
+
+            // check the group participant is the owner of the building and the send message is private
+            $isMessagePrivateAndGroupParticipantOwnerFromBuilding = $buildingFromOwner->user_id == $groupParticipant->id && PrivateMessage::isPrivate($privateMessage);
+
+            if ($groupParticipant->id != \Auth::id() && !$isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
                 PrivateMessageView::create([
                     'private_message_id' => $event->privateMessage->id,
                     'user_id' => $groupParticipant->id

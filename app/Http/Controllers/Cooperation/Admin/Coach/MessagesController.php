@@ -9,10 +9,12 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Models\PrivateMessageView;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
 use App\Services\MessageService;
+use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
@@ -27,6 +29,7 @@ class MessagesController extends Controller
             $this->authorize('edit', $privateMessages->first());
         }
 
+        PrivateMessageViewService::setRead($privateMessages);
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
         return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
@@ -47,6 +50,7 @@ class MessagesController extends Controller
             }
         }
 
+        PrivateMessageViewService::setRead($privateMessages);
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
         return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));

@@ -10,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Services\InboxService;
 use App\Services\MessageService;
+use App\Services\PrivateMessageViewService;
 
 class MessagesController extends Controller
 {
@@ -30,6 +31,7 @@ class MessagesController extends Controller
             $this->authorize('edit', $privateMessages->first());
         }
 
+        PrivateMessageViewService::setRead($privateMessages);
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
         return view('cooperation.admin.cooperation.coordinator.messages.edit', compact('privateMessages', 'isPublic', 'buildingId', 'groupParticipants'));
@@ -50,6 +52,7 @@ class MessagesController extends Controller
             }
         }
 
+        PrivateMessageViewService::setRead($privateMessages);
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
         return view('cooperation.admin.cooperation.coordinator.messages.edit', compact('privateMessages', 'isPublic', 'buildingId', 'groupParticipants'));

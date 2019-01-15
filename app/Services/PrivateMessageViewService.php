@@ -6,6 +6,7 @@ use App\Events\PrivateMessageReceiverEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 

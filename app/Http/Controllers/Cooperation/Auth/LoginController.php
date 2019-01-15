@@ -123,7 +123,7 @@ class LoginController extends Controller
 	        if ($isPending){
 		        \Log::debug("The user tried to log in, but isn't confirmed yet.");
 		        throw ValidationException::withMessages([
-			        'confirm_token' => [__('auth.inactive')]
+			        'confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.resend-confirm-mail')])]
 		        ]);
 	        }
         }

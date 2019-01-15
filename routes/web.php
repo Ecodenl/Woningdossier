@@ -26,9 +26,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
         //		 Login, forgot password etc.
-//        Route::group(['middleware' => 'guest'], function () {
+
+	    Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
+	    Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-email');
+
         Auth::routes();
-//        });
 
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {

@@ -212,71 +212,12 @@ class PrivateMessage extends Model
         return $query->where('is_public', false);
     }
 
-    /**
-     * Get the main messages for a person who will receives messages.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeMainMessages($query)
-    {
-        return $query->where('is_completed', false)->where('main_message', null)->where('to_user_id', \Auth::id());
-    }
 
-    /**
-     * Get the main messages for a person who sended / created the message.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeMyCreatedMessages($query)
-    {
-        return $query->where('is_completed', false)->where('main_message', null)->where('from_user_id', \Auth::id());
-    }
 
-    /**
-     * Return the sender information.
-     *
-     * @param int $messageId
-     *
-     * @return User|null
-     */
-//    public function getSender($messageId)
-//    {
-//        $senderId = $this->find($messageId)->from_user_id;
-//        if (empty($senderId)){
-//        	return null;
-//        }
-//
-//        $sender = User::find($senderId);
-//
-//        return $sender;
-//    }
 
     public function getSender()
     {
         return $this->from_user;
-    }
-
-    /**
-     * Return info about the receiver of the message.
-     *
-     * @param int $messageId
-     *
-     * @return User|null
-     */
-    public function getReceiver($messageId)
-    {
-        $receiverId = $this->find($messageId)->to_user_id;
-        if (empty($receiverId)) {
-            return null;
-        }
-
-        $receiver = User::find($receiverId);
-
-        return $receiver;
     }
 
     /**
@@ -417,42 +358,6 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if a message is the main message.
-     *
-     * @return bool
-     */
-    public function isMainMessage(): bool
-    {
-        if (empty($this->main_message)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the main message is read.
-     *
-     * @return bool
-     */
-    public function isMainMessageRead(): bool
-    {
-        // if its set to 1 it wil return true;
-        // if the to user read is set to 0 it will return false
-        return $this->to_user_read;
-    }
-
-    /**
-     * Returns the opposite of isMainMessageRead();.
-     *
-     * @return bool
-     */
-    public function isMainMessageUnread(): bool
-    {
-        return ! $this->isMainMessageRead();
-    }
-
-    /**
      * Check if the user has unread messages based on the main message.
      *
      * @return bool
@@ -476,20 +381,6 @@ class PrivateMessage extends Model
 //        }
     }
 
-    /**
-     * Check wheter a conversation request has been read, this can only be used on conversation requests
-     * Cause we search on cooperation id and not on user id.
-     *
-     * @return bool
-     */
-    public function isConversationRequestRead()
-    {
-        if ($this->to_cooperation_id == session('cooperation') && true == $this->to_user_read) {
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * Check if the message is a conversation request.

@@ -14,6 +14,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
 use App\Services\MessageService;
+use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
@@ -23,7 +24,7 @@ class MessagesController extends Controller
 
         return redirect(route('cooperation.my-account.messages.edit'));
 
-        return view('cooperation.my-account.messages.index', compact('myUnreadMessages', 'groups'));
+//        return view('cooperation.my-account.messages.index', compact('myUnreadMessagesCount', 'groups'));
     }
 
     public function edit(Cooperation $cooperation)
@@ -41,6 +42,8 @@ class MessagesController extends Controller
         $this->authorize('edit', $privateMessages->first());
 
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
+
+        PrivateMessageViewService::setRead($privateMessages);
 
         return view('cooperation.my-account.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants'));
     }

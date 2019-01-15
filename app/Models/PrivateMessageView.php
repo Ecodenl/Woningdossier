@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 
 class PrivateMessageView extends Model
@@ -13,4 +14,19 @@ class PrivateMessageView extends Model
     protected $casts = [
         'read_at' => 'datetime'
     ];
+
+    public static function getTotalUnreadMessages()
+    {
+        // if the user is loggen in as a coordinator or cooperation admin
+        if (\Auth::user()->hasRole(['coordinator', 'cooperation-admin']) && in_array(Role::find(HoomdossierSession::getRole())->name, ['coordinator', 'cooperation-admin'])) {
+            return self::where('cooperation_id', HoomdossierSession::getCooperation())
+                ->where('read_at', null)
+                ->count();
+        } else {
+            return self::where('user_id', \Auth::id())
+                ->where('read_at', null)
+                ->count();
+        }
+
+    }
 }

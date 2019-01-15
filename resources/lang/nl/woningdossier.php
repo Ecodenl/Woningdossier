@@ -10,6 +10,15 @@ return [
         ],
     ],
     'cooperation' => [
+
+        'chat' => [
+            'modal' => [
+                'text' => 'Naar welk groeps gesprek wilt u gaan ?',
+                'public' => 'Publieke',
+                'private' => 'Prive'
+            ]
+        ],
+
         'navbar' => [
             'start' => 'Start',
         ],
@@ -436,7 +445,7 @@ return [
                             \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
                         ],
                         'create' => [
-                            'header' => 'U bent de aanvraag van :firstName :lastName aan het koppelen met een coach',
+                            'header' => 'U bent de aanvraag van :name aan het koppelen met een coach',
 
                             'form' => [
                                 'message-to-coach' => [
@@ -446,7 +455,7 @@ return [
                                 'title' => 'Titel van het bericht',
                                 'select-coach' => 'Selecteer een coach',
                                 'submit' => 'Coach koppelen',
-                                'submit-warning' => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?',
+                                'submit-warning' => 'Weet u zeker dat u deze coach met :name wilt koppelen ?',
                             ],
                         ],
                         'talk-to-coach' => [

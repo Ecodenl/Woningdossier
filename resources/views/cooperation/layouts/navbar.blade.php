@@ -78,7 +78,7 @@
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{$myUnreadMessages->count()}}</span>
+                                    <span class="badge">{{$myUnreadMessagesCount}}</span>
                                 </a>
                             </li>
                         @endif

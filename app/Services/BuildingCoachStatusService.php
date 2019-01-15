@@ -15,10 +15,10 @@ class BuildingCoachStatusService
      *
      * @return bool
      */
-    public static function revokeAccess($coachId, $buildingId, $privateMessageId): bool
+    public static function revokeAccess($coachId, $buildingId): bool
     {
         BuildingCoachStatus::create([
-            'coach_id' => $coachId, 'building_id' => $buildingId, 'private_message_id' => $privateMessageId, 'status' => BuildingCoachStatus::STATUS_REMOVED,
+            'coach_id' => $coachId, 'building_id' => $buildingId, 'status' => BuildingCoachStatus::STATUS_REMOVED,
         ]);
 
         return true;

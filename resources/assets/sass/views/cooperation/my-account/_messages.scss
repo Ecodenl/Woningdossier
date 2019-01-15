@@ -1,3 +1,12 @@
+.group-members {
+  display: flex;
+  .group-member {
+    margin-right: 5px;
+    .glyphicon-remove {
+      cursor: pointer;
+    }
+  }
+}
 .chat {
   list-style: none;
   margin: 0;

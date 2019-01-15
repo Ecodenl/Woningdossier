@@ -2,41 +2,83 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Models\PrivateMessageView;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
 use App\Services\MessageService;
+use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
-    public function index(Cooperation $cooperation)
+
+    public function index()
     {
-        $myCreatedMessages = PrivateMessage::myCreatedMessages()->get();
+//        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
+//            ->groupBy('building_id')
+//            ->select('building_id')
+//            ->get()
+//            ->toArray();
+//
+//        $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
+//
+//        $buildings = Building::findMany($flattenedBuildingIds);
 
-        $mainMessages = PrivateMessage::mainMessages()->get();
+        $buildings = \DB::table('building_coach_statuses')
+            ->where('building_coach_statuses.coach_id', '=', \Auth::id())
+            ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
+            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
+            ->leftJoin('private_messages', 'private_messages.id', '=', 'building_coach_statuses.private_message_id')
+            ->select('buildings.*', 'users.first_name', 'users.last_name', 'private_messages.allow_access')
+            ->get()->unique('id');
 
-        $mainMessages = collect($mainMessages)->merge($myCreatedMessages)->unique('id');
-
-        return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
+        return view('cooperation.admin.coach.messages.index', compact('buildings'));
     }
 
-    public function edit(Cooperation $cooperation, $mainMessageId)
+    public function publicGroup(Cooperation $cooperation, $buildingId)
     {
-        $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
+        $isPublic = true;
+        $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
 
-        $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
+        if ($privateMessages->first() instanceof PrivateMessage) {
+            $this->authorize('edit', $privateMessages->first());
+        }
 
-        InboxService::setRead($mainMessageId);
+        PrivateMessageViewService::setRead($privateMessages);
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
-        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'mainMessageId'));
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
     }
+
+    public function privateGroup(Cooperation $cooperation, $buildingId)
+    {
+        $isPublic = false;
+        $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
+
+        if ($privateMessages->first() instanceof PrivateMessage) {
+            $this->authorize('edit', $privateMessages->first());
+        } else {
+            // at this point we check if there is actually a private_message, public or not.
+            if (!PrivateMessage::forMyCooperation()->conversation($buildingId)->first() instanceof PrivateMessage) {
+                // there are no messages for this building for the current cooperation, so we return them back to the index from the buildings
+                return redirect()->route('cooperation.admin.cooperation.coordinator.building-access.index');
+            }
+        }
+
+        PrivateMessageViewService::setRead($privateMessages);
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
+
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
+    }
+
 
     public function store(Cooperation $cooperation, MessagesRequest $request)
     {

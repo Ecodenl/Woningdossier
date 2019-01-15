@@ -37,11 +37,6 @@
                                         @lang('woningdossier.cooperation.my-account.side-nav.my-messages')
                                     </a>
                                 </li>
-                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.requests.index', 'cooperation.my-account.messages.requests.edit']))  active @endif">
-                                    <a href="{{route('cooperation.my-account.messages.requests.index')}}">
-                                        @lang('woningdossier.cooperation.my-account.side-nav.my-requests')
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                     </div>

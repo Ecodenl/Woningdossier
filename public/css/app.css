@@ -8478,6 +8478,20 @@ ul.progress-list li.not-available a:focus img {
   margin-top: -45px;
 }
 
+.group-members {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.group-members .group-member {
+  margin-right: 5px;
+}
+
+.group-members .group-member .glyphicon-remove {
+  cursor: pointer;
+}
+
 .chat {
   list-style: none;
   margin: 0;

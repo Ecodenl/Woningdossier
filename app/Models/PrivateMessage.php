@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class PrivateMessage extends Model
 {
@@ -17,9 +18,8 @@ class PrivateMessage extends Model
     const REQUEST_TYPE_OTHER = 'other';
 
     protected $fillable = [
-        'message', 'from_user_id', 'to_user_id', 'from_cooperation_id',
-        'to_cooperation_id', 'status', 'main_message', 'title',
-        'request_type', 'allow_access',
+        'message', 'from_user_id', 'from_cooperation_id', 'to_cooperation_id',
+        'request_type', 'allow_access', 'building_id', 'from_user', 'is_public'
     ];
 
     /**
@@ -28,11 +28,20 @@ class PrivateMessage extends Model
      * @var array
      */
     protected $casts = [
-        'is_completed' => 'boolean',
-        'from_user_read' => 'boolean',
-        'to_user_read' => 'boolean',
         'allow_access' => 'boolean',
+        'is_public' => 'boolean',
     ];
+
+
+    public function scopeForMyCooperation($query)
+    {
+        return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
+    }
+
+    public function scopeConversationRequest($query, $buildingId)
+    {
+        return $query->where('building_id', $buildingId)->where('request_type', '!=', null);
+    }
 
     public static function isConversationRequestConnectedToCoach($conversationRequest)
     {
@@ -55,6 +64,62 @@ class PrivateMessage extends Model
     }
 
     /**
+     * Return the private message ids based on the Auth user has permission to
+     *
+     * A "group" is defined by its building_id, one building_id has one group
+     * however, a coach or coordinator can access multiple groups. This because they need to talk to multiple residents / buildings
+     * in that case we return multiple private messages ids
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopePrivateMessagesIdsGroupedByBuildingId($query)
+    {
+        $role = Role::find(HoomdossierSession::getRole());
+        // we call it short
+        $roleShort = $role->name;
+
+        switch ($roleShort) {
+            case 'resident':
+                $query = $query
+                    ->where('building_id', HoomdossierSession::getBuilding())
+                    ->orderBy('created_at');
+
+            case 'coach':
+
+            case 'coordinator':
+
+        }
+
+        return $query;
+    }
+
+    /**
+     * Determine if a private message is public
+     *
+     * @param PrivateMessage $privateMessage
+     * @return bool
+     */
+    public static function isPublic(PrivateMessage $privateMessage)
+    {
+        if ($privateMessage->is_public) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine if a private message is private
+     *
+     * @param PrivateMessage $privateMessage
+     * @return bool
+     */
+    public static function isPrivate(PrivateMessage $privateMessage)
+    {
+        return !self::isPublic($privateMessage);
+    }
+
+    /**
      * Scope a query to return the messages that are sent to a user / coach.
      *
      * @return PrivateMessage
@@ -62,18 +127,6 @@ class PrivateMessage extends Model
     public function scopeMyPrivateMessages($query)
     {
         return $query->where('to_user_id', \Auth::id());
-    }
-
-    /**
-     * Scope a query to return the current open conversation requests.
-     *
-     * @return PrivateMessage
-     */
-    public function scopeMyConversationRequest($query)
-    {
-        return $query
-            ->where('from_user_id', \Auth::id())
-            ->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
     /**
@@ -91,101 +144,53 @@ class PrivateMessage extends Model
             ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION);
     }
 
-    public function scopeMyOpenCoachConversationRequest($query)
+    public function scopeMyOpenConversationRequest($query)
     {
         return $query
-            ->where('from_user_id', \Auth::id())
-            ->where('to_cooperation_id', session('cooperation'))
-            ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION)
-            ->where('status', self::STATUS_IN_CONSIDERATION);
+            ->where('building_id', HoomdossierSession::getBuilding())
+            ->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
     /**
-     * Scope a query to return the full conversation between a coach and a user based on the main message.
+     * Scope a query to return the conversation ordered on created_at
      *
      * @return $this
      */
-    public static function scopeConversation($query, $mainMessageId)
+    public static function scopeConversation($query, $buildingId)
     {
-        return $query->where('id', $mainMessageId)->orWhere('main_message', $mainMessageId);
+        return $query->where('building_id', $buildingId)->orderBy('created_at');
     }
 
     /**
-     * Get the main messages for a person who will receives messages.
+     * Scope the public messages
      *
      * @param $query
+     * @return mixed
+     */
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true);
+    }
+
+    /**
+     * Scope the private messages
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopePrivate($query)
+    {
+        return $query->where('is_public', false);
+    }
+
+    /**
+     * Return the full name, just a wrap
      *
      * @return mixed
      */
-    public function scopeMainMessages($query)
-    {
-        return $query->where('is_completed', false)->where('main_message', null)->where('to_user_id', \Auth::id());
-    }
-
-    /**
-     * Get the main messages for a person who sended / created the message.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeMyCreatedMessages($query)
-    {
-        return $query->where('is_completed', false)->where('main_message', null)->where('from_user_id', \Auth::id());
-    }
-
-    /**
-     * Return the sender information.
-     *
-     * @param int $messageId
-     *
-     * @return User|null
-     */
-//    public function getSender($messageId)
-//    {
-//        $senderId = $this->find($messageId)->from_user_id;
-//        if (empty($senderId)){
-//        	return null;
-//        }
-//
-//        $sender = User::find($senderId);
-//
-//        return $sender;
-//    }
-
     public function getSender()
     {
-        $senderId = $this->from_user_id;
-        if (empty($senderId)) {
-            return null;
-        }
-
-        $sender = User::find($senderId);
-
-        if ($sender instanceof User) {
-            return $sender;
-        }
-
-        return null;
-    }
-
-    /**
-     * Return info about the receiver of the message.
-     *
-     * @param int $messageId
-     *
-     * @return User|null
-     */
-    public function getReceiver($messageId)
-    {
-        $receiverId = $this->find($messageId)->to_user_id;
-        if (empty($receiverId)) {
-            return null;
-        }
-
-        $receiver = User::find($receiverId);
-
-        return $receiver;
+        return $this->from_user;
     }
 
     /**
@@ -218,14 +223,57 @@ class PrivateMessage extends Model
         return Cooperation::find($sendingCooperationId);
     }
 
+
+    /**
+     * Get all the "group members"
+     * returns a collection of all the participants for a chat from a building
+     *
+     * @param $buildingId
+     * @param bool $publicConversation
+     *
+     * @return Collection
+     */
+    public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
+    {
+        // all the buildingCoachStatuses for a building
+        $buildingCoachStatuses = BuildingCoachStatus::where('building_id', $buildingId)->get();
+
+        // filter the coaches that have access to a building
+        $coachesWithAccess = $buildingCoachStatuses->filter(function ($buildingCoachStatus) {
+            return BuildingCoachStatus::hasCoachAccess($buildingCoachStatus->building_id, $buildingCoachStatus->coach_id);
+        })->unique('coach_id');
+
+        // create a collection of group members
+        $groupMembers = collect();
+
+        // if its a public conversation we push the building owner in it
+        if ($publicConversation) {
+            // get the owner of the building,
+            $groupMembers->push(Building::find($buildingId)->user);
+        }
+
+        // put the coaches with access to the groupmembers
+        foreach ($coachesWithAccess as $coachWithAccess) {
+            $groupMembers->push(User::find($coachWithAccess->coach_id));
+        }
+
+
+        return $groupMembers;
+    }
+
     /**
      * Check if its the user his message.
      *
      * @return bool
      */
-    public function isMyMessage()
+    public function isMyMessage(): bool
     {
-        if ($this->from_user_id == \Auth::id()) {
+        // a coordinator and cooperation admin talks from a cooperation, not from his own name.
+        if (\Auth::user()->hasRole(['coordinator', 'cooperation-admin']) && in_array(Role::find(HoomdossierSession::getRole())->name, ['coordinator', 'cooperation-admin'])) {
+            if ($this->from_cooperation_id == HoomdossierSession::getCooperation()) {
+                return true;
+            }
+        } elseif(\Auth::id() == $this->from_user_id) {
             return true;
         }
 
@@ -243,34 +291,6 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the user has response to his conversation request.
-     *
-     * @return bool
-     */
-    public static function hasUserResponseToConversationRequest()
-    {
-        if (null != self::myConversationRequest()->first() && self::STATUS_LINKED_TO_COACH == self::myConversationRequest()->first()->status) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the user has response to his coach conversation request.
-     *
-     * @return bool
-     */
-    public static function hasUserResponseToCoachConversationRequest()
-    {
-        if (null != self::myCoachConversationRequest()->first() && self::STATUS_LINKED_TO_COACH == self::myCoachConversationRequest()->first()->status) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Scope a query to get the unread messages from a user.
      *
      * @param $query
@@ -279,43 +299,7 @@ class PrivateMessage extends Model
      */
     public function scopeUnreadMessages($query)
     {
-        return $query->where('to_user_id', \Auth::id())->where('to_user_read', false);
-    }
-
-    /**
-     * Check if a message is the main message.
-     *
-     * @return bool
-     */
-    public function isMainMessage(): bool
-    {
-        if (empty($this->main_message)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the main message is read.
-     *
-     * @return bool
-     */
-    public function isMainMessageRead(): bool
-    {
-        // if its set to 1 it wil return true;
-        // if the to user read is set to 0 it will return false
-        return $this->to_user_read;
-    }
-
-    /**
-     * Returns the opposite of isMainMessageRead();.
-     *
-     * @return bool
-     */
-    public function isMainMessageUnread(): bool
-    {
-        return ! $this->isMainMessageRead();
+        return $query;
     }
 
     /**
@@ -325,34 +309,23 @@ class PrivateMessage extends Model
      */
     public function hasUserUnreadMessages(): bool
     {
-        $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
 
-        // $asnwers will be empty when there is no response to the main message
-        if ($answers->isNotEmpty()) {
-            return $answers->contains('to_user_read', false);
-        } elseif ($this->isMainMessage()) {
-            // we check if the main message is unread and if its not our message, you have always read your own message.
-            // unless your blind.
-            return $this->isMainMessageUnread() && $this->isNotMyMessage();
-        } else {
-            \Log::debug(__FUNCTION__.'Came to the else for message id: '.$this->id);
-        }
+        // new logic should be aplied here
+        return true;
+//        $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
+//
+//        // $asnwers will be empty when there is no response to the main message
+//        if ($answers->isNotEmpty()) {
+//            return $answers->contains('to_user_read', false);
+//        } elseif ($this->isMainMessage()) {
+//            // we check if the main message is unread and if its not our message, you have always read your own message.
+//            // unless your blind.
+//            return $this->isMainMessageUnread() && $this->isNotMyMessage();
+//        } else {
+//            \Log::debug(__FUNCTION__.'Came to the else for message id: '.$this->id);
+//        }
     }
 
-    /**
-     * Check wheter a conversation request has been read, this can only be used on conversation requests
-     * Cause we search on cooperation id and not on user id.
-     *
-     * @return bool
-     */
-    public function isConversationRequestRead()
-    {
-        if ($this->to_cooperation_id == session('cooperation') && true == $this->to_user_read) {
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * Check if the message is a conversation request.

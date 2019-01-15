@@ -16,7 +16,7 @@
                 <div class="row">
                     <div id="example-building" class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>@lang('woningdossier.cooperation.tool.general-data.example-building.example-building-type')</label>
+                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{ \App\Helpers\Translation::translate('general-data.example-building.title') }}
                             <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                 @foreach($exampleBuildings as $exampleBuilding)
                                     <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
@@ -41,7 +41,7 @@
                         <div class="col-sm-12">
                             <div class="form-group add-space">
                                 <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
-                                    I would like to have some help full information right here!
+                                    {{ \App\Helpers\Translation::translate('general-data.example-building.help') }}
                                 </div>
                             </div>
                         </div>

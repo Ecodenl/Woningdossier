@@ -29,8 +29,15 @@ class MessagesController extends Controller
     public function edit(Cooperation $cooperation)
     {
         $buildingId = HoomdossierSession::getBuilding();
-        $privateMessages = PrivateMessage::conversation($buildingId)->get();
+        $privateMessages = PrivateMessage::forMyCooperation()
+            ->public()
+            ->conversation($buildingId)
+            ->get();
 
+        // if no private message exist redirect them to the conversation request create
+        if (!$privateMessages->first() instanceof PrivateMessage) {
+            return redirect()->route('cooperation.conversation-requests.index');
+        }
         $this->authorize('edit', $privateMessages->first());
 
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);

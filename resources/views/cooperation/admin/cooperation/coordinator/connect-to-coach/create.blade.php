@@ -4,7 +4,7 @@
 @section('coordinator_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.header', ['firstName' => $privateMessage->getSender($privateMessage->id)->first_name, 'lastName' => $privateMessage->getSender($privateMessage->id)->last_name])
+            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.header', ['name' => $privateMessage->getSender()])
 
         </div>
 
@@ -13,15 +13,14 @@
                 <div class="col-sm-12">
                     <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.store')}}" method="post"  >
                         {{csrf_field()}}
-                        <input type="hidden" name="sender_id" value="{{$privateMessage->from_user_id}}">
-                        <input type="hidden" name="private_message_id" value="{{$privateMessage->id}}">
+                        <input type="hidden" name="building_id" value="{{$buildingId}}">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('coach') ? ' has-error' : '' }}>
                                     <label for="coach">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.select-coach')</label>
-                                    <select name="coach" class="coach form-control" id="coach">
+                                    <select name="coach_id" class="coach form-control" id="coach">
                                         @foreach($coaches as $coach)
-                                            <option @if(old('coach') == $coach->id) selected @endif value="{{$coach->id}}">{{$coach->first_name ." ". $coach->last_name}}</option>
+                                            <option @if(old('coach') == $coach->id) selected @endif value="{{$coach->id}}">{{$coach->getFullName()}}</option>
                                         @endforeach
                                     </select>
 
@@ -54,10 +53,11 @@
 
         <script>
 
-            $('form').disableAutoFill();
+            var form = $('form');
+            form.disableAutoFill();
 
-            $('form').on('submit', function () {
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.submit-warning', ['firstName' => $privateMessage->getSender($privateMessage->id)->first_name, 'lastName' => $privateMessage->getSender($privateMessage->id)->last_name])')) {
+            form.on('submit', function () {
+                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.submit-warning', ['name' => $privateMessage->getSender()])')) {
 
                 } else {
                     event.preventDefault();

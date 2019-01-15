@@ -24,9 +24,17 @@ class ConnectToCoachController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-        $openConversations = PrivateMessage::openCooperationConversationRequests()->get();
+        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
+            ->groupBy('building_id')
+            ->select('building_id')
+            ->get()
+            ->toArray();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.index', compact('openConversations'));
+        $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
+
+        $buildings = Building::findMany($flattenedBuildingIds);
+
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.index', compact('buildings'));
     }
 
     /**
@@ -37,13 +45,12 @@ class ConnectToCoachController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Cooperation $cooperation, $privateMessageId)
+    public function create(Cooperation $cooperation, $buildingId)
     {
-        $privateMessage = PrivateMessage::openCooperationConversationRequests()->find($privateMessageId);
-
+        $privateMessage = PrivateMessage::forMyCooperation()->conversationRequest($buildingId)->first();
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('privateMessage', 'coaches'));
+        return view('cooperation.admin.cooperation.coordinator.connect-to-coach.create', compact('buildingId', 'coaches', 'privateMessage'));
     }
 
     /**
@@ -56,35 +63,33 @@ class ConnectToCoachController extends Controller
      */
     public function store(Cooperation $cooperation, ConnectToCoachRequest $request)
     {
-        $coach = $request->get('coach', '');
-        $senderId = $request->get('sender_id', '');
-        $privateMessageId = $request->get('private_message_id', '');
+        $coachId = $request->get('coach_id', '');
+        $buildingId = $request->get('building_id', '');
 
-        // the resident now has a coach to talk to, so the conversation request is done.
-        PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
-            'status' => PrivateMessage::STATUS_LINKED_TO_COACH,
-        ]);
 
         // the receiver of the message
-        $toUser = $cooperation->users()->find($coach);
+        $coach = $cooperation->users()->find($coachId);
 
-        $residentBuilding = Building::where('user_id', $senderId)->first();
+        if ($coach instanceof User) {
 
-        $privateMessage = PrivateMessage::find($privateMessageId);
+            $residentBuilding = Building::find($buildingId);
 
-        if ($privateMessage->allow_access) {
-            // give the coach permission to the resident his building
-            BuildingPermission::create([
-                'user_id' => $toUser->id, 'building_id' => $residentBuilding->id,
+            $privateMessage = PrivateMessage::forMyCooperation()->conversationRequest($buildingId)->first();
+
+            if ($privateMessage->allow_access) {
+                // give the coach permission to the resident his building
+                BuildingPermission::create([
+                    'user_id' => $coach->id, 'building_id' => $residentBuilding->id,
+                ]);
+            }
+
+            BuildingCoachStatus::create([
+                'coach_id' => $coach->id,
+                'building_id' => $residentBuilding->id,
+                'status' => BuildingCoachStatus::STATUS_ACTIVE,
+//                'private_message_id' => $privateMessageId,
             ]);
         }
-
-        BuildingCoachStatus::create([
-            'coach_id' => $toUser->id,
-            'building_id' => $residentBuilding->id,
-            'status' => BuildingCoachStatus::STATUS_ACTIVE,
-            'private_message_id' => $privateMessageId,
-        ]);
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }
@@ -114,30 +119,34 @@ class ConnectToCoachController extends Controller
      */
     public function talkToCoachStore(Cooperation $cooperation, Request $request)
     {
-        $coach = $request->get('coach', '');
-        $message = $request->get('message');
-        $title = $request->get('title', '');
-        $privateMessageId = $request->get('private_message_id', '');
-
-        // When a coordinator starts a message with a coach through a specific conversation request
-        // we update the status of that request to "in consideration"
-        PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
-            'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
-        ]);
-
-        // the receiver of the message, in this case a coach
-        $toUser = $cooperation->users()->find($coach);
-
-        // create a new message
-        PrivateMessage::create(
-            [
-                'title' => $title,
-                'message' => $message,
-                'from_cooperation_id' => $cooperation->id,
-                'to_user_id' => $toUser->id,
-                'from_user_id' => \Auth::id(),
-            ]
-        );
+//        $coach = $request->get('coach', '');
+//        $message = $request->get('message');
+//        $title = $request->get('title', '');
+//        $privateMessageId = $request->get('private_message_id', '');
+//
+//        // When a coordinator starts a message with a coach through a specific conversation request
+//        // we update the status of that request to "in consideration"
+//        PrivateMessage::openCooperationConversationRequests()->where('id', $privateMessageId)->update([
+//
+//        ]);
+//
+//        PrivateMessage::conversationRequest($buildingId)->update([
+//            'status' => PrivateMessage::STATUS_IN_CONSIDERATION,
+//        ]);
+//
+//        // the receiver of the message, in this case a coach
+//        $toUser = $cooperation->users()->find($coach);
+//
+//        // create a new message
+//        PrivateMessage::create(
+//            [
+//                'title' => $title,
+//                'message' => $message,
+//                'from_cooperation_id' => $cooperation->id,
+//                'to_user_id' => $toUser->id,
+//                'from_user_id' => \Auth::id(),
+//            ]
+//        );
 
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }

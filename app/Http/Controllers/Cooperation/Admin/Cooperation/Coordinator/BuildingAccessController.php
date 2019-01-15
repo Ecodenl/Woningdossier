@@ -45,7 +45,7 @@ class BuildingAccessController extends Controller
 
 
         // we want to show the coordinators all the buildings that initiated a requested to the cooperation.
-        $privateMessageBuildingIds = PrivateMessage::where('to_cooperation_id', HoomdossierSession::getCooperation())
+        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
             ->groupBy('building_id')
             ->select('building_id')
             ->get()

@@ -38,6 +38,11 @@ class PrivateMessage extends Model
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
+    public function scopeConversationRequest($query, $buildingId)
+    {
+        return $query->where('building_id', $buildingId)->where('request_type', '!=', null);
+    }
+
     public static function isConversationRequestConnectedToCoach($conversationRequest)
     {
         return self::STATUS_LINKED_TO_COACH == $conversationRequest->status;
@@ -183,6 +188,28 @@ class PrivateMessage extends Model
     public static function scopeConversation($query, $buildingId)
     {
         return $query->where('building_id', $buildingId)->orderBy('created_at');
+    }
+
+    /**
+     * Scope the public messages
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true);
+    }
+
+    /**
+     * Scope the private messages
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopePrivate($query)
+    {
+        return $query->where('is_public', false);
     }
 
     /**

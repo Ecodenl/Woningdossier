@@ -22,16 +22,23 @@ class MessagesController extends Controller
 
     public function index()
     {
-        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
-            ->groupBy('building_id')
-            ->select('building_id')
-            ->get()
-            ->toArray();
+//        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
+//            ->groupBy('building_id')
+//            ->select('building_id')
+//            ->get()
+//            ->toArray();
+//
+//        $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
+//
+//        $buildings = Building::findMany($flattenedBuildingIds);
 
-        $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
-
-        $buildings = Building::findMany($flattenedBuildingIds);
-
+        $buildings = \DB::table('building_coach_statuses')
+            ->where('building_coach_statuses.coach_id', '=', \Auth::id())
+            ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
+            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
+            ->leftJoin('private_messages', 'private_messages.id', '=', 'building_coach_statuses.private_message_id')
+            ->select('buildings.*', 'users.first_name', 'users.last_name', 'private_messages.allow_access')
+            ->get()->unique('id');
 
         return view('cooperation.admin.coach.messages.index', compact('buildings'));
     }

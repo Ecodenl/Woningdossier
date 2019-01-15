@@ -119,27 +119,6 @@ class PrivateMessage extends Model
         return !self::isPublic($privateMessage);
     }
 
-
-
-    public function scopeMessageGroups($query)
-    {
-        $privateMessageIds = $this->privateMessagesIdsGroupedByBuildingId()->get();
-        $role = Role::find(HoomdossierSession::getRole());
-        // we call it short
-        $roleShort = $role->name;
-
-        switch ($roleShort) {
-            case 'resident':
-                $query
-                    ->where('building_id', HoomdossierSession::getBuilding())
-                    ->select('building_id')
-                    ->groupBy('building_id')->get();
-
-        }
-
-        return $query;
-    }
-    
     /**
      * Scope a query to return the messages that are sent to a user / coach.
      *
@@ -148,19 +127,6 @@ class PrivateMessage extends Model
     public function scopeMyPrivateMessages($query)
     {
         return $query->where('to_user_id', \Auth::id());
-    }
-
-    /**
-     * Scope a query to return the current open conversation requests.
-     *
-     * @return PrivateMessage
-     */
-    public function scopeMyConversationRequest($query)
-    {
-        return $query
-            ->where('request_type', '!=', null)
-            ->where('building_id', HoomdossierSession::getBuilding())
-            ->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
     /**
@@ -217,9 +183,11 @@ class PrivateMessage extends Model
         return $query->where('is_public', false);
     }
 
-
-
-
+    /**
+     * Return the full name, just a wrap
+     *
+     * @return mixed
+     */
     public function getSender()
     {
         return $this->from_user;
@@ -320,34 +288,6 @@ class PrivateMessage extends Model
     public function isNotMyMessage(): bool
     {
         return ! $this->isMyMessage();
-    }
-
-    /**
-     * Check if the user has response to his conversation request.
-     *
-     * @return bool
-     */
-    public static function hasUserResponseToConversationRequest()
-    {
-        if (null != self::myConversationRequest()->first() && self::STATUS_LINKED_TO_COACH == self::myConversationRequest()->first()->status) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the user has response to his coach conversation request.
-     *
-     * @return bool
-     */
-    public static function hasUserResponseToCoachConversationRequest()
-    {
-        if (null != self::myCoachConversationRequest()->first() && self::STATUS_LINKED_TO_COACH == self::myCoachConversationRequest()->first()->status) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

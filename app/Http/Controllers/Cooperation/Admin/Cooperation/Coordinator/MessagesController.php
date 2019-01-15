@@ -18,7 +18,7 @@ class MessagesController extends Controller
     public function index()
     {
         // for now.
-        return redirect(back());
+        return redirect()->route('cooperation.admin.cooperation.coordinator.building-access.index');
 //        return view('cooperation.admin.cooperation.coordinator.messages.index', compact('mainMessages'));
     }
 

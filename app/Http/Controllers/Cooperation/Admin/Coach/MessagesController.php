@@ -25,7 +25,7 @@ class MessagesController extends Controller
         $isPublic = true;
         $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
 
-        if ($privateMessages instanceof PrivateMessage) {
+        if ($privateMessages->first() instanceof PrivateMessage) {
             $this->authorize('edit', $privateMessages->first());
         }
 
@@ -40,7 +40,7 @@ class MessagesController extends Controller
         $isPublic = false;
         $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
 
-        if ($privateMessages instanceof PrivateMessage) {
+        if ($privateMessages->first() instanceof PrivateMessage) {
             $this->authorize('edit', $privateMessages->first());
         } else {
             // at this point we check if there is actually a private_message, public or not.

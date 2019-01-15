@@ -51,6 +51,7 @@ class PrivateMessagePolicy
 
             return false;
         } elseif ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
+
             return true;
 
         }

@@ -15,6 +15,11 @@ class PrivateMessageView extends Model
         'read_at' => 'datetime'
     ];
 
+    /**
+     * Get the total unread messages from a auth user
+     *
+     * @return int
+     */
     public static function getTotalUnreadMessages()
     {
         // if the user is loggen in as a coordinator or cooperation admin

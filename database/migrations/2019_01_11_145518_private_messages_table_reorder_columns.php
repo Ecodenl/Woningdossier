@@ -15,13 +15,15 @@ class PrivateMessagesTableReorderColumns extends Migration
     {
         Schema::table('private_messages', function (Blueprint $table) {
 
-            // drop columns and foreigns
+            // drop columns
             $table->dropColumn(['title', 'main_message', 'status', 'is_completed', 'from_user_read', 'to_user_read']);
 
             // add the new columns
             $table->integer('building_id')->unsigned()->nullable()->default(null)->after('id');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('set null');
+
             $table->string('from_user')->default("")->after('building_id');
+
             $table->boolean('is_public')->nullable()->after('building_id');
 
 
@@ -79,34 +81,11 @@ class PrivateMessagesTableReorderColumns extends Migration
             $table->string('status')->nullable()->after('request_type');
             $table->boolean('is_completed')->default(false)->after('status');
 
-        });
-
-        Schema::table('private_messages', function (Blueprint $table) {
-
-            $pm = \DB::table('private_messages')->get();
-
-            foreach ($pm as $privateMessage) {
-
-                $building = \DB::table('buildings')->where('id', $privateMessage->building_id)->first();
-
-                if ($building instanceof stdClass) {
-
-                    $user = \DB::table('users')->find($building->id);
-
-                    $fromUserId = $user->id;
-
-                    \DB::table('private_messages')
-                        ->where('id', $privateMessage->id)
-                        ->update([
-                            'from_user_id' => $fromUserId,
-                        ]);
-                }
-            }
-
             $table->dropForeign(['building_id']);
             $table->dropColumn(['building_id', 'from_user']);
-            $table->dropColumn('is_public');
+
         });
+
 
     }
 }

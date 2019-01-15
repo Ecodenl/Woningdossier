@@ -8,7 +8,7 @@
                     <div class="panel-heading">Resend confirmation e-mail</div>
 
                     <div class="panel-body">
-                        <form class="form-horizontal" method="POST" action="{{ route('cooperation.auth.resend-confirm-email', ['cooperation' => $cooperation]) }}">
+                        <form class="form-horizontal" method="POST" action="{{ route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation]) }}">
                             {{ csrf_field() }}
 
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">

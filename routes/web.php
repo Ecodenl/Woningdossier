@@ -28,7 +28,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         //		 Login, forgot password etc.
 
 	    Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
-	    Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-email');
+	    Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
 
         Auth::routes();
 

@@ -15,6 +15,5 @@ class CooperationComposer
         $view->with('cooperationStyle', app()->make('CooperationStyle'));
 
         $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
-        $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessages());
     }
 }

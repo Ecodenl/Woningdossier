@@ -205,9 +205,9 @@ Dakisolatie,"Indicatie vervangingsmoment dakpannen","Op basis van het huidige st
 General,graden,"Geen helptext",general.unit.degrees,92442724-9f6d-4e87-b9a0-83514944162c,f5c04516-3253-47bf-8943-17d5167845d4
 General,m²,"Geen helptext",general.unit.square-meters,5385186a-243f-4a8b-8dce-3003007e3ad4,8dde4d5e-989f-4b69-b04a-885924c3325f
 General,m3,"Geen helptext",general.unit.cubic-meters,5320e94b-0e08-471b-ad29-5774e73edd28,39a7d2ac-249e-4bc3-ac7e-875abc2298da
-General,day,"Geen helptext",general.unit.day,ae45a36c-7509-4b15-8b41-8b8a567f26eb,7a407c2f-f57f-4626-b7f3-e0501d5191e0
+General,dag,"Geen helptext",general.unit.day,ae45a36c-7509-4b15-8b41-8b8a567f26eb,7a407c2f-f57f-4626-b7f3-e0501d5191e0
 General,liter,"Geen helptext",general.unit.liter,8975ccb1-0543-4050-92a7-cfbd0bb3bb78,cfabc4de-53a2-43f3-86a8-ef41060c618f
-General,pieces,"Geen helptext",general.unit.pieces,c86cd9d4-7536-42e7-8f45-48b714374c9d,d8486b47-4003-40c5-aa06-9c05d2b06936
+General,stuks,"Geen helptext",general.unit.pieces,c86cd9d4-7536-42e7-8f45-48b714374c9d,d8486b47-4003-40c5-aa06-9c05d2b06936
 General,kg,"Geen helptext",general.unit.kg,7861ce73-3bc4-4d26-a8ea-7d31ea543c82,1a6af964-e1e0-4538-abc1-0065b0b5b97a
 "HR CV Ketel","Indicatie voor kosten en baten voor deze maatregel ","Hier kunt u zien wat de indicatieve kosten en baten voor deze maatregel zijn. Als er geen waarde wordt aangegeven:  wordt er geen besparing berekend. Het gaat dan alleen om een onderhoudsmaatregel. Er wordt geen energiebesparing gerealiseerd.",boiler.indication-for-costs,0b2d3a3a-fc2d-4a5d-8ef3-ca550d5b2bc8,0b7db881-c775-48ba-bd9f-2457a2ae919c
 "HR CV Ketel","Indicatieve kosten","Hier kunt u zien wat de indicatieve kosten voor deze maatregel zijn.",boiler.indication-for-costs.indicative-costs-insulation,a2e6431d-9c7b-4e51-962a-35218ea50d98,e3305b8e-3710-4a51-9542-759a7ed22993
@@ -229,7 +229,7 @@ Zonneboiler,"Comfortniveau voor het gebruik van warm tapwater","Hier wordt nog e
 Zonneboiler,"Oriëntatie van de collector","Geef hier aan in welke oriëntatie de zonnecollector geplaatst wordt. ",heater.pv-panel-orientation-id,5db0611a-7ff7-46b6-8205-7690357ac817,436f71cb-fefb-459f-b0cd-ad05d62718a6
 Zonneboiler,"Hellingshoek van de collector","Geef hier aan onder welke hellingshoek de zonnecollector geplaatst wordt. Op een hellend dak is de hellingshoek van de collector meestal gelijk aan de dakhelling.",heater.angle,314b0b21-d7b2-456f-80ef-926eeb6b9b3b,0d7bd296-3370-4c73-b9f0-e59d15dae343
 Zonneboiler,"Gebruik warm tapwater","Het gebruik voor warm tapwater is afhankelijk van het aantal gebruikers en het comfortniveau.",heater.consumption-water,c920b95f-f197-401d-b768-dbd207736dd9,317d5606-b386-47e6-b113-41ec0d25e2cc
-Zonneboiler,"Bijhorend gasverbruik","Hier wordt een inschatting gegeven van het jaalijkse gasverbruik voor warm tapwater.",heater.consumption-gas,b942707f-b578-4f71-b522-1f92dbb0109f,74184143-1e2d-4f49-8511-95399f1d6fba
+Zonneboiler,"Bijhorend gasverbruik","Hier wordt een inschatting gegeven van het jaarlijkse gasverbruik voor warm tapwater.",heater.consumption-gas,b942707f-b578-4f71-b522-1f92dbb0109f,74184143-1e2d-4f49-8511-95399f1d6fba
 Zonneboiler,"Grootte zonneboiler","Op basis van de verbruikscijfers wordt hier een inschatting gegeven hoe groot het buffervat zou moeten zijn.",heater.size-boiler,bc80f2a3-5384-41ba-986d-1478f12a5dd8,15ac510c-d158-4ec5-a53c-db6c25e02bf8
 Zonneboiler,"Grootte collector","Op basis van de verbruikscijfers wordt hier een inschatting gegeven hoe groot de collector zou moeten zijn.",heater.size-collector,5179c23f-79c1-428f-bacc-45abdaf5769e,448a0cfe-ab1d-424d-8ae4-4b2e74075277
 Zonneboiler,"Indicatie voor kosten en baten voor deze maatregel","Kosten baten voor de maatregel",heater.indication-for-costs.title,1b8dcfea-2dc8-467f-a3e7-6e28bc8dcac3,db49c948-6bbb-44ae-a20b-87f84df476a1

@@ -10,6 +10,15 @@ return [
         ],
     ],
     'cooperation' => [
+
+        'chat' => [
+            'modal' => [
+                'text' => 'Naar welk groeps gesprek wilt u gaan ?',
+                'public' => 'Publieke',
+                'private' => 'Prive'
+            ]
+        ],
+
         'navbar' => [
             'start' => 'Start',
         ],

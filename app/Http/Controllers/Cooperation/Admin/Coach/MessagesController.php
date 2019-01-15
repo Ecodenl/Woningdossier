@@ -18,16 +18,40 @@ use Illuminate\Http\Request;
 class MessagesController extends Controller
 {
 
-    public function edit(Cooperation $cooperation, $buildingId)
+    public function publicGroup(Cooperation $cooperation, $buildingId)
     {
-        $privateMessages = PrivateMessage::conversation($buildingId)->get();
+        $isPublic = true;
+        $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
 
-        $this->authorize('edit', $privateMessages->first());
+        if ($privateMessages instanceof PrivateMessage) {
+            $this->authorize('edit', $privateMessages->first());
+        }
 
         $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
-        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants'));
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
     }
+
+    public function privateGroup(Cooperation $cooperation, $buildingId)
+    {
+        $isPublic = false;
+        $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
+
+        if ($privateMessages instanceof PrivateMessage) {
+            $this->authorize('edit', $privateMessages->first());
+        } else {
+            // at this point we check if there is actually a private_message, public or not.
+            if (!PrivateMessage::forMyCooperation()->conversation($buildingId)->first() instanceof PrivateMessage) {
+                // there are no messages for this building for the current cooperation, so we return them back to the index from the buildings
+                return redirect()->route('cooperation.admin.cooperation.coordinator.building-access.index');
+            }
+        }
+
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
+
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
+    }
+
 
     public function store(Cooperation $cooperation, MessagesRequest $request)
     {

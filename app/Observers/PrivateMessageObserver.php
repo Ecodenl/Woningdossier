@@ -10,12 +10,16 @@ use App\Services\PrivateMessageViewService;
 
 class PrivateMessageObserver
 {
+    /**
+     * On updating check if the allow access is dirty, if so we need to change permissions and building_coach_statuses
+     *
+     * @param PrivateMessage $privateMessage
+     * @throws \Exception
+     */
     public function updating(PrivateMessage $privateMessage)
     {
         if ($privateMessage->isDirty('allow_access')) {
             // the user turned the access for his hoomdossier on
-            // todo, refactor this.
-            // does not need alot of refactoring, but some old attributes are used.
             if ($privateMessage->allow_access) {
                 $buildingFromSender = Building::find($privateMessage->building_id);
                 $buildingId = $buildingFromSender->id;
@@ -65,6 +69,11 @@ class PrivateMessageObserver
         }
     }
 
+    /**
+     * For every message that is created we want to create a row in the private_message_view
+     *
+     * @param PrivateMessage $privateMessage
+     */
     public function created(PrivateMessage $privateMessage)
     {
         PrivateMessageViewService::create($privateMessage);

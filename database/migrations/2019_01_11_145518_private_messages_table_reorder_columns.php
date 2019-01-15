@@ -26,8 +26,6 @@ class PrivateMessagesTableReorderColumns extends Migration
 
             $table->boolean('is_public')->nullable()->after('building_id');
 
-
-
         });
 
         Schema::table('private_messages', function (Blueprint $table) {

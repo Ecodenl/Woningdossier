@@ -18,8 +18,8 @@ class PrivateMessage extends Model
     const REQUEST_TYPE_OTHER = 'other';
 
     protected $fillable = [
-        'message', 'from_user_id', 'to_user_id', 'from_cooperation_id', 'to_cooperation_id',
-        'request_type', 'allow_access', 'building_id', 'from_user'
+        'message', 'from_user_id', 'from_cooperation_id', 'to_cooperation_id',
+        'request_type', 'allow_access', 'building_id', 'from_user', 'is_public'
     ];
 
     /**
@@ -31,6 +31,12 @@ class PrivateMessage extends Model
         'allow_access' => 'boolean',
         'is_public' => 'boolean',
     ];
+
+
+    public function scopeForMyCooperation($query)
+    {
+        return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
+    }
 
     public static function isConversationRequestConnectedToCoach($conversationRequest)
     {
@@ -82,6 +88,28 @@ class PrivateMessage extends Model
 
         return $query;
     }
+
+    /**
+     * Check if the group chat is private
+     *
+     * @param Collection | User $privateMessages
+     * @return bool
+     */
+    public static function isGroupPublic($privateMessages): bool
+    {
+        if ($privateMessages instanceof Collection) {
+            if ($privateMessages->first()->is_public) {
+                return true;
+            }
+        } elseif($privateMessages instanceof PrivateMessage) {
+            if ($privateMessages->is_public) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public function scopeMessageGroups($query)
     {
@@ -297,14 +325,17 @@ class PrivateMessage extends Model
      *
      * @return bool
      */
-    public function isMyMessage()
+    public function isMyMessage(): bool
     {
-        // since we dont save a user id in any sort of form, we need to check the full name.
-        $userFullName = \Auth::user()->first_name ." ". \Auth::user()->last_name;
-
-        if ($this->from_user == $userFullName) {
+        // a coordinator and cooperation admin talks from a cooperation, not from his own name.
+        if (\Auth::user()->hasRole(['coordinator', 'cooperation-admin']) && in_array(Role::find(HoomdossierSession::getRole())->name, ['coordinator', 'cooperation-admin'])) {
+            if ($this->from_cooperation_id == HoomdossierSession::getCooperation()) {
+                return true;
+            }
+        } elseif(\Auth::id() == $this->from_user_id) {
             return true;
         }
+
         return false;
     }
 

@@ -151,19 +151,17 @@ class UserPolicy
     /**
      * Check if a user can remove a participant from the group chat
      *
-     * @param User $user
-     * @param $buildingId
+     * @param User $user | Auth user
+     * @param User $groupParticipant | Participant from the group chat
      * @return bool
      */
     public function removeParticipantFromChat(User $user, User $groupParticipant): bool
     {
-        // a coordinator can remove a coach from a conversation
-        // a resident can remove a coach from a conversation
-        if ($user->hasRole('coordinator') && $groupParticipant->hasRole(['resident'])) {
-            return true;
-        } elseif($user->hasRole('resident') && $groupParticipant->hasRole(['coach'])) {
+        // a coordinator and resident can remove a coach from a conversation
+        if ($user->hasRole(['resident', 'coordinator']) && $groupParticipant->hasRole(['coach'])) {
             return true;
         }
+
         return false;
     }
 

@@ -42,7 +42,7 @@
                                     @if(empty($building->deleted_at))
                                         @can('make-appointment', $building->id)
                                             <a href="{{ route('cooperation.admin.coach.buildings.edit', ['id' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-                                            <a href="{{ route('cooperation.admin.coach.messages.edit', ['buildingId' => $building->id]) }}" class="btn btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
+                                            <a data-toggle="modal" data-target="#private-public-{{$building->id}}" data-building-id="{{$building->id}}" class="participate-in-group-chat btn btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
                                         @endcan
                                         @can('access-building', $building->id)
                                             <a href="{{ route('cooperation.admin.coach.buildings.fill-for-user', ['id' => $building->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
@@ -58,6 +58,13 @@
             </div>
         </div>
     </div>
+
+    @include('cooperation.layouts.chat.private-public-modal', [
+        'buildings' => $buildingsFromCoachStatuses,
+        'privateRoute' => 'cooperation.admin.coach.messages.private.edit',
+        'publicRoute' => 'cooperation.admin.coach.messages.public.edit'
+    ])
+
 @endsection
 
 

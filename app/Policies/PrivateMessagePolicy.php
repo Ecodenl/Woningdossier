@@ -38,23 +38,12 @@ class PrivateMessagePolicy
         $receivingCooperationId = $message->to_cooperation_id;
 
         $buildingId = $message->building_id;
-
         // note the order
-        if ($user->hasRole(['cooperation-admin', 'coordinator', 'coach'])) {
+        if ($user->hasRole(['cooperation-admin', 'coordinator']) && $message->to_cooperation_id == HoomdossierSession::getCooperation()) {
 
             return true;
-//            foreach ($user->cooperations as $cooperation) {
-//                if (in_array($cooperation->id, compact('sendingCooperationId', 'receivingCooperationId'))) {
-//                    return true;
-//                }
-//            }
-//            if (in_array($user->id, compact('sendingUserId', 'receivingUserId'))) {
-//                return true;
-//            }
-//
-//            return false;
         }
-        //if ($user->hasRo)
+
         if ($user->hasRole(['resident'])) {
             if (in_array(HoomdossierSession::getBuilding(), compact('buildingId'))) {
                 return true;
@@ -62,6 +51,7 @@ class PrivateMessagePolicy
 
             return false;
         } elseif ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
+            return true;
 
         }
     }

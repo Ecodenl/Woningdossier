@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Cooperation\Admin\Coach;
+namespace App\Http\Requests\Admin\Cooperation\Coordinator;
 
-use App\Rules\isUserMemberOfCooperation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MessagesRequest extends FormRequest
+class MessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +13,7 @@ class MessagesRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasRole(['coach']);
+        return \Auth::user()->hasRole('coordinator');
     }
 
     /**

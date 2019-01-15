@@ -3,26 +3,25 @@
 @section('coordinator_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            {{$privateMessages->first()->title}}
+            @include('cooperation.layouts.chat.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId, 'isPublic' => $isPublic])
         </div>
         <div class="panel-body panel-chat-body" id="chat">
             @component('cooperation.layouts.chat.messages')
-                @forelse($privateMessages->sortBy('created_at') as $privateMessage)
+                @forelse($privateMessages as $privateMessage)
 
-                    <?php $time = \Carbon\Carbon::parse($privateMessage->created_at); ?>
 
                     <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
                         <div class="chat-body clearfix">
                             <div class="header">
                                 @if($privateMessage->isMyMessage())
 
-                                    <small class="text-muted"><span class="glyphicon glyphicon-time"></span>{{$time->diffForHumans()}}</small>
-                                    <strong class="pull-right primary-font">{{$privateMessage->getSender($privateMessage->id)->first_name}}</strong>
+                                    <small class="text-muted"><span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}</small>
+                                    <strong class="pull-right primary-font">{{$privateMessage->getSender()}}</strong>
 
                                 @else
 
-                                    <strong class="primary-font">{{$privateMessage->getSender($privateMessage->id)->first_name}}</strong>
-                                    <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>{{$time->diffForHumans()}}</small>
+                                    <strong class="primary-font">{{$privateMessage->getSender()}}</strong>
+                                    <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}</small>
 
                                 @endif
                             </div>
@@ -38,7 +37,7 @@
         </div>
 
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'mainMessageId' => $mainMessageId, 'url' => route('cooperation.admin.cooperation.coordinator.messages.store')])
+            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $buildingId, 'url' => route('cooperation.admin.cooperation.coordinator.messages.store'), 'isPublic' => $isPublic])
                 <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                     @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
                 </button>

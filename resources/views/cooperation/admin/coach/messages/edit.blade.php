@@ -3,7 +3,7 @@
 @section('coach_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @include('cooperation.layouts.chat.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId])
+            @include('cooperation.layouts.chat.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId, 'isPublic' => $isPublic])
         </div>
         <div class="panel-body panel-chat-body" id="chat">
             <form id="revoke-access-form" action="{{ route('cooperation.admin.coach.messages.revoke-access') }}" method="post">
@@ -41,7 +41,7 @@
         </div>
 
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $buildingId, 'url' => route('cooperation.admin.coach.messages.store')])
+            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $buildingId, 'url' => route('cooperation.admin.coach.messages.store'), 'isPublic' => $isPublic])
                 <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                     @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
                 </button>

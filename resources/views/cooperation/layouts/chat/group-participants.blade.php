@@ -1,3 +1,14 @@
+@if(isset($isPublic))
+    @if($isPublic)
+        <div class="pubic-notification">
+            <span class="label label-danger">Deze chat is publiek.</span>
+        </div>
+    @else
+        <div class="pubic-notification">
+            <span class="label label-warning">Deze chat is prive.</span>
+        </div>
+    @endif
+@endif
 <div class="group-members">
     @foreach($groupParticipants as $groupParticipant)
         <div class="group-member">

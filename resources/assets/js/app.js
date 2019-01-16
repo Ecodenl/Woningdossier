@@ -98,6 +98,8 @@ $("#register #street").focusin(
                 city.addClass("loading");
             },
             success: function(data){
+                // remove error messages, since its a success.
+                $('.help-block').remove();
                 street.removeClass("loading");
                 city.removeClass("loading");
                 var address = data;

@@ -91,7 +91,7 @@ if (!isset($building)) {
     </div>
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
-            <?php $toolSettingsLoopCount++ ?>
+            <?php $toolSettingsLoopCount++; ?>
             <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post">
                 <input type="hidden" name="input_source" value="{{$toolSetting->inputSource->short}}">
                 {{csrf_field()}}
@@ -100,18 +100,21 @@ if (!isset($building)) {
             {{--
                 If there are more than one we will load all the input-source notifications, the building notification will be loaded on top of the page
              --}}
-            <?php $col = 12 / $totalChangedToolSettings ?>
+            <?php $col = 12 / $totalChangedToolSettings; ?>
             <div class="col-sm-{{$col}}">
                 @component('cooperation.tool.components.alert', ['alertType' => 'success', 'dismissible' => true, 'classes' => 'input-source-notifications'])
                     <input type="hidden" class="input-source-short" value="{{$toolSetting->inputSource->short}}">
                     <div class="row">
                         <div class="col-sm-12">
-                            @lang('woningdossier.cooperation.my-account.import-center.index.other-source',
-                                ['input_source_name' => $toolSetting->inputSource->name
-                            ])
+                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->inputSource->short])}}" class="btn btn-sm btn-primary pull-right">
+                                @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')
+                            </a>
                             <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
                                 @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->inputSource->name])
                             </a>
+                            @lang('woningdossier.cooperation.my-account.import-center.index.other-source-new',
+                                ['input_source_name' => $toolSetting->inputSource->name
+                            ])
                         </div>
                     </div>
                 @endcomponent

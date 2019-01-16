@@ -170,7 +170,7 @@ class HoomdossierSession extends Session
      */
     public static function getCompareInputSourceShort(): string
     {
-        return self::getHoomdossierSession('compare_input_source_short');
+        return self::getHoomdossierSession('compare_input_source_short', '');
     }
 
     /**

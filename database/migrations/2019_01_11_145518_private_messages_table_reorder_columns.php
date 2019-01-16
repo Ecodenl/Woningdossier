@@ -38,16 +38,18 @@ class PrivateMessagesTableReorderColumns extends Migration
             foreach ($pm as $privateMessage) {
 
                 $user = \DB::table('users')->find($privateMessage->from_user_id);
-                $building = \DB::table('buildings')->where('user_id', $user->id)->first();
+                if ($user instanceof stdClass) {
+                    $building = \DB::table('buildings')->where('user_id', $user->id)->first();
 
-                $fromUser = "{$user->first_name} {$user->last_name}";
+                    $fromUser = "{$user->first_name} {$user->last_name}";
 
-                \DB::table('private_messages')
-                    ->where('id', $privateMessage->id)
-                    ->update([
-                        'from_user' => $fromUser,
-                        'building_id' => $building->id
-                    ]);
+                    \DB::table('private_messages')
+                        ->where('id', $privateMessage->id)
+                        ->update([
+                            'from_user' => $fromUser,
+                            'building_id' => $building->id
+                        ]);
+                }
 
             }
 

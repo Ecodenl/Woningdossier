@@ -20,12 +20,17 @@ class ToolComposer
         $view->with('cooperation', app()->make('Cooperation'));
         $view->with('cooperationStyle', app()->make('CooperationStyle'));
 
-        $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
-        $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessages());
+        // since we dont really need to load the vars in this view since its just a alert
+        // the alert is also loaded on pages where a user is not authenticated so some vars would fail.
+        $excludedViews = ['cooperation.tool.components.alert'];
 
-        $view->with('steps', $cooperation->getActiveOrderedSteps());
-        $view->with('interests', Interest::orderBy('order')->get());
+        if (!in_array($view->getName(), $excludedViews)) {
+            $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
+            $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessages());
 
-        $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
+            $view->with('steps', $cooperation->getActiveOrderedSteps());
+            $view->with('interests', Interest::orderBy('order')->get());
+            $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
+        }
     }
 }

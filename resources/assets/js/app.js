@@ -117,7 +117,7 @@ $("#register #street").focusin(
                 var errorMessage = $.parseJSON(request.responseText);
 
                 $.each(errorMessage.errors, function(fieldName, message) {
-                    $('#'+fieldName).parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
+                    $('input[name='+fieldName+']').parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
                 });
             },
             dataType: 'json'

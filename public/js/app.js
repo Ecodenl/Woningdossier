@@ -185,8 +185,14 @@ $("#register #street").focusin(function () {
             addressId.val(address.id);
             city.val(address.city);
         },
-        fail: function fail(xhr, textStatus, errorThrown) {
-            console.log(xhr, textStatus, errorThrown);
+        fail: function fail(xhr, textStatus, errorThrown) {},
+        error: function error(request, status, _error) {
+            var helpBlock = '<span class="help-block"></span>';
+            var errorMessage = $.parseJSON(request.responseText);
+
+            $.each(errorMessage.errors, function (fieldName, message) {
+                $('#' + fieldName).parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
+            });
         },
         dataType: 'json'
     });

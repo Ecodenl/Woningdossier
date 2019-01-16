@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FillAddressRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -224,14 +225,13 @@ class RegisterController extends Controller
         return redirect()->back();
     }
 
-    public function fillAddress(Request $request)
+    public function fillAddress(FillAddressRequest $request)
     {
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
         $number = trim(strip_tags($request->get('number', '')));
         $extension = trim(strip_tags($request->get('house_number_extension', '')));
 
         $options = $this->getAddressData($postalCode, $number);
-
         $result = [];
         $dist = null;
         if (is_array($options) && count($options) > 0) {
@@ -261,13 +261,16 @@ class RegisterController extends Controller
 
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
+
+
         \Log::debug($postalCode.' '.$number.' '.$pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
+
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (! is_null($pointer)) {
+        if (!is_null($pointer)) {
             foreach ($response as $addrInfo) {
                 if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];
@@ -279,7 +282,6 @@ class RegisterController extends Controller
 
             return [];
         }
-
         return $response;
     }
 }

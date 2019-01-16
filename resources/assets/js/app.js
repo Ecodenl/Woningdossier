@@ -109,7 +109,14 @@ $("#register #street").focusin(
                 city.val(address.city);
             },
             fail: function (xhr, textStatus, errorThrown) {
-                console.log(xhr, textStatus, errorThrown);
+            },
+            error: function (request, status, error) {
+                var helpBlock = '<span class="help-block"></span>';
+                var errorMessage = $.parseJSON(request.responseText);
+
+                $.each(errorMessage.errors, function(fieldName, message) {
+                    $('#'+fieldName).parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
+                });
             },
             dataType: 'json'
         });

@@ -134,6 +134,9 @@ class RegisterController extends Controller
         $cooperation = Cooperation::find($cooperationId);
         $user->cooperations()->attach($cooperation);
 
+        $residentRole = Role::findByName('resident');
+        $user->roles()->attach($residentRole);
+
         return $user;
     }
 
@@ -161,9 +164,12 @@ class RegisterController extends Controller
             $user->confirm_token = null;
             $user->save();
 
-            // give the user the role resident
-            $residentRole = Role::findByName('resident');
-            $user->roles()->attach($residentRole);
+            if ($user->roles()->count() == 0) {
+                \Log::debug("A user confirmed his account and there was no role set, the id = {$user->id} we set the role to resident so no exception");
+
+                $residentRole = Role::findByName('resident');
+                $user->roles()->attach($residentRole);
+            }
 
             return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
         }

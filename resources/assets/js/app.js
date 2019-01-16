@@ -61,8 +61,8 @@ $(document).ready(function () {
                     inputSourceGroup.find('input[type=radio][value='+dataInputValue+']').prop('checked', true);
                     break;
                 case "checkbox":
-                    inputSourceGroup.find('input[type=checkbox]:checked').removeProp('selected');
-                    inputSourceGroup.find('input[value='+dataInputValue+']').prop('selected', true);
+                    inputSourceGroup.find('input[type=checkbox]:checked').removeProp('checked');
+                    inputSourceGroup.find('input[type=checkbox][value='+dataInputValue+']').prop('checked', true);
                     break;
                 case "select":
                     inputSourceGroup.find('select').val(dataInputValue);

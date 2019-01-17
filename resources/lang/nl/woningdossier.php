@@ -16,7 +16,10 @@ return [
                 'text' => 'Naar welk groeps gesprek wilt u gaan ?',
                 'public' => 'Publieke',
                 'private' => 'Prive'
-            ]
+            ],
+            'group-participants' => [
+                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.'
+            ],
         ],
 
         'navbar' => [
@@ -411,7 +414,7 @@ return [
                     ],
                     'conversation-requests' => [
                         'index' => [
-                            'header' => 'Overzicht van openstaande gespreks aanvragen',
+                            'header' => 'Berichten center',
                             'no-messages' => [
                                 'title' => 'Geen openstaande aanvragen',
                                 'text' => 'Er zijn op het moment geen openstaande aanvragen',

@@ -8488,7 +8488,11 @@ ul.progress-list li.not-available a:focus img {
   margin-right: 5px;
 }
 
-.group-members .group-member .glyphicon-remove {
+.group-members .group-member .not-removable-user {
+  cursor: not-allowed;
+}
+
+.group-members .group-member .is-removable-user {
   cursor: pointer;
 }
 

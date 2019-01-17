@@ -2,7 +2,10 @@
   display: flex;
   .group-member {
     margin-right: 5px;
-    .glyphicon-remove {
+    .not-removable-user {
+      cursor: not-allowed;
+    }
+    .is-removable-user {
       cursor: pointer;
     }
   }

@@ -419,7 +419,7 @@ class InsulatedGlazingController extends Controller
             }
         }
 
-        $woodElements = $request->input('building_elements.wood-elements');
+        $woodElements = $request->input('building_elements.wood-elements', []);
 
         $woodElementCreateData = [];
         foreach ($woodElements as $woodElementId => $woodElementValueIds) {

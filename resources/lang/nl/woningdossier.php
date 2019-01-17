@@ -824,6 +824,7 @@ return [
                     ],
                     'destroy' => [
                         'header' => 'Account verwijderen',
+                        'are-you-sure' => 'Letop, dit verwijderd alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan ?',
                         'label' => 'Mijn account verwijderen',
                         'submit' => 'Verwijderen',
                     ],

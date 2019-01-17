@@ -65,5 +65,7 @@ return [
     'confirm' => [
         'success' => 'Uw account is bevestigd. U kunt nu inloggen met uw gebruikersnaam en wachtwoord.',
         'error' => 'Uw bevestigingslink is ongeldig. Is uw account wellicht al bevestigd?',
+	    'email-error' => 'We konden uw e-mailadres niet vinden. Weet u zeker dat u eerder geregistreerd bent?',
+	    'email-success' => 'De bevestigingslink is opnieuw naar u verstuurd.'
     ],
 ];

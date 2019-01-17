@@ -271,7 +271,9 @@ class RegisterController extends Controller
     	$user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
 
     	if (!$user instanceof User){
-		    return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])->with('error', trans('auth.confirm.email-error'));
+		    return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])
+		                     ->withInput()
+		                     ->withErrors(['email' => trans('auth.confirm.email-error')]);
 	    }
 
     	SendRequestAccountConfirmationEmail::dispatch($user);

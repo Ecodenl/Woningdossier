@@ -883,7 +883,6 @@ return [
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.',
             ],
 
-            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
         ],
         'tool' => [
             'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',

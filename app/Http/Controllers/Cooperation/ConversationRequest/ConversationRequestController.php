@@ -67,6 +67,7 @@ class ConversationRequestController extends Controller
 
         $cooperation = Cooperation::find($cooperationId);
 
-        return redirect()->route('cooperation.tool.my-plan.index')->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.messages.requests.index', compact('cooperation'))]));
+        return redirect()->route('cooperation.tool.my-plan.index')
+            ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]));
     }
 }

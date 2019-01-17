@@ -16,7 +16,10 @@ return [
                 'text' => 'Naar welk groeps gesprek wilt u gaan ?',
                 'public' => 'Publieke',
                 'private' => 'Prive'
-            ]
+            ],
+            'group-participants' => [
+                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.'
+            ],
         ],
 
         'navbar' => [
@@ -411,7 +414,7 @@ return [
                     ],
                     'conversation-requests' => [
                         'index' => [
-                            'header' => 'Overzicht van openstaande gespreks aanvragen',
+                            'header' => 'Berichten center',
                             'no-messages' => [
                                 'title' => 'Geen openstaande aanvragen',
                                 'text' => 'Er zijn op het moment geen openstaande aanvragen',
@@ -723,6 +726,7 @@ return [
                 'label' => 'Mijn account',
                 'import' => 'Import centrum',
                 'settings' => 'Instellingen',
+                'access' => 'Gebruikers met toegang tot uw gebouw',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',
             ],
@@ -742,6 +746,20 @@ return [
                     'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
                     'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
                     'show-differences' => 'Toon de verschillen met mijn data',
+                ]
+            ],
+
+            'access' => [
+                'index' => [
+                    'header' => 'Gebruikers met toegang tot mijn gebouw',
+                    'text' => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw gebouw. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
+
+                    'table' => [
+                        'columns' => [
+                            'coach' => 'Naam van gebruiker',
+                            'actions' => 'Actie ondernemen',
+                        ]
+                    ]
                 ]
             ],
 
@@ -894,7 +912,6 @@ return [
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.',
             ],
 
-            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
         ],
         'tool' => [
             'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',

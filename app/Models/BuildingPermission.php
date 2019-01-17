@@ -31,4 +31,9 @@ class BuildingPermission extends Model
     {
         return $this->belongsTo('App\Models\BuildingCoachStatus', 'building_id', 'building_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

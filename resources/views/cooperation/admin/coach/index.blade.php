@@ -19,11 +19,13 @@
                         </thead>
                         <tbody>
                         @foreach($buildingPermissions as $buildingPermission)
-                            <tr>
-                                <td>{{ $buildingPermission->building->city }}</td>
-                                <td>{{ $buildingPermission->building->city }}</td>
-                                <td>{{ $buildingPermission->building->user->first_name .' '. $buildingPermission->building->user->last_name}}</td>
-                            </tr>
+                            @if($buildingPermission->city instanceof \App\Models\Building)
+                                <tr>
+                                    <td>{{ $buildingPermission->building->city }}</td>
+                                    <td>{{ $buildingPermission->building->city }}</td>
+                                    <td>{{ $buildingPermission->building->user->first_name .' '. $buildingPermission->building->user->last_name}}</td>
+                                </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

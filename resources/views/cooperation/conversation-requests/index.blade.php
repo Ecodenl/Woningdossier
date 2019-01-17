@@ -56,7 +56,7 @@
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</label>
-                                    <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')"></textarea>
+                                    <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')">{{old('message')}}</textarea>
 
                                     @if ($errors->has('message'))
                                         <span class="help-block">

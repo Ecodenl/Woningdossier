@@ -14,21 +14,11 @@ class RequestController extends Controller
     public function index()
     {
         return redirect()->route('cooperation.my-account.messages.index');
-//        $conversationRequests = PrivateMessage::myConversationRequest()->get();
-
-//        return view('cooperation.my-account.messages.requests.index', compact('conversationRequests'));
     }
 
     public function edit(Cooperation $cooperation, $requestMessageId)
     {
         return redirect()->route('cooperation.my-account.messages.index');
-//        $conversationRequest = PrivateMessage::myConversationRequest()->find($requestMessageId);
-
-//        return view('cooperation.my-account.messages.requests.edit', compact('conversationRequest'));
-
-        //$conversation = PrivateMessage::conversation($requestMessageId)->get();
-
-        //return view('cooperation.my-account.messages.requests.edit', compact('conversation'));
     }
 
     public function update(Request $request, Cooperation $cooperation, $requestMessageId)

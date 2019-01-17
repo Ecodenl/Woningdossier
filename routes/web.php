@@ -50,6 +50,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
+                Route::group(['as' => 'access.', 'prefix' => 'access'], function () {
+                    Route::get('', 'AccessController@index')->name('index');
+                    Route::post('revoke-access', 'AccessController@revokeAccess')->name('revoke-access');
+                });
+
                 //Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
             });
 

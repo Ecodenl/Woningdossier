@@ -723,6 +723,7 @@ return [
         'my-account' => [
             'side-nav' => [
                 'label' => 'Berichten centrum',
+                'access' => 'Gebruikers met toegang tot uw gebouw',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',
             ],
@@ -733,6 +734,20 @@ return [
 
                 'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',
                 'messages' => 'Berichten <span class="glyphicon glyphicon-envelope">',
+            ],
+
+            'access' => [
+                'index' => [
+                    'header' => 'Gebruikers met toegang tot mijn gebouw',
+                    'text' => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw gebouw. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
+
+                    'table' => [
+                        'columns' => [
+                            'coach' => 'Naam van gebruiker',
+                            'actions' => 'Actie ondernemen',
+                        ]
+                    ]
+                ]
             ],
 
             'messages' => [

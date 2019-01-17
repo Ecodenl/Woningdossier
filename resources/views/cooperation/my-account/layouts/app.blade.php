@@ -21,6 +21,12 @@
 {{--                                        <span class="pull-right label label-success">{{$myUnreadMessages->count()}}</span>--}}
                                     </a>
                                 </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.access.index'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.access.index')}}">
+                                        @lang('woningdossier.cooperation.my-account.side-nav.access')
+{{--                                        <span class="pull-right label label-success">{{$myUnreadMessages->count()}}</span>--}}
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>

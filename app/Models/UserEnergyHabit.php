@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
-use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -82,7 +81,7 @@ class UserEnergyHabit extends Model
 
     /**
      * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id.
+     * The UserEnergyHabit uses the user_id instead of the building_id.
      *
      * @param $query
      *
@@ -92,23 +91,25 @@ class UserEnergyHabit extends Model
     {
         $building = Building::find(HoomdossierSession::getBuilding());
 
-        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
+	    return $query->withoutGlobalScope(GetValueScope::class)
+	                 ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')
+	                 ->orderBy('input_sources.order', 'ASC')
+	                 ->where('user_id', $building->user_id)
+	                 ->select([$this->getTable().'.*']);
     }
 
-    /**
-     * Get the input Sources.
-     *
-     * @return InputSource
-     */
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
     public function inputSource()
     {
-        return $this->belongsTo('App\Models\InputSource');
+        return $this->belongsTo(InputSource::class);
     }
 
     /**
      * Get a input source name.
      *
-     * @return InputSource name
+     * @return string InputSource name
      */
     public function getInputSourceName()
     {

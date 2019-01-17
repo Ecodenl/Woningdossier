@@ -83,10 +83,14 @@ class MyPlanController extends Controller
 
         $myAdvices = $request->input('advice', []);
 
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
+
         foreach ($myAdvices as $adviceId => $data) {
             $advice = UserActionPlanAdvice::find($adviceId);
 
-            if ($advice instanceof UserActionPlanAdvice && $advice->user->id === \Auth::user()->id) {
+            // check if the advice exists, if the input source id is the current input source and if the buildingOwner id is the user id
+            if ($advice instanceof UserActionPlanAdvice && $advice->input_source_id == HoomdossierSession::getInputSource() && $buildingOwner->id == $advice->user_id) {
                 MyPlanHelper::saveUserInterests($request, $advice);
 
                 // check if a user is interested in a measure

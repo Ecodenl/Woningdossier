@@ -2,7 +2,7 @@
     <div class="col-sm-12">
         <div class="form-group add-space{{ $errors->has('questions.'.$question->id) ? ' has-error' : '' }}">
             <label for="">{{$question->name}} @if($question->isRequired()) * @endif</label>
-            @component('cooperation.tool.components.input-group',
+            @component('cooperation.tool.questionnaires.components.input-group',
             ['inputType' => 'select', 'inputValues' => $question->questionOptions, 'userInputValues' => $question->questionAnswers()->forMe()->get(), 'userInputColumn' => 'answer'])
                 <select name="questions[{{$question->id}}]" class="form-control">
                     @foreach($question->questionOptions as $option)

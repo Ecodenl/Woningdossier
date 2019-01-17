@@ -33,12 +33,6 @@
                          'inputValues' => $inputValues,
                     ])
                     @break
-                @case('checkbox-custom-questionnaire')
-                    @include('cooperation.tool.components.checkbox-custom-questionnaire', [
-                        'userInputValues' => $userInputValues,
-                        'inputValues' => $inputValues,
-                    ])
-                    @break
                 @case('radio')
                     @include('cooperation.tool.components.radio', [
                       'userInputValues' => $userInputValues,

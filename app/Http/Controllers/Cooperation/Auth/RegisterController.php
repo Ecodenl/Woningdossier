@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FillAddressRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
@@ -135,6 +136,9 @@ class RegisterController extends Controller
         $cooperation = Cooperation::find($cooperationId);
         $user->cooperations()->attach($cooperation);
 
+        $residentRole = Role::findByName('resident');
+        $user->roles()->attach($residentRole);
+
         return $user;
     }
 
@@ -162,9 +166,12 @@ class RegisterController extends Controller
             $user->confirm_token = null;
             $user->save();
 
-            // give the user the role resident
-            $residentRole = Role::findByName('resident');
-            $user->roles()->attach($residentRole);
+            if ($user->roles()->count() == 0) {
+                \Log::debug("A user confirmed his account and there was no role set, the id = {$user->id} we set the role to resident so no exception");
+
+                $residentRole = Role::findByName('resident');
+                $user->roles()->attach($residentRole);
+            }
 
             return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
         }
@@ -226,14 +233,13 @@ class RegisterController extends Controller
         return redirect()->back();
     }
 
-    public function fillAddress(Request $request)
+    public function fillAddress(FillAddressRequest $request)
     {
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
         $number = trim(strip_tags($request->get('number', '')));
         $extension = trim(strip_tags($request->get('house_number_extension', '')));
 
         $options = $this->getAddressData($postalCode, $number);
-
         $result = [];
         $dist = null;
         if (is_array($options) && count($options) > 0) {
@@ -281,13 +287,16 @@ class RegisterController extends Controller
 
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
+
+
         \Log::debug($postalCode.' '.$number.' '.$pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
+
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (! is_null($pointer)) {
+        if (!is_null($pointer)) {
             foreach ($response as $addrInfo) {
                 if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];
@@ -299,7 +308,6 @@ class RegisterController extends Controller
 
             return [];
         }
-
         return $response;
     }
 }

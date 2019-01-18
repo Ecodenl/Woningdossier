@@ -47,7 +47,7 @@ class MessageService
 
 
             // users that have the role coordinator and cooperation admin dont talk from themself but from a cooperation
-            if (\Auth::user()->hasRole(['coordinator', 'cooperation-admin']) && in_array(Role::find(HoomdossierSession::getRole())->name, ['coordinator', 'cooperation-admin'])) {
+            if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageData['from_cooperation_id'] = HoomdossierSession::getCooperation();
                 $privateMessageData['from_user'] = Cooperation::find(HoomdossierSession::getCooperation())->name;
             }

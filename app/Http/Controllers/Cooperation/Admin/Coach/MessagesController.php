@@ -46,7 +46,7 @@ class MessagesController extends Controller
     public function publicGroup(Cooperation $cooperation, $buildingId)
     {
         $isPublic = true;
-        $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
+        $privateMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 
         if ($privateMessages->first() instanceof PrivateMessage) {
             $this->authorize('edit', $privateMessages->first());

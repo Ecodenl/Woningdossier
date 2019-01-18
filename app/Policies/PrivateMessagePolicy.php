@@ -34,12 +34,14 @@ class PrivateMessagePolicy
         // get the building id from the message
         $buildingId = $message->building_id;
 
+        dd('ff');
         // note the order
         if ($user->hasRoleAndIsCurrentRole(['coordinator', 'coordinator-admin'])) {
             return true;
         }
 
         if ($user->hasRoleAndIsCurrentRole(['coach'])) {
+
             return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
         }
 

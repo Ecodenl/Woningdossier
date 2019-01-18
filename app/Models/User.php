@@ -344,10 +344,12 @@ class User extends Authenticatable
         // get the last known coach status for the current coach
         $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)->where('building_id', $buildingId)->get()->last();
 
-        // if the coach his last known building status for the current building is removed
-        // we return true, the user either removed from the building
-        if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
-            return true;
+        if ($buildingCoachStatus instanceof BuildingCoachStatus) {
+            // if the coach his last known building status for the current building is removed
+            // we return true, the user either removed from the building
+            if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
+                return true;
+            }
         }
 
         return false;

@@ -54,7 +54,6 @@ class MessagesController extends Controller
         $isPublic = true;
         $privateMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 
-        dd($privateMessages);
         if ($privateMessages->first() instanceof PrivateMessage) {
             $this->authorize('edit', $privateMessages->first());
         }

@@ -8,6 +8,6 @@ class MyAccountController extends Controller
 {
     public function index()
     {
-        return redirect(route('cooperation.my-account.messages.index'));
+        return view('cooperation.my-account.index');
     }
 }

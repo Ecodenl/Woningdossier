@@ -99,28 +99,34 @@ class StepHelper
 
         $currentFound = false;
 
-        // before we check for other pets we want to check if the current step has additional questionnaires
-        // if it does and the user did not finish those we redirect to that tab
-        if ($current->hasQuestionnaires()) {
+        // count all the active questionnaires for the current step
+        $allActiveQuestionnairesForCurrentStepCount = $current->questionnaires()->active()->count();
 
+        // before we check for other pets we want to check if the current step has active additional questionnaires
+        // if it does and the user did not finish those we redirect to that tab
+        if ($current->hasQuestionnaires() && $allActiveQuestionnairesForCurrentStepCount > 0) {
+
+            // since it can be null
             if ($currentQuestionnaire instanceof Questionnaire) {
 
-                // get the next questionnaire
+                // if so, get the next questionnaire in the right order
                 $nextQuestionnaire = $current->questionnaires()
+                    ->active()
                     ->where('id', '!=', $currentQuestionnaire->id)
                     ->where('order', '>', $currentQuestionnaire->order)
                     ->orderBy('order')
                     ->first();
+
 
                 // and return it with the tab id
                 if ($nextQuestionnaire instanceof Questionnaire) {
                     return ['route' => 'cooperation.tool.' . $current->slug . '.index', 'tab_id' => 'questionnaire-' . $nextQuestionnaire->id];
                 }
             } else {
-                $nextQuestionnaire = $current->questionnaires()->orderBy('order')->first();
+                // else, we just redirect them to the first questionnaire.
+                $nextQuestionnaire = $current->questionnaires()->active()->orderBy('order')->first();
                 return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
             }
-
         }
 
         // the step does not have custom questionnaires or the user does not have uncompleted questionnaires left for that step.

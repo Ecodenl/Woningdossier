@@ -73,4 +73,15 @@ class Questionnaire extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    /**
+     * Scope the active questionnaires
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

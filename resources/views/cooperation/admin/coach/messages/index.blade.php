@@ -22,6 +22,7 @@
                                         <div class="chat-body clearfix">
                                             <div class="header">
                                                 <strong class="primary-font">
+                                                    <p>{{$privatePrivateMessage->building->getFullAddress()}}</p>
                                                     {{ $privatePrivateMessage->getSender() }}
                                                 </strong>
 
@@ -30,8 +31,7 @@
                                                     @if(\App\Models\PrivateMessageView::isMessageUnread($privatePrivateMessage))
                                                         <span class="label label-primary">@lang('default.new-message')</span>
                                                     @endif
-                                                    <?php $time = \Carbon\Carbon::parse($privatePrivateMessage->created_at); ?>
-                                                    <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
+                                                    <span class="glyphicon glyphicon-time"></span> {{ $privatePrivateMessage->created_at->diffForHumans() }}
                                                 </small>
                                             </div>
                                             <p>
@@ -53,6 +53,7 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
+                                                <p>{{$publicPrivateMessage->building->getFullAddress()}}</p>
                                                 {{ $publicPrivateMessage->getSender() }}
                                             </strong>
 
@@ -61,8 +62,7 @@
                                                 @if(\App\Models\PrivateMessageView::isMessageUnread($publicPrivateMessage))
                                                     <span class="label label-primary">@lang('default.new-message')</span>
                                                 @endif
-                                                <?php $time = \Carbon\Carbon::parse($publicPrivateMessage->created_at); ?>
-                                                <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
+                                                <span class="glyphicon glyphicon-time"></span> {{ $publicPrivateMessage->created_at->diffForHumans() }}
                                             </small>
                                         </div>
                                         <p>

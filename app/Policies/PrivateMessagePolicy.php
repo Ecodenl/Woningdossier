@@ -31,29 +31,25 @@ class PrivateMessagePolicy
     public function edit(User $user, PrivateMessage $message)
     {
 
-        // TODO: refactor function
-        $sendingUserId = $message->from_user_id;
-        $receivingUserId = $message->to_user_id;
-        $sendingCooperationId = $message->from_cooperation_id;
-        $receivingCooperationId = $message->to_cooperation_id;
-
+        // get the building id from the message
         $buildingId = $message->building_id;
-        // note the order
-        if ($user->hasRole(['cooperation-admin', 'coordinator']) && $message->to_cooperation_id == HoomdossierSession::getCooperation()) {
 
+        dd('ff');
+        // note the order
+        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'coordinator-admin'])) {
             return true;
         }
 
-        if ($user->hasRole(['resident'])) {
+        if ($user->hasRoleAndIsCurrentRole(['coach'])) {
+
+            return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
+        }
+
+        if ($user->hasRoleAndIsCurrentRole(['resident'])) {
             if (in_array(HoomdossierSession::getBuilding(), compact('buildingId'))) {
                 return true;
             }
-
-            return false;
-        } elseif ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
-
-            return true;
-
         }
+
     }
 }

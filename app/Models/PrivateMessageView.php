@@ -23,7 +23,7 @@ class PrivateMessageView extends Model
     public static function getTotalUnreadMessages()
     {
         // if the user is loggen in as a coordinator or cooperation admin
-        if (\Auth::user()->hasRole(['coordinator', 'cooperation-admin']) && in_array(Role::find(HoomdossierSession::getRole())->name, ['coordinator', 'cooperation-admin'])) {
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             return self::where('cooperation_id', HoomdossierSession::getCooperation())
                 ->where('read_at', null)
                 ->count();
@@ -37,7 +37,7 @@ class PrivateMessageView extends Model
     public static function isMessageUnread($privateMessage)
     {
         // if the user is loggen in as a coordinator or cooperation admin
-        if (\Auth::user()->hasRole(['coordinator', 'cooperation-admin']) && in_array(Role::find(HoomdossierSession::getRole())->name, ['coordinator', 'cooperation-admin'])) {
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             $privateMessageView = PrivateMessageView::where('private_message_id', $privateMessage->id)
                 ->where('cooperation_id', HoomdossierSession::getCooperation())->first();
             if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {

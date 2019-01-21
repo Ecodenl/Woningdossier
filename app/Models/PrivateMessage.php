@@ -269,7 +269,7 @@ class PrivateMessage extends Model
     public function isMyMessage(): bool
     {
         // a coordinator and cooperation admin talks from a cooperation, not from his own name.
-        if (\Auth::user()->hasRole(['coordinator', 'cooperation-admin']) && in_array(Role::find(HoomdossierSession::getRole())->name, ['coordinator', 'cooperation-admin'])) {
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             if ($this->from_cooperation_id == HoomdossierSession::getCooperation()) {
                 return true;
             }

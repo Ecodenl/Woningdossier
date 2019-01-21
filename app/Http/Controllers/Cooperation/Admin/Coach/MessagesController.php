@@ -10,11 +10,13 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
 use App\Services\MessageService;
 use App\Services\PrivateMessageViewService;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
@@ -22,31 +24,35 @@ class MessagesController extends Controller
 
     public function index()
     {
-//        $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
-//            ->groupBy('building_id')
-//            ->select('building_id')
-//            ->get()
-//            ->toArray();
-//
-//        $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
-//
-//        $buildings = Building::findMany($flattenedBuildingIds);
+        // the raw query
+        //    SELECT bcs2.building_id, bcs2.count_active AS count_active, bcs3.count_removed AS count_removed
+        //    FROM ( SELECT building_id, count(`status`) AS count_active FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'active' group by building_id ) AS bcs2
+        //    LEFT JOIN
+        //    ( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'removed' group by building_id) AS bcs3
+        //    ON bcs2.building_id = bcs3.building_id
+        //    HAVING (count_active > count_removed) OR count_removed IS NULL
 
-        $buildings = \DB::table('building_coach_statuses')
-            ->where('building_coach_statuses.coach_id', '=', \Auth::id())
-            ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
-            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
-            ->leftJoin('private_messages', 'private_messages.id', '=', 'building_coach_statuses.private_message_id')
-            ->select('buildings.*', 'users.first_name', 'users.last_name', 'private_messages.allow_access')
-            ->get()->unique('id');
+        // if laravel version = 5.6 use fromSub function.
 
-        return view('cooperation.admin.coach.messages.index', compact('buildings'));
+        // get the building_coach_statuses
+        $activeCount = \DB::raw('( SELECT building_id, count(`status`) AS count_active FROM building_coach_statuses WHERE coach_id = '.\Auth::id().' AND `status` = \'active\' group by building_id ) AS bcs2');
+        $removedCount = \DB::raw('( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = '.\Auth::id().' AND `status` = \'removed\' group by building_id) AS bcs3');
+
+        // get the building_coach_statuses where the active status is higher then the removed status
+        $activeBuildingCoachStatuses = \DB::query()
+            ->select('bcs2.building_id', 'bcs2.count_active AS count_active', 'bcs3.count_removed AS count_removed')
+            ->from($activeCount)
+            ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
+            ->orHavingRaw('count_active > count_removed OR count_removed IS NULL')
+            ->get();
+
+        return view('cooperation.admin.coach.messages.index', compact('activeBuildingCoachStatuses'));
     }
 
     public function publicGroup(Cooperation $cooperation, $buildingId)
     {
         $isPublic = true;
-        $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
+        $privateMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 
         if ($privateMessages->first() instanceof PrivateMessage) {
             $this->authorize('edit', $privateMessages->first());

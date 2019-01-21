@@ -11,13 +11,13 @@
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.admin.layouts.components.chat-messages')
-                        @forelse($buildings as $building)
+                        @forelse($activeBuildingCoachStatuses as $activeBuildingCoachStatus)
                             <?php
-                                $publicPrivateMessage = \App\Models\PrivateMessage::forMyCooperation()->public()->conversation($building->id)->get()->last();
-                                $privatePrivateMessage = \App\Models\PrivateMessage::forMyCooperation()->private()->conversation($building->id)->get()->last();
+                                $publicPrivateMessage = \App\Models\PrivateMessage::forMyCooperation()->public()->conversation($activeBuildingCoachStatus->building_id)->get()->last();
+                                $privatePrivateMessage = \App\Models\PrivateMessage::forMyCooperation()->private()->conversation($activeBuildingCoachStatus->building_id)->get()->last();
                             ?>
                             @if($privatePrivateMessage instanceof \App\Models\PrivateMessage)
-                                <a href="{{ route('cooperation.admin.coach.messages.private.edit', ['buildingId' => $building->id]) }}">
+                                <a href="{{ route('cooperation.admin.coach.messages.private.edit', ['buildingId' => $activeBuildingCoachStatus->building_id]) }}">
                                     <li class="left clearfix">
                                         <div class="chat-body clearfix">
                                             <div class="header">
@@ -48,7 +48,7 @@
                                 </a>
                             @endif
                             @if($publicPrivateMessage instanceof \App\Models\PrivateMessage)
-                                <a href="{{ route('cooperation.admin.coach.messages.public.edit', ['buildingId' => $building->id]) }}">
+                                <a href="{{ route('cooperation.admin.coach.messages.public.edit', ['buildingId' => $activeBuildingCoachStatus->building_id]) }}">
                                 <li class="left clearfix">
                                     <div class="chat-body clearfix">
                                         <div class="header">

@@ -17,6 +17,7 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.last-name')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.email')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.role')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -32,6 +33,12 @@
                                         });
                                     ?>
                                 </td>
+                                <form action="{{route('cooperation.admin.cooperation.cooperation-admin.users.destroy')}}" method="post">
+                                    {{csrf_field()}}
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="user_id" value="{{$user->id}}">
+                                    <td><button type="submit" class="btn btn-danger remove"><span class="glyphicon glyphicon-trash"></span></button></td>
+                                </form>
                             </tr>
                         @empty
                         @endforelse
@@ -53,10 +60,11 @@
             });
 
             $('.remove').click(function () {
-                if (confirm("Weet u zeker dat u de gebruiker wilt verwijderen")) {
+                if (confirm("{{__('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.destroy.warning')}}")) {
 
                 } else {
                     event.preventDefault();
+                    return false;
                 }
             })
         })

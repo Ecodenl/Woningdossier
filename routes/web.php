@@ -283,12 +283,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
-                Route::group(['prefix' => 'connect-to-resident', 'as' => 'connect-to-resident.'], function () {
-                    Route::get('', 'ConnectToResidentController@index')->name('index');
-                    Route::get('{userId}', 'ConnectToResidentController@create')->name('create');
-                    Route::post('', 'ConnectToResidentController@store')->name('store');
-                });
-
                 // needs to be the last route due to the param
                 Route::get('home', 'CoachController@index')->name('index');
             });

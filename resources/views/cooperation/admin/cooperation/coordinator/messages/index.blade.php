@@ -19,6 +19,7 @@
                                         <div class="chat-body clearfix">
                                             <div class="header">
                                                 <strong class="primary-font">
+                                                    <p>{{$privatePrivateMessage->building->getFullAddress()}}</p>
                                                     {{ $privatePrivateMessage->getSender() }}
                                                 </strong>
 
@@ -50,6 +51,7 @@
                                         <div class="chat-body clearfix">
                                             <div class="header">
                                                 <strong class="primary-font">
+                                                    <p>{{$publicPrivateMessage->building->getFullAddress()}}</p>
                                                     {{ $publicPrivateMessage->getSender() }}
                                                 </strong>
 

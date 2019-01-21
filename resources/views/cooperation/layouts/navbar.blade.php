@@ -81,6 +81,23 @@
                                     <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
                                 </a>
                             </li>
+                        @elseif(Auth::user()->can('access-admin'))
+                            <li>
+                                @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
+                                    @case('coach')
+                                        <?php $messageUrl = route('cooperation.admin.coach.messages.index') ?>
+                                        @break
+                                    @case('coordinator')
+                                        <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index') ?>
+                                        @break
+                                    @default
+                                        <?php $messageUrl = route('cooperation.admin.index') ?>
+                                @endswitch
+                                <a href="{{$messageUrl}}">
+                                    <span class="glyphicon glyphicon-envelope"></span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
+                                </a>
+                            </li>
                         @endif
 
                         <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>

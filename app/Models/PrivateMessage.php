@@ -303,31 +303,6 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the user has unread messages based on the main message.
-     *
-     * @return bool
-     */
-    public function hasUserUnreadMessages(): bool
-    {
-
-        // new logic should be aplied here
-        return true;
-//        $answers = $this->where('main_message', $this->id)->where('to_user_id', \Auth::id())->get();
-//
-//        // $asnwers will be empty when there is no response to the main message
-//        if ($answers->isNotEmpty()) {
-//            return $answers->contains('to_user_read', false);
-//        } elseif ($this->isMainMessage()) {
-//            // we check if the main message is unread and if its not our message, you have always read your own message.
-//            // unless your blind.
-//            return $this->isMainMessageUnread() && $this->isNotMyMessage();
-//        } else {
-//            \Log::debug(__FUNCTION__.'Came to the else for message id: '.$this->id);
-//        }
-    }
-
-
-    /**
      * Check if the message is a conversation request.
      *
      * @return bool
@@ -353,5 +328,15 @@ class PrivateMessage extends Model
         }
 
         return false;
+    }
+
+    /**
+     * Get the building from a message
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
     }
 }

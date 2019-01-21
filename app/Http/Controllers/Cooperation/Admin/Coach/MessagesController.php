@@ -24,13 +24,14 @@ class MessagesController extends Controller
 
     public function index()
     {
-        // the raw query
-        //    SELECT bcs2.building_id, bcs2.count_active AS count_active, bcs3.count_removed AS count_removed
-        //    FROM ( SELECT building_id, count(`status`) AS count_active FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'active' group by building_id ) AS bcs2
-        //    LEFT JOIN
-        //    ( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'removed' group by building_id) AS bcs3
-        //    ON bcs2.building_id = bcs3.building_id
-        //    HAVING (count_active > count_removed) OR count_removed IS NULL
+//         the raw query
+//            SELECT bcs2.building_id, bcs2.count_active AS count_active, bcs3.count_removed AS count_removed
+//            FROM ( SELECT building_id, count(`status`) AS count_active FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'active' group by building_id ) AS bcs2
+//            LEFT JOIN
+//            ( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'removed' group by building_id) AS bcs3
+//            ON bcs2.building_id = bcs3.building_id
+//	          GROUP BY count_active, count_removed, building_id
+//            HAVING (count_active > count_removed) OR count_removed IS NULL
 
         // if laravel version = 5.6 use fromSub function.
 
@@ -43,6 +44,7 @@ class MessagesController extends Controller
             ->select('bcs2.building_id', 'bcs2.count_active AS count_active', 'bcs3.count_removed AS count_removed')
             ->from($activeCount)
             ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
+            ->groupBy('count_active', 'count_removed', 'building_id')
             ->orHavingRaw('count_active > count_removed OR count_removed IS NULL')
             ->get();
 

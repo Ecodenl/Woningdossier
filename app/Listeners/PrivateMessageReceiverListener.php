@@ -48,11 +48,14 @@ class PrivateMessageReceiverListener
             }
         }
 
-        // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
-        PrivateMessageView::create([
-            'private_message_id' => $event->privateMessage->id,
-            'cooperation_id' => HoomdossierSession::getCooperation()
-        ]);
+        // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
+        if (!\Auth::user()->hasRoleAndIsCurrentRole(['coordinator'])) {
+            // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
+            PrivateMessageView::create([
+                'private_message_id' => $event->privateMessage->id,
+                'cooperation_id' => HoomdossierSession::getCooperation()
+            ]);
+        }
 
     }
 }

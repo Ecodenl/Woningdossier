@@ -103,7 +103,12 @@
                 }
             });
 
-            var previous_bt = "{{ $building->buildingFeatures()->forMe()->first()->building_type_id }}";
+            <?php
+                $myFeatures = $building->buildingFeatures()->forMe()->first();
+                $prevBt = ($myFeatures instanceof \App\Models\BuildingFeature) ? $myFeatures->building_type_id : "";
+            ?>
+            var previous_bt = "{{ $prevBt }}";
+
 
             $("form.form-horizontal").on('submit', function () {
                 // Store the current value on focus and on change

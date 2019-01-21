@@ -30,7 +30,8 @@ class MessagesController extends Controller
 //            LEFT JOIN
 //            ( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'removed' group by building_id) AS bcs3
 //            ON bcs2.building_id = bcs3.building_id
-        //    HAVING (count_active > count_removed) OR count_removed IS NULL
+//	          GROUP BY count_active, count_removed, building_id
+//            HAVING (count_active > count_removed) OR count_removed IS NULL
 
         // if laravel version = 5.6 use fromSub function.
 

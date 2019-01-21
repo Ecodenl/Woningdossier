@@ -4,7 +4,6 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.coach.messages.index.header')
-            <a href="{{ route('cooperation.admin.coach.connect-to-resident.index') }}" class="btn btn-sm btn-primary pull-right"><span class="glyphicon glyphicon-envelope"></span></a>
         </div>
 
         <div class="panel-body">

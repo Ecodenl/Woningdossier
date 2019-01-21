@@ -341,7 +341,7 @@ return [
                         'home' => 'Home',
                         'my-messages' => 'Mijn berichten',
                         'questionnaire' => 'Vragenlijsten',
-                        'connect-to-coach' => 'Gewbouw toewijzen',
+                        'connect-to-coach' => 'Woning toewijzen',
                         'assign-roles' => 'Rollen toewijzen',
                         'messages' => 'Berichten',
                         'buildings' => 'Gebouwen',

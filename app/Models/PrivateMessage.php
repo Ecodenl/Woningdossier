@@ -40,7 +40,7 @@ class PrivateMessage extends Model
 
     public function scopeConversationRequest($query, $buildingId)
     {
-        return $query->where('building_id', $buildingId)->where('request_type', '!=', null);
+        return $query->public()->conversation($buildingId)->where('request_type', '!=', null);
     }
 
     public static function isConversationRequestConnectedToCoach($conversationRequest)

@@ -87,7 +87,6 @@ class ConnectToCoachController extends Controller
                 'coach_id' => $coach->id,
                 'building_id' => $residentBuilding->id,
                 'status' => BuildingCoachStatus::STATUS_ACTIVE,
-//                'private_message_id' => $privateMessageId,
             ]);
         }
 

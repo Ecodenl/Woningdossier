@@ -22,7 +22,7 @@
                         </thead>
                         <tbody>
                         @foreach($buildings as $building)
-                            <?php $conversationRequest = \App\Models\PrivateMessage::forMyCooperation()->conversationRequest($building->id)->first() ?>
+                            <?php $conversationRequest = \App\Models\PrivateMessage::forMyCooperation()->conversationRequest($building->id)->first(); ?>
                             <tr>
                                 <td>@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.'.$conversationRequest->request_type)</td>
                                 <td>{{$building->user->getFullName()}}</td>

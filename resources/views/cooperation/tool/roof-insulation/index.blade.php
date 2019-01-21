@@ -520,7 +520,6 @@
             </div>
         </div>
 
-<<<<<<<<< Temporary merge branch 1
     </form>
 @endsection
 

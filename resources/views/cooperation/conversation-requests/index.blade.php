@@ -37,7 +37,7 @@
                                                 @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
                                                     <li>
                                                         <label>
-                                                            <input name="action" @if(isset($selectedOption) && $value == $selectedOption) checked @endif value="{{ $value }}" type="radio">
+                                                            <input name="action" @if(((isset($selectedOption)) && $value == $selectedOption) || old('action') == $value ) checked @endif value="{{ $value }}" type="radio">
                                                             {{$label}}
                                                         </label>
                                                     </li>
@@ -119,7 +119,8 @@
                 $(input).val(capitalizeFirstLetter(radioLabel));
             });
 
-            // $(dropdown).trigger('change');
+            // trigger the change for the old or selected request type
+            $(dropdown).trigger('change');
 
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing
@@ -137,6 +138,7 @@
             })
 
         })
+
     </script>
 
 @endpush

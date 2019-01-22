@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -29,31 +30,25 @@ class PrivateMessagePolicy
      */
     public function edit(User $user, PrivateMessage $message)
     {
-        $sendingUserId = $message->from_user_id;
-        $receivingUserId = $message->to_user_id;
-        $sendingCooperationId = $message->from_cooperation_id;
-        $receivingCooperationId = $message->to_cooperation_id;
+
+        // get the building id from the message
+        $buildingId = $message->building_id;
 
         // note the order
-        if ($user->hasRole(['cooperation-admin', 'coordinator'])) {
-            foreach ($user->cooperations as $cooperation) {
-                if (in_array($cooperation->id, compact('sendingCooperationId', 'receivingCooperationId'))) {
-                    return true;
-                }
-            }
-            if (in_array($user->id, compact('sendingUserId', 'receivingUserId'))) {
+        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'coordinator-admin'])) {
+            return true;
+        }
+
+        if ($user->hasRoleAndIsCurrentRole(['coach'])) {
+
+            return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
+        }
+
+        if ($user->hasRoleAndIsCurrentRole(['resident'])) {
+            if (in_array(HoomdossierSession::getBuilding(), compact('buildingId'))) {
                 return true;
             }
-
-            return false;
         }
-        //if ($user->hasRo)
-        if ($user->hasRole(['coach', 'resident'])) {
-            if (in_array($user->id, compact('sendingUserId', 'receivingUserId'))) {
-                return true;
-            }
 
-            return false;
-        }
     }
 }

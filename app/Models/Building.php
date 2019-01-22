@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -98,6 +99,88 @@ class Building extends Model
     }
 
     /**
+     * Check if a step is completed for a building with matching input source id
+     *
+     * @param Step $step
+     * @return bool
+     */
+    public function hasCompleted(Step $step)
+    {
+        return $this->find(HoomdossierSession::getBuilding())
+                ->completedSteps()->where('step_id', $step->id)->count() > 0;
+    }
+    /**
+     * Returns the user progress.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function completedSteps()
+    {
+        return $this->hasMany(UserProgress::class);
+    }
+
+    /**
+     * Complete a step for a building
+     *
+     * @param Step $step
+     * @return Model
+     */
+    public function complete(Step $step)
+    {
+        return UserProgress::firstOrCreate([
+            'step_id' => $step->id,
+            'input_source_id' => HoomdossierSession::getInputSource(),
+            'building_id' => HoomdossierSession::getBuilding(),
+        ]);
+    }
+
+    /**
+     * Check if a user is interested in a step
+     *
+     * @param string $type
+     * @param array $interestedInIds
+     * @return bool
+     */
+    public function isInterestedInStep($type, $interestedInIds = [])
+    {
+        // the interest ids that people select when they do not have any interest
+        $noInterestIds = [4, 5];
+
+        $interestedIds = [];
+
+        if (! is_array($interestedInIds)) {
+            $interestedInIds = [$interestedInIds];
+        }
+
+        // go through the elementid and get the user interest id to put them into the array
+        foreach ($interestedInIds as $key => $interestedInId) {
+            if ($this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId)->interest_id);
+            }
+        }
+
+        // check if the user wants to do something with their glazing
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a user is not interested in a step
+     *
+     * @param string $type
+     * @param array $interestedInIds
+     * @return bool
+     */
+    public function isNotInterestedInStep($type, $interestedInIds = [])
+    {
+        return !$this->isInterestedInStep($type, $interestedInIds);
+    }
+
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -142,6 +225,13 @@ class Building extends Model
     public function exampleBuilding()
     {
         return $this->belongsTo(ExampleBuilding::class);
+    }
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+    public function progress(){
+	    return $this->hasMany(UserProgress::class);
     }
 
     /**
@@ -341,5 +431,15 @@ class Building extends Model
     public function questionAnswers()
     {
         return $this->hasMany(QuestionsAnswer::class);
+    }
+
+    /**
+     * Get the full address
+     *
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        return "{$this->postal_code}, {$this->street}, {$this->number}";
     }
 }

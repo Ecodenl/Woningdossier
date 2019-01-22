@@ -26,9 +26,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
         //		 Login, forgot password etc.
-//        Route::group(['middleware' => 'guest'], function () {
+
+	    Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
+	    Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
+
         Auth::routes();
-//        });
 
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
@@ -50,15 +52,14 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('edit/{mainMessageId}', 'MessagesController@edit')->name('edit');
+                    Route::get('edit', 'MessagesController@edit')->name('edit');
                     Route::post('edit', 'MessagesController@store')->name('store');
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
+                });
 
-                    Route::group(['prefix' => 'requests', 'as' => 'requests.'], function () {
-                        Route::get('', 'RequestController@index')->name('index');
-                        Route::get('{requestMessageId}', 'RequestController@edit')->name('edit');
-                        Route::post('{requestMessageId}', 'RequestController@update')->name('update');
-                    });
+                Route::group(['as' => 'access.', 'prefix' => 'access'], function () {
+                    Route::get('', 'AccessController@index')->name('index');
+                    Route::post('revoke-access', 'AccessController@revokeAccess')->name('revoke-access');
                 });
 
                 //Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
@@ -95,16 +96,20 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 // todo
-                Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
+//                Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
                 // todo end
                 Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
+
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
 
+                Route::group(['middleware' => 'filled-step:building-detail'], function () {
+                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Extra pages with downloadable or information content.
                     Route::group(['namespace' => 'Information'], function () {
@@ -206,13 +211,14 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
                         Route::get('', 'MessagesController@index')->name('index');
-                        Route::get('message/{messageId}', 'MessagesController@edit')->name('edit');
+                        Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
+                        Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
                         Route::post('message', 'MessagesController@store')->name('store');
                     });
 
                     Route::group(['prefix' => 'connect-to-coach', 'as' => 'connect-to-coach.'], function () {
                         Route::get('', 'ConnectToCoachController@index')->name('index');
-                        Route::get('connect/{privateMessageId}', 'ConnectToCoachController@create')->name('create');
+                        Route::get('connect/{buildingId}', 'ConnectToCoachController@create')->name('create');
                         Route::get('consult-coach/{privateMessageId}', 'ConnectToCoachController@talkToCoachCreate')->name('talk-to-coach.create');
                         Route::post('consult-coach', 'ConnectToCoachController@talkToCoachStore')->name('talk-to-coach.store');
 //                        Route::post('message-and-connect', 'ConnectToCoachController@storeWithMessageToCoach')->name('store-with-message-to-coach');
@@ -233,6 +239,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                         Route::get('', 'UserController@index')->name('index');
                         Route::get('create', 'UserController@create')->name('create');
+                        Route::delete('delete', 'UserController@destroy')->name('destroy');
                         Route::post('', 'UserController@store')->name('store');
                     });
 
@@ -271,15 +278,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('message/{messageId}', 'MessagesController@edit')->name('edit');
+                    Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
+                    Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
                     Route::post('message', 'MessagesController@store')->name('store');
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
-                });
-
-                Route::group(['prefix' => 'connect-to-resident', 'as' => 'connect-to-resident.'], function () {
-                    Route::get('', 'ConnectToResidentController@index')->name('index');
-                    Route::get('{userId}', 'ConnectToResidentController@create')->name('create');
-                    Route::post('', 'ConnectToResidentController@store')->name('store');
                 });
 
                 // needs to be the last route due to the param

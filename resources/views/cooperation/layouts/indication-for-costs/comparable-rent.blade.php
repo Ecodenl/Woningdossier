@@ -15,6 +15,6 @@
         <input type="text" id="{{isset($id) ? $id.'_' : ''}}interest_comparable" class="form-control disabled" disabled="" value="0,0">
     </div>
     @component('cooperation.tool.components.alert', ['alertType' => 'info', 'id' => $infoAlertId, 'collapsable' => true])
-        {{\App\Helpers\Translation::translate('general.unit.year.help')}}
+        {{\App\Helpers\Translation::translate('general.costs.comparable-rent.help')}}
     @endcomponent
 </div>

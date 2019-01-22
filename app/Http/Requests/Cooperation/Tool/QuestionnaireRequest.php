@@ -31,11 +31,14 @@ class QuestionnaireRequest extends FormRequest
 
         $attributes = [];
 
-        foreach ($questions as $questionId => $questionAnswer) {
-            $currentQuestion = Question::find($questionId);
+        if (is_array($questions) && !empty($questions)) {
 
-            // instead of using the array key as name in validation we give a "dynamic" name
-            $attributes['questions.'.$questionId] = "vraag '$currentQuestion->name'";
+            foreach ($questions as $questionId => $questionAnswer) {
+                $currentQuestion = Question::find($questionId);
+
+                // instead of using the array key as name in validation we give a "dynamic" name
+                $attributes['questions.'.$questionId] = "vraag '$currentQuestion->name'";
+            }
         }
 
         return $attributes;
@@ -54,40 +57,44 @@ class QuestionnaireRequest extends FormRequest
         $questions = $request->get('questions');
         $validationRules = [];
 
-        // loop through the questions
-        foreach ($questions as $questionId => $questionAnswer) {
-            // get the current question and the validation for that question
-            $currentQuestion = Question::find($questionId);
-            $validation = $currentQuestion->validation;
+        if (is_array($questions) && !empty($questions)) {
 
-            // nullable is still needed, in some cases the strings will be converted to null
-            // if that happens sometimes would not work
-            // see ConvertEmptyStringsToNull middleware class
-            $rule = 'sometimes|nullable|';
-            // if its required add the required rule
-            if ($currentQuestion->isRequired()) {
-                $rule .= 'required|';
-            }
-            foreach ($validation as $mainRule => $rules) {
-                // check if there is validation for the question
-                if (! empty($validation)) {
-                    // let the concat start
-                    $rule .= "{$mainRule}|";
+            // loop through the questions
+            foreach ($questions as $questionId => $questionAnswer) {
+                // get the current question and the validation for that question
+                $currentQuestion = Question::find($questionId);
+                $validation = $currentQuestion->validation;
 
-                    foreach ($rules as $subRule => $subRuleCheckValues) {
-                        $rule .= "{$subRule}:";
-                        foreach ($subRuleCheckValues as $subRuleCheckValue) {
-                            $rule .= "{$subRuleCheckValue},";
-                        }
-                    }
-
-                    // remove the last "," from the rule and replace it with a pipe
-                    $rule = rtrim($rule, ',');
-                    $rule .= '|';
+                // nullable is still needed, in some cases the strings will be converted to null
+                // if that happens sometimes would not work
+                // see ConvertEmptyStringsToNull middleware class
+                $rule = 'sometimes|nullable|';
+                // if its required add the required rule
+                if ($currentQuestion->isRequired()) {
+                    $rule .= 'required|';
                 }
+                foreach ($validation as $mainRule => $rules) {
+                    // check if there is validation for the question
+                    if (! empty($validation)) {
+                        // let the concat start
+                        $rule .= "{$mainRule}|";
+
+                        foreach ($rules as $subRule => $subRuleCheckValues) {
+                            $rule .= "{$subRule}:";
+                            foreach ($subRuleCheckValues as $subRuleCheckValue) {
+                                $rule .= "{$subRuleCheckValue},";
+                            }
+                        }
+
+                        // remove the last "," from the rule and replace it with a pipe
+                        $rule = rtrim($rule, ',');
+                        $rule .= '|';
+                    }
+                }
+                $validationRules['questions.'.$questionId] = $rule;
             }
-            $validationRules['questions.'.$questionId] = $rule;
         }
+
 
         return $validationRules;
     }

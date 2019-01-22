@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\Information;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Illuminate\Http\Request;
@@ -41,8 +43,9 @@ class VentilationController extends Controller
      */
     public function store(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
         // Save progress
-        Auth::user()->complete($this->step);
+        $building->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
         $nextStep = StepHelper::getNextStep($this->step);

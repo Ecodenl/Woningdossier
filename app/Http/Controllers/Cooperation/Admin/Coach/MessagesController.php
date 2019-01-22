@@ -2,41 +2,91 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Models\PrivateMessageView;
+use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\InboxService;
 use App\Services\MessageService;
+use App\Services\PrivateMessageViewService;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
-    public function index(Cooperation $cooperation)
+
+    public function index()
     {
-        $myCreatedMessages = PrivateMessage::myCreatedMessages()->get();
+//         the raw query
+//            SELECT bcs2.building_id, bcs2.count_active AS count_active, bcs3.count_removed AS count_removed
+//            FROM ( SELECT building_id, count(`status`) AS count_active FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'active' group by building_id ) AS bcs2
+//            LEFT JOIN
+//            ( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'removed' group by building_id) AS bcs3
+//            ON bcs2.building_id = bcs3.building_id
+//	          GROUP BY count_active, count_removed, building_id
+//            HAVING (count_active > count_removed) OR count_removed IS NULL
 
-        $mainMessages = PrivateMessage::mainMessages()->get();
+        // if laravel version = 5.6 use fromSub function.
 
-        $mainMessages = collect($mainMessages)->merge($myCreatedMessages)->unique('id');
+        // get the building_coach_statuses
+        $activeCount = \DB::raw('( SELECT building_id, count(`status`) AS count_active FROM building_coach_statuses WHERE coach_id = '.\Auth::id().' AND `status` = \'active\' group by building_id ) AS bcs2');
+        $removedCount = \DB::raw('( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = '.\Auth::id().' AND `status` = \'removed\' group by building_id) AS bcs3');
 
-        return view('cooperation.admin.coach.messages.index', compact('mainMessages'));
+        // get the building_coach_statuses where the active status is higher then the removed status
+        $activeBuildingCoachStatuses = \DB::query()
+            ->select('bcs2.building_id', 'bcs2.count_active AS count_active', 'bcs3.count_removed AS count_removed')
+            ->from($activeCount)
+            ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
+            ->groupBy('count_active', 'count_removed', 'building_id')
+            ->orHavingRaw('count_active > count_removed OR count_removed IS NULL')
+            ->get();
+
+        return view('cooperation.admin.coach.messages.index', compact('activeBuildingCoachStatuses'));
     }
 
-    public function edit(Cooperation $cooperation, $mainMessageId)
+    public function publicGroup(Cooperation $cooperation, $buildingId)
     {
-        $this->authorize('edit', PrivateMessage::findOrFail($mainMessageId));
+        $isPublic = true;
+        $privateMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 
-        $privateMessages = PrivateMessage::conversation($mainMessageId)->get();
+        if ($privateMessages->first() instanceof PrivateMessage) {
+            $this->authorize('edit', $privateMessages->first());
+        }
 
-        InboxService::setRead($mainMessageId);
+        PrivateMessageViewService::setRead($privateMessages);
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
 
-        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'mainMessageId'));
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
     }
+
+    public function privateGroup(Cooperation $cooperation, $buildingId)
+    {
+        $isPublic = false;
+        $privateMessages = PrivateMessage::forMyCooperation()->conversation($buildingId)->where('is_public', $isPublic)->get();
+
+        if ($privateMessages->first() instanceof PrivateMessage) {
+            $this->authorize('edit', $privateMessages->first());
+        } else {
+            // at this point we check if there is actually a private_message, public or not.
+            if (!PrivateMessage::forMyCooperation()->conversation($buildingId)->first() instanceof PrivateMessage) {
+                // there are no messages for this building for the current cooperation, so we return them back to the index from the buildings
+                return redirect()->route('cooperation.admin.cooperation.coordinator.building-access.index');
+            }
+        }
+
+        PrivateMessageViewService::setRead($privateMessages);
+        $groupParticipants = PrivateMessage::getGroupParticipants($buildingId);
+
+        return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
+    }
+
 
     public function store(Cooperation $cooperation, MessagesRequest $request)
     {

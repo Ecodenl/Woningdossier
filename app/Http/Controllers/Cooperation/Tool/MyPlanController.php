@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvExportService;
@@ -15,8 +17,9 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-        $user = \Auth::user();
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
         $coachComments = UserActionPlanAdvice::getAllCoachComments();
 
         return view('cooperation.tool.my-plan.index', compact(
@@ -80,10 +83,14 @@ class MyPlanController extends Controller
 
         $myAdvices = $request->input('advice', []);
 
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
+
         foreach ($myAdvices as $adviceId => $data) {
             $advice = UserActionPlanAdvice::find($adviceId);
 
-            if ($advice instanceof UserActionPlanAdvice && $advice->user->id === \Auth::user()->id) {
+            // check if the advice exists, if the input source id is the current input source and if the buildingOwner id is the user id
+            if ($advice instanceof UserActionPlanAdvice && $advice->input_source_id == HoomdossierSession::getInputSource() && $buildingOwner->id == $advice->user_id) {
                 MyPlanHelper::saveUserInterests($request, $advice);
 
                 // check if a user is interested in a measure

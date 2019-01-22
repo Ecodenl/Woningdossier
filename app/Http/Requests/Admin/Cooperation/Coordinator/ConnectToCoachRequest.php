@@ -27,7 +27,7 @@ class ConnectToCoachRequest extends FormRequest
         return [
 //            'title' => 'required|max:125',
 //            'message' => 'required',
-            'coach' => ['required', 'exists:users,id', new isUserMemberOfCooperation()],
+            'coach_id' => ['required', 'exists:users,id', new isUserMemberOfCooperation()],
         ];
     }
 }

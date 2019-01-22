@@ -93,7 +93,7 @@ class GeneralDataController extends Controller
         $userInterestsForMe = UserInterest::forMe()->get();
 
         return view('cooperation.tool.general-data.index', compact(
-            'building', 'step', 'buildingOwner',
+            'building', 'step',
             'coachEnergyHabitRemarks', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
             'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
@@ -356,7 +356,7 @@ class GeneralDataController extends Controller
         );
 
         // Save progress
-        \Auth::user()->complete($this->step);
+        $building->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
         $nextStep = StepHelper::getNextStep($this->step);

@@ -28,7 +28,7 @@ class UserService
         // remove the motivations from a user
         $user->motivations()->delete();
         // remove the progress from a user
-        $user->progress()->delete();
+        //$user->progress()->delete();
         // delete the cooperation from the user, belongsToMany so no deleting here.
         $user->cooperations()->detach();
 

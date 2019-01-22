@@ -126,8 +126,8 @@ $(document).ready(function () {
         var inputType = inputSourceGroup.find('input').attr('type');
 
         if (inputType === undefined) {
-            // check if it's a select
-            inputType = inputSourceGroup.find('select').length === 1 ? 'select' : undefined;
+            // try to find a select, if its not a select, its prob a textarea.
+            inputType = inputSourceGroup.find('select').length === 1 ? 'select' : 'textarea';
         }
 
         // check if the input is a "input" and not a select
@@ -141,11 +141,17 @@ $(document).ready(function () {
                     inputSourceGroup.find('input[type=radio][value=' + dataInputValue + ']').prop('checked', true);
                     break;
                 case "checkbox":
-                    inputSourceGroup.find('input[type=checkbox]:checked').removeProp('selected');
-                    inputSourceGroup.find('input[value=' + dataInputValue + ']').prop('selected', true);
+                    inputSourceGroup.find('input[type=checkbox]:checked').removeProp('checked');
+                    inputSourceGroup.find('input[type=checkbox][value=' + dataInputValue + ']').prop('checked', true);
                     break;
                 case "select":
                     inputSourceGroup.find('select').val(dataInputValue);
+                    break;
+                case "date":
+                    inputSourceGroup.find('input[type=date]').val(dataInputValue);
+                    break;
+                case "textarea":
+                    inputSourceGroup.find('textarea').val(dataInputValue);
                     break;
                 default:
                     //inputSourceGroup.find('select option:selected').removeAttr('selected');

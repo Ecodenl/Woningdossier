@@ -383,9 +383,15 @@ class QuestionnaireController extends Controller
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
 
+        $step = Step::find($stepId);
+
+        $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
+
+
         $questionnaire = Questionnaire::create([
             'name' => $questionnaireNameKey,
             'step_id' => $stepId,
+            'order' => ++$maxOrderForQuestionnairesInSelectedSteps,
             'cooperation_id' => HoomdossierSession::getCooperation(),
             'is_active' => false,
         ]);

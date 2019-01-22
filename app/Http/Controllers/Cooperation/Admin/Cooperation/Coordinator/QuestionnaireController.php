@@ -387,7 +387,6 @@ class QuestionnaireController extends Controller
 
         $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
 
-
         $questionnaire = Questionnaire::create([
             'name' => $questionnaireNameKey,
             'step_id' => $stepId,

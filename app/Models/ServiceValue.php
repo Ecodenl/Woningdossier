@@ -14,10 +14,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $calculate_value
  * @property int $order
  * @property bool $is_default
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\KeyFigureBoilerEfficiency $keyFigureBoilerEfficiency
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue whereCreatedAt($value)

@@ -170,8 +170,8 @@ class SolarPanelsController extends Controller
         $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
-        $comment = $request->get('comment', "");
-        $comment = is_null($comment) ? "" : $comment;
+        $comment = $request->get('comment', '');
+        $comment = is_null($comment) ? '' : $comment;
 
         BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -189,7 +189,8 @@ class SolarPanelsController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);($this->step);
+        $building->complete($this->step);
+        ($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $nextStep = StepHelper::getNextStep($this->step);

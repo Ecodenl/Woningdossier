@@ -7,7 +7,6 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Role;
 use Illuminate\Support\Facades\Session;
-use phpDocumentor\Reflection\Types\Self_;
 
 class HoomdossierSession extends Session
 {
@@ -134,7 +133,7 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Set the bool, this determines if the logged in user is comparing input sources
+     * Set the bool, this determines if the logged in user is comparing input sources.
      *
      * @param bool $isUserComparing
      */
@@ -144,7 +143,7 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Set the compare input source short, this is used to retrieve the right compare value from the dom
+     * Set the compare input source short, this is used to retrieve the right compare value from the dom.
      *
      * @param string $inputSourceShort
      */
@@ -241,7 +240,7 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Returns if a user is comparing input sources
+     * Returns if a user is comparing input sources.
      *
      * @return bool
      */
@@ -251,7 +250,7 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Check if a user is comparing his own values against the values from a other input source
+     * Check if a user is comparing his own values against the values from a other input source.
      *
      * @return bool
      */
@@ -261,15 +260,14 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Check if a user is NOT comparing his own values against the values from a other input source
+     * Check if a user is NOT comparing his own values against the values from a other input source.
      *
      * @return bool
      */
     public static function isUserNotComparingInputSources(): bool
     {
-        return !self::getIsUserComparingInputSources();
+        return ! self::getIsUserComparingInputSources();
     }
-
 
     /**
      * Return the Hoomdossier session data.

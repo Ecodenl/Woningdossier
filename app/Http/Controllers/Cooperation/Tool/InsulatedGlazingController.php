@@ -427,7 +427,6 @@ class InsulatedGlazingController extends Controller
 
         $woodElementCreateData = [];
         foreach ($woodElements as $woodElementId => $woodElementValueIds) {
-
             // add the data we need to perform a create
             foreach ($woodElementValueIds as $woodElementValueId) {
                 array_push($woodElementCreateData, ['element_value_id' => $woodElementValueId]);
@@ -443,15 +442,12 @@ class InsulatedGlazingController extends Controller
             );
         }
 
-
-
-
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
         BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'last_painted_year' => $paintWorkStatuses['last_painted_year'],
@@ -465,16 +461,17 @@ class InsulatedGlazingController extends Controller
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId
+                'input_source_id' => $inputSourceId,
             ],
             [
-                'window_surface' => $windowSurface
+                'window_surface' => $windowSurface,
             ]
         );
 
         $this->saveAdvices($request);
         // Save progress
-        $building->complete($this->step);($this->step);
+        $building->complete($this->step);
+        ($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $nextStep = StepHelper::getNextStep($this->step);

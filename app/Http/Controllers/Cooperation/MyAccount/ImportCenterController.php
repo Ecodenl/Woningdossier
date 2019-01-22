@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\ToolSetting;
-use App\Http\Controllers\Controller;
 use App\Services\ToolSettingService;
 use Illuminate\Http\Request;
 
@@ -24,6 +24,7 @@ class ImportCenterController extends Controller
      *
      * @param Cooperation $cooperation
      * @param $inputSourceShort
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function setCompareSession(Cooperation $cooperation, $inputSourceShort)
@@ -44,7 +45,7 @@ class ImportCenterController extends Controller
      * Dismiss the notification from the tool pages / set the changed column to false.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
      */
     public function dismissNotification(Cooperation $cooperation, Request $request)
     {

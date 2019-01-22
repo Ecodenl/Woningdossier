@@ -12,10 +12,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $resident_count
  * @property int $water_consumption
  * @property int $energy_consumption
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\ComfortLevelTapWater $comfortLevelTapWater
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater whereComfortLevelTapWaterId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater whereEnergyConsumption($value)

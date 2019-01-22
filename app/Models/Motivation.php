@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property int|null $calculate_value
  * @property int $order
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereCreatedAt($value)

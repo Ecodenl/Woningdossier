@@ -2,26 +2,21 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
-use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
-use App\Models\PrivateMessageView;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
-use App\Services\InboxService;
 use App\Services\MessageService;
 use App\Services\PrivateMessageViewService;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
-
     public function index()
     {
 //         the raw query
@@ -30,7 +25,7 @@ class MessagesController extends Controller
 //            LEFT JOIN
 //            ( SELECT building_id, count(`status`) AS count_removed FROM building_coach_statuses WHERE coach_id = 16 AND `status` = 'removed' group by building_id) AS bcs3
 //            ON bcs2.building_id = bcs3.building_id
-//	          GROUP BY count_active, count_removed, building_id
+        //	          GROUP BY count_active, count_removed, building_id
 //            HAVING (count_active > count_removed) OR count_removed IS NULL
 
         // if laravel version = 5.6 use fromSub function.
@@ -75,7 +70,7 @@ class MessagesController extends Controller
             $this->authorize('edit', $privateMessages->first());
         } else {
             // at this point we check if there is actually a private_message, public or not.
-            if (!PrivateMessage::forMyCooperation()->conversation($buildingId)->first() instanceof PrivateMessage) {
+            if (! PrivateMessage::forMyCooperation()->conversation($buildingId)->first() instanceof PrivateMessage) {
                 // there are no messages for this building for the current cooperation, so we return them back to the index from the buildings
                 return redirect()->route('cooperation.admin.cooperation.coordinator.building-access.index');
             }
@@ -86,7 +81,6 @@ class MessagesController extends Controller
 
         return view('cooperation.admin.coach.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants', 'isPublic'));
     }
-
 
     public function store(Cooperation $cooperation, MessagesRequest $request)
     {

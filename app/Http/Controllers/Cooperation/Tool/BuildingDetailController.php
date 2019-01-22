@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\Str;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\BuildingDetailRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -14,7 +14,6 @@ use App\Models\Step;
 use App\Scopes\GetValueScope;
 use App\Services\ExampleBuildingService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class BuildingDetailController extends Controller
 {
@@ -48,7 +47,7 @@ class BuildingDetailController extends Controller
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'build_year' => $buildYear
+                'build_year' => $buildYear,
             ]
         );
 
@@ -61,25 +60,26 @@ class BuildingDetailController extends Controller
         if ($exampleBuilding instanceof ExampleBuilding) {
             $building->exampleBuilding()->associate($exampleBuilding);
             $building->save();
-	        ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+            ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
         }
 
         // finish the step
         \Auth::user()->complete($this->step);
-        return redirect()->route('cooperation.tool.general-data.index');
 
+        return redirect()->route('cooperation.tool.general-data.index');
     }
 
     /**
-     * Get a example building based on the building type
+     * Get a example building based on the building type.
      *
      * @param BuildingType $buildingType
+     *
      * @return ExampleBuilding|\Illuminate\Database\Eloquent\Builder
      */
     private function getGenericExampleBuildingByBuildingType(BuildingType $buildingType)
     {
         $exampleBuilding = ExampleBuilding::generic()->where('building_type_id', $buildingType->id)->first();
+
         return $exampleBuilding;
     }
-
 }

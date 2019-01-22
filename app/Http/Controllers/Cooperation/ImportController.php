@@ -10,11 +10,9 @@ use Illuminate\Http\Request;
 
 class ImportController extends Controller
 {
-
     public function copy(Request $request)
     {
         $desiredInputSourceName = $request->get('input_source');
-
 
         $tablesWithBuildingIds = [
             'building_pv_panels',
@@ -90,7 +88,6 @@ class ImportController extends Controller
                 \DB::table($tableWithUserId)->insert($desiredInputSourceValue);
             }
         }
-
 
         ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
         HoomdossierSession::stopUserComparingInputSources();

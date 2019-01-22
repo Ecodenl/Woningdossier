@@ -14,9 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property string $execution_term_name
  * @property int|null $term_years
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeSurface newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeSurface newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeSurface query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeSurface translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeSurface whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeSurface whereCreatedAt($value)

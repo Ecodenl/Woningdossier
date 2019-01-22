@@ -4,10 +4,9 @@ namespace App\Observers;
 
 use App\Models\PrivateMessageView;
 
-class PrivateMessageViewObserver {
-
+class PrivateMessageViewObserver
+{
     public function creating(PrivateMessageView $privateMessageView)
     {
-
     }
 }

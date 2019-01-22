@@ -203,8 +203,8 @@ class HeaterController extends Controller
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
-        $comment = $request->get('comment', "");
-        $comment = is_null($comment) ? "" : $comment;
+        $comment = $request->get('comment', '');
+        $comment = is_null($comment) ? '' : $comment;
 
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -226,7 +226,8 @@ class HeaterController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);($this->step);
+        $building->complete($this->step);
+        ($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $nextStep = StepHelper::getNextStep($this->step);

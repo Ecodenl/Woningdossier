@@ -11,10 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $measure_id
  * @property string $name
  * @property string $value
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\Measure|null $measure
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty whereMeasureId($value)

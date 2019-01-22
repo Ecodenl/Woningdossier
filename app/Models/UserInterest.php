@@ -13,16 +13,23 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $user_id
+ * @property int|null $input_source_id
  * @property string $interested_in_type
  * @property int $interested_in_id
  * @property int $interest_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \App\Models\InputSource|null $inputSource
  * @property \App\Models\Interest $interest
  * @property \App\Models\User $user
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestedInId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestedInType($value)

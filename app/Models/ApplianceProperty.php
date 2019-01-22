@@ -11,10 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $appliance_id
  * @property string $name
  * @property string $value
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\Appliance|null $appliance
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereApplianceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty whereId($value)

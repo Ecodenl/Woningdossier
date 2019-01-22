@@ -222,7 +222,8 @@ class FloorInsulationController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);($this->step);
+        $building->complete($this->step);
+        ($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $nextStep = StepHelper::getNextStep($this->step);

@@ -56,6 +56,7 @@ class LoginController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function logout(Request $request)
@@ -115,17 +116,16 @@ class LoginController extends Controller
                     'cooperation' => [trans('auth.cooperation')],
                 ]);
             }
-        }
-        else {
-        	// So it wasn't alright. Check if it was because of the confirm_token
-	        $userEmail = $request->get('email');
-	        $isPending = User::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
-	        if ($isPending){
-		        \Log::debug("The user tried to log in, but isn't confirmed yet.");
-		        throw ValidationException::withMessages([
-			        'confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])]
-		        ]);
-	        }
+        } else {
+            // So it wasn't alright. Check if it was because of the confirm_token
+            $userEmail = $request->get('email');
+            $isPending = User::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
+            if ($isPending) {
+                \Log::debug("The user tried to log in, but isn't confirmed yet.");
+                throw ValidationException::withMessages([
+                    'confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])],
+                ]);
+            }
         }
 
         if ($this->attemptLogin($request)) {

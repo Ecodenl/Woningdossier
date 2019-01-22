@@ -11,9 +11,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $type
  * @property string $name
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory whereId($value)

@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\Cooperation
+ * App\Models\Cooperation.
  *
  * @property int $id
  * @property string $name
  * @property string $slug
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property-read \App\Models\CooperationStyle $style
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property \App\Models\CooperationStyle $style
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation query()

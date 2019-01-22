@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\ExampleBuilding
+ * App\Models\ExampleBuilding.
  *
  * @property int $id
  * @property string $name
@@ -18,9 +18,10 @@ use Illuminate\Support\Collection;
  * @property bool $is_default
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\BuildingType|null $buildingType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
- * @property-read \App\Models\Cooperation|null $cooperation
+ * @property \App\Models\BuildingType|null $buildingType
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property \App\Models\Cooperation|null $cooperation
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forAnyOrMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding generic()
@@ -109,13 +110,13 @@ class ExampleBuilding extends Model
                     ->orderBy('build_year')
                     ->first();
 
-        if ($content instanceof ExampleBuildingContent){
-        	return $content;
+        if ($content instanceof ExampleBuildingContent) {
+            return $content;
         }
 
         return $this->contents()
-	        ->whereNull('build_year')
-	        ->first();
+            ->whereNull('build_year')
+            ->first();
     }
 
     /**
@@ -167,14 +168,15 @@ class ExampleBuilding extends Model
         return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
     }
 
-	/**
-	 * Scope on only generic example buildings.
-	 *
-	 * @param \Illuminate\Database\Eloquent\Builder $query
-	 *
-	 * @return \Illuminate\Database\Eloquent\Builder
-	 */
-    public function scopeGeneric($query){
-    	return $query->whereNull('cooperation_id');
+    /**
+     * Scope on only generic example buildings.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeGeneric($query)
+    {
+        return $query->whereNull('cooperation_id');
     }
 }

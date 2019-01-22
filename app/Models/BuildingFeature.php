@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
-use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingFeature
+ * App\Models\BuildingFeature.
  *
  * @property int $id
  * @property int|null $building_id
@@ -37,12 +37,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $additional_info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\BuildingCategory|null $buildingCategory
- * @property-read \App\Models\BuildingType|null $buildingType
- * @property-read \App\Models\EnergyLabel|null $energyLabel
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\RoofType|null $roofType
+ * @property \App\Models\Building|null $building
+ * @property \App\Models\BuildingCategory|null $buildingCategory
+ * @property \App\Models\BuildingType|null $buildingType
+ * @property \App\Models\EnergyLabel|null $energyLabel
+ * @property \App\Models\InputSource|null $inputSource
+ * @property \App\Models\RoofType|null $roofType
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newQuery()

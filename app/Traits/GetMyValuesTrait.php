@@ -111,5 +111,4 @@ trait GetMyValuesTrait
     {
         return $this->inputSource()->first()->name;
     }
-
 }

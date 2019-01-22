@@ -7,7 +7,7 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserProgress
+ * App\Models\UserProgress.
  *
  * @property int $id
  * @property int|null $input_source_id
@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $building_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property \App\Models\InputSource|null $inputSource
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress newQuery()
@@ -34,7 +35,7 @@ class UserProgress extends Model
     use GetMyValuesTrait, GetValueTrait;
 
     public $fillable = [
-        'user_id', 'step_id', 'building_id', 'input_source_id'
+        'user_id', 'step_id', 'building_id', 'input_source_id',
     ];
 
     public function steps()

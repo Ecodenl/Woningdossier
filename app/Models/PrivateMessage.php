@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\PrivateMessage
+ * App\Models\PrivateMessage.
  *
  * @property int $id
  * @property int|null $building_id
@@ -21,7 +21,8 @@ use Illuminate\Support\Collection;
  * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
+ * @property \App\Models\Building|null $building
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
@@ -63,7 +64,7 @@ class PrivateMessage extends Model
 
     protected $fillable = [
         'message', 'from_user_id', 'from_cooperation_id', 'to_cooperation_id',
-        'request_type', 'allow_access', 'building_id', 'from_user', 'is_public'
+        'request_type', 'allow_access', 'building_id', 'from_user', 'is_public',
     ];
 
     /**
@@ -76,17 +77,17 @@ class PrivateMessage extends Model
         'is_public' => 'boolean',
     ];
 
-
     public function scopeForMyCooperation($query)
     {
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
     /**
-     * Scope a conversation requests for a building
+     * Scope a conversation requests for a building.
      *
      * @param $query
      * @param $buildingId
+     *
      * @return mixed
      */
     public function scopeConversationRequest($query, $buildingId)
@@ -115,13 +116,14 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Return the private message ids based on the Auth user has permission to
+     * Return the private message ids based on the Auth user has permission to.
      *
      * A "group" is defined by its building_id, one building_id has one group
      * however, a coach or coordinator can access multiple groups. This because they need to talk to multiple residents / buildings
      * in that case we return multiple private messages ids
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopePrivateMessagesIdsGroupedByBuildingId($query)
@@ -136,19 +138,20 @@ class PrivateMessage extends Model
                     ->where('building_id', HoomdossierSession::getBuilding())
                     ->orderBy('created_at');
 
+                    // no break
             case 'coach':
 
             case 'coordinator':
-
         }
 
         return $query;
     }
 
     /**
-     * Determine if a private message is public
+     * Determine if a private message is public.
      *
      * @param PrivateMessage $privateMessage
+     *
      * @return bool
      */
     public static function isPublic(PrivateMessage $privateMessage)
@@ -156,18 +159,20 @@ class PrivateMessage extends Model
         if ($privateMessage->is_public) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Determine if a private message is private
+     * Determine if a private message is private.
      *
      * @param PrivateMessage $privateMessage
+     *
      * @return bool
      */
     public static function isPrivate(PrivateMessage $privateMessage)
     {
-        return !self::isPublic($privateMessage);
+        return ! self::isPublic($privateMessage);
     }
 
     /**
@@ -203,7 +208,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to return the conversation ordered on created_at
+     * Scope a query to return the conversation ordered on created_at.
      *
      * @return $this
      */
@@ -213,9 +218,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope the public messages
+     * Scope the public messages.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopePublic($query)
@@ -224,9 +230,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope the private messages
+     * Scope the private messages.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopePrivate($query)
@@ -235,7 +242,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Return the full name, just a wrap
+     * Return the full name, just a wrap.
      *
      * @return mixed
      */
@@ -274,10 +281,9 @@ class PrivateMessage extends Model
         return Cooperation::find($sendingCooperationId);
     }
 
-
     /**
      * Get all the "group members"
-     * returns a collection of all the participants for a chat from a building
+     * returns a collection of all the participants for a chat from a building.
      *
      * @param $buildingId
      * @param bool $publicConversation
@@ -308,7 +314,6 @@ class PrivateMessage extends Model
             $groupMembers->push(User::find($coachWithAccess->coach_id));
         }
 
-
         return $groupMembers;
     }
 
@@ -324,7 +329,7 @@ class PrivateMessage extends Model
             if ($this->from_cooperation_id == HoomdossierSession::getCooperation()) {
                 return true;
             }
-        } elseif(\Auth::id() == $this->from_user_id) {
+        } elseif (\Auth::id() == $this->from_user_id) {
             return true;
         }
 
@@ -382,7 +387,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get the building from a message
+     * Get the building from a message.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserMotivation
+ * App\Models\UserMotivation.
  *
  * @property int $id
  * @property int $user_id
@@ -13,8 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Motivation $motivation
- * @property-read \App\Models\User $user
+ * @property \App\Models\Motivation $motivation
+ * @property \App\Models\User $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation query()

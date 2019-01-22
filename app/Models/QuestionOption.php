@@ -6,13 +6,14 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\QuestionOption
+ * App\Models\QuestionOption.
  *
  * @property int $id
  * @property int $question_id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionOption newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionOption newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionOption query()

@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureApplication
+ * App\Models\MeasureApplication.
  *
  * @property int $id
  * @property string $measure_type
@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication query()

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
-use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingRoofType
+ * App\Models\BuildingRoofType.
  *
  * @property int $id
  * @property int $building_id
@@ -21,11 +21,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\ElementValue|null $elementValue
- * @property-read \App\Models\BuildingHeating $heating
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\RoofType $roofType
+ * @property \App\Models\Building $building
+ * @property \App\Models\ElementValue|null $elementValue
+ * @property \App\Models\BuildingHeating $heating
+ * @property \App\Models\InputSource|null $inputSource
+ * @property \App\Models\RoofType $roofType
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newQuery()

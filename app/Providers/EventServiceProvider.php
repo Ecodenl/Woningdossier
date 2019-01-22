@@ -16,8 +16,8 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         PrivateMessageReceiverEvent::class => [
-            PrivateMessageReceiverListener::class
-        ]
+            PrivateMessageReceiverListener::class,
+        ],
     ];
 
     /**

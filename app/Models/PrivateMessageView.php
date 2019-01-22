@@ -6,7 +6,7 @@ use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PrivateMessageView
+ * App\Models\PrivateMessageView.
  *
  * @property int $id
  * @property int $private_message_id
@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView query()
@@ -30,15 +31,15 @@ use Illuminate\Database\Eloquent\Model;
 class PrivateMessageView extends Model
 {
     protected $fillable = [
-        'private_message_id', 'user_id', 'cooperation_id', 'read_at'
+        'private_message_id', 'user_id', 'cooperation_id', 'read_at',
     ];
 
     protected $casts = [
-        'read_at' => 'datetime'
+        'read_at' => 'datetime',
     ];
 
     /**
-     * Get the total unread messages from a auth user
+     * Get the total unread messages from a auth user.
      *
      * @return int
      */
@@ -60,17 +61,19 @@ class PrivateMessageView extends Model
     {
         // if the user is loggen in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            $privateMessageView = PrivateMessageView::where('private_message_id', $privateMessage->id)
+            $privateMessageView = self::where('private_message_id', $privateMessage->id)
                 ->where('cooperation_id', HoomdossierSession::getCooperation())->first();
-            if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {
+            if ($privateMessageView instanceof self && is_null($privateMessageView->read_at)) {
                 return true;
             }
+
             return false;
         } else {
-            $privateMessageView = PrivateMessageView::where('private_message_id', $privateMessage->id)->where('user_id', \Auth::id())->first();
-            if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {
+            $privateMessageView = self::where('private_message_id', $privateMessage->id)->where('user_id', \Auth::id())->first();
+            if ($privateMessageView instanceof self && is_null($privateMessageView->read_at)) {
                 return true;
             }
+
             return false;
         }
     }

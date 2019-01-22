@@ -7,7 +7,6 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Interest;
-use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\Step;
 use App\Models\ToolSetting;
@@ -26,7 +25,7 @@ class ToolComposer
         // the alert is also loaded on pages where a user is not authenticated so some vars would fail.
         $excludedViews = ['cooperation.tool.components.alert'];
 
-        if (!in_array($view->getName(), $excludedViews)) {
+        if (! in_array($view->getName(), $excludedViews)) {
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
             $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessages());
 
@@ -34,20 +33,20 @@ class ToolComposer
             $view->with('interests', Interest::orderBy('order')->get());
             $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
 
-	        $currentBuilding = HoomdossierSession::getBuilding();
-	        if (!is_null($currentBuilding)) {
-		        $building = Building::find($currentBuilding);
-		        if ($building instanceof Building) {
-			        $view->with( 'buildingOwner', $building->user );
-		        }
-	        }
+            $currentBuilding = HoomdossierSession::getBuilding();
+            if (! is_null($currentBuilding)) {
+                $building = Building::find($currentBuilding);
+                if ($building instanceof Building) {
+                    $view->with('buildingOwner', $building->user);
+                }
+            }
 
-	        $buildingId = HoomdossierSession::getBuilding();
-	        $changedSettings = collect([]);
-	        if (!is_null($buildingId)){
-		        $changedSettings = ToolSetting::getChangedSettings($buildingId);
-	        }
-	        $view->with('toolSettings', $changedSettings);
+            $buildingId = HoomdossierSession::getBuilding();
+            $changedSettings = collect([]);
+            if (! is_null($buildingId)) {
+                $changedSettings = ToolSetting::getChangedSettings($buildingId);
+            }
+            $view->with('toolSettings', $changedSettings);
         }
     }
 }

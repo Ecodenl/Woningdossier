@@ -66,12 +66,10 @@ class ConnectToCoachController extends Controller
         $coachId = $request->get('coach_id', '');
         $buildingId = $request->get('building_id', '');
 
-
         // the receiver of the message
         $coach = $cooperation->users()->find($coachId);
 
         if ($coach instanceof User) {
-
             $residentBuilding = Building::find($buildingId);
 
             $privateMessage = PrivateMessage::forMyCooperation()->conversationRequest($buildingId)->first();

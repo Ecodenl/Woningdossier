@@ -6,14 +6,13 @@ use App\Events\PrivateMessageReceiverEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
-use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-class PrivateMessageViewService {
-
+class PrivateMessageViewService
+{
     /**
-     * Create a private message view for each group participant
+     * Create a private message view for each group participant.
      *
      * @param PrivateMessage $privateMessage
      */
@@ -43,7 +42,6 @@ class PrivateMessageViewService {
                     ->where('user_id', \Auth::id())
                     ->update(['read_at' => Carbon::now()]);
             }
-
         }
 
         return true;

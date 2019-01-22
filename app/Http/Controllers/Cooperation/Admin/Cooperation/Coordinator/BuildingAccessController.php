@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
-use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -42,7 +41,6 @@ class BuildingAccessController extends Controller
 //                return $result;
 //            }
 //        })->unique('user_id');
-
 
         // we want to show the coordinators all the buildings that initiated a requested to the cooperation.
         $privateMessageBuildingIds = PrivateMessage::forMyCooperation()

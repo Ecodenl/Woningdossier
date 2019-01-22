@@ -7,7 +7,7 @@ use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Questionnaire
+ * App\Models\Questionnaire.
  *
  * @property int $id
  * @property string $name
@@ -17,9 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Cooperation $cooperation
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
- * @property-read \App\Models\Step|null $step
+ * @property \App\Models\Cooperation $cooperation
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
+ * @property \App\Models\Step|null $step
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire active()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newQuery()
@@ -40,7 +41,7 @@ class Questionnaire extends Model
     use TranslatableTrait;
 
     protected $fillable = [
-        'name', 'step_id', 'cooperation_id', 'is_active', 'order'
+        'name', 'step_id', 'cooperation_id', 'is_active', 'order',
     ];
 
     protected $casts = [
@@ -104,9 +105,10 @@ class Questionnaire extends Model
     }
 
     /**
-     * Scope the active questionnaires
+     * Scope the active questionnaires.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeActive($query)

@@ -10,7 +10,6 @@ use App\Models\HeatSource;
 use App\Models\PresentHeatPump;
 use App\Models\Step;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class HeatPumpController extends Controller
 {

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\KeyFigureTemperature
+ * App\Models\KeyFigureTemperature.
  *
  * @property int $id
  * @property int $measure_application_id
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $key_figure
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature query()

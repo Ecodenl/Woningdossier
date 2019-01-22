@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
-use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingInsulatedGlazing
+ * App\Models\BuildingInsulatedGlazing.
  *
  * @property int $id
  * @property int $building_id
@@ -21,11 +21,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\BuildingHeating|null $buildingHeating
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\InsulatingGlazing $insulatedGlazing
- * @property-read \App\Models\MeasureApplication $measureApplication
+ * @property \App\Models\Building $building
+ * @property \App\Models\BuildingHeating|null $buildingHeating
+ * @property \App\Models\InputSource|null $inputSource
+ * @property \App\Models\InsulatingGlazing $insulatedGlazing
+ * @property \App\Models\MeasureApplication $measureApplication
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing newQuery()

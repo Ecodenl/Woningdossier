@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * App\Models\User
+ * App\Models\User.
  *
  * @property int $id
  * @property string $first_name
@@ -27,19 +27,20 @@ use Spatie\Permission\Traits\HasRoles;
  * @property bool $is_admin
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
- * @property-read \App\Models\UserEnergyHabit $energyHabit
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property \App\Models\UserEnergyHabit $energyHabit
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
@@ -137,7 +138,6 @@ class User extends Authenticatable
         return $this->hasMany(UserActionPlanAdvice::class);
     }
 
-
     /**
      * The cooperations the user is associated with.
      */
@@ -157,7 +157,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Returns the first and last name, concatenated
+     * Returns the first and last name, concatenated.
      *
      * @return string
      */
@@ -179,7 +179,6 @@ class User extends Authenticatable
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
     }
 
-
     /**
      * Returns whether or not a user is associated with a particular Cooperation.
      *
@@ -196,7 +195,8 @@ class User extends Authenticatable
 
     public function complete(Step $step)
     {
-        \Log::debug(__METHOD__ .' is still being used, this should not be');
+        \Log::debug(__METHOD__.' is still being used, this should not be');
+
         return UserProgress::firstOrCreate([
             'step_id' => $step->id,
             'input_source_id' => HoomdossierSession::getInputSource(),
@@ -213,7 +213,8 @@ class User extends Authenticatable
      */
     public function hasCompleted(Step $step)
     {
-        \Log::debug(__METHOD__ .'is still being used somewhere, this should not be');
+        \Log::debug(__METHOD__.'is still being used somewhere, this should not be');
+
         return true;
     }
 
@@ -271,11 +272,11 @@ class User extends Authenticatable
         return false;
     }
 
-
     /**
-     * Check if a user is not removed from the building coach status table
+     * Check if a user is not removed from the building coach status table.
      *
      * @param $buildingId
+     *
      * @return bool
      */
     public function isRemovedFromBuildingCoachStatus($buildingId): bool
@@ -295,16 +296,16 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the opposite of the isRemovedFromBuildingCoachStatus function
+     * Return the opposite of the isRemovedFromBuildingCoachStatus function.
      *
      * @param $buildingId
+     *
      * @return bool
      */
     public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
     {
-        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
+        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
     }
-
 
     /**
      * Check if the logged in user is filling the tool for someone else.
@@ -318,7 +319,6 @@ class User extends Authenticatable
         if (is_null(HoomdossierSession::getBuilding())) {
             return false;
         } else {
-
             if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
                 return true;
             }
@@ -419,5 +419,4 @@ class User extends Authenticatable
     {
         $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
     }
-
 }

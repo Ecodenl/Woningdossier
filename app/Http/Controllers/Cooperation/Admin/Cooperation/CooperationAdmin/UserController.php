@@ -38,7 +38,6 @@ class UserController extends Controller
     {
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->orWhere('name', 'coordinator')->get();
 
-
         return view('cooperation.admin.cooperation.cooperation-admin.users.create', compact('roles'));
     }
 

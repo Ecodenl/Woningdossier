@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\UserActionPlanAdvice
+ * App\Models\UserActionPlanAdvice.
  *
  * @property int $id
  * @property int $user_id
@@ -30,10 +30,11 @@ use Illuminate\Support\Collection;
  * @property int $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\MeasureApplication $measureApplication
- * @property-read \App\Models\Step $step
- * @property-read \App\Models\User $user
+ * @property \App\Models\InputSource|null $inputSource
+ * @property \App\Models\MeasureApplication $measureApplication
+ * @property \App\Models\Step $step
+ * @property \App\Models\User $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newModelQuery()

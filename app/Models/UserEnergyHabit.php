@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
-use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserEnergyHabit
+ * App\Models\UserEnergyHabit.
  *
  * @property int $id
  * @property int|null $user_id
@@ -32,11 +32,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
- * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
- * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\User|null $user
+ * @property \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
+ * @property \App\Models\BuildingHeating|null $heatingFirstFloor
+ * @property \App\Models\BuildingHeating|null $heatingSecondFloor
+ * @property \App\Models\InputSource|null $inputSource
+ * @property \App\Models\User|null $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()
@@ -98,16 +99,16 @@ class UserEnergyHabit extends Model
     {
         $building = Building::find(HoomdossierSession::getBuilding());
 
-	    return $query->withoutGlobalScope(GetValueScope::class)
-	                 ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')
-	                 ->orderBy('input_sources.order', 'ASC')
-	                 ->where('user_id', $building->user_id)
-	                 ->select([$this->getTable().'.*']);
+        return $query->withoutGlobalScope(GetValueScope::class)
+                     ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')
+                     ->orderBy('input_sources.order', 'ASC')
+                     ->where('user_id', $building->user_id)
+                     ->select([$this->getTable().'.*']);
     }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function inputSource()
     {
         return $this->belongsTo(InputSource::class);

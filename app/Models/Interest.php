@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Interest
+ * App\Models\Interest.
  *
  * @property int $id
  * @property string $name
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Interest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Interest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Interest query()

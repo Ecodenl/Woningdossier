@@ -166,7 +166,7 @@ class RegisterController extends Controller
             $user->confirm_token = null;
             $user->save();
 
-            if ($user->roles()->count() == 0) {
+            if (0 == $user->roles()->count()) {
                 \Log::debug("A user confirmed his account and there was no role set, the id = {$user->id} we set the role to resident so no exception");
 
                 $residentRole = Role::findByName('resident');
@@ -178,10 +178,11 @@ class RegisterController extends Controller
     }
 
     /**
-     * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation
+     * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function checkExistingEmail(Cooperation $cooperation, Request $request)
@@ -206,10 +207,11 @@ class RegisterController extends Controller
     }
 
     /**
-     * Connect the existing email to a cooperation
+     * Connect the existing email to a cooperation.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function connectExistingAccount(Cooperation $cooperation, Request $request)
@@ -219,13 +221,13 @@ class RegisterController extends Controller
 
         // okay, the user does exists
         if ($user instanceof User) {
-
             // check if the is already attached
             if ($user->cooperations->contains($cooperation)) {
                 return redirect()->back();
             }
 
             $cooperation->users()->attach($user);
+
             return redirect(url('login'))->with('account_connected', __('auth.register.form.message.account-connected'));
         }
 
@@ -267,30 +269,30 @@ class RegisterController extends Controller
         return response()->json($result);
     }
 
-    public function formResendConfirmMail(){
-		return view('cooperation.auth.resend-confirm-mail');
+    public function formResendConfirmMail()
+    {
+        return view('cooperation.auth.resend-confirm-mail');
     }
 
-    public function resendConfirmMail(ResendConfirmMailRequest $request){
-    	$validated = $request->validated();
+    public function resendConfirmMail(ResendConfirmMailRequest $request)
+    {
+        $validated = $request->validated();
 
-    	$user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
+        $user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
 
-    	if (!$user instanceof User){
-		    return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])
-		                     ->withInput()
-		                     ->withErrors(['email' => trans('auth.confirm.email-error')]);
-	    }
+        if (! $user instanceof User) {
+            return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])
+                             ->withInput()
+                             ->withErrors(['email' => trans('auth.confirm.email-error')]);
+        }
 
-    	SendRequestAccountConfirmationEmail::dispatch($user);
+        SendRequestAccountConfirmationEmail::dispatch($user);
 
-	    return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.email-success'));
+        return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.email-success'));
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
-
-
         \Log::debug($postalCode.' '.$number.' '.$pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
@@ -298,7 +300,7 @@ class RegisterController extends Controller
 
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (!is_null($pointer)) {
+        if (! is_null($pointer)) {
             foreach ($response as $addrInfo) {
                 if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];
@@ -310,6 +312,7 @@ class RegisterController extends Controller
 
             return [];
         }
+
         return $response;
     }
 }

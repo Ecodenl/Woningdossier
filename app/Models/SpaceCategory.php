@@ -6,13 +6,14 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\SpaceCategory
+ * App\Models\SpaceCategory.
  *
  * @property int $id
  * @property string $type
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory query()

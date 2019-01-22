@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingCoachStatus
+ * App\Models\BuildingCoachStatus.
  *
  * @property int $id
  * @property int $coach_id
@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $private_message_id
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\User $coach
+ * @property \App\Models\Building $building
+ * @property \App\Models\User $coach
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus currentStatus($status)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newQuery()
@@ -124,10 +125,11 @@ class BuildingCoachStatus extends Model
     /**
      * A function to check if a coach has 'access' to a a building
      * if the active count i higher then the remove count he has 'access'
-     * i say 'access' because he cant access the building without a building_permission, however he can access the building details and a groupchat
+     * i say 'access' because he cant access the building without a building_permission, however he can access the building details and a groupchat.
      *
      * @param $buildingId
      * @param $coachId
+     *
      * @return bool
      */
     public static function hasCoachAccess($buildingId, $coachId): bool
@@ -148,7 +150,4 @@ class BuildingCoachStatus extends Model
             return false;
         }
     }
-
-
-
 }

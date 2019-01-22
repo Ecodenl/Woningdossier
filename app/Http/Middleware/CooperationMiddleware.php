@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
-use App\Models\PrivateMessage;
 use Closure;
 use Illuminate\Support\Facades\URL;
 
@@ -49,7 +48,6 @@ class CooperationMiddleware
             } else {
                 \Log::debug('Session: user is not comparing his data');
             }
-
         } else {
             \Log::debug('Session: no user role set.');
         }

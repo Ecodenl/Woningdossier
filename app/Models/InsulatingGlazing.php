@@ -6,13 +6,14 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\InsulatingGlazing
+ * App\Models\InsulatingGlazing.
  *
  * @property int $id
  * @property string $name
  * @property int|null $calculate_value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InsulatingGlazing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InsulatingGlazing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InsulatingGlazing query()

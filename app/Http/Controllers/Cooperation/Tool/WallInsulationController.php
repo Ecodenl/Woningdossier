@@ -22,11 +22,9 @@ use App\Models\FacadeSurface;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
-use App\Models\ToolSetting;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
-use App\Services\ToolSettingService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -118,7 +116,6 @@ class WallInsulationController extends Controller
                 'element_value_id' => $elementValueId,
             ]
         );
-
 
         $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [

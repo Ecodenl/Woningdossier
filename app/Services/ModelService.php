@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-class ModelService {
-
+class ModelService
+{
     /**
-     * In some cases there are models / tables that have multiple element_ids with different element_value_ids (we take the building_elements table as example)
+     * In some cases there are models / tables that have multiple element_ids with different element_value_ids (we take the building_elements table as example).
      *
      * row examples:
      * 1 row
@@ -27,7 +27,7 @@ class ModelService {
     public static function deleteAndCreate($model, array $attributes, array $values)
     {
         // make the model
-        $model = new $model;
+        $model = new $model();
 
         // delete the old values
         $model->where($attributes)->delete();

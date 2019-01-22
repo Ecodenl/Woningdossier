@@ -6,17 +6,18 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Measure
+ * App\Models\Measure.
  *
  * @property int $id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\BuildingElement $buildingElements
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureProperty[] $properties
- * @property-read \App\Models\ServiceType $serviceType
+ * @property \App\Models\BuildingElement $buildingElements
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureProperty[] $properties
+ * @property \App\Models\ServiceType $serviceType
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure query()

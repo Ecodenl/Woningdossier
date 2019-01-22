@@ -6,7 +6,7 @@ use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ToolSetting
+ * App\Models\ToolSetting.
  *
  * @property int $id
  * @property int $changed_input_source_id
@@ -14,7 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $has_changed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource $inputSource
+ * @property \App\Models\InputSource $inputSource
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting query()
@@ -29,16 +30,15 @@ use Illuminate\Database\Eloquent\Model;
 class ToolSetting extends Model
 {
     protected $fillable = [
-        'changed_input_source_id', 'has_changed', 'building_id'
+        'changed_input_source_id', 'has_changed', 'building_id',
     ];
 
     protected $casts = [
-        'has_changed' => 'bool'
+        'has_changed' => 'bool',
     ];
 
-
     /**
-     * check if its changed
+     * check if its changed.
      *
      * @return bool
      */
@@ -47,11 +47,11 @@ class ToolSetting extends Model
         return $this->has_changed;
     }
 
-
     /**
-     * Return a collection of tool settings for a building where is is not the current inputsource
+     * Return a collection of tool settings for a building where is is not the current inputsource.
      *
      * @param int $buildingId
+     *
      * @return \Illuminate\Support\Collection
      */
     public static function getChangedSettings(int $buildingId)
@@ -59,11 +59,12 @@ class ToolSetting extends Model
         $toolSettings = self::where('building_id', $buildingId)
             ->where('changed_input_source_id', '!=', HoomdossierSession::getInputSource())
             ->get();
+
         return $toolSettings;
     }
 
     /**
-     * Get the input source from the tool setting
+     * Get the input source from the tool setting.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -73,9 +74,10 @@ class ToolSetting extends Model
     }
 
     /**
-     * Return the tool settings where has_changed is true
+     * Return the tool settings where has_changed is true.
      *
      * @param int $buildingId
+     *
      * @return \Illuminate\Support\Collection
      */
     public static function getUndoneChangedSettings(int $buildingId)

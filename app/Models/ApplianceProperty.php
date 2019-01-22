@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ApplianceProperty
+ * App\Models\ApplianceProperty.
  *
  * @property int $id
  * @property int|null $appliance_id
@@ -13,7 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Appliance|null $appliance
+ * @property \App\Models\Appliance|null $appliance
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApplianceProperty query()

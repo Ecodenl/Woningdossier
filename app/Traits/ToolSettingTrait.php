@@ -7,8 +7,8 @@ use App\Models\InputSource;
 use App\Services\ToolSettingService;
 use Illuminate\Database\Eloquent\Model;
 
-trait ToolSettingTrait {
-
+trait ToolSettingTrait
+{
     /**
      * Returns an input source ID if it's present on the model or in the session.
      * There, however, is a case when this method can return null: on
@@ -16,11 +16,12 @@ trait ToolSettingTrait {
      * input source just yet.
      *
      * @param Model $model
+     *
      * @return int|null
      */
     public static function getInputSourceId(Model $model)
     {
-    	// Try to obtain the input source from the model itself
+        // Try to obtain the input source from the model itself
         $inputSource = InputSource::find($model->input_source_id);
 
         // Set the InputSource ID to the default of my input source
@@ -39,25 +40,22 @@ trait ToolSettingTrait {
     public static function bootToolSettingTrait()
     {
         static::created(function (Model $model) {
-
             $inputSourceId = self::getInputSourceId($model);
 
-			if (!is_null($inputSourceId)) {
-				ToolSettingService::setChanged( HoomdossierSession::getBuilding(),
-					$inputSourceId,
-					true );
-
-			}
+            if (! is_null($inputSourceId)) {
+                ToolSettingService::setChanged(HoomdossierSession::getBuilding(),
+                    $inputSourceId,
+                    true);
+            }
         });
 
         static::updated(function (Model $model) {
-
             $inputSourceId = self::getInputSourceId($model);
 
-            if (!is_null($inputSourceId)) {
-	            ToolSettingService::setChanged( HoomdossierSession::getBuilding(),
-		            $inputSourceId,
-		            true );
+            if (! is_null($inputSourceId)) {
+                ToolSettingService::setChanged(HoomdossierSession::getBuilding(),
+                    $inputSourceId,
+                    true);
             }
         });
     }

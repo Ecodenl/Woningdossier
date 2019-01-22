@@ -29,10 +29,10 @@ class ExampleBuildingService
         // Clear the current example building data
         self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear);
         $contents = $exampleBuilding->getContentForYear($buildYear);
-		if (!$contents instanceof ExampleBuildingContent){
-			// There's nothing to apply
-			return;
-		}
+        if (! $contents instanceof ExampleBuildingContent) {
+            // There's nothing to apply
+            return;
+        }
 
         // traverse the contents:
         $exampleData = $contents->content;

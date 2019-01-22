@@ -10,10 +10,13 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $categories
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory whereId($value)

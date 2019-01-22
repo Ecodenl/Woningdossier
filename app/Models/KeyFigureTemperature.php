@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $insulating_glazing_id
  * @property int $building_heating_id
  * @property float $key_figure
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereBuildingHeatingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereId($value)

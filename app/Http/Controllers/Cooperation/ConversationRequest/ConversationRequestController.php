@@ -23,7 +23,6 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
-
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
         // set the measure application name if there is a measure application
@@ -31,9 +30,8 @@ class ConversationRequestController extends Controller
 
         $selectedOption = $option;
 
-        return view('cooperation.conversation-requests.index', compact( 'selectedOption', 'measureApplicationName'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName'));
     }
-
 
     /**
      * Save the conversation request for whatever the conversation request may be.
@@ -47,7 +45,6 @@ class ConversationRequestController extends Controller
         $action = $request->get('action', '');
         $message = $request->get('message', '');
         $allowAccess = 'on' == $request->get('allow_access', '');
-
 
         $cooperationId = HoomdossierSession::getCooperation();
 

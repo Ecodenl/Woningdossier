@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * App\Models\Building.
  *
  * @property int $id
- * @property int $user_id
+ * @property int|null $user_id
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -22,21 +22,33 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $primary
  * @property string $bag_addressid
  * @property int|null $example_building_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
  * @property \App\Models\BuildingFeature $buildingFeatures
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
  * @property \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
  * @property \App\Models\ExampleBuilding|null $exampleBuilding
  * @property \App\Models\BuildingHeater $heater
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
  * @property \App\Models\BuildingPvPanel $pvPanels
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
- * @property \App\Models\User $user
+ * @property \App\Models\User|null $user
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
  *
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Building onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building query()
+ * @method static bool|null restore()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereBagAddressid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCountryCode($value)
@@ -52,6 +64,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Building withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Building withoutTrashed()
  * @mixin \Eloquent
  */
 class Building extends Model
@@ -99,9 +113,10 @@ class Building extends Model
     }
 
     /**
-     * Check if a step is completed for a building with matching input source id
+     * Check if a step is completed for a building with matching input source id.
      *
      * @param Step $step
+     *
      * @return bool
      */
     public function hasCompleted(Step $step)
@@ -109,6 +124,7 @@ class Building extends Model
         return $this->find(HoomdossierSession::getBuilding())
                 ->completedSteps()->where('step_id', $step->id)->count() > 0;
     }
+
     /**
      * Returns the user progress.
      *
@@ -120,9 +136,10 @@ class Building extends Model
     }
 
     /**
-     * Complete a step for a building
+     * Complete a step for a building.
      *
      * @param Step $step
+     *
      * @return Model
      */
     public function complete(Step $step)
@@ -135,10 +152,11 @@ class Building extends Model
     }
 
     /**
-     * Check if a user is interested in a step
+     * Check if a user is interested in a step.
      *
      * @param string $type
-     * @param array $interestedInIds
+     * @param array  $interestedInIds
+     *
      * @return bool
      */
     public function isInterestedInStep($type, $interestedInIds = [])
@@ -168,17 +186,17 @@ class Building extends Model
     }
 
     /**
-     * Check if a user is not interested in a step
+     * Check if a user is not interested in a step.
      *
      * @param string $type
-     * @param array $interestedInIds
+     * @param array  $interestedInIds
+     *
      * @return bool
      */
     public function isNotInterestedInStep($type, $interestedInIds = [])
     {
-        return !$this->isInterestedInStep($type, $interestedInIds);
+        return ! $this->isInterestedInStep($type, $interestedInIds);
     }
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -227,11 +245,12 @@ class Building extends Model
         return $this->belongsTo(ExampleBuilding::class);
     }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-    public function progress(){
-	    return $this->hasMany(UserProgress::class);
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function progress()
+    {
+        return $this->hasMany(UserProgress::class);
     }
 
     /**
@@ -434,7 +453,7 @@ class Building extends Model
     }
 
     /**
-     * Get the full address
+     * Get the full address.
      *
      * @return string
      */

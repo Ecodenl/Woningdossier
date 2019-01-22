@@ -21,8 +21,7 @@ class FilledStep
         $step = Step::whereSlug($step)->first();
         $debugMsg = 'For this step, the '.$step->slug.' should be filled';
 
-        if (!\Auth::user()->hasCompleted($step)) {
-
+        if (! \Auth::user()->hasCompleted($step)) {
             \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
             $cooperation = Cooperation::find($request->session()->get('cooperation'));
 

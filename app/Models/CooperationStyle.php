@@ -15,10 +15,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $tertiary_color
  * @property string $quaternary_color
  * @property string|null $css_url
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\Cooperation $cooperation
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CooperationStyle whereCssUrl($value)

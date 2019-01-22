@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Coach;
 
-use App\Rules\isUserMemberOfCooperation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MessagesRequest extends FormRequest

@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $short
  * @property string $name
  * @property float $percentage
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PriceIndexing whereId($value)

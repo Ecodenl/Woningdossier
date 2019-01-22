@@ -30,7 +30,6 @@ class PrivateMessagePolicy
      */
     public function edit(User $user, PrivateMessage $message)
     {
-
         // get the building id from the message
         $buildingId = $message->building_id;
 
@@ -40,7 +39,6 @@ class PrivateMessagePolicy
         }
 
         if ($user->hasRoleAndIsCurrentRole(['coach'])) {
-
             return $user->isNotRemovedFromBuildingCoachStatus($buildingId);
         }
 
@@ -49,6 +47,5 @@ class PrivateMessagePolicy
                 return true;
             }
         }
-
     }
 }

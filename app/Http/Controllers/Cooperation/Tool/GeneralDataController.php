@@ -65,15 +65,15 @@ class GeneralDataController extends Controller
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
 
         //$exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
-	    $buildingType = $building->getBuildingType();
-	    $exampleBuildings = collect([]);
-	    if ($buildingType instanceof BuildingType) {
-		    $exampleBuildings = ExampleBuilding::forMyCooperation()->where( 'building_type_id',
-			    '=',
-			    $building->getBuildingType()->id )->get();
-	    }
+        $buildingType = $building->getBuildingType();
+        $exampleBuildings = collect([]);
+        if ($buildingType instanceof BuildingType) {
+            $exampleBuildings = ExampleBuilding::forMyCooperation()->where('building_type_id',
+                '=',
+                $building->getBuildingType()->id)->get();
+        }
 
-	    $interests = Interest::orderBy('order')->get();
+        $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
@@ -110,6 +110,7 @@ class GeneralDataController extends Controller
              'motivations', 'energyHabit', 'services'
         ));
     }
+
 //
 //    // todo
 //
@@ -143,17 +144,17 @@ class GeneralDataController extends Controller
         $buildYear = $building->getBuildYear();
 
         // There is one strange option: "Er is geen passende voorbeeldwoning"
-        if (is_null($exampleBuildingId) && !is_null($buildYear)){
-        	// No fitting? Try to set the generic.
-	        $btype = $building->getBuildingType();
-	        if ($btype instanceof BuildingType) {
-		        $generic = ExampleBuilding::generic()->where( 'building_type_id', $btype->id )->first();
-		        if ( $generic instanceof ExampleBuilding ) {
-			        $exampleBuildingId = $generic->id;
-		        }
-	        }
-        	$building->example_building_id = null;
-        	$building->save();
+        if (is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            // No fitting? Try to set the generic.
+            $btype = $building->getBuildingType();
+            if ($btype instanceof BuildingType) {
+                $generic = ExampleBuilding::generic()->where('building_type_id', $btype->id)->first();
+                if ($generic instanceof ExampleBuilding) {
+                    $exampleBuildingId = $generic->id;
+                }
+            }
+            $building->example_building_id = null;
+            $building->save();
         }
 
         if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
@@ -331,8 +332,6 @@ class GeneralDataController extends Controller
                 }
             }
         }
-
-
 
         $motivationCreateData = [];
         // get the motivations

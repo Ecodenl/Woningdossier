@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
-use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
@@ -75,7 +74,7 @@ class SettingsController extends Controller
         // remove the user usage from a building
         $building->userUsage()->delete();
         // remove all progress made in the tool
-	    $building->progress()->delete();
+        $building->progress()->delete();
 
         // remove the building usages from the user
         $user->buildingUsage()->delete();

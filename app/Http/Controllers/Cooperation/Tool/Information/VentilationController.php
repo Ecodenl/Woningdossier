@@ -9,7 +9,6 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class VentilationController extends Controller
 {

@@ -23,25 +23,27 @@
                         <tbody>
                         @foreach($buildings as $building)
                             <?php $conversationRequest = \App\Models\PrivateMessage::forMyCooperation()->conversationRequest($building->id)->first(); ?>
-                            <tr>
-                                <td>@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.'.$conversationRequest->request_type)</td>
-                                <td>{{$building->user->getFullName()}}</td>
-                                <td>{{$building->user->email}}</td>
-                                <td>{{$conversationRequest->created_at}}</td>
-                                <td>
-                                    <div class="btn-group" role="group" style="min-width: 145px;">
-                                        <a href="{{route('cooperation.admin.cooperation.coordinator.messages.public.edit', ['buildingId' => $building->id])}}" class="btn btn-default">
-                                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.see-message')
-                                        </a>
-                                        <a href="{{route('cooperation.admin.cooperation.coordinator.messages.private.edit', ['buildingId' => $building->id])}}" class="btn btn-default">
-                                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.talk-to-coach')
-                                        </a>
-                                        <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['buildingId' => $building->id])}}" class="btn btn-default">
-                                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.connect-to-coach')
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                            @if($conversationRequest instanceof \App\Models\PrivateMessage)
+                                <tr>
+                                    <td>@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.'.$conversationRequest->request_type)</td>
+                                    <td>{{$building->user->getFullName()}}</td>
+                                    <td>{{$building->user->email}}</td>
+                                    <td>{{$conversationRequest->created_at}}</td>
+                                    <td>
+                                        <div class="btn-group" role="group" style="min-width: 145px;">
+                                            <a href="{{route('cooperation.admin.cooperation.coordinator.messages.public.edit', ['buildingId' => $building->id])}}" class="btn btn-default">
+                                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.see-message')
+                                            </a>
+                                            <a href="{{route('cooperation.admin.cooperation.coordinator.messages.private.edit', ['buildingId' => $building->id])}}" class="btn btn-default">
+                                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.talk-to-coach')
+                                            </a>
+                                            <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['buildingId' => $building->id])}}" class="btn btn-default">
+                                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.index.table.columns.connect-to-coach')
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

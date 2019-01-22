@@ -38,6 +38,13 @@ class PrivateMessage extends Model
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
+    /**
+     * Scope a conversation requests for a building
+     *
+     * @param $query
+     * @param $buildingId
+     * @return mixed
+     */
     public function scopeConversationRequest($query, $buildingId)
     {
         return $query->public()->conversation($buildingId)->where('request_type', '!=', null);

@@ -15,6 +15,7 @@
                             <ul id="sidebar-main" class="sidebar list-group panel-collapse open collapse in collapse " aria-expanded="true">
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.index'])) active @endif"><a href="{{route('cooperation.admin.super-admin.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.home')</a></li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.index'])) active @endif"><a href="{{route('cooperation.admin.super-admin.cooperations.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.cooperations')</a></li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.example-buildings.index', 'cooperation.admin.super-admin.example-buildings.edit', 'cooperation.admin.super-admin.example-buildings.create'])) active @endif"><a href="{{route('cooperation.admin.super-admin.example-buildings.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')</a></li>
                             </ul>
                         </div>
                     </div>

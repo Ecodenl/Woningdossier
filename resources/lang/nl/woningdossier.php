@@ -30,7 +30,8 @@ return [
                 'side-nav' => [
                     'label' => 'Super admin menu',
                     'home' => 'Home',
-                    'cooperations' => 'Cooperaties'
+                    'cooperations' => 'Cooperaties',
+                    'example-buildings' => 'Voorbeeld woningen',
                 ],
                 'index' => [
                     'header' => 'Super admin panel',
@@ -47,7 +48,12 @@ return [
                             ],
                         ],
                     ]
-                ]
+                ],
+                'example-buildings' => [
+                    'index' => [
+                        'header' => 'Voorbeeldwoningen'
+                    ]
+                ],
             ],
             'navbar' => [
                 'current-role' => 'Uw huidge rol:',

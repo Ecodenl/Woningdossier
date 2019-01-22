@@ -268,6 +268,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.'], function () {
                     Route::get('', 'CooperationController@index')->name('index');
                 });
+
+                Route::resource('example-buildings', 'ExampleBuildingController');
+                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
             });
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {

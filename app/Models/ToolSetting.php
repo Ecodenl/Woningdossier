@@ -5,6 +5,27 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\ToolSetting
+ *
+ * @property int $id
+ * @property int $changed_input_source_id
+ * @property int $building_id
+ * @property bool $has_changed
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\InputSource $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereChangedInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereHasChanged($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class ToolSetting extends Model
 {
     protected $fillable = [

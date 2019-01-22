@@ -6,14 +6,16 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\AssessmentType.
+ * App\Models\AssessmentType
  *
  * @property int $id
  * @property string $type
  * @property string $name
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AssessmentType whereId($value)

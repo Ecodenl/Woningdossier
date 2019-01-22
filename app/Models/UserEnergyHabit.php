@@ -9,10 +9,11 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserEnergyHabit.
+ * App\Models\UserEnergyHabit
  *
  * @property int $id
  * @property int|null $user_id
+ * @property int|null $input_source_id
  * @property int|null $resident_count
  * @property float|null $thermostat_high
  * @property float|null $thermostat_low
@@ -29,13 +30,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $motivation_extra
  * @property string|null $start_date
  * @property string|null $end_date
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
- * @property \App\Models\BuildingHeating|null $heatingFirstFloor
- * @property \App\Models\BuildingHeating|null $heatingSecondFloor
- * @property \App\Models\User|null $user
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
+ * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
+ * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountElectricity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountGas($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountWater($value)
@@ -47,6 +52,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereHeatingSecondFloor($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereHoursHigh($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereLivingSituationExtra($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereMotivationExtra($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereResidentCount($value)

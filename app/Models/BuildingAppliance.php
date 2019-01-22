@@ -8,20 +8,26 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingAppliance.
+ * App\Models\BuildingAppliance
  *
  * @property int $id
  * @property int|null $building_id
+ * @property int|null $input_source_id
  * @property int|null $appliance_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\Appliance|null $appliance
- * @property \App\Models\Building|null $building
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Appliance|null $appliance
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereApplianceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereUpdatedAt($value)
  * @mixin \Eloquent
  */

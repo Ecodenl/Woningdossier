@@ -7,18 +7,19 @@ use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Step.
+ * App\Models\Step
  *
  * @property int $id
  * @property string $slug
  * @property string $name
  * @property int $order
- * @property int|null $cooperation_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereName($value)

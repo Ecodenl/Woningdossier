@@ -5,6 +5,28 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\PrivateMessageView
+ *
+ * @property int $id
+ * @property int $private_message_id
+ * @property int|null $user_id
+ * @property int|null $cooperation_id
+ * @property \Illuminate\Support\Carbon|null $read_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView wherePrivateMessageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereReadAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUserId($value)
+ * @mixin \Eloquent
+ */
 class PrivateMessageView extends Model
 {
     protected $fillable = [

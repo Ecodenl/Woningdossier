@@ -6,6 +6,50 @@ use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
+/**
+ * App\Models\PrivateMessage
+ *
+ * @property int $id
+ * @property int|null $building_id
+ * @property bool|null $is_public
+ * @property string $from_user
+ * @property string|null $request_type
+ * @property string $message
+ * @property int|null $from_user_id
+ * @property int|null $from_cooperation_id
+ * @property int|null $to_cooperation_id
+ * @property bool $allow_access
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building|null $building
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest($buildingId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myCoachConversationRequest()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myOpenConversationRequest()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myPrivateMessages()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage openCooperationConversationRequests()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage private()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage privateMessagesIdsGroupedByBuildingId()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage public()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage unreadMessages()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereAllowAccess($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereIsPublic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereRequestType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereToCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class PrivateMessage extends Model
 {
     const STATUS_LINKED_TO_COACH = 'gekoppeld aan coach';

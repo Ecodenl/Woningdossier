@@ -14,10 +14,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\UserActionPlanAdvice.
+ * App\Models\UserActionPlanAdvice
  *
  * @property int $id
  * @property int $user_id
+ * @property int|null $input_source_id
  * @property int $measure_application_id
  * @property float|null $costs
  * @property float|null $savings_gas
@@ -27,17 +28,21 @@ use Illuminate\Support\Collection;
  * @property bool $planned
  * @property int|null $planned_year
  * @property int $step_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\MeasureApplication $measureApplication
- * @property \App\Models\Step $step
- * @property \App\Models\User $user
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\MeasureApplication $measureApplication
+ * @property-read \App\Models\Step $step
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forStep(\App\Models\Step $step)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereCosts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereMeasureApplicationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice wherePlanned($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice wherePlannedYear($value)

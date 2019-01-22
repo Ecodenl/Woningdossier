@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Element.
+ * App\Models\Element
  *
  * @property int $id
  * @property string $name
@@ -14,11 +14,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $service_type_id
  * @property int $order
  * @property string $info
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\ServiceType $serviceType
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ServiceType $serviceType
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element whereId($value)

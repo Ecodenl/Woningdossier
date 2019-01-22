@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * App\Models\User.
+ * App\Models\User
  *
  * @property int $id
  * @property string $first_name
@@ -25,22 +25,25 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int $visit_count
  * @property int $active
  * @property bool $is_admin
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
- * @property \App\Models\UserEnergyHabit $energyHabit
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
- * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property-read \App\Models\UserEnergyHabit $energyHabit
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereConfirmToken($value)

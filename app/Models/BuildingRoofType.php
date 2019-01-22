@@ -8,30 +8,38 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingRoofType.
+ * App\Models\BuildingRoofType
  *
  * @property int $id
  * @property int $building_id
+ * @property int|null $input_source_id
  * @property int $roof_type_id
  * @property int|null $element_value_id
- * @property int|null $surface
+ * @property int|null $roof_surface
+ * @property int|null $insulation_roof_surface
  * @property int|null $building_heating_id
- * @property array $extra
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\Building $building
- * @property \App\Models\ElementValue|null $elementValue
- * @property \App\Models\BuildingHeating $heating
- * @property \App\Models\RoofType $roofType
- *
+ * @property array|null $extra
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\ElementValue|null $elementValue
+ * @property-read \App\Models\BuildingHeating $heating
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\RoofType $roofType
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingHeatingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereElementValueId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereExtra($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereInsulationRoofSurface($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereRoofSurface($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereRoofTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereSurface($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereUpdatedAt($value)
  * @mixin \Eloquent
  */

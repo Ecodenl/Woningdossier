@@ -6,6 +6,35 @@ use App\Helpers\TranslatableTrait;
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Questionnaire
+ *
+ * @property int $id
+ * @property string $name
+ * @property int|null $step_id
+ * @property int $cooperation_id
+ * @property int $order
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
+ * @property-read \App\Models\Step|null $step
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire active()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Questionnaire extends Model
 {
     use TranslatableTrait;

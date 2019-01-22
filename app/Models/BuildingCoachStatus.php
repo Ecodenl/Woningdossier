@@ -4,6 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\BuildingCoachStatus
+ *
+ * @property int $id
+ * @property int $coach_id
+ * @property int $building_id
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $appointment_date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $private_message_id
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\User $coach
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus currentStatus($status)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereAppointmentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereCoachId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus wherePrivateMessageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class BuildingCoachStatus extends Model
 {
     protected $fillable = [

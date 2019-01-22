@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Building.
+ * App\Models\Building
  *
  * @property int $id
- * @property int $user_id
+ * @property int|null $user_id
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -22,21 +22,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $primary
  * @property string $bag_addressid
  * @property int|null $example_building_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property string|null $deleted_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
- * @property \App\Models\BuildingFeature $buildingFeatures
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
- * @property \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
- * @property \App\Models\ExampleBuilding|null $exampleBuilding
- * @property \App\Models\BuildingHeater $heater
- * @property \App\Models\BuildingPvPanel $pvPanels
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
- * @property \App\Models\User $user
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property-read \App\Models\BuildingFeature $buildingFeatures
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property-read \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
+ * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property-read \App\Models\BuildingHeater $heater
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
+ * @property-read \App\Models\BuildingPvPanel $pvPanels
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property-read \App\Models\User|null $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Building onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building query()
+ * @method static bool|null restore()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereBagAddressid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCountryCode($value)
@@ -52,6 +63,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Building withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Building withoutTrashed()
  * @mixin \Eloquent
  */
 class Building extends Model

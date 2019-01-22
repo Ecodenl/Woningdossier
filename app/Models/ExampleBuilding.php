@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\ExampleBuilding.
+ * App\Models\ExampleBuilding
  *
  * @property int $id
  * @property string $name
@@ -16,13 +16,17 @@ use Illuminate\Support\Collection;
  * @property int|null $cooperation_id
  * @property int|null $order
  * @property bool $is_default
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\BuildingType|null $buildingType
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
- * @property \App\Models\Cooperation|null $cooperation
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property-read \App\Models\Cooperation|null $cooperation
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forAnyOrMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding generic()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereBuildingTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereCooperationId($value)

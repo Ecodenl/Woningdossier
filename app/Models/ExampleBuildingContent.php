@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ExampleBuildingContent.
+ * App\Models\ExampleBuildingContent
  *
  * @property int $id
  * @property int $example_building_id
  * @property int|null $build_year
- * @property array $content
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\ExampleBuilding $exampleBuilding
- *
+ * @property array|null $content
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ExampleBuilding $exampleBuilding
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuildingContent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuildingContent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuildingContent query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuildingContent whereBuildYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuildingContent whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuildingContent whereCreatedAt($value)

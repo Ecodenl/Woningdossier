@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ServiceValue.
+ * App\Models\ServiceValue
  *
  * @property int $id
  * @property int|null $service_id
@@ -14,10 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $calculate_value
  * @property int $order
  * @property bool $is_default
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \App\Models\KeyFigureBoilerEfficiency $keyFigureBoilerEfficiency
- *
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\KeyFigureBoilerEfficiency $keyFigureBoilerEfficiency
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue whereCreatedAt($value)

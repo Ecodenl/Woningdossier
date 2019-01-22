@@ -43,6 +43,8 @@ class IsAdmin
         }
         \Log::debug(__METHOD__.' user does not have role cooperation-admin');
 
+        \Log::debug(__METHOD__.' is admin middleware is being used');
+
         return redirect()->route('index');
     }
 }

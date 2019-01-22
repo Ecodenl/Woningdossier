@@ -262,6 +262,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
             });
 
+            Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'superAdmin', 'middleware' => ['role:super-admin']], function () {
+                Route::get('home', 'SuperAdminController@index')->name('index');
+
+                Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.'], function () {
+                    Route::get('', 'CooperationController@index')->name('index');
+                });
+            });
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');

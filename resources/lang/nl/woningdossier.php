@@ -26,6 +26,29 @@ return [
             'start' => 'Start',
         ],
         'admin' => [
+            'super-admin' => [
+                'side-nav' => [
+                    'label' => 'Super admin menu',
+                    'home' => 'Home',
+                    'cooperations' => 'Cooperaties'
+                ],
+                'index' => [
+                    'header' => 'Super admin panel',
+                    'text' => 'Beheer de applicatie',
+                ],
+
+                'cooperations' => [
+                    'index' => [
+                        'header' => 'Cooperaties',
+                        'table' => [
+                            'columns' => [
+                                'name' => 'Cooperatie naam',
+                                'slug' => 'Cooperatie Slug / Subdomein'
+                            ],
+                        ],
+                    ]
+                ]
+            ],
             'navbar' => [
                 'current-role' => 'Uw huidge rol:',
                 'reports' => 'Rapportages',

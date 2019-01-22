@@ -26,7 +26,7 @@ class MessagesController extends Controller
 
         $flattenedBuildingIds = array_flatten($privateMessageBuildingIds);
 
-        $buildings = Building::findMany($flattenedBuildingIds);
+        $buildings = Building::withTrashed()->findMany($flattenedBuildingIds);
 
         return view('cooperation.admin.cooperation.coordinator.messages.index', compact('buildings'));
     }

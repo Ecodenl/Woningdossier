@@ -25,6 +25,8 @@ class MessageService
         $isPublic = $request->get('is_public', true);
         $buildingId = $request->get('building_id', '');
 
+
+
         // if the is public is set to false
         // and the user current role is resident, then something isnt right.
         // since a resident cant access the private group chat

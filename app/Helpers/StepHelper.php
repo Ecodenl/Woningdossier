@@ -2,9 +2,11 @@
 
 namespace App\Helpers;
 
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\Step;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 
 class StepHelper
@@ -71,9 +73,11 @@ class StepHelper
      */
     public static function hasInterestInStep(Step $step): bool
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
         if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
             foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
-                if (\Auth::user()->isInterestedInStep($type, $interestedIn)) {
+                if ($building->isInterestedInStep($type, $interestedIn)) {
                     return true;
                 }
             }
@@ -83,13 +87,13 @@ class StepHelper
     }
 
     /**
-     * Get the next step for a user where the user shows interest in.
+     * Get the next step for a user where the user shows interest in or the next questionnaire for a user
      *
      * @param Step $current
-     *
+     * @param Questionnaire $currentQuestionnaire
      * @return array
      */
-    public static function getNextStep(Step $current): array
+    public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array
     {
         // get all the steps
         $steps = Cooperation::find(HoomdossierSession::getCooperation())->getActiveOrderedSteps();
@@ -98,23 +102,32 @@ class StepHelper
 
         $currentFound = false;
 
-        // before we check for other pets we want to check if the current step has additional questionnaires
+        // count all the active questionnaires for the current step
+        $allActiveQuestionnairesForCurrentStepCount = $current->questionnaires()->active()->count();
+
+        // before we check for other pets we want to check if the current step has active additional questionnaires
         // if it does and the user did not finish those we redirect to that tab
-        if ($current->hasQuestionnaires()) {
-            // get the questionnaires for the current step  & the user his completed questionnaires
-            $questionnairesForCurrentStep = $current->questionnaires;
-            $userCompletedQuestionnaires = \Auth::user()->completedQuestionnaires;
+        if ($current->hasQuestionnaires() && $allActiveQuestionnairesForCurrentStepCount > 0) {
 
-            // now get the non completed questionnaires for this step & user
-            $nonCompletedQuestionnairesForCurrentStep = $questionnairesForCurrentStep->filter(function ($questionnaire) use ($userCompletedQuestionnaires) {
-                return ! $userCompletedQuestionnaires->find($questionnaire) instanceof Questionnaire;
-            });
+            // since it can be null
+            if ($currentQuestionnaire instanceof Questionnaire) {
 
-            // we should not take the first one i guess, should be on order based, but there is no order in the questionnaire table
-            $nextQuestionnaire = $nonCompletedQuestionnairesForCurrentStep->first();
+                // if so, get the next questionnaire in the right order
+                $nextQuestionnaire = $current->questionnaires()
+                    ->active()
+                    ->where('id', '!=', $currentQuestionnaire->id)
+                    ->where('order', '>', $currentQuestionnaire->order)
+                    ->orderBy('order')
+                    ->first();
 
-            // and return it with the tab id
-            if ($nextQuestionnaire instanceof Questionnaire) {
+
+                // and return it with the tab id
+                if ($nextQuestionnaire instanceof Questionnaire) {
+                    return ['route' => 'cooperation.tool.' . $current->slug . '.index', 'tab_id' => 'questionnaire-' . $nextQuestionnaire->id];
+                }
+            } else {
+                // else, we just redirect them to the first questionnaire.
+                $nextQuestionnaire = $current->questionnaires()->active()->orderBy('order')->first();
                 return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
             }
         }

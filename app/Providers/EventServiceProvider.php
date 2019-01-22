@@ -6,7 +6,6 @@ use App\Events\PrivateMessageReceiverEvent;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {

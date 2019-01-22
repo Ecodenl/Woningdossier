@@ -9,7 +9,7 @@
                     <a href="#start" data-toggle="tab">@lang('woningdossier.cooperation.home.tabs.start')</a>
                 </li>
                 <li>
-                    <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}" target="_blank">
+                    <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                         @lang('woningdossier.cooperation.home.tabs.messages')
                         <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
                     </a>
@@ -25,9 +25,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{route('cooperation.my-account.settings.index')}}" target="_blank">
+                    <a href="{{route('cooperation.my-account.index')}}">
                         @lang('woningdossier.cooperation.home.tabs.settings')
-                    </a
+                    </a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -41,7 +41,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="text-center col-sm-12">
-                                        <a href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">
+                                        <a href="{{route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">
                                             @lang('woningdossier.cooperation.home.start.get-started')
                                         </a>
                                     </div>

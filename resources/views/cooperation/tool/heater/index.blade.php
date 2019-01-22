@@ -167,19 +167,25 @@
 
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('heater.consumption-water.title')}}</label>
+                            <label class="control-label"><i data-toggle="collapse" data-target="#consumption-water-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.consumption-water.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.liter.title') }} / {{\App\Helpers\Translation::translate('general.unit.day.title')}}</span>
                                 <input type="text" id="consumption_water" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="consumption-water-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('heater.consumption-water.help')}}
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('heater.consumption-gas.title')}}</label>
+                            <label class="control-label"><i data-toggle="collapse" data-target="#consumption-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.consumption-gas.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="consumption_gas" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="consumption-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('heater.consumption-gas.help')}}
                             </div>
                         </div>
                     </div>
@@ -195,19 +201,25 @@
 
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('heater.size-boiler.title')}}</label>
+                            <label class="control-label"><i data-toggle="collapse" data-target="#size-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.size-boiler.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.liter.title')}}</span>
                                 <input type="text" id="size_boiler" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="size-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('heater.size-boiler.help')}}
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label">{{\App\Helpers\Translation::translate('heater.size-collector.title')}}</label>
+                            <label class="control-label"><i data-toggle="collapse" data-target="#size-collector-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.size-collector.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">m<sup>2</sup></span>
                                 <input type="text" id="size_collector" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="size-collector-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('heater.size-collector.help')}}
                             </div>
                         </div>
                     </div>

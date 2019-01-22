@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Step extends Model
 {
+    protected $fillable = ['slug', 'name', 'order'];
     use TranslatableTrait;
 
     /**
@@ -39,6 +40,17 @@ class Step extends Model
     protected static function boot()
     {
         parent::boot();
+
+        static::created(function (Step $step) {
+
+            foreach (Cooperation::all() as $cooperation) {
+                $cooperationStepsQuery = $cooperation->steps();
+                $cooperationStepsQuery->attach($step->id);
+                $cooperationStep = $cooperationStepsQuery->find($step->id);
+                $cooperationStepsQuery->updateExistingPivot($cooperationStep->id, ['order' => $step->order]);
+
+            }
+        });
         // for now, we keep it in kees.
 //        static::addGlobalScope(new CooperationScope());
     }

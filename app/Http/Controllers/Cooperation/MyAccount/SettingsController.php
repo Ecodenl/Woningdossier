@@ -74,6 +74,8 @@ class SettingsController extends Controller
         $building->currentPaintworkStatus()->delete();
         // remove the user usage from a building
         $building->userUsage()->delete();
+        // remove all progress made in the tool
+	    $building->progress()->delete();
 
         // remove the building usages from the user
         $user->buildingUsage()->delete();
@@ -86,9 +88,7 @@ class SettingsController extends Controller
         // remove the motivations from a user
         $user->motivations()->delete();
         // remove the progress from a user
-        $user->progress()->delete();
-
-        HoomdossierSession::destroy();
+        //$user->progress()->delete();
 
         return redirect()->back()->with('success', __('woningdossier.cooperation.my-account.settings.form.reset-file.success'));
     }

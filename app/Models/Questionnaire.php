@@ -11,7 +11,7 @@ class Questionnaire extends Model
     use TranslatableTrait;
 
     protected $fillable = [
-        'name', 'step_id', 'cooperation_id', 'is_active',
+        'name', 'step_id', 'cooperation_id', 'is_active', 'order'
     ];
 
     protected $casts = [
@@ -72,5 +72,16 @@ class Questionnaire extends Model
     public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    /**
+     * Scope the active questionnaires
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

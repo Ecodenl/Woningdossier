@@ -1,10 +1,16 @@
-INSERT INTO `example_buildings` (`id`, `name`, `building_type_id`, `cooperation_id`, `order`, `is_default`, `created_at`, `updated_at`) VALUES
-(16, 'bd7b81d6-f520-494c-8644-ebe8120e5b3c', 1, NULL, 100, 0, NOW(), NOW()),
-(17, '4e0da161-77c8-4e95-95ac-b749a266b5ee', 2, NULL, 101, 0, NOW(), NOW()),
-(18, '4fa4a234-0e7a-4db3-8655-15eba6b790e0', 3, NULL, 102, 0, NOW(), NOW()),
-(20, '09bfe3a3-e431-4542-81e9-df09f158ca77', 4, NULL, 103, 0, NOW(), NOW()),
-(21, '0c3ca6a7-e2ea-4fa8-a191-d122443b7680', 5, NULL, 104, 0, NOW(), NOW()),
-(22, '27b0abb6-5c54-4316-929b-aff4fbe02393', 6, NULL, 105, 0, NOW(), NOW()),
-(23, '02850366-f6fe-4a6a-8cac-5017e1bba51f', 7, NULL, 106, 0, NOW(), NOW()),
-(24, '837219fb-6783-431f-83bb-f0742e83f81a', 7, NULL, 107, 0, NOW(), NOW()),
-(25, 'afcb3a21-c0b3-455c-a5db-9507d2f19e49', 10, NULL, 108, 0, NOW(), NOW());
+INSERT INTO `example_buildings` (`id`, `name`, `building_type_id`, `cooperation_id`, `order`, `is_default`, `created_at`, `updated_at`)
+VALUES
+	(1,'b89d3c70-7dbc-4eed-8102-551f1e60350f',4,4,0,0,NULL,'2018-06-28 14:16:24'),
+	(2,'69554edd-b281-4752-9719-290956c2e4ca',3,4,1,0,NULL,'2018-06-28 14:25:15'),
+	(3,'a9b46386-f595-4bc7-b4c5-f303359bff5f',4,4,2,0,NULL,'2018-06-28 14:28:03'),
+	(4,'37bd20c0-5988-4534-a3d8-0e1334ea0bbd',3,4,3,0,NULL,'2018-06-28 14:30:31'),
+	(5,'cb301b62-78b7-49cb-92c6-141a45435360',3,4,6,0,NULL,'2018-06-28 14:48:41'),
+	(6,'fec8128a-4270-42ce-ace3-ea6b4daad4d4',4,4,7,0,NULL,'2018-06-28 14:53:03'),
+	(7,'e9145d1d-d648-4706-a025-109b4863c8be',4,4,8,0,NULL,'2018-06-28 15:25:32'),
+	(8,'e6f7d51e-a6bb-4662-9d50-4e6c239bb246',4,4,9,0,NULL,'2018-06-28 15:34:14'),
+	(9,'3e7f739b-0ff5-49bd-bed8-ef1f72c6b56c',4,4,10,0,NULL,'2018-06-28 15:40:29'),
+	(10,'27f1c8fe-6423-431d-acfd-479a679098b1',3,4,11,0,NULL,'2018-06-28 15:43:09'),
+	(11,'3e968c42-dff8-418d-8740-471c4f79413f',4,4,12,0,NULL,'2018-06-28 16:23:40'),
+	(12,'4b0b86a4-ecc0-4b32-8394-99b1f0b4b435',3,4,13,0,NULL,'2018-06-28 14:10:25'),
+	(13,'5fee7b5b-e98d-490f-bde8-7c0d51529d9b',4,4,4,0,NULL,'2018-06-28 14:37:17'),
+	(14,'2d8536ec-9fb2-4202-ba34-c44a8d8c918f',3,4,5,0,NULL,'2018-06-28 14:39:56');

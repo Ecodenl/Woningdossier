@@ -26,9 +26,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
         //		 Login, forgot password etc.
-//        Route::group(['middleware' => 'guest'], function () {
+
+	    Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
+	    Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
+
         Auth::routes();
-//        });
 
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
@@ -43,6 +45,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
                 Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
 
+                Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
+                    Route::get('', 'ImportCenterController@index')->name('index');
+                    Route::get('set-compare-session/{inputSourceShort}', 'ImportCenterController@setCompareSession')->name('set-compare-session');
+                    Route::post('dismiss-notification', 'ImportCenterController@dismissNotification')->name('dismiss-notification');
+                });
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');
@@ -89,16 +96,20 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 // todo
-                Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
+//                Route::get('general-data/example-building-type', 'GeneralDataController@exampleBuildingType')->name('general-data.example-building-type');
                 // todo end
                 Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
+
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
 
+                Route::group(['middleware' => 'filled-step:building-detail'], function () {
+                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Extra pages with downloadable or information content.
                     Route::group(['namespace' => 'Information'], function () {
@@ -228,6 +239,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                         Route::get('', 'UserController@index')->name('index');
                         Route::get('create', 'UserController@create')->name('create');
+                        Route::delete('delete', 'UserController@destroy')->name('destroy');
                         Route::post('', 'UserController@store')->name('store');
                     });
 

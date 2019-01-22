@@ -72,8 +72,6 @@ class GeneralDataFormRequest extends FormRequest
 
             // start
             'example_building_id' => 'nullable|exists:example_buildings,id',
-            'building_type_id' => 'required|exists:building_types,id',
-            'build_year' => 'required|numeric',
             'surface' => 'required|numeric',
             'monument' => 'numeric|digits_between:0,2',
             'energy_label_id' => 'required|exists:energy_labels,id',

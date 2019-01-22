@@ -1,5 +1,43 @@
 <?php return 
 [
+    "building-detail" => 
+        [
+            "title" => 
+                [
+                    "help" => '03c7eef0-919f-464d-bbed-83a8af2f948e',
+                    "title" => '93eba59e-49d7-4de9-885d-5e76c24a8d98',
+                ],
+
+            "intro" => 
+                [
+                    "help" => 'e48b717c-d332-4175-b3d0-12c9f93d6fa0',
+                    "title" => '2614849c-8411-4a30-855b-1f5a49fc00eb',
+                ],
+
+            "warning" => 
+                [
+                    "help" => 'c468bbe2-9210-442a-8fad-0d6911bb1ec9',
+                    "title" => '67c0be4e-eed4-4fbe-b842-ce43fc51591c',
+                ],
+
+            "building-type" => 
+                [
+                    "what-type" => 
+                        [
+                            "help" => 'a8e60dde-ff51-447e-8b9a-8bda81c3fc2e',
+                            "title" => 'fdb1d3e2-9ff1-42be-9c22-0da9f73633cf',
+                        ],
+
+                    "what-building-year" => 
+                        [
+                            "help" => '5d52fb88-b794-4954-9743-885cb546963d',
+                            "title" => 'ddf88400-5870-48fd-98f8-2a158481b719',
+                        ],
+
+                ],
+
+        ],
+
     "general-data" => 
         [
             "building-type" => 
@@ -254,6 +292,8 @@
 
             "example-building" => 
                 [
+                    "help" => 'db606cae-ca7e-4463-808b-073520b63738',
+                    "title" => '63e24510-7fce-4d24-95ee-ea7179efdb48',
                     "no-match" => 
                         [
                             "help" => '8985674f-f00a-4211-8afc-46efc1eb0cce',

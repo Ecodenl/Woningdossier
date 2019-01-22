@@ -233,6 +233,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                         Route::get('', 'UserController@index')->name('index');
                         Route::get('create', 'UserController@create')->name('create');
+                        Route::delete('delete', 'UserController@destroy')->name('destroy');
                         Route::post('', 'UserController@store')->name('store');
                     });
 

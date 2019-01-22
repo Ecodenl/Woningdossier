@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Messages;
 
+use App\Events\ParticipantAddedEvent;
+use App\Events\ParticipantRevokedEvent;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -36,8 +38,9 @@ class ParticipantController extends Controller
             // revoke the access for the coach to talk with the resident
             BuildingPermissionService::revokePermission($groupParticipantUserId, $building->id);
             BuildingCoachStatusService::revokeAccess($groupParticipantUserId, $building->id);
+            $revokedParticipant = User::find($groupParticipantUserId);
 
-            // TODO: create a message ? to notify some admin ?
+            event(new ParticipantRevokedEvent($revokedParticipant, $building));
         }
 
         return redirect()->back();
@@ -76,6 +79,8 @@ class ParticipantController extends Controller
                 'building_id' => $residentBuilding->id,
                 'status' => BuildingCoachStatus::STATUS_ACTIVE,
             ]);
+
+            event(new ParticipantAddedEvent($user, $residentBuilding));
         }
 
 

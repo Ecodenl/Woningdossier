@@ -256,7 +256,7 @@ class PrivateMessage extends Model
         // if its a public conversation we push the building owner in it
         if ($publicConversation) {
             // get the owner of the building,
-            $groupMembers->push(Building::find($buildingId)->user);
+            $groupMembers->push(Building::withTrashed()->find($buildingId)->user);
         }
 
         // put the coaches with access to the groupmembers

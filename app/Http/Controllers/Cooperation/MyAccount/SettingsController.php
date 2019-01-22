@@ -88,8 +88,6 @@ class SettingsController extends Controller
         // remove the progress from a user
         $user->progress()->delete();
 
-        HoomdossierSession::destroy();
-
         return redirect()->back()->with('success', __('woningdossier.cooperation.my-account.settings.form.reset-file.success'));
     }
 

@@ -76,8 +76,8 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @guest
-
                     @else
+                        @if(Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach']))
                         <li>
                             @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                 @case('coach')
@@ -94,6 +94,7 @@
                                 <span class="badge">{{$myUnreadMessagesCount}}</span>
                             </a>
                         </li>
+                        @endif
                         @hasrole('cooperation-admin|super-admin|superuser')
                         <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
                         <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>

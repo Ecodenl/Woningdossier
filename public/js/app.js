@@ -181,18 +181,28 @@ $("#register #street").focusin(function () {
             city.addClass("loading");
         },
         success: function success(data) {
+            // remove error messages, since its a success.
+            $('.help-block').remove();
             street.removeClass("loading");
             city.removeClass("loading");
             var address = data;
             console.log(address);
             street.val(address.street);
-            number.val(address.number);
-            houseNumberExtension.val(address.house_number_extension);
+            if (address.street !== "") {
+                number.val(address.number);
+                houseNumberExtension.val(address.house_number_extension);
+            }
             addressId.val(address.id);
             city.val(address.city);
         },
-        fail: function fail(xhr, textStatus, errorThrown) {
-            console.log(xhr, textStatus, errorThrown);
+        fail: function fail(xhr, textStatus, errorThrown) {},
+        error: function error(request, status, _error) {
+            var helpBlock = '<span class="help-block"></span>';
+            var errorMessage = $.parseJSON(request.responseText);
+
+            $.each(errorMessage.errors, function (fieldName, message) {
+                $('input[name=' + fieldName + ']').parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
+            });
         },
         dataType: 'json'
     });

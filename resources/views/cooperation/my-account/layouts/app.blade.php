@@ -15,10 +15,26 @@
                                 </h4>
                             </div>
                             <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['my-account'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.index'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.index')}}">
+                                        @lang('woningdossier.cooperation.my-account.side-nav.home')
+                                    </a>
+                                </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.settings.index'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.settings.index')}}">
+                                        @lang('woningdossier.cooperation.my-account.side-nav.settings')
+                                        <span class="glyphicon glyphicon-cog"></span>
+                                    </a>
+                                </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.import-center.index')}}">
+                                        @lang('woningdossier.cooperation.my-account.side-nav.import')
+                                        <span class="badge">{{\App\Models\ToolSetting::getUndoneChangedSettings(\App\Helpers\HoomdossierSession::getBuilding())->count()}}</span>
+                                    </a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.index', 'cooperation.my-account.messages.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.messages.index')}}">
                                         @lang('woningdossier.cooperation.my-account.side-nav.my-messages')
-{{--                                        <span class="pull-right label label-success">{{$myUnreadMessages->count()}}</span>--}}
                                     </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.requests.index', 'cooperation.my-account.messages.requests.edit']))  active @endif">

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
+use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,8 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingUserUsage extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     public function building()
     {

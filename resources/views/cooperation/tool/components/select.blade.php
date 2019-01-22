@@ -21,7 +21,7 @@
             }
             ?>
             @if(!is_null($compareValue) && $key == $compareValue)
-                <li class="change-input-value" data-input-value="{{ $key }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputValue }}</a></li>
+                <li class="change-input-value" data-input-value="{{ $key }}" data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputValue }}</a></li>
             @endif
         @endforeach
     @endforeach
@@ -52,7 +52,7 @@
             }
             ?>
             @if(!is_null($value) && $inputValue->id == $value)
-                <li class="change-input-value" data-input-value="{{ $inputValue->id }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
+                <li class="change-input-value" data-input-value="{{ $inputValue->id }}" data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
             @endif
         @endforeach
     @endforeach

@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Cooperation;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\InputSource;
+use App\Services\ToolSettingService;
 use Illuminate\Http\Request;
 
 class ImportController extends Controller
 {
+
     public function copy(Request $request)
     {
         $desiredInputSourceName = $request->get('input_source');
+
 
         $tablesWithBuildingIds = [
             'building_pv_panels',
@@ -19,6 +22,7 @@ class ImportController extends Controller
             'building_heaters',
             'building_features',
             'building_paintwork_statuses',
+            'user_progresses',
             'building_elements',
             'building_insulated_glazings',
             'building_services',
@@ -28,6 +32,7 @@ class ImportController extends Controller
         ];
 
         $tablesWithUserId = [
+            'user_action_plan_advices',
             'user_energy_habits',
             'user_interests',
         ];
@@ -86,6 +91,10 @@ class ImportController extends Controller
             }
         }
 
-        return redirect()->route('cooperation.tool.general-data.index');
+
+        ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
+        HoomdossierSession::stopUserComparingInputSources();
+
+        return redirect()->back();
     }
 }

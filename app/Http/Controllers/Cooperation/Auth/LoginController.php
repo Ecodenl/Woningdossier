@@ -55,6 +55,23 @@ class LoginController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function logout(Request $request)
+    {
+        // destroy all HoomdossierSessions
+
+        HoomdossierSession::destroy();
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return redirect('/');
+    }
+
+    /**
      * Get the needed authorization credentials from the request.
      *
      * @param \Illuminate\Http\Request $request

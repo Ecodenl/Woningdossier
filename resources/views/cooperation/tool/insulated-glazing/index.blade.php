@@ -44,6 +44,8 @@
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.title') }}
                             </label>
 
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
                             <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]" >
                                 @foreach($interests as $interest)
                                     {{-- calculate_value 4 is the default --}}
@@ -59,6 +61,7 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @endcomponent
 
                             <div id="user_interests_{{ $measureApplication->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
                                 {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.help') }}

@@ -201,6 +201,15 @@
                 return false;
                 event.preventDefault();
             }
+        });
+        var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure')';
+        $('#delete-account').click(function () {
+            if (confirm(areYouSureToDestroy)) {
+                $(this).closest('form').submit();
+            } else {
+                return false;
+                event.preventDefault();
+            }
         })
     </script>
 @endpush

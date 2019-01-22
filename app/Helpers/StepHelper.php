@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Questionnaire;
 use App\Models\Step;
@@ -72,9 +73,11 @@ class StepHelper
      */
     public static function hasInterestInStep(Step $step): bool
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
         if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
             foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
-                if (\Auth::user()->isInterestedInStep($type, $interestedIn)) {
+                if ($building->isInterestedInStep($type, $interestedIn)) {
                     return true;
                 }
             }

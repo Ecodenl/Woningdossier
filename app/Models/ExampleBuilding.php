@@ -100,10 +100,18 @@ class ExampleBuilding extends Model
      */
     public function getContentForYear($year)
     {
-        return $this->contents()
+        $content = $this->contents()
                     ->where('build_year', '<=', $year)
                     ->orderBy('build_year')
                     ->first();
+
+        if ($content instanceof ExampleBuildingContent){
+        	return $content;
+        }
+
+        return $this->contents()
+	        ->whereNull('build_year')
+	        ->first();
     }
 
     /**
@@ -153,5 +161,16 @@ class ExampleBuilding extends Model
         $cooperationId = \Session::get('cooperation', 0);
 
         return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
+    }
+
+	/**
+	 * Scope on only generic example buildings.
+	 *
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 *
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+    public function scopeGeneric($query){
+    	return $query->whereNull('cooperation_id');
     }
 }

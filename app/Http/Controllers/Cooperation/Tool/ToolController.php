@@ -26,6 +26,6 @@ class ToolController extends Controller
     {
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect(route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]));
+        return redirect(route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation]));
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\HoomdossierSession;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Closure;
@@ -18,19 +16,17 @@ class FilledStep
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, $stepSlug)
+    public function handle($request, Closure $next, $step)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
-        $step = Step::whereSlug($stepSlug)->first();
+        $step = Step::whereSlug($step)->first();
+        $debugMsg = 'For this step, the '.$step->slug.' should be filled';
 
-        $debugMsg = 'For this step, the '.$stepSlug.' should be filled';
-        $prev = Step::where('order', $step->order)->first();
+        if (!\Auth::user()->hasCompleted($step)) {
 
-        if (! $building->complete($prev)) {
             \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
             $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-            return redirect('/tool/'.$prev->slug.'/')->with(compact('cooperation'));
+            return redirect('/tool/'.$step->slug.'/')->with(compact('cooperation'));
         }
         \Log::debug($debugMsg.'.. And it was :-)');
 

@@ -6,6 +6,8 @@ use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FillAddressRequest;
 use App\Http\Requests\RegisterFormRequest;
+use App\Http\Requests\ResendConfirmMailRequest;
+use App\Jobs\SendRequestAccountConfirmationEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -263,6 +265,26 @@ class RegisterController extends Controller
         }
 
         return response()->json($result);
+    }
+
+    public function formResendConfirmMail(){
+		return view('cooperation.auth.resend-confirm-mail');
+    }
+
+    public function resendConfirmMail(ResendConfirmMailRequest $request){
+    	$validated = $request->validated();
+
+    	$user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
+
+    	if (!$user instanceof User){
+		    return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])
+		                     ->withInput()
+		                     ->withErrors(['email' => trans('auth.confirm.email-error')]);
+	    }
+
+    	SendRequestAccountConfirmationEmail::dispatch($user);
+
+	    return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.email-success'));
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)

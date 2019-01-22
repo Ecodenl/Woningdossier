@@ -41,7 +41,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="text-center col-sm-12">
-                                        <a href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">
+                                        <a href="{{route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">
                                             @lang('woningdossier.cooperation.home.start.get-started')
                                         </a>
                                     </div>

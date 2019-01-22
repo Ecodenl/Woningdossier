@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $savings
  * @property int $boiler
  * @property float $collector
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification whereBoiler($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification whereCollector($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HeaterSpecification whereCreatedAt($value)

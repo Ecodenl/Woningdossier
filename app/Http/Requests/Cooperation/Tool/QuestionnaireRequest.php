@@ -31,8 +31,7 @@ class QuestionnaireRequest extends FormRequest
 
         $attributes = [];
 
-        if (is_array($questions) && !empty($questions)) {
-
+        if (is_array($questions) && ! empty($questions)) {
             foreach ($questions as $questionId => $questionAnswer) {
                 $currentQuestion = Question::find($questionId);
 
@@ -57,8 +56,7 @@ class QuestionnaireRequest extends FormRequest
         $questions = $request->get('questions');
         $validationRules = [];
 
-        if (is_array($questions) && !empty($questions)) {
-
+        if (is_array($questions) && ! empty($questions)) {
             // loop through the questions
             foreach ($questions as $questionId => $questionAnswer) {
                 // get the current question and the validation for that question
@@ -94,7 +92,6 @@ class QuestionnaireRequest extends FormRequest
                 $validationRules['questions.'.$questionId] = $rule;
             }
         }
-
 
         return $validationRules;
     }

@@ -6,12 +6,11 @@ use App\Models\ToolSetting;
 
 class ToolSettingService
 {
-
     /**
-     * Set the changed status
+     * Set the changed status.
      *
-     * @param int $buildingId
-     * @param int $inputSourceId
+     * @param int  $buildingId
+     * @param int  $inputSourceId
      * @param bool $hasChanged
      */
     public static function setChanged(int $buildingId, int $inputSourceId, bool $hasChanged)
@@ -28,7 +27,7 @@ class ToolSettingService
                 [
                     'building_id' => $buildingId,
                     'changed_input_source_id' => $inputSourceId,
-                    'has_changed' => $hasChanged
+                    'has_changed' => $hasChanged,
                 ]
             );
         }

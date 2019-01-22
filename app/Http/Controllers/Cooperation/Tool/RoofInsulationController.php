@@ -440,9 +440,7 @@ class RoofInsulationController extends Controller
         // the selected roof types for the current situation
         $roofTypes = $request->input('building_roof_types', []);
 
-
-
-        $createData = array();
+        $createData = [];
         foreach ($roofTypes as $i => $details) {
             if (is_numeric($i) && is_numeric($details)) {
                 $roofType = RoofType::find($details);
@@ -473,8 +471,7 @@ class RoofInsulationController extends Controller
                         'roof_type_id' => $request->input('building_features.roof_type_id'),
                     ]);
 
-
-                    array_push($createData,  [
+                    array_push($createData, [
                         'roof_type_id' => $roofType->id,
                         'element_value_id' => $elementValueId,
                         'roof_surface' => $roofSurface,
@@ -501,7 +498,8 @@ class RoofInsulationController extends Controller
         );
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);($this->step);
+        $building->complete($this->step);
+        ($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         $nextStep = StepHelper::getNextStep($this->step);

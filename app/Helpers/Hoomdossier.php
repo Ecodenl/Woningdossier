@@ -39,27 +39,27 @@ class Hoomdossier
         ];
 
         // Always check my own input source first. If that is properly filled
-	    // return that.
-	    $myInputSource = InputSource::find(HoomdossierSession::getInputSource());
+        // return that.
+        $myInputSource = InputSource::find(HoomdossierSession::getInputSource());
 
-	    if ($results->has($myInputSource->short)){
-	    	$value = $results->get($myInputSource->short);
+        if ($results->has($myInputSource->short)) {
+            $value = $results->get($myInputSource->short);
 
-		    if (false !== stristr($column, 'surface') && $value <= 0) {
-			    // skip this one
-			    $value = null;
-		    }
-		    if (in_array($column, $falltroughColumns) && is_null($value)) {
-			    // skip this one
-			    $value = null;
-		    }
-		    if (! is_null($value) && '' !== $value) {
-			    return $value;
-		    }
-	    }
+            if (false !== stristr($column, 'surface') && $value <= 0) {
+                // skip this one
+                $value = null;
+            }
+            if (in_array($column, $falltroughColumns) && is_null($value)) {
+                // skip this one
+                $value = null;
+            }
+            if (! is_null($value) && '' !== $value) {
+                return $value;
+            }
+        }
 
         // .. My own input source was not (properly) filled.
-	    // Return the best match. Treat the results in order.
+        // Return the best match. Treat the results in order.
         foreach ($results as $inputSourceShort => $value) {
             if (false !== stristr($column, 'surface') && $value <= 0) {
                 // skip this one
@@ -69,7 +69,7 @@ class Hoomdossier
                 // skip this one
                 continue;
             }
-            if ($inputSourceShort == InputSource::RESIDENT_SHORT) {
+            if (InputSource::RESIDENT_SHORT == $inputSourceShort) {
                 // no matter what
                 return $value;
             }

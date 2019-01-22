@@ -27,9 +27,7 @@ class QuestionnaireController extends Controller
         $questionnaireId = $request->get('questionnaire_id');
         $questionnaire = Questionnaire::find($questionnaireId);
 
-
-        if (is_array($questions) && !empty($questions)) {
-
+        if (is_array($questions) && ! empty($questions)) {
             // the question answer can be a string or int.
             // it does not matter how we save it. Later when retrieving the answers we determine how we should show them based on the question type
             foreach ($questions as $questionId => $questionAnswer) {

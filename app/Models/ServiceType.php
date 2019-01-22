@@ -11,12 +11,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name
  * @property string $iso
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Element[] $elements
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $measures
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereId($value)

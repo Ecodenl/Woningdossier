@@ -87,10 +87,11 @@ class StepHelper
     }
 
     /**
-     * Get the next step for a user where the user shows interest in or the next questionnaire for a user
+     * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
      *
-     * @param Step $current
+     * @param Step          $current
      * @param Questionnaire $currentQuestionnaire
+     *
      * @return array
      */
     public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array
@@ -108,10 +109,8 @@ class StepHelper
         // before we check for other pets we want to check if the current step has active additional questionnaires
         // if it does and the user did not finish those we redirect to that tab
         if ($current->hasQuestionnaires() && $allActiveQuestionnairesForCurrentStepCount > 0) {
-
             // since it can be null
             if ($currentQuestionnaire instanceof Questionnaire) {
-
                 // if so, get the next questionnaire in the right order
                 $nextQuestionnaire = $current->questionnaires()
                     ->active()
@@ -120,14 +119,14 @@ class StepHelper
                     ->orderBy('order')
                     ->first();
 
-
                 // and return it with the tab id
                 if ($nextQuestionnaire instanceof Questionnaire) {
-                    return ['route' => 'cooperation.tool.' . $current->slug . '.index', 'tab_id' => 'questionnaire-' . $nextQuestionnaire->id];
+                    return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
                 }
             } else {
                 // else, we just redirect them to the first questionnaire.
                 $nextQuestionnaire = $current->questionnaires()->active()->orderBy('order')->first();
+
                 return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
             }
         }

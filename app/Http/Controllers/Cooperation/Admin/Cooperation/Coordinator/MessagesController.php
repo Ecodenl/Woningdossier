@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
-use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\MessageRequest;
-use App\Http\Requests\Cooperation\Admin\Coach\MessagesRequest;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
-use App\Services\InboxService;
 use App\Services\MessageService;
 use App\Services\PrivateMessageViewService;
 
 class MessagesController extends Controller
 {
-
     public function index()
     {
         $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
@@ -55,7 +51,7 @@ class MessagesController extends Controller
             $this->authorize('edit', $privateMessages->first());
         } else {
             // at this point we check if there is actually a private_message, public or not.
-            if (!PrivateMessage::forMyCooperation()->conversation($buildingId)->first() instanceof PrivateMessage) {
+            if (! PrivateMessage::forMyCooperation()->conversation($buildingId)->first() instanceof PrivateMessage) {
                 // there are no messages for this building for the current cooperation, so we return them back to the index from the buildings
                 return redirect()->route('cooperation.admin.cooperation.coordinator.building-access.index');
             }
@@ -69,7 +65,6 @@ class MessagesController extends Controller
 
     public function edit(Cooperation $cooperation, $buildingId)
     {
-
     }
 
     public function store(Cooperation $cooperation, MessageRequest $request)

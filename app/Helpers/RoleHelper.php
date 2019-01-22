@@ -40,12 +40,12 @@ class RoleHelper
                     break;
                     //break;
                 default:
-                    return route('cooperation.tool.index');
+                    return route('cooperation.home');
                     break;
             }
         }
 
-        return route('cooperation.tool.index');
+        return route('cooperation.home');
     }
 
     public static function getUrlByRole(Role $role)

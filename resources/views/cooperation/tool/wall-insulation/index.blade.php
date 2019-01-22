@@ -52,9 +52,7 @@
                 </div>
             </div>
         </div>
-
         @include('cooperation.tool.includes.savings-alert', ['buildingElement' => 'wall-insulation'])
-
         <div class="hideable">
 
             @if(isset($building->buildingFeatures->build_year))

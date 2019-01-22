@@ -202,14 +202,12 @@
                 $('#connect-existing-account-form').submit();
             });
 
-
             email.on('keyup change', function () {
                 $.ajax({
                     url: '{{route('cooperation.check-existing-email')}}',
+                    method: "GET",
                     data: {email: $(this).val()},
-                    method: "GET"
                 }).done(function (data) {
-
                     var emailIsAlreadyRegistered =  $('#email-is-already-registered');
                     var otherFormData = $('#other-form-data');
 

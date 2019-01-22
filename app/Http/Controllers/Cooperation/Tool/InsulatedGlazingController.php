@@ -128,9 +128,10 @@ class InsulatedGlazingController extends Controller
 //        }
 
         $myBuildingElements = BuildingElement::forMe()->get();
+        $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', 'measure_application')->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'interests', 'myBuildingElements', 'buildingOwner',
+            'building', 'interests', 'myBuildingElements', 'buildingOwner', 'userInterestsForMe',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
@@ -373,6 +374,7 @@ class InsulatedGlazingController extends Controller
             UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
                     'user_id' => $user->id,
+                    'input_source_id'    => $inputSourceId,
                     'interested_in_type' => 'measure_application',
                     'interested_in_id' => $measureApplicationId,
                 ],
@@ -392,6 +394,7 @@ class InsulatedGlazingController extends Controller
             [
                 'user_id'            => $user->id,
                 'interested_in_type' => 'element',
+                'input_source_id'    => $inputSourceId,
                 'interested_in_id'   => $livingRoomWindowsElement->id,
             ],
             [
@@ -419,7 +422,7 @@ class InsulatedGlazingController extends Controller
             }
         }
 
-        $woodElements = $request->input('building_elements.wood-elements');
+        $woodElements = $request->input('building_elements.wood-elements', []);
 
         $woodElementCreateData = [];
         foreach ($woodElements as $woodElementId => $woodElementValueIds) {
@@ -447,7 +450,7 @@ class InsulatedGlazingController extends Controller
         BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
+                'input_source_id' => $inputSourceId
             ],
             [
                 'last_painted_year' => $paintWorkStatuses['last_painted_year'],
@@ -461,10 +464,10 @@ class InsulatedGlazingController extends Controller
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
+                'input_source_id' => $inputSourceId
             ],
             [
-                'window_surface' => $windowSurface,
+                'window_surface' => $windowSurface
             ]
         );
 

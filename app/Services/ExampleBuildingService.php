@@ -14,6 +14,7 @@ use App\Models\BuildingService;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
+use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -28,6 +29,10 @@ class ExampleBuildingService
         // Clear the current example building data
         self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear);
         $contents = $exampleBuilding->getContentForYear($buildYear);
+		if (!$contents instanceof ExampleBuildingContent){
+			// There's nothing to apply
+			return;
+		}
 
         // traverse the contents:
         $exampleData = $contents->content;

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
+use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,8 +38,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingInsulatedGlazing extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
     /**
      * The attributes that should be cast to native types.
      *

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
+use App\Traits\ToolSettingTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,8 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingHeater extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     protected $fillable = [
         'building_id', 'input_source_id', 'pv_panel_orientation_id', 'angle', 'comment',

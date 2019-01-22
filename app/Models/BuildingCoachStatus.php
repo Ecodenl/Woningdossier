@@ -94,18 +94,34 @@ class BuildingCoachStatus extends Model
         return '';
     }
 
-    public static function hasCoachAccess()
+    /**
+     * A function to check if a coach has 'access' to a a building
+     * if the active count i higher then the remove count he has 'access'
+     * i say 'access' because he cant access the building without a building_permission, however he can access the building details and a groupchat
+     *
+     * @param $buildingId
+     * @param $coachId
+     * @return bool
+     */
+    public static function hasCoachAccess($buildingId, $coachId): bool
     {
-        \Log::info('the '.__METHOD__.'has been used');
-        // the coach can talk to a resident if there is a coach status where the active status is higher then the deleted status
-        $buildingCoachStatusActive = self::where('building_coach_statuses.coach_id', '=', \Auth::id())
+        // count the active statuses
+        $buildingCoachStatusActive = self::where('coach_id', '=', $coachId)
+            ->where('building_id', $buildingId)
             ->where('status', '=', self::STATUS_ACTIVE)->count();
 
-        $buildingCoachStatusRemoved = self::where('building_coach_statuses.coach_id', '=', \Auth::id())
+        // count the removed statuses
+        $buildingCoachStatusRemoved = self::where('coach_id', '=', $coachId)
+            ->where('building_id', $buildingId)
             ->where('status', '=', self::STATUS_REMOVED)->count();
 
-        if ($buildingCoachStatusRemoved > $buildingCoachStatusActive) {
+        if ($buildingCoachStatusActive > $buildingCoachStatusRemoved) {
+            return true;
+        } else {
             return false;
         }
     }
+
+
+
 }

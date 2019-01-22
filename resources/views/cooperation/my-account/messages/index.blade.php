@@ -10,31 +10,30 @@
             <div class="row">
                 <div class="col-sm-12">
                     @component('cooperation.my-account.layouts.components.chat-messages')
-                        @forelse($mainMessages as $mainMessage)
-                            <a href="{{ route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation, 'mainMessageId' => $mainMessage->id]) }}">
+                        @forelse($groups as $group)
+                            <a href="{{ route('cooperation.my-account.messages.edit', ['cooperation' => $cooperation, 'mainMessageId' => $group->id]) }}">
                                 <li class="left clearfix">
 
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                {{ $mainMessage->getSender($mainMessage->id)->first_name. ' ' .$mainMessage->getSender($mainMessage->id)->last_name }} - {{ $mainMessage->title }}
+                                                {{ $group->getSender() }}
                                             </strong>
 
                                             <small class="pull-right text-muted">
-                                                @if($mainMessage->hasUserUnreadMessages())
+                                                @if($group->hasUserUnreadMessages())
                                                     <span class="label label-primary">@lang('default.new-message')</span>
                                                 @endif
-                                                <?php $time = \Carbon\Carbon::parse($mainMessage->created_at); ?>
-                                                <span class="glyphicon glyphicon-time"></span> {{ $time->diffForHumans() }}
+                                                <span class="glyphicon glyphicon-time"></span> {{ $group->created_at->diffForHumans() }}
                                             </small>
                                         </div>
                                         <p>
-                                            @if($mainMessage->hasUserUnreadMessages())
+                                            @if($group->hasUserUnreadMessages())
                                                 <strong>
-                                                    {{ $mainMessage->message }}
+                                                    {{ $group->message }}
                                                 </strong>
                                             @else
-                                                {{ $mainMessage->message }}
+                                                {{ $group->message }}
                                             @endif
                                         </p>
                                     </div>

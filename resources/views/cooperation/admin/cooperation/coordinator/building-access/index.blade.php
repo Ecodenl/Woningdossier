@@ -20,14 +20,15 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.status')</th>
                             <th>Verleent toegang</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.appointment')</th>
+                            <th>Berichten</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($filteredResults as $i => $building)
+                        @foreach($buildings as $i => $building)
                             <tr>
                                 <td>{{ $building->city }}</td>
                                 <td>{{ $building->street }}</td>
-                                <td>{{ str_limit($building->first_name .' '. $building->last_name, 40)}}</td>
+                                <td>{{ $building->user->getFullName() }}</td>
 
                                 <?php
                                     $currentBuildingStatuses = $buildingCoachStatuses->where('building_id', $building->id);
@@ -56,6 +57,9 @@
                                         @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.no-appointment')
                                     @endif
                                 </td>
+                                <td>
+                                    <a data-toggle="modal" data-target="#private-public-{{$building->id}}" data-building-id="{{$building->id}}" class="participate-in-group-chat btn btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -64,6 +68,13 @@
             </div>
         </div>
     </div>
+
+    @include('cooperation.layouts.chat.private-public-modal', [
+        'buildings' => $buildings,
+        'privateRoute' => 'cooperation.admin.cooperation.coordinator.messages.private.edit',
+        'publicRoute' => 'cooperation.admin.cooperation.coordinator.messages.public.edit'
+    ])
+
 @endsection
 
 

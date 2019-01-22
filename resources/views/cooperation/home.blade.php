@@ -11,7 +11,7 @@
                 <li>
                     <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                         @lang('woningdossier.cooperation.home.tabs.messages')
-                        <span class="badge">{{$myUnreadMessages->count()}}</span>
+                        <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
                     </a>
                 </li>
                 <li>

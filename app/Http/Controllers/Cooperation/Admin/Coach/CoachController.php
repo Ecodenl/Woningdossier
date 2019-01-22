@@ -7,10 +7,9 @@ use App\Models\Cooperation;
 
 class CoachController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index()
     {
-        $buildingPermissions = \Auth::user()->buildingPermissions;
-
-        return view('cooperation.admin.coach.index', compact('buildingPermissions'));
+        // no home page that is relevant, so we redirect them to the building page
+        return redirect()->route('cooperation.admin.coach.buildings.index');
     }
 }

@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -153,6 +154,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Returns the first and last name, concatenated
+     *
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
      * Returns a specific interested row for a specific type.
      *
      * @param $type
@@ -257,6 +268,41 @@ class User extends Authenticatable
         return false;
     }
 
+
+    /**
+     * Check if a user is not removed from the building coach status table
+     *
+     * @param $buildingId
+     * @return bool
+     */
+    public function isRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        // get the last known coach status for the current coach
+        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)->where('building_id', $buildingId)->get()->last();
+
+        if ($buildingCoachStatus instanceof BuildingCoachStatus) {
+            // if the coach his last known building status for the current building is removed
+            // we return true, the user either removed from the building
+            if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the opposite of the isRemovedFromBuildingCoachStatus function
+     *
+     * @param $buildingId
+     * @return bool
+     */
+    public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
+    }
+
+
     /**
      * Check if the logged in user is filling the tool for someone else.
      *
@@ -298,6 +344,48 @@ class User extends Authenticatable
     public function hasMultipleRoles(): bool
     {
         if ($this->getRoleNames()->count() > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Function to check if a user has a role, and if the user has that role check if the role is set in the Hoomdossier session.
+     *
+     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     *
+     * @return bool
+     */
+    public function hasRoleAndIsCurrentRole($roles): bool
+    {
+        // collect the role names from the gives roles.
+        $roleNames = [];
+        if (is_string($roles) && false !== strpos($roles, '|')) {
+            $roleNames = $this->convertPipeToArray($roles);
+        }
+
+        if (is_string($roles)) {
+            $roleNames = [$roles];
+        }
+
+        if (is_array($roles)) {
+            $roleNames = $roles;
+        }
+
+        if ($roles instanceof Role) {
+            $roleNames = [$roles->name];
+        }
+
+        if ($roles instanceof Collection) {
+            $this->hasRoleAndIsCurrentRole($roles->toArray());
+        }
+
+        // get the current role based on the session
+        $currentRole = Role::find(HoomdossierSession::getRole());
+
+        // check if the user has the role, and if the current role is set in the role
+        if ($this->hasRole($roles) && in_array($currentRole->name, $roleNames)) {
             return true;
         }
 

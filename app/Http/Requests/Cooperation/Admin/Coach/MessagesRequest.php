@@ -14,7 +14,7 @@ class MessagesRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user();
+        return \Auth::user()->hasRole(['coach']);
     }
 
     /**
@@ -26,7 +26,6 @@ class MessagesRequest extends FormRequest
     {
         return [
             'message' => 'required',
-            'receiver_id' => ['required', new isUserMemberOfCooperation()],
         ];
     }
 }

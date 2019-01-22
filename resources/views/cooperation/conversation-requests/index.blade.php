@@ -26,7 +26,7 @@
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</label>
                                     <div class="input-group" id="take-action">
-                                        <input disabled placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')" type="text" class="form-control disabled" aria-label="...">
+                                        <input disabled placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')" type="text" class="form-control disabled" aria-label="...">
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 @lang('woningdossier.cooperation.conversation-requests.index.form.action')
@@ -56,7 +56,7 @@
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</label>
-                                    <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')"></textarea>
+                                    <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')">{{old('message')}}</textarea>
 
                                     @if ($errors->has('message'))
                                         <span class="help-block">
@@ -70,7 +70,7 @@
                                 <div class="col-sm-12">
                                     <label for="allow_access">
                                         <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
-                                        @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(session('cooperation'))->name])
+                                        @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
                                     </label>
                                     @if ($errors->has('allow_access'))
                                         <span class="help-block">
@@ -103,22 +103,23 @@
 
 @push('js')
     <script type="text/javascript">
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
         $(document).ready(function () {
 
             // put the label text from the selected option inside the input for ux
             var takeAction = $('#take-action');
             var input = $(takeAction).find('input.form-control');
             var dropdown = $(takeAction).find('input[type=radio]');
-            var inputPrefix = '@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')';
 
             $(dropdown).change(function () {
                 var radioLabel = $('input[type=radio]:checked').parent().text().trim().toLowerCase();
-
                 $(input).val();
-                $(input).val(inputPrefix +' '+ radioLabel);
+                $(input).val(capitalizeFirstLetter(radioLabel));
             });
 
-            $(dropdown).trigger('change');
+            // $(dropdown).trigger('change');
 
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing

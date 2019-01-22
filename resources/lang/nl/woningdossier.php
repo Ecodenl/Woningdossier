@@ -10,6 +10,18 @@ return [
         ],
     ],
     'cooperation' => [
+
+        'chat' => [
+            'modal' => [
+                'text' => 'Naar welk groeps gesprek wilt u gaan ?',
+                'public' => 'Publieke',
+                'private' => 'Prive'
+            ],
+            'group-participants' => [
+                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.'
+            ],
+        ],
+
         'navbar' => [
             'start' => 'Start',
         ],
@@ -333,7 +345,7 @@ return [
                         'home' => 'Home',
                         'my-messages' => 'Mijn berichten',
                         'questionnaire' => 'Vragenlijsten',
-                        'connect-to-coach' => 'Gewbouw toewijzen',
+                        'connect-to-coach' => 'Woning toewijzen',
                         'assign-roles' => 'Rollen toewijzen',
                         'messages' => 'Berichten',
                         'buildings' => 'Gebouwen',
@@ -406,7 +418,7 @@ return [
                     ],
                     'conversation-requests' => [
                         'index' => [
-                            'header' => 'Overzicht van openstaande gespreks aanvragen',
+                            'header' => 'Berichten center',
                             'no-messages' => [
                                 'title' => 'Geen openstaande aanvragen',
                                 'text' => 'Er zijn op het moment geen openstaande aanvragen',
@@ -440,7 +452,7 @@ return [
                             \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
                         ],
                         'create' => [
-                            'header' => 'U bent de aanvraag van :firstName :lastName aan het koppelen met een coach',
+                            'header' => 'U bent de aanvraag van :name aan het koppelen met een coach',
 
                             'form' => [
                                 'message-to-coach' => [
@@ -450,7 +462,7 @@ return [
                                 'title' => 'Titel van het bericht',
                                 'select-coach' => 'Selecteer een coach',
                                 'submit' => 'Coach koppelen',
-                                'submit-warning' => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?',
+                                'submit-warning' => 'Weet u zeker dat u deze coach met :name wilt koppelen ?',
                             ],
                         ],
                         'talk-to-coach' => [
@@ -714,10 +726,11 @@ return [
 
         'my-account' => [
             'side-nav' => [
-                'home' => 'Home',
-                'label' => 'Mijn account',
-                'import' => 'Import centrum',
-                'settings' => 'Instellingen',
+	            'home' => 'Home',
+	            'label' => 'Mijn account',
+	            'import' => 'Import centrum',
+	            'settings' => 'Instellingen',
+                'access' => 'Gebruikers met toegang tot uw gebouw',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',
             ],
@@ -737,6 +750,20 @@ return [
                     'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
                     'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
                     'show-differences' => 'Toon de verschillen met mijn data',
+                ]
+            ],
+
+            'access' => [
+                'index' => [
+                    'header' => 'Gebruikers met toegang tot mijn gebouw',
+                    'text' => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw gebouw. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
+
+                    'table' => [
+                        'columns' => [
+                            'coach' => 'Naam van gebruiker',
+                            'actions' => 'Actie ondernemen',
+                        ]
+                    ]
                 ]
             ],
 
@@ -889,7 +916,6 @@ return [
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.',
             ],
 
-            'edit-conversation-requests' => 'U kunt uw huidige aanvragen <strong><a href="'.route('cooperation.my-account.messages.requests.index').'">hier bekijken</a></strong> ',
         ],
         'tool' => [
             'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',

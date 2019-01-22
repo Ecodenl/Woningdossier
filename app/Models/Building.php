@@ -432,4 +432,14 @@ class Building extends Model
     {
         return $this->hasMany(QuestionsAnswer::class);
     }
+
+    /**
+     * Get the full address
+     *
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        return "{$this->postal_code}, {$this->street}, {$this->number}";
+    }
 }

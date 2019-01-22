@@ -10,6 +10,7 @@ class ConversationRequestsController extends Controller
 {
     public function index()
     {
+
         $openConversationRequests = PrivateMessage::openCooperationConversationRequests()->get();
 
         return view('cooperation.admin.cooperation.coordinator.conversation-requests.index', compact('openConversationRequests'));

@@ -78,6 +78,22 @@
                     @guest
 
                     @else
+                        <li>
+                            @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
+                                @case('coach')
+                                    <?php $messageUrl = route('cooperation.admin.coach.messages.index') ?>
+                                    @break
+                                @case('coordinator')
+                                    <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index') ?>
+                                @break
+                                    @default
+                                    <?php $messageUrl = route('cooperation.admin.index') ?>
+                            @endswitch
+                            <a href="{{$messageUrl}}">
+                                <span class="glyphicon glyphicon-envelope"></span>
+                                <span class="badge">{{$myUnreadMessagesCount}}</span>
+                            </a>
+                        </li>
                         @hasrole('cooperation-admin|super-admin|superuser')
                         <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
                         <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>

@@ -8,20 +8,36 @@ use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\UsersReques
 use App\Mail\UserCreatedEmail;
 use App\Models\Cooperation;
 use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->getCoordinators()->get();
+        $users = $cooperation->users()->get();
 
         return view('cooperation.admin.cooperation.cooperation-admin.users.index', compact('users'));
+    }
+
+    public function destroy(Cooperation $cooperation, Request $request)
+    {
+        $userId = $request->get('user_id');
+
+        $user = User::find($userId);
+
+        if ($user instanceof User) {
+            UserService::deleteUser($user);
+        }
+
+        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.users.index')->with('success', __('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.destroy.success'));
     }
 
     public function create()
     {
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->orWhere('name', 'coordinator')->get();
+
 
         return view('cooperation.admin.cooperation.cooperation-admin.users.create', compact('roles'));
     }

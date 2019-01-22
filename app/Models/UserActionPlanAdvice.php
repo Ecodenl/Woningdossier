@@ -7,6 +7,7 @@ use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,7 +52,7 @@ use Illuminate\Support\Collection;
  */
 class UserActionPlanAdvice extends Model
 {
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     public $fillable = [
         'user_id', 'measure_application_id', // old

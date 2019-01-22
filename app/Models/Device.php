@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Device extends Model
 {
-    use GetValueTrait;
+    use GetValueTrait, ToolSettingTrait;
 
     public function measure()
     {

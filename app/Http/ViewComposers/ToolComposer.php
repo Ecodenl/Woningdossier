@@ -9,6 +9,7 @@ use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\PrivateMessage;
 use App\Models\Step;
+use App\Models\ToolSetting;
 use Illuminate\View\View;
 
 class ToolComposer
@@ -35,5 +36,13 @@ class ToolComposer
 		        $view->with( 'buildingOwner', $building->user );
 	        }
         }
+
+        $buildingId = HoomdossierSession::getBuilding();
+        $changedSettings = collect([]);
+        if (!is_null($buildingId)){
+	        $changedSettings = ToolSetting::getChangedSettings($buildingId);
+        }
+	    $view->with('toolSettings', $changedSettings);
+
     }
 }

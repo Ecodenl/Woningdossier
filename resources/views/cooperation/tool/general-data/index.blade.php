@@ -310,7 +310,7 @@
                                         }
                                         ?>
 
-                                        <li class="change-input-value" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
+                                        <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource()->first()->short}}" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -642,7 +642,7 @@
                                                 $trans = __('woningdossier.cooperation.radiobutton.no');
                                             }
                                         ?>
-                                        <li class="change-input-value" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
+                                        <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource()->first()->short}}" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>

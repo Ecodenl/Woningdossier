@@ -264,11 +264,18 @@ class User extends Authenticatable
      */
     public function isFillingToolForOtherBuilding(): bool
     {
-        if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
-            return true;
-        }
+        // if the building is not set it is null, so return false.
+        // this will only happen in very rare occasions (prob only on dev / local)
+        if (is_null(HoomdossierSession::getBuilding())) {
+            return false;
+        } else {
 
-        return false;
+            if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     /**
@@ -321,4 +328,5 @@ class User extends Authenticatable
     {
         $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
     }
+
 }

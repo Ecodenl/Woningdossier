@@ -98,6 +98,8 @@ $("#register #street").focusin(
                 city.addClass("loading");
             },
             success: function(data){
+                // remove error messages, since its a success.
+                $('.help-block').remove();
                 street.removeClass("loading");
                 city.removeClass("loading");
                 var address = data;
@@ -109,7 +111,14 @@ $("#register #street").focusin(
                 city.val(address.city);
             },
             fail: function (xhr, textStatus, errorThrown) {
-                console.log(xhr, textStatus, errorThrown);
+            },
+            error: function (request, status, error) {
+                var helpBlock = '<span class="help-block"></span>';
+                var errorMessage = $.parseJSON(request.responseText);
+
+                $.each(errorMessage.errors, function(fieldName, message) {
+                    $('input[name='+fieldName+']').parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
+                });
             },
             dataType: 'json'
         });

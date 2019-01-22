@@ -74,16 +74,9 @@
                     <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
                     @if (!Auth::user()->isFillingToolForOtherBuilding())
 
-                        @if(Auth::user()->hasNotMultipleRoles() && Auth::user()->hasRole('resident'))
+                        @if (\App\Helpers\HoomdossierSession::currentRole() == 'resident')
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
-                                    <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{$myUnreadMessages->count()}}</span>
-                                </a>
-                            </li>
-                        @elseif(Auth::user()->can('access-admin'))
-                            <li>
-                                <a href="{{route('cooperation.admin.index')}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                     <span class="badge">{{$myUnreadMessages->count()}}</span>
                                 </a>
@@ -98,7 +91,7 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
+                                    <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
                                     {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
                                     <li>
                                         <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"

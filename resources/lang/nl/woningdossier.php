@@ -255,6 +255,10 @@ return [
                             ],
                         ],
 
+                        'destroy' => [
+                            'warning' => 'Dit verwijderd de gebruiker en al zijn data van het Hoomdossier, weet u zeker dat u wilt doorgaan ?',
+                            'success' => 'Gebruiker is verwijderd van het Hoomdossier.'
+                        ],
                         'store' => [
                             'success' => 'Gebruiker is met success toevoegd',
                         ],
@@ -710,7 +714,10 @@ return [
 
         'my-account' => [
             'side-nav' => [
-                'label' => 'Berichten centrum',
+                'home' => 'Home',
+                'label' => 'Mijn account',
+                'import' => 'Import centrum',
+                'settings' => 'Instellingen',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',
             ],
@@ -721,6 +728,16 @@ return [
 
                 'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',
                 'messages' => 'Berichten <span class="glyphicon glyphicon-envelope">',
+            ],
+            'import-center' => [
+                'index' => [
+                    'header' => 'Import centrum',
+                    'text' => 'Welkom bij het import centrum.',
+                    'copy-data' => 'Neem :input_source_name antwoorden over',
+                    'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
+                    'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
+                    'show-differences' => 'Toon de verschillen met mijn data',
+                ]
             ],
 
             'messages' => [
@@ -797,11 +814,12 @@ return [
                         'description' => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
                         'label' => 'Reset mijn dossier',
                         'submit' => 'Reset',
-                        'are-you-sure' => 'Letop, dit verwijderd alle gegevens die zijn ingevuld bij de veschillende stappen. Weet u zeker dat u wilt doorgaan ?',
+                        'are-you-sure' => 'Let op: dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen. Weet u zeker dat u wilt doorgaan?',
                         'success' => 'Uw gegevens zijn succesvol verwijderd van uw account',
                     ],
                     'destroy' => [
                         'header' => 'Account verwijderen',
+                        'are-you-sure' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
                         'label' => 'Mijn account verwijderen',
                         'submit' => 'Verwijderen',
                     ],
@@ -877,6 +895,7 @@ return [
             'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',
             'filling-for' => 'U bewerkt de woning van :first_name :last_name als :input_source_name.',
             'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
+            'is-user-comparing-input-sources' => 'U bent nu de data aan het vergelijken, de velden die rood zijn gemarkeerd bevat een andere waarde',
 
             'unit' => [
                 'year' => 'jaar',

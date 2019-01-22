@@ -57,7 +57,7 @@ class HeatPumpController extends Controller
      */
     public function store(Request $request)
     {
-        Auth::user()->complete($this->step);
+        $building->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
         $nextStep = StepHelper::getNextStep($this->step);

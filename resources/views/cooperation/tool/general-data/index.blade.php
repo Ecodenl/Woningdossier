@@ -19,7 +19,7 @@
                             <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{ \App\Helpers\Translation::translate('general-data.example-building.title') }}</label>
                             <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                 @foreach($exampleBuildings as $exampleBuilding)
-                                    <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !Auth::user()->hasCompleted($step) && $exampleBuilding->is_default)
+                                    <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !$building->complete($step) && $exampleBuilding->is_default)
                                             selected="selected"
                                             @elseif($exampleBuilding->id == old('example_building_id'))
                                             selected="selected"
@@ -28,7 +28,7 @@
                                             @endif
                                             value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                 @endforeach
-                                <option value="" @if((empty(old('example_building_id', $building->example_building_id)) || !$exampleBuildings->contains('id', '=', $building->example_building_id)) && Auth::user()->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                                <option value="" @if((empty(old('example_building_id', $building->example_building_id)) || !$exampleBuildings->contains('id', '=', $building->example_building_id)) && $building->complete($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
                             </select>
 
                             @if ($errors->has('example_building_id'))
@@ -242,7 +242,7 @@
                                         }
                                         ?>
 
-                                        <li class="change-input-value" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
+                                        <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource()->first()->short}}" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -574,7 +574,7 @@
                                                 $trans = __('woningdossier.cooperation.radiobutton.no');
                                             }
                                         ?>
-                                        <li class="change-input-value" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
+                                        <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource()->first()->short}}" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>

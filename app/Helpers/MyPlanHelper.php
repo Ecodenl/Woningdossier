@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Building;
 use App\Models\Interest;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
@@ -72,8 +73,11 @@ class MyPlanHelper
      */
     public static function isUserInterestedInMeasure(Step $step): bool
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
+
         foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
-            if (\Auth::user()->getInterestedType($type, $interestedIn) instanceof UserInterest && \Auth::user()->isInterestedInStep($type, $interestedIn)) {
+            if ($buildingOwner->getInterestedType($type, $interestedIn) instanceof UserInterest && $buildingOwner->isInterestedInStep($type, $interestedIn)) {
                 return true;
             }
         }

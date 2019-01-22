@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Closure;
-use Doctrine\DBAL\Schema\View;
 
 class FilledStep
 {

@@ -7,6 +7,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Role;
 use Illuminate\Support\Facades\Session;
+use phpDocumentor\Reflection\Types\Self_;
 
 class HoomdossierSession extends Session
 {
@@ -24,6 +25,9 @@ class HoomdossierSession extends Session
         self::setInputSource($inputSource);
         self::setInputSourceValue($inputSourceValue);
         self::setRole($role);
+        self::setCompareInputSourceShort($inputSource->short);
+        // default to false
+        self::setIsUserComparingInputSources(false);
     }
 
     /**
@@ -31,7 +35,6 @@ class HoomdossierSession extends Session
      */
     public static function destroy()
     {
-//        self::forget(['hoomdossier_session.role_id', 'hoomdossier_session.building_id', 'hoomdossier_session.input_source_id', 'hoomdossier_session.input_source_value_id']);
         self::forget(['hoomdossier_session']);
     }
 
@@ -79,12 +82,13 @@ class HoomdossierSession extends Session
      * Get a value from the Hoomdossier session.
      *
      * @param $key
+     * @param $default
      *
      * @return mixed
      */
-    public static function getHoomdossierSession($key)
+    public static function getHoomdossierSession($key, $default = null)
     {
-        return self::get('hoomdossier_session.'.$key);
+        return self::get('hoomdossier_session.'.$key, $default);
     }
 
     /**
@@ -130,6 +134,46 @@ class HoomdossierSession extends Session
     }
 
     /**
+     * Set the bool, this determines if the logged in user is comparing input sources
+     *
+     * @param bool $isUserComparing
+     */
+    public static function setIsUserComparingInputSources(bool $isUserComparing)
+    {
+        self::setHoomdossierSession('is_user_comparing_input_sources', $isUserComparing);
+    }
+
+    /**
+     * Set the compare input source short, this is used to retrieve the right compare value from the dom
+     *
+     * @param string $inputSourceShort
+     */
+    public static function setCompareInputSourceShort(string $inputSourceShort)
+    {
+        self::setHoomdossierSession('compare_input_source_short', $inputSourceShort);
+    }
+
+    /**
+     * Stop / Reset the sessions for comparing the input sources
+     * We set the compareInputSourceShort back to the auth user his own input source short and the isUserComparingInputSource back to false.
+     */
+    public static function stopUserComparingInputSources()
+    {
+        self::setIsUserComparingInputSources(false);
+        self::setCompareInputSourceShort(InputSource::find(self::getInputSource())->short);
+    }
+
+    /**
+     * Get the compare input source.
+     *
+     * @return string
+     */
+    public static function getCompareInputSourceShort(): string
+    {
+        return self::getHoomdossierSession('compare_input_source_short', '');
+    }
+
+    /**
      * Set the building id.
      *
      * @param Building $building
@@ -168,9 +212,9 @@ class HoomdossierSession extends Session
     /**
      * Get the input source id.
      *
-     * @return int
+     * @return int|null
      */
-    public static function getInputSource(): int
+    public static function getInputSource()
     {
         return self::getHoomdossierSession('input_source_id');
     }
@@ -197,12 +241,43 @@ class HoomdossierSession extends Session
     }
 
     /**
+     * Returns if a user is comparing input sources
+     *
+     * @return bool
+     */
+    public static function getIsUserComparingInputSources(): bool
+    {
+        return self::getHoomdossierSession('is_user_comparing_input_sources', false);
+    }
+
+    /**
+     * Check if a user is comparing his own values against the values from a other input source
+     *
+     * @return bool
+     */
+    public static function isUserComparingInputSources(): bool
+    {
+        return self::getIsUserComparingInputSources();
+    }
+
+    /**
+     * Check if a user is NOT comparing his own values against the values from a other input source
+     *
+     * @return bool
+     */
+    public static function isUserNotComparingInputSources(): bool
+    {
+        return !self::getIsUserComparingInputSources();
+    }
+
+
+    /**
      * Return the Hoomdossier session data.
      *
      * @return array
      */
     public static function getAll(): array
     {
-        return self::get('hoomdossier_session');
+        return (array) self::get('hoomdossier_session');
     }
 }

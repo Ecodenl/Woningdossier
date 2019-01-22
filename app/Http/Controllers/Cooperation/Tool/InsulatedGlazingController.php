@@ -450,7 +450,7 @@ class InsulatedGlazingController extends Controller
         BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
+                'input_source_id' => $inputSourceId
             ],
             [
                 'last_painted_year' => $paintWorkStatuses['last_painted_year'],
@@ -464,10 +464,10 @@ class InsulatedGlazingController extends Controller
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
+                'input_source_id' => $inputSourceId
             ],
             [
-                'window_surface' => $windowSurface,
+                'window_surface' => $windowSurface
             ]
         );
 

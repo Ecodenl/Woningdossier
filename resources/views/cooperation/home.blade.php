@@ -25,7 +25,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{route('cooperation.my-account.settings.index')}}">
+                    <a href="{{route('cooperation.my-account.index')}}">
                         @lang('woningdossier.cooperation.home.tabs.settings')
                     </a>
                 </li>

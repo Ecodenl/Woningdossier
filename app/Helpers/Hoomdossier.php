@@ -69,7 +69,7 @@ class Hoomdossier
                 // skip this one
                 continue;
             }
-            if ('resident' == $inputSourceShort) {
+            if ($inputSourceShort == InputSource::RESIDENT_SHORT) {
                 // no matter what
                 return $value;
             }

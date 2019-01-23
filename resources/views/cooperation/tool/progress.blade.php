@@ -45,7 +45,7 @@
     @foreach($steps as $step)
         <li class="list-inline-item
             @if($step->slug == "building-detail")
-                active
+                {{--active--}}
             @else
 
 

@@ -80,15 +80,11 @@ class Cooperation extends Model
     /**
      * get the active steps ordered on the order column.
      *
-     * Yes, the building-detail is a step, but we dont treat it like a real step.
-     * So we dont want it in our active steps collection.
-     *
      * @return mixed
      */
     public function getActiveOrderedSteps(): Collection
     {
         return $this->steps()
-//            ->where('slug', '!=', 'building-detail')
             ->orderBy('cooperation_steps.order')
             ->where('cooperation_steps.is_active', '1')->get();
     }

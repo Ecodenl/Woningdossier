@@ -46,8 +46,9 @@
         <li class="list-inline-item
             @if($step->slug == "building-detail")
                 active
+            @else
 
-            @endif
+
             @if(Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index')
                 active
             @elseif($building->hasCompleted($step))
@@ -82,7 +83,7 @@
             @endif
             </a>
         </li>
-
+            @endif
     @endforeach
         <li class="list-inline-item">
             <a href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">

@@ -268,7 +268,7 @@ return [
                         ],
 
                         'destroy' => [
-                            'warning' => 'Dit verwijderd de gebruiker en al zijn data van het Hoomdossier, weet u zeker dat u wilt doorgaan ?',
+                            'warning' => 'Dit verwijdert de gebruiker en al zijn data van het Hoomdossier, weet u zeker dat u wilt doorgaan?',
                             'success' => 'Gebruiker is verwijderd van het Hoomdossier.'
                         ],
                         'store' => [

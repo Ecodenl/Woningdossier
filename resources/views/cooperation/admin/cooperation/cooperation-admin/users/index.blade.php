@@ -37,7 +37,7 @@
                                     {{csrf_field()}}
                                     <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="user_id" value="{{$user->id}}">
-                                    <td><button type="submit" class="btn btn-danger remove"><span class="glyphicon glyphicon-trash"></span></button></td>
+                                    <td><button type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-trash"></i></button></td>
                                 </form>
                             </tr>
                         @empty
@@ -59,7 +59,7 @@
                 responsive: true
             });
 
-            $('.remove').click(function () {
+            $('table').on('click', '.remove', function (event) {
                 if (confirm("{{__('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.destroy.warning')}}")) {
 
                 } else {

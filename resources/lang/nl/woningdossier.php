@@ -59,8 +59,19 @@ return [
                             'create' => 'Aanmaken'
                         ],
                     ],
+                    'edit' => [
+                        'header' => 'Cooperatie :name bewerken',
+                        'form' => [
+                            'name' => 'Naam van de cooperatie',
+                            'slug' => 'Slug / subdomein',
+                            'update' => 'Bijwerken'
+                        ],
+                    ],
                     'store' => [
                         'success' => 'Cooperatie is toegevoegd aan het Hoomdossier',
+                    ],
+                    'update' => [
+                        'success' => 'Cooperatie is bijgewerkt.'
                     ],
                 ],
                 'example-buildings' => [

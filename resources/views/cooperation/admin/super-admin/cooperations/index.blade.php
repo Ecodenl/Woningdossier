@@ -24,7 +24,7 @@
                                     <td>{{$cooperation->name}}</td>
                                     <td>{{$cooperation->slug}}</td>
                                     <td>
-                                        <a href="" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
+                                        <a href="{{route('cooperation.admin.super-admin.cooperations.edit', ['cooperation' => $currentCooperation,  'cooperationId' => $cooperation->id])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
                                     </td>
                                 </tr>
                             @endforeach

@@ -448,22 +448,22 @@ class ExampleBuildingController extends Controller
                     'options' => $interestOptions,
                 ];*/
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.insulated_glazing_id'] = [
-                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.current-glass.title'),
+                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title'),
                     'type' => 'select',
                     'options' => $this->createOptions($insulatedGlazings),
                 ];
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.building_heating_id'] = [
-                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.heated-rooms.title'),
+                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title'),
                     'type' => 'select',
                     'options' => $this->createOptions($heatings),
                 ];
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.m2'] = [
-                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.m2.title'),
+                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.title'),
                     'type' => 'text',
                     'unit' => Translation::translate('general.unit.square-meters.title'),
                 ];
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.windows'] = [
-                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.total-windows.title'),
+                    'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.title'),
                     'type' => 'text',
                 ];
             }

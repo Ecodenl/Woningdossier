@@ -52,6 +52,7 @@
         $('#table').DataTable({
             responsive: true,
             pageLength: 50,
+            order: [],
             columnDefs: [
                 {responsivePriority: 2, targets: 1},
                 {responsivePriority: 1, targets: 0}

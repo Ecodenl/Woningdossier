@@ -33,12 +33,7 @@
                                         });
                                     ?>
                                 </td>
-                                <form action="{{route('cooperation.admin.cooperation.cooperation-admin.users.destroy')}}" method="post">
-                                    {{csrf_field()}}
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="user_id" value="{{$user->id}}">
-                                    <td><button type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-trash"></i></button></td>
-                                </form>
+                                <td><button data-user-id="{{$user->id}}"type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-trash"></i></button></td>
                             </tr>
                         @empty
                         @endforelse
@@ -49,18 +44,32 @@
             </div>
         </div>
     </div>
+
+    @foreach($users as $user)
+        <form action="{{route('cooperation.admin.cooperation.cooperation-admin.users.destroy')}}" method="post" id="user-form-{{$user->id}}">
+            {{csrf_field()}}
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="user_id" value="{{$user->id}}">
+        </form>
+    @endforeach
 @endsection
 
 
 @push('js')
     <script>
         $(document).ready(function () {
-            $('table').DataTable({
+            var table = $('table');
+
+            table.DataTable({
                 responsive: true
             });
 
-            $('table').on('click', '.remove', function (event) {
+            table.on('click', '.remove', function (event) {
                 if (confirm("{{__('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.destroy.warning')}}")) {
+
+                    // submit the form, datatables strips non valid html.
+                    var userId = $(this).data('user-id');
+                    $('form#user-form-'+userId).submit();
 
                 } else {
                     event.preventDefault();

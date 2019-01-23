@@ -121,6 +121,7 @@ class UserPolicy
         return false;
     }
 
+
     /**
      * Check if a user is authorized to delete a user.
      *

@@ -54,44 +54,6 @@ class ConnectToCoachController extends Controller
     }
 
     /**
-     * Connect a coach to a building and resident.
-     *
-     * @param Cooperation           $cooperation
-     * @param ConnectToCoachRequest $request
-     *
-     * @return RedirectResponse
-     */
-    public function store(Cooperation $cooperation, ConnectToCoachRequest $request)
-    {
-        $coachId = $request->get('coach_id', '');
-        $buildingId = $request->get('building_id', '');
-
-        // the receiver of the message
-        $coach = $cooperation->users()->find($coachId);
-
-        if ($coach instanceof User) {
-            $residentBuilding = Building::find($buildingId);
-
-            $privateMessage = PrivateMessage::forMyCooperation()->conversationRequest($buildingId)->first();
-
-            if ($privateMessage->allow_access) {
-                // give the coach permission to the resident his building
-                BuildingPermission::create([
-                    'user_id' => $coach->id, 'building_id' => $residentBuilding->id,
-                ]);
-            }
-
-            BuildingCoachStatus::create([
-                'coach_id' => $coach->id,
-                'building_id' => $residentBuilding->id,
-                'status' => BuildingCoachStatus::STATUS_ACTIVE,
-            ]);
-        }
-
-        return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
-    }
-
-    /**
      * When the coordinator decides to message the coach before attaching anything to the user.
      *
      * @param Cooperation $cooperation

@@ -20,24 +20,4 @@ class AccessController extends Controller
         return view('cooperation.my-account.access.index', compact('buildingPermissions'));
     }
 
-    public function revokeAccess(Cooperation $cooperation, Request $request)
-    {
-        // get the group participant user id which is only a coach, but still
-        $groupParticipantUserId = $request->get('user_id');
-        // get the building owner id
-        $buildingOwnerId = $request->get('building_owner_id');
-
-        // the building from the user / resident
-        $building = Building::find($buildingOwnerId);
-
-        if ($building instanceof Building) {
-            // revoke the access for the coach to talk with the resident
-            BuildingPermissionService::revokePermission($groupParticipantUserId, $building->id);
-            BuildingCoachStatusService::revokeAccess($groupParticipantUserId, $building->id);
-
-            // TODO: create a message ? to notify some admin ?
-        }
-
-        return redirect()->back();
-    }
 }

@@ -11,14 +11,14 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.store')}}" method="post"  >
+                    <form action="{{route('cooperation.messages.participants.add-with-building-access')}}" method="post"  >
                         {{csrf_field()}}
                         <input type="hidden" name="building_id" value="{{$buildingId}}">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('coach') ? ' has-error' : '' }}>
                                     <label for="coach">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.select-coach')</label>
-                                    <select name="coach_id" class="coach form-control" id="coach">
+                                    <select name="user_id" class="coach form-control" id="coach">
                                         @foreach($coaches as $coach)
                                             <option @if(old('coach') == $coach->id) selected @endif value="{{$coach->id}}">{{$coach->getFullName()}}</option>
                                         @endforeach

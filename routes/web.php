@@ -38,6 +38,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::get('measures', 'MeasureController@index')->name('measures.index');
             Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
+            Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+                Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {
+                    Route::post('revoke-access', 'ParticipantController@revokeAccess')->name('revoke-access');
+                    Route::post('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
+                });
+            });
+
             // my account
             Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function () {
                 Route::get('', 'MyAccountController@index')->name('index');
@@ -219,10 +226,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::group(['prefix' => 'connect-to-coach', 'as' => 'connect-to-coach.'], function () {
                         Route::get('', 'ConnectToCoachController@index')->name('index');
                         Route::get('connect/{buildingId}', 'ConnectToCoachController@create')->name('create');
-                        Route::get('consult-coach/{privateMessageId}', 'ConnectToCoachController@talkToCoachCreate')->name('talk-to-coach.create');
-                        Route::post('consult-coach', 'ConnectToCoachController@talkToCoachStore')->name('talk-to-coach.store');
-//                        Route::post('message-and-connect', 'ConnectToCoachController@storeWithMessageToCoach')->name('store-with-message-to-coach');
-                        Route::post('', 'ConnectToCoachController@store')->name('store');
                     });
 
                     // needs to be the last route due to the param

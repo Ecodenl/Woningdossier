@@ -10,7 +10,7 @@
         }
     ?>
 
-    <label for="building_type_id">@lang('woningdossier.cooperation.tool.general-data.building-type.title')</label>
+    <label for="building_type_id">{{\App\Helpers\Translation::translate('building-detail.building-type.what-type.title')}}</label>
     <select id="building_type_id" name="building_type_id" class="form-control">
         <option value="" @if($selected == "")selected="selected"@endif>-</option>
         @foreach($buildingTypes as $buildingType)

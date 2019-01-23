@@ -336,12 +336,12 @@ class ExampleBuildingController extends Controller
                     'unit' => Translation::translate('general.unit.square-meters.title'),
                 ],
                 'element.'.$crawlspace->id.'.extra.has_crawlspace' => [
-                    'label' => Translation::translate('floor-insulation.has-crawlspace.title.title'),
+                    'label' => Translation::translate('floor-insulation.has-crawlspace.title'),
                     'type' => 'select',
                     'options' => __('woningdossier.cooperation.option'),
                 ],
                 'element.'.$crawlspace->id.'.extra.access' => [
-                    'label' => Translation::translate('floor-insulation.crawlspace-access.title.title'),
+                    'label' => Translation::translate('floor-insulation.crawlspace-access.title'),
                     'type' => 'select',
                     'options' => __('woningdossier.cooperation.option'),
                 ],

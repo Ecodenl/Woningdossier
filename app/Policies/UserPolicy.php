@@ -152,7 +152,7 @@ class UserPolicy
     public function removeParticipantFromChat(User $user, User $groupParticipant): bool
     {
         // a coordinator and resident can remove a coach from a conversation
-        if ($user->hasRole(['resident', 'coordinator']) && $groupParticipant->hasRole(['coach'])) {
+        if ($user->hasRoleAndIsCurrentRole(['resident', 'coordinator', 'cooperation-admin']) && $groupParticipant->hasRole(['coach'])) {
             return true;
         }
 

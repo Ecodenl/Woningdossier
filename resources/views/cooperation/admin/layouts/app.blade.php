@@ -77,7 +77,7 @@
                     <!-- Authentication Links -->
                     @guest
                     @else
-                        @if(Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach']))
+                        @if(Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                         <li>
                             @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                 @case('coach')
@@ -85,8 +85,11 @@
                                     @break
                                 @case('coordinator')
                                     <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index') ?>
-                                @break
-                                    @default
+                                    @break
+                                @case('cooperation-admin')
+                                    <?php $messageUrl = route('cooperation.admin.cooperation.cooperation-admin.messages.index') ?>
+                                    @break
+                                @default
                                     <?php $messageUrl = route('cooperation.admin.index') ?>
                             @endswitch
                             <a href="{{$messageUrl}}">

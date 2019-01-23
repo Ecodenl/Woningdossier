@@ -90,6 +90,9 @@
                                     @case('coordinator')
                                         <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index') ?>
                                         @break
+                                    @case('cooperation-admin')
+                                        <?php $messageUrl = route('cooperation.admin.cooperation.cooperation-admin.messages.index') ?>
+                                        @break
                                     @default
                                         <?php $messageUrl = route('cooperation.admin.index') ?>
                                 @endswitch

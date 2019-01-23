@@ -243,6 +243,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('', 'UserController@store')->name('store');
                     });
 
+                    Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
+                        Route::get('', 'MessagesController@index')->name('index');
+                        Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
+                        Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
+                        Route::post('message', 'MessagesController@store')->name('store');
+                    });
+
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');

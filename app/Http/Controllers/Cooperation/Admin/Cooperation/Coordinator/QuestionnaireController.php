@@ -423,11 +423,16 @@ class QuestionnaireController extends Controller
     public function deleteQuestion(Cooperation $cooperation, $questionId)
     {
         $question = Question::find($questionId);
-        $questionnaire = $question->questionnaire;
-        $this->authorize('delete', $questionnaire);
 
-        // rm
-        $question->delete();
+        // since a newly added question that is not saved yet, can still be deleted. If that happens we would get an exception which we dont want
+        if ($question instanceof Question) {
+
+            $questionnaire = $question->questionnaire;
+            $this->authorize('delete', $questionnaire);
+
+            // rm
+            $question->delete();
+        }
 
         return 202;
     }
@@ -446,13 +451,20 @@ class QuestionnaireController extends Controller
     public function deleteQuestionOption(Cooperation $cooperation, $questionId, $questionOptionId)
     {
         $question = Question::find($questionId);
-        $questionnaire = $question->questionnaire;
-        $this->authorize('delete', $questionnaire);
+        // since a newly added question that is not saved yet, can still be deleted. If that happens we would get an exception which we dont want
+        if ($question instanceof Question) {
+            $questionnaire = $question->questionnaire;
+            $this->authorize('delete', $questionnaire);
 
-        $questionOption = QuestionOption::find($questionOptionId);
+            $questionOption = QuestionOption::find($questionOptionId);
 
-        $questionOption->deleteTranslations('name');
-        $questionOption->delete();
+            // since the question could exist, but the option dont. So check.
+            if ($questionOption instanceof QuestionOption) {
+
+                $questionOption->deleteTranslations('name');
+                $questionOption->delete();
+            }
+        }
 
         return 202;
     }

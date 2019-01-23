@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\ParticipantAddedEvent;
+use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
+use App\Listeners\ParticipantAddedListener;
+use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +22,12 @@ class EventServiceProvider extends ServiceProvider
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
         ],
+        ParticipantRevokedEvent::class => [
+            ParticipantRevokedListener::class
+        ],
+        ParticipantAddedEvent::class => [
+            ParticipantAddedListener::class
+        ]
     ];
 
     /**

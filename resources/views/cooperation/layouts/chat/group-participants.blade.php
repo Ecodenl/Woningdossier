@@ -37,7 +37,7 @@
                     if (confirm('@lang('woningdossier.cooperation.chat.group-participants.revoke-access')')) {
 
                         $.ajax({
-                            url: '{{route('cooperation.my-account.messages.revoke-access')}}',
+                            url: '{{route('cooperation.messages.participants.revoke-access')}}',
                             method: 'POST',
                             data: {
                                 user_id: userId,

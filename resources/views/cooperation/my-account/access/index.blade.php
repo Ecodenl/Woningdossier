@@ -18,7 +18,7 @@
                         </thead>
                         <tbody>
                         @foreach($buildingPermissions as $i => $buildingPermission)
-                            <form id="revoke-access-{{$buildingPermission->id}}" action="{{route('cooperation.my-account.access.revoke-access')}}" method="post">
+                            <form id="revoke-access-{{$buildingPermission->id}}" action="{{route('cooperation.messages.participants.revoke-access')}}" method="post">
                                 {{csrf_field()}}
                                 <input type="hidden" name="user_id" value="{{$buildingPermission->user_id}}">
                                 <input type="hidden" name="building_owner_id" value="{{$buildingPermission->building_id}}">

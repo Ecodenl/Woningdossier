@@ -179,11 +179,12 @@ class UserController extends Controller
     }
 
     /**
-     * Destroy a user
+     * Destroy a user.
      *
      * @param Cooperation $cooperation
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Cooperation $cooperation, Request $request)
     {
@@ -191,6 +192,8 @@ class UserController extends Controller
         $userId = $request->get('user_id');
 
         $user = User::find($userId);
+
+        $this->authorize('destroy', $user);
 
         if ($user instanceof User) {
             UserService::deleteUser($user);

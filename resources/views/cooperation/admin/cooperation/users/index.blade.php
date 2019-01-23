@@ -38,8 +38,7 @@
                                 </td>
                                 @can('delete-user')
                                     <td>
-                                        <button type="button" class="btn btn-danger remove"><i
-                                                    class="glyphicon glyphicon-trash"></i></button>
+                                        <button  data-user-id="{{$user->id}}"t type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-trash"></i></button>
                                     </td>
                                 @endcan
                             </tr>
@@ -55,8 +54,7 @@
 
     @can('delete-user')
         @foreach($users as $user)
-            <form action="{{route('cooperation.admin.cooperation.users.destroy')}}" method="post"
-                  id="user-form-{{$user->id}}">
+            <form action="{{route('cooperation.admin.cooperation.users.destroy')}}" method="post" id="user-form-{{$user->id}}">
                 {{csrf_field()}}
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="user_id" value="{{$user->id}}">
@@ -73,7 +71,7 @@
                 responsive: true
             });
             table.on('click', '.remove', function (event) {
-                if (confirm("{{__('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.destroy.warning')}}")) {
+                if (confirm("{{__('woningdossier.cooperation.admin.cooperation.users.destroy.warning')}}")) {
                     // submit the form, datatables strips non valid html.
                     var userId = $(this).data('user-id');
                     $('form#user-form-'+userId).submit();

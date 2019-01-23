@@ -246,6 +246,7 @@ return [
                         'success' => 'Gebruiker is met success toevoegd',
                     ],
                     'destroy' => [
+                        'warning' => 'Letop, dit verwijderd de gebruiker en al zijn gegevens die zijn opgeslagen in het Hoomdossier. Weet u zeker dat u wilt doorgaan ?',
                         'success' => 'Gebruiker is verwijderd',
                     ],
                 ],

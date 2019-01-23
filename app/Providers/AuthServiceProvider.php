@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Models\Building;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
+use App\Models\User;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         PrivateMessage::class => PrivateMessagePolicy::class,
         Questionnaire::class => QuestionnairePolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**

@@ -137,6 +137,22 @@ class UserPolicy
     }
 
     /**
+     * Check if a user is authorized to destroy a user.
+     *
+     * @param User $user
+     * @param User $userToDestroy
+     * @return bool
+     */
+    public function destroy(User $user, User $userToDestroy)
+    {
+        // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
+        if ($user->can('delete-user') && $userToDestroy->cooperations->contains('id', HoomdossierSession::getCooperation())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Check if a user is allowed to participate in a group chat or not.
      *
      * @param User $user

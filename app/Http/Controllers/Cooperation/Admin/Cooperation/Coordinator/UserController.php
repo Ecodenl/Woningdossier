@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Events\ParticipantAddedEvent;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Cooperation\Coordinator\CoachRequest;
@@ -9,7 +10,10 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
+use App\Models\PrivateMessage;
 use App\Models\User;
+use App\Services\BuildingCoachStatusService;
+use App\Services\BuildingPermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Spatie\Permission\Models\Role;
@@ -24,11 +28,12 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.coordinator.user.index', compact('roles', 'users'));
     }
 
-    public function create()
+    public function create(Cooperation $cooperation)
     {
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
+        $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.user.create', compact('roles'));
+        return view('cooperation.admin.cooperation.coordinator.user.create', compact('roles', 'coaches'));
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)
@@ -68,6 +73,7 @@ class UserController extends Controller
         $street = strip_tags($request->get('street', ''));
         $city = trim(strip_tags($request->get('city')));
         $addressId = $request->get('addressid', null);
+        $coachId = $request->get('coach_id', '');
 
         // create the new user
         $user = User::create(
@@ -91,7 +97,7 @@ class UserController extends Controller
         );
 
         // make a new building
-        $address = new Building(
+        $building = new Building(
             [
                 'street' => $street,
                 'number' => $houseNumber,
@@ -103,8 +109,8 @@ class UserController extends Controller
         );
 
         // save the building feature and the building itself and accociate the new user with it
-        $address->user()->associate($user)->save();
-        $features->building()->associate($address)->save();
+        $building->user()->associate($user)->save();
+        $features->building()->associate($building)->save();
 
         // give the user his role
         $roleIds = $request->get('roles', '');
@@ -119,6 +125,36 @@ class UserController extends Controller
         // assign the roles to the user
         $user->assignRole($roles);
 
+        // if the created user is a resident, then we connect the selected coach to the building, else we dont.
+        if ($user->hasRole('resident')) {
+
+            // so create a message, with the access allowed
+            PrivateMessage::create(
+                [
+                    // we get the selected option from the language file, we can do this cause the submitted value = key from localization
+                    'is_public' => true,
+                    'message' => "",
+                    'from_user_id' => $user->id,
+                    'from_user' => $user->getFullName(),
+                    'to_cooperation_id' => $cooperation->id,
+                    'building_id' => $building->id,
+                    'request_type' => 'user-created-by-cooperation',
+                    'allow_access' => true,
+                ]
+            );
+
+
+            $coach = User::find($coachId);
+            // now give the selected coach access with permission to the new created building
+            BuildingPermissionService::givePermission($coachId, $building->id);
+            BuildingCoachStatusService::giveAccess($coachId, $building->id);
+
+            // and fire the added event twice, for the user itself and for the coach.
+            event(new ParticipantAddedEvent($user, $building));
+            event(new ParticipantAddedEvent($coach, $building));
+
+        }
+        // and send the account confirmation mail.
         $this->sendAccountConfirmationMail($cooperation, $request);
 
         return redirect()

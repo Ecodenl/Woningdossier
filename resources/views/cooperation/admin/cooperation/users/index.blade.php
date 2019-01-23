@@ -65,7 +65,6 @@
     @endcan
 @endsection
 
-
 @push('js')
     <script>
         $(document).ready(function () {
@@ -77,7 +76,7 @@
                 if (confirm("{{__('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.destroy.warning')}}")) {
                     // submit the form, datatables strips non valid html.
                     var userId = $(this).data('user-id');
-                    $('form#user-form-' + userId).submit();
+                    $('form#user-form-'+userId).submit();
                 } else {
                     event.preventDefault();
                     return false;

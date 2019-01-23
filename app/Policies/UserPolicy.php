@@ -122,6 +122,20 @@ class UserPolicy
     }
 
     /**
+     * Check if a user is authorized to delete a user.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function deleteUser(User $user): bool
+    {
+        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'super-admin'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Check if a user is allowed to participate in a group chat or not.
      *
      * @param User $user

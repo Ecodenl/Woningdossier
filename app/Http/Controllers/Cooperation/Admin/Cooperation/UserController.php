@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
 use App\Helpers\Str;
@@ -14,8 +14,8 @@ use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -25,7 +25,7 @@ class UserController extends Controller
         $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
         $roles = Role::all();
 
-        return view('cooperation.admin.cooperation.coordinator.user.index', compact('roles', 'users'));
+        return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));
     }
 
     public function create(Cooperation $cooperation)
@@ -33,7 +33,7 @@ class UserController extends Controller
         $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
         $coaches = $cooperation->getCoaches()->get();
 
-        return view('cooperation.admin.cooperation.coordinator.user.create', compact('roles', 'coaches'));
+        return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)
@@ -158,8 +158,8 @@ class UserController extends Controller
         $this->sendAccountConfirmationMail($cooperation, $request);
 
         return redirect()
-            ->route('cooperation.admin.cooperation.coordinator.user.index')
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.store.success'));
+            ->route('cooperation.admin.cooperation.users.index')
+            ->with('success', __('woningdossier.cooperation.admin.cooperation.users.store.success'));
     }
 
     /**
@@ -178,51 +178,24 @@ class UserController extends Controller
         \Mail::to($user->email)->sendNow(new UserCreatedEmail($cooperation, $user, $token));
     }
 
-    public function destroy(Cooperation $cooperation, $userId)
+    /**
+     * Destroy a user
+     *
+     * @param Cooperation $cooperation
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Cooperation $cooperation, Request $request)
     {
-        $user = $cooperation->users()->findOrFail($userId);
 
-        // only remove the example building id from the building
-        if ($user->buildings()->first() instanceof Building) {
-            $building = $user->buildings()->first();
-            $building->example_building_id = null;
-            $building->save();
-            // delete the services from a building
-            $building->buildingServices()->delete();
-            // delete the elements from a building
-            $building->buildingElements()->delete();
-            // remove the features from a building
-            $building->buildingFeatures()->delete();
-            // remove the roof types from a building
-            $building->roofTypes()->delete();
-            // remove the heater from a building
-            $building->heater()->delete();
-            // remove the solar panels from a building
-            $building->pvPanels()->delete();
-            // remove the insulated glazings from a building
-            $building->currentInsulatedGlazing()->delete();
-            // remove the paintwork from a building
-            $building->currentPaintworkStatus()->delete();
-            // remove the user usage from a building
-            $building->userUsage()->delete();
+        $userId = $request->get('user_id');
+
+        $user = User::find($userId);
+
+        if ($user instanceof User) {
+            UserService::deleteUser($user);
         }
-        // remove the building usages from the user
-        $user->buildingUsage()->delete();
-        // remove the action plan advices from the user
-        $user->actionPlanAdvices()->delete();
-        // remove the user interests
-        $user->interests()->delete();
-        // remove the energy habits from a user
-        $user->energyHabit()->delete();
-        // remove the motivations from a user
-        $user->motivations()->delete();
-        // remove the progress from a user
-        $user->progress()->delete();
 
-        $user->cooperations()->detach($cooperation->id);
-
-        $user->delete();
-
-        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.user.destroy.success'));
+        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.users.destroy.success'));
     }
 }

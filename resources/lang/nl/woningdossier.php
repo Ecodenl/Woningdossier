@@ -200,6 +200,55 @@ return [
                     'header' => 'Welkom',
                     'text' => 'U kunt hier verschillende dingen doen.',
                 ],
+                'users' => [
+                    'index' => [
+                        'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
+
+                        'table' => [
+                            'columns' => [
+                                'first-name' => 'Voornaam',
+                                'last-name' => 'Achternaam',
+                                'email' => 'E-mail adres',
+                                'role' => 'Huidige rollen van gebruiker',
+                                'total-houses' => 'Totale woningen',
+                                'actions' => 'Acties',
+                            ],
+                        ],
+                    ],
+
+                    'create' => [
+                        'form' => [
+                            'first-name' => 'Voornaam',
+                            'last-name' => 'Achternaam',
+                            'roles' => 'Rol toewijzen aan gebruiker',
+                            'email' => 'E-mail adres',
+                            'role' => 'Koppel rol aan de nieuwe gebruiker',
+                            'select-role' => 'Selecteer een rol...',
+                            'password' => [
+                                'header' => 'Wachtwoord instellen',
+                                'label' => 'Wachtwoord',
+                                'placeholder' => 'Wachtwoord invullen...',
+                                'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen',
+                            ],
+
+                            'postal-code' => 'Postcode',
+                            'number' => 'Huisnummer',
+                            'house-number-extension' => 'Toevoeging',
+                            'street' => 'Straat',
+                            'city' => 'Plaats',
+                            'phone-number' => 'Telefoonnummer',
+
+                            'submit' => 'Gebruiker aanmaken',
+                        ],
+                    ],
+
+                    'store' => [
+                        'success' => 'Gebruiker is met success toevoegd',
+                    ],
+                    'destroy' => [
+                        'success' => 'Gebruiker is verwijderd',
+                    ],
+                ],
                 'cooperation-admin' => [
                     'side-nav' => [
                         'label' => 'Coöperatie admin menu',
@@ -233,50 +282,6 @@ return [
                                     'active' => 'Actief',
                                 ],
                             ],
-                        ],
-                    ],
-
-                    'users' => [
-                        'index' => [
-                            'header' => 'Overzicht van alle gebruikers binnen uw coöperatie',
-
-                            'table' => [
-                                'columns' => [
-                                    'first-name' => 'Voornaam',
-                                    'last-name' => 'Achternaam',
-                                    'email' => 'E-mail adres',
-                                    'role' => 'Huidige rollen van gebruiker',
-                                    'actions' => 'Acties',
-                                ],
-                            ],
-                        ],
-                        'create' => [
-                            'header' => 'Gebruiker toevoegen aan uw coöperatie',
-
-                            'form' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'roles' => 'Rol toewijzen aan gebruiker',
-                                'email' => 'E-mail adres',
-                                'role' => 'Koppel rol aan de nieuwe gebruiker',
-                                'select-role' => 'Selecteer een rol...',
-                                'password' => [
-                                    'header' => 'Wachtwoord instellen',
-                                    'label' => 'Wachtwoord',
-                                    'placeholder' => 'Wachtwoord invullen...',
-                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen',
-                                ],
-
-                                'submit' => 'Gebruiker aanmaken',
-                            ],
-                        ],
-
-                        'destroy' => [
-                            'warning' => 'Dit verwijdert de gebruiker en al zijn data van het Hoomdossier, weet u zeker dat u wilt doorgaan?',
-                            'success' => 'Gebruiker is verwijderd van het Hoomdossier.'
-                        ],
-                        'store' => [
-                            'success' => 'Gebruiker is met success toevoegd',
                         ],
                     ],
 
@@ -523,55 +528,6 @@ return [
                         ],
                         'update' => [
                             'success' => 'Rollen zijn bijgewerkt',
-                        ],
-                    ],
-                    'user' => [
-                        'index' => [
-                            'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
-
-                            'table' => [
-                                'columns' => [
-                                    'first-name' => 'Voornaam',
-                                    'last-name' => 'Achternaam',
-                                    'email' => 'E-mail adres',
-                                    'role' => 'Huidige rollen van gebruiker',
-                                    'total-houses' => 'Totale woningen',
-                                    'actions' => 'Acties',
-                                ],
-                            ],
-                        ],
-
-                        'create' => [
-                            'form' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'roles' => 'Rol toewijzen aan gebruiker',
-                                'email' => 'E-mail adres',
-                                'role' => 'Koppel rol aan de nieuwe gebruiker',
-                                'select-role' => 'Selecteer een rol...',
-                                'password' => [
-                                    'header' => 'Wachtwoord instellen',
-                                    'label' => 'Wachtwoord',
-                                    'placeholder' => 'Wachtwoord invullen...',
-                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen',
-                                ],
-
-                                'postal-code' => 'Postcode',
-                                'number' => 'Huisnummer',
-                                'house-number-extension' => 'Toevoeging',
-                                'street' => 'Straat',
-                                'city' => 'Plaats',
-                                'phone-number' => 'Telefoonnummer',
-
-                                'submit' => 'Gebruiker aanmaken',
-                            ],
-                        ],
-
-                        'store' => [
-                            'success' => 'Gebruiker is met success toevoegd',
-                        ],
-                        'destroy' => [
-                            'success' => 'Gebruiker is verwijderd',
                         ],
                     ],
                     'questionnaires' => [

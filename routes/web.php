@@ -166,6 +166,17 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
+
+                Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
+                    Route::get('', 'UserController@index')->name('index');
+                    Route::get('create', 'UserController@create')->name('create');
+                    Route::post('create', 'UserController@store')->name('store');
+
+                    Route::group(['middleware' => 'role:cooperation-admin'], function () {
+                        Route::delete('delete', 'UserController@destroy')->name('destroy');
+                    });
+                });
+
                 Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
@@ -178,7 +189,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('', 'UserController@index')->name('index');
                         Route::get('create', 'UserController@create')->name('create');
                         Route::post('create', 'UserController@store')->name('store');
-                        //Route::post('delete/{userId}', 'CoachController@destroy')->name('destroy');
                     });
 
                     Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {

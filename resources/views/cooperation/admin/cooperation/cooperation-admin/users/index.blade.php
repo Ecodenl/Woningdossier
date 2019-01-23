@@ -49,19 +49,27 @@
             </div>
         </div>
     </div>
+    @foreach($users as $user)
+        <form action="{{route('cooperation.admin.cooperation.cooperation-admin.users.destroy')}}" method="post" id="user-form-{{$user->id}}">
+            {{csrf_field()}}
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="user_id" value="{{$user->id}}">
+        </form>
+    @endforeach
 @endsection
-
 
 @push('js')
     <script>
         $(document).ready(function () {
-            $('table').DataTable({
+            var table = $('table');
+            table.DataTable({
                 responsive: true
             });
-
-            $('table').on('click', '.remove', function (event) {
+            table.on('click', '.remove', function (event) {
                 if (confirm("{{__('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.destroy.warning')}}")) {
-
+                    // submit the form, datatables strips non valid html.
+                    var userId = $(this).data('user-id');
+                    $('form#user-form-'+userId).submit();
                 } else {
                     event.preventDefault();
                     return false;
@@ -70,4 +78,3 @@
         })
     </script>
 @endpush
-

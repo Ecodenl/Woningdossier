@@ -28,7 +28,7 @@ class ParticipantRevokedListener
     public function handle($event)
     {
         $participantFullName = $event->revokedParticipant->getFullName();
-        $message = "{$participantFullName} is verwijderd van het gesprek.";
+	    $message = __('woningdossier.cooperation.chat.messages.participant-removed', ['participant' => $participantFullName]);
 
         // is_public is set to true, could be changed in the future.
         PrivateMessage::create([

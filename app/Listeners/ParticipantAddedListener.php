@@ -28,7 +28,7 @@ class ParticipantAddedListener
     public function handle($event)
     {
         $participantFullName = $event->addedParticipant->getFullName();
-        $message = "{$participantFullName} is toegevoegd het gesprek.";
+        $message = __('woningdossier.cooperation.chat.messages.participant-added', ['participant' => $participantFullName]);
 
         // is_public is set to true, could be changed in the future.
         PrivateMessage::create([

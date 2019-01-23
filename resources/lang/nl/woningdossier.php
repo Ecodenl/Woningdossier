@@ -20,6 +20,10 @@ return [
             'group-participants' => [
                 'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.'
             ],
+	        'messages' => [
+	        	'participant-added' => ":participant is toegevoegd aan het gesprek",
+		        'participant-removed' => ":participant is verwijderd uit het gesprek",
+	        ],
         ],
 
         'navbar' => [

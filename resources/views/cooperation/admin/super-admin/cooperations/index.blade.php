@@ -4,7 +4,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.header')
-
+            <a href="{{route('cooperation.admin.super-admin.cooperations.create')}}" class=" btn-sm btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.create')</a>
         </div>
 
         <div class="panel-body">
@@ -15,6 +15,7 @@
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.table.columns.name')</th>
                             <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.table.columns.slug')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -22,6 +23,9 @@
                                 <tr>
                                     <td>{{$cooperation->name}}</td>
                                     <td>{{$cooperation->slug}}</td>
+                                    <td>
+                                        <a href="" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

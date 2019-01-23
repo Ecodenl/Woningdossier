@@ -44,10 +44,24 @@ return [
                         'table' => [
                             'columns' => [
                                 'name' => 'Cooperatie naam',
-                                'slug' => 'Cooperatie Slug / Subdomein'
+                                'slug' => 'Cooperatie Slug / Subdomein',
+                                'actions' => 'Acties'
                             ],
                         ],
-                    ]
+                        'edit' => 'Bewerken',
+                        'create' => 'Aanmaken',
+                    ],
+                    'create' => [
+                        'header' => 'Cooperaie toevoegen',
+                        'form' => [
+                            'name' => 'Naam van de cooperatie',
+                            'slug' => 'Slug / subdomein',
+                            'create' => 'Aanmaken'
+                        ],
+                    ],
+                    'store' => [
+                        'success' => 'Cooperatie is toegevoegd aan het Hoomdossier',
+                    ],
                 ],
                 'example-buildings' => [
                     'index' => [

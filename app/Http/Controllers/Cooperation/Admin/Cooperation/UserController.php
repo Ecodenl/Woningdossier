@@ -81,7 +81,7 @@ class UserController extends Controller
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $email,
-                'password' => bcrypt(Str::randomPassword()),
+                'password' => \Hash::make(Str::randomPassword()),
             ]
         );
 

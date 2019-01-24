@@ -265,6 +265,20 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
             });
 
+            Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'superAdmin', 'middleware' => ['role:super-admin']], function () {
+                Route::get('home', 'SuperAdminController@index')->name('index');
+
+                Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.'], function () {
+                    Route::get('', 'CooperationController@index')->name('index');
+                    Route::get('edit/{cooperationId}', 'CooperationController@edit')->name('edit');
+                    Route::get('create', 'CooperationController@create')->name('create');
+                    Route::post('', 'CooperationController@store')->name('store');
+                    Route::post('edit', 'CooperationController@update')->name('update');
+                });
+
+                Route::resource('example-buildings', 'ExampleBuildingController');
+                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+            });
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');

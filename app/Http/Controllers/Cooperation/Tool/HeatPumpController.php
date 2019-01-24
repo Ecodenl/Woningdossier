@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\BuildingCurrentHeating;
 use App\Models\Cooperation;
 use App\Models\HeatSource;
@@ -56,6 +58,7 @@ class HeatPumpController extends Controller
      */
     public function store(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
         $building->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 

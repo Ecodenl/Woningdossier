@@ -222,9 +222,9 @@ class HoomdossierSession extends Session
      * Get the input source value id
      * Read the NOTE @setInputSourceValue.
      *
-     * @return int
+     * @return int|null
      */
-    public static function getInputSourceValue(): int
+    public static function getInputSourceValue()
     {
         return self::getHoomdossierSession('input_source_value_id');
     }

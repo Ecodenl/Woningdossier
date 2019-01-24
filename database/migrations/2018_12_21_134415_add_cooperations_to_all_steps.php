@@ -11,15 +11,12 @@ class AddCooperationsToAllSteps extends Migration
      */
     public function up()
     {
-        $allCooperations = \App\Models\Cooperation::all();
+        $cooperations = \DB::table('cooperations')->get();
+        $steps = \DB::table('steps')->get();
 
-        $steps = \App\Models\Step::all();
-
-        foreach ($allCooperations as $cooperation) {
-//            $cooperation->steps()->attach($steps)
+        foreach ($cooperations as $cooperation) {
             foreach ($steps as $step) {
-                $cooperation->steps()->attach($step);
-                $cooperation->steps()->updateExistingPivot($step->id, ['order' => $step->order]);
+            	\DB::table('cooperation_steps')->insert(['cooperation_id' => $cooperation->id, 'step_id' => $step->id, 'order' => $step->order ]);
             }
         }
     }
@@ -31,12 +28,16 @@ class AddCooperationsToAllSteps extends Migration
      */
     public function down()
     {
-        $allCooperations = \App\Models\Cooperation::all();
+	    $cooperations = \DB::table('cooperations')->get();
+	    $steps = \DB::table('steps')->get();
 
-        $steps = \App\Models\Step::all();
-
-        foreach ($allCooperations as $cooperation) {
-            $cooperation->steps()->sync($steps);
+        foreach ($cooperations as $cooperation) {
+	        foreach ($steps as $step) {
+		        \DB::table( 'cooperation_steps' )
+		           ->where( 'cooperation_id', '=', $cooperation->id )
+		           ->where( 'step_id', '=', $step->id )
+		           ->delete();
+	        }
         }
     }
 }

@@ -11,6 +11,7 @@
 @endif
 <div class="group-members">
     @foreach($groupParticipants as $groupParticipant)
+        @if($groupParticipant instanceof \App\Models\User)
         <div class="group-member">
             <span class="label label-primary @cannot('remove-participant-from-chat', $groupParticipant) not-removable-user @endcan @can('remove-participant-from-chat', $groupParticipant) is-removable-user @endcan">
                 {{$groupParticipant->getFullName()}}
@@ -19,6 +20,7 @@
                 @endcan
             </span>
         </div>
+        @endif
     @endforeach
 </div>
 

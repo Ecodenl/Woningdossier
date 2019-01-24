@@ -14,7 +14,7 @@
                 {{--
                    We check if the current step is the building detail
                 --}}
-                @if(in_array($currentStep->slug, ['building-detail',  'general-data']))
+                @if($currentStep instanceof \App\Models\Step && in_array($currentStep->slug, ['building-detail',  'general-data']))
                     <ul class="nav nav-tabs">
                         <li @if($currentStep->slug == "building-detail")class="active"@endif>
                             <a href="{{route('cooperation.tool.building-detail.index')}}" >@lang('woningdossier.cooperation.step.building-detail')</a>

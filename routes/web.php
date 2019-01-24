@@ -282,7 +282,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
             });
 
-            Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'superAdmin', 'middleware' => ['role:super-admin']], function () {
+            Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['role:super-admin']], function () {
                 Route::get('home', 'SuperAdminController@index')->name('index');
 
                 Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.'], function () {

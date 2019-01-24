@@ -746,10 +746,10 @@ return [
 
         'my-account' => [
             'side-nav' => [
-	            'home' => 'Home',
-	            'label' => 'Mijn account',
-	            'import' => 'Import centrum',
-	            'settings' => 'Instellingen',
+                'home' => 'Home',
+                'label' => 'Mijn account',
+                'import' => 'Import centrum',
+                'settings' => 'Instellingen',
                 'access' => 'Gebruikers met toegang tot uw gebouw',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',

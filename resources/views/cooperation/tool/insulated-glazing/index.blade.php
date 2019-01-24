@@ -75,7 +75,7 @@
                         </div>
                     </div>
                     <div class="values">
-                        <div class=" col-sm-3 ">
+                        <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
@@ -102,7 +102,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class=" col-sm-3 ">
+                        <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
@@ -154,7 +154,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class=" col-sm-3 ">
+                        <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.windows') ? ' has-error' : '' }}">
                                 <label class=" control-label">
                                     <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
@@ -628,26 +628,30 @@
                         @if(App::environment('local'))
                         console.log(data);
                         @endif
+
+                        changeOnInterests();
                     }
                 });
             });
 
-            $('.user-interest').change(function() {
+            function changeOnInterests(){
+                $('.user-interest').each(function(i, element){
+                    // the input field
+                    var userInterest = $(element);
+                    // the text from the selected interested option
+                    var userInterestText = userInterest.find('option:selected').text().trim();
 
-                // the input field
-                var userInterest = $(this);
-                // the text from the selected interested option
-                var userInterestText = userInterest.find('option:selected').text().trim();
+                    if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
+                        userInterest.parent().parent().parent().find('.values').hide();
+                    } else {
+                        userInterest.parent().parent().parent().find('.values').show();
+                    }
+                });
+            }
 
-                if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
-                    userInterest.parent().parent().parent().find('.values').hide();
-                } else {
-                    userInterest.parent().parent().parent().find('.values').show();
-                }
-            });
             // Trigger the change event so it will load the data
-            //$("select, input[type=radio], input[type=text]").trigger('change');
-            $('form').find('*').filter(':input:visible:first').trigger('change');
+            //$('form').find('*').filter(':input:visible:first').trigger('change');
+            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
         });
 
     </script>

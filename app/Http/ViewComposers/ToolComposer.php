@@ -32,14 +32,13 @@ class ToolComposer
             $view->with('steps', $cooperation->getActiveOrderedSteps());
             $view->with('interests', Interest::orderBy('order')->get());
             $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
-
-            $currentBuilding = HoomdossierSession::getBuilding();
-            if (! is_null($currentBuilding)) {
-                $building = Building::find($currentBuilding);
-                if ($building instanceof Building) {
-                    $view->with('buildingOwner', $building->user);
-                }
-            }
+	        $currentBuilding = HoomdossierSession::getBuilding();
+	        if (!is_null($currentBuilding)) {
+		        $building = Building::find($currentBuilding);
+		        if ($building instanceof Building) {
+			        $view->with( 'buildingOwner', $building->user );
+		        }
+	        }
 
             $buildingId = HoomdossierSession::getBuilding();
             $changedSettings = collect([]);

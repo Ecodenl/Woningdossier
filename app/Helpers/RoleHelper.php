@@ -35,8 +35,7 @@ class RoleHelper
                     //break;
                 case 'super-admin':
                     // for now: fall through
-                    return route('cooperation.admin.cooperation.cooperation-admin.index',
-                        ['role_name' => $roleName]);
+                    return route('cooperation.admin.super-admin.index');
                     break;
                     //break;
                 default:

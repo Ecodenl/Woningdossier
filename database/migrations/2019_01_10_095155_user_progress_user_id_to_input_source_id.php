@@ -45,7 +45,7 @@ class UserProgressUserIdToInputSourceId extends Migration
         Schema::table('user_progresses', function (Blueprint $table) {
 
             // drop the foreign
-            $table->dropForeign(['input_source_id']);
+            $table->dropForeign('user_progresses_input_source_id_foreign');
             // rename it back
             $table->dropColumn('input_source_id');
 

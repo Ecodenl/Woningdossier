@@ -12,95 +12,65 @@ class ExampleBuildingsTableSeeder extends Seeder
     public function run()
     {
         $exampleBuildings = [
-            /*[
-                'names' => [
-                    'nl' => 'Er is geen passende voorbeeldwoning',
-                ],
-                'order' => 99,
-            ],*/
             [
                 'names' => [
-                    'nl' => 'Tussenwoning, drie bouwlagen en plat dak',
+                    'nl' => 'Vrijstaande woning',
                 ],
                 'order' => 100,
             ],
             [
                 'names' => [
-                    'nl' => 'Hoekwoning, drie bouwlagen en plat dak',
+                    'nl' => '2 onder 1 kap',
                 ],
                 'order' => 101,
             ],
             [
                 'names' => [
-                    'nl' => 'Benedenwoning zonder opkamer (tussenwoning)',
+                    'nl' => 'Hoekwoning',
                 ],
                 'order' => 102,
             ],
             [
                 'names' => [
-                    'nl' => 'Benedenwoning zonder opkamer (hoekwoning)',
+                    'nl' => 'Tussenwoning',
                 ],
                 'order' => 103,
             ],
+	        [
+		        'names' => [
+			        'nl' => 'Bovenwoning hoek',
+		        ],
+		        'order' => 104,
+	        ],
+	        [
+		        'names' => [
+			        'nl' => 'Bovenwoning tussen',
+		        ],
+		        'order' => 105,
+	        ],
             [
                 'names' => [
-                    'nl' => 'Hoekhuis, twee bouwlagen en nieuwe dakopbouw',
+                    'nl' => 'Bovenwoning hoek',
                 ],
                 'order' => 106,
             ],
             [
                 'names' => [
-                    'nl' => 'Tussenwoning, twee bouwlagen en nieuwe dakopbouw',
+                    'nl' => 'Bovenwoning tussen',
                 ],
                 'order' => 107,
             ],
             [
                 'names' => [
-                    'nl' => 'Tussenwoning, twee bouwlagen en plat dak',
+                    'nl' => 'Appartement tussen op een tussenverdieping',
                 ],
                 'order' => 108,
             ],
             [
                 'names' => [
-                    'nl' => 'Arbeidershuis, twee bouwlagen (tussenwoning)',
+                    'nl' => 'Appartement hoek op een tussenverdieping',
                 ],
                 'order' => 109,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Jaren \'30 tussenwoning met hellend dak',
-                ],
-                'order' => 110,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Jaren \'30 hoekwoning met hellend dak',
-                ],
-                'order' => 111,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Tussenwoning, drie bouwlagen en hellend dak',
-                ],
-                'order' => 112,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Hoekwoning, drie bouwlagen en hellend dak',
-                ],
-                'order' => 113,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Bovenwoning zonder opkamer (tussenwoning)',
-                ],
-                'order' => 104,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Bovenwoning zonder opkamer (hoekwoning)',
-                ],
-                'order' => 105,
             ],
         ];
 

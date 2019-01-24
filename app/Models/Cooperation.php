@@ -84,7 +84,9 @@ class Cooperation extends Model
      */
     public function getActiveOrderedSteps(): Collection
     {
-        return $this->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
+        return $this->steps()
+            ->orderBy('cooperation_steps.order')
+            ->where('cooperation_steps.is_active', '1')->get();
     }
 
     public function getRouteKeyName()

@@ -11,6 +11,11 @@ return [
     ],
     'cooperation' => [
 
+        'step' => [
+            'general-data' => 'Algemene gegevens',
+            'building-detail' => 'Woning details'
+        ],
+
         'chat' => [
             'modal' => [
                 'text' => 'Naar welk groeps gesprek wilt u gaan ?',

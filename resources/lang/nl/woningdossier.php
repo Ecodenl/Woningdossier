@@ -258,6 +258,7 @@ return [
                     'side-nav' => [
                         'label' => 'Coöperatie admin menu',
                         'step' => 'Stappen',
+                        'messages' => 'Berichten',
                         'home' => 'Home',
                         'users' => 'Gebruikers van uw coöperatie',
                         'create-user' => 'Voeg een gebruiker toe',
@@ -287,6 +288,12 @@ return [
                                     'active' => 'Actief',
                                 ],
                             ],
+                        ],
+                    ],
+
+                    'messages' => [
+                        'index' => [
+                            'header' => 'Uw berichten',
                         ],
                     ],
 

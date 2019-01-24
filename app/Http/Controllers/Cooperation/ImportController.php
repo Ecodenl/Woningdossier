@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
+use App\Models\Element;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
@@ -14,9 +15,18 @@ class ImportController extends Controller
 {
     public function copy(Request $request)
     {
+        // answers that are considered to be empty.
+        $consideredEmptyAnswers = ['', "", null, 'null', '0.00', '0.0', 0];
+
         $desiredInputSourceName = $request->get('input_source');
 
         $tablesWithBuildingIds = [
+            'building_elements' => [
+                'whereColumn' => 'element_id'
+            ],
+            'building_services' => [
+                'whereColumn' => 'service_id'
+            ],
 //            'questions_answers',
 //            'building_pv_panels',
             'building_roof_types',
@@ -24,9 +34,7 @@ class ImportController extends Controller
             'building_features',
 //            'building_paintwork_statuses',
 //            'user_progresses',
-//            'building_elements',
 //            'building_insulated_glazings',
-//            'building_services',
 //            'building_appliances',
 //            'building_user_usages',
 //            'devices',
@@ -44,58 +52,85 @@ class ImportController extends Controller
 
         $exampleBuilding  = ExampleBuildingContent::find(89);
 
+        $buildingId = HoomdossierSession::getBuilding();
         foreach ($exampleBuilding->content as $stepSlug => $contents) {
             foreach ($contents as $columnOrTable => $values) {
-                self::log('-> '.$stepSlug.' + '.$columnOrTable.' <-');
 
-                // can be user or building_id
-                $userOrBuildingIdWhere = 'user_id';
-                $userOrBuildingId = \Auth::id();
-                // check if the table has a building id column
-                if (\Schema::hasColumn($columnOrTable, 'building_id')) {
-                    $userOrBuildingIdWhere = 'building_id';
-                    $userOrBuildingId = HoomdossierSession::getBuilding();
-                }
+                \Log::debug('-> '.$stepSlug.' + '.$columnOrTable.' <-');
+
                 if (is_null($values)) {
-                    self::log('Skipping '.$columnOrTable.' (empty)');
+                    \Log::debug('Skipping '.$columnOrTable.' (empty)');
                     continue;
                 }
                 if ('user_interest' == $columnOrTable) {
-                    self::log('Skipping outdated user interests');
+                    \Log::debug('Skipping outdated user interests');
                     continue;
                 }
+                if ('element' == $columnOrTable && $stepSlug == "floor-insulation") {
 
-                // those 'tables' are not really tables we need to insert something in
-                // but when we see those we need to insert a row in building_elements and building_service
-                if (in_array($columnOrTable, ['element', 'service'])) {
-                    dd($columnOrTable, $values);
-                }
+                    if (is_array($values)) {
+                        foreach ($values as $elementId => $elementValueData) {
+                            $extraElement = null;
+                            if (is_array($elementValueData)) {
+                                if (! array_key_exists('element_value_id', $elementValueData)) {
+                                    \Log::debug('Skipping element value as there is no element_value_id');
+                                    continue;
+                                }
+                                $elementValueId = (int) $elementValueData['element_value_id'];
+                                if (array_key_exists('extra', $elementValueData)) {
+                                    $extraElement = $elementValueData['extra'];
+                                }
+                            } else {
+                                $elementValueId = (int) $elementValueData;
+                            }
 
-                if (!\Schema::hasTable($columnOrTable)) {
-                    dump($columnOrTable);
-                    dump($contents);
-                }
-                if ($columnOrTable == "building_roof_types") {
-//                    dd($contents);
+                            $element = Element::find($elementId);
+                            if ($element instanceof Element) {
+                                $residentInputQuery = \DB::table('building_elements')
+                                    ->where('input_source_id', $residentInputSource->id)
+                                    ->where('building_id', $buildingId)
+                                    ->where('element_id', $elementId);
 
+                                $residentInput = $residentInputQuery->first();
 
-                }
-//                // query on the base information.
-//                $baseResidentInputSourceQuery = \DB::table($table)
-//                    ->where('input_source_id', $residentInputSource->id)
-//                    ->where($userOrBuildingIdWhere, $userOrBuildingId)->get();
+                                $updateElementId = empty($elementId) ? $residentInput->element_id : $elementId;
+                                $updateElementValueId = empty($elementValueId) ? $residentInput->element_value_id : $elementValueId;
 
+                                $extraElementResident = json_decode($residentInput->extra, true);
 
-                $additionalWhereColumn = '';
-                switch ($columnOrTable) {
-                    case 'building_roof_types':
-                        $additionalWhereColumn = 'roof_type_id';
+                                // if there is extra data from the example building and the resident does to
+                                // then we filter out the considered empty values from the example building
+                                // and merge those into the resident his extra array
+                                // else just use the example building one.
+                                if (is_array($extraElement) && is_array($extraElementResident)) {
+
+                                    // filter the values which are not worth updating, so we dont lose filled in values over null, 0.0, 0.000 etc
+                                    $noNullExtraValues = array_filter($extraElement, function ($value, $key) use ($consideredEmptyAnswers) {
+                                        return !in_array($value, $consideredEmptyAnswers, true);
+                                    }, ARRAY_FILTER_USE_BOTH);
+
+                                    // merge those toes
+                                    $updateElementExtra = array_merge($extraElementResident, $noNullExtraValues);
+
+                                } else {
+                                    $updateElementExtra = $extraElement;
+                                }
+
+                                $updateElementExtra = json_encode($updateElementExtra);
+                                // the array we will use to update the building_elements
+                                $updateElement = ['element_id' => $updateElementId, 'element_value_id' => $updateElementValueId, 'extra' => $updateElementExtra];
+                                $residentInputQuery->update($updateElement);
+                            }
+                        }
+                    }
                 }
 
             }
         }
         dd();
 
+
+        // TODO: Only to be used in the coach
         // handle the copy for the tables with a building id.
         foreach ($tablesWithBuildingIds as $tableWithBuildingId) {
             // first delete all the resident his input, we dont need it anyway

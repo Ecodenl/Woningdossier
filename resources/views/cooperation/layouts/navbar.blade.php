@@ -72,8 +72,8 @@
                 @else
                     <li><a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a></li>
                     <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
-                    @if (!Auth::user()->isFillingToolForOtherBuilding())
 
+                    @if (!Auth::user()->isFillingToolForOtherBuilding())
                         @if (\App\Helpers\HoomdossierSession::currentRole() == 'resident')
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
@@ -81,7 +81,7 @@
                                     <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
                                 </a>
                             </li>
-                        @elseif(Auth::user()->can('access-admin'))
+                        @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach']))
                             <li>
                                 @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                     @case('coach')
@@ -89,6 +89,9 @@
                                         @break
                                     @case('coordinator')
                                         <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index') ?>
+                                        @break
+                                    @case('cooperation-admin')
+                                        <?php $messageUrl = route('cooperation.admin.cooperation.cooperation-admin.messages.index') ?>
                                         @break
                                     @default
                                         <?php $messageUrl = route('cooperation.admin.index') ?>

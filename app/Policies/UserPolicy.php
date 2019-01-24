@@ -121,6 +121,37 @@ class UserPolicy
         return false;
     }
 
+
+    /**
+     * Check if a user is authorized to delete a user.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function deleteUser(User $user): bool
+    {
+        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'super-admin'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if a user is authorized to destroy a user.
+     *
+     * @param User $user
+     * @param User $userToDestroy
+     * @return bool
+     */
+    public function destroy(User $user, User $userToDestroy)
+    {
+        // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
+        if ($user->can('delete-user') && $userToDestroy->cooperations->contains('id', HoomdossierSession::getCooperation())) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Check if a user is allowed to participate in a group chat or not.
      *
@@ -152,7 +183,7 @@ class UserPolicy
     public function removeParticipantFromChat(User $user, User $groupParticipant): bool
     {
         // a coordinator and resident can remove a coach from a conversation
-        if ($user->hasRole(['resident', 'coordinator']) && $groupParticipant->hasRole(['coach'])) {
+        if ($user->hasRoleAndIsCurrentRole(['resident', 'coordinator', 'cooperation-admin']) && $groupParticipant->hasRole(['coach'])) {
             return true;
         }
 

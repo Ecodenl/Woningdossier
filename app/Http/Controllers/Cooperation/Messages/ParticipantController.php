@@ -69,16 +69,10 @@ class ParticipantController extends Controller
 
             if ($privateMessage->allow_access) {
                 // give the coach permission to the resident his building
-                BuildingPermission::create([
-                    'user_id' => $user->id, 'building_id' => $residentBuilding->id,
-                ]);
+                BuildingPermissionService::givePermission($userId, $buildingId);
             }
 
-            BuildingCoachStatus::create([
-                'coach_id' => $user->id,
-                'building_id' => $residentBuilding->id,
-                'status' => BuildingCoachStatus::STATUS_ACTIVE,
-            ]);
+            BuildingCoachStatusService::giveAccess($userId, $buildingId);
 
             event(new ParticipantAddedEvent($user, $residentBuilding));
         }

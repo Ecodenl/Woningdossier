@@ -45,22 +45,37 @@ class ImportController extends Controller
         $exampleBuilding  = ExampleBuildingContent::find(89);
 
         foreach ($exampleBuilding->content as $stepSlug => $contents) {
-            foreach ($contents as $table => $content) {
+            foreach ($contents as $columnOrTable => $values) {
+                self::log('-> '.$stepSlug.' + '.$columnOrTable.' <-');
 
                 // can be user or building_id
                 $userOrBuildingIdWhere = 'user_id';
                 $userOrBuildingId = \Auth::id();
                 // check if the table has a building id column
-                if (\Schema::hasColumn($table, 'building_id')) {
+                if (\Schema::hasColumn($columnOrTable, 'building_id')) {
                     $userOrBuildingIdWhere = 'building_id';
                     $userOrBuildingId = HoomdossierSession::getBuilding();
                 }
+                if (is_null($values)) {
+                    self::log('Skipping '.$columnOrTable.' (empty)');
+                    continue;
+                }
+                if ('user_interest' == $columnOrTable) {
+                    self::log('Skipping outdated user interests');
+                    continue;
+                }
 
-                if (!\Schema::hasTable($table)) {
-                    dump($table);
+                // those 'tables' are not really tables we need to insert something in
+                // but when we see those we need to insert a row in building_elements and building_service
+                if (in_array($columnOrTable, ['element', 'service'])) {
+                    dd($columnOrTable, $values);
+                }
+
+                if (!\Schema::hasTable($columnOrTable)) {
+                    dump($columnOrTable);
                     dump($contents);
                 }
-                if ($table == "building_roof_types") {
+                if ($columnOrTable == "building_roof_types") {
 //                    dd($contents);
 
 
@@ -72,7 +87,7 @@ class ImportController extends Controller
 
 
                 $additionalWhereColumn = '';
-                switch ($table) {
+                switch ($columnOrTable) {
                     case 'building_roof_types':
                         $additionalWhereColumn = 'roof_type_id';
                 }

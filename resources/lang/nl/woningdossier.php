@@ -35,6 +35,60 @@ return [
             'start' => 'Start',
         ],
         'admin' => [
+            'super-admin' => [
+                'side-nav' => [
+                    'label' => 'Super admin menu',
+                    'home' => 'Home',
+                    'cooperations' => 'Cooperaties',
+                    'example-buildings' => 'Voorbeeld woningen',
+                ],
+                'index' => [
+                    'header' => 'Super admin panel',
+                    'text' => 'Beheer de applicatie',
+                ],
+
+                'cooperations' => [
+                    'index' => [
+                        'header' => 'Cooperaties',
+                        'table' => [
+                            'columns' => [
+                                'name' => 'Cooperatie naam',
+                                'slug' => 'Cooperatie Slug / Subdomein',
+                                'actions' => 'Acties'
+                            ],
+                        ],
+                        'edit' => 'Bewerken',
+                        'create' => 'Aanmaken',
+                    ],
+                    'create' => [
+                        'header' => 'Cooperaie toevoegen',
+                        'form' => [
+                            'name' => 'Naam van de cooperatie',
+                            'slug' => 'Slug / subdomein',
+                            'create' => 'Aanmaken'
+                        ],
+                    ],
+                    'edit' => [
+                        'header' => 'Cooperatie :name bewerken',
+                        'form' => [
+                            'name' => 'Naam van de cooperatie',
+                            'slug' => 'Slug / subdomein',
+                            'update' => 'Bijwerken'
+                        ],
+                    ],
+                    'store' => [
+                        'success' => 'Cooperatie is toegevoegd aan het Hoomdossier',
+                    ],
+                    'update' => [
+                        'success' => 'Cooperatie is bijgewerkt.'
+                    ],
+                ],
+                'example-buildings' => [
+                    'index' => [
+                        'header' => 'Voorbeeldwoningen'
+                    ]
+                ],
+            ],
             'navbar' => [
                 'current-role' => 'Uw huidge rol:',
                 'reports' => 'Rapportages',
@@ -209,6 +263,7 @@ return [
                     'side-nav' => [
                         'label' => 'Coöperatie admin menu',
                         'step' => 'Stappen',
+                        'messages' => 'Berichten',
                         'home' => 'Home',
                         'users' => 'Gebruikers van uw coöperatie',
                         'create-user' => 'Voeg een gebruiker toe',
@@ -238,6 +293,12 @@ return [
                                     'active' => 'Actief',
                                 ],
                             ],
+                        ],
+                    ],
+
+                    'messages' => [
+                        'index' => [
+                            'header' => 'Uw berichten',
                         ],
                     ],
 

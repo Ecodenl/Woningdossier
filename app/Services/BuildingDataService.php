@@ -19,6 +19,8 @@ class BuildingDataService
         $building->currentInsulatedGlazing()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
         $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
         $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+        $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+        $building->heater()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
 
         return true;
     }

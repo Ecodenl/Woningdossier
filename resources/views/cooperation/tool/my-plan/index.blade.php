@@ -120,6 +120,16 @@
             </ul>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-12">
+            @foreach($actionPlanComments as $actionPlanComment)
+                <div class="form-group">
+                    <label for="{{$actionPlanComment->inputSource->name}}">{{$actionPlanComment->inputSource->name}}</label>
+                    <textarea @if($actionPlanComment->inputSource->id != \App\Helpers\HoomdossierSession::getInputSource()) disabled @else name="comment" @endif class="form-control">{{$actionPlanComment->comment}}</textarea>
+                </div>
+            @endforeach
+        </div>
+    </div>
 
     <hr>
 

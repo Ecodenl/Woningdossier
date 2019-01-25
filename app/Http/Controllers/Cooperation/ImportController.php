@@ -85,8 +85,7 @@ class ImportController extends Controller
     {
         $desiredInputSourceName = $request->get('input_source');
 
-
-        // the tables that have a building id, the where_column is used to query on the resident his answers.
+        // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
             'building_features',
             'building_elements' => [
@@ -136,7 +135,6 @@ class ImportController extends Controller
             if (!is_int($tableOrInt)) {
                 $table = $tableOrInt;
                 $whereColumn = $tableOrWhereColumns['where_column'];
-
             } else {
                 $table = $tableOrWhereColumns;
             }
@@ -240,9 +238,6 @@ class ImportController extends Controller
                     // and insert a new row!
                     \DB::table($table)->insert($desiredInputSourceValue);
                 }
-
-
-
 
             }
         }

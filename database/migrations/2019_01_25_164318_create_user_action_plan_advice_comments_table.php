@@ -22,7 +22,7 @@ class CreateUserActionPlanAdviceCommentsTable extends Migration
             $table->integer('input_source_id')->unsigned()->default(1);
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
 
-            $table->string('comment');
+            $table->text('comment');
 
             $table->timestamps();
         });

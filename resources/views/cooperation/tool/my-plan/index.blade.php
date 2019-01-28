@@ -123,10 +123,16 @@
     <div class="row">
         <div class="col-sm-12">
             @foreach($actionPlanComments as $actionPlanComment)
-                <div class="form-group">
-                    <label for="{{$actionPlanComment->inputSource->name}}">{{$actionPlanComment->inputSource->name}}</label>
-                    <textarea @if($actionPlanComment->inputSource->id != \App\Helpers\HoomdossierSession::getInputSource()) disabled @else name="comment" @endif class="form-control">{{$actionPlanComment->comment}}</textarea>
-                </div>
+                <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
+                    {{csrf_field()}}
+                    <div class="form-group">
+                        <label for="{{$actionPlanComment->inputSource->name}}">{{$actionPlanComment->inputSource->name}}</label>
+                        <textarea @if($actionPlanComment->inputSource->id != \App\Helpers\HoomdossierSession::getInputSource()) disabled @else name="comment" @endif class="form-control">{{old('comment', $actionPlanComment->comment)}}</textarea>
+                    </div>
+                    @if($actionPlanComment->inputSource->id == \App\Helpers\HoomdossierSession::getInputSource())
+                        <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
+                    @endif
+                </form>
             @endforeach
         </div>
     </div>

@@ -40,29 +40,37 @@ class BuildingDetailController extends Controller
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
         $buildYear = $request->get('build_year');
+        $buildingTypeId = $request->get('building_type_id');
 
-        $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'build_year' => $buildYear,
-            ]
-        );
+        $currentFeatures = BuildingFeature::where('building_id', HoomdossierSession::getBuilding())->first();
+        $currentBuildYear = $currentFeatures->build_year;
+        $currentBuildingTypeId = $currentFeatures->building_type_id;
 
-        $buildingType = BuildingType::find($request->get('building_type_id'));
-        $features->buildingType()->associate($buildingType);
-        $features->save();
+        // if the saved building year or saved building type id differs from the request year or type.
+        // then apply a new example building and buildingtype
+        if ($currentBuildYear != $buildYear || $currentBuildingTypeId != $buildingTypeId) {
+            $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+                [
+                    'building_id' => $buildingId,
+                    'input_source_id' => $inputSourceId,
+                ],
+                [
+                    'build_year' => $buildYear,
+                ]
+            );
 
-        $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);
+            $buildingType = BuildingType::find($buildingTypeId);
+            $features->buildingType()->associate($buildingType);
+            $features->save();
 
-        if ($exampleBuilding instanceof ExampleBuilding) {
-            $building->exampleBuilding()->associate($exampleBuilding);
-            $building->save();
-            ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+            $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);
+
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                $building->exampleBuilding()->associate($exampleBuilding);
+                $building->save();
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+            }
         }
-
         // finish the step
         $building->complete($this->step);
 

@@ -519,7 +519,7 @@
                     $('#floor-insulation-info-alert').find('.alert').addClass('hide');
                 }
                 else {
-                    if ((elementCalculateValue === 3 || elementCalculateValue === 4) && interestedCalculateValue <= 2) {
+                    if ((elementCalculateValue === 3 || elementCalculateValue === 4)/* && interestedCalculateValue <= 2*/) {
                         // insulation already present and there's interest
                         $('#hideable').hide();
                         $('#floor-insulation-info-alert').find('.alert').removeClass('hide');

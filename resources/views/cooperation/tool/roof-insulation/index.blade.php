@@ -668,7 +668,7 @@
             var interestedCalculateValue = $('#interest_element_{{$roofInsulation->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $(this).find(':selected').data('calculate-value');
 
-            if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
+            if (elementCalculateValue >= 3 /* && interestedCalculateValue <= 2 */) {
                 if ($(this).attr('name').includes('flat')) {
                     $('.flat-hideable').hide();
                     $('#flat-info-alert').find('.alert').removeClass('hide');

@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-
+        @include('cooperation.tool.includes.savings-alert', ['buildingElement' => 'wall-insulation'])
         <div class="hideable">
 
             @if(isset($building->buildingFeatures->build_year))
@@ -653,7 +653,9 @@
             var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-            if (elementCalculateValue >= 3 && interestedCalculateValue <= 2) {
+
+            console.log(elementCalculateValue);
+            if (elementCalculateValue >= 3 /* && interestedCalculateValue <= 2 */) {
                 $('.hideable').hide();
                 $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
             } else {

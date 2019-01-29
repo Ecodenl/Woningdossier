@@ -199,38 +199,16 @@
                     </div>
                 </div>
             </div>
-            @if(\App\Models\BuildingService::hasCoachInputSource($buildingPvPanelsForMe) && Auth::user()->hasRole('resident'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space">
-                            <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput($buildingPvPanelsForMe);
-                            $comment = $coachInputSource->comment;
-                            ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
-                            </label>
-                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                        </div>
-                    </div>
-                </div>
-            @elseif(\App\Models\BuildingService::hasResidentInputSource($buildingPvPanelsForMe) && Auth::user()->hasRole('coach'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space">
-                            <?php
-                            $residentInputSource = \App\Models\BuildingService::getResidentInput($buildingPvPanelsForMe);
-                            $comment = $residentInputSource->comment;
-                            ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
-                            </label>
 
-                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                        </div>
-                    </div>
-                </div>
-            @endif
+            @include('cooperation.tool.includes.comment', [
+                 'collection' => $buildingPvPanelsForMe,
+                 'commentColumn' => 'comment',
+                 'translation' => [
+                     'title' => 'general.specific-situation.title',
+                     'help' => 'general.specific-situation.help'
+                ]
+            ])
+
 
             <div id="indication-for-costs">
                 <hr>

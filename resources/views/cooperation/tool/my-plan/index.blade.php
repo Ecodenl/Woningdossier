@@ -122,20 +122,36 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            @foreach($actionPlanComments as $actionPlanComment)
-                <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
-                    {{csrf_field()}}
-                    <div class="form-group">
-                        <label for="{{$actionPlanComment->inputSource->name}}">{{$actionPlanComment->inputSource->name}}</label>
-                        <textarea @if($actionPlanComment->inputSource->id != \App\Helpers\HoomdossierSession::getInputSource()) disabled @else name="comment" @endif class="form-control">{{old('comment', $actionPlanComment->comment)}}</textarea>
+            <?php
+                $myActionPlanComment = $actionPlanComments->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->first();
+            ?>
+            <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
+                {{csrf_field()}}
+                <div class="form-group">
+                    <label for="" class=" control-label">
+                        <i data-toggle="collapse" data-target="#my-plan-own-comment" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                        {{\App\Helpers\Translation::translate('general.specific-situation.title')}} ({{$myActionPlanComment->inputSource->name}})
+                    </label>
+
+                    <textarea name="comment" class="form-control">{{old('comment', $myActionPlanComment->comment)}}</textarea>
+
+                    <div id="my-plan-own-comment" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
                     </div>
-                    @if($actionPlanComment->inputSource->id == \App\Helpers\HoomdossierSession::getInputSource())
-                        <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
-                    @endif
-                </form>
-            @endforeach
+                </div>
+                <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
+            </form>
         </div>
     </div>
+
+    @include('cooperation.tool.includes.comment', [
+        'collection' => $actionPlanComments,
+        'commentColumn' => 'comment',
+        'translation' => [
+          'title' => 'general.specific-situation.title',
+          'help' => 'general.specific-situation.help'
+        ]
+    ])
 
     <hr>
 

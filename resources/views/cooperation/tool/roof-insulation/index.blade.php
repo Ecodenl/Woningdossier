@@ -508,10 +508,10 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="form-group add-space">
-                        <div class="">
-                            <a class="btn btn-success pull-left" href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                            <button type="submit" class="btn btn-primary pull-right">
+                <div class="form-group add-space">
+                    <div class="">
+                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                        <button type="submit" class=" btn btn-primary pull-right">
                                 @lang('default.buttons.next')
                             </button>
                         </div>

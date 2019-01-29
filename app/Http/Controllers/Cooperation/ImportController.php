@@ -15,6 +15,7 @@ class ImportController extends Controller
         $desiredInputSourceName = $request->get('input_source');
 
         $tablesWithBuildingIds = [
+            'questions_answers',
             'building_pv_panels',
             'building_roof_types',
             'building_heaters',

@@ -21,6 +21,7 @@ class CooperationMiddleware
     {
         $cooperation = $request->route()->parameter('cooperation');
 
+
         if (! $cooperation instanceof Cooperation) {
             // No valid cooperation subdomain. Return to global index.
             \Log::debug('No cooperation found');
@@ -30,6 +31,7 @@ class CooperationMiddleware
 
         \Log::debug('Session: cooperation -> '.$cooperation->id.' ('.$cooperation->slug.')');
         HoomdossierSession::setCooperation($cooperation);
+
 
         // Set as default URL parameter
         if (HoomdossierSession::hasCooperation()) {

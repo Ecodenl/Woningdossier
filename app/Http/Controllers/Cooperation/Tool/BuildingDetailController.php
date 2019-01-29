@@ -64,7 +64,7 @@ class BuildingDetailController extends Controller
         }
 
         // finish the step
-        \Auth::user()->complete($this->step);
+        $building->complete($this->step);
 
         return redirect()->route('cooperation.tool.general-data.index');
     }

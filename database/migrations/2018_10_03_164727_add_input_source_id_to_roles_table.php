@@ -39,5 +39,9 @@ class AddInputSourceIdToRolesTable extends Migration
      */
     public function down()
     {
+    	Schema::table('roles', function(Blueprint $table){
+    		$table->dropForeign('roles_input_source_id_foreign');
+    		$table->dropColumn('input_source_id');
+	    });
     }
 }

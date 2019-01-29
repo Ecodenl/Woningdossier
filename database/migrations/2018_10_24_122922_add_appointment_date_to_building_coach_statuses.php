@@ -28,7 +28,7 @@ class AddAppointmentDateToBuildingCoachStatuses extends Migration
      */
     public function down()
     {
-        // just in kees
+        // just in case
         Schema::table('building_coach_statuses', function (Blueprint $table) {
             $table->dropColumn('appointment_date');
         });

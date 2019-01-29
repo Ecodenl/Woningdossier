@@ -7,7 +7,12 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
-        @include('cooperation.tool.includes.interested', ['type' => 'element', 'buildingElements' => $floorInsulation, ])
+        {{--{{dd($floorInsulation)}}--}}
+
+        @include('cooperation.tool.includes.interested', [
+            'type' => 'element', 'buildingElements' => $floorInsulation, 'buildingElement' => 'floor-insulation'
+        ])
+
 
         <div id="floor-insulation">
             <div class="row">
@@ -99,19 +104,20 @@
                                     </div>
                                 </div>
 
-                                @if ($errors->has('building_elements.crawlspace'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('building_elements.crawlspace') }}</strong>
-                                    </span>
-                                @endif
-
+                            @if ($errors->has('building_elements.crawlspace'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('building_elements.crawlspace') }}</strong>
+                                </span>
+                            @endif
+                            
 
 
                                 <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                     <div class="alert alert-warning show" role="alert">
-                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.unknown')</p>
+                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
@@ -258,6 +264,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
                 <div class="row additional-info">
                     <div class="col-sm-12">

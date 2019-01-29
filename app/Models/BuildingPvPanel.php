@@ -28,37 +28,60 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereAngle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereComment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePeakPower($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePvPanelOrientationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereAngle( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereBuildingId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereComment( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereCreatedAt( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereInputSourceId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereNumber( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePeakPower( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePvPanelOrientationId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereUpdatedAt( $value )
  * @mixin \Eloquent
  */
-class BuildingPvPanel extends Model
-{
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+class BuildingPvPanel extends Model {
+	use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
-    protected $fillable = ['building_id', 'input_source_id', 'peak_power', 'number', 'pv_panel_orientation_id', 'angle', 'comment'];
+	protected $fillable = [
+		'building_id',
+		'input_source_id',
+		'peak_power',
+		'number',
+		'pv_panel_orientation_id',
+		'angle',
+		'comment'
+	];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function building()
-    {
-        return $this->belongsTo(Building::class);
-    }
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function building()
+	{
+		return $this->belongsTo( Building::class );
+	}
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function orientation()
-    {
-        return $this->belongsTo(PvPanelOrientation::class);
-    }
+	/**
+	 * Make sure that null is casted to the integer 0
+	 *
+	 * @param  string $value
+	 *
+	 * @return void
+	 */
+	public function setNumberAttribute( $value )
+	{
+    	if (is_null($value)){
+    		$value = 0;
+	    }
+
+    	$this->attributes['number'] = $value;
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function orientation()
+	{
+		return $this->belongsTo( PvPanelOrientation::class );
+	}
 }

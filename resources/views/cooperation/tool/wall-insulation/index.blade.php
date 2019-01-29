@@ -7,9 +7,9 @@
         {{ csrf_field() }}
 
         <div id="intro">
-
-            @include('cooperation.tool.includes.interested', ['type' => 'element', 'buildingElements' => $buildingElements,])
-
+            @include('cooperation.tool.includes.interested', [
+                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
+            ])
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
@@ -548,7 +548,7 @@
                }
 
                var form = $(this).closest("form").serialize();
-               $.ajax({
+              $.ajax({
                   type: "POST",
                   url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                   data: form,
@@ -635,9 +635,8 @@
                         console.log(data);
                       @endif
                   }
-               });
+              })
             });
-
             // Trigger the change event so it will load the data
             $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
 

@@ -11,7 +11,28 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if(isset($currentStep) && $currentStep->hasQuestionnaires())
+                {{--
+                   We check if the current step is the building detail
+                --}}
+                @if($currentStep instanceof \App\Models\Step && in_array($currentStep->slug, ['building-detail',  'general-data']))
+                    <ul class="nav nav-tabs">
+                        <li @if($currentStep->slug == "building-detail")class="active"@endif>
+                            <a href="{{route('cooperation.tool.building-detail.index')}}" >@lang('woningdossier.cooperation.step.building-detail')</a>
+                        </li>
+
+                        <li @if($currentStep->slug == "general-data")class="active @endif">
+                            <a href="{{route('cooperation.tool.general-data.index')}}">@lang('woningdossier.cooperation.step.general-data')</a>
+                        </li>
+
+                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
+                            @foreach($currentStep->questionnaires as $questionnaire)
+                                @if($questionnaire->isActive())
+                                    <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
+                                @endif
+                            @endforeach
+                        @endif
+                    </ul>
+                @elseif(isset($currentStep) && $currentStep->hasQuestionnaires())
                     <ul class="nav nav-tabs">
                         <li class="active">
                             <a href="#main-tab" data-toggle="tab">{{$currentStep->name}}</a></li>

@@ -181,7 +181,7 @@ class UserActionPlanAdvice extends Model
      */
     public static function getAllCoachComments(): Collection
     {
-        $building = Building::find(HoomdossierSession::getInputSource());
+        $building = Building::find(HoomdossierSession::getBuilding());
         $allInputForMe = collect();
         $coachComments = collect();
         $comment = '';

@@ -6,9 +6,11 @@ use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MyPlanRequest;
 use App\Models\Building;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserActionPlanAdviceComments;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,10 +23,31 @@ class MyPlanController extends Controller
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
         $coachComments = UserActionPlanAdvice::getAllCoachComments();
+        $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachComments'
+            'advices', 'coachComments', 'actionPlanComments'
         ));
+    }
+
+    public function storeComment(MyPlanRequest $request)
+    {
+        $comment = $request->get('comment');
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
+
+        // update or create the comment
+        UserActionPlanAdviceComments::updateOrCreate(
+            [
+                'input_source_id' => HoomdossierSession::getInputSource(),
+                'user_id' => $buildingOwner->id,
+            ],
+            [
+                'comment' => $comment,
+            ]
+        );
+
+        return redirect()->route('cooperation.tool.my-plan.index');
     }
 
     public function export()

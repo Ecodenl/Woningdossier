@@ -642,9 +642,9 @@
                     var userInterestText = userInterest.find('option:selected').text().trim();
 
                     if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
-                        userInterest.parent().parent().parent().find('.values').hide();
+                        $(this).parent().parent().parent().parent().find('.values').hide();
                     } else {
-                        userInterest.parent().parent().parent().find('.values').show();
+                        $(this).parent().parent().parent().parent().find('.values').show();
                     }
                 });
             }

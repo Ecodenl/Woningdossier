@@ -121,6 +121,11 @@ class User extends Authenticatable
         return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
     }
 
+    public function userActionPlanAdviceComments()
+    {
+        return $this->hasMany(UserActionPlanAdviceComments::class);
+    }
+
     /*
     public function progress()
     {

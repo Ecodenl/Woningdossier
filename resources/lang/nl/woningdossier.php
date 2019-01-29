@@ -1057,6 +1057,7 @@ return [
                 'maintenance-plan' => 'Uw persoonlijke meerjarenonderhoudsplan',
                 'no-year' => 'Geen jaartal',
                 'download' => 'Download hier je actieplan',
+                'add-comment' => 'Opmerking opslaan',
 
                 'coach-comments' => [
                     'title' => 'Opmerkingen die door de coach zijn geplaatst',

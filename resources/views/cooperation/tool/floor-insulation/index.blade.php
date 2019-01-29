@@ -288,17 +288,6 @@
 
                         </div>
                     </div>
-                    <div class="col-sm-12">
-                        <?php
-                            $coachInputSource = App\Models\InputSource::findByShort('coach');
-                            $coachInput = \App\Models\BuildingElement::getCoachInput($buildingElementsForMe);
-                        ?>
-                        @if(($coachInput instanceof \App\Models\BuildingElement && is_array($coachInput->extra)) && array_key_exists('comment', $coachInput->extra))
-                            @component('cooperation.tool.components.alert')
-                                {{$coachInput->extra['comment']}}
-                            @endcomponent
-                        @endif
-                    </div>
                 </div>
 
 
@@ -336,41 +325,14 @@
                     </div>
                 </div>
             </div>
-            @if(\App\Models\BuildingService::hasCoachInputSource($buildingElementsForMe->where('element_id', $crawlspace->id)) && Auth::user()->hasRole('resident'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                            <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput($buildingElementsForMe->where('element_id', $crawlspace->id));
-                            $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
-                            ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
-                            </label>
-
-                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                        </div>
-                    </div>
-                </div>
-            @elseif(\App\Models\BuildingService::hasResidentInputSource($buildingElementsForMe->where('element_id', $crawlspace->id)) && Auth::user()->hasRole('coach'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space">
-                            <?php
-                                $residentInputSource = \App\Models\BuildingService::getResidentInput($buildingElementsForMe->where('element_id', $crawlspace->id));
-                                $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
-                            ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
-                            </label>
-
-                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-
+            @include('cooperation.tool.includes.comment', [
+               'collection' => $buildingElementsForMe->where('element_id', $crawlspace->id),
+               'commentColumn' => 'extra.comment',
+               'translation' => [
+                   'title' => 'general.specific-situation.title',
+                   'help' => 'general.specific-situation.help'
+               ]
+            ])
 
             <div class="row" id="no-crawlspace-error">
                 <div class="col-md-12">

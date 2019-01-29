@@ -126,38 +126,15 @@
                     </div>
                 </div>
             </div>
-            @if(\App\Models\BuildingService::hasCoachInputSource($currentHeatersForMe) && Auth::user()->hasRole('resident'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space">
-                            <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput($currentHeatersForMe);
-                            $comment = $coachInputSource->comment;
-                            ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
-                            </label>
-                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                        </div>
-                    </div>
-                </div>
-            @elseif(\App\Models\BuildingService::hasResidentInputSource($currentHeatersForMe) && Auth::user()->hasRole('coach'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group add-space">
-                            <?php
-                            $residentInputSource = \App\Models\BuildingService::getResidentInput($currentHeatersForMe);
-                            $comment = $residentInputSource->comment;
-                            ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
-                            </label>
+            @include('cooperation.tool.includes.comment', [
+                'collection' => $currentHeatersForMe,
+                'commentColumn' => 'comment',
+                'translation' => [
+                  'title' => 'general.specific-situation.title',
+                  'help' => 'general.specific-situation.help'
+                ]
+            ])
 
-                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                        </div>
-                    </div>
-                </div>
-            @endif
 
             <div id="estimated-usage">
                 <hr>

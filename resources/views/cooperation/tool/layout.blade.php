@@ -165,7 +165,6 @@
                             break;
                     }
 
-
                     var bestCssUGGSDesignStyle = {'background-color': 'red', 'color': 'white'};
                     // get the value from the compare input source
                     var compareInputSourceValue = ul.find('li[data-input-source-short="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}"]').attr('data-input-value');

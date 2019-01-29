@@ -20,17 +20,7 @@
                         ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
                             <select id="element_{{ $facadeInsulation->element->id }}" class="form-control" name="element[{{ $facadeInsulation->element->id }}]">
                                 @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
-
                                     <option data-calculate-value="{{$elementValue->calculate_value}}" @if(old('element.' . $facadeInsulation->element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $facadeInsulation->element->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
-                                    {{--
-                                    <option data-calculate-value="{{$elementValue->calculate_value}}"
-                                            @if(old('element.' . $facadeInsulation->element->id . '') && $elementValue->id == old('element.' . $facadeInsulation->element->id . ''))
-                                                selected="selected"
-                                            @elseif(isset($facadeInsulation->element_value_id) && $elementValue->id == $facadeInsulation->element_value_id)
-                                                selected="selected"
-                                            @endif
-                                            value="{{ $elementValue->id }}">{{ $elementValue->value }}
-                                    </option>--}}
                                 @endforeach
                             </select>
                         @endcomponent
@@ -650,12 +640,9 @@
         });
 
         function checkInterestAndCurrentInsulation(){
-            var interestedCalculateValue = $('#interest_element_{{$buildingElements->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-
-            console.log(elementCalculateValue);
-            if (elementCalculateValue >= 3 /* && interestedCalculateValue <= 2 */) {
+            if (elementCalculateValue >= 3) {
                 $('.hideable').hide();
                 $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
             } else {

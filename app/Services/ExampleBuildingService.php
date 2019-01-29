@@ -79,6 +79,7 @@ class ExampleBuildingService
 
                             $element = Element::find($elementId);
                             if ($element instanceof Element) {
+
                                 $buildingElement = new BuildingElement(['extra' => $extra]);
                                 $buildingElement->inputSource()->associate($inputSource);
                                 $buildingElement->element()->associate($element);

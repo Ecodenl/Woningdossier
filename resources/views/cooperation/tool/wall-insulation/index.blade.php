@@ -271,7 +271,7 @@
                             </label>
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface'])
+                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
                                 <input id="wall_surface" type="text" name="wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}" class="form-control" >
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                             @endcomponent
@@ -294,7 +294,7 @@
                             </label>
 
                             @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface'])
+                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
                                 <input id="insulation_wall_surface" type="text" name="insulation_wall_surface" value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}" class="form-control" >
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                             @endcomponent
@@ -449,51 +449,17 @@
 
                     </div>
                 </div>
-                <div class="col-sm-12">
-                    <?php
-                        $coachInputSource = App\Models\InputSource::findByShort('coach');
-                    ?>
-                    @if(isset($buildingFeaturesForMe) && \App\Models\BuildingService::hasCoachInputSource($buildingFeaturesForMe) && isset(\App\Models\BuildingService::getCoachInput($buildingFeaturesForMe)->additional_info) && !empty(\App\Models\BuildingService::getCoachInput($buildingFeaturesForMe)->additional_info)))
-                        @component('cooperation.tool.components.alert')
-                            {{$buildingFeaturesForMe->where('input_source_id', $coachInputSource->id)->first()->additional_info}}
-                        @endcomponent
-                    @endif
-                </div>
             </div>
         </div>
+            @include('cooperation.tool.includes.comment', [
+               'collection' => $buildingFeaturesForMe,
+               'commentColumn' => 'additional_info',
+               'translation' => [
+                   'title' => 'general.specific-situation.title',
+                   'help' => 'general.specific-situation.help'
+               ]
+           ])
 
-        @if(\App\Models\BuildingService::hasCoachInputSource($buildingFeaturesForMe) && Auth::user()->hasRole('resident'))
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <?php
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput($buildingFeaturesForMe);
-                            $comment = $coachInputSource->additional_info;
-                        ?>
-                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
-                        </label>
-                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                    </div>
-                </div>
-            </div>
-        @elseif(\App\Models\BuildingService::hasResidentInputSource($buildingFeaturesForMe) && Auth::user()->hasRole('coach'))
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space">
-                        <?php
-                            $residentInputSource = \App\Models\BuildingService::getResidentInput($buildingFeaturesForMe);
-                            $comment = $residentInputSource->additional_info;
-                        ?>
-                        <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
-                        </label>
-
-                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                    </div>
-                </div>
-            </div>
-        @endif
 
         <div class="row">
             <div class="col-md-12">

@@ -7,6 +7,7 @@ use Ramsey\Uuid\Uuid;
 class Str
 {
     const CHARACTERS = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
+    const CONSIDERED_EMPTY_ANSWERS = ['', "", null, 'null', '0.00', '0.0', '0', 0];
 
     /**
      * Uuid generation wrapping. Laravel < 5.6 uses Ramsey\Uuid. From 5.6 it is
@@ -111,5 +112,19 @@ class Str
         }
 
         return (string) implode($password); // password returns array so implode it
+    }
+
+    /**
+     * Check if the given answer is a empty answer, its considered empty when its in the array.
+     *
+     * @param $answer
+     * @return bool
+     */
+    public static function isConsideredEmptyAnswer($answer): bool
+    {
+        if (in_array($answer, self::CONSIDERED_EMPTY_ANSWERS, true)) {
+            return true;
+        }
+        return false;
     }
 }

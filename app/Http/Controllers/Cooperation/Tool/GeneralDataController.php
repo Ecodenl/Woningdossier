@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneralDataFormRequest;
@@ -171,13 +172,15 @@ class GeneralDataController extends Controller
             }
         }
 
+        $surface = NumberFormatter::reverseFormat($request->get('surface', 0));
+
         $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'surface' => $request->get('surface'),
+                'surface' => $surface,
                 'monument' => $request->get('monument', 0),
                 'building_layers' => $request->get('building_layers'),
             ]

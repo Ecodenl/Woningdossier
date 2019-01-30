@@ -183,7 +183,6 @@ class GeneralDataController extends Controller
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingId = $building->id;
-        $user = $building->user;
         $inputSourceId = HoomdossierSession::getInputSource();
 
         $exampleBuildingId = $request->get('example_building_id', null);

@@ -65,9 +65,6 @@ class CreateBuildingController extends Controller
 
             $features->building()->associate($address)->save();
 
-            // after all the data is saved, log the user in.
-            \Auth::login($user);
-
             // now do all the stuff we would normaly do in the login controller
             // we cant query on the Spatie\Role model so we first get the result on the "original model"
             $role = Role::findByName($user->roles->first()->name);

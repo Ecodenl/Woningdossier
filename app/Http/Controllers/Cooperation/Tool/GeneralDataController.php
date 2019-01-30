@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneralDataFormRequest;
@@ -111,30 +112,6 @@ class GeneralDataController extends Controller
         ));
     }
 
-//
-//    // todo
-//
-//    /**
-//     * return the example buildings based on the building types.
-//     *
-//     * @param Request $request
-//     *
-//     * @return \Illuminate\Http\JsonResponse
-//     */
-//    public function exampleBuildingType(Request $request)
-//    {
-//        $buildingTypeId = $request->get('building_type_id', '');
-//        $exampleBuildings = ExampleBuilding::forMyCooperation()->buildingsByBuildingType($buildingTypeId)->get();
-//        // loop through all the example buildings so we can add the "real name" to the examplebuilding
-//        foreach ($exampleBuildings as $exampleBuilding) {
-//            $exampleBuildings->where('id', $exampleBuilding->id)->first()->real_name = $exampleBuilding->name;
-//        }
-//
-//        return response()->json($exampleBuildings);
-//    }
-//
-//    // todo end
-
     public function applyExampleBuilding(Request $request)
     {
         $building = Building::find(HoomdossierSession::getBuilding());
@@ -183,7 +160,6 @@ class GeneralDataController extends Controller
         /** @var Building $building */
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingId = $building->id;
-        $user = $building->user;
         $inputSourceId = HoomdossierSession::getInputSource();
 
         $exampleBuildingId = $request->get('example_building_id', null);
@@ -196,13 +172,15 @@ class GeneralDataController extends Controller
             }
         }
 
+        $surface = NumberFormatter::reverseFormat($request->get('surface', 0));
+
         $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'surface' => $request->get('surface'),
+                'surface' => $surface,
                 'monument' => $request->get('monument', 0),
                 'building_layers' => $request->get('building_layers'),
             ]

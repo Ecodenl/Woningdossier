@@ -32,6 +32,7 @@ use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use App\Services\ToolSettingService;
 use App\Services\ModelService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -282,7 +283,10 @@ class InsulatedGlazingController extends Controller
                 $woodRotStatus = WoodRotStatus::find($buildingPaintworkStatuses['wood_rot_status_id']);
             }
             if (array_key_exists('last_painted_year', $buildingPaintworkStatuses)) {
-                $lastPaintedYear = $buildingPaintworkStatuses['last_painted_year'];
+	            $year = (int) $buildingPaintworkStatuses['last_painted_year'];
+	            if ($year > 1950){
+		            $lastPaintedYear = $year;
+	            }
             }
 
             $year = InsulatedGlazingCalculator::determineApplicationYear($measureApplication, $paintworkStatus, $woodRotStatus, $lastPaintedYear);
@@ -444,13 +448,22 @@ class InsulatedGlazingController extends Controller
 
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
+
+	    $lastPaintedYear = 2000;
+	    if (array_key_exists('last_painted_year', $paintWorkStatuses)) {
+		    $year = (int) $paintWorkStatuses['last_painted_year'];
+		    if ($year > 1950){
+		    	$lastPaintedYear = $year;
+		    }
+	    }
+
         BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
             ],
             [
-                'last_painted_year' => $paintWorkStatuses['last_painted_year'],
+                'last_painted_year' => $lastPaintedYear,
                 'paintwork_status_id' => $paintWorkStatuses['paintwork_status_id'],
                 'wood_rot_status_id' => $paintWorkStatuses['paintwork_status_id'],
             ]

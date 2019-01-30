@@ -28,6 +28,8 @@ class CreateBuildingFormRequest extends FormRequest
     public function rules()
     {
         return [
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required',
             'postal_code' => ['required', new PostalCode('nl')],
             'number' => ['required', new HouseNumber('nl')],
             'house_number_extension' => [new HouseNumberExtension('nl')],

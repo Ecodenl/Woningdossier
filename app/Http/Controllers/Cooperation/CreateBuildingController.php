@@ -95,8 +95,6 @@ class CreateBuildingController extends Controller
         throw ValidationException::withMessages([
             'email' => [trans('auth.failed')],
         ]);
-
-
     }
 
     protected function logout(Request $request)

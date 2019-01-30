@@ -922,7 +922,7 @@
                     </div>
                 </div>
             </div>
-                @include('cooperation.tool.components.comment', [
+                @include('cooperation.tool.includes.comment', [
                     'collection' => $userEnergyHabitsForMe,
                     'commentColumn' => 'living_situation_extra',
                     'translation' => [

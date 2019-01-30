@@ -67,6 +67,17 @@ class BuildingCoachStatus extends Model
     }
 
     /**
+     * Get the user from the status
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'coach_id', 'id');
+    }
+
+
+    /**
      * Get the coach from the status.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

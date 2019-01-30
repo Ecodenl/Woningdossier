@@ -13,10 +13,13 @@
     @foreach($groupParticipants as $groupParticipant)
         @if($groupParticipant instanceof \App\Models\User)
         <div class="group-member">
-            <span class="label label-primary @cannot('remove-participant-from-chat', $groupParticipant) not-removable-user @endcan @can('remove-participant-from-chat', $groupParticipant) is-removable-user @endcan">
+            <span class="label label-primary @cannot('remove-participant-from-chat', $groupParticipant) not-removable-user @endcan @can('remove-participant-from-chat', $groupParticipant) @if(!$groupParticipant->buildings->contains('id', $buildingId)) is-removable-user @endif @endcan">
                 {{$groupParticipant->getFullName()}}
                 @can('remove-participant-from-chat', $groupParticipant)
-                    <span data-building-owner-id="{{$buildingId}}" data-user-id="{{$groupParticipant->id}}" class="glyphicon glyphicon-remove"></span>
+                    {{-- If the group participant is the owner of the building, we cant cick him out. --}}
+                    @if(!$groupParticipant->buildings->contains('id', $buildingId))
+                        <span data-building-owner-id="{{$buildingId}}" data-user-id="{{$groupParticipant->id}}" class="glyphicon glyphicon-remove"></span>
+                    @endif
                 @endcan
             </span>
         </div>

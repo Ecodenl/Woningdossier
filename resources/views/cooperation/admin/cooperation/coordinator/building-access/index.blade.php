@@ -18,9 +18,8 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.owner')</th>
                             <th>Coach</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.status')</th>
-                            <th>Verleent toegang</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.columns.appointment')</th>
-                            <th>Berichten</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.edit.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -31,34 +30,44 @@
                                 <td>{{ $building->user->getFullName() }}</td>
 
                                 <?php
-                                    $currentBuildingStatuses = $buildingCoachStatuses->where('building_id', $building->id);
-                                    // get the last building status for the current building
-                                    $lastBuildingCoachStatus = $currentBuildingStatuses->last();
-                                    // unique the current building statuses on coach id, if the count is more then one there are multiple coaches involved to this building thing dinges
+                                    // get all the statuses for the current building
+                                    $buildingStatuses = $building->buildingCoachStatuses;
+                                    // get the last known status
+                                    $lastBuildingStatus = $buildingStatuses->last();
                                 ?>
-                                <td>@if($currentBuildingStatuses->unique('coach_id')->count() > 1)
-                                        Meerdere coaches gekoppeld aan gebouw
-                                    @elseif($lastBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus)
-                                        {{$lastBuildingCoachStatus->coach->first_name .' '. $lastBuildingCoachStatus->coach->last_name}}
+                                {{-- Check if there are multiple coaches connected to the building --}}
+                                <td>@if($buildingStatuses->unique('coach_id')->count() > 1)
+                                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.multiple-coaches-connected')
+                                    @elseif($lastBuildingStatus instanceof \App\Models\BuildingCoachStatus)
+                                        {{$lastBuildingStatus->user->getFullName()}}
                                     @else
-                                        Nog geen coach gekoppeld
+                                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.no-coach-connected')
                                     @endif
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id)}}
-                                </td>
-                                <td>
-                                    {{$building->allow_access ? "Ja" : "Nee"}}
+                                    @if($lastBuildingStatus instanceof \App\Models\BuildingCoachStatus)
+                                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.options.'.$lastBuildingStatus->status)
+                                    @else
+                                        @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.table.no-status-available')
+                                    @endif
                                 </td>
 
-                                <td>@if($lastBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastBuildingCoachStatus->appointment_date))
+                                <td>@if($lastBuildingStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastBuildingStatus->appointment_date))
                                         {{$lastBuildingCoachStatus->appointment_date}}
                                     @else
                                         @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.no-appointment')
                                     @endif
                                 </td>
                                 <td>
-                                    <a data-toggle="modal" data-target="#private-public-{{$building->id}}" data-building-id="{{$building->id}}" class="participate-in-group-chat btn btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
+                                    <a data-toggle="modal" data-target="#private-public-{{$building->id}}" data-building-id="{{$building->id}}" class="participate-in-group-chat btn btn-default">
+                                        <i class="glyphicon glyphicon-envelope"></i>
+                                    </a>
+                                    <a href="{{route('cooperation.admin.cooperation.coordinator.connect-to-coach.create', ['buildingId' => $building->id])}}" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-link"></i>
+                                    </a>
+                                    <a href="{{route('cooperation.admin.cooperation.coordinator.building-access.manage-connected-coaches', ['buildingId' => $building->id])}}" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-cog"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach

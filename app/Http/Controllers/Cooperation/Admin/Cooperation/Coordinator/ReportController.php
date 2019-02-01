@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
@@ -56,38 +57,52 @@ class ReportController extends Controller
 
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
                     $answer = $questionAnswerForCurrentQuestionnaire->answer;
-                    $currentQuestion = Question::find($questionAnswerForCurrentQuestionnaire->question_id);
+                    $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
 
-                    // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
-                    if ($currentQuestion->hasQuestionOptions()) {
-                        $questionOptionAnswer = [];
 
-                        // explode on array since some questions are multi select
-                        $explodedAnswers = explode('|', $answer);
+                    // check if the question
+                    if ($currentQuestion instanceof Question) {
+                        // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
+                        if ($currentQuestion->hasQuestionOptions()) {
+                            $questionOptionAnswer = [];
 
-                        foreach ($explodedAnswers as $explodedAnswer) {
-                            // check if the current question has options
-                            // the question can contain a int but can be a answer to a question like "How old are you"
-                            if ($currentQuestion->hasQuestionOptions()) {
-                                $questionOption = QuestionOption::find($explodedAnswer);
-                                array_push($questionOptionAnswer, $questionOption->name);
+                            // explode on array since some questions are multi select
+                            $explodedAnswers = explode('|', $answer);
+
+                            foreach ($explodedAnswers as $explodedAnswer) {
+                                // check if the current question has options
+                                // the question can contain a int but can be a answer to a question like "How old are you"
+                                if ($currentQuestion->hasQuestionOptions() && !empty($explodedAnswer)) {
+                                    $questionOption = QuestionOption::find($explodedAnswer);
+                                    array_push($questionOptionAnswer, $questionOption->name);
+                                }
+                            }
+
+                            // the questionOptionAnswer can be empty if the the if statements did not pass
+                            // so we check that before assigning it.
+                            if (!empty($questionOptionAnswer)) {
+                                // implode it
+                                $answer = implode($questionOptionAnswer, '|');
                             }
                         }
-
-                        // the questionOptionAnswer can be empty if the the if statements did not pass
-                        // so we check that before assigning it.
-                        if (! empty($questionOptionAnswer)) {
-                            // implode it
-                            $answer = implode($questionOptionAnswer, '|');
-                        }
+                        $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
                     }
-                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
                 }
             }
         }
 
+
+
+        // unset the whole empty arrays
+        // so we only set rows with answers.
+        foreach ($rows as $buildingId => $row) {
+            if (Arr::isWholeArrayEmpty($row)) {
+                unset($rows[$buildingId]);
+            }
+        }
+
         $headers = [];
-        if (! empty($rows)) {
+        if (!empty($rows)) {
             $headers = array_keys(array_first($rows));
         }
 

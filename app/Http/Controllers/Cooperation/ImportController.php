@@ -125,7 +125,9 @@ class ImportController extends Controller
         
         // input sources
         $desiredInputSource = InputSource::findByShort($desiredInputSourceName);
-        $residentInputSource = InputSource::findByShort('resident');
+        //$residentInputSource = InputSource::findByShort('resident');
+
+        $targetInputSource = InputSource::find(HoomdossierSession::getInputSource());
 
         foreach ($tables as $tableOrInt => $tableOrWhereColumns) {
 
@@ -154,7 +156,6 @@ class ImportController extends Controller
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get();
 
-
             // now check if the $whereColumn isset
             // if so we need to add it to the query from the resident during the loop from the $desiredInputSourceValues
             if (isset($whereColumn)) {
@@ -164,77 +165,77 @@ class ImportController extends Controller
                     if ($desiredInputSourceValue instanceof \stdClass && isset($desiredInputSourceValue->$whereColumn)) {
 
                         // now build the query to get the resident his answers
-                        $residentInputSourceValueQuery = \DB::table($table)
-                            ->where('input_source_id', $residentInputSource->id)
+                        $targetInputSourceValueQuery = \DB::table($table)
+                            ->where('input_source_id', $targetInputSource->id)
                             ->where($buildingOrUserColumn, $buildingOrUserId)
                             ->where($whereColumn, $desiredInputSourceValue->$whereColumn);
 
 
                         // count the rows
-                        $residentInputSourceValueCount = \DB::table($table)
-                            ->where('input_source_id', $residentInputSource->id)
+                        $targetInputSourceValueCount = \DB::table($table)
+                            ->where('input_source_id', $targetInputSource->id)
                             ->where($buildingOrUserColumn, $buildingOrUserId)
                             ->where($whereColumn, $desiredInputSourceValue->$whereColumn)
                             ->count();
 
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
-                        if ($residentInputSourceValueCount > 1) {
+                        if ($targetInputSourceValueCount > 1) {
 
                             $additionalWhereColumn = $tableOrWhereColumns['additional_where_column'];
                             // add the where to the query
-                            $residentInputSourceValueQuery = $residentInputSourceValueQuery
+                            $targetInputSourceValueQuery = $targetInputSourceValueQuery
                                 ->where($additionalWhereColumn, $desiredInputSourceValue->$additionalWhereColumn);
 
                             // get the result
-                            $residentInputSourceValue = $residentInputSourceValueQuery->first();
+                            $targetInputSourceValue = $targetInputSourceValueQuery->first();
 
                             // cast the results to a array
-                            $residentInputSourceValue = (array)$residentInputSourceValue;
+                            $targetInputSourceValue = (array)$targetInputSourceValue;
                             $desiredInputSourceValue = (array)$desiredInputSourceValue;
 
                             // if it exists, we need to update it. Else we need to insert a new row.
-                            if (!empty($residentInputSourceValue)) {
-                                $residentInputSourceValueQuery->update($this->createUpdateArray($residentInputSourceValue, $desiredInputSourceValue));
+                            if (!empty($targetInputSourceValue)) {
+                                $targetInputSourceValueQuery->update($this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue));
                             } else {
                                 // unset the stuff we dont want to insert
                                 unset($desiredInputSourceValue['id'], $desiredInputSourceValue['input_source_id']);
                                 // change the input source id to the resident
-                                $desiredInputSourceValue['input_source_id'] = $residentInputSource->id;
+                                $desiredInputSourceValue['input_source_id'] = $targetInputSource->id;
                                 // and insert a new row!
                                 \DB::table($table)->insert($desiredInputSourceValue);
                             }
                         } else {
 
-                            $residentInputSourceValue = $residentInputSourceValueQuery->first();
+                            $targetInputSourceValue = $targetInputSourceValueQuery->first();
                             // cast the results to a array
-                            $residentInputSourceValue = (array)$residentInputSourceValue;
+                            $targetInputSourceValue = (array)$targetInputSourceValue;
                             $desiredInputSourceValue = (array)$desiredInputSourceValue;
 
                             // YAY! data has been copied so update the resident his records.
-                            $residentInputSourceValueQuery->update($this->createUpdateArray($residentInputSourceValue, $desiredInputSourceValue));
+                            $targetInputSourceValueQuery->update($this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue));
                         }
                     }
                 }
             } else {
                 // get the resident his input
-                $residentInputSourceValueQuery = \DB::table($table)
-                    ->where('input_source_id', $residentInputSource->id)
+                $targetInputSourceValueQuery = \DB::table($table)
+                    ->where('input_source_id', $targetInputSource->id)
                     ->where($buildingOrUserColumn, $buildingOrUserId);
 
                 // get the first result from the desired input source
                 $desiredInputSourceValue = $desiredInputSourceValues->first();
-                $residentInputSourceValue = $residentInputSourceValueQuery->first();
+                $targetInputSourceValue = $targetInputSourceValueQuery->first();
 
                 // if it exists, we need to update it. Else we need to insert a new row.
-                if ($residentInputSourceValue instanceof \stdClass) {
-                    $residentInputSourceValueQuery->update($this->createUpdateArray((array) $desiredInputSource, (array) $desiredInputSourceValue));
+                if ($targetInputSourceValue instanceof \stdClass) {
+                    $targetInputSourceValueQuery->update($this->createUpdateArray((array) $desiredInputSource, (array) $desiredInputSourceValue));
                 } else {
                     $desiredInputSourceValue = (array) $desiredInputSourceValue;
                     // unset the stuff we dont want to insert
                     unset($desiredInputSourceValue['id'], $desiredInputSourceValue['input_source_id']);
                     // change the input source id to the resident
-                    $desiredInputSourceValue['input_source_id'] = $residentInputSource->id;
+                    $desiredInputSourceValue['input_source_id'] = $targetInputSource->id;
                     // and insert a new row!
                     \DB::table($table)->insert($desiredInputSourceValue);
                 }

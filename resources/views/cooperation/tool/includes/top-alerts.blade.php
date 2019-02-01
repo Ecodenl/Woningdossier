@@ -89,6 +89,7 @@ if (!isset($building)) {
             @endcomponent
         </div>
     </div>
+@endif
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
             <?php $toolSettingsLoopCount++; ?>
@@ -121,7 +122,7 @@ if (!isset($building)) {
             </div>
         @endforeach
     </div>
-@endif
+
 
 @push('js')
     <script>

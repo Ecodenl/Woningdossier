@@ -45,7 +45,6 @@ class BuildingDetailController extends Controller
         // to get the old building features
         $currentFeatures = BuildingFeature::where('building_id', HoomdossierSession::getBuilding())->first();
 
-
         $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,

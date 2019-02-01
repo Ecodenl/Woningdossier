@@ -107,7 +107,7 @@ class ExampleBuilding extends Model
     {
         $content = $this->contents()
                     ->where('build_year', '<=', $year)
-                    ->orderBy('build_year')
+                    ->orderBy('build_year', 'desc')
                     ->first();
 
         if ($content instanceof ExampleBuildingContent) {

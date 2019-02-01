@@ -29,6 +29,20 @@ class ImportController extends Controller
         return false;
     }
 
+	/**
+	 * Returns whether or not fields are expressed as radio inputs. These fields
+	 * might have a value of 0, which is considered empty, but in the context of
+	 * radio buttons they should not be considered empty. We define these
+	 * fields here so we can test for !empty OR radio input.
+	 *
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
+    private function isRadioInput($key){
+    	return in_array($key, ['cavity_wall', 'monument', 'facade_plastered_painted',]);
+    }
+
     /**
      * Creates an update array from the input source to copy and the input source to update
      *
@@ -69,11 +83,10 @@ class ImportController extends Controller
             unset($inputSourceToUpdate['id'], $inputSourceToCopy['extra']);
         }
 
-
         // now update the "normal" values
         foreach ($inputSourceToCopy as $desiredInputSourceKey => $desiredInputSourceAnswer) {
             // if the answer from the desired input source is not empty and the key needs a update, then we update the resident his answer.
-            if (!empty($desiredInputSourceAnswer) && $this->keyNeedsUpdate($desiredInputSourceKey)) {
+            if ((!empty($desiredInputSourceAnswer) || $this->isRadioInput($desiredInputSourceKey)) && $this->keyNeedsUpdate($desiredInputSourceKey)) {
                 $updateArray[$desiredInputSourceKey] = $desiredInputSourceAnswer;
             }
         }

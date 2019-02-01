@@ -330,127 +330,125 @@
                 </div>
             </div>
 
+            <div class="hideable">
+                <div id="indication-for-costs">
+                    <hr>
+                    @include('cooperation.layouts.section-title', [
+                            'translationKey' => 'wall-insulation.indication-for-costs.title',
+                            'infoAlertId' => 'indication-for-costs-info'
+                        ])
 
-
-        <div class="hideable">
-            <div id="indication-for-costs">
+                    <div id="costs" class="row">
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                        </div>
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                        </div>
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                        </div>
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="taking-into-account">
                 <hr>
-                @include('cooperation.layouts.section-title', [
-                        'translationKey' => 'wall-insulation.indication-for-costs.title',
-                        'infoAlertId' => 'indication-for-costs-info'
-                    ])
+                @include('cooperation.layouts.section-title', ['translationKey' => 'wall-insulation.taking-into-account.title'])
+                <h6 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</h6>
 
-                <div id="costs" class="row">
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group add-space">
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#repair-join-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.repair-joint.title')}} <span id="repair_joint_year">(in 2018)</span></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <input type="text" id="repair_joint" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="repair-join-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.repair-joint.help')}}
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
-                    </div>
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                    <div class="col-sm-6">
+                        <div class="form-group add-space">
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#clean-brickwork-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.clean-brickwork.title')}} <span id="clean_brickwork_year"></span></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <input type="text" id="clean_brickwork" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="clean-brickwork-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.clean-brickwork.help')}}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                    <div class="col-sm-6">
+                        <div class="form-group add-space">
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#impregnate-wall-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.impregnate-wall.title')}}
+                                <span id="impregnate_wall_year"></span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <input type="text" id="impregnate_wall" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="impregnate-wall-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.impregnate-wall.help')}}
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                    <div class="col-sm-6">
+                        <div class="form-group add-space">
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#paint-wall-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.wall-painting.title')}} <span id="paint_wall_year"></span></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <input type="text" id="paint_wall" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="paint-wall-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.wall-painting.help')}}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div id="taking-into-account">
-            <hr>
-            @include('cooperation.layouts.section-title', ['translationKey' => 'wall-insulation.taking-into-account.title'])
-            <h6 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</h6>
 
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group add-space">
-                        <label class="control-label">
-                            <i data-toggle="collapse" data-target="#repair-join-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.repair-joint.title')}} <span id="repair_joint_year">(in 2018)</span></label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" id="repair_joint" class="form-control disabled" disabled="" value="0">
-                        </div>
-                        <div id="repair-join-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.repair-joint.help')}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group add-space">
-                        <label class="control-label">
-                            <i data-toggle="collapse" data-target="#clean-brickwork-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.clean-brickwork.title')}} <span id="clean_brickwork_year"></span></label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" id="clean_brickwork" class="form-control disabled" disabled="" value="0">
-                        </div>
-                        <div id="clean-brickwork-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.clean-brickwork.help')}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group add-space">
-                        <label class="control-label">
-                            <i data-toggle="collapse" data-target="#impregnate-wall-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.impregnate-wall.title')}}
-                            <span id="impregnate_wall_year"></span>
-                        </label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" id="impregnate_wall" class="form-control disabled" disabled="" value="0">
-                        </div>
-                        <div id="impregnate-wall-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.impregnate-wall.help')}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group add-space">
-                        <label class="control-label">
-                            <i data-toggle="collapse" data-target="#paint-wall-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.wall-painting.title')}} <span id="paint_wall_year"></span></label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" id="paint_wall" class="form-control disabled" disabled="" value="0">
-                        </div>
-                        <div id="paint-wall-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.wall-painting.help')}}
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
+                            <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
+
+                            <textarea id="additional-info" class="form-control" name="additional_info">@if(old('additional_info')){{old('additional_info')}}@elseif(isset($buildingFeature)){{$buildingFeature->additional_info}}@endif</textarea>
+
+                            <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
+                            </div>
+
+                            @if ($errors->has('additional_info'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('additional_info') }}</strong>
+                                </span>
+                            @endif
+
                         </div>
                     </div>
                 </div>
             </div>
-
-
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('additional_info') ? ' has-error' : '' }}">
-                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
-
-                        <textarea id="additional-info" class="form-control" name="additional_info">@if(old('additional_info')){{old('additional_info')}}@elseif(isset($buildingFeature)){{$buildingFeature->additional_info}}@endif</textarea>
-
-                        <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
-                        </div>
-
-                        @if ($errors->has('additional_info'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('additional_info') }}</strong>
-                            </span>
-                        @endif
-
-                    </div>
-                </div>
-            </div>
-        </div>
             @include('cooperation.tool.includes.comment', [
                'collection' => $buildingFeaturesForMe,
                'commentColumn' => 'additional_info',
@@ -461,24 +459,25 @@
            ])
 
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a></li>
-                            <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a></li>
-                        </ol>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">@lang('default.buttons.download')</div>
+                        <div class="panel-body">
+                            <ol>
+                                <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a></li>
+                                <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a></li>
+                            </ol>
+                        </div>
                     </div>
-                </div>
-                <hr>
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class="btn btn-primary pull-right">
-                            @lang('default.buttons.next')
-                        </button>
+                    <hr>
+                    <div class="form-group add-space">
+                        <div class="">
+                            <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
+                            <button type="submit" class="btn btn-primary pull-right">
+                                @lang('default.buttons.next')
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

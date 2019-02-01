@@ -57,6 +57,7 @@ class PrivateMessage extends Model
     const STATUS_IN_CONSIDERATION = 'in behandeling';
     const STATUS_APPLICATION_SENT = 'aanvraag verzonden';
 
+    const REQUEST_TYPE_USER_CREATED_BY_COOPERATION = 'user-created-by-cooperation';
     const REQUEST_TYPE_COACH_CONVERSATION = 'coach-conversation';
     const REQUEST_TYPE_MORE_INFORMATION = 'more-information';
     const REQUEST_TYPE_QUOTATION = 'quotation';
@@ -300,6 +301,7 @@ class PrivateMessage extends Model
             return BuildingCoachStatus::hasCoachAccess($buildingCoachStatus->building_id, $buildingCoachStatus->coach_id);
         })->unique('coach_id');
 
+
         // create a collection of group members
         $groupMembers = collect();
 
@@ -394,5 +396,16 @@ class PrivateMessage extends Model
     public function building()
     {
         return $this->belongsTo(Building::class);
+    }
+
+    /**
+     * Scope a query to returned the messages where building access is allowed
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeAccessAllowed($query)
+    {
+        return $query->where('allow_access', true);
     }
 }

@@ -199,6 +199,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {
                         Route::get('', 'BuildingAccessController@index')->name('index');
+                        Route::get('/manage-connect-coaches/{buildingId}', 'BuildingAccessController@manageConnectedCoaches')->name('manage-connected-coaches');
                         Route::get('{buildingId}', 'BuildingAccessController@edit')->name('edit');
                         Route::delete('destroy', 'BuildingAccessController@destroy')->name('destroy');
                     });

@@ -446,6 +446,9 @@ return [
                                     'status' => 'Status',
                                     'appointment' => 'Datum van afspraak',
                                 ],
+                                'multiple-coaches-connected' => 'Er zijn meerdere coaches verbonden met dit gebouw.',
+                                'no-coach-connected' => 'Geen coach verbonden met dit gebouw',
+                                'no-status-available' => 'Nog geen status beschikbaar',
                                 'status' => 'Kies status',
                                 'current-status' => 'Huidige status:',
                                 'options' => [
@@ -466,6 +469,9 @@ return [
                                     'email' => 'Email',
                                 ],
                             ],
+                        ],
+                        'manage-connected-coaches' => [
+                            'redirect-message' => 'U kunt een of meerdere gebruikers toegang tot de woning ontzeggen door op het kruisje te klikken bij een gebruiker bovenin het chatvenster.'
                         ],
                         'destroy' => [
                             'success' => 'Toegang is ontzegd',
@@ -527,6 +533,8 @@ return [
                                 ],
                             ],
 
+
+                            \App\Models\PrivateMessage::REQUEST_TYPE_USER_CREATED_BY_COOPERATION => 'Gebruiker aangemaakt door cooperatie',
                             \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
                             \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
                             \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
@@ -561,7 +569,7 @@ return [
                             ],
                         ],
                         'store' => [
-                            'success' => 'Uw bericht is verstuurd naar de coach, de coach kan nu verdere actie ondernemen.',
+                            'success' => 'De coach is verbonden, de coach kan nu verdere actie ondernemen.',
                         ],
                     ],
                     'assign-roles' => [

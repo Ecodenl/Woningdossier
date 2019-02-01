@@ -9,14 +9,15 @@ class RoleHelper
     /**
      * Get the right route / url by a role name.
      *
-     * @param $roleName
+     * @param string $roleName
+     * @param bool Whether or not to check the user's role against the role name. Defaults to true.
      *
      * @return string The target url
      */
-    public static function getUrlByRoleName(string $roleName)
+    public static function getUrlByRoleName(string $roleName, $checkUser = true)
     {
         // check if the user his role exists / is his
-        if (\Auth::check() && \Auth::user()->roles()->where('name', $roleName)->first() instanceof Role) {
+        if (!$checkUser || (\Auth::check() && \Auth::user()->roles()->where('name', $roleName)->first() instanceof Role)) {
             switch ($roleName) {
                 case 'cooperation-admin':
                     return route('cooperation.admin.cooperation.cooperation-admin.index');
@@ -47,8 +48,16 @@ class RoleHelper
         return route('cooperation.home');
     }
 
-    public static function getUrlByRole(Role $role)
+	/**
+	 * Get the right route / url by a role
+	 *
+	 * @param Role $role
+	 * @param bool Whether or not to check the user's role against the role name. Defaults to true.
+	 *
+	 * @return string
+	 */
+    public static function getUrlByRole(Role $role, $checkUser = true)
     {
-        return self::getUrlByRoleName($role->name);
+        return self::getUrlByRoleName($role->name, $checkUser);
     }
 }

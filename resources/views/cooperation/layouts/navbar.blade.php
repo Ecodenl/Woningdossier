@@ -103,7 +103,7 @@
                             </li>
                         @endif
 
-                        <li><a href="{{ route('cooperation.measures.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.measure.title')</a></li>
+                        @include('cooperation.admin.layouts.navbar.role-switcher')
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">

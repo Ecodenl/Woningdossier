@@ -10,6 +10,18 @@ return [
         ],
     ],
     'cooperation' => [
+        'create-building' => [
+            'current-login-info' => [
+                'header' => 'Voor uw huidige login gegevens in.',
+            ],
+            'building' => [
+                'header' => 'Vul uw adres in.',
+                'store' => 'Adres aanmaken'
+            ],
+            'store' => [
+                'success' => 'Uw adres is toegevoegd aan het Hoomdossier, u kunt nu gebruik maken van de tool.'
+            ]
+        ],
 
         'step' => [
             'general-data' => 'Algemene gegevens',

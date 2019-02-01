@@ -32,6 +32,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Auth::routes();
 
+        Route::group(['prefix' => 'create-building', 'as' => 'create-building.'], function () {
+            Route::get('', 'CreateBuildingController@index')->name('index');
+            Route::post('', 'CreateBuildingController@store')->name('store');
+        });
+
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
             Route::get('home', 'HomeController@index')->name('home');

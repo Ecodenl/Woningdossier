@@ -130,10 +130,10 @@
                 <div class="form-group">
                     <label for="" class=" control-label">
                         <i data-toggle="collapse" data-target="#my-plan-own-comment" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                        {{\App\Helpers\Translation::translate('general.specific-situation.title')}} ({{$myActionPlanComment->inputSource->name}})
+                        {{\App\Helpers\Translation::translate('general.specific-situation.title')}} ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
                     </label>
 
-                    <textarea name="comment" class="form-control">{{old('comment', $myActionPlanComment->comment)}}</textarea>
+                    <textarea name="comment" class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
 
                     <div id="my-plan-own-comment" class="collapse alert alert-info remove-collapse-space alert-top-space">
                         {{\App\Helpers\Translation::translate('general.specific-situation.title')}}

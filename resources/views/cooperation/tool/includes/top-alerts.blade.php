@@ -8,21 +8,20 @@ if (!isset($building)) {
 }
 ?>
 
-{{--
-    Alerts that will show if the user (prob a coach or other admin role) is filling the tool for a resident
---}}
-@if (Auth::user()->isFillingToolForOtherBuilding())
-    <div class="col-sm-6">
-        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
-            @lang('woningdossier.cooperation.tool.filling-for', [
-                'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
-                'last_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->last_name,
-                'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
-            ])
-        @endcomponent
-    </div>
-    <div class="col-sm-6">
-        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+<div class="row">
+    @if (Auth::user()->isFillingToolForOtherBuilding())
+        <div class="col-sm-6">
+            @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
+                @lang('woningdossier.cooperation.tool.filling-for', [
+                    'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
+                    'last_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->last_name,
+                    'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
+                ])
+            @endcomponent
+        </div>
+    @endif
+    <div class="@if(Auth::user()->isFillingToolForOtherBuilding())col-sm-6 @else col-sm-12 @endif">
+        @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
             @lang('woningdossier.cooperation.tool.current-building-address', [
                 'street' => $building->street,
                 'number' => $building->number,
@@ -32,17 +31,19 @@ if (!isset($building)) {
             ])
         @endcomponent
     </div>
+</div>
+
 {{--
     Alerts that will show when a resident (could be a admin role aswell but the feature is not implemented for a admin atm) is comparing his data to that
     From a other input source
  --}}
-@elseif(\App\Helpers\HoomdossierSession::isUserComparingInputSources())
+@if(\App\Helpers\HoomdossierSession::isUserComparingInputSources())
     <form id="copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}" action="{{route('cooperation.import.copy')}}" method="post">
         <input type="hidden" name="input_source" value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
         {{csrf_field()}}
     </form>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'input-source-notifications'])
                 <input type="hidden" class="input-source-short" value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
                 <div class="row">
@@ -60,36 +61,11 @@ if (!isset($building)) {
                 </div>
             @endcomponent
         </div>
-        <div class="col-sm-6">
-            @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
-                @lang('woningdossier.cooperation.tool.current-building-address', [
-                    'street' => $building->street,
-                    'number' => $building->number,
-                    'extension' => $building->extension,
-                    'zip_code' => $building->postal_code,
-                    'city' => $building->city
-                ])
-            @endcomponent
-        </div>
     </div>
+@else
 {{--
     Alerts that will show when a resident / user is not comparing input sources
 --}}
-@elseif(\App\Helpers\HoomdossierSession::isUserNotComparingInputSources())
-    <div class="row">
-        <div class="col-sm-12">
-            @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
-                @lang('woningdossier.cooperation.tool.current-building-address', [
-                    'street' => $building->street,
-                    'number' => $building->number,
-                    'extension' => $building->extension,
-                    'zip_code' => $building->postal_code,
-                    'city' => $building->city
-                ])
-            @endcomponent
-        </div>
-    </div>
-@endif
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
             <?php $toolSettingsLoopCount++; ?>
@@ -122,7 +98,7 @@ if (!isset($building)) {
             </div>
         @endforeach
     </div>
-
+@endif
 
 @push('js')
     <script>
@@ -143,11 +119,11 @@ if (!isset($building)) {
                 // the input-source from the dismissed notification
                 var dismissedInputSourceShort = dismissedInputSourceNotification.find('.input-source-short').val();
 
-                // send dataa
+                // send data
                 $.ajax({
                     url: '{{route('cooperation.my-account.import-center.dismiss-notification')}}',
                     data: {input_source_short: dismissedInputSourceShort},
-                    method: 'post',
+                    method: 'post'
                 })
 
             });

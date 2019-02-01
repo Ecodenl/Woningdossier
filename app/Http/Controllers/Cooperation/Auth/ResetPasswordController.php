@@ -108,7 +108,7 @@ class ResetPasswordController extends Controller
             $inputSource = $role->inputSource;
 
             // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-            if (! $role->inputSource instanceof InputSource) {
+            if (! $inputSource instanceof InputSource) {
                 $inputSource = InputSource::findByShort('resident');
             }
 
@@ -120,10 +120,13 @@ class ResetPasswordController extends Controller
 
             // set the redirect url
             if (1 == $user->roles->count()) {
-                $this->redirectTo = RoleHelper::getUrlByRole($role);
+            	// don't check the user as he's not logged in yet
+                $this->redirectTo = RoleHelper::getUrlByRole($role, false);
             } else {
                 $this->redirectTo = '/admin';
             }
+
+            \Log::debug("Redirect to: " . $this->redirectTo);
 
             $this->guard()->login($user);
         }

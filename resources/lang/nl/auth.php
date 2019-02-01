@@ -61,6 +61,11 @@ return [
         'may-not-be-filled' => 'Dit veld mag niet gevuld zijn onder deze omstandigheden',
     ],
 	'reset' => [
+		'form' => [
+			'header' => 'Wachtwoord resetten',
+			'send-reset-link' => 'Verstuur reset link',
+			'set-password' => 'Nieuw wachtwoord instellen',
+		],
 		'inactive' => 'Uw wachtwoord is gereset, maar uw account is nog niet bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail.',
 	],
     'confirm' => [

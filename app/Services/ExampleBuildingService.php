@@ -31,6 +31,7 @@ class ExampleBuildingService
         $contents = $exampleBuilding->getContentForYear($buildYear);
         if (! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
+	        self::log("No data to apply");
             return;
         }
 

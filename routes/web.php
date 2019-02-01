@@ -40,7 +40,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
             Route::get('home', 'HomeController@index')->name('home');
-            Route::get('measures', 'MeasureController@index')->name('measures.index');
+            //Route::get('measures', 'MeasureController@index')->name('measures.index');
             Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {

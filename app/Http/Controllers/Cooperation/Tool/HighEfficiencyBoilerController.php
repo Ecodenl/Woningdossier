@@ -99,7 +99,9 @@ class HighEfficiencyBoilerController extends Controller
 
                     $amountGas = $request->input('habit.gas_usage', null);
 
-                    $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas);
+                    if ($user->energyHabit instanceof UserEnergyHabit) {
+                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas);
+                    }
                     $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                     $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
                     //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure);

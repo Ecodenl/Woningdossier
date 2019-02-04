@@ -66,7 +66,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 
                     @if($rowData['type'] == 'text')
 
-                                <input type="text" class="form-control" name="{{ $fname }}" value="{{ old($fvalKey, $fallback) }}">
+                        <input type="text" class="form-control" name="{{ $fname }}" value="{{ old($fvalKey, $fallback) }}">
                         {{--<input type="text" class="form-control" name="content[@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->id }}@endif][content][{{ $step }}][{{ $formFieldName }}]" value="@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->getValue($step . '.'. $formFieldName) }}@endif">--}}
                     @elseif($rowData['type'] == 'select')
 

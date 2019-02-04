@@ -8,6 +8,7 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\SuperAdmin\ExampleBuildingRequest;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
@@ -555,7 +556,7 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Cooperation $cooperation, $id)
+    public function update(ExampleBuildingRequest $request, Cooperation $cooperation, $id)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
@@ -589,6 +590,7 @@ class ExampleBuildingController extends Controller
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+
             $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {

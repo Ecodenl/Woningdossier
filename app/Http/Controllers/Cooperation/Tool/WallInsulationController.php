@@ -23,6 +23,7 @@ use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
@@ -235,7 +236,7 @@ class WallInsulationController extends Controller
 
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);
-        if ($elementValue instanceof ElementValue) {
+        if ($elementValue instanceof ElementValue && $energyHabits instanceof UserEnergyHabit) {
             $result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabits, $facadeSurface, $advice);
         }
 

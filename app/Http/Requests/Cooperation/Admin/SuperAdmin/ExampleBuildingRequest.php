@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
+use App\Helpers\Old;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExampleBuildingRequest extends FormRequest
@@ -33,6 +35,14 @@ class ExampleBuildingRequest extends FormRequest
         // modify the request.
         $this->replace(array_replace($this->all(), $undotedContents));
 
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        // use the old helper since we have modified the request.
+        Old::put($this->all());
+
+        parent::failedValidation($validator);
     }
 
     /**

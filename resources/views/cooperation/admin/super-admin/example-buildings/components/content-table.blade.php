@@ -10,23 +10,20 @@ $fvalKey = str_replace('[', '.', $fname);
 // fallback value for old functions
 $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->build_year : '';
 
-//content.9.content.roof-insulation.building_roof_types.1.roof_surface
-
-//if ($errors->any()) {
-//    dd($errors);
-//}
 ?>
 <div class="form-group {{ $errors->has('content.'.$fkey.'.build_year') ? ' has-error' : '' }}">
     <label for="build_year">Build year:</label>
-    <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"
-           class="form-control" value="{{ old($fvalKey, $fallback) }}" />
 
+
+    <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"
+           class="form-control" value="{{ App\Helpers\Old::get($fvalKey, $fallback) }}" />
     @if ($errors->has('content.'.$fkey.'.build_year'))
         <span class="help-block">
             <strong>{{ $errors->first('content.'.$fkey.'.build_year') }}</strong>
         </span>
     @endif
 </div>
+
 
 <table class="table table-responsive table-condensed">
     <thead>
@@ -69,13 +66,13 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                     @endif
 
                     @if($rowData['type'] == 'text')
-                        <input type="text" class="form-control" name="{{ $fname }}" value="{{ old($fvalKey, $fallback) }}">
+                        <input type="text" class="form-control" name="{{ $fname }}" value="{{ App\Helpers\Old::get($fvalKey, $fallback) }}">
                         {{--<input type="text" class="form-control" name="content[@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->id }}@endif][content][{{ $step }}][{{ $formFieldName }}]" value="@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->getValue($step . '.'. $formFieldName) }}@endif">--}}
                     @elseif($rowData['type'] == 'select')
 
                         <select class="form-control" name="{{ $fname }}">
                             @foreach($rowData['options'] as $value => $label)
-                                <option value="{{ $value }}" @if(old($fvalKey, $fallback) == $value)selected="selected"@endif>
+                                <option value="{{ $value }}" @if(App\Helpers\Old::get($fvalKey, $fallback) == $value)selected="selected"@endif>
                                     {{ $label }}
                                 </option>
                             @endforeach

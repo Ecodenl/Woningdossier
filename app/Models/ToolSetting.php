@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,8 +31,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ToolSetting extends Model
 {
+	use GetValueTrait, GetMyValuesTrait;
+
     protected $fillable = [
         'changed_input_source_id', 'has_changed', 'building_id',
+	    'input_source_id',
     ];
 
     protected $casts = [
@@ -68,7 +73,7 @@ class ToolSetting extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function inputSource()
+    public function changedInputSource()
     {
         return $this->belongsTo(InputSource::class, 'changed_input_source_id');
     }

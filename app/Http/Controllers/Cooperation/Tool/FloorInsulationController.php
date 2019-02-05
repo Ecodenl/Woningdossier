@@ -20,6 +20,7 @@ use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Illuminate\Http\JsonResponse;
@@ -138,7 +139,7 @@ class FloorInsulationController extends Controller
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         if (array_key_exists($floorInsulation->id, $elements)) {
             $floorInsulationValue = ElementValue::where('element_id', $floorInsulation->id)->where('id', $elements[$floorInsulation->id])->first();
-            if ($floorInsulationValue instanceof ElementValue) {
+            if ($floorInsulationValue instanceof ElementValue && $user->energyHabit instanceof UserEnergyHabit) {
                 $result['savings_gas'] = FloorInsulationCalculator::calculateGasSavings($building, $floorInsulationValue, $user->energyHabit, $surface, $advice);
             }
 

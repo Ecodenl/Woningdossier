@@ -11,11 +11,23 @@ class Arr
      *
      * @return array
      */
+//    public static function arrayUndot($content)
+//    {
+//        $array = [];
+//        foreach ($content as $key => $value) {
+//            array_set($array, $key, $value);
+//        }
+//
+//        return $array;
+//    }
     public static function arrayUndot($content)
     {
         $array = [];
-        foreach ($content as $key => $value) {
-            array_set($array, $key, $value);
+
+        foreach ($content as $key => $values) {
+            foreach ($values as $dottedKey => $value) {
+                array_set($array, $key.'.'.$dottedKey, $value);
+            }
         }
 
         return $array;
@@ -36,4 +48,5 @@ class Arr
         }
         return true;
     }
+
 }

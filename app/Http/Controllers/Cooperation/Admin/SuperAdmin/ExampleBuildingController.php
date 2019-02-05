@@ -8,6 +8,7 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\SuperAdmin\ExampleBuildingRequest;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
@@ -555,18 +556,10 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Cooperation $cooperation, $id)
+    public function update(ExampleBuildingRequest $request, Cooperation $cooperation, $id)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
-
-        $this->validate($request, [
-            'building_type_id' => 'required|exists:building_types,id',
-            'cooperation_id' => 'nullable|exists:cooperations,id',
-            'is_default' => 'required|boolean',
-            'order' => 'nullable|numeric|min:0',
-            'content.*.build_year' => 'nullable|numeric|min:1500|max:2025',
-        ]);
 
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
@@ -589,6 +582,7 @@ class ExampleBuildingController extends Controller
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+
             $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {

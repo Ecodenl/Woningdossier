@@ -54,6 +54,7 @@ class ExampleBuildingRequest extends FormRequest
     {
         return [
             'content.*.content.roof-insulation.building_roof_types.*.roof_surface' => 'nullable|numeric',
+            'content.*.content.roof-insulation.building_roof_types.*.insulation_roof_surface' => 'nullable|numeric',
             'building_type_id' => 'required|exists:building_types,id',
             'cooperation_id' => 'nullable|exists:cooperations,id',
             'is_default' => 'required|boolean',

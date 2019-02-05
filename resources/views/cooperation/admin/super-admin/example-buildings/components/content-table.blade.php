@@ -10,8 +10,12 @@ $fvalKey = str_replace('[', '.', $fname);
 // fallback value for old functions
 $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->build_year : '';
 
-?>
+//content.9.content.roof-insulation.building_roof_types.1.roof_surface
 
+//if ($errors->any()) {
+//    dd($errors);
+//}
+?>
 <div class="form-group {{ $errors->has('content.'.$fkey.'.build_year') ? ' has-error' : '' }}">
     <label for="build_year">Build year:</label>
     <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"
@@ -46,7 +50,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                     // full html array
                     $fname = 'content['.$fkey.'][content]['.$step.']['.$formFieldName.']';
                     // laravel dotted notation
-                    $fvalKey = str_replace('[', '.', $fname);
+                    $fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
                     // fallback value for old functions
                     $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($step.'.'.$formFieldName) : '';
                 ?>
@@ -57,7 +61,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                 </td>
                 <td>
 
-                    <div class="form-group {{ $errors->has($fkey) ? ' has-error' : '' }}">
+                    <div class="form-group {{ $errors->has($fvalKey) ? ' has-error' : '' }}">
 
                     @if(isset($rowData['unit']))
                         <div class="input-group" >
@@ -65,7 +69,6 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                     @endif
 
                     @if($rowData['type'] == 'text')
-
                         <input type="text" class="form-control" name="{{ $fname }}" value="{{ old($fvalKey, $fallback) }}">
                         {{--<input type="text" class="form-control" name="content[@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->id }}@endif][content][{{ $step }}][{{ $formFieldName }}]" value="@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->getValue($step . '.'. $formFieldName) }}@endif">--}}
                     @elseif($rowData['type'] == 'select')

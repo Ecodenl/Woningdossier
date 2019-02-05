@@ -633,6 +633,7 @@ class ExampleBuildingController extends Controller
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
+
         try {
             $exampleBuilding->delete();
         } catch (\Exception $e) {

@@ -77,6 +77,7 @@ class ExampleBuilding extends Model
                     $translation->delete();
                 }
             }
+            \Log::debug("Deleting done..");
         });
     }
 

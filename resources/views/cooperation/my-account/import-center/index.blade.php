@@ -15,7 +15,7 @@
                         </div>
                         @foreach($toolSettings as $toolSetting)
                             <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post">
-                                <input type="hidden" name="input_source" value="{{$toolSetting->inputSource->short}}">
+                                <input type="hidden" name="input_source" value="{{$toolSetting->changedInputSource->short}}">
                                 {{csrf_field()}}
                             </form>
                             <div class="row">
@@ -25,14 +25,14 @@
                                             <div class="col-sm-12">
                                                 <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
                                                     @lang('woningdossier.cooperation.my-account.import-center.index.copy-data',
-                                                        ['input_source_name' => $toolSetting->inputSource->name
+                                                        ['input_source_name' => $toolSetting->changedInputSource->name
                                                     ])
                                                 </a>
-                                                <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->inputSource->short])}}" class="btn btn-sm btn-primary pull-right">
+                                                <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->changedInputSource->short])}}" class="btn btn-sm btn-primary pull-right">
                                                     @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')
                                                 </a>
                                                 @lang('woningdossier.cooperation.my-account.import-center.index.other-source-new',
-                                                    ['input_source_name' => $toolSetting->inputSource->name
+                                                    ['input_source_name' => $toolSetting->changedInputSource->name
                                                 ])
                                             </div>
                                         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\ToolSetting;
 
 class ToolSettingService
@@ -27,6 +28,7 @@ class ToolSettingService
                 [
                     'building_id' => $buildingId,
                     'changed_input_source_id' => $inputSourceId,
+                    'input_source_id' => HoomdossierSession::getInputSource(),
                     'has_changed' => $hasChanged,
                 ]
             );

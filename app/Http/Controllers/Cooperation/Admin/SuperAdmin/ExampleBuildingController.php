@@ -561,14 +561,6 @@ class ExampleBuildingController extends Controller
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
 
-        $this->validate($request, [
-            'building_type_id' => 'required|exists:building_types,id',
-            'cooperation_id' => 'nullable|exists:cooperations,id',
-            'is_default' => 'required|boolean',
-            'order' => 'nullable|numeric|min:0',
-            'content.*.build_year' => 'nullable|numeric|min:1500|max:2025',
-        ]);
-
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 

@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
 
-use App\Helpers\Arr;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Validation\Rules\In;
 
 class ExampleBuildingRequest extends FormRequest
 {
@@ -19,16 +16,23 @@ class ExampleBuildingRequest extends FormRequest
         return \Auth::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
     }
 
-    protected function array_undot($content)
+    public function prepareForValidation()
     {
-        $array = [];
-        foreach ($content as $key => $values) {
-            foreach ($values as $dottedKey => $value) {
-                array_set($array, $key.'.'.$dottedKey, $value);
+        // get the contents
+        $contents = $this->input('content', []);
+        $undotedContents = [];
+
+        foreach ($contents as $cid => $data) {
+            // undot the array and set it.
+            if (array_key_exists('content', $data)) {
+                $undotedContents['content'][$cid]['content'] = $this->array_undot($data['content']);
+                $undotedContents['content'][$cid]['build_year'] = $data['build_year'];
             }
         }
 
-        return $array;
+        // modify the request.
+        $this->replace(array_replace($this->all(), $undotedContents));
+
     }
 
     /**
@@ -39,11 +43,24 @@ class ExampleBuildingRequest extends FormRequest
     public function rules()
     {
         return [
+            'content.*.content.roof-insulation.building_roof_types.*.roof_surface' => 'nullable|numeric',
             'building_type_id' => 'required|exists:building_types,id',
             'cooperation_id' => 'nullable|exists:cooperations,id',
             'is_default' => 'required|boolean',
             'order' => 'nullable|numeric|min:0',
-            'content.*.build_year' => 'nullable|numeric|min:1500|max:2025',
         ];
+    }
+
+    protected function array_undot($content)
+    {
+        $array = [];
+
+        foreach ($content as $key => $values) {
+            foreach ($values as $dottedKey => $value) {
+                array_set($array, $key.'.'.$dottedKey, $value);
+            }
+        }
+
+        return $array;
     }
 }

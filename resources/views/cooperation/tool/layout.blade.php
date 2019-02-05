@@ -130,7 +130,7 @@
 
         function isUserComparingInputSources()
         {
-            var isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}'
+            var isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}';
             if (isUserComparingInputSources) {
                 return true;
             }

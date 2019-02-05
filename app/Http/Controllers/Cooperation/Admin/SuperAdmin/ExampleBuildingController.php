@@ -243,7 +243,7 @@ class ExampleBuildingController extends Controller
                     'unit' => Translation::translate('general.unit.square-meters.title'),
                 ],
                 'building_features.insulation_wall_surface' => [
-                    'label' => Translation::translate('wall-insulation.optional.insulation-wall-surface.title'),
+                    'label' => Translation::translate('wall-insulation.optional.insulated-surface.title'),
                     'type' => 'text',
                     'unit' => Translation::translate('general.unit.square-meters.title'),
                 ],
@@ -276,7 +276,7 @@ class ExampleBuildingController extends Controller
                     'options' => $this->createOptions($surfaces),
                 ],
                 'building_features.contaminated_wall_joints' => [
-                    'label' => Translation::translate('wall-insulation.optional.if-facade-dirty.title'),
+                    'label' => Translation::translate('wall-insulation.optional.is-facade-dirty.title'),
                     'type' => 'select',
                     'options' => $this->createOptions($surfaces),
                 ],
@@ -287,7 +287,7 @@ class ExampleBuildingController extends Controller
                 'element.'.$crackSealing->id => [
                     'label' => Translation::translate('insulated-glazing.moving-parts-quality.title'),
                     'type' => 'select',
-                    'options' => $this->createOptions($crackSealing->values()->orderBy('order')->get(), 'value.'),
+                    'options' => $this->createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
                 ],
                 'building_features.window_surface' => [
                     'label' => Translation::translate('insulated-glazing.windows-surface.title'),
@@ -522,7 +522,7 @@ class ExampleBuildingController extends Controller
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.measure_application_id'] = [
                 'label' => Translation::translate('roof-insulation.'.$roofType->short.'-roof.insulate-roof.title'),
                 'type' => 'select',
-                'options' => $this->createOptions(collect($roofInsulationMeasureApplications[$roofType->short]), 'measure_name.title'),
+                'options' => $this->createOptions(collect($roofInsulationMeasureApplications[$roofType->short]), 'measure_name'),
             ];
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.building_heating_id'] = [
                 'label' => Translation::translate('roof-insulation.'.$roofType->short.'-roof.situation.title'),

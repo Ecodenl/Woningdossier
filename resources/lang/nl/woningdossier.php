@@ -30,9 +30,9 @@ return [
 
         'chat' => [
             'modal' => [
-                'text' => 'Naar welk groeps gesprek wilt u gaan ?',
-                'public' => 'Publieke',
-                'private' => 'Prive'
+                'text' => 'Naar welk groepsgesprek wilt u gaan?',
+                'public' => 'Publiek',
+                'private' => 'Privé'
             ],
             'group-participants' => [
                 'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.'
@@ -127,7 +127,7 @@ return [
             ],
 
             'choose-roles' => [
-                'header' => 'Als welke rol wilt u doorgaan ?',
+                'header' => 'Als welke rol wilt u doorgaan?',
                 'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
             ],
             'coach' => [
@@ -248,7 +248,7 @@ return [
                                 'placeholder' => 'Vul hier uw bericht in voor de bewoner',
                             ],
                             'request-type' => [
-                                'label' => 'Waar wilde de bewoner het over hebben ?',
+                                'label' => 'Waar wilde de bewoner het over hebben?',
                                 'placeholder' => 'Selecteer optie',
                             ],
 
@@ -314,10 +314,10 @@ return [
                     ],
 
                     'store' => [
-                        'success' => 'Gebruiker is met success toevoegd',
+                        'success' => 'Gebruiker is toevoegd!',
                     ],
                     'destroy' => [
-                        'warning' => 'Letop, dit verwijderd de gebruiker en al zijn gegevens die zijn opgeslagen in het Hoomdossier. Weet u zeker dat u wilt doorgaan ?',
+                        'warning' => 'Let op: dit verwijdert de gebruiker en al zijn gegevens die zijn opgeslagen in het Hoomdossier. Weet u zeker dat u wilt doorgaan?',
                         'success' => 'Gebruiker is verwijderd',
                     ],
                 ],
@@ -329,6 +329,7 @@ return [
                         'users' => 'Gebruikers van uw coöperatie',
                         'create-user' => 'Voeg een gebruiker toe',
                         'assign-role' => 'Rollen toewijzen',
+                        'messages' => 'Berichten',
                     ],
 
                     'index' => [
@@ -551,7 +552,7 @@ return [
                                 'title' => 'Titel van het bericht',
                                 'select-coach' => 'Selecteer een coach',
                                 'submit' => 'Coach koppelen',
-                                'submit-warning' => 'Weet u zeker dat u deze coach met :name wilt koppelen ?',
+                                'submit-warning' => 'Weet u zeker dat u deze coach met :name wilt koppelen?',
                             ],
                         ],
                         'talk-to-coach' => [
@@ -560,12 +561,12 @@ return [
                             'form' => [
                                 'message-to-coach' => [
                                     'label' => 'Uw bericht aan de coach',
-                                    'placeholder' => 'Bijv: bent u beschikbaar de komende tijd ?',
+                                    'placeholder' => 'Bijv: bent u beschikbaar de komende tijd?',
                                 ],
                                 'title' => 'Titel van het bericht',
-                                'select-coach' => 'Naar welke coach wilt u dit bericht sturen ?',
+                                'select-coach' => 'Naar welke coach wilt u dit bericht sturen?',
                                 'submit' => 'Coach bericht sturen',
-//							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen ?'
+//							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen?'
                             ],
                         ],
                         'store' => [
@@ -984,7 +985,7 @@ return [
                 'coach-input' => [
                     'copy' => [
                         'title' => 'Neem coach antwoorden over',
-                        'help' => 'Weet u zeker dat u alle antwoorden van de coach wil overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de coach.',
+                        'help' => 'Weet u zeker dat u alle antwoorden van de coach wilt overnemen? Uw huidige antwoorden zullen worden overschreven door die van de coach.',
                     ],
                 ],
 

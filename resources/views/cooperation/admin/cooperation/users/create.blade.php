@@ -1,7 +1,7 @@
 @extends('cooperation.admin.cooperation.coordinator.layouts.app')
 @section('coordinator_content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.users.index.header')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</div>
 
         <div class="panel-body">
             <div class="row">

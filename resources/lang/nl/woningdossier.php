@@ -329,6 +329,7 @@ return [
                         'users' => 'Gebruikers van uw coöperatie',
                         'create-user' => 'Voeg een gebruiker toe',
                         'assign-role' => 'Rollen toewijzen',
+                        'messages' => 'Berichten',
                     ],
 
                     'index' => [

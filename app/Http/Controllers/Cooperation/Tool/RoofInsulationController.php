@@ -24,6 +24,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
@@ -382,7 +383,9 @@ class RoofInsulationController extends Controller
                 $roofInsulationValue = ElementValue::where('element_id', $roofInsulation->id)->where('id', $roofTypes[$cat]['element_value_id'])->first();
 
                 if ($roofInsulationValue instanceof ElementValue && $heating instanceof BuildingHeating && isset($advice)) {
-                    $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $roofInsulationValue, $user->energyHabit, $heating, $surface, $totalSurface, $advice);
+                    if ($user->energyHabit instanceof UserEnergyHabit) {
+                        $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $roofInsulationValue, $user->energyHabit, $heating, $surface, $totalSurface, $advice);
+                    }
                     $catData['savings_co2'] = Calculator::calculateCo2Savings($catData['savings_gas']);
                     $catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));
                     $catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice);

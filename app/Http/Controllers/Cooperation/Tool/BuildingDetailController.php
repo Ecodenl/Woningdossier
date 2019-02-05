@@ -43,7 +43,7 @@ class BuildingDetailController extends Controller
         $buildingTypeId = $request->get('building_type_id');
 
         // to get the old building features
-        $currentFeatures = BuildingFeature::where('building_id', HoomdossierSession::getBuilding())->first();
+	    $currentFeatures = $building->buildingFeatures;
 
         $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -62,17 +62,20 @@ class BuildingDetailController extends Controller
 
         // if there are no features yet, then we can apply the example building
         // else, we need to compare the old buildingtype and buildyear against that from the request, if those differ then we apply the example building again.
-        if (!$currentFeatures instanceof BuildingFeature && $exampleBuilding instanceof ExampleBuilding) {
-
-            $building->exampleBuilding()->associate($exampleBuilding);
-            $building->save();
-            ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+        if (!$currentFeatures instanceof BuildingFeature) {
+        	if ($exampleBuilding instanceof ExampleBuilding) {
+		        $building->exampleBuilding()->associate( $exampleBuilding );
+		        $building->save();
+		        ExampleBuildingService::apply( $exampleBuilding,
+			        $buildYear,
+			        $building );
+	        }
         } else {
             $currentBuildYear = $currentFeatures->build_year;
             $currentBuildingTypeId = $currentFeatures->building_type_id;
 
             // compare the old ones vs the request
-            if ($currentBuildYear != $buildYear || $currentBuildingTypeId != $buildingTypeId && $exampleBuilding instanceof ExampleBuilding) {
+            if (($currentBuildYear != $buildYear || $currentBuildingTypeId != $buildingTypeId) && $exampleBuilding instanceof ExampleBuilding) {
                 $building->exampleBuilding()->associate($exampleBuilding);
                 $building->save();
                 ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);

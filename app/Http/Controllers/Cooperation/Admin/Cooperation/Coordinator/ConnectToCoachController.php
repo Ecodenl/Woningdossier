@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Cooperation\Coordinator\ConnectToCoachRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\Cooperation\Coordinator;
+namespace App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Rules\AlphaSpace;
 use App\Rules\HouseNumber;

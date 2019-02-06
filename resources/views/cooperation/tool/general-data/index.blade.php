@@ -28,7 +28,7 @@
                                             @endif
                                             value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                 @endforeach
-                                <option value="" @if((empty(old('example_building_id', $building->example_building_id)) || !$exampleBuildings->contains('id', '=', $building->example_building_id)) && $building->hasCompleted($step))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                                <option value="" @if(((empty(old('example_building_id', $building->example_building_id)) || !$exampleBuildings->contains('id', '=', $building->example_building_id)) && $building->hasCompleted($step)) || ($exampleBuildings->contains('cooperation_id', '!=', null) && !$building->hasCompleted($step)))selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
                             </select>
 
                             @if ($errors->has('example_building_id'))

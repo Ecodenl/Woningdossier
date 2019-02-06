@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\ToolSettingService;
 use Illuminate\Database\Eloquent\Model;
@@ -39,23 +40,26 @@ trait ToolSettingTrait
 
     public static function bootToolSettingTrait()
     {
+        // we set the has changed to true if the example_building_id was already filled and to false if its null.
         static::created(function (Model $model) {
+            $building = Building::find(HoomdossierSession::getBuilding());
+            $hasChanged = $building->example_building_id === null ? false : true;
+
             $inputSourceId = self::getInputSourceId($model);
 
             if (! is_null($inputSourceId)) {
-                ToolSettingService::setChanged(HoomdossierSession::getBuilding(),
-                    $inputSourceId,
-                    true);
+                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $inputSourceId, $hasChanged);
             }
         });
 
         static::updated(function (Model $model) {
+            $building = Building::find(HoomdossierSession::getBuilding());
+            $hasChanged = $building->example_building_id === null ? false : true;
+
             $inputSourceId = self::getInputSourceId($model);
 
             if (! is_null($inputSourceId)) {
-                ToolSettingService::setChanged(HoomdossierSession::getBuilding(),
-                    $inputSourceId,
-                    true);
+                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $inputSourceId, $hasChanged);
             }
         });
     }

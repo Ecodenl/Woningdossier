@@ -64,11 +64,11 @@ class BuildingDetailController extends Controller
         // else, we need to compare the old buildingtype and buildyear against that from the request, if those differ then we apply the example building again.
         if (!$currentFeatures instanceof BuildingFeature) {
         	if ($exampleBuilding instanceof ExampleBuilding) {
-		        $building->exampleBuilding()->associate( $exampleBuilding );
-		        $building->save();
-		        ExampleBuildingService::apply( $exampleBuilding,
-			        $buildYear,
-			        $building );
+		        ExampleBuildingService::apply( $exampleBuilding, $buildYear, $building );
+
+		        // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
+                $building->exampleBuilding()->associate( $exampleBuilding );
+                $building->save();
 	        }
         } else {
             $currentBuildYear = $currentFeatures->build_year;
@@ -76,9 +76,11 @@ class BuildingDetailController extends Controller
 
             // compare the old ones vs the request
             if (($currentBuildYear != $buildYear || $currentBuildingTypeId != $buildingTypeId) && $exampleBuilding instanceof ExampleBuilding) {
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
                 $building->exampleBuilding()->associate($exampleBuilding);
                 $building->save();
-                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
             }
         }
         // finish the step

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
+use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -61,7 +62,8 @@ class ToolSetting extends Model
      */
     public static function getChangedSettings(int $buildingId)
     {
-        $toolSettings = self::where('building_id', $buildingId)
+        $toolSettings = self::withoutGlobalScope(GetValueScope::class)
+            ->where('building_id', $buildingId)
             ->where('changed_input_source_id', '!=', HoomdossierSession::getInputSource())
             ->get();
 

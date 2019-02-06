@@ -1,4 +1,4 @@
-@extends('cooperation.admin.layouts.app')
+@extends('cooperation.admin.layouts.app', ['menu' => false])
 
 @section('content')
     <div class="container">

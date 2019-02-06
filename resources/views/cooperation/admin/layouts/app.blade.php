@@ -38,10 +38,17 @@
 
     <div class="container">
         <div class="row">
+        @if(!isset($menu) || $menu == true)
             @include('cooperation.admin.layouts.sidebar-menu')
             <div class="col-md-9">
                 @yield('content')
             </div>
+        @else
+            <div class="col-md-12">
+                @yield('content')
+            </div>
+        @endif
+
         </div>
     </div>
 

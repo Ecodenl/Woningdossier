@@ -69,9 +69,9 @@ class GeneralDataController extends Controller
         $buildingType = $building->getBuildingType();
         $exampleBuildings = collect([]);
         if ($buildingType instanceof BuildingType) {
-            $exampleBuildings = ExampleBuilding::forMyCooperation()->where('building_type_id',
-                '=',
-                $building->getBuildingType()->id)->get();
+            $exampleBuildings = ExampleBuilding::forMyCooperation()
+                ->where('building_type_id', '=', $building->getBuildingType()->id)
+                ->get();
         }
 
         $interests = Interest::orderBy('order')->get();

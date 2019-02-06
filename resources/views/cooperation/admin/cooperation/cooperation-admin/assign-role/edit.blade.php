@@ -1,6 +1,6 @@
-@extends('cooperation.admin.cooperation.cooperation-admin.layouts.app')
+@extends('cooperation.admin.app')
 
-@section('cooperation_admin_content')
+@section('content')
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.assign-roles.edit.header', ['firstName' => $user->first_name, 'lastName' => $user->last_name])</div>
 

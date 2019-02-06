@@ -1,6 +1,6 @@
-@extends('cooperation.admin.cooperation.coordinator.layouts.app')
+@extends('cooperation.admin.layouts.app')
 
-@section('coordinator_content')
+@section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.edit.header', ['street' => $building->street, 'postal_code' => $building->postal_code])

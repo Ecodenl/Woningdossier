@@ -1,6 +1,6 @@
-@extends('cooperation.admin.cooperation.coordinator.layouts.app')
+@extends('cooperation.admin.layouts.app')
 
-@section('coordinator_content')
+@section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
             @include('cooperation.layouts.chat.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId, 'isPublic' => $isPublic])

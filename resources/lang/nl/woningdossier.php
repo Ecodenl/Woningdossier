@@ -47,6 +47,11 @@ return [
             'start' => 'Start',
         ],
         'admin' => [
+            'example-buildings' => [
+                'index' => [
+                    'header' => 'Voorbeeldwoningen'
+                ]
+            ],
             'super-admin' => [
                 'side-nav' => [
                     'label' => 'Super admin menu',
@@ -94,11 +99,6 @@ return [
                     'update' => [
                         'success' => 'Cooperatie is bijgewerkt.'
                     ],
-                ],
-                'example-buildings' => [
-                    'index' => [
-                        'header' => 'Voorbeeldwoningen'
-                    ]
                 ],
             ],
             'navbar' => [

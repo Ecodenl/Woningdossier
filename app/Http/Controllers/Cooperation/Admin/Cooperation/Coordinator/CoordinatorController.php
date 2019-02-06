@@ -9,6 +9,7 @@ class CoordinatorController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+
         $users = $cooperation->users;
 
         return view('cooperation.admin.cooperation.coordinator.index', compact('users'));

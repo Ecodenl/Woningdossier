@@ -171,7 +171,15 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::get('/', 'AdminController@index')->name('index');
             Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
+            Route::group(['middleware' => ['role:cooperation-admin|super-admin']], function () {
+                Route::resource('example-buildings', 'ExampleBuildingController');
+                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+            });
+
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
+
+                Route::resource('example-buildings', 'ExampleBuildingController');
+                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                     Route::get('', 'UserController@index')->name('index');
@@ -300,8 +308,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('edit', 'CooperationController@update')->name('update');
                 });
 
-                Route::resource('example-buildings', 'ExampleBuildingController');
-                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
             });
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {

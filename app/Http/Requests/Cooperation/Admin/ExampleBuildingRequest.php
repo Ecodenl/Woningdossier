@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Cooperation\Admin\SuperAdmin;
+namespace App\Http\Requests\Cooperation\Admin;
 
 use App\Helpers\Old;
 use Illuminate\Contracts\Validation\Validator;

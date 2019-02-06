@@ -1,6 +1,6 @@
-@extends('cooperation.admin.super-admin.layouts.app')
+@extends('cooperation.admin.layouts.app')
 
-@section('super_admin_content')
+@section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.super-admin.cooperations.create.header')

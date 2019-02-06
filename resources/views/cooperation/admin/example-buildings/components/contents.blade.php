@@ -17,11 +17,11 @@
     @if(isset($exampleBuilding) && $exampleBuilding instanceof \App\Models\ExampleBuilding)
         @foreach($exampleBuilding->contents()->orderBy('build_year', 'asc')->get() as $content)
             <div role="tabpanel" class="tab-pane" id="{{ $content->id }}">
-                @include('cooperation.admin.super-admin.example-buildings.components.content-table', ['content' => $content])
+                @include('cooperation.admin.example-buildings.components.content-table', ['content' => $content])
             </div>
         @endforeach
     @endif
     <div role="tabpanel" class="tab-pane" id="new">
-        @include('cooperation.admin.super-admin.example-buildings.components.content-table', ['content' => null])
+        @include('cooperation.admin.example-buildings.components.content-table', ['content' => null])
     </div>
 </div>

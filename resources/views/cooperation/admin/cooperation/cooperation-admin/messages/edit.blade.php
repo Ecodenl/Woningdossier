@@ -1,4 +1,4 @@
-@extends('cooperation.admin.app')
+@extends('cooperation.admin.layouts.app')
 
 @section('content')
     <div class="panel panel-default">

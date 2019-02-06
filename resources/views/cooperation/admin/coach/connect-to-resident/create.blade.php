@@ -1,6 +1,6 @@
 @extends('cooperation.admin.layouts.app')
 
-@section('coach_content')
+@section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.coach.connect-to-resident.create.header', ['firstName' => $receiver->first_name, 'lastName' => $receiver->last_name])

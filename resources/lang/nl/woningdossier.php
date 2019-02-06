@@ -332,6 +332,12 @@ return [
                         'messages' => 'Berichten',
                     ],
 
+                    'messages' => [
+                        'index' => [
+                            'header' => 'Uw berichten / chats',
+                        ],
+                    ],
+
                     'index' => [
                         'header' => 'Welkom op het coöperatie admin panel',
 

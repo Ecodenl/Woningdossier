@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Cooperation\Coordinator\AssignRoleRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\AssignRoleRequest;
 use App\Models\Cooperation;
 use App\Models\User;
 use Spatie\Permission\Models\Role;

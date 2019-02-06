@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin\Cooperation\Coordinator;
+namespace App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator;
 
+use App\Rules\isUserMemberOfCooperation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MessageRequest extends FormRequest
+class ConnectToCoachRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +25,9 @@ class MessageRequest extends FormRequest
     public function rules()
     {
         return [
-            'message' => 'required',
+//            'title' => 'required|max:125',
+//            'message' => 'required',
+            'coach_id' => ['required', 'exists:users,id', new isUserMemberOfCooperation()],
         ];
     }
 }

@@ -1052,14 +1052,10 @@
                 }
             });
 
-            var previous_eb = $("select#example_building_id").val();
+            var previous_eb = parseInt('{{ $building->example_building_id }}');
 
-            $("select#example_building_id").on('focus', function () {
-                // Store the current value on focus and on change
-                previous_eb = this.value;
-            }).change(function() {
+            $("select#example_building_id").change(function() {
                 // Do something with the previous value after the change
-                //var buildYear = $("input[name='build_year']").val();
                 if (this.value !== previous_eb ){
                     if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
                         @if(App::environment('local'))
@@ -1079,7 +1075,15 @@
                         // Make sure the previous value is updated
                         previous_eb = this.value;
                     } else {
-                        $(this).val(previous_eb);
+                        if ( $("#select-box option[value='" + previous_eb + "']").val() === undefined) {
+                            @if(App::environment('local'))
+                            console.log("Prev: " + previous_eb + " does not exist. Setting to empty");
+                            @endif
+                            $(this).val("");
+                        }
+                        else {
+                            $(this).val(previous_eb);
+                        }
                     }
                 }
             });

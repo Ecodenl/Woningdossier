@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 use App\Events\ParticipantAddedEvent;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Cooperation\Coordinator\CoachRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\CoachRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;

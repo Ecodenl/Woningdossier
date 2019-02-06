@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Cooperation\Coordinator\MessageRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\MessageRequest;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\Cooperation\Coordinator;
+namespace App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator;
 
 use Illuminate\Foundation\Http\FormRequest;
 

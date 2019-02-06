@@ -14,7 +14,7 @@ class MessageRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user();
+        return \Auth::user()->hasRole('coordinator');
     }
 
     /**
@@ -26,7 +26,6 @@ class MessageRequest extends FormRequest
     {
         return [
             'message' => 'required',
-            'receiver_id' => ['required', new isUserMemberOfCooperation()],
         ];
     }
 }

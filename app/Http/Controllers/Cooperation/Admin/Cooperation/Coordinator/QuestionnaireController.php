@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Cooperation\Coordinator\QuestionnaireRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;

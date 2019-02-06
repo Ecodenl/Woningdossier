@@ -1,10 +1,10 @@
-@extends('cooperation.admin.super-admin.layouts.app')
+@extends('cooperation.admin.layouts.app')
 
-@section('super_admin_content')
+@section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.super-admin.example-buildings.index.header')
-            <a href="{{ route('cooperation.admin.super-admin.example-buildings.create') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Add new</a>
+            @lang('woningdossier.cooperation.admin.example-buildings.index.header')
+            <a href="{{ route('cooperation.admin.example-buildings.create') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Add new</a>
         </div>
 
         <div class="panel-body">
@@ -28,9 +28,9 @@
                                 <td>@if($exampleBuilding->cooperation instanceof \App\Models\Cooperation){{ $exampleBuilding->cooperation->name }}@else - @endif</td>
                                 <td>@if($exampleBuilding->is_default)<i class="glyphicon glyphicon-check"></i>@endif</td>
                                 <td>
-                                    <a href="{{ route('cooperation.admin.super-admin.example-buildings.copy', ['id' => $exampleBuilding->id]) }}" class="btn btn-info"><i class="glyphicon glyphicon-copy"></i></a>
-                                    <a href="{{ route('cooperation.admin.super-admin.example-buildings.edit', ['id' => $exampleBuilding->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
-                                    <form style="display:inline;" action="{{ route('cooperation.admin.super-admin.example-buildings.destroy', ['id' => $exampleBuilding->id]) }}" method="post">
+                                    <a href="{{ route('cooperation.admin.example-buildings.copy', ['id' => $exampleBuilding->id]) }}" class="btn btn-info"><i class="glyphicon glyphicon-copy"></i></a>
+                                    <a href="{{ route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                    <form style="display:inline;" action="{{ route('cooperation.admin.example-buildings.destroy', ['id' => $exampleBuilding->id]) }}" method="post">
                                         {{ method_field("DELETE") }}
                                         {{ csrf_field() }}
                                         <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>

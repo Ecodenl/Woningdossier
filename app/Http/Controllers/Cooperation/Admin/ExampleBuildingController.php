@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
+namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
@@ -8,7 +8,7 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\SuperAdmin\ExampleBuildingRequest;
+use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
@@ -47,7 +47,7 @@ class ExampleBuildingController extends Controller
 
         $exampleBuildings = $exampleBuildingsQuery->get();
 
-        return view('cooperation.admin.super-admin.example-buildings.index', compact('exampleBuildings'));
+        return view('cooperation.admin.example-buildings.index', compact('exampleBuildings'));
     }
 
     /**
@@ -62,7 +62,7 @@ class ExampleBuildingController extends Controller
 
         $contentStructure = $this->getContentStructure();
 
-        return view('cooperation.admin.super-admin.example-buildings.create',
+        return view('cooperation.admin.example-buildings.create',
             compact(
                 'buildingTypes', 'cooperations', 'contentStructure'
             )
@@ -76,16 +76,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(ExampleBuildingRequest $request)
     {
-        $this->validate($request, [
-            'building_type_id' => 'required|exists:building_types,id',
-            'cooperation_id' => 'nullable|exists:cooperations,id',
-            'is_default' => 'required|boolean',
-            'order' => 'nullable|numeric|min:0',
-            'content.*.build_year' => 'nullable|numeric|min:1500|max:2025',
-        ]);
-
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
@@ -153,7 +145,7 @@ class ExampleBuildingController extends Controller
 
         $contentStructure = $this->getContentStructure();
 
-        return view('cooperation.admin.super-admin.example-buildings.edit',
+        return view('cooperation.admin.example-buildings.edit',
             compact(
                 'exampleBuilding', 'buildingTypes',
                 'cooperations', 'contentStructure'

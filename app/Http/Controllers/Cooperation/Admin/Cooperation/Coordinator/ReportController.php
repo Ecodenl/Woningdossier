@@ -7,10 +7,12 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
+use App\Scopes\GetValueScope;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
 
@@ -143,6 +145,9 @@ class ReportController extends Controller
         // new array for the userdata
         $rows = [];
 
+        // since we only want the reports from the resident
+        $residentInputSource = InputSource::findByShort('resident');
+
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
@@ -166,8 +171,15 @@ class ReportController extends Controller
                     $row[$key][$startYear] = '';
                 }
 
+                // get the action plan advices for the user, but only for the resident his input source
+                $userActionPlanAdvices = $user
+                    ->actionPlanAdvices()
+                    ->withOutGlobalScope(GetValueScope::class)
+                    ->where('input_source_id', $residentInputSource->id)
+                    ->get();
+
                 // get the user measures / advices
-                foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
+                foreach ($userActionPlanAdvices as $actionPlanAdvice) {
                     $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
                     $measureName = $actionPlanAdvice->measureApplication->measure_name;
 
@@ -225,6 +237,9 @@ class ReportController extends Controller
         // new array for the userdata
         $rows = [];
 
+        // since we only want the reports from the resident
+        $residentInputSource = InputSource::findByShort('resident');
+
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
@@ -248,8 +263,16 @@ class ReportController extends Controller
                     $row[$key][$measure->measure_name] = '';
                 }
 
+
+                // get the action plan advices for the user, but only for the resident his input source
+                $userActionPlanAdvices = $user
+                    ->actionPlanAdvices()
+                    ->withOutGlobalScope(GetValueScope::class)
+                    ->where('input_source_id', $residentInputSource->id)
+                    ->get();
+
                 // get the user measures / advices
-                foreach ($user->actionPlanAdvices as $actionPlanAdvice) {
+                foreach ($userActionPlanAdvices as $actionPlanAdvice) {
                     $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
                     $measureName = $actionPlanAdvice->measureApplication->measure_name;
 

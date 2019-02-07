@@ -324,7 +324,7 @@
                 <div class="row" id="cavity-wall-alert" style="display: none;">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
-                            <b><p>{{\App\Helpers\Translation::translate('wall-insulation.alert.description.title')}}</p></b>
+                            <p><strong>@lang('woningdossier.cooperation.tool.wall-insulation.alert.description')</strong></p>
                         </div>
                     </div>
                 </div>

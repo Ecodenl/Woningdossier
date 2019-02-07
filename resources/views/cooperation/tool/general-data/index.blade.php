@@ -1068,6 +1068,10 @@
                         console.log("Let's save it. EB id: " + this.value);
                         @endif
 
+                        // Firefox fix, who else thinks that stuff has changed
+                        $(this).closest('form').trigger('reinitialize.areYouSure');
+                        // End Firefox fix
+
                         $.ajax({
                             type: "POST",
                             url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
@@ -1105,7 +1109,10 @@
                     $('#house-ventilation').parent().parent().parent().next().next().show();
                 } else {
                     $('#house-ventilation').parent().parent().parent().next().next().hide();
-                    $('#house-ventilation').parent().parent().parent().next().next().find('input').val("");
+                    if($('#house-ventilation').parent().parent().parent().next().next().find('input').val().trim() !== "") {
+                        console.log("Adjusting house ventilation");
+                        $('#house-ventilation').parent().parent().parent().next().next().find('input').val("");
+                    }
                 }
             });
 
@@ -1119,7 +1126,10 @@
                     extraField.show();
                 } else {
                     extraField.hide();
-                    extraField.find('input').val("");
+                    if (extraField.find('input').val().trim() !== "") {
+                        console.log("Adjusting sun panel year");
+                        extraField.find('input').val("");
+                    }
                 }
 
             });
@@ -1142,10 +1152,11 @@
 
             $("#total-sun-panels").trigger('change');
 
+
+            // Firefox fix, who else thinks that stuff has changed
             document.getElementById("main-form").reset();
-            // after everything is loaded, remove the class dirty from the main form
-            // on load the class dirty is added due to the .reset()
-            $('#main-form').removeClass('dirty');
+            $('#main-form').trigger('reinitialize.areYouSure');
+            // End Firefox fix
         });
     </script>
 @endpush

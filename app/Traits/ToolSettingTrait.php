@@ -43,7 +43,12 @@ trait ToolSettingTrait
         // we set the has changed to true if the example_building_id was already filled and to false if its null.
         static::created(function (Model $model) {
             $building = Building::find(HoomdossierSession::getBuilding());
-            $hasChanged = $building->example_building_id === null ? false : true;
+
+            $hasChanged = false;
+
+            if ($building instanceof Building) {
+                $hasChanged = $building->example_building_id === null ? false : true;
+            }
 
             $inputSourceId = self::getInputSourceId($model);
 
@@ -54,7 +59,12 @@ trait ToolSettingTrait
 
         static::updated(function (Model $model) {
             $building = Building::find(HoomdossierSession::getBuilding());
-            $hasChanged = $building->example_building_id === null ? false : true;
+
+            $hasChanged = false;
+
+            if ($building instanceof Building) {
+                $hasChanged = $building->example_building_id === null ? false : true;
+            }
 
             $inputSourceId = self::getInputSourceId($model);
 

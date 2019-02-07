@@ -4,7 +4,7 @@
 
 @section('step_content')
 
-    <form class="form-horizontal" method="POST"
+    <form class="form-horizontal" method="POST" id="main-form"
           action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div class="row">
@@ -1051,6 +1051,7 @@
 
         $(document).ready(function () {
 
+            document.getElementById("main-form").reset();
             $(window).keydown(function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
@@ -1141,6 +1142,10 @@
             });
 
             $("#total-sun-panels").trigger('change');
+
+            // after everything is loaded, remove the class dirty from the main form
+            // on load the class dirty is added due to the .reset()
+            $('#main-form').removeClass('dirty');
         });
     </script>
 @endpush

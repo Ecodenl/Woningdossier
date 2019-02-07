@@ -519,16 +519,16 @@
                               // Hide the advice
                               $("#advice-help").hide();
                               // Hide the indications and measures
-                              $('#taking-into-account').hide();
-                              $('#indication-for-costs').hide();
+                              // $('#taking-into-account').hide();
+                              // $('#indication-for-costs').hide();
                           } else  {
                               // hide the alert
                               $('#cavity-wall-alert').hide();
 
                               // Show the advice
                               $("#advice-help").show();
-                              $('#taking-into-account').show();
-                              $('#indication-for-costs').show();
+                              // $('#taking-into-account').show();
+                              // $('#indication-for-costs').show();
                           }
 
                       }
@@ -607,10 +607,13 @@
         function checkInterestAndCurrentInsulation(){
             var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
+            console.log(elementCalculateValue);
             if (elementCalculateValue >= 3) {
+                console.log('hide');
                 $('.hideable').hide();
                 $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
             } else {
+                console.log('show');
                 $('.hideable').show();
                 $('#wall-insulation-info-alert').find('.alert').addClass('hide');
             }

@@ -53,7 +53,7 @@
                                 </td>
 
                                 <td>@if($lastBuildingStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastBuildingStatus->appointment_date))
-                                        {{$lastBuildingCoachStatus->appointment_date}}
+                                        {{$lastBuildingStatus->appointment_date}}
                                     @else
                                         @lang('woningdossier.cooperation.admin.cooperation.coordinator.building-access.index.no-appointment')
                                     @endif

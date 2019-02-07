@@ -1051,7 +1051,6 @@
 
         $(document).ready(function () {
 
-            document.getElementById("main-form").reset();
             $(window).keydown(function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
@@ -1143,6 +1142,7 @@
 
             $("#total-sun-panels").trigger('change');
 
+            document.getElementById("main-form").reset();
             // after everything is loaded, remove the class dirty from the main form
             // on load the class dirty is added due to the .reset()
             $('#main-form').removeClass('dirty');

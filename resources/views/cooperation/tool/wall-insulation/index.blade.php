@@ -324,7 +324,7 @@
                 <div class="row" id="cavity-wall-alert" style="display: none;">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
-                            <b><p>{{\App\Helpers\Translation::translate('wall-insulation.alert.description.title')}}</p></b>
+                            <p><strong>@lang('woningdossier.cooperation.tool.wall-insulation.alert.description')</strong></p>
                         </div>
                     </div>
                 </div>
@@ -458,7 +458,6 @@
                ]
            ])
 
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
@@ -519,16 +518,16 @@
                               // Hide the advice
                               $("#advice-help").hide();
                               // Hide the indications and measures
-                              $('#taking-into-account').hide();
-                              $('#indication-for-costs').hide();
+                              // $('#taking-into-account').hide();
+                              // $('#indication-for-costs').hide();
                           } else  {
                               // hide the alert
                               $('#cavity-wall-alert').hide();
 
                               // Show the advice
                               $("#advice-help").show();
-                              $('#taking-into-account').show();
-                              $('#indication-for-costs').show();
+                              // $('#taking-into-account').show();
+                              // $('#indication-for-costs').show();
                           }
 
                       }
@@ -607,10 +606,13 @@
         function checkInterestAndCurrentInsulation(){
             var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
+            console.log(elementCalculateValue);
             if (elementCalculateValue >= 3) {
+                console.log('hide');
                 $('.hideable').hide();
                 $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
             } else {
+                console.log('show');
                 $('.hideable').show();
                 $('#wall-insulation-info-alert').find('.alert').addClass('hide');
             }

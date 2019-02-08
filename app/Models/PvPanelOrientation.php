@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property string $short
  * @property int $order
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation whereId($value)

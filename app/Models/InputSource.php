@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * App\Models\InputSource.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $short
+ * @property int $order
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+class InputSource extends Model
+{
+    const RESIDENT_SHORT = 'resident';
+    const RESIDENT_COACH = 'coach';
+
+    public static function findByShort($short)
+    {
+        return self::where('short', $short)->first();
+    }
+
+    /**
+     * Check if the input source is a resident.
+     *
+     * @return bool
+     */
+    public function isResident(): bool
+    {
+        return self::RESIDENT_SHORT == $this->short;
+    }
+}

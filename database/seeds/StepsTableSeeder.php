@@ -13,12 +13,20 @@ class StepsTableSeeder extends Seeder
     {
         $steps = [
             [
+                'slug' => 'building-detail',
+                'names' => [
+                    'en' => 'Building details',
+                    'nl' => 'Woning details',
+                ],
+                'order' => 0,
+            ],
+            [
                 'slug' => 'general-data',
                 'names' => [
                     'en' => 'General data',
                     'nl' => 'Algemene gegevens',
                 ],
-                'order' => 0,
+                'order' => 1,
             ],
             [
                 'slug' => 'ventilation-information',
@@ -26,7 +34,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Ventilation information',
                     'nl' => 'Ventilatie informatie',
                 ],
-                'order' => 1,
+                'order' => 2,
             ],
             [
                 'slug' => 'wall-insulation',
@@ -34,7 +42,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Wall Insulation',
                     'nl' => 'Gevelisolatie',
                 ],
-                'order' => 2,
+                'order' => 3,
             ],
             [
                 'slug' => 'insulated-glazing',
@@ -42,7 +50,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Insulated Glazing',
                     'nl' => 'Isolerende beglazing',
                 ],
-                'order' => 3,
+                'order' => 4,
             ],
             [
                 'slug' => 'floor-insulation',
@@ -50,7 +58,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Floor Insulation',
                     'nl' => 'Vloerisolatie',
                 ],
-                'order' => 4,
+                'order' => 5,
             ],
             [
                 'slug' => 'roof-insulation',
@@ -58,7 +66,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Roof Insulation',
                     'nl' => 'Dakisolatie',
                 ],
-                'order' => 5,
+                'order' => 6,
             ],
             [
                 'slug' => 'high-efficiency-boiler',
@@ -66,7 +74,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'High Efficiency Boiler',
                     'nl' => 'HR CV-ketel',
                 ],
-                'order' => 6,
+                'order' => 7,
             ],
             [
                 'slug' => 'heat-pump',
@@ -74,7 +82,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Heat Pump',
                     'nl' => 'Warmtepomp',
                 ],
-                'order' => 7,
+                'order' => 8,
             ],
             [
                 'slug' => 'solar-panels',
@@ -82,7 +90,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Solar Panels',
                     'nl' => 'Zonnepanelen',
                 ],
-                'order' => 8,
+                'order' => 9,
             ],
             [
                 'slug' => 'heater',
@@ -90,7 +98,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Heater',
                     'nl' => 'Zonneboiler',
                 ],
-                'order' => 9,
+                'order' => 10,
             ],
         ];
 
@@ -104,11 +112,25 @@ class StepsTableSeeder extends Seeder
                 ]);
             }
 
-            \DB::table('steps')->insert([
-                'slug' => $step['slug'],
-                'name' => $uuid,
-                'order' => $step['order'],
-            ]);
+            if (!DB::table('steps')->where('slug', $step['slug'])->first() instanceof stdClass) {
+
+                \DB::table('steps')->insert([
+                    'slug' => $step['slug'],
+                    'name' => $uuid,
+                    'order' => $step['order'],
+                ]);
+            }
+        }
+
+        $allCooperations = \App\Models\Cooperation::all();
+
+        $steps = \App\Models\Step::all();
+
+        foreach ($allCooperations as $cooperation) {
+            foreach ($steps as $step) {
+                $cooperation->steps()->attach($step);
+                $cooperation->steps()->updateExistingPivot($step->id, ['order' => $step->order]);
+            }
         }
     }
 }

@@ -1,11 +1,14 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.my-account.layouts.app')
 
-@section('content')
+@section('my_account_content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-9">
                 <div class="panel panel-default">
-                    <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</div>
+                    <?php $building = $user->buildings->first(); ?>
+                    <div class="panel-heading">
+                        @lang('woningdossier.cooperation.my-account.settings.form.index.header')
+                    </div>
 
                     <div class="panel-body">
                         <form class="form-horizontal" method="POST" action="{{ route('cooperation.my-account.settings.store', ['cooperation' => $cooperation]) }}">
@@ -17,6 +20,23 @@
                                 <div class="col-md-8">
                                     {{--<input id="email" type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required autofocus>--}}
                                     <span>{{ $user->email }}</span>
+
+                                    @if ($errors->has('email'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('email') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                                <label for="email" class="col-md-4 control-label">@lang('auth.register.form.connected-address')</label>
+
+                                <div class="col-md-8">
+                                    {{--<input id="email" type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required autofocus>--}}
+                                    <span>{{$building->street}} {{$building->number}} {{$building->extension}}</span>
+                                    <br>
+                                    <span>{{$building->postal_code}} {{$building->city}} </span>
 
                                     @if ($errors->has('email'))
                                         <span class="help-block">
@@ -119,7 +139,7 @@
 
 
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-9">
                 <div class="panel panel-default">
                     <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.form.reset-file.header')</div>
 
@@ -143,7 +163,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-9">
                 <div class="panel panel-default">
                     <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.form.destroy.header')</div>
 
@@ -176,6 +196,15 @@
         var areYouSure = '@lang('woningdossier.cooperation.my-account.settings.form.reset-file.are-you-sure')';
         $('#reset-account').click(function () {
             if (confirm(areYouSure)) {
+                $(this).closest('form').submit();
+            } else {
+                return false;
+                event.preventDefault();
+            }
+        });
+        var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure')';
+        $('#delete-account').click(function () {
+            if (confirm(areYouSureToDestroy)) {
                 $(this).closest('form').submit();
             } else {
                 return false;

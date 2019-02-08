@@ -30,7 +30,8 @@ class NumberFormatter
     protected static $reverseLocaleSeparators = [
         'nl' => [
             'decimal' => ',',
-            'thousands' => '', // different! If people fill in a dot, treat it like a comma (and so: a decimal)
+            'thousands' => '',
+            // different! If people fill in a dot, treat it like a comma (and so: a decimal)
         ],
         'en' => [
             'decimal' => '.',
@@ -45,12 +46,17 @@ class NumberFormatter
             $number = 0;
         }
 
-        return number_format(
+        // if the number is numeric we can format it
+        // else we return the value thats not a correct number
+        if (is_numeric($number)) {
+            return number_format(
                 $number,
                 $decimals,
                 self::$formatLocaleSeparators[$locale]['decimal'],
                 self::$formatLocaleSeparators[$locale]['thousands']
-        );
+            );
+        } else
+            return $number;
     }
 
     public static function reverseFormat($number)
@@ -60,12 +66,51 @@ class NumberFormatter
             $number = 0;
         }
 
+        $number = self::removeMultipleDecimals($number);
+
         $number = str_replace(
             [self::$reverseLocaleSeparators[$locale]['thousands'], ' '],
             ['', ''],
             $number
         );
 
-        return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'], '.', $number);
+        return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'],
+            '.',
+            $number);
+    }
+
+    protected static function removeMultipleDecimals($number)
+    {
+        $locale = app()->getLocale();
+        // check if multiple decimals were added to the input
+
+        if ($locale != 'en') {
+            // always for dot.
+            $number = self::countAndRemoveDownToOne($number, ".");
+        }
+
+        $number = self::countAndRemoveDownToOne($number, self::$reverseLocaleSeparators[$locale]['decimal']);
+
+        return $number;
+    }
+
+    /**
+     * We use a for while on purpose. In theory one could also use preg_replace,
+     * BUT: a dot is treated as a regex operator which is undesired.
+     *
+     * @param string $number
+     * @param string $sign
+     * @return string
+     */
+    protected static function countAndRemoveDownToOne($number, $sign)
+    {
+        $decimalSignCount = substr_count($number, '.');
+
+        $len = strlen($sign);
+        while ($decimalSignCount-- > 1 && ($pos = strpos($number, $sign)) !== false) {
+            $number = substr_replace($number, '', $pos, $len);
+        }
+
+        return $number;
     }
 }

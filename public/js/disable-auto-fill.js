@@ -1,0 +1,1 @@
+!function(t){t.fn.disableAutoFill=function(){var n=t(this).find("input"),a=Math.random().toString(36).replace(/[^a-z]+/g,""),i={},e={};t(n).each(function(n,o){e[n]=t(this).attr("name"),t(this).attr("name",a),i[n]=t(this).attr("name")}),t("form").on("submit",function(){Object.keys(i).forEach(function(a){t(n[a]).attr("name",e[a])})})}}(jQuery);

@@ -14,11 +14,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $service_type_id
  * @property int $order
  * @property string $info
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\ServiceType $serviceType
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ServiceValue[] $values
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Service whereId($value)

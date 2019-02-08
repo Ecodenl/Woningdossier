@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -15,13 +16,18 @@ use Illuminate\Support\Collection;
  * @property int|null $cooperation_id
  * @property int|null $order
  * @property bool $is_default
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\BuildingType|null $buildingType
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
  * @property \App\Models\Cooperation|null $cooperation
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forAnyOrMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding generic()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereBuildingTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereCooperationId($value)
@@ -71,6 +77,7 @@ class ExampleBuilding extends Model
                     $translation->delete();
                 }
             }
+            \Log::debug("Deleting done..");
         });
     }
 
@@ -99,11 +106,18 @@ class ExampleBuilding extends Model
      */
     public function getContentForYear($year)
     {
-        return $this->contents()
+        $content = $this->contents()
                     ->where('build_year', '<=', $year)
-                    ->orderBy('build_year')
-                    ->take(1)
-                    ->get();
+                    ->orderBy('build_year', 'desc')
+                    ->first();
+
+        if ($content instanceof ExampleBuildingContent) {
+            return $content;
+        }
+
+        return $this->contents()
+            ->whereNull('build_year')
+            ->first();
     }
 
     /**
@@ -136,8 +150,34 @@ class ExampleBuilding extends Model
      */
     public function scopeForMyCooperation($query)
     {
-        $cooperationId = \Session::get('cooperation', 0);
+        $cooperationId = ! empty(HoomdossierSession::getCooperation()) ? HoomdossierSession::getCooperation() : 0;
 
         return $query->where('cooperation_id', '=', $cooperationId);
+    }
+
+    /**
+     * Scope a query to only include buildings for my cooperation.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeForAnyOrMyCooperation($query)
+    {
+        $cooperationId = \Session::get('cooperation', 0);
+
+        return $query->where('cooperation_id', '=', $cooperationId)->orWhereNull('cooperation_id');
+    }
+
+    /**
+     * Scope on only generic example buildings.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeGeneric($query)
+    {
+        return $query->whereNull('cooperation_id');
     }
 }

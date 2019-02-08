@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
@@ -21,11 +23,12 @@ use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class WallInsulationController extends Controller
 {
@@ -46,12 +49,14 @@ class WallInsulationController extends Controller
     {
         $typeIds = [3];
 
-        $steps = Step::orderBy('order')->get();
         /** @var Building $building */
-        $building = \Auth::user()->buildings()->first();
-        // todo should use short here
-        $facadeInsulation = $building->buildingElements()->where('element_id', 3)->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+
+        $facadeInsulation = $building->getBuildingElement('wall-insulation');
         $buildingFeature = $building->buildingFeatures;
+        $buildingElements = $facadeInsulation->element;
+
+        $buildingFeaturesForMe = BuildingFeature::withoutGlobalScope(GetValueScope::class)->forMe()->get();
 
         /** @var BuildingElement $houseInsulation */
         $surfaces = FacadeSurface::orderBy('order')->get();
@@ -61,9 +66,10 @@ class WallInsulationController extends Controller
         $interests = Interest::orderBy('order')->get();
 
         return view('cooperation.tool.wall-insulation.index', compact(
-            'steps', 'building', 'facadeInsulation',
+             'building', 'facadeInsulation',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
-            'facadePlasteredSurfaces', 'facadeDamages'
+            'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
+            'buildingElements'
         ));
     }
 
@@ -76,9 +82,12 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-        $user = Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
-        $interests = $request->input('interest', '');
+        $interests = $request->input('interest', []);
         UserInterest::saveUserInterests($user, $interests);
 
         // Get all the values from the form
@@ -93,18 +102,15 @@ class WallInsulationController extends Controller
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
 
-        // get the user buildingfeature
-        $building = $user->buildings()->first();
-        $buildingFeatures = $building->buildingFeatures();
-
         // Element id's and values
         $elementId = key($wallInsulationQualities);
         $elementValueId = reset($wallInsulationQualities);
 
         // Save the wall insulation
-        BuildingElement::updateOrCreate(
+        $buildingElement = BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
                 'element_id' => $elementId,
             ],
             [
@@ -112,42 +118,56 @@ class WallInsulationController extends Controller
             ]
         );
 
-        // Update the building feature table with some fresh data
-        $buildingFeatures->update([
-            'facade_plastered_surface_id' => $plasteredWallSurface,
-            'wall_joints' => $wallJoints,
-            'cavity_wall' => $cavityWall,
-            'contaminated_wall_joints' => $wallJointsContaminated,
-            'wall_surface' => $wallSurface,
-            'insulation_wall_surface' => $insulationWallSurface,
-            'facade_damaged_paintwork_id' => $damagedPaintwork,
-            'additional_info' => $additionalInfo,
-            'facade_plastered_painted' => $facadePlasteredOrPainted,
-        ]);
+        $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
+            ],
+            [
+                'facade_plastered_surface_id' => $plasteredWallSurface,
+                'wall_joints' => $wallJoints,
+                'cavity_wall' => $cavityWall,
+                'contaminated_wall_joints' => $wallJointsContaminated,
+                'wall_surface' => $wallSurface,
+                'insulation_wall_surface' => $insulationWallSurface,
+                'facade_damaged_paintwork_id' => $damagedPaintwork,
+                'additional_info' => $additionalInfo,
+                'facade_plastered_painted' => $facadePlasteredOrPainted,
+            ]
+        );
 
         // Save progress
         $this->saveAdvices($request);
-        \Auth::user()->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $building->complete($this->step);
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)
     {
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();
@@ -166,7 +186,7 @@ class WallInsulationController extends Controller
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -180,8 +200,8 @@ class WallInsulationController extends Controller
         /**
          * @var Building
          */
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
         $energyHabits = $user->energyHabit;
 
         $cavityWall = $request->get('cavity_wall', -1);
@@ -200,27 +220,33 @@ class WallInsulationController extends Controller
         $advice = Temperature::WALL_INSULATION_JOINTS;
         if (1 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_JOINTS;
-            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
+            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
+            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif (2 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_FACADE;
-            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
+            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
+            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif (0 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_RESEARCH;
-            $result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.research');
+            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.research');
+            //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         }
+        $insulationAdvice = MeasureApplication::byShort($advice);
+        $result['insulation_advice'] = $insulationAdvice->measure_name;
 
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);
-        if ($elementValue instanceof ElementValue) {
+        if ($elementValue instanceof ElementValue && $energyHabits instanceof UserEnergyHabit) {
             $result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabits, $facadeSurface, $advice);
         }
 
         $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
         $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-        $result['cost_indication'] = Calculator::calculateCostIndication($facadeSurface, $advice);
+        $result['cost_indication'] = Calculator::calculateCostIndication($facadeSurface, $insulationAdvice);
         $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-        $measureApplication = MeasureApplication::translated('measure_name', 'Reparatie voegwerk', 'nl')->first(['measure_applications.*']);
+        $measureApplication = MeasureApplication::where('short', '=', 'repair-joint')->first();
+        //$measureApplication = MeasureApplication::translated('measure_name', 'Reparatie voegwerk', 'nl')->first(['measure_applications.*']);
         $surfaceId = $request->get('wall_joints', 1);
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -229,10 +255,11 @@ class WallInsulationController extends Controller
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
+        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['repair_joint'] = compact('costs', 'year');
 
-        $measureApplication = MeasureApplication::translated('measure_name', 'Reinigen metselwerk', 'nl')->first(['measure_applications.*']);
+        $measureApplication = MeasureApplication::where('short', '=', 'clean-brickwork')->first();
+        //$measureApplication = MeasureApplication::translated('measure_name', 'Reinigen metselwerk', 'nl')->first(['measure_applications.*']);
         $surfaceId = $request->get('contaminated_wall_joints', 1);
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -241,10 +268,11 @@ class WallInsulationController extends Controller
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
+        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['clean_brickwork'] = compact('costs', 'year');
 
-        $measureApplication = MeasureApplication::translated('measure_name', 'Impregneren gevel', 'nl')->first(['measure_applications.*']);
+        $measureApplication = MeasureApplication::where('short', '=', 'impregnate-wall')->first();
+        //$measureApplication = MeasureApplication::translated('measure_name', 'Impregneren gevel', 'nl')->first(['measure_applications.*']);
         $surfaceId = $request->get('contaminated_wall_joints', 1);
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
@@ -253,16 +281,15 @@ class WallInsulationController extends Controller
             $number = $wallJointsSurface->calculate_value;
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
-        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year);
+        $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
         $result['impregnate_wall'] = compact('costs', 'year');
 
-        // Note: this answer options are harcoded in template
+        // Note: these answer options are hardcoded in template
         $isPlastered = 2 != (int) $request->get('facade_plastered_painted', 2);
 
         if ($isPlastered) {
-            $measureApplication = MeasureApplication::translated('measure_name',
-                'Gevelschilderwerk op stuk- of metselwerk',
-                'nl')->first(['measure_applications.*']);
+            $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();
+            //$measureApplication = MeasureApplication::translated('measure_name', 'Gevelschilderwerk op stuk- of metselwerk', 'nl')->first(['measure_applications.*']);
             $surfaceId = $request->get('facade_plastered_surface_id');
             $facadePlasteredSurface = FacadePlasteredSurface::find($surfaceId);
             $damageId = $request->get('facade_damaged_paintwork_id');
@@ -276,7 +303,7 @@ class WallInsulationController extends Controller
             }
             $costs = Calculator::calculateMeasureApplicationCosts($measureApplication,
                 $number,
-                $year);
+                $year, false);
             $result['paint_wall'] = compact('costs', 'year');
         }
 

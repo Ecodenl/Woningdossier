@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/datepicker/datetimepicker.min.css') }}">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">
     @endif
@@ -22,91 +23,67 @@
         }
     </style>
     @stack('css')
+
+    <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
+
 </head>
 <body class="@yield('page_class')">
 <div id="app">
 
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" aria-expanded="false">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
-                <!-- Branding Image -->
-                <a class="navbar-brand" href="{{ route('cooperation.admin.index') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="app-navbar-collapse">
-            @if(App::environment() == 'local') {{-- currently only for local --}}
-            <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                            @lang('woningdossier.navbar.language')<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            @foreach(config('woningdossier.supported_locales') as $locale)
-                                @if(app()->getLocale() != $locale)
-                                    <li>
-                                        <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    </li>
-                </ul>
-            @endif
-
-            <!-- Right Side Of Navbar -->
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- Authentication Links -->
-                    @guest
-                    @else
-                        <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                        <li><a href="{{ route('cooperation.admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu">
-                                <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
-                                {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
-                                <li>
-                                    <a href="{{ route('cooperation.admin.logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('cooperation.admin.logout') }}" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    @endguest
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    @include('cooperation.admin.layouts.navbar')
     @include('cooperation.layouts.messages')
-    @yield('content')
+
+    <div class="container">
+        <div class="row">
+        @if(!isset($menu) || $menu == true)
+            @include('cooperation.admin.layouts.sidebar-menu')
+            <div class="col-md-9">
+                @yield('content')
+            </div>
+        @else
+            <div class="col-md-12">
+                @yield('content')
+            </div>
+        @endif
+
+        </div>
+    </div>
+
 
 </div>
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/moment/moment.js') }}"></script>
+<script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
 
+<script src="{{ asset('js/datatables.js') }}"></script>
+<script src="{{ asset('js/disable-auto-fill.js') }}"></script>
+<script src="{{asset('js/select2.js')}}"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.collapse').on('shown.bs.collapse', function () {
+            $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+        }).on('hidden.bs.collapse', function () {
+            $(this).parent().find(".glyphicon-chevron-up").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+        });
+    });
+
+    $.extend(true, $.fn.dataTable.defaults, {
+        language: {
+            url: "{{asset('js/datatables-dutch.json')}}"
+        }
+    });
+</script>
 @stack('js')
+{{--additional js code here--}}
 </body>
 </html>
+
+
+

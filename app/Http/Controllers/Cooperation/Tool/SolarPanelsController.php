@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
@@ -12,6 +13,7 @@ use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
 use App\Models\BuildingPvPanel;
 use App\Models\Cooperation;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
@@ -20,9 +22,10 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use App\Scopes\GetValueScope;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class SolarPanelsController extends Controller
 {
@@ -43,21 +46,19 @@ class SolarPanelsController extends Controller
     {
         $typeIds = [7];
 
-        $steps = Step::orderBy('order')->get();
-        $user = \Auth::user();
-        /**
-         * @var Building
-         */
-        $building = $user->buildings()->first();
-        $user->energyHabit;
-        $amountElectricity = ($user->energyHabit instanceof UserEnergyHabit) ? $user->energyHabit->amount_electricity : 0;
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
         $buildingPvPanels = $building->pvPanels;
+        $buildingPvPanelsForMe = $building->pvPanels()->forMe()->get();
+        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
 
         return view('cooperation.tool.solar-panels.index',
-            compact('pvPanelOrientations', 'amountElectricity',
-                'buildingPvPanels', 'steps', 'typeIds'
+            compact(
+                'building', 'pvPanelOrientations', 'buildingOwner',
+                'energyHabitsForMe', 'buildingPvPanels', 'typeIds',
+                'buildingPvPanelsForMe'
             )
         );
     }
@@ -71,16 +72,17 @@ class SolarPanelsController extends Controller
             'savings_money' => 0,
             'cost_indication' => 0,
             'interest_comparable' => 0,
+            'year' => null,
         ];
 
-        $user = \Auth::user();
-        $building = $user->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);
         $panels = $request->input('building_pv_panels.number', 0);
         $orientationId = $request->input('building_pv_panels.pv_panel_orientation_id', 0);
         $angle = $request->input('building_pv_panels.angle', 0);
+        $interests = $request->input('interest', '');
         $orientation = PvPanelOrientation::find($orientationId);
 
         $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
@@ -106,6 +108,19 @@ class SolarPanelsController extends Controller
             $result['savings_money'] = $result['yield_electricity'] * KeyFigures::COST_KWH;
             $result['cost_indication'] = $wp * KeyFigures::COST_WP;
             $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+
+            foreach ($interests as $type => $interestTypes) {
+                foreach ($interestTypes as $typeId => $interestId) {
+                    $interest = Interest::find($interestId);
+                }
+            }
+
+            $currentYear = Carbon::now()->year;
+            if (1 == $interest->calculate_value) {
+                $result['year'] = $currentYear;
+            } elseif (2 == $interest->calculate_value) {
+                $result['year'] = $currentYear + 5;
+            }
         }
 
         if ($helpFactor >= 0.84) {
@@ -137,7 +152,10 @@ class SolarPanelsController extends Controller
      */
     public function store(SolarPanelFormRequest $request)
     {
-        $user = Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
@@ -145,42 +163,57 @@ class SolarPanelsController extends Controller
         $interests = $request->input('interest', '');
         UserInterest::saveUserInterests($user, $interests);
 
-        $user->energyHabit()->update(['amount_electricity' => $habitAmountElectricity]);
+        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['amount_electricity' => $habitAmountElectricity]);
 
         $pvPanels = $request->input('building_pv_panels', '');
         $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : '';
         $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
+        $comment = $request->get('comment', '');
+        $comment = is_null($comment) ? '' : $comment;
 
-        BuildingPvPanel::updateOrCreate(
+        BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $user->buildings()->first()->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'peak_power' => $peakPower,
                 'number' => $number,
                 'pv_panel_orientation_id' => $orientation,
+                'comment' => $comment,
                 'angle' => $angle,
             ]
         );
 
         // Save progress
         $this->saveAdvices($request);
-        $user->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        $building->complete($this->step);
+        ($this->step);
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     protected function saveAdvices(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
@@ -188,7 +221,7 @@ class SolarPanelsController extends Controller
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
-                $actionPlanAdvice->user()->associate(Auth::user());
+                $actionPlanAdvice->user()->associate($user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);
                 $actionPlanAdvice->save();

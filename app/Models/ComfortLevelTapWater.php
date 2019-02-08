@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property int $calculate_value
  * @property int $order
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater whereCalculateValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater whereCreatedAt($value)

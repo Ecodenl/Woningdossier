@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\BuildingCurrentHeating;
 use App\Models\Cooperation;
 use App\Models\HeatSource;
 use App\Models\PresentHeatPump;
 use App\Models\Step;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class HeatPumpController extends Controller
 {
@@ -35,9 +36,8 @@ class HeatPumpController extends Controller
         $heatpumpTypes = PresentHeatPump::all();
         $buildingCurrentHeatings = BuildingCurrentHeating::all();
         $heatSources = HeatSource::all();
-        $steps = Step::orderBy('order')->get();
 
-        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes', 'steps', 'heatSources', 'buildingCurrentHeatings'));
+        return view('cooperation.tool.heat-pump.index', compact('heatpumpTypes', 'heatSources', 'buildingCurrentHeatings'));
     }
 
     /**
@@ -58,10 +58,18 @@ class HeatPumpController extends Controller
      */
     public function store(Request $request)
     {
-        Auth::user()->complete($this->step);
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $building->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     /**

@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ApplianceProperty[] $properties
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Appliance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Appliance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Appliance query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Appliance whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Appliance whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Appliance whereName($value)

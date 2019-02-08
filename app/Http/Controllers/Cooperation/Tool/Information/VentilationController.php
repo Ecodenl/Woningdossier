@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\Information;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Step;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class VentilationController extends Controller
 {
@@ -29,8 +30,6 @@ class VentilationController extends Controller
         // get the next page order
         $nextPage = $this->step->order + 1;
 
-        $steps = Step::orderBy('order')->get();
-
         return view('cooperation.tool.ventilation-information.index', compact('steps'));
     }
 
@@ -43,10 +42,18 @@ class VentilationController extends Controller
      */
     public function store(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
         // Save progress
-        Auth::user()->complete($this->step);
+        $building->complete($this->step);
         $cooperation = Cooperation::find($request->session()->get('cooperation'));
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

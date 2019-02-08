@@ -10,14 +10,17 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\BuildingElement $buildingElements
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureProperty[] $properties
  * @property \App\Models\ServiceType $serviceType
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Measure whereId($value)

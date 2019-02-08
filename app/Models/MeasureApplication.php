@@ -19,9 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $maintenance_interval
  * @property string $maintenance_unit
  * @property int $step_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereApplication($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereCostUnit($value)
@@ -41,4 +44,14 @@ use Illuminate\Database\Eloquent\Model;
 class MeasureApplication extends Model
 {
     use TranslatableTrait;
+
+    /**
+     * @param string $short
+     *
+     * @return MeasureApplication|Model|null|object
+     */
+    public static function byShort($short)
+    {
+        return self::where('short', '=', $short)->first();
+    }
 }

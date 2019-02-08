@@ -2,8 +2,11 @@
 
 namespace App\Helpers;
 
+use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\Questionnaire;
 use App\Models\Step;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 
 class StepHelper
@@ -70,9 +73,11 @@ class StepHelper
      */
     public static function hasInterestInStep(Step $step): bool
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
         if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
             foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
-                if (\Auth::user()->isInterestedInStep($type, $interestedIn)) {
+                if ($building->isInterestedInStep($type, $interestedIn)) {
                     return true;
                 }
             }
@@ -82,28 +87,62 @@ class StepHelper
     }
 
     /**
-     * Get the next step for a user where the user shows interest in.
+     * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
      *
-     * @return string
+     * @param Step          $current
+     * @param Questionnaire $currentQuestionnaire
+     *
+     * @return array
      */
-    public static function getNextStep(Step $current): string
+    public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array
     {
         // get all the steps
-        $steps = Step::orderBy('order')->get();
+        $steps = Cooperation::find(HoomdossierSession::getCooperation())->getActiveOrderedSteps();
         // create new collection for the completed steps
         $completedSteps = collect();
 
         $currentFound = false;
 
+        // count all the active questionnaires for the current step
+        $allActiveQuestionnairesForCurrentStepCount = $current->questionnaires()->active()->count();
+
+        // before we check for other pets we want to check if the current step has active additional questionnaires
+        // if it does and the user did not finish those we redirect to that tab
+        if ($current->hasQuestionnaires() && $allActiveQuestionnairesForCurrentStepCount > 0) {
+            // since it can be null
+            if ($currentQuestionnaire instanceof Questionnaire) {
+                // if so, get the next questionnaire in the right order
+                $nextQuestionnaire = $current->questionnaires()
+                    ->active()
+                    ->where('id', '!=', $currentQuestionnaire->id)
+                    ->where('order', '>', $currentQuestionnaire->order)
+                    ->orderBy('order')
+                    ->first();
+
+                // and return it with the tab id
+                if ($nextQuestionnaire instanceof Questionnaire) {
+                    return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
+                }
+            } else {
+                // else, we just redirect them to the first questionnaire.
+                $nextQuestionnaire = $current->questionnaires()->active()->orderBy('order')->first();
+
+                return ['route' => 'cooperation.tool.'.$current->slug.'.index', 'tab_id' => 'questionnaire-'.$nextQuestionnaire->id];
+            }
+        }
+
+        // the step does not have custom questionnaires or the user does not have uncompleted questionnaires left for that step.
+        // so we will redirect them to a next step.
+
         // remove the completed steps from the steps
         foreach ($steps as $step) {
-            if ($step != $current && ! $currentFound) {
+            if ($step->id != $current->id && ! $currentFound) {
                 $completedStep = $steps->search(function ($item) use ($step) {
                     return $item->id == $step->id;
                 });
 
                 $completedSteps->push($steps->pull($completedStep));
-            } elseif ($step == $current) {
+            } elseif ($step->id == $current->id) {
                 $currentFound = true;
 
                 $completedStep = $steps->search(function ($item) use ($step) {
@@ -112,18 +151,6 @@ class StepHelper
 
                 $completedSteps->push($steps->pull($completedStep));
             }
-
-            /*
-            if (\Auth::user()->hasCompleted($step)) {
-                // get the completed step
-                // $completedStep is the index of the collection item, so we can pull it from the steps itself
-                $completedStep = $steps->search(function ($item) use ($step) {
-                    return $item->id == $step->id;
-                });
-
-                $completedSteps->push($steps->pull($completedStep));
-            }
-            */
         }
 
         // since we pulled the completed steps of the collection
@@ -134,11 +161,11 @@ class StepHelper
             if (self::hasInterestInStep($nonCompletedStep)) {
                 $routeName = 'cooperation.tool.'.$nonCompletedStep->slug.'.index';
 
-                return $routeName;
+                return ['route' => $routeName, 'tab_id' => ''];
             }
         }
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan
-        return 'cooperation.tool.my-plan.index';
+        return ['route' => 'cooperation.tool.my-plan.index', 'tab_id' => ''];
     }
 }

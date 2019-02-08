@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,21 +12,30 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int|null $building_id
+ * @property int|null $input_source_id
  * @property int|null $appliance_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \App\Models\Appliance|null $appliance
  * @property \App\Models\Building|null $building
+ * @property \App\Models\InputSource|null $inputSource
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereApplianceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingAppliance extends Model
 {
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+
     public function building()
     {
         return $this->belongsTo(Building::class);

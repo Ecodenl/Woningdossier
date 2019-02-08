@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
@@ -28,9 +29,12 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use App\Scopes\GetValueScope;
+use App\Services\ToolSettingService;
+use App\Services\ModelService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingController extends Controller
 {
@@ -49,9 +53,6 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
         // we do not want the user to set his interests for this step
 //        $typeIds = [1, 2];
 
@@ -60,8 +61,8 @@ class InsulatedGlazingController extends Controller
         /**
          * @var Building
          */
-        $building = \Auth::user()->buildings->first();
-        $steps = Step::orderBy('order')->get();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
 
         $interests = Interest::orderBy('order')->get();
 
@@ -81,6 +82,9 @@ class InsulatedGlazingController extends Controller
         ];
 
         $buildingInsulatedGlazings = [];
+        $buildingInsulatedGlazingsForMe = [];
+
+        $buildingFeaturesForMe = $building->buildingFeatures->forMe()->get();
         $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
@@ -89,14 +93,19 @@ class InsulatedGlazingController extends Controller
             if ($measureApplication instanceof MeasureApplication) {
                 // get current situation
                 $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
+                $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
+
+                if (! $currentInsulatedGlazingInputs->isEmpty()) {
+                    $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
+                }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
-                $measureInterest = \Auth::user()->interests()
-                                                ->where('interested_in_type', 'measure_application')
-                                                ->where('interested_in_id', $measureApplication->id)
-                                                ->get();
+                $measureInterest = $buildingOwner->interests()
+                    ->where('interested_in_type', 'measure_application')
+                    ->where('interested_in_id', $measureApplication->id)
+                    ->first();
 
                 if ($measureInterest instanceof UserInterest) {
                     // We only have to check on the interest ID, so we don't put
@@ -108,22 +117,38 @@ class InsulatedGlazingController extends Controller
             }
         }
 
+//        $inputValues = $woodElements;
+//
+//        $x = $building;
+//        $z = $building->buildingElements()->forMe();
+//
+//        foreach ($inputValues->values()->orderBy('order')->get() as $i => $inputValue) {
+//            // returned 1 instance 2 null
+//            dump($z->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
+//            // returned 3 instances 0 null
+//            dump($x->buildingElements()->forMe()->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
+//        }
+
+        $myBuildingElements = BuildingElement::forMe()->get();
+        $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', 'measure_application')->get();
+
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'steps', 'interests',
+            'building', 'interests', 'myBuildingElements', 'buildingOwner', 'userInterestsForMe',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'userInterests', 'crackSealing', 'frames', 'woodElements',
-            'paintworkStatuses', 'woodRotStatuses'
+            'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
+            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
         ));
     }
 
     protected function saveAdvices(Request $request)
     {
+        $user = Building::find(HoomdossierSession::getBuilding())->user;
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->forStep($this->step)->delete();
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         foreach ($results['measure'] as $measureId => $data) {
             if (array_key_exists('costs', $data) && $data['costs'] > 0) {
@@ -132,7 +157,7 @@ class InsulatedGlazingController extends Controller
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -150,7 +175,7 @@ class InsulatedGlazingController extends Controller
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
-                    $actionPlanAdvice->user()->associate(Auth::user());
+                    $actionPlanAdvice->user()->associate($user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($this->step);
                     $actionPlanAdvice->save();
@@ -161,6 +186,9 @@ class InsulatedGlazingController extends Controller
 
     public function calculate(Request $request)
     {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -255,39 +283,51 @@ class InsulatedGlazingController extends Controller
                 $woodRotStatus = WoodRotStatus::find($buildingPaintworkStatuses['wood_rot_status_id']);
             }
             if (array_key_exists('last_painted_year', $buildingPaintworkStatuses)) {
-                $lastPaintedYear = $buildingPaintworkStatuses['last_painted_year'];
+	            $year = (int) $buildingPaintworkStatuses['last_painted_year'];
+	            if ($year > 1950){
+		            $lastPaintedYear = $year;
+	            }
             }
 
             $year = InsulatedGlazingCalculator::determineApplicationYear($measureApplication, $paintworkStatus, $woodRotStatus, $lastPaintedYear);
 
             $costs = Calculator::calculateMeasureApplicationCosts($measureApplication,
                 $number,
-                $year);
+                $year, false);
             $result['paintwork'] = compact('costs', 'year');
         }
 
         $result['crack-sealing'] = [
-            'cost' => 0,
-            'savings' => 0,
+            'costs' => 0,
+            'savings_gas' => 0,
         ];
 
-        $crackSealingId = $request->get('building_elements.crack-sealing', 0);
+        //$crackSealingId = $request->get('building_elements.crack-sealing', 0);
+        //$crackSealingElement = ElementValue::find($crackSealingId);
+        $crackSealing = Element::where('short', 'crack-sealing')->first();
+        $crackSealingId = 0;
+        if (array_key_exists($crackSealing->id, $buildingElements) && array_key_exists('crack-sealing', $buildingElements[$crackSealing->id])) {
+            $crackSealingId = (int) $buildingElements[$crackSealing->id]['crack-sealing'];
+        }
         $crackSealingElement = ElementValue::find($crackSealingId);
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
-            $energyHabit = \Auth::user()->energyHabits;
+            $energyHabit = $user->energyHabit;
             $gas = 0;
             if ($energyHabit instanceof UserEnergyHabit) {
                 $gas = $energyHabit->amount_gas;
             }
+
             if (2 == $crackSealingElement->calculate_value) {
-                $result['crack-sealing']['savings'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
+                $result['crack-sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
             } else {
-                $result['crack-sealing']['savings'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
+                $result['crack-sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
             }
 
             $measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
 
-            $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1);
+            $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1, null, false);
+            $result['crack-sealing']['savings_co2'] = Calculator::calculateCo2Savings($result['crack-sealing']['savings_gas']);
+            $result['crack-sealing']['savings_money'] = Calculator::calculateMoneySavings($result['crack-sealing']['savings_gas']);
         }
 
         return response()->json($result);
@@ -302,9 +342,11 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-        $user = Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = $building->user;
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
-        $building = $user->buildings()->first();
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
         // Saving the insulate glazings
@@ -317,10 +359,12 @@ class InsulatedGlazingController extends Controller
 
             // The interest for a measure
             $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
+
             // Update or Create the buildingInsulatedGlazing
-            BuildingInsulatedGlazing::updateOrCreate(
+            BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
-                    'building_id' => $building->id,
+                    'building_id' => $buildingId,
+                    'input_source_id' => $inputSourceId,
                     'measure_application_id' => $measureApplicationId,
                 ],
                 [
@@ -332,9 +376,10 @@ class InsulatedGlazingController extends Controller
                 ]
             );
             // We'll create the user interests for the measures or update it
-            UserInterest::updateOrCreate(
+            UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
                     'user_id' => $user->id,
+                    'input_source_id'    => $inputSourceId,
                     'interested_in_type' => 'measure_application',
                     'interested_in_id' => $measureApplicationId,
                 ],
@@ -350,10 +395,11 @@ class InsulatedGlazingController extends Controller
         $highestInterestLevel = $interests->unique('id')->min('calculate_value');
         // update the livingroomwindow interest level based of the highest interest level for the measure.
         $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
-        UserInterest::updateOrCreate(
+        UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'user_id'            => Auth::id(),
+                'user_id'            => $user->id,
                 'interested_in_type' => 'element',
+                'input_source_id'    => $inputSourceId,
                 'interested_in_id'   => $livingRoomWindowsElement->id,
             ],
             [
@@ -368,50 +414,56 @@ class InsulatedGlazingController extends Controller
             $elementValue = ElementValue::find(reset($elementValueId));
 
             if ($element instanceof Element && $elementValue instanceof ElementValue) {
-                $buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
-                if (! $buildingElement instanceof BuildingElement) {
-                    $buildingElement = new BuildingElement();
-                }
-                $buildingElement->elementValue()->associate($elementValue);
-                $buildingElement->element()->associate($element);
-                $buildingElement->building()->associate($building);
-                $buildingElement->save();
-            }
-        }
-
-        // Saving the wood building elements
-        // Get the wood elements
-        $woodElements = $request->input('building_elements.wood-elements.*.*');
-
-        if (isset($woodElements)) {
-            // Get the first key for the woodElementId
-            $woodElementId = key($request->input('building_elements.wood-elements'));
-
-            // Check if there are wood elements drop them
-            if (BuildingElement::where('element_id', $woodElementId)->count() > 0) {
-                BuildingElement::where('element_id', $woodElementId)->delete();
-            }
-
-            // Save the woodElements
-            foreach ($woodElements as $woodElementValueId) {
-                BuildingElement::create(
+                BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [
-                        'building_id' => $building->id,
-                        'element_id' => $woodElementId,
-                        'element_value_id' => $woodElementValueId,
+                        'element_id' => $element->id,
+                        'input_source_id' => $inputSourceId,
+                        'building_id' => $buildingId,
+                    ],
+                    [
+                        'element_value_id' => $elementValue->id,
                     ]
                 );
             }
         }
 
+        $woodElements = $request->input('building_elements.wood-elements', []);
+
+        $woodElementCreateData = [];
+        foreach ($woodElements as $woodElementId => $woodElementValueIds) {
+            // add the data we need to perform a create
+            foreach ($woodElementValueIds as $woodElementValueId) {
+                array_push($woodElementCreateData, ['element_value_id' => $woodElementValueId]);
+            }
+
+            ModelService::deleteAndCreate(BuildingElement::class,
+                [
+                    'building_id' => $buildingId,
+                    'element_id' => $woodElementId,
+                    'input_source_id' => $inputSourceId,
+                ],
+                $woodElementCreateData
+            );
+        }
+
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
-        BuildingPaintworkStatus::updateOrCreate(
+
+	    $lastPaintedYear = 2000;
+	    if (array_key_exists('last_painted_year', $paintWorkStatuses)) {
+		    $year = (int) $paintWorkStatuses['last_painted_year'];
+		    if ($year > 1950){
+		    	$lastPaintedYear = $year;
+		    }
+	    }
+
+        BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
             ],
             [
-                'last_painted_year' => $paintWorkStatuses['last_painted_year'],
+                'last_painted_year' => $lastPaintedYear,
                 'paintwork_status_id' => $paintWorkStatuses['paintwork_status_id'],
                 'wood_rot_status_id' => $paintWorkStatuses['paintwork_status_id'],
             ]
@@ -419,15 +471,29 @@ class InsulatedGlazingController extends Controller
 
         // Save the window surface to the building feature
         $windowSurface = $request->get('window_surface', '');
-        BuildingFeature::where('building_id', $building->id)->first()->update([
-            'window_surface' => $windowSurface,
-        ]);
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
+            ],
+            [
+                'window_surface' => $windowSurface,
+            ]
+        );
 
         $this->saveAdvices($request);
         // Save progress
-        $user->complete($this->step);
-        $cooperation = Cooperation::find($request->session()->get('cooperation'));
+        $building->complete($this->step);
+        ($this->step);
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

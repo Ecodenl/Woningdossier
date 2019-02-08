@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
+use App\Scopes\GetValueScope;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -23,22 +26,26 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int $visit_count
  * @property int $active
  * @property bool $is_admin
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
  * @property \App\Models\UserEnergyHabit $energyHabit
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereConfirmToken($value)
@@ -105,10 +112,27 @@ class User extends Authenticatable
         return $this->hasOne(UserEnergyHabit::class);
     }
 
+    /**
+     * Return all the building notes a user has created.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function buildingNotes()
+    {
+        return $this->hasMany(BuildingNotes::class, 'coach_id', 'id');
+    }
+
+    public function userActionPlanAdviceComments()
+    {
+        return $this->hasMany(UserActionPlanAdviceComments::class);
+    }
+
+    /*
     public function progress()
     {
         return $this->hasMany(UserProgress::class);
     }
+    */
 
     public function motivations()
     {
@@ -118,16 +142,6 @@ class User extends Authenticatable
     public function actionPlanAdvices()
     {
         return $this->hasMany(UserActionPlanAdvice::class);
-    }
-
-    /**
-     * Returns the user progress.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function completedSteps()
-    {
-        return $this->hasMany(UserProgress::class);
     }
 
     /**
@@ -149,6 +163,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Returns the first and last name, concatenated.
+     *
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
      * Returns a specific interested row for a specific type.
      *
      * @param $type
@@ -156,69 +180,17 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Model|null|object|static
      */
-    public function getInterestedType($type, $interestedInId)
+    public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
     {
+        if ($inputSource instanceof InputSource) {
+            return $this
+                ->interests()
+                ->withoutGlobalScope(GetValueScope::class)
+                ->where('input_source_id', $inputSource->id)
+                ->where('interested_in_type', $type)
+                ->where('interested_in_id', $interestedInId)->first();
+        }
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
-    }
-
-    /**
-     * check if a user is interested in a step.
-     *
-     * @param $type
-     * @param array $interestedInIds
-     *
-     * @return bool
-     */
-    public function isNotInterestedInStep($type, $interestedInIds = [])
-    {
-        // the interest ids that people select when they do not have any interest
-        $noInterestIds = [4, 5];
-
-        $interestedIds = [];
-
-        if (! is_array($interestedInIds)) {
-            $interestedInIds = [$interestedInIds];
-        }
-
-        // go through the elementid and get the user interest id to put them into the array
-        foreach ($interestedInIds as $key => $interestedInId) {
-            if ($this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
-                array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
-            }
-        }
-
-        // check if the user wants to do something with their glazing
-        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isInterestedInStep($type, $interestedInIds = [])
-    {
-        // the interest ids that people select when they do not have any interest
-        $noInterestIds = [4, 5];
-
-        $interestedIds = [];
-
-        if (! is_array($interestedInIds)) {
-            $interestedInIds = [$interestedInIds];
-        }
-
-        // go through the elementid and get the user interest id to put them into the array
-        foreach ($interestedInIds as $key => $interestedInId) {
-            if ($this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
-                array_push($interestedIds, $this->getInterestedType($type, $interestedInId)->interest_id);
-            }
-        }
-
-        // check if the user wants to do something with their glazing
-        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->getInterestedType($type, $interestedInId) instanceof UserInterest) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -237,9 +209,12 @@ class User extends Authenticatable
 
     public function complete(Step $step)
     {
+        \Log::debug(__METHOD__.' is still being used, this should not be');
+
         return UserProgress::firstOrCreate([
             'step_id' => $step->id,
-            'user_id' => \Auth::user()->id,
+            'input_source_id' => HoomdossierSession::getInputSource(),
+            'building_id' => HoomdossierSession::getBuilding(),
         ]);
     }
 
@@ -252,7 +227,9 @@ class User extends Authenticatable
      */
     public function hasCompleted(Step $step)
     {
-        return $this->completedSteps()->where('step_id', $step->id)->count() > 0;
+        \Log::debug(__METHOD__.'is still being used somewhere, this should not be');
+
+        return true;
     }
 
     /**
@@ -265,5 +242,195 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
+    }
+
+    /**
+     * Get the human readable role name based on the role name.
+     *
+     * @param $roleName
+     *
+     * @return mixed
+     */
+    public function getHumanReadableRoleName($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->first()->human_readable_name;
+    }
+
+    public function buildingPermissions()
+    {
+        return $this->hasMany('App\Models\BuildingPermission');
+    }
+
+    /**
+     * Check if a user had permissions for a specific building.
+     *
+     * @param $buildingId
+     *
+     * @return bool
+     */
+    public function hasBuildingPermission($buildingId): bool
+    {
+        if ($this->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isBuildingOwner(Building $building)
+    {
+        if ($this->buildings()->find($building->id) instanceof Building) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a user is not removed from the building coach status table.
+     *
+     * @param $buildingId
+     *
+     * @return bool
+     */
+    public function isRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        // get the last known coach status for the current coach
+        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)->where('building_id', $buildingId)->get()->last();
+
+        if ($buildingCoachStatus instanceof BuildingCoachStatus) {
+            // if the coach his last known building status for the current building is removed
+            // we return true, the user either removed from the building
+            if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the opposite of the isRemovedFromBuildingCoachStatus function.
+     *
+     * @param $buildingId
+     *
+     * @return bool
+     */
+    public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
+    }
+
+    /**
+     * Check if the logged in user is filling the tool for someone else.
+     *
+     * @return bool
+     */
+    public function isFillingToolForOtherBuilding(): bool
+    {
+        // if the building is not set it is null, so return false.
+        // this will only happen in very rare occasions (prob only on dev / local)
+        if (is_null(HoomdossierSession::getBuilding())) {
+            return false;
+        } else {
+            if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    /**
+     * Determine if the model has not (one of) the given role(s).
+     *
+     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     *
+     * @return bool
+     */
+    public function hasNotRole($roles): bool
+    {
+        return ! $this->hasRole($roles);
+    }
+
+    /**
+     * Check if a user has multiple roles.
+     *
+     * @return bool
+     */
+    public function hasMultipleRoles(): bool
+    {
+        if ($this->getRoleNames()->count() > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Function to check if a user has a role, and if the user has that role check if the role is set in the Hoomdossier session.
+     *
+     * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     *
+     * @return bool
+     */
+    public function hasRoleAndIsCurrentRole($roles): bool
+    {
+        // collect the role names from the gives roles.
+        $roleNames = [];
+        if (is_string($roles) && false !== strpos($roles, '|')) {
+            $roleNames = $this->convertPipeToArray($roles);
+        }
+
+        if (is_string($roles)) {
+            $roleNames = [$roles];
+        }
+
+        if (is_array($roles)) {
+            $roleNames = $roles;
+        }
+
+        if ($roles instanceof Role) {
+            $roleNames = [$roles->name];
+        }
+
+        if ($roles instanceof Collection) {
+            $this->hasRoleAndIsCurrentRole($roles->toArray());
+        }
+
+        // get the current role based on the session
+        $currentRole = Role::find(HoomdossierSession::getRole());
+
+        // check if the user has the role, and if the current role is set in the role
+        if ($this->hasRole($roles) && in_array($currentRole->name, $roleNames)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the user has one role.
+     *
+     * @return bool
+     */
+    public function hasNotMultipleRoles(): bool
+    {
+        return ! $this->hasMultipleRoles();
+    }
+
+    public function completedQuestionnaires()
+    {
+        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
+    }
+
+    /**
+     * Complete a questionnaire for a user.
+     *
+     * @param Questionnaire $questionnaire
+     */
+    public function completeQuestionnaire(Questionnaire $questionnaire)
+    {
+        $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
     }
 }

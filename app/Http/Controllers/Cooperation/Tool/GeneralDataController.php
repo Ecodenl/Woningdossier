@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneralDataFormRequest;
@@ -18,6 +20,7 @@ use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\PresentHeatPump;
@@ -32,8 +35,11 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
 use App\Models\Ventilation;
+use App\Scopes\GetValueScope;
+use App\Services\ExampleBuildingService;
+use App\Services\ModelService;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class GeneralDataController extends Controller
 {
@@ -41,7 +47,7 @@ class GeneralDataController extends Controller
 
     public function __construct(Request $request)
     {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
+        $slug = str_replace(['tool', '/'], '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
     }
 
@@ -52,12 +58,22 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
-        $building = \Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingOwner = $building->user;
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
-        $exampleBuildings = ExampleBuilding::forMyCooperation()->orderBy('order')->get();
+
+        //$exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
+        $buildingType = $building->getBuildingType();
+        $exampleBuildings = collect([]);
+        if ($buildingType instanceof BuildingType) {
+            $exampleBuildings = ExampleBuilding::forMyCooperation()
+                ->where('building_type_id', '=', $building->getBuildingType()->id)
+                ->get();
+        }
+
         $interests = Interest::orderBy('order')->get();
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows',
@@ -73,31 +89,78 @@ class GeneralDataController extends Controller
         $heatPumps = PresentHeatPump::all();
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
         $motivations = Motivation::orderBy('order')->get();
-        $energyHabit = Auth::user()->energyHabit;
-        $steps = Step::orderBy('order')->get();
+        $energyHabit = $buildingOwner->energyHabit;
+
+        // Get possible remarks from the coach on energy habits
+        $coachSource = InputSource::findByShort('coach');
+        $coachEnergyHabitRemarks = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)
+                                       ->where('user_id', $buildingOwner->id)
+                                       ->where('input_source_id', $coachSource->id)
+                                       ->first();
         $step = $this->step;
+        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
+        $userInterestsForMe = UserInterest::forMe()->get();
 
         return view('cooperation.tool.general-data.index', compact(
             'building', 'step',
+            'coachEnergyHabitRemarks', 'userInterestsForMe',
             'buildingTypes', 'roofTypes', 'energyLabels',
-            'exampleBuildings', 'interests', 'elements',
+            'exampleBuildings', 'interests', 'elements', 'userEnergyHabitsForMe',
             'insulations', 'houseVentilations', 'buildingHeatings', 'solarWaterHeaters',
             'centralHeatingAges', 'heatPumps', 'comfortLevelsTapWater',
-            'steps', 'motivations', 'energyHabit', 'services'
+             'motivations', 'energyHabit', 'services'
         ));
+    }
+
+    public function applyExampleBuilding(Request $request)
+    {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
+        $exampleBuildingId = $request->get('example_building_id', null);
+
+        $buildYear = $building->getBuildYear();
+
+        // There is one strange option: "Er is geen passende voorbeeldwoning"
+        if (is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            // No fitting? Try to set the generic.
+            $btype = $building->getBuildingType();
+            if ($btype instanceof BuildingType) {
+                $generic = ExampleBuilding::generic()->where('building_type_id', $btype->id)->first();
+                if ($generic instanceof ExampleBuilding) {
+                    $exampleBuildingId = $generic->id;
+                }
+            }
+            $building->example_building_id = null;
+            $building->save();
+        }
+
+        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id', $exampleBuildingId)->first();
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                $building->exampleBuilding()->associate($exampleBuilding);
+                $building->save();
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+                return response()->json();
+            }
+        }
+        // Something went wrong!
+        return response()->json([], 500);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param FormRequest $request
      *
      * @return \Illuminate\Http\Response
      */
     public function store(GeneralDataFormRequest $request)
     {
         /** @var Building $building */
-        $building = Auth::user()->buildings()->first();
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $buildingId = $building->id;
+        $inputSourceId = HoomdossierSession::getInputSource();
 
         $exampleBuildingId = $request->get('example_building_id', null);
         if (! is_null($exampleBuildingId)) {
@@ -109,20 +172,22 @@ class GeneralDataController extends Controller
             }
         }
 
-        $features = $building->buildingFeatures;
-        if (! $features instanceof BuildingFeature) {
-            $features = new BuildingFeature();
-        }
-        $features->build_year = $request->get('build_year');
-        $features->surface = $request->get('surface');
-        $features->monument = $request->get('monument', 0);
-        $features->building_layers = $request->get('building_layers');
+        $surface = NumberFormatter::reverseFormat($request->get('surface', 0));
+
+        $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $buildingId,
+                'input_source_id' => $inputSourceId,
+            ],
+            [
+                'surface' => $surface,
+                'monument' => $request->get('monument', 0),
+                'building_layers' => $request->get('building_layers'),
+            ]
+        );
 
         $energyLabel = EnergyLabel::find($request->get('energy_label_id'));
         $features->energyLabel()->associate($energyLabel);
-
-        $buildingType = BuildingType::find($request->get('building_type_id'));
-        $features->buildingType()->associate($buildingType);
 
         $roofType = RoofType::find($request->get('roof_type_id'));
         $features->roofType()->associate($roofType);
@@ -135,16 +200,16 @@ class GeneralDataController extends Controller
         // we will always set the interest level to 1 so the user can still go to the step.
         $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
         $yesOnShortTermInterest = Interest::where('calculate_value', 1)->first();
-        UserInterest::updateOrCreate(
+        $buildingOwner = Building::find($buildingId)->user;
+
+        UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'user_id'            => Auth::id(),
+                'user_id'            => $buildingOwner->id,
+                'input_source_id'    => $inputSourceId,
                 'interested_in_type' => 'element',
                 'interested_in_id'   => $livingRoomWindowsElement->id,
             ],
             [
-                'user_id'            => Auth::id(),
-                'interested_in_type' => 'element',
-                'interested_in_id'   => $livingRoomWindowsElement->id,
                 'interest_id'        => $yesOnShortTermInterest->id,
             ]
         );
@@ -157,27 +222,26 @@ class GeneralDataController extends Controller
             $elementInterestId = $request->input('user_interest.element.'.$elementId.'', '');
 
             if ($element instanceof Element && $elementValue instanceof ElementValue) {
-                $buildingElement = $building->buildingElements()->where('element_id', $element->id)->first();
-                if (! $buildingElement instanceof BuildingElement) {
-                    $buildingElement = new BuildingElement();
-                }
-                $buildingElement->elementValue()->associate($elementValue);
-                $buildingElement->element()->associate($element);
-                $buildingElement->building()->associate($building);
-                $buildingElement->save();
-
+                BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+                    [
+                        'element_id' => $element->id,
+                        'input_source_id' => $inputSourceId,
+                        'building_id' => $buildingId,
+                    ],
+                    [
+                        'element_value_id' => $elementValue->id,
+                    ]
+                );
                 if (! empty($elementInterestId)) {
                     // We'll create the user interests for the elements or update it
-                    UserInterest::updateOrCreate(
+                    UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
-                            'user_id'            => Auth::id(),
+                            'user_id'            => $buildingOwner->id,
+                            'input_source_id'    => $inputSourceId,
                             'interested_in_type' => 'element',
                             'interested_in_id'   => $elementId,
                         ],
                         [
-                            'user_id'            => Auth::id(),
-                            'interested_in_type' => 'element',
-                            'interested_in_id'   => $elementId,
                             'interest_id'        => $elementInterestId,
                         ]
                     );
@@ -200,12 +264,19 @@ class GeneralDataController extends Controller
             $serviceInterestId = $request->input('user_interest.service.'.$serviceId.'', '');
 
             if ($service instanceof Service) {
-                // get a building service
-                $buildingService = $building->buildingServices()->where('service_id', $service->id)->first();
+                $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+                    [
+                        'service_id' => $service->id,
+                        'input_source_id' => $inputSourceId,
+                        'building_id' => $buildingId,
+                    ],
+                    [
+                        'service_id' => $service->id,
+                        'input_source_id' => $inputSourceId,
+                        'building_id' => $buildingId,
+                    ]
+                );
 
-                if (! $buildingService instanceof BuildingService) {
-                    $buildingService = new BuildingService();
-                }
                 // check if the current service is a sun panel
                 // if so, we will need to put the value / valueId inside the extra field.
                 if ('total-sun-panels' == $service->short) {
@@ -221,22 +292,18 @@ class GeneralDataController extends Controller
                     $buildingService->serviceValue()->associate($serviceValue);
                 }
 
-                $buildingService->service()->associate($service);
-                $buildingService->building()->associate($building);
                 $buildingService->save();
 
                 // We'll create the user interests for the services or update it
                 if (! empty($serviceInterestId)) {
-                    UserInterest::updateOrCreate(
+                    UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                         [
-                            'user_id'            => Auth::id(),
+                            'user_id'            => $buildingOwner->id,
+                            'input_source_id'    => $inputSourceId,
                             'interested_in_type' => 'service',
                             'interested_in_id'   => $serviceId,
                         ],
                         [
-                            'user_id'            => Auth::id(),
-                            'interested_in_type' => 'service',
-                            'interested_in_id'   => $serviceId,
                             'interest_id'        => $serviceInterestId,
                         ]
                     );
@@ -244,29 +311,27 @@ class GeneralDataController extends Controller
             }
         }
 
-        // Check if the user already has a motivation
-        if (UserMotivation::where('user_id', Auth::id())->count() > 0) {
-            // if so drop the old ones
-            UserMotivation::where('user_id', Auth::id())->delete();
-        }
+        $motivationCreateData = [];
         // get the motivations
         foreach ($request->get('motivation', []) as $key => $motivationId) {
-            // Then save the UserMotivation
-            UserMotivation::create(
-                [
-                    'user_id' => Auth::id(),
-                    'motivation_id' => $motivationId,
-                    'order' => $key,
-                ]
-            );
+            $motivationCreateData[] = [
+                'motivation_id' => $motivationId,
+                'order' => $key,
+            ];
         }
-
-        UserEnergyHabit::updateOrCreate(
+        ModelService::deleteAndCreate(UserMotivation::class,
             [
-                'user_id' => Auth::id(),
+                'user_id' => $buildingOwner->id,
+            ],
+            $motivationCreateData
+        );
+
+        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'user_id' => $buildingOwner->id,
+                'input_source_id' => $inputSourceId,
             ],
             [
-                'user_id' => Auth::id(),
                 'resident_count' => $request->get('resident_count'),
                 'thermostat_high' => $request->get('thermostat_high', 20),
                 'thermostat_low' => $request->get('thermostat_low', 15),
@@ -284,9 +349,16 @@ class GeneralDataController extends Controller
         );
 
         // Save progress
-        \Auth::user()->complete($this->step);
+        $building->complete($this->step);
         $cooperation = Cooperation::find(\Session::get('cooperation'));
 
-        return redirect()->route(StepHelper::getNextStep($this->step), ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($this->step);
+        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

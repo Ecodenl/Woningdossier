@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.solar-panels.title'))
+@section('step_title', \App\Helpers\Translation::translate('solar-panels.title.title'))
 
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
@@ -9,21 +9,26 @@
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.solar-panels.title')</h4>
+                    @include('cooperation.layouts.section-title', ['translationKey' => 'solar-panels.title'])
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.amount_electricity') ? ' has-error' : '' }}">
-                        <label for="user_energy_habits_amount_electricity" class=" control-label"><i data-toggle="collapse" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.general-data.data-about-usage.electricity-consumption-past-year')</label>
+                        <label for="user_energy_habits_amount_electricity" class=" control-label">
+                            <i data-toggle="collapse" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.electra-usage.title')}}
+                        </label>
 
-                        <div class="input-group">
-                            <span class="input-group-addon">kWh / @lang('woningdossier.cooperation.tool.unit.year')</span>
-                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />
-                        </div>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
+                            <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
+                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_electricity', 0)) }}" />
+                            {{--<input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />--}}
+                        @endcomponent
 
                         <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.electra-usage.help')}}
                         </div>
 
                         @if ($errors->has('user_energy_habits.amount_electricity'))
@@ -37,19 +42,23 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.peak_power') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_peak_power" class=" control-label"><i data-toggle="collapse" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.peak-power')</label>
+                        <label for="building_pv_panels_peak_power" class=" control-label">
+                            <i data-toggle="collapse" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.peak-power.title')}}
+                        </label>
 
-                        <div class="input-group">
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers(), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'peak_power'])
                             <span class="input-group-addon">Wp</span>
                             <select id="building_pv_panels_peak_power" class="form-control" name="building_pv_panels[peak_power]">
-                                @foreach(range(260, 300, 5) as $peakPower)
+                                @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers() as $peakPower)
                                     <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        @endcomponent
 
                         <div id="peak-power-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.peak-power.help')}}
                         </div>
 
                         @if ($errors->has('building_pv_panels.peak_power'))
@@ -75,12 +84,20 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.number') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_number" class=" control-label"><i data-toggle="collapse" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.number')</label>
+                        <label for="building_pv_panels_number" class=" control-label">
+                            <i data-toggle="collapse" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.number.title')}}
+                        </label>
 
-                        <input type="number" min="0" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'number'])
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.solar-panels.amount')</span>
+                            <input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'number', 0)) }}" />
+                            {{--<input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />--}}
+                        @endcomponent
 
                         <div id="number-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.number.help')}}
                         </div>
                         @if ($errors->has('building_pv_panels.number'))
                             <span class="help-block">
@@ -93,16 +110,23 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.pv_panel_orientation_id') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_pv_panel_orientation_id" class=" control-label"><i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.pv-panel-orientation-id')</label>
+                        <label for="building_pv_panels_pv_panel_orientation_id" class=" control-label">
+                            <i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.pv-panel-orientation-id.title')}}
+                        </label>
 
-                        <select id="building_pv_panels_pv_panel_orientation_id" class="form-control" name="building_pv_panels[pv_panel_orientation_id]">
-                            @foreach($pvPanelOrientations as $pvPanelOrientation)
-                                <option @if(old('building_pv_panels.pv_panel_orientation_id') == $pvPanelOrientation->id || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->pv_panel_orientation_id == $pvPanelOrientation->id)) selected @endif value="{{ $pvPanelOrientation->id }}">{{ $pvPanelOrientation->name }}</option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => $pvPanelOrientations, 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'pv_panel_orientation_id'])
+                            <select id="building_pv_panels_pv_panel_orientation_id" class="form-control" name="building_pv_panels[pv_panel_orientation_id]">
+                                @foreach($pvPanelOrientations as $pvPanelOrientation)
+                                    <option @if(old('building_pv_panels.pv_panel_orientation_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'pv_panel_orientation_id')) == $pvPanelOrientation->id) selected="selected" @endif value="{{ $pvPanelOrientation->id }}">{{ $pvPanelOrientation->name }}</option>
+                                    {{--<option @if(old('building_pv_panels.pv_panel_orientation_id') == $pvPanelOrientation->id || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->pv_panel_orientation_id == $pvPanelOrientation->id)) selected @endif value="{{ $pvPanelOrientation->id }}">{{ $pvPanelOrientation->name }}</option>--}}
+                                @endforeach
+                            </select>
+                        @endcomponent
 
                         <div id="orientation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.pv-panel-orientation-id.help')}}
                         </div>
 
                         @if ($errors->has('building_pv_panels.pv_panel_orientation_id'))
@@ -116,19 +140,25 @@
 
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.angle') ? ' has-error' : '' }}">
-                        <label for="building_pv_panels_angle" class=" control-label"><i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.solar-panels.angle')</label>
+                        <label for="building_pv_panels_angle" class=" control-label">
+                            <i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('solar-panels.angle.title')}}
+                        </label>
 
-                        <div class="input-group">
+                        <?php \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(); ?>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles(), 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'angle'])
                             <span class="input-group-addon">&deg;</span>
                             <select id="building_pv_panels_angle" class="form-control" name="building_pv_panels[angle]">
-                                @foreach([10, 15, 20, 30, 40, 45, 50, 60, 70, 75, 90] as $angle)
-                                    <option @if(old('building_pv_panels.angle') == $angle || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>
+                                @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getAngles() as $angle)
+                                    <option @if(old('building_pv_panels.angle', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'angle')) == $angle) selected="selected" @endif value="{{ $angle }}">{{ $angle }}</option>
+                                    {{--<option @if(old('building_pv_panels.angle') == $angle || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->angle == $angle)) selected @endif value="{{ $angle }}">{{ $angle }}</option>--}}
                                 @endforeach
                             </select>
-                        </div>
+                        @endcomponent
 
                         <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            And i would like to have it to...
+                            {{\App\Helpers\Translation::translate('solar-panels.angle.help')}}
                         </div>
 
                         @if ($errors->has('building_pv_panels.angle'))
@@ -149,65 +179,89 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
+                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
+
+                        <textarea id="additional-info" class="form-control" name="comment">{{old('comment', isset($buildingPvPanels) ? $buildingPvPanels->comment : '')}}</textarea>
+
+                        <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
+                        </div>
+
+                        @if ($errors->has('comment'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('comment') }}</strong>
+                            </span>
+                        @endif
+
+                    </div>
+                </div>
+            </div>
+
+            @include('cooperation.tool.includes.comment', [
+                 'collection' => $buildingPvPanelsForMe,
+                 'commentColumn' => 'comment',
+                 'translation' => [
+                     'title' => 'general.specific-situation.title',
+                     'help' => 'general.specific-situation.help'
+                ]
+            ])
+
 
             <div id="indication-for-costs">
                 <hr>
-                <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.title')</h4>
+                @include('cooperation.layouts.section-title', [
+                    'translationKey' => 'solar-panels.indication-for-costs.title',
+                    'infoAlertId' => 'indication-for-costs-info'
+                ])
 
                 <div id="costs" class="row">
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.yield-electricity')</label>
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#yield-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.title')}}
+                            </label>
                             <div class="input-group">
-                                <span class="input-group-addon">kWh / @lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.year')</span>
+                                <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="yield_electricity" class="form-control disabled" disabled="" value="0">
+                            </div>
+                            <div id="yield-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.help')}}
                             </div>
                         </div>
                     </div>
+
                     <div class="col-sm-4">
                         <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.raise-own-consumption')</label>
+                            <label class="control-label">
+                                <i data-toggle="collapse" data-target="#raise-own-consumption-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title')}}
+                            </label>
                             <div class="input-group">
                                 <span class="input-group-addon">%</span>
                                 <input type="text" id="raise_own_consumption" class="form-control disabled" disabled="" value="0">
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.co2-savings')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.year')</span>
-                                <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
+                            <div id="raise-own-consumption-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.help')}}
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.savings-in-euro')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">€ / @lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.year')</span>
-                                <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.indicative-costs')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.indicative-costs')
                     </div>
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
-                            <label class="control-label">@lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.comparable-rate')</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.solar-panels.indication-for-costs.year')</span>
-                                <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                            </div>
-                        </div>
+                        @include('cooperation.layouts.indication-for-costs.comparable-rent')
                     </div>
                 </div>
             </div>
@@ -223,13 +277,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">@lang('default.buttons.download')</div>
+                        <div class="panel-heading">{{\App\Helpers\Translation::translate('general.download.title')}}</div>
                         <div class="panel-body">
                             <ol>
                                 <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Zonnepanelen.pdf')))))}}</a></li>
-                                <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_Zonnepanelen.pdf"; ?>
-                                <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
-
                             </ol>
                         </div>
                     </div>
@@ -246,6 +297,7 @@
             </div>
 
         </div>
+
     </form>
 @endsection
 
@@ -260,7 +312,7 @@
                 }
             });
 
-            $("select, input[type=radio], input[type=number]").change(formChange);
+            $("select, input[type=radio], input[type=text]").change(formChange);
 
             function formChange(){
                 var form = $(this).closest("form").serialize();

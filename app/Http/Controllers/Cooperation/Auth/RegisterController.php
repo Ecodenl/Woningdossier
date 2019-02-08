@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FillAddressRequest;
 use App\Http\Requests\RegisterFormRequest;
+use App\Http\Requests\ResendConfirmMailRequest;
+use App\Jobs\SendRequestAccountConfirmationEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
+use App\Models\Role;
 use App\Models\User;
 use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
@@ -47,7 +51,8 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        // middle ware on auth routes instead on controller
+//        $this->middleware('guest');
     }
 
     /**
@@ -91,16 +96,7 @@ class RegisterController extends Controller
      */
     public function register(RegisterFormRequest $request)
     {
-        //$this->validator($request->all())->validate();
-
         event(new Registered($user = $this->create($request->all())));
-
-        //$this->guard()->login($user);
-
-        /*
-        return $this->registered($request, $user)
-            ?: redirect($this->redirectPath())->with('success', trans('auth.register.form.message.success'));
-        */
 
         return redirect($this->redirectPath())->with('success', __('auth.register.form.message.success'));
     }
@@ -140,6 +136,9 @@ class RegisterController extends Controller
         $cooperation = Cooperation::find($cooperationId);
         $user->cooperations()->attach($cooperation);
 
+        $residentRole = Role::findByName('resident');
+        $user->roles()->attach($residentRole);
+
         return $user;
     }
 
@@ -167,18 +166,82 @@ class RegisterController extends Controller
             $user->confirm_token = null;
             $user->save();
 
+            if (0 == $user->roles()->count()) {
+                \Log::debug("A user confirmed his account and there was no role set, the id = {$user->id} we set the role to resident so no exception");
+
+                $residentRole = Role::findByName('resident');
+                $user->roles()->attach($residentRole);
+            }
+
             return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
         }
     }
 
-    public function fillAddress(Request $request)
+    /**
+     * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
+     *
+     * @param Cooperation $cooperation
+     * @param Request     $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkExistingEmail(Cooperation $cooperation, Request $request)
+    {
+        $email = $request->get('email');
+        $user = User::where('email', $email)->first();
+
+        $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
+
+        if ($user instanceof User) {
+            $response['email_exists'] = true;
+
+            // check if the is already attached
+            if ($user->cooperations->contains($cooperation)) {
+                $response['user_is_already_member_of_cooperation'] = true;
+            }
+
+            return response()->json($response);
+        } else {
+            return response()->json($response);
+        }
+    }
+
+    /**
+     * Connect the existing email to a cooperation.
+     *
+     * @param Cooperation $cooperation
+     * @param Request     $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function connectExistingAccount(Cooperation $cooperation, Request $request)
+    {
+        $email = $request->get('existing_email');
+        $user = User::where('email', $email)->first();
+
+        // okay, the user does exists
+        if ($user instanceof User) {
+            // check if the is already attached
+            if ($user->cooperations->contains($cooperation)) {
+                return redirect()->back();
+            }
+
+            $cooperation->users()->attach($user);
+
+            return redirect(url('login'))->with('account_connected', __('auth.register.form.message.account-connected'));
+        }
+
+        // user is playing, redirect them back
+        return redirect()->back();
+    }
+
+    public function fillAddress(FillAddressRequest $request)
     {
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
         $number = trim(strip_tags($request->get('number', '')));
         $extension = trim(strip_tags($request->get('house_number_extension', '')));
 
         $options = $this->getAddressData($postalCode, $number);
-
         $result = [];
         $dist = null;
         if (is_array($options) && count($options) > 0) {
@@ -189,14 +252,14 @@ class RegisterController extends Controller
                 if (! empty($houseNumberExtension) && ! empty($extension)) {
                     $newDist = levenshtein(strtolower($houseNumberExtension), strtolower($extension), 1, 10, 1);
                 }
-                if (is_null($dist) || isset($newDist) && $newDist < $dist) {
+                if ((is_null($dist) || isset($newDist) && $newDist < $dist) && is_array($option)) {
                     // best match
                     $result = [
-                        'id'                     => md5($option['bag_adresid']),
-                        'street'                 => $option['straat'],
-                        'number'                 => $option['huisnummer'],
+                        'id'                     => array_key_exists('bag_adresid', $option) ? md5($option['bag_adresid']) : '',
+                        'street'                 => array_key_exists('straat', $option) ? $option['straat'] : '',
+                        'number'                 => array_key_exists('huisnummer', $option) ? $option['huisnummer'] : '',
                         'house_number_extension' => $houseNumberExtension,
-                        'city'                   => $option['woonplaats'],
+                        'city'                   => array_key_exists('woonplaats', $option) ? $option['woonplaats'] : '',
                     ];
                     $dist = $newDist;
                 }
@@ -206,12 +269,35 @@ class RegisterController extends Controller
         return response()->json($result);
     }
 
+    public function formResendConfirmMail()
+    {
+        return view('cooperation.auth.resend-confirm-mail');
+    }
+
+    public function resendConfirmMail(ResendConfirmMailRequest $request)
+    {
+        $validated = $request->validated();
+
+        $user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
+
+        if (! $user instanceof User) {
+            return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])
+                             ->withInput()
+                             ->withErrors(['email' => trans('auth.confirm.email-error')]);
+        }
+
+        SendRequestAccountConfirmationEmail::dispatch($user);
+
+        return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.email-success'));
+    }
+
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
         \Log::debug($postalCode.' '.$number.' '.$pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
+
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
         if (! is_null($pointer)) {

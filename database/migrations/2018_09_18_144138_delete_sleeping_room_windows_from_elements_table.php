@@ -30,6 +30,5 @@ class DeleteSleepingRoomWindowsFromElementsTable extends Migration
      */
     public function down()
     {
-
     }
 }

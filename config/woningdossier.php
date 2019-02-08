@@ -21,5 +21,5 @@ return [
     | method.
     |
     */
-    'supported_locales' => ['nl', 'en'],
+    'supported_locales' => ['nl'],
 ];

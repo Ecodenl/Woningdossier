@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.boiler.title'))
+@section('step_title', \App\Helpers\Translation::translate('boiler.title.title'))
 
 
 @section('step_content')
@@ -8,14 +8,24 @@
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="start-information">
-            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.boiler.title')</h4>
+            @include('cooperation.layouts.section-title', ['translationKey' => 'boiler.title'])
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.current-gas-usage')</label>
-                        <div class="input-group">
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#current-gas-usage" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('boiler.current-gas-usage.title')}}
+                        </label>
+
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                             <span class="input-group-addon">m<sup>3</sup></span>
-                            <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">
+                            <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ old('habit.gas_usage', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_gas', 0)) }}">
+                            {{--<input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">--}}
+                        @endcomponent
+
+                        <div id="current-gas-usage" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('boiler.current-gas-usage.help')}}
                         </div>
 
                         @if ($errors->has('habit.gas_usage'))
@@ -27,12 +37,20 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.resident_count') ? ' has-error' : '' }}">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.resident-count')</label>
-                        <div class="input-group">
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#resident-count" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('boiler.resident-count.title')}}
+                        </label>
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'resident_count'])
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">
-                        </div>
+                            <input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ old('habit.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count', 0)) }}">
+                            {{--<input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">--}}
+                        @endcomponent
 
+                        <div id="resident-count" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('boiler.resident-count.help')}}
+                        </div>
                         @if ($errors->has('habit.resident_count'))
                             <span class="help-block">
                                     <strong>{{ $errors->first('habit.resident_count') }}</strong>
@@ -48,16 +66,22 @@
                 <div id="boiler-options" >
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.service_value_id') ? ' has-error' : '' }}">
-                            <label for="high_efficiency_boiler_id" class=" control-label"><i data-toggle="collapse" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.boiler.boiler-type') </label>
+                            <label for="high_efficiency_boiler_id" class=" control-label">
+                                <i data-toggle="collapse" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('boiler.boiler-type.title')}} </label>
 
-                            <select id="high_efficiency_boiler_id" class="form-control" name="building_services[{{ $boiler->id  }}][service_value_id]">
-                                @foreach($boilerTypes as $boilerType)
-                                    <option @if(old('building_services.' . $boiler->id . '.service_value_id') == $boilerType->id || ($installedBoiler instanceof \App\Models\BuildingService && $installedBoiler->service_value_id == $boilerType->id)) selected @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>
-                                @endforeach
-                            </select>
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'service_value_id'])
+                                <select id="high_efficiency_boiler_id" class="form-control" name="building_services[{{ $boiler->id  }}][service_value_id]">
+                                    @foreach($boilerTypes as $boilerType)
+                                        <option @if(old('building_services.' . $boiler->id . '.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'service_value_id')) == $boilerType->id) selected="selected" @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>
+                                        {{--<option @if(old('building_services.' . $boiler->id . '.service_value_id') == $boilerType->id || ($installedBoiler instanceof \App\Models\BuildingService && $installedBoiler->service_value_id == $boilerType->id)) selected @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>--}}
+                                    @endforeach
+                                </select>
+                            @endcomponent
 
                             <div id="high-efficiency-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                And i would like to have it to...
+                                {{\App\Helpers\Translation::translate('boiler.boiler-type.help')}}
                             </div>
 
                             @if ($errors->has('building_services.' . $boiler->id . '.service_value_id'))
@@ -74,17 +98,21 @@
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.extra') ? ' has-error' : '' }}">
                             <label for="high_efficiency_boiler_placed_date" class=" control-label">
                                 <i data-toggle="collapse" data-target="#high-efficiency-boiler-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                @lang('woningdossier.cooperation.tool.boiler.boiler-placed-date')
+                                {{\App\Helpers\Translation::translate('boiler.boiler-placed-date.title')}}
                             </label> <span> *</span>
 
                             <?php
                                 $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('date', $installedBoiler->extra)) ? $installedBoiler->extra['date'] : '';
                             ?>
 
-                            <input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'extra.date'])
+                                <input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'extra.date')) }}" name="building_services[{{ $boiler->id }}][extra]">
+                                {{--<input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">--}}
+                            @endcomponent
 
                             <div id="high-efficiency-boiler-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                And i would like to have it to...
+                                {{\App\Helpers\Translation::translate('boiler.boiler-placed-date.help')}}
                             </div>
 
                             @if ($errors->has('building_services.' . $boiler->id . '.extra'))
@@ -99,15 +127,23 @@
                     
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('default.form.input.comment') </label>
+                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                {{\App\Helpers\Translation::translate('general.specific-situation.title')}} </label>
                             <?php
                                 $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
+                                if (Auth::user()->hasRole('resident')) {
+                                    $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
+                                } elseif (Auth::user()->hasRole('coach')) {
+                                    $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
+
+                                    $default = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';
+                                }
                             ?>
 
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
 
                             <div id="comment" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                And i would like to have it to...
+                                {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
                             </div>
 
                             @if ($errors->has('comment'))
@@ -117,7 +153,6 @@
                             @endif
                         </div>
                     </div>
-                    
                 </div>
             </div>
 
@@ -131,78 +166,62 @@
         </div>
         <div id="indication-for-costs">
             <hr>
-            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.title')</h4>
+            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('boiler.indication-for-costs.title')}}</h4>
+
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.gas-savings')</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">m<sup>3</sup> / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
-                            <input type="text" id="savings_gas" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => 'boiler'])
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.co2-savings')</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kilograms') / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
-                            <input type="text" id="savings_co2" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => 'boiler'])
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.savings-in-euro')</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">€ / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
-                            <input type="text" id="savings_money" class="form-control disabled" disabled="" value="0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.indicative-replacement')</label>
+                        <label class="control-label">
+                            <i data-toggle="collapse" data-target="#replace-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.title')}}
+                        </label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                             <input type="text" id="replace_year" class="form-control disabled" disabled="" >
                         </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.indicative-costs')</label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                            <input type="text" id="cost_indication" class="form-control disabled" disabled="" value="0">
+                        <div id="replace-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.help')}}
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        <label class="control-label">@lang('woningdossier.cooperation.tool.boiler.indication-for-costs.comparable-rate')</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">% / @lang('woningdossier.cooperation.tool.boiler.indication-for-costs.year')</span>
-                            <input type="text" id="interest_comparable" class="form-control disabled" disabled="" value="0,0">
-                        </div>
-                    </div>
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                </div>
+                <div class="col-sm-4">
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
                 </div>
             </div>
         </div>
 
+        @include('cooperation.tool.includes.comment', [
+             'collection' => $installedBoilerForMe,
+             'commentColumn' => 'extra.comment',
+             'translation' => [
+                 'title' => 'general.specific-situation.title',
+                 'help' => 'general.specific-situation.help'
+            ]
+        ])
 
 
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-heading">{{\App\Helpers\Translation::translate('general.download.title')}}</div>
                     <div class="panel-body">
                         <ol>
                             <li><a download="" href="{{asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')))))}}</a></li>
-                            <?php $helpFile = "storage/hoomdossier-assets/Invul_hulp_CV-ketel.pdf"; ?>
-                            <li><a download="" href="{{asset($helpFile)}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($helpFile)))))}}</a></li>
-
                         </ol>
                     </div>
                 </div>

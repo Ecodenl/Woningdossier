@@ -12,95 +12,75 @@ class ExampleBuildingsTableSeeder extends Seeder
     public function run()
     {
         $exampleBuildings = [
-            /*[
-                'names' => [
-                    'nl' => 'Er is geen passende voorbeeldwoning',
-                ],
-                'order' => 99,
-            ],*/
             [
                 'names' => [
-                    'nl' => 'Tussenwoning, drie bouwlagen en plat dak',
+                    'nl' => 'Vrijstaande woning',
                 ],
-                'order' => 0,
+                'order' => 100,
+	            'building_type_id' => 1,
             ],
             [
                 'names' => [
-                    'nl' => 'Hoekwoning, drie bouwlagen en plat dak',
+                    'nl' => '2 onder 1 kap',
                 ],
-                'order' => 1,
+                'order' => 101,
+	            'building_type_id' => 2,
             ],
             [
                 'names' => [
-                    'nl' => 'Benedenwoning zonder opkamer (tussenwoning)',
+                    'nl' => 'Hoekwoning',
                 ],
-                'order' => 2,
+                'order' => 102,
+                'building_type_id' => 3,
             ],
             [
                 'names' => [
-                    'nl' => 'Benedenwoning zonder opkamer (hoekwoning)',
+                    'nl' => 'Tussenwoning',
                 ],
-                'order' => 3,
+                'order' => 103,
+                'building_type_id' => 4,
+            ],
+	        [
+		        'names' => [
+			        'nl' => 'Bovenwoning hoek',
+		        ],
+		        'order' => 104,
+		        'building_type_id' => 5,
+	        ],
+	        [
+		        'names' => [
+			        'nl' => 'Bovenwoning tussen',
+		        ],
+		        'order' => 105,
+		        'building_type_id' => 6,
+	        ],
+            [
+                'names' => [
+                    'nl' => 'Bovenwoning hoek',
+                ],
+                'order' => 106,
+                'building_type_id' => 7,
             ],
             [
                 'names' => [
-                    'nl' => 'Hoekhuis, twee bouwlagen en nieuwe dakopbouw',
+                    'nl' => 'Bovenwoning tussen',
                 ],
-                'order' => 6,
+                'order' => 107,
+                'building_type_id' => 8,
             ],
             [
                 'names' => [
-                    'nl' => 'Tussenwoning, twee bouwlagen en nieuwe dakopbouw',
+                    'nl' => 'Appartement tussen op een tussenverdieping',
                 ],
-                'order' => 7,
+                'order' => 108,
+                'building_type_id' => 9,
             ],
             [
                 'names' => [
-                    'nl' => 'Tussenwoning, twee bouwlagen en plat dak',
+                    'nl' => 'Appartement hoek op een tussenverdieping',
                 ],
-                'order' => 8,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Arbeidershuis, twee bouwlagen (tussenwoning)',
-                ],
-                'order' => 9,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Jaren \'30 tussenwoning met hellend dak',
-                ],
-                'order' => 10,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Jaren \'30 hoekwoning met hellend dak',
-                ],
-                'order' => 11,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Tussenwoning, drie bouwlagen en hellend dak',
-                ],
-                'order' => 12,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Hoekwoning, drie bouwlagen en hellend dak',
-                ],
-                'order' => 13,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Bovenwoning zonder opkamer (tussenwoning)',
-                ],
-                'order' => 4,
-            ],
-            [
-                'names' => [
-                    'nl' => 'Bovenwoning zonder opkamer (hoekwoning)',
-                ],
-                'order' => 5,
+                'order' => 109,
+                'building_type_id' => 10,
             ],
         ];
 
@@ -117,6 +97,7 @@ class ExampleBuildingsTableSeeder extends Seeder
             \DB::table('example_buildings')->insert([
                 'name' => $uuid,
                 'order' => $exampleBuilding['order'],
+	            'building_type_id' => $exampleBuilding['building_type_id'],
             ]);
         }
     }

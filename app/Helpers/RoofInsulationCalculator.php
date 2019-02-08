@@ -36,15 +36,18 @@ class RoofInsulationCalculator
 
     public static function determineApplicationYear(MeasureApplication $measureApplication, $last, $factor)
     {
-        self::debug(__METHOD__);
+        self::debug(__METHOD__.' ('.$measureApplication->measure_name.', '.$last.', '.$factor.')');
 
         $correctedMaintenanceInterval = ceil($factor * $measureApplication->maintenance_interval);
+
+        self::debug($correctedMaintenanceInterval.' = ceil('.$factor.' * '.$measureApplication->maintenance_interval.')');
 
         if ($last + $correctedMaintenanceInterval <= Carbon::now()->year) {
             self::debug('Last replacement is longer than '.$correctedMaintenanceInterval.' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $last + $correctedMaintenanceInterval;
+            self::debug($year.' = '.$last.' + '.$correctedMaintenanceInterval);
         }
 
         return $year;

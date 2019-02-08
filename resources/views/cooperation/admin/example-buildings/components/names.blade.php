@@ -1,8 +1,8 @@
 <?php
 // We want to unset keys once the input is placed
-$locales = array_flip(config( 'woningdossier.supported_locales' ));
+$locales = array_flip(config('woningdossier.supported_locales'));
 // default
-$translationKey = "";
+$translationKey = '';
 ?>
 @if(isset($exampleBuilding) && $exampleBuilding instanceof \App\Models\ExampleBuilding)
 {{-- edits --}}

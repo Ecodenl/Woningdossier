@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
+use App\Models\InputSource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -51,6 +56,24 @@ class LoginController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function logout(Request $request)
+    {
+        // destroy all HoomdossierSessions
+
+        HoomdossierSession::destroy();
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return redirect('/');
+    }
+
+    /**
      * Get the needed authorization credentials from the request.
      *
      * @param \Illuminate\Http\Request $request
@@ -89,15 +112,66 @@ class LoginController extends Controller
             /** @var User $user */
             $user = $this->guard()->getLastAttempted();
 
-            if (! $user->isAssociatedWith(\App::make('Cooperation'))) {
+            if (!$user->isAssociatedWith(\App::make('Cooperation'))) {
                 throw ValidationException::withMessages([
                     'cooperation' => [trans('auth.cooperation')],
+                ]);
+            }
+        } else {
+            // So it wasn't alright. Check if it was because of the confirm_token
+            $userEmail = $request->get('email');
+            $isPending = User::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
+            if ($isPending) {
+                \Log::debug("The user tried to log in, but isn't confirmed yet.");
+                throw ValidationException::withMessages([
+                    'confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])],
                 ]);
             }
         }
 
         if ($this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
+            $user = \Auth::user();
+
+            // get the first building from the user
+            $building = $user->buildings()->first();
+
+            // if the user has a building, log him in.
+            // else, redirect him to a page where he needs to create a building
+            // without a building the application is useless.
+            if ($building instanceof Building) {
+
+                // we cant query on the Spatie\Role model so we first get the result on the "original model"
+                $role = Role::findByName($user->roles->first()->name);
+
+                // get the input source
+                $inputSource = $role->inputSource;
+
+                // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
+                if (!$role->inputSource instanceof InputSource) {
+                    $inputSource = InputSource::findByShort('resident');
+                }
+
+                // set the required sessions
+                HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
+
+                // set the redirect url
+                if (1 == $user->roles->count()) {
+                    $this->redirectTo = RoleHelper::getUrlByRole($role);
+                } else {
+                    $this->redirectTo = '/admin';
+                }
+
+                return $this->sendLoginResponse($request);
+            } else {
+                // there is no building connected, log the user out. destroy sessions and let them create a building
+                HoomdossierSession::destroy();
+
+                $this->guard()->logout();
+
+                $request->session()->invalidate();
+
+                return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
+            }
         }
 
         // If the login attempt was unsuccessful we will increment the number of attempts
@@ -107,4 +181,20 @@ class LoginController extends Controller
 
         return $this->sendFailedLoginResponse($request);
     }
+
+    /*
+     * Send the response after the user was authenticated.
+     *
+     * @param $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    /*protected function sendLoginResponse ($request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
+        return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
+    }*/
 }

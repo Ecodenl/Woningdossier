@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
+use App\Scopes\GetValueScope;
+use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,16 +13,23 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $user_id
+ * @property int|null $input_source_id
  * @property string $interested_in_type
  * @property int $interested_in_id
  * @property int $interest_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \App\Models\InputSource|null $inputSource
  * @property \App\Models\Interest $interest
  * @property \App\Models\User $user
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestedInId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestedInType($value)
@@ -28,7 +39,46 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserInterest extends Model
 {
-    protected $fillable = ['user_id', 'interested_in_type', 'interested_in_id', 'interest_id'];
+    use GetValueTrait, ToolSettingTrait;
+
+    protected $fillable = [
+        'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',
+    ];
+
+    /**
+     * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
+     * The UserEnergyHabit uses the user_id instead off the building_id.
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeForMe($query)
+    {
+        $building = Building::find(HoomdossierSession::getBuilding());
+
+        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
+    }
+
+	/**
+	 * Get the input sources.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+    public function inputSource()
+    {
+        return $this->belongsTo(InputSource::class);
+    }
+
+    /**
+     * Get a input source name.
+     *
+     * @return InputSource name
+     */
+    public function getInputSourceName()
+    {
+        return $this->inputSource()->first()->name;
+    }
 
     public function user()
     {

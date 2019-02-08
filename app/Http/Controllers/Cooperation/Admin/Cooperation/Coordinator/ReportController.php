@@ -184,7 +184,7 @@ class ReportController extends Controller
                     $measureName = $actionPlanAdvice->measureApplication->measure_name;
 
                     if (is_null($plannedYear)) {
-                        $plannedYear = $actionPlanAdvice->getAdviceYear();
+                        $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
                     }
 
                     // create a new array with the measures for the user connected to the planned year
@@ -277,7 +277,7 @@ class ReportController extends Controller
                     $measureName = $actionPlanAdvice->measureApplication->measure_name;
 
                     if (is_null($plannedYear)) {
-                        $plannedYear = $actionPlanAdvice->getAdviceYear();
+                        $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
                     }
 
                     // fill the measure with the planned year

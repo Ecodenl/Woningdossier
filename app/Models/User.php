@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
+use App\Scopes\GetValueScope;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -179,8 +180,16 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Model|null|object|static
      */
-    public function getInterestedType($type, $interestedInId)
+    public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
     {
+        if ($inputSource instanceof InputSource) {
+            return $this
+                ->interests()
+                ->withoutGlobalScope(GetValueScope::class)
+                ->where('input_source_id', $inputSource->id)
+                ->where('interested_in_type', $type)
+                ->where('interested_in_id', $interestedInId)->first();
+        }
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
     }
 

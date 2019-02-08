@@ -245,7 +245,7 @@ class UserActionPlanAdvice extends Model
         return $coachComments;
     }
 
-    public function getAdviceYear()
+    public function getAdviceYear(InputSource $inputSource = null)
     {
         // todo Find a neater solution for this as this was one of many additions in hindsight
         // Step slug => element short
@@ -260,7 +260,7 @@ class UserActionPlanAdvice extends Model
         }
 
         if ('insulated-glazing' == $this->step->slug) {
-            $userInterest = $this->user->getInterestedType('measure_application', $this->measureApplication->id);
+            $userInterest = $this->user->getInterestedType('measure_application', $this->measureApplication->id, $inputSource);
             if (! $userInterest instanceof UserInterest) {
                 return null;
             }
@@ -282,7 +282,7 @@ class UserActionPlanAdvice extends Model
         if (! $element instanceof Element) {
             return null;
         }
-        $userInterest = $this->user->getInterestedType('element', $element->id);
+        $userInterest = $this->user->getInterestedType('element', $element->id, $inputSource);
         if (! $userInterest instanceof UserInterest) {
             return null;
         }

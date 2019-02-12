@@ -171,6 +171,11 @@ class PvPanelLocationFactorsTableSeeder extends Seeder
 		        'location' => 'Muiden',
 		        'factor' => 0.93,
 	        ],
+	        [
+		        'pc2' => 28,
+		        'location' => 'Gouda',
+		        'factor' => 0.93,
+	        ],
             [
                 'pc2' => 29,
                 'location' => 'Ridderkerk',

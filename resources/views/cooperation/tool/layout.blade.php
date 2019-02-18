@@ -84,11 +84,10 @@
 
 @push('js')
     <script>
-        $(document).keypress(function(event) {
+        $('input').keypress(function(event) {
             // get the current keycode
             var keycode = (event.keyCode ? event.keyCode : event.which);
-            // if its 13 / enter and the tag is not textarea, preventdefault and return false.
-            if (keycode === 13 && $(document.activeElement).prop('tagName') !== "TEXTAREA") {
+            if (keycode === 13) {
                 event.preventDefault();
                 return false;
             }

@@ -13,7 +13,7 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">
                         <label class="control-label">
-                            <i data-toggle="collapse" data-target="#current-gas-usage" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#current-gas-usage" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('boiler.current-gas-usage.title')}}
                         </label>
 
@@ -24,9 +24,9 @@
                             {{--<input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">--}}
                         @endcomponent
 
-                        <div id="current-gas-usage" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('boiler.current-gas-usage.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('habit.gas_usage'))
                             <span class="help-block">
@@ -38,7 +38,7 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.resident_count') ? ' has-error' : '' }}">
                         <label class="control-label">
-                            <i data-toggle="collapse" data-target="#resident-count" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#resident-count" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('boiler.resident-count.title')}}
                         </label>
                         @component('cooperation.tool.components.input-group',
@@ -48,9 +48,9 @@
                             {{--<input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">--}}
                         @endcomponent
 
-                        <div id="resident-count" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('boiler.resident-count.help')}}
-                        </div>
+                        @endcomponent
                         @if ($errors->has('habit.resident_count'))
                             <span class="help-block">
                                     <strong>{{ $errors->first('habit.resident_count') }}</strong>
@@ -67,7 +67,7 @@
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.service_value_id') ? ' has-error' : '' }}">
                             <label for="high_efficiency_boiler_id" class=" control-label">
-                                <i data-toggle="collapse" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                <i data-toggle="modal" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 {{\App\Helpers\Translation::translate('boiler.boiler-type.title')}} </label>
 
                             @component('cooperation.tool.components.input-group',
@@ -80,9 +80,9 @@
                                 </select>
                             @endcomponent
 
-                            <div id="high-efficiency-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('boiler.boiler-type.help')}}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('building_services.' . $boiler->id . '.service_value_id'))
                                 <span class="help-block">
@@ -97,7 +97,7 @@
                     <div class="col-sm-6">
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.extra') ? ' has-error' : '' }}">
                             <label for="high_efficiency_boiler_placed_date" class=" control-label">
-                                <i data-toggle="collapse" data-target="#high-efficiency-boiler-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                <i data-toggle="modal" data-target="#high-efficiency-boiler-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 {{\App\Helpers\Translation::translate('boiler.boiler-placed-date.title')}}
                             </label> <span> *</span>
 
@@ -111,9 +111,9 @@
                                 {{--<input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">--}}
                             @endcomponent
 
-                            <div id="high-efficiency-boiler-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('boiler.boiler-placed-date.help')}}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('building_services.' . $boiler->id . '.extra'))
                                 <span class="help-block">
@@ -127,7 +127,7 @@
                     
                     <div class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <label for="" class=" control-label"><i data-toggle="modal" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 {{\App\Helpers\Translation::translate('general.specific-situation.title')}} </label>
                             <?php
                                 $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
@@ -142,9 +142,9 @@
 
                             <textarea name="comment" id="" class="form-control">{{old('comment', $default)}}</textarea>
 
-                            <div id="comment" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('comment'))
                                 <span class="help-block">
@@ -184,16 +184,16 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space">
                         <label class="control-label">
-                            <i data-toggle="collapse" data-target="#replace-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#replace-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.title')}}
                         </label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                             <input type="text" id="replace_year" class="form-control disabled" disabled="" >
                         </div>
-                        <div id="replace-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.help')}}
-                        </div>
+                        @endcomponent
                     </div>
                 </div>
                 <div class="col-sm-4">

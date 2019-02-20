@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', \App\Helpers\Translation::translate('boiler.title.title'))
+@section('step_title', \App\Helpers\Translation::translate('high-efficiency-boiler.title.title'))
 
 
 @section('step_content')
@@ -8,13 +8,13 @@
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="start-information">
-            @include('cooperation.layouts.section-title', ['translationKey' => 'boiler.title'])
+            @include('cooperation.layouts.section-title', ['translationKey' => 'high-efficiency-boiler.title'])
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#current-gas-usage" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('boiler.current-gas-usage.title')}}
+                            {{\App\Helpers\Translation::translate('high-efficiency-boiler.current-gas-usage.title')}}
                         </label>
 
                         @component('cooperation.tool.components.input-group',
@@ -25,7 +25,7 @@
                         @endcomponent
 
                         <div id="current-gas-usage" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('boiler.current-gas-usage.help')}}
+                            {{\App\Helpers\Translation::translate('high-efficiency-boiler.current-gas-usage.help')}}
                         </div>
 
                         @if ($errors->has('habit.gas_usage'))
@@ -39,7 +39,7 @@
                     <div class="form-group add-space {{ $errors->has('habit.resident_count') ? ' has-error' : '' }}">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#resident-count" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('boiler.resident-count.title')}}
+                            {{\App\Helpers\Translation::translate('high-efficiency-boiler.resident-count.title')}}
                         </label>
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'resident_count'])
@@ -49,7 +49,7 @@
                         @endcomponent
 
                         <div id="resident-count" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('boiler.resident-count.help')}}
+                            {{\App\Helpers\Translation::translate('high-efficiency-boiler.resident-count.help')}}
                         </div>
                         @if ($errors->has('habit.resident_count'))
                             <span class="help-block">
@@ -68,7 +68,7 @@
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.service_value_id') ? ' has-error' : '' }}">
                             <label for="high_efficiency_boiler_id" class=" control-label">
                                 <i data-toggle="collapse" data-target="#high-efficiency-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                {{\App\Helpers\Translation::translate('boiler.boiler-type.title')}} </label>
+                                {{\App\Helpers\Translation::translate('high-efficiency-boiler.boiler-type.title')}} </label>
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'service_value_id'])
@@ -81,7 +81,7 @@
                             @endcomponent
 
                             <div id="high-efficiency-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('boiler.boiler-type.help')}}
+                                {{\App\Helpers\Translation::translate('high-efficiency-boiler.boiler-type.help')}}
                             </div>
 
                             @if ($errors->has('building_services.' . $boiler->id . '.service_value_id'))
@@ -98,7 +98,7 @@
                         <div class="form-group add-space{{ $errors->has('building_services.' . $boiler->id . '.extra') ? ' has-error' : '' }}">
                             <label for="high_efficiency_boiler_placed_date" class=" control-label">
                                 <i data-toggle="collapse" data-target="#high-efficiency-boiler-placed-date-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                                {{\App\Helpers\Translation::translate('boiler.boiler-placed-date.title')}}
+                                {{\App\Helpers\Translation::translate('high-efficiency-boiler.boiler-placed-date.title')}}
                             </label> <span> *</span>
 
                             <?php
@@ -112,7 +112,7 @@
                             @endcomponent
 
                             <div id="high-efficiency-boiler-placed-date-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                {{\App\Helpers\Translation::translate('boiler.boiler-placed-date.help')}}
+                                {{\App\Helpers\Translation::translate('high-efficiency-boiler.boiler-placed-date.help')}}
                             </div>
 
                             @if ($errors->has('building_services.' . $boiler->id . '.extra'))
@@ -166,15 +166,15 @@
         </div>
         <div id="indication-for-costs">
             <hr>
-            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('boiler.indication-for-costs.title')}}</h4>
+            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('high-efficiency-boiler.indication-for-costs.title.title')}}</h4>
 
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => 'boiler'])
+                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => 'high-efficiency-boiler'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => 'boiler'])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => 'high-efficiency-boiler'])
                 </div>
                 <div class="col-sm-4">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro')
@@ -185,14 +185,14 @@
                     <div class="form-group add-space">
                         <label class="control-label">
                             <i data-toggle="collapse" data-target="#replace-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                            {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.title')}}
+                            {{\App\Helpers\Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title')}}
                         </label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                             <input type="text" id="replace_year" class="form-control disabled" disabled="" >
                         </div>
                         <div id="replace-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                            {{\App\Helpers\Translation::translate('boiler.indication-for-costs.indicative-replacement.help')}}
+                            {{\App\Helpers\Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.help')}}
                         </div>
                     </div>
                 </div>

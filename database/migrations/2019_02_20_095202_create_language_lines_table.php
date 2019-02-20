@@ -22,8 +22,11 @@ class CreateLanguageLinesTable extends Migration
             $table->integer('step_id')->nullable()->unsigned();
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('set null');
 
-            $table->integer('main_language_id')->nullable()->unsigned();
-            $table->foreign('main_language_id')->references('id')->on('language_lines')->onDelete('cascade');
+            $table->integer('main_language_line_id')->nullable()->unsigned();
+            $table->foreign('main_language_line_id')->references('id')->on('language_lines')->onDelete('cascade');
+
+            $table->integer('help_language_line_id')->nullable()->unsigned();
+            $table->foreign('help_language_line_id')->references('id')->on('language_lines')->onDelete('cascade');
 
             $table->timestamps();
         });

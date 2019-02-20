@@ -28,36 +28,11 @@ class Translation
      *
      * @return array|mixed|null|string
      */
-    public static function translate(string $translationString, array $replaceArray = []): string
+    public static function translate(string $translationString, array $replaceArray = [])
     {
-        // Key to the uuid.php translatable file.
-        $translationFileKey = 'uuid.'.str_replace("'", '', $translationString);
-
         // Get the uuid from the translation file key
-        $translationUuidKey = __($translationFileKey);
+        $translation = __($translationString, $replaceArray);
 
-        // if it is a valid uuid get the translation else we will return the translation key.
-        if (Str::isValidUuid($translationUuidKey)) {
-            $translation = self::getTranslationFromUuid($translationUuidKey);
-
-            if (empty($replaceArray)) {
-                return $translation;
-            }
-
-            foreach ($replaceArray as $key => $value) {
-                $translation = str_replace(
-                    [
-                        ':'.$key,
-                    ],
-                    [
-                        $value,
-                    ],
-                    $translation);
-            }
-
-            return $translation;
-        } else {
-            return $translationFileKey;
-        }
+        return $translation;
     }
 }

@@ -842,8 +842,12 @@
                             "title" => 'ec657c08-6ebe-40fe-b63e-1987478d964c',
                         ],
 
-                    "help" => '9c8d18ef-9954-4940-bd54-18025590a333',
-                    "title" => 'fdf09c78-dc77-4cb2-9897-b6133da7580f',
+                    "title" => 
+                        [
+                            "help" => '9c8d18ef-9954-4940-bd54-18025590a333',
+                            "title" => 'fdf09c78-dc77-4cb2-9897-b6133da7580f',
+                        ],
+
                     "wood-rot-visible" => 
                         [
                             "help" => '33f27e1d-a6d3-4bec-87dd-211299b6b0bd',
@@ -860,22 +864,6 @@
                         [
                             "help" => 'b6433a1f-2cbb-4cc7-9bbc-e4d3adbd9970',
                             "title" => 'a2da0cf5-697f-4762-9c86-c35312a382ba',
-                        ],
-
-                ],
-
-            "paintwork" => 
-                [
-                    "paint-damage-visible" => 
-                        [
-                            "help" => '58088538-bf3d-44f5-a0a6-4650d7bd299c',
-                            "title" => '884b96a5-6840-4ce2-a53d-b8a49a8ab6d5',
-                        ],
-
-                    "wood-rot-visible" => 
-                        [
-                            "help" => 'e2c66fd3-56a2-4812-922f-926f3ffcddd6',
-                            "title" => '9ee58f7f-8038-4da1-abec-0877b2db625f',
                         ],
 
                 ],
@@ -1386,8 +1374,12 @@
 
             "indication-for-costs" => 
                 [
-                    "help" => '0b2d3a3a-fc2d-4a5d-8ef3-ca550d5b2bc8',
-                    "title" => '0b7db881-c775-48ba-bd9f-2457a2ae919c',
+                    "title" => 
+                        [
+                            "help" => '0b2d3a3a-fc2d-4a5d-8ef3-ca550d5b2bc8',
+                            "title" => '0b7db881-c775-48ba-bd9f-2457a2ae919c',
+                        ],
+
                     "indicative-costs-insulation" => 
                         [
                             "help" => 'a2e6431d-9c7b-4e51-962a-35218ea50d98',

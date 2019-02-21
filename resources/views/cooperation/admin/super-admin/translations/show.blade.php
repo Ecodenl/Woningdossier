@@ -23,11 +23,18 @@
                                         @foreach($question->text as $locale => $text)
                                             <div class="form-group">
                                                 <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.question', ['locale' => $locale])</label>
-                                                <textarea class="form-control"
-                                                          name="translation_line[{{$question->id}}]">{{$text}}</textarea>
+                                                <input class="form-control question-input" name="translation_line[question][{{$question->id}}]" value="{{$text}}">
                                                 <label for="">key: {{$question->group}}.{{$question->key}}</label>
                                             </div>
                                         @endforeach
+                                        @forelse($question->helpText->text as $locale => $text)
+                                            <div class="form-group">
+                                                <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
+                                                <textarea class="form-control" name="translation_line[{{$locale}}][help][{{$question->helpText->id}}]">{{$text}}</textarea>
+                                                <label for="">key: {{$question->helpText->group}}.{{$question->helpText->key}}</label>
+                                            </div>
+                                        @empty
+                                        @endforelse
                                     </div>
                                 </div>
                                 @if($question->subQuestions->isNotEmpty())
@@ -41,9 +48,13 @@
                                     <div class="col-sm-12">
                                         @foreach($question->subQuestions as $subQuestion)
                                             <br>
-                                            <a class="label label-success" href="{{$subQuestion->id}}">
+                                            <a data-toggle="modal" data-target="#sub-question-modal-{{$subQuestion->id}}" class="label label-success">
                                                 {{$subQuestion->text['nl']}}
                                             </a>
+                                                @include('cooperation.admin.super-admin.translations.sub-question-modal', [
+                                                    'id' => 'sub-question-modal-'.$subQuestion->id,
+                                                    'subQuestion' => $subQuestion
+                                                ])
                                         @endforeach
                                     </div>
                                 </div>
@@ -70,13 +81,13 @@
             });
         }
 
-        $(document).ready(function(){
-            $('#search').on("keyup", function() {
+        $(document).ready(function () {
+            $('#search').on("keyup", function () {
                 var value = removeDiacritics($(this).val()).toLowerCase();
-                $('textarea').filter(function() {
+                $('.question-input').filter(function () {
 
                     var translationsPanel = $(this).parent().parent().parent().parent().parent();
-                    var cleanTranslation = removeDiacritics($(this).text());
+                    var cleanTranslation = removeDiacritics($(this).val());
 
                     translationsPanel.toggle(cleanTranslation.toLowerCase().indexOf(value) > -1)
                 });

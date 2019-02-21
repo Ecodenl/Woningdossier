@@ -80,6 +80,7 @@ return [
                         'header' => 'Alle vragen die vertaalbaar zijn op de stap :step_name',
                         'sub-question' => 'Laat sub-vragen zien',
                         'question' => 'Vraag in taal: :locale',
+                        'help' => 'Helptext in taal: :locale',
                         'search' => [
                             'placeholder' => 'Zoek naar een vraag..'
                         ],

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Collection;
+
 class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 {
     protected $fillable = [
@@ -40,8 +42,9 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         return $this->hasMany(LanguageLine::class, 'main_language_line_id', 'id');
     }
 
-    public function helpTexts()
+    public function helpText()
     {
-        return $this->hasMany(LanguageLine::class, 'help_language_line_id', 'id');
+        return $this->hasOne(LanguageLine::class, 'id', 'help_language_line_id');
     }
+
 }

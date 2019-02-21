@@ -50,7 +50,7 @@ class TranslationController extends Controller
      */
     public function show(Cooperation $cooperation, $stepId)
     {
-        $questions = LanguageLine::with(['subQuestions', 'helpTexts'])
+        $questions = LanguageLine::with(['subQuestions', 'helpText'])
             ->where('step_id', $stepId)
             ->mainQuestions()
             ->get();

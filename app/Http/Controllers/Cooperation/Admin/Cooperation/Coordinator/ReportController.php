@@ -160,7 +160,7 @@ class ReportController extends Controller
                 $firstName = $user->first_name;
                 $lastName = $user->last_name;
                 $email = $user->email;
-                $phoneNumber = $user->phone_number;
+                $phoneNumber = "'".$user->phone_number;
                 $mobileNumber = $user->mobile;
 
                 // set the personal userinfo
@@ -252,7 +252,7 @@ class ReportController extends Controller
                 $firstName = $user->first_name;
                 $lastName = $user->last_name;
                 $email = $user->email;
-                $phoneNumber = $user->phone_number;
+                $phoneNumber = "'".$user->phone_number;
                 $mobileNumber = $user->mobile;
 
                 // set the personal userinfo

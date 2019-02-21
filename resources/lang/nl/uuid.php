@@ -468,32 +468,28 @@
 
             "options" => 
                 [
-                    "radio" => 
+                    "yes" => 
                         [
-                            "yes" => 
-                                [
-                                    "help" => '9793acc9-d1b4-41d1-9afb-5c4da7e5af64',
-                                    "title" => 'ed6b3cc8-9d23-482f-bd32-c53e63e86efd',
-                                ],
+                            "help" => '9793acc9-d1b4-41d1-9afb-5c4da7e5af64',
+                            "title" => 'ed6b3cc8-9d23-482f-bd32-c53e63e86efd',
+                        ],
 
-                            "no" => 
-                                [
-                                    "help" => 'fa88bcd9-9558-4a59-9e49-650bf15a1345',
-                                    "title" => 'e8157f50-c41b-4687-8a61-4fc352a778fa',
-                                ],
+                    "no" => 
+                        [
+                            "help" => 'fa88bcd9-9558-4a59-9e49-650bf15a1345',
+                            "title" => 'e8157f50-c41b-4687-8a61-4fc352a778fa',
+                        ],
 
-                            "unknown" => 
-                                [
-                                    "help" => 'caa43cbe-9fde-45ba-a3c8-a26058252acd',
-                                    "title" => '746c2607-180d-40e6-9ab5-1ae61881c442',
-                                ],
+                    "unknown" => 
+                        [
+                            "help" => 'caa43cbe-9fde-45ba-a3c8-a26058252acd',
+                            "title" => '746c2607-180d-40e6-9ab5-1ae61881c442',
+                        ],
 
-                            "not-important" => 
-                                [
-                                    "help" => 'df9f2cc5-5615-477c-805d-418432c6cd61',
-                                    "title" => 'b170ecdf-0050-44a6-98f4-dd98f7a48013',
-                                ],
-
+                    "not-important" => 
+                        [
+                            "help" => 'df9f2cc5-5615-477c-805d-418432c6cd61',
+                            "title" => 'b170ecdf-0050-44a6-98f4-dd98f7a48013',
                         ],
 
                 ],

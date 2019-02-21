@@ -73,6 +73,7 @@ return [
                                 'name' => 'Stap naam',
                                 'actions' => 'Acties',
                             ],
+                            'main-translations' => 'Herhalende teksten',
                             'see' => 'Bekijk vertalingen'
                         ],
                     ],
@@ -84,7 +85,12 @@ return [
                         'search' => [
                             'placeholder' => 'Zoek naar een vraag..'
                         ],
+                        'save' => 'Wijzigingen voor de vragen, sub-vragen en helpteksten opslaan.',
+                        'close-modal' => 'Sluit venster.',
                     ],
+                    'update' => [
+                        'success' => 'Vertalingen zijn bijgewerkt.'
+                    ]
                 ],
                 'cooperations' => [
                     'index' => [

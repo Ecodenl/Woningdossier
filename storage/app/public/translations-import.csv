@@ -240,8 +240,8 @@ Zonneboiler,"Aandeel van de zonneboiler aan het totaalverbruik voor warm water",
 General,jaar,"Geen helptext",general.unit.year,49362ad6-bdef-48e5-a097-dba09d841b5c,2024aba4-36f7-4b0e-be47-87f31845c06f
 Zonneboiler,"Geschat huidig gebruik",",geen helptext""",heater.estimated-usage.title,be30832a-1b70-49e3-b3e5-d04b3f194a64,5e4ff5b2-637f-4671-83ff-067aa43acf91
 Zonneboiler,"Specificaties systeem","geen helptext",uuid.heater.system-specs.title,cb829a80-b0bc-432a-949b-70c64af5ab4e,a39c44e7-880b-43a8-b2ad-87ca8d7af1d6
-General,Ja,"geen helptext",general.options.radio.yes,9793acc9-d1b4-41d1-9afb-5c4da7e5af64,ed6b3cc8-9d23-482f-bd32-c53e63e86efd
-General,Nee,"geen helptext",general.options.radio.no,fa88bcd9-9558-4a59-9e49-650bf15a1345,e8157f50-c41b-4687-8a61-4fc352a778fa
-General,Onbekend,"geen helptext",general.options.radio.unknown,caa43cbe-9fde-45ba-a3c8-a26058252acd,746c2607-180d-40e6-9ab5-1ae61881c442
-General,"Niet van toepassing","geen helptext",general.options.radio.not-important,df9f2cc5-5615-477c-805d-418432c6cd61,b170ecdf-0050-44a6-98f4-dd98f7a48013
+General,Ja,"geen helptext",general.options.yes,9793acc9-d1b4-41d1-9afb-5c4da7e5af64,ed6b3cc8-9d23-482f-bd32-c53e63e86efd
+General,Nee,"geen helptext",general.options.no,fa88bcd9-9558-4a59-9e49-650bf15a1345,e8157f50-c41b-4687-8a61-4fc352a778fa
+General,Onbekend,"geen helptext",general.options.unknown,caa43cbe-9fde-45ba-a3c8-a26058252acd,746c2607-180d-40e6-9ab5-1ae61881c442
+General,"Niet van toepassing","geen helptext",general.options.not-important,df9f2cc5-5615-477c-805d-418432c6cd61,b170ecdf-0050-44a6-98f4-dd98f7a48013
 General,"Indicatie voor kosten en baten voor deze maatregel","Geen helptext",general.costs.cost-and-benefits,d2c110cf-d7c3-43c6-a9ca-f1430c2fc5c3,5a507b1f-e992-4b5e-84e9-ab4984cb0f23

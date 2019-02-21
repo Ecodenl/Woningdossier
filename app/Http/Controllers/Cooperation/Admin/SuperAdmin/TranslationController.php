@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 use App\Models\Cooperation;
 use App\Models\LanguageLine;
 use App\Models\Step;
+use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -34,7 +35,7 @@ class TranslationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -42,49 +43,68 @@ class TranslationController extends Controller
         //
     }
 
+
     /**
      * @param Cooperation $cooperation
-     * @param int $stepId | So we can get the translations / questions from language_line table for the step.
+     * @param string $stepSlug| So we can get the translations / questions from language_line table for the step.
      *
-     * @return \Response
-     */
-    public function show(Cooperation $cooperation, $stepId)
-    {
-        $questions = LanguageLine::with(['subQuestions', 'helpText'])
-            ->where('step_id', $stepId)
-            ->mainQuestions()
-            ->get();
-
-        return view('cooperation.admin.super-admin.translations.show', compact('questions'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Cooperation $cooperation, $stepSlug)
     {
-        //
+        $step = Step::where('slug', $stepSlug)->first();
+        if ($step instanceof Step) {
+            $questions = LanguageLine::with(['subQuestions', 'helpText'])
+                ->where('step_id', $step->id)
+                ->mainQuestions()
+                ->get();
+
+            // if it isnt a instace, then its a general translation group
+        } else if ($stepSlug == "general") {
+            $questions = LanguageLine::with(['subQuestions', 'helpText'])
+                ->where('group', 'general')
+                ->mainQuestions()
+                ->get();
+        }
+
+        return view('cooperation.admin.super-admin.translations.edit', compact('questions', 'stepSlug'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  Cooperation $cooperation
+     * @param  string $stepId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Cooperation $cooperation, $stepSlug)
     {
-        //
+        $languageLinesData = $request->get('language_lines', []);
+
+        foreach ($languageLinesData as $locale => $languageLineData) {
+            foreach ($languageLineData as $type => $languageLines) {
+                // we dont do stuff with the type yet, could be helpfull in the future.
+                foreach ($languageLines as $languageLineId => $text) {
+                    $languageLine = LanguageLine::find($languageLineId);
+                    if ($languageLine instanceof LanguageLine) {
+                        if (!empty($text)) {
+                            $languageLine->setTranslation($locale, $text);
+                            $languageLine->save();
+                        }
+                    }
+                }
+            }
+        }
+
+        return redirect(route('cooperation.admin.super-admin.translations.edit', ['step-slug' => $stepSlug]))
+            ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

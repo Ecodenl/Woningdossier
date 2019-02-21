@@ -21,11 +21,21 @@
                             <tr>
                                 <td>{{$step->name}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.super-admin.translations.show', ['id' => $step->id])}}">@lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')</a>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['step-slug' => $step->slug])}}">
+                                        @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
+                                    </a>
                                 </td>
                             </tr>
                         @empty
                         @endforelse
+                            <tr>
+                                <td>@lang('woningdossier.cooperation.admin.super-admin.translations.index.table.main-translations')</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['step-slug' => 'general'])}}">
+                                        @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
+                                    </a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 

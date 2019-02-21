@@ -57,13 +57,34 @@ return [
                     'label' => 'Super admin menu',
                     'home' => 'Home',
                     'cooperations' => 'Cooperaties',
+                    'translations' => 'Vertalingen',
                     'example-buildings' => 'Voorbeeld woningen',
                 ],
                 'index' => [
                     'header' => 'Super admin panel',
                     'text' => 'Beheer de applicatie',
                 ],
-
+                'translations' => [
+                    'index' => [
+                        'header' => 'Stappen waarvan u de vragen kunt vertalen',
+                        'text' => 'Hier zijn alle stappen te zien waarvan u vragen en bijbehorende helpteksten kunt aanpassen',
+                        'table' => [
+                            'columns' => [
+                                'name' => 'Stap naam',
+                                'actions' => 'Acties',
+                            ],
+                            'see' => 'Bekijk vertalingen'
+                        ],
+                    ],
+                    'edit' => [
+                        'header' => 'Alle vragen die vertaalbaar zijn op de stap :step_name',
+                        'sub-question' => 'Laat sub-vragen zien',
+                        'question' => 'Vraag in taal: :locale',
+                        'search' => [
+                            'placeholder' => 'Zoek naar een vraag..'
+                        ],
+                    ],
+                ],
                 'cooperations' => [
                     'index' => [
                         'header' => 'Cooperaties',

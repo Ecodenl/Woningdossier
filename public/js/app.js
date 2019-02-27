@@ -111,6 +111,10 @@ $.ajaxSetup({
 var baseUrl = window.location.origin;
 var fillAddressUrl = baseUrl + "/fill-address";
 
+$('i.glyphicon-info-sign').click(function () {
+    $(this).parent().parent().find('.modal').modal();
+});
+
 $(document).ready(function () {
 
     $('.input-source-group').on('click', 'li.change-input-value', function (event) {

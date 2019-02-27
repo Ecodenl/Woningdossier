@@ -71,7 +71,13 @@
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
                     <li><a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a></li>
-                    <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
+                    <li>
+                        <a href="{{
+                                    \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->hasCompleted(\App\Models\Step::where('slug', 'building-detail')->first()) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])
+                                 }}">
+                            @lang('woningdossier.cooperation.tool.title')
+                        </a>
+                    </li>
 
                     @if (!Auth::user()->isFillingToolForOtherBuilding())
                         @if (\App\Helpers\HoomdossierSession::currentRole() == 'resident')

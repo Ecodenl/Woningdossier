@@ -7,14 +7,17 @@
  */
 ?>
 
-<h4 style="margin-left: -5px;">
+<div class="section-title">
+    <h4 style="margin-left: -5px;">
+        @isset($infoAlertId)
+            <i data-toggle="modal" data-target="#{{$infoAlertId}}"
+               class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+        @endisset
+        {{\App\Helpers\Translation::translate($translationKey.'.title')}}
+    </h4>
     @isset($infoAlertId)
-        <i data-toggle="collapse" data-target="#{{$infoAlertId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+        @component('cooperation.tool.components.help-modal')
+            {{\App\Helpers\Translation::translate($translationKey.'.help')}}
+        @endcomponent
     @endisset
-    {{\App\Helpers\Translation::translate($translationKey.'.title')}}
-</h4>
-@isset($infoAlertId)
-    @component('cooperation.tool.components.alert', ['alertType' => 'info', 'id' => $infoAlertId, 'collapsable' => true])
-        {{\App\Helpers\Translation::translate($translationKey.'.help')}}
-    @endcomponent
-@endisset
+</div>

@@ -84,6 +84,14 @@
 
 @push('js')
     <script>
+        $('input').keypress(function(event) {
+            // get the current keycode
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode === 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
 
         $(document).ready(function () {
             // get the current url

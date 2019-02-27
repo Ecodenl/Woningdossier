@@ -1033,24 +1033,17 @@
 
 @push('js')
     <script>
-
         $(document).ready(function () {
-
-            $(window).keydown(function (event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
 
             var previous_eb = parseInt('{{ $building->example_building_id }}');
 
             $("select#example_building_id").change(function() {
+                var current_eb = parseInt(this.value);
                 // Do something with the previous value after the change
-                if (this.value !== previous_eb ){
+                if (current_eb !== previous_eb ){
                     if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
                         @if(App::environment('local'))
-                        console.log("Let's save it. EB id: " + this.value);
+                        console.log("Let's save it. EB id: " + current_eb);
                         @endif
 
                         // Firefox fix, who else thinks that stuff has changed
@@ -1060,7 +1053,7 @@
                         $.ajax({
                             type: "POST",
                             url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
-                            data: { example_building_id: this.value },
+                            data: { example_building_id: current_eb },
                             success: function(data){
                                 location.reload();
                             }
@@ -1068,7 +1061,7 @@
 
 
                         // Make sure the previous value is updated
-                        previous_eb = this.value;
+                        previous_eb = current_eb;
                     } else {
                         if ( $("#select-box option[value='" + previous_eb + "']").val() === undefined) {
                             @if(App::environment('local'))

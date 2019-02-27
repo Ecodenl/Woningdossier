@@ -29,6 +29,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereUpdatedAt($value)
  * @mixin \Eloquent
+ *
+ * @NOTE The model contains a changed_input_source_id and a input_source_id.
+ * The changed_input_source_id contains the id from the input source that made changes / created or update records.
+ * The input_source_id, behaves like it normally would. Get the data for the current input source.
  */
 class ToolSetting extends Model
 {
@@ -54,17 +58,18 @@ class ToolSetting extends Model
     }
 
     /**
-     * Return a collection of tool settings for a building where is is not the current inputsource.
+     * Returns a collection of changed tool settings
+     *
+     * Get the changed input sources for the current input source.
      *
      * @param int $buildingId
-     *
      * @return \Illuminate\Support\Collection
      */
     public static function getChangedSettings(int $buildingId)
     {
-        $toolSettings = self::withoutGlobalScope(GetValueScope::class)
-            ->where('building_id', $buildingId)
+        $toolSettings = self::where('building_id', $buildingId)
             ->where('changed_input_source_id', '!=', HoomdossierSession::getInputSource())
+            ->where('has_changed', true)
             ->get();
 
         return $toolSettings;

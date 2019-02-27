@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\CoachRequest;
@@ -22,7 +23,17 @@ class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->users()->where('id', '!=', \Auth::id())->get();
+        if (HoomdossierSession::currentRole() == 'coordinator') {
+            $users = $cooperation
+                ->users()
+                ->where('id', '!=', \Auth::id())
+                ->role('coach')
+                ->get();
+        } else {
+            $users = $cooperation
+                ->users()
+                ->get();
+        }
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));

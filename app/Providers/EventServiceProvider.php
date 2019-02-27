@@ -8,7 +8,9 @@ use App\Events\PrivateMessageReceiverEvent;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\UserAuthentictedListener;
 use App\Listeners\UserEventSubscriber;
+use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -27,7 +29,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         ParticipantAddedEvent::class => [
             ParticipantAddedListener::class
-        ]
+        ],
     ];
 
     /**

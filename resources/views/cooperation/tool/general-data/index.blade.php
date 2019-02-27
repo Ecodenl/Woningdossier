@@ -16,7 +16,7 @@
                 <div class="row">
                     <div id="example-building" class="col-sm-12">
                         <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                            <label for="example_building_id" class=" control-label"><i data-toggle="collapse" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{ \App\Helpers\Translation::translate('general-data.example-building.title') }}</label>
+                            <label for="example_building_id" class=" control-label"><i data-toggle="modal" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{ \App\Helpers\Translation::translate('general-data.example-building.title') }}</label>
                             <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                 @foreach($exampleBuildings as $exampleBuilding)
                                     <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !$building->hasCompleted($step) && $exampleBuilding->is_default)
@@ -42,14 +42,10 @@
                                     <strong>{{ $errors->first('example_building_id') }}</strong>
                                 </span>
                             @endif
-                        </div>
 
-                        <div class="col-sm-12">
-                            <div class="form-group add-space">
-                                <div id="example-building-info" class="collapse alert alert-info remove-collapse-space">
-                                    {{ \App\Helpers\Translation::translate('general-data.example-building.help') }}
-                                </div>
-                            </div>
+                            @component('cooperation.tool.components.help-modal')
+                                {{ \App\Helpers\Translation::translate('general-data.example-building.help') }}
+                            @endcomponent
                         </div>
                     </div>
                 </div>
@@ -59,7 +55,7 @@
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('surface') ? ' has-error' : '' }}">
                             <label for="surface" class=" control-label">
-                                <i data-toggle="collapse" data-target="#user-surface-info"
+                                <i data-toggle="modal" data-target="#user-surface-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                    aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.building-type.what-user-surface.title')}}
                             </label> <span>*</span>
@@ -72,10 +68,9 @@
                                        required autofocus>
                             @endcomponent
 
-                            <div id="user-surface-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('general-data.building-type.what-user-surface.help')}}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('surface'))
                                 <span class="help-block">
@@ -87,7 +82,7 @@
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('building_layers') ? ' has-error' : '' }}">
                             <label for="building_layers" class=" control-label">
-                                <i data-toggle="collapse" data-target="#roof-layers-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false">
+                                <i data-toggle="modal" data-target="#roof-layers-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false">
                                 </i>{{\App\Helpers\Translation::translate('general-data.building-type.how-much-building-layers.title')}}
                             </label>
 
@@ -97,10 +92,11 @@
                                        value="{{ old('building_layers', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_layers')) }}" autofocus>
                             @endcomponent
 
-                            <div id="roof-layers-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+
+
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('general-data.building-type.how-much-building-layers.help')}}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('building_layers'))
                                 <span class="help-block">
@@ -115,7 +111,7 @@
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('roof_type_id') ? ' has-error' : '' }}">
                             <label for="roof_type_id" class=" control-label">
-                                <i data-toggle="collapse" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                <i data-toggle="modal" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 {{\App\Helpers\Translation::translate('general-data.building-type.type-roof.title')}}
                             </label>
 
@@ -132,10 +128,10 @@
                                 </select>
                             @endcomponent
 
-                            <div id="roof-type-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('general-data.building-type.type-roof.help')}}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('roof_type_id'))
                                 <span class="help-block">
@@ -147,7 +143,7 @@
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('energy_label_id') ? ' has-error' : '' }}">
                             <label for="energy_label_id" class=" control-label">
-                                <i data-toggle="collapse" data-target="#current-energy-label-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                <i data-toggle="modal" data-target="#current-energy-label-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 {{\App\Helpers\Translation::translate('general-data.building-type.current-energy-label.title')}}
                             </label>
 
@@ -186,10 +182,10 @@
                                     @endforeach
                                 </select>
                             @endcomponent
-                            <div id="current-energy-label-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('general-data.building-type.current-energy-label.help')}}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('energy_label_id'))
                                 <span class="help-block">
@@ -205,7 +201,7 @@
                         <div class="input-group input-source-group">
                             <div class="form-group add-space{{ $errors->has('monument') ? ' has-error' : '' }}">
                                 <label for="monument" class=" control-label">
-                                <i data-toggle="collapse" data-target="#is-monument-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                <i data-toggle="modal" data-target="#is-monument-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                 {{\App\Helpers\Translation::translate('general-data.building-type.is-monument.title')}}
                             </label>
 	                            <?php $checked = (int) old('monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument')); ?>
@@ -222,9 +218,9 @@
                                        @if($checked == 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.radio.unknown.title')}}
                                 </label>
 
-                                <div id="is-monument-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.building-type.is-monument.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('monument'))
                                     <span class="help-block">
@@ -280,7 +276,7 @@
                         <div class="@if(in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows'])) col-sm-6 @else col-sm-4 @endif">
                             <div class="form-group add-space{{ $errors->has('element.'.$element->id) ? ' has-error' : '' }}">
                                 <label for="element_{{ $element->id }}" class="control-label">
-                                    <i data-toggle="collapse" data-target="#element_{{ $element->id }}-info"
+                                    <i data-toggle="modal" data-target="#element_{{ $element->id }}-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>
                                     {{ $element->name }}
@@ -299,10 +295,9 @@
                                     </select>
                                 @endcomponent
 
-                                <div id="element_{{ $element->id }}-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{ $element->info }}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('element.' . $element->id))
                                     <span class="help-block">
@@ -315,7 +310,7 @@
                             <div class="col-sm-2">
                                 <div class="form-group add-space{{ $errors->has('user_interest.element.' . $element->id) ? ' has-error' : '' }}">
                                     <label for="element_interested_{{ $element->id }}-info" class="control-label small-text" style="font-size:12px;">
-                                        <i data-toggle="collapse" data-target="#element_interested_{{ $element->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                        <i data-toggle="modal" data-target="#element_interested_{{ $element->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                         {{\App\Helpers\Translation::translate('general.interested-in-improvement.title')}}
                                         <span>*</span>
                                     </label>
@@ -327,7 +322,7 @@
                                 </select>
                                 @endcomponent
 
-                                @component('cooperation.tool.components.alert', ['collapsable' => true, 'id' => 'element_interested_'.$element->id.'-info', 'alertType' => 'info'])
+                                @component('cooperation.tool.components.help-modal')
                                     {{ \App\Helpers\Translation::translate('general.interested-in-improvement.help') }}
                                 @endcomponent
 
@@ -371,7 +366,7 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('service.'.$service->id) ? ' has-error' : '' }}">
                         <label for="{{ $service->short }}" class="control-label">
-                            <i data-toggle="collapse" data-target="#service_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            <i data-toggle="modal" data-target="#service_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                             {{ $service->name }}
                         </label>
                         {{-- This will check if the service has values. If so we need a selectbox. If not: a textbox --}}
@@ -413,9 +408,9 @@
                             @endcomponent
                         @endif
 
-                        <div id="service_{{ $service->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{ $service->info }}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('service.' . $service->id))
                             <span class="help-block">
@@ -429,7 +424,7 @@
                 <div class="col-sm-2">
                     <div class="form-group add-space{{ $errors->has('user_interest.service.' . $service->id) ? ' has-error' : '' }}">
                         <label for="user_interest_service_{{ $service->id }}" class="control-label small-text" style="font-size:12px;">
-                            <i data-toggle="collapse" data-target="#service_interested_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            <i data-toggle="modal" data-target="#service_interested_{{ $service->id }}-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                             {{ \App\Helpers\Translation::translate('general.interested-in-improvement.title') }}
                         </label> <span>*</span>
                         @component('cooperation.tool.components.input-group',
@@ -444,7 +439,7 @@
                                 --}}
                                             @endforeach
                                         </select>@endcomponent
-                        @component('cooperation.tool.components.alert', ['collapsable' => true, 'id' => 'service_interested_'.$service->id.'-info', 'alertType' => 'info'])
+                        @component('cooperation.tool.components.help-modal')
                             {{ \App\Helpers\Translation::translate('general.interested-in-improvement.help') }}
                         @endcomponent
 
@@ -464,7 +459,7 @@
                                     <div id="{{$service->id.'-extra'}}"
                              class="form-group add-space{{ $errors->has(''.$service->id.'.extra') ? ' has-error' : '' }}">
                             <label for="service_{{ $service->id }}" class="control-label">
-                                <i data-toggle="collapse"
+                                <i data-toggle="modal"
                                    data-target="#service_{{ $service->id }}-extra-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                    aria-expanded="false"></i>
@@ -489,10 +484,9 @@
                                 {{--<input type="text" class="form-control" name="{{ $service->id }}[extra][year]" value="@if(old($service->id.'.extra.year')){{ old($service->id.'.extra.year') }}@elseif(isset($year)){{ $year }}@endif">--}}
                                         @endcomponent
 
-                            <div id="service_{{ $service->id }}-extra-info"
-                                 class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.help')}}
-                            </div>
+                            @endcomponent
 
                                         @if ($errors->has($service->id.'.extra'))
                                             <span class="help-block">
@@ -528,7 +522,7 @@
                 <div class="col-sm-6">
 
                     <div class="form-group add-space{{ $errors->has('resident_count') ? ' has-error' : '' }}">
-                        <label for="resident_count" class=" control-label"><i data-toggle="collapse" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.total-citizens.title')}}
+                        <label for="resident_count" class=" control-label"><i data-toggle="modal" data-target="#resident_count-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.total-citizens.title')}}
                                 </label> <span>*</span>
 
                         @component('cooperation.tool.components.input-group',
@@ -536,10 +530,9 @@
                             <input type="text" id="resident_count" class="form-control" value="{{ old('resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count')) }}" name="resident_count" required>
                         {{--<input type="text" id="resident_count" class="form-control" value="@if(old('resident_count') != ""){{old('resident_count')}}@elseif(isset($energyHabit)){{$energyHabit->resident_count}}@endif" name="resident_count" required>--}}
                         @endcomponent
-
-                    <div id="resident_count-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    @component('cooperation.tool.components.help-modal')
                         {{\App\Helpers\Translation::translate('general-data.data-about-usage.total-citizens.help')}}
-                    </div>
+                    @endcomponent
 
                         @if ($errors->has('resident_count'))
                             <span class="help-block">
@@ -553,7 +546,7 @@
 
                     <div class="form-group add-space{{ $errors->has('cook_gas') ? ' has-error' : '' }}">
                         <label for="cook_gas" class=" control-label">
-                            <i data-toggle="collapse" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            <i data-toggle="modal" data-target="#cooked-on-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                             {{\App\Helpers\Translation::translate('general-data.data-about-usage.cooked-on-gas.title')}}
                         </label>
                         <span>*</span>
@@ -586,9 +579,9 @@
                             </div>
                         </div>
 
-                    <div id="cooked-on-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                         {{\App\Helpers\Translation::translate('general-data.data-about-usage.cooked-on-gas.help')}}
-                    </div>
+                        @endcomponent
 
                                 @if ($errors->has('cook_gas'))
                                     <span class="help-block">
@@ -603,7 +596,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('thermostat_high') ? ' has-error' : '' }}">
                                 <label for="thermostat_high" class=" control-label">
-                                    <i data-toggle="collapse" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                    <i data-toggle="modal" data-target="#thermostat-high-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.thermostat-highest.title')}}
                                 </label>
 
@@ -615,9 +608,9 @@
                                            name="thermostat_high">--}}
                                 @endcomponent
 
-                                <div id="thermostat-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.thermostat-highest.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('thermostat_high'))
                                     <span class="help-block">
@@ -630,7 +623,7 @@
 
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('thermostat_low') ? ' has-error' : '' }}">
-                                <label for="thermostat_low" class=" control-label"><i data-toggle="collapse"
+                                <label for="thermostat_low" class=" control-label"><i data-toggle="modal"
                                                                                       data-target="#thermostat-low-info"
                                                                                       class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                                                                       aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.thermostat-lowest.title')}}
@@ -643,10 +636,9 @@
                             {{--<input id="thermostat_low" type="text" class="form-control" name="thermostat_low" value="@if(!empty(old('thermostat_low'))){{ old('thermostat_low', 16) }}@elseif(isset($energyHabit)){{ \App\Helpers\NumberFormatter::format($energyHabit->thermostat_low, 1) }}@else{{ \App\Helpers\NumberFormatter::format(16, 1) }}@endif">--}}
                                 @endcomponent
 
-                                <div id="thermostat-low-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.thermostat-lowest.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('thermostat_low'))
                                     <span class="help-block">
@@ -660,7 +652,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('hours_high') ? ' has-error' : '' }}">
                                 <label for="hours_high" class=" control-label">
-                                    <i data-toggle="collapse" data-target="#hours-high-info"
+                                    <i data-toggle="modal" data-target="#hours-high-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.max-hours-thermostat-highest.title')}}
@@ -687,9 +679,9 @@
                                 </option>
                             </select>
                         @endcomponent
-                        <div id="hours-high-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                             {{ \App\Helpers\Translation::translate('general-data.data-about-usage.max-hours-thermostat-highest.help') }}
-                        </div>
+                                @endcomponent
                         @if ($errors->has('hours_high'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('hours_high') }}</strong>
@@ -701,7 +693,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('heating_first_floor') ? ' has-error' : '' }}">
                                 <label for="heating_first_floor" class=" control-label">
-                                    <i data-toggle="collapse" data-target="#heating-first-floor-info"
+                                    <i data-toggle="modal" data-target="#heating-first-floor-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.situation-first-floor.title')}}
                                 </label>
@@ -740,10 +732,9 @@
                                     @endforeach
                                 </select>@endcomponent
 
-                                <div id="heating-first-floor-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.situation-first-floor.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('heating_first_floor'))
                                     <span class="help-block">
@@ -758,7 +749,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('heating_second_floor') ? ' has-error' : '' }}">
                                 <label for="heating_second_floor" class=" control-label">
-                                    <i data-toggle="collapse"
+                                    <i data-toggle="modal"
                                        data-target="#heating-second-floor-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.situation-second-floor.title')}}
@@ -802,10 +793,9 @@
                             </select>
                             @endcomponent
 
-                                <div id="heating-second-floor-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.situation-second-floor.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('heating_second_floor'))
                                     <span class="help-block">
@@ -818,7 +808,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('water_comfort') ? ' has-error' : '' }}">
                                 <label for="water_comfort" class=" control-label">
-                                    <i data-toggle="collapse"
+                                    <i data-toggle="modal"
                                        data-target="#comfortniveau-warm-tapwater-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.comfortniveau-warm-tapwater.title')}}
@@ -831,9 +821,9 @@
                                     {{--<option @if($comfortLevelTapWater->id == old('water_comfort')) selected @elseif(isset($energyHabit) && $energyHabit->water_comfort_id == $comfortLevelTapWater->id) selected @endif value="{{ $comfortLevelTapWater->id }}">{{ $comfortLevelTapWater->name }}</option>--}}
                             @endforeach
                         </select>@endcomponent
-                        <div id="comfortniveau-warm-tapwater-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('general-data.data-about-usage.comfortniveau-warm-tapwater.help')}}
-                        </div>
+                                @endcomponent
 
                                 @if ($errors->has('water_comfort'))
                                     <span class="help-block">
@@ -847,7 +837,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('amount_electricity') ? ' has-error' : '' }}">
                                 <label for="amount_electricity" class=" control-label">
-                                    <i data-toggle="collapse"
+                                    <i data-toggle="modal"
                                        data-target="#amount-electricity-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.electricity-consumption-past-year.title')}} <span>*</span></label>
@@ -861,10 +851,9 @@
                                            class="form-control" name="amount_electricity" required>--}}
                                 @endcomponent
 
-                                <div id="amount-electricity-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.electricity-consumption-past-year.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('amount_electricity'))
                                     <span class="help-block">
@@ -876,7 +865,7 @@
                         <div class="col-sm-6">
                             <div class="form-group add-space{{ $errors->has('amount_gas') ? ' has-error' : '' }}">
                                 <label for="amount_gas" class=" control-label">
-                                    <i data-toggle="collapse"
+                                    <i data-toggle="modal"
                                        data-target="#amount-gas-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.gas-usage-past-year.title')}}
@@ -890,10 +879,9 @@
                                            class="form-control" name="amount_gas" required>--}}
                                 @endcomponent
 
-                                <div id="amount-gas-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.gas-usage-past-year.help')}}
-                                </div>
+                                @endcomponent
 
 
                                 @if ($errors->has('amount_gas'))
@@ -909,16 +897,15 @@
                         <div class="col-sm-12">
                             <div class="form-group add-space{{ $errors->has('living_situation_extra') ? ' has-error' : '' }}">
                                 <label for="additional-info" class=" control-label">
-                                    <i data-toggle="collapse"
+                                    <i data-toggle="modal"
                                        data-target="#living-situation-extra-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.data-about-usage.additional-info.title')}}</label>
                                         <textarea id="additional-info" class="form-control" name="living_situation_extra">{{ old('living_situation_extra', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'living_situation_extra')) }}</textarea>
 
-                                <div id="living-situation-extra-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.data-about-usage.additional-info.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('living_situation_extra'))
                                     <span class="help-block">
@@ -950,7 +937,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group add-space{{ $errors->has('motivation.'.$i) ? ' has-error' : '' }}">
                                     <label for="motivation[{{ $i }}]" class=" control-label">
-                                        <i data-toggle="collapse"
+                                        <i data-toggle="modal"
                                            data-target="#motivation-{{ $i }}-info"
                                            class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                            aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.motivation.priority.title', ['prio' => $i])}}
@@ -978,10 +965,9 @@
 
 
                                     </select>
-                                    <div id="motivation-{{ $i }}-info"
-                                         class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                    @component('cooperation.tool.components.help-modal')
                                         {{\App\Helpers\Translation::translate('general-data.motivation.priority.help')}}
-                                    </div>
+                                    @endcomponent
 
                                     @if ($errors->has('motivation.'.$i))
                                         <span class="help-block">
@@ -996,7 +982,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group add-space{{ $errors->has('motivation_extra') ? ' has-error' : '' }}">
-                                <label for="motivation-extra" class=" control-label"><i data-toggle="collapse"
+                                <label for="motivation-extra" class=" control-label"><i data-toggle="modal"
                                                                                         data-target="#motivation-extra-info"
                                                                                         class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                                                                         aria-expanded="false"></i>
@@ -1006,10 +992,9 @@
                                 <textarea id="motivation-extra" class="form-control"
                                           name="motivation_extra">@if(old('motivation_extra') != ""){{ old('motivation_extra') }}@elseif(isset($energyHabit)){{ $energyHabit->motivation_extra }}@endif</textarea>
 
-                                <div id="motivation-extra-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('general-data.motivation-extra.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('motivation_extra'))
                                     <span class="help-block">
@@ -1048,24 +1033,17 @@
 
 @push('js')
     <script>
-
         $(document).ready(function () {
-
-            $(window).keydown(function (event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
 
             var previous_eb = parseInt('{{ $building->example_building_id }}');
 
             $("select#example_building_id").change(function() {
+                var current_eb = parseInt(this.value);
                 // Do something with the previous value after the change
-                if (this.value !== previous_eb ){
+                if (current_eb !== previous_eb ){
                     if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
                         @if(App::environment('local'))
-                        console.log("Let's save it. EB id: " + this.value);
+                        console.log("Let's save it. EB id: " + current_eb);
                         @endif
 
                         // Firefox fix, who else thinks that stuff has changed
@@ -1075,7 +1053,7 @@
                         $.ajax({
                             type: "POST",
                             url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
-                            data: { example_building_id: this.value },
+                            data: { example_building_id: current_eb },
                             success: function(data){
                                 location.reload();
                             }
@@ -1083,7 +1061,7 @@
 
 
                         // Make sure the previous value is updated
-                        previous_eb = this.value;
+                        previous_eb = current_eb;
                     } else {
                         if ( $("#select-box option[value='" + previous_eb + "']").val() === undefined) {
                             @if(App::environment('local'))

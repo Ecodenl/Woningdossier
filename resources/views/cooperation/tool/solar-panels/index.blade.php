@@ -16,7 +16,7 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.amount_electricity') ? ' has-error' : '' }}">
                         <label for="user_energy_habits_amount_electricity" class=" control-label">
-                            <i data-toggle="collapse" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#user-energy-habits-amount-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('solar-panels.electra-usage.title')}}
                         </label>
 
@@ -27,9 +27,9 @@
                             {{--<input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />--}}
                         @endcomponent
 
-                        <div id="user-energy-habits-amount-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('solar-panels.electra-usage.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('user_energy_habits.amount_electricity'))
                             <span class="help-block">
@@ -43,7 +43,7 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.peak_power') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_peak_power" class=" control-label">
-                            <i data-toggle="collapse" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#peak-power-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('solar-panels.peak-power.title')}}
                         </label>
 
@@ -57,9 +57,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="peak-power-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('solar-panels.peak-power.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_pv_panels.peak_power'))
                             <span class="help-block">
@@ -85,7 +85,7 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.number') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_number" class=" control-label">
-                            <i data-toggle="collapse" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#number-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('solar-panels.number.title')}}
                         </label>
 
@@ -96,9 +96,9 @@
                             {{--<input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />--}}
                         @endcomponent
 
-                        <div id="number-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('solar-panels.number.help')}}
-                        </div>
+                        @endcomponent
                         @if ($errors->has('building_pv_panels.number'))
                             <span class="help-block">
                             <strong>{{ $errors->first('building_pv_panels.number') }}</strong>
@@ -111,7 +111,7 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.pv_panel_orientation_id') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_pv_panel_orientation_id" class=" control-label">
-                            <i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('solar-panels.pv-panel-orientation-id.title')}}
                         </label>
 
@@ -125,9 +125,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="orientation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('solar-panels.pv-panel-orientation-id.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_pv_panels.pv_panel_orientation_id'))
                             <span class="help-block">
@@ -141,7 +141,7 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_pv_panels.angle') ? ' has-error' : '' }}">
                         <label for="building_pv_panels_angle" class=" control-label">
-                            <i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('solar-panels.angle.title')}}
                         </label>
 
@@ -157,9 +157,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('solar-panels.angle.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_pv_panels.angle'))
                             <span class="help-block">
@@ -182,13 +182,13 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
+                        <label for="additional-info" class=" control-label"><i data-toggle="modal" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
 
                         <textarea id="additional-info" class="form-control" name="comment">{{old('comment', isset($buildingPvPanels) ? $buildingPvPanels->comment : '')}}</textarea>
 
-                        <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('comment'))
                             <span class="help-block">
@@ -221,32 +221,32 @@
                     <div class="col-sm-4">
                         <div class="form-group add-space">
                             <label class="control-label">
-                                <i data-toggle="collapse" data-target="#yield-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                <i data-toggle="modal" data-target="#yield-electricity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.title')}}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="yield_electricity" class="form-control disabled" disabled="" value="0">
                             </div>
-                            <div id="yield-electricity-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.yield-electricity.help')}}
-                            </div>
+                            @endcomponent
                         </div>
                     </div>
 
                     <div class="col-sm-4">
                         <div class="form-group add-space">
                             <label class="control-label">
-                                <i data-toggle="collapse" data-target="#raise-own-consumption-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                <i data-toggle="modal" data-target="#raise-own-consumption-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title')}}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">%</span>
                                 <input type="text" id="raise_own_consumption" class="form-control disabled" disabled="" value="0">
                             </div>
-                            <div id="raise-own-consumption-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.help')}}
-                            </div>
+                            @endcomponent
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -305,12 +305,7 @@
     <script>
         $(document).ready(function() {
 
-            $(window).keydown(function(event){
-                if(event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+
 
             $("select, input[type=radio], input[type=text]").change(formChange);
 

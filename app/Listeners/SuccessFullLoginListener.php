@@ -51,7 +51,9 @@ class SuccessFullLoginListener
 
             // set the required sessions
             HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
-
+        }
+        if (\Auth::viaRemember()) {
+            \Log::debug('User logged in with a remember token! user id: '.$user->id);
         }
     }
 }

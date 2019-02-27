@@ -29,7 +29,13 @@
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.import-center.index')}}">
                                         @lang('woningdossier.cooperation.my-account.side-nav.import')
-                                        <span class="badge">{{\App\Models\ToolSetting::getUndoneChangedSettings(\App\Helpers\HoomdossierSession::getBuilding())->count()}}</span>
+                                        <?php
+                                        $count = 0;
+                                        if (!is_null(\App\Helpers\HoomdossierSession::getBuilding())){
+                                        	$count = \App\Models\ToolSetting::getUndoneChangedSettings(\App\Helpers\HoomdossierSession::getBuilding())->count();
+                                        }
+                                        ?>
+                                        <span class="badge">{{$count}}</span>
                                     </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.index', 'cooperation.my-account.messages.edit'])) active @endif">

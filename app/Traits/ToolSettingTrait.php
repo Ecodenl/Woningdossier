@@ -11,26 +11,27 @@ use Illuminate\Database\Eloquent\Model;
 trait ToolSettingTrait
 {
     /**
-     * Returns an input source ID if it's present on the model or in the session.
-     * There, however, is a case when this method can return null: on
-     * registration as the user is not logged in (yet) and the model has no
-     * input source just yet.
+     * Returns an input source id if it's present on the model, we always try to get it from the current model since the example building is a input source as well.
+     * However, if we cannot get it from the model we will try to get it from the session.
      *
      * @param Model $model
      *
      * @return int|null
      */
-    public static function getInputSourceId(Model $model)
+    public static function getChangedInputSourceId(Model $model)
     {
+        $inputSourceId = null;
+
         // Try to obtain the input source from the model itself
         $inputSource = InputSource::find($model->input_source_id);
-
-        // Set the InputSource ID to the default of my input source
-        $inputSourceId = HoomdossierSession::getInputSource();
 
         // And override if necessary
         if ($inputSource instanceof InputSource) {
             $inputSourceId = $inputSource->id;
+        } else if (\Auth::check()) {
+            // Set the InputSource ID to the default of my input source
+            $inputSourceId = HoomdossierSession::getInputSource();
+            \Log::debug('Got the inputsource from session');
         } else {
             \Log::debug('ToolSettingTrait: $inputSource is not a instance. this means the input_source_id does not exist on the model and the trait is included in a wrong model !');
         }
@@ -50,10 +51,10 @@ trait ToolSettingTrait
                 $hasChanged = $building->example_building_id === null ? false : true;
             }
 
-            $inputSourceId = self::getInputSourceId($model);
+            $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (! is_null($inputSourceId)) {
-                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $inputSourceId, $hasChanged);
+            if (!is_null($changedInputSourceId)) {
+                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
             }
         });
 
@@ -66,10 +67,10 @@ trait ToolSettingTrait
                 $hasChanged = $building->example_building_id === null ? false : true;
             }
 
-            $inputSourceId = self::getInputSourceId($model);
+            $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (! is_null($inputSourceId)) {
-                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $inputSourceId, $hasChanged);
+            if (!is_null($changedInputSourceId)) {
+                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
             }
         });
     }

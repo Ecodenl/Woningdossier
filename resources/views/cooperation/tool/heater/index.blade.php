@@ -20,7 +20,7 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('user_energy_habits.water_comfort_id') ? ' has-error' : '' }}">
                         <label for="user_energy_habits_water_comfort_id" class=" control-label">
-                            <i data-toggle="collapse" data-target="#water-comfort-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#water-comfort-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.title')}}
                         </label>
 
@@ -34,9 +34,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="water-comfort-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('heater.comfort-level-warm-tap-water.help')}}
-                        </div>
+                        @endcomponent
                         @if ($errors->has('user_energy_habits.water_comfort_id'))
                             <span class="help-block">
                             <strong>{{ $errors->first('user_energy_habits.water_comfort_id') }}</strong>
@@ -48,7 +48,7 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_heaters.pv_panel_orientation_id') ? ' has-error' : '' }}">
                         <label for="building_heaters_pv_panel_orientation_id" class=" control-label">
-                            <i data-toggle="collapse" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#orientation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('heater.pv-panel-orientation-id.title')}}
                         </label>
 
@@ -62,9 +62,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="orientation-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('heater.pv-panel-orientation-id.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_heaters.pv_panel_orientation_id'))
                             <span class="help-block">
@@ -78,7 +78,7 @@
                 <div class="col-sm-4">
                     <div class="form-group add-space{{ $errors->has('building_heaters.angle') ? ' has-error' : '' }}">
                         <label for="building_heaters_angle" class=" control-label">
-                            <i data-toggle="collapse" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#angle-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('heater.angle.title')}}
                         </label>
 
@@ -92,9 +92,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="angle-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('heater.angle.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_heaters.angle'))
                             <span class="help-block">
@@ -109,13 +109,12 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space{{ $errors->has('comment') ? ' has-error' : '' }}">
-                        <label for="additional-info" class=" control-label"><i data-toggle="collapse" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
+                        <label for="additional-info" class=" control-label"><i data-toggle="modal" data-target="#additional-info-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('general.specific-situation.title')}}</label>
 
                         <textarea id="additional-info" class="form-control" name="comment">{{old('comment', isset($currentHeater) ? $currentHeater->comment : '')}}</textarea>
-
-                        <div id="additional-info-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('comment'))
                             <span class="help-block">
@@ -144,26 +143,26 @@
 
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label"><i data-toggle="collapse" data-target="#consumption-water-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.consumption-water.title')}}</label>
+                            <label class="control-label"><i data-toggle="modal" data-target="#consumption-water-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.consumption-water.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.liter.title') }} / {{\App\Helpers\Translation::translate('general.unit.day.title')}}</span>
                                 <input type="text" id="consumption_water" class="form-control disabled" disabled="" value="0">
                             </div>
-                            <div id="consumption-water-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('heater.consumption-water.help')}}
-                            </div>
+                            @endcomponent
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label"><i data-toggle="collapse" data-target="#consumption-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.consumption-gas.title')}}</label>
+                            <label class="control-label"><i data-toggle="modal" data-target="#consumption-gas-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.consumption-gas.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="consumption_gas" class="form-control disabled" disabled="" value="0">
                             </div>
-                            <div id="consumption-gas-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('heater.consumption-gas.help')}}
-                            </div>
+                            @endcomponent
                         </div>
                     </div>
 
@@ -178,26 +177,26 @@
 
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label"><i data-toggle="collapse" data-target="#size-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.size-boiler.title')}}</label>
+                            <label class="control-label"><i data-toggle="modal" data-target="#size-boiler-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.size-boiler.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.liter.title')}}</span>
                                 <input type="text" id="size_boiler" class="form-control disabled" disabled="" value="0">
                             </div>
-                            <div id="size-boiler-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('heater.size-boiler.help')}}
-                            </div>
+                            @endcomponent
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space">
-                            <label class="control-label"><i data-toggle="collapse" data-target="#size-collector-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.size-collector.title')}}</label>
+                            <label class="control-label"><i data-toggle="modal" data-target="#size-collector-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('heater.size-collector.title')}}</label>
                             <div class="input-group">
                                 <span class="input-group-addon">m<sup>2</sup></span>
                                 <input type="text" id="size_collector" class="form-control disabled" disabled="" value="0">
                             </div>
-                            <div id="size-collector-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('heater.size-collector.help')}}
-                            </div>
+                            @endcomponent
                         </div>
                     </div>
 
@@ -213,22 +212,22 @@
                     <div class="col-sm-6">
                         <div class="form-group add-space">
                             <label class="control-label">
-                                <i data-toggle="collapse" data-target="#production-heat-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                <i data-toggle="modal" data-target="#production-heat-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 {{\App\Helpers\Translation::translate('heater.indication-for-costs.production-heat.title')}}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                                 <input type="text" id="production_heat" class="form-control disabled" disabled="" value="0">
                             </div>
-                            <div id="production-heat-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('heater.indication-for-costs.production-heat.help')}}
-                            </div>
+                            @endcomponent
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group add-space">
                             <label class="control-label">
-                                <i data-toggle="collapse" data-target="#percentage-consumption-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                <i data-toggle="modal" data-target="#percentage-consumption-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 {{\App\Helpers\Translation::translate('heater.indication-for-costs.percentage-consumption.title')}}
                             </label>
                             <div class="input-group">
@@ -312,12 +311,7 @@
     <script>
         $(document).ready(function() {
 
-            $(window).keydown(function(event){
-                if(event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+
 
             $("select, input[type=radio], input[type=text]").change(formChange);
 

@@ -13,7 +13,7 @@
             <div class="col-md-6">
                 <div class="form-group add-space{{ $errors->has('building_type_id') ? ' has-error' : '' }}">
                     <label for="building_type_id" class=" control-label">
-                        <i data-toggle="collapse" data-target="#building-type-info"
+                        <i data-toggle="modal" data-target="#building-type-info"
                            class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                            aria-expanded="false"></i>
                         {{\App\Helpers\Translation::translate('building-detail.building-type.what-type.title')}}
@@ -50,7 +50,7 @@
             <div class="col-md-6">
                 <div class="form-group add-space{{ $errors->has('build_year') ? ' has-error' : '' }}">
                     <label for="build_year" class=" control-label">
-                        <i data-toggle="collapse" data-target="#what-building-year-info"
+                        <i data-toggle="modal" data-target="#what-building-year-info"
                            class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                         {{\App\Helpers\Translation::translate('building-detail.building-type.what-building-year.title')}}
                         <span>*</span>

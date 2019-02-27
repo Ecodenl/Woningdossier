@@ -3,7 +3,11 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.users.index.header')
+            @if(\App\Helpers\HoomdossierSession::currentRole() == 'coordinator')
+                @lang('woningdossier.cooperation.admin.cooperation.coordinator.users.index.header')
+            @else
+                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.header')
+            @endif
             <a href="{{route('cooperation.admin.cooperation.users.create')}}" class="btn btn-md btn-primary pull-right"><span
                         class="glyphicon glyphicon-plus"></span></a>
         </div>
@@ -38,7 +42,7 @@
                                 </td>
                                 @can('delete-user')
                                     <td>
-                                        <button  data-user-id="{{$user->id}}"t type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-trash"></i></button>
+                                        <button  data-user-id="{{$user->id}}" type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-trash"></i></button>
                                     </td>
                                 @endcan
                             </tr>

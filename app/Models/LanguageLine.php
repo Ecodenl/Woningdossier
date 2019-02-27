@@ -12,6 +12,8 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 
     public static function boot()
     {
+	    parent::boot();
+
         static::creating(function ($model) {
             if (static::where('group', $model->group)->where('key', $model->key)->first() instanceof LanguageLine) {
                 \Log::debug('duplicate key: '.$model->key);

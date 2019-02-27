@@ -129,7 +129,7 @@
                 {{csrf_field()}}
                 <div class="form-group">
                     <label for="" class=" control-label">
-                        <i data-toggle="collapse" data-target="#my-plan-own-comment" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                        <i data-toggle="modal" data-target="#my-plan-own-comment" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                         {{\App\Helpers\Translation::translate('general.specific-situation.title')}} ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
                     </label>
 

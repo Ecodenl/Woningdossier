@@ -102,7 +102,7 @@ return [
                 ],
             ],
             'navbar' => [
-                'current-role' => 'Uw huidge rol:',
+                'current-role' => 'Uw huidige rol:',
                 'reports' => 'Rapportages',
                 'example-buildings' => 'Example buildings',
             ],

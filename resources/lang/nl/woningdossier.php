@@ -322,6 +322,11 @@ return [
                     ],
                 ],
                 'cooperation-admin' => [
+                    'users' => [
+                        'index' => [
+                            'header' => 'Overzicht van alle coaches voor uw coöperatie',
+                        ],
+                    ],
                     'side-nav' => [
                         'label' => 'Coöperatie admin menu',
                         'step' => 'Stappen',
@@ -427,6 +432,11 @@ return [
                 ],
 
                 'coordinator' => [
+                    'users' => [
+                        'index' => [
+                            'header' => 'Overzicht van alle coaches voor uw coöperatie',
+                        ],
+                    ],
                     'side-nav' => [
                         'reports' => 'Rapporten',
                         'label' => 'Coördinator menu',

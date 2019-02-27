@@ -36,7 +36,7 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'hoomsessionguard',
+            'driver' => 'session',
             'provider' => 'users',
         ],
 

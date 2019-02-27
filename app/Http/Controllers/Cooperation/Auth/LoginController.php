@@ -138,24 +138,12 @@ class LoginController extends Controller
             // get the first building from the user
             $building = $user->buildings()->first();
 
-            // if the user has a building, log him in.
-            // else, redirect him to a page where he needs to create a building
+            // if he has a building redirect him, else redirect him to a page where he needs to create a building
             // without a building the application is useless.
             if ($building instanceof Building) {
 
                 // we cant query on the Spatie\Role model so we first get the result on the "original model"
                 $role = Role::findByName($user->roles->first()->name);
-
-                // get the input source
-                $inputSource = $role->inputSource;
-
-                // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-                if (!$role->inputSource instanceof InputSource) {
-                    $inputSource = InputSource::findByShort('resident');
-                }
-
-                // set the required sessions
-                HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
 
                 // set the redirect url
                 if (1 == $user->roles->count()) {

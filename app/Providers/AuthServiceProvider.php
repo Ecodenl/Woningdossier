@@ -35,27 +35,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        \Auth::extend('hoomsessionguard', function ($app, $name, array $config) {
-
-            $userProvider = \Auth::createUserProvider($config['provider']);
-            $sessionGuard = new HoomSessionGuard($name, $userProvider, $app['session.store'], $app->request);
-            
-            // When using the remember me functionality of the authentication services we
-            // will need to be set the encryption instance of the guard, which allows
-            // secure, encrypted cookie values to get generated for those cookies.
-            if (method_exists($sessionGuard, 'setCookieJar')) {
-                $sessionGuard->setCookieJar($app['cookie']);
-            }
-            if (method_exists($sessionGuard, 'setDispatcher')) {
-                $sessionGuard->setDispatcher($app['events']);
-            }
-            if (method_exists($sessionGuard, 'setRequest')) {
-                $sessionGuard->setRequest($app->refresh('request', $sessionGuard, 'setRequest'));
-            }
-
-            return $sessionGuard;
-        });
-
         Gate::define('access-admin', 'App\Policies\UserPolicy@accessAdmin');
         Gate::define('delete-user', 'App\Policies\UserPolicy@deleteUser');
         Gate::define('respond', 'App\Policies\UserPolicy@respond');

@@ -8,8 +8,6 @@
           action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
-        {{--{{dd($floorInsulation)}}--}}
-
         @include('cooperation.tool.includes.interested', [
             'type' => 'element', 'buildingElements' => $floorInsulation, 'buildingElement' => 'floor-insulation'
         ])

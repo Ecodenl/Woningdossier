@@ -19,6 +19,7 @@ class MyPlanController extends Controller
 {
     public function index()
     {
+
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);

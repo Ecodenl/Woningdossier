@@ -10,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\UserActionPlanAdvice;
+use App\Observer\CooperationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
 use App\Observers\UserActionPlanAdviceObserver;
@@ -24,6 +25,7 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Cooperation::observe(CooperationObserver::class);
         PrivateMessage::observe(PrivateMessageObserver::class);
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
         PrivateMessageView::observe(PrivateMessageViewObserver::class);

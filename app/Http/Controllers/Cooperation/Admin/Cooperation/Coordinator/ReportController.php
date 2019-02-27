@@ -61,7 +61,6 @@ class ReportController extends Controller
                     $answer = $questionAnswerForCurrentQuestionnaire->answer;
                     $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
 
-
                     // check if the question
                     if ($currentQuestion instanceof Question) {
                         // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
@@ -74,7 +73,7 @@ class ReportController extends Controller
                             foreach ($explodedAnswers as $explodedAnswer) {
                                 // check if the current question has options
                                 // the question can contain a int but can be a answer to a question like "How old are you"
-                                if ($currentQuestion->hasQuestionOptions() && !empty($explodedAnswer)) {
+                                if ($currentQuestion->hasQuestionOptions() && ! empty($explodedAnswer)) {
                                     $questionOption = QuestionOption::find($explodedAnswer);
                                     array_push($questionOptionAnswer, $questionOption->name);
                                 }
@@ -82,7 +81,7 @@ class ReportController extends Controller
 
                             // the questionOptionAnswer can be empty if the the if statements did not pass
                             // so we check that before assigning it.
-                            if (!empty($questionOptionAnswer)) {
+                            if (! empty($questionOptionAnswer)) {
                                 // implode it
                                 $answer = implode($questionOptionAnswer, '|');
                             }
@@ -93,8 +92,6 @@ class ReportController extends Controller
             }
         }
 
-
-
         // unset the whole empty arrays
         // so we only set rows with answers.
         foreach ($rows as $buildingId => $row) {
@@ -104,7 +101,7 @@ class ReportController extends Controller
         }
 
         $headers = [];
-        if (!empty($rows)) {
+        if (! empty($rows)) {
             $headers = array_keys(array_first($rows));
         }
 
@@ -262,7 +259,6 @@ class ReportController extends Controller
                 foreach ($measures as $measure) {
                     $row[$key][$measure->measure_name] = '';
                 }
-
 
                 // get the action plan advices for the user, but only for the resident his input source
                 $userActionPlanAdvices = $user

@@ -26,11 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 class CooperationStep extends Model
 {
     protected $fillable = [
-        'is_active', 'order', 'cooperation_id', 'step_id'
+        'is_active', 'order', 'cooperation_id', 'step_id',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
 }

@@ -11,7 +11,3 @@ class MyAccountController extends Controller
         return view('cooperation.my-account.index');
     }
 }
-
-
-
-

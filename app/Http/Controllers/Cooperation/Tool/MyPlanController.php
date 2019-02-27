@@ -19,7 +19,6 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
@@ -32,9 +31,10 @@ class MyPlanController extends Controller
     }
 
     /**
-     * Store a comment for the my plan page for the current inputsource on the owner of the building
+     * Store a comment for the my plan page for the current inputsource on the owner of the building.
      *
      * @param MyPlanRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function storeComment(MyPlanRequest $request)

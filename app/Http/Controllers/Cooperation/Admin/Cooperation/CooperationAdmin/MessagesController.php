@@ -43,7 +43,6 @@ class MessagesController extends Controller
 
     public function privateGroup(Cooperation $cooperation, $buildingId)
     {
-
         $isPublic = false;
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
 

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class PrivateMessagesTableReorderColumns extends Migration
 {
@@ -14,7 +14,6 @@ class PrivateMessagesTableReorderColumns extends Migration
     public function up()
     {
         Schema::table('private_messages', function (Blueprint $table) {
-
             // drop columns
             $table->dropColumn(['title', 'main_message', 'status', 'is_completed', 'from_user_read', 'to_user_read']);
 
@@ -25,18 +24,15 @@ class PrivateMessagesTableReorderColumns extends Migration
             $table->dropForeign(['from_user_id']);
             $table->foreign('from_user_id')->references('id')->on('users')->onDelete('set null');
 
-            $table->string('from_user')->default("")->after('building_id');
+            $table->string('from_user')->default('')->after('building_id');
 
             $table->boolean('is_public')->nullable()->after('building_id');
-
         });
 
         Schema::table('private_messages', function (Blueprint $table) {
-
             // change le data
             $pm = \DB::table('private_messages')->get();
             foreach ($pm as $privateMessage) {
-
                 $user = \DB::table('users')->find($privateMessage->from_user_id);
                 if ($user instanceof stdClass) {
                     $building = \DB::table('buildings')->where('user_id', $user->id)->first();
@@ -47,18 +43,14 @@ class PrivateMessagesTableReorderColumns extends Migration
                         ->where('id', $privateMessage->id)
                         ->update([
                             'from_user' => $fromUser,
-                            'building_id' => $building->id
+                            'building_id' => $building->id,
                         ]);
                 }
-
             }
 
             $table->dropForeign(['to_user_id']);
             $table->dropColumn(['to_user_id']);
-
         });
-
-
     }
 
     /**
@@ -69,7 +61,6 @@ class PrivateMessagesTableReorderColumns extends Migration
     public function down()
     {
         Schema::table('private_messages', function (Blueprint $table) {
-
             $table->dropColumn('is_public');
             $table->string('title')->nullable()->default(null)->after('building_id');
 
@@ -86,9 +77,6 @@ class PrivateMessagesTableReorderColumns extends Migration
 
             $table->dropForeign(['building_id']);
             $table->dropColumn(['building_id', 'from_user']);
-
         });
-
-
     }
 }

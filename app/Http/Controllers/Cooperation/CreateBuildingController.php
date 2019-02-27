@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -12,13 +13,12 @@ use App\Models\InputSource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 class CreateBuildingController extends Controller
 {
     /**
-     * If a user tries to login and we notice there is no building for that user, show him the page where he can create a new building to his account
+     * If a user tries to login and we notice there is no building for that user, show him the page where he can create a new building to his account.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -31,7 +31,8 @@ class CreateBuildingController extends Controller
      * Store the building and connect it to the user his account.
      *
      * @param CreateBuildingFormRequest $request
-     * @param Cooperation $cooperation
+     * @param Cooperation               $cooperation
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(CreateBuildingFormRequest $request, Cooperation $cooperation)
@@ -49,7 +50,6 @@ class CreateBuildingController extends Controller
 
         // a user has to give up his mail and password again, so we can verify he is only creating the building for himself.
         if (\Auth::attempt(['email' => $email, 'password' => $password])) {
-
             $data = $request->all();
 
             $address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
@@ -73,7 +73,7 @@ class CreateBuildingController extends Controller
             $inputSource = $role->inputSource;
 
             // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-            if (!$role->inputSource instanceof InputSource) {
+            if (! $role->inputSource instanceof InputSource) {
                 $inputSource = InputSource::findByShort('resident');
             }
 
@@ -86,7 +86,6 @@ class CreateBuildingController extends Controller
             } else {
                 return redirect(url('/admin'))->with('success', __('woningdossier.cooperation.create-building.store.success'));
             }
-
         }
 
         throw ValidationException::withMessages([

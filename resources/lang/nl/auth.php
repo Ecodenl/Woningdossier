@@ -16,7 +16,7 @@ return [
     'failed'   => 'Uw gebruikersnaam of wachtwoord is onjuist.',
     'cooperation' => 'U bent geen lid van deze coöperatie.',
     'throttle' => 'Te veel login pogingen. U kunt het opniew proberen over :seconds seconde(n).',
-	'inactive' => 'U kunt nog niet inloggen omdat uw account nog niet is bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail. <a href=":resend-link">Niet ontvangen?</a>',
+    'inactive' => 'U kunt nog niet inloggen omdat uw account nog niet is bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail. <a href=":resend-link">Niet ontvangen?</a>',
 
     'register' => [
         'form' => [
@@ -42,7 +42,7 @@ return [
             'button'                => 'Registreren',
             'message'               => [
                 'success'           => 'Bedankt. We hebben een e-mail met een bevestigingslink naar u toegestuurd om uw registratie te voltooien.',
-                'account-connected' => 'Het account is gekoppeld, u kunt nu inloggen met het wachtwoord waar u mee inlogde bij uw vorige coöperatie.'
+                'account-connected' => 'Het account is gekoppeld, u kunt nu inloggen met het wachtwoord waar u mee inlogde bij uw vorige coöperatie.',
             ],
         ],
     ],
@@ -61,18 +61,18 @@ return [
     'general-data' => [
         'may-not-be-filled' => 'Dit veld mag niet gevuld zijn onder deze omstandigheden',
     ],
-	'reset' => [
-		'form' => [
-			'header' => 'Wachtwoord resetten',
-			'send-reset-link' => 'Verstuur reset link',
-			'set-password' => 'Nieuw wachtwoord instellen',
-		],
-		'inactive' => 'Uw wachtwoord is gereset, maar uw account is nog niet bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail.',
-	],
+    'reset' => [
+        'form' => [
+            'header' => 'Wachtwoord resetten',
+            'send-reset-link' => 'Verstuur reset link',
+            'set-password' => 'Nieuw wachtwoord instellen',
+        ],
+        'inactive' => 'Uw wachtwoord is gereset, maar uw account is nog niet bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail.',
+    ],
     'confirm' => [
         'success' => 'Uw account is bevestigd. U kunt nu inloggen met uw gebruikersnaam en wachtwoord.',
         'error' => 'Uw bevestigingslink is ongeldig. Is uw account wellicht al bevestigd?',
-	    'email-error' => 'We konden uw e-mailadres niet vinden. Weet u zeker dat u eerder geregistreerd bent?',
-	    'email-success' => 'De bevestigingslink is opnieuw naar u verstuurd.'
+        'email-error' => 'We konden uw e-mailadres niet vinden. Weet u zeker dat u eerder geregistreerd bent?',
+        'email-success' => 'De bevestigingslink is opnieuw naar u verstuurd.',
     ],
 ];

@@ -28,7 +28,7 @@ trait ToolSettingTrait
         // And override if necessary
         if ($inputSource instanceof InputSource) {
             $inputSourceId = $inputSource->id;
-        } else if (\Auth::check()) {
+        } elseif (\Auth::check()) {
             // Set the InputSource ID to the default of my input source
             $inputSourceId = HoomdossierSession::getInputSource();
             \Log::debug('Got the inputsource from session');
@@ -48,12 +48,12 @@ trait ToolSettingTrait
             $hasChanged = false;
 
             if ($building instanceof Building) {
-                $hasChanged = $building->example_building_id === null ? false : true;
+                $hasChanged = null === $building->example_building_id ? false : true;
             }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (!is_null($changedInputSourceId)) {
+            if (! is_null($changedInputSourceId)) {
                 ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
             }
         });
@@ -64,12 +64,12 @@ trait ToolSettingTrait
             $hasChanged = false;
 
             if ($building instanceof Building) {
-                $hasChanged = $building->example_building_id === null ? false : true;
+                $hasChanged = null === $building->example_building_id ? false : true;
             }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (!is_null($changedInputSourceId)) {
+            if (! is_null($changedInputSourceId)) {
                 ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
             }
         });

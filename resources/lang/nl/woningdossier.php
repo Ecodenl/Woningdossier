@@ -16,31 +16,31 @@ return [
             ],
             'building' => [
                 'header' => 'Vul uw adres in.',
-                'store' => 'Adres aanmaken'
+                'store' => 'Adres aanmaken',
             ],
             'store' => [
-                'success' => 'Uw adres is toegevoegd aan het Hoomdossier, u kunt nu gebruik maken van de tool.'
-            ]
+                'success' => 'Uw adres is toegevoegd aan het Hoomdossier, u kunt nu gebruik maken van de tool.',
+            ],
         ],
 
         'step' => [
             'general-data' => 'Algemene gegevens',
-            'building-detail' => 'Woning details'
+            'building-detail' => 'Woning details',
         ],
 
         'chat' => [
             'modal' => [
                 'text' => 'Naar welk groepsgesprek wilt u gaan?',
                 'public' => 'Publiek',
-                'private' => 'Privé'
+                'private' => 'Privé',
             ],
             'group-participants' => [
-                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.'
+                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
             ],
-	        'messages' => [
-	        	'participant-added' => ":participant is toegevoegd aan het gesprek",
-		        'participant-removed' => ":participant is verwijderd uit het gesprek",
-	        ],
+            'messages' => [
+                'participant-added' => ':participant is toegevoegd aan het gesprek',
+                'participant-removed' => ':participant is verwijderd uit het gesprek',
+            ],
         ],
 
         'navbar' => [
@@ -49,8 +49,8 @@ return [
         'admin' => [
             'example-buildings' => [
                 'index' => [
-                    'header' => 'Voorbeeldwoningen'
-                ]
+                    'header' => 'Voorbeeldwoningen',
+                ],
             ],
             'super-admin' => [
                 'side-nav' => [
@@ -74,7 +74,7 @@ return [
                                 'actions' => 'Acties',
                             ],
                             'main-translations' => 'Herhalende teksten',
-                            'see' => 'Bekijk vertalingen'
+                            'see' => 'Bekijk vertalingen',
                         ],
                     ],
                     'edit' => [
@@ -83,14 +83,14 @@ return [
                         'question' => 'Vraag in taal: :locale',
                         'help' => 'Helptext in taal: :locale',
                         'search' => [
-                            'placeholder' => 'Zoek naar een vraag..'
+                            'placeholder' => 'Zoek naar een vraag..',
                         ],
                         'save' => 'Wijzigingen voor de vragen, sub-vragen en helpteksten opslaan.',
                         'close-modal' => 'Sluit venster.',
                     ],
                     'update' => [
-                        'success' => 'Vertalingen zijn bijgewerkt.'
-                    ]
+                        'success' => 'Vertalingen zijn bijgewerkt.',
+                    ],
                 ],
                 'cooperations' => [
                     'index' => [
@@ -99,7 +99,7 @@ return [
                             'columns' => [
                                 'name' => 'Cooperatie naam',
                                 'slug' => 'Cooperatie Slug / Subdomein',
-                                'actions' => 'Acties'
+                                'actions' => 'Acties',
                             ],
                         ],
                         'edit' => 'Bewerken',
@@ -110,7 +110,7 @@ return [
                         'form' => [
                             'name' => 'Naam van de cooperatie',
                             'slug' => 'Slug / subdomein',
-                            'create' => 'Aanmaken'
+                            'create' => 'Aanmaken',
                         ],
                     ],
                     'edit' => [
@@ -118,14 +118,14 @@ return [
                         'form' => [
                             'name' => 'Naam van de cooperatie',
                             'slug' => 'Slug / subdomein',
-                            'update' => 'Bijwerken'
+                            'update' => 'Bijwerken',
                         ],
                     ],
                     'store' => [
                         'success' => 'Cooperatie is toegevoegd aan het Hoomdossier',
                     ],
                     'update' => [
-                        'success' => 'Cooperatie is bijgewerkt.'
+                        'success' => 'Cooperatie is bijgewerkt.',
                     ],
                 ],
             ],
@@ -516,7 +516,7 @@ return [
                             ],
                         ],
                         'manage-connected-coaches' => [
-                            'redirect-message' => 'U kunt een of meerdere gebruikers toegang tot de woning ontzeggen door op het kruisje te klikken bij een gebruiker bovenin het chatvenster.'
+                            'redirect-message' => 'U kunt een of meerdere gebruikers toegang tot de woning ontzeggen door op het kruisje te klikken bij een gebruiker bovenin het chatvenster.',
                         ],
                         'destroy' => [
                             'success' => 'Toegang is ontzegd',
@@ -577,7 +577,6 @@ return [
                                     'actions' => 'Acties',
                                 ],
                             ],
-
 
                             \App\Models\PrivateMessage::REQUEST_TYPE_USER_CREATED_BY_COOPERATION => 'Gebruiker aangemaakt door cooperatie',
                             \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
@@ -835,7 +834,7 @@ return [
                     'other-source' => 'Er zijn gegevens van een :input_source_name aanwezig',
                     'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
                     'show-differences' => 'Toon de verschillen met mijn data',
-                ]
+                ],
             ],
 
             'access' => [
@@ -847,9 +846,9 @@ return [
                         'columns' => [
                             'coach' => 'Naam van gebruiker',
                             'actions' => 'Actie ondernemen',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
 
             'messages' => [
@@ -1000,7 +999,6 @@ return [
                 'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
                 'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.',
             ],
-
         ],
         'tool' => [
             'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',
@@ -1037,9 +1035,9 @@ return [
                     'example-building-type' => 'Kies de best passende voorbeeldwoning',
                     'no-match' => 'Er is geen passende voorbeeldwoning',
                     'apply-are-you-sure' => 'Weet u zeker dat u deze voorbeeldwoning wilt toepassen?',
-	                'generic' => [
-	                	'apply-are-you-sure' => 'Let op: Op basis van woningtype en bouwjaar wordt een voorbeeldwoning geselecteerd. Het veranderen van het woningtype heeft invloed op een aantal gegevens in het Hoomdossier.',
-	                ]
+                    'generic' => [
+                        'apply-are-you-sure' => 'Let op: Op basis van woningtype en bouwjaar wordt een voorbeeldwoning geselecteerd. Het veranderen van het woningtype heeft invloed op een aantal gegevens in het Hoomdossier.',
+                    ],
                 ],
             ],
 

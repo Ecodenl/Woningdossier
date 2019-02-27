@@ -4,24 +4,23 @@ namespace App\Http\Controllers\Cooperation\Messages;
 
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
+use App\Http\Controllers\Controller;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
-use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class ParticipantController extends Controller
 {
     /**
-     * Remove a participant from a group chat and revoke his building access permissions
+     * Remove a participant from a group chat and revoke his building access permissions.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function revokeAccess(Cooperation $cooperation, Request $request)
@@ -47,10 +46,10 @@ class ParticipantController extends Controller
     }
 
     /**
-     * Add a user / participant to a group chat and give him building access permission
+     * Add a user / participant to a group chat and give him building access permission.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -76,7 +75,6 @@ class ParticipantController extends Controller
 
             event(new ParticipantAddedEvent($user, $residentBuilding));
         }
-
 
         // since the coordinator is the only one who can do this atm.
         return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')

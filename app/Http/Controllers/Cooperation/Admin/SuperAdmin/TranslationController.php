@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\LanguageLine;
 use App\Models\Step;
 use App\Models\Translation;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class TranslationController extends Controller
 {
@@ -19,6 +19,7 @@ class TranslationController extends Controller
     public function index()
     {
         $steps = Step::all();
+
         return view('cooperation.admin.super-admin.translations.index', compact('steps'));
     }
 
@@ -29,24 +30,22 @@ class TranslationController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
     }
-
 
     /**
      * @param Cooperation $cooperation
-     * @param string $stepSlug| So we can get the translations / questions from language_line table for the step.
+     * @param string      $stepSlug|   So we can get the translations / questions from language_line table for the step
      *
      * @return \Illuminate\Http\Response
      */
@@ -60,7 +59,7 @@ class TranslationController extends Controller
                 ->get();
 
             // if it isnt a instace, then its a general translation group
-        } else if ($stepSlug == "general") {
+        } elseif ('general' == $stepSlug) {
             $questions = LanguageLine::with(['subQuestions', 'helpText'])
                 ->where('group', 'general')
                 ->mainQuestions()
@@ -73,9 +72,10 @@ class TranslationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  Cooperation $cooperation
-     * @param  string $stepId
+     * @param \Illuminate\Http\Request $request
+     * @param Cooperation              $cooperation
+     * @param string                   $stepId
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Cooperation $cooperation, $stepSlug)
@@ -88,7 +88,7 @@ class TranslationController extends Controller
                 foreach ($languageLines as $languageLineId => $text) {
                     $languageLine = LanguageLine::find($languageLineId);
                     if ($languageLine instanceof LanguageLine) {
-                        if (!empty($text)) {
+                        if (! empty($text)) {
                             $languageLine->setTranslation($locale, $text);
                             $languageLine->save();
                         }
@@ -104,11 +104,11 @@ class TranslationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
     }
 }

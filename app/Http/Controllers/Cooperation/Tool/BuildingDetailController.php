@@ -43,7 +43,7 @@ class BuildingDetailController extends Controller
         $buildingTypeId = $request->get('building_type_id');
 
         // to get the old building features
-	    $currentFeatures = $building->buildingFeatures;
+        $currentFeatures = $building->buildingFeatures;
 
         $features = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -62,14 +62,14 @@ class BuildingDetailController extends Controller
 
         // if there are no features yet, then we can apply the example building
         // else, we need to compare the old buildingtype and buildyear against that from the request, if those differ then we apply the example building again.
-        if (!$currentFeatures instanceof BuildingFeature) {
-        	if ($exampleBuilding instanceof ExampleBuilding) {
-		        ExampleBuildingService::apply( $exampleBuilding, $buildYear, $building );
+        if (! $currentFeatures instanceof BuildingFeature) {
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
-		        // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
-                $building->exampleBuilding()->associate( $exampleBuilding );
+                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
+                $building->exampleBuilding()->associate($exampleBuilding);
                 $building->save();
-	        }
+            }
         } else {
             $currentBuildYear = $currentFeatures->build_year;
             $currentBuildingTypeId = $currentFeatures->building_type_id;

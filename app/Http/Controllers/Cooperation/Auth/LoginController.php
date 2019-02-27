@@ -6,7 +6,6 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
-use App\Models\InputSource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -91,6 +90,7 @@ class LoginController extends Controller
     public function authenticated()
     {
     }
+
     /**
      * Handle a login request to the application.
      *
@@ -114,7 +114,7 @@ class LoginController extends Controller
             /** @var User $user */
             $user = $this->guard()->getLastAttempted();
 
-            if (!$user->isAssociatedWith(\App::make('Cooperation'))) {
+            if (! $user->isAssociatedWith(\App::make('Cooperation'))) {
                 throw ValidationException::withMessages([
                     'cooperation' => [trans('auth.cooperation')],
                 ]);
@@ -131,7 +131,6 @@ class LoginController extends Controller
             }
         }
 
-
         if ($this->attemptLogin($request)) {
             $user = \Auth::user();
 
@@ -141,7 +140,6 @@ class LoginController extends Controller
             // if he has a building redirect him, else redirect him to a page where he needs to create a building
             // without a building the application is useless.
             if ($building instanceof Building) {
-
                 // we cant query on the Spatie\Role model so we first get the result on the "original model"
                 $role = Role::findByName($user->roles->first()->name);
 

@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Collection;
-
 class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 {
     protected $fillable = [
-        'group', 'key', 'text', 'step_id', 'main_language_line_id', 'help_language_line_id'
+        'group', 'key', 'text', 'step_id', 'main_language_line_id', 'help_language_line_id',
     ];
 
     public static function boot()
     {
-	    parent::boot();
+        parent::boot();
 
         static::creating(function ($model) {
             if (static::where('group', $model->group)->where('key', $model->key)->first() instanceof LanguageLine) {
@@ -22,9 +20,10 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
     }
 
     /**
-     * Scope a query to only return the main questions and exclude the helptexts
+     * Scope a query to only return the main questions and exclude the helptexts.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeMainQuestions($query)
@@ -41,12 +40,11 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
      */
     public function subQuestions()
     {
-        return $this->hasMany(LanguageLine::class, 'main_language_line_id', 'id');
+        return $this->hasMany(self::class, 'main_language_line_id', 'id');
     }
 
     public function helpText()
     {
-        return $this->hasOne(LanguageLine::class, 'id', 'help_language_line_id');
+        return $this->hasOne(self::class, 'id', 'help_language_line_id');
     }
-
 }

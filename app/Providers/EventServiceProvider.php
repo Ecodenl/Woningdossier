@@ -25,14 +25,14 @@ class EventServiceProvider extends ServiceProvider
             PrivateMessageReceiverListener::class,
         ],
         ParticipantRevokedEvent::class => [
-            ParticipantRevokedListener::class
+            ParticipantRevokedListener::class,
         ],
         ParticipantAddedEvent::class => [
-            ParticipantAddedListener::class
+            ParticipantAddedListener::class,
         ],
         Login::class => [
-            SuccessFullLoginListener::class
-        ]
+            SuccessFullLoginListener::class,
+        ],
     ];
 
     /**

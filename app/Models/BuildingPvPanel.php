@@ -40,48 +40,49 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereUpdatedAt( $value )
  * @mixin \Eloquent
  */
-class BuildingPvPanel extends Model {
-	use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+class BuildingPvPanel extends Model
+{
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
-	protected $fillable = [
-		'building_id',
-		'input_source_id',
-		'peak_power',
-		'number',
-		'pv_panel_orientation_id',
-		'angle',
-		'comment'
-	];
+    protected $fillable = [
+        'building_id',
+        'input_source_id',
+        'peak_power',
+        'number',
+        'pv_panel_orientation_id',
+        'angle',
+        'comment',
+    ];
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function building()
-	{
-		return $this->belongsTo( Building::class );
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
 
-	/**
-	 * Make sure that null is casted to the integer 0
-	 *
-	 * @param  string $value
-	 *
-	 * @return void
-	 */
-	public function setNumberAttribute( $value )
-	{
-    	if (is_null($value)){
-    		$value = 0;
-	    }
+    /**
+     * Make sure that null is casted to the integer 0.
+     *
+     * @param string $value
+     *
+     * @return void
+     */
+    public function setNumberAttribute($value)
+    {
+        if (is_null($value)) {
+            $value = 0;
+        }
 
-    	$this->attributes['number'] = $value;
-	}
+        $this->attributes['number'] = $value;
+    }
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function orientation()
-	{
-		return $this->belongsTo( PvPanelOrientation::class );
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function orientation()
+    {
+        return $this->belongsTo(PvPanelOrientation::class);
+    }
 }

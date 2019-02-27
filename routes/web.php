@@ -27,8 +27,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
         //		 Login, forgot password etc.
 
-	    Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
-	    Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
+        Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
+        Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
 
         Auth::routes();
 
@@ -114,7 +114,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
                 Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
 
-
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
@@ -177,7 +176,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
-
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
@@ -308,7 +306,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('edit', 'CooperationController@update')->name('update');
                 });
                 Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
-
             });
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {

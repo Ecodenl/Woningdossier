@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ParticipantRevokedListener
 {
@@ -16,19 +14,19 @@ class ParticipantRevokedListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)
     {
         $participantFullName = $event->revokedParticipant->getFullName();
-	    $message = __('woningdossier.cooperation.chat.messages.participant-removed', ['participant' => $participantFullName]);
+        $message = __('woningdossier.cooperation.chat.messages.participant-removed', ['participant' => $participantFullName]);
 
         // is_public is set to true, could be changed in the future.
         PrivateMessage::create([

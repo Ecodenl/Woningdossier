@@ -127,14 +127,15 @@ class Building extends Model
     }
 
     /**
-     * Check if a step is not completed
+     * Check if a step is not completed.
      *
      * @param Step $step
+     *
      * @return bool
      */
     public function hasNotCompleted(Step $step)
     {
-        return !$this->hasCompleted($step);
+        return ! $this->hasCompleted($step);
     }
 
     /**

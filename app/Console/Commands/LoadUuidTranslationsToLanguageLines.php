@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\LanguageLine;
 use App\Models\Step;
 use App\Models\Translation;
-use App\Models\LanguageLine;
 use Illuminate\Console\Command;
 
 class LoadUuidTranslationsToLanguageLines extends Command
@@ -35,7 +35,6 @@ class LoadUuidTranslationsToLanguageLines extends Command
 
     protected function createQuestion($step, $titleData, $helpData)
     {
-
 //        $title['main_language_line_id'] = $mainQuestionLanguageLine->id;
         // since there is also a key called general, which contains info that repeats in all the tool pages
 
@@ -47,6 +46,7 @@ class LoadUuidTranslationsToLanguageLines extends Command
         $helpLanguageLine = LanguageLine::create($helpData);
 
         $titleData['help_language_line_id'] = $helpLanguageLine->id;
+
         return LanguageLine::create($titleData);
     }
 
@@ -54,6 +54,7 @@ class LoadUuidTranslationsToLanguageLines extends Command
      * If a given questions array contains a title key, it has sub questions.
      *
      * @param array $questions
+     *
      * @return bool
      */
     public function hasSubQuestions(array $questions)
@@ -61,6 +62,7 @@ class LoadUuidTranslationsToLanguageLines extends Command
         if (array_key_exists('title', $questions)) {
             return true;
         }
+
         return false;
     }
 
@@ -72,11 +74,11 @@ class LoadUuidTranslationsToLanguageLines extends Command
     public function handle()
     {
         $uuid = __('uuid');
-        /**
+        /*
          * Function to migrate the data from the uuid.php to the laravel translation loader from spatie.
          */
         foreach ($uuid as $stepSlug => $stepQuestions) {
-            if ($stepSlug == 'boiler') {
+            if ('boiler' == $stepSlug) {
                 $stepSlug = 'high-efficiency-boiler';
             }
             $step = Step::where('slug', $stepSlug)->first();
@@ -85,31 +87,26 @@ class LoadUuidTranslationsToLanguageLines extends Command
             foreach ($stepQuestions as $questionKey => $questions) {
                 // if a question contains a title and help key,
                 if (array_key_exists('title', $questions) && array_key_exists('help', $questions)) {
-
                     $question = $questions;
                     $helpTranslation = Translation::where('key', $question['help'])->first();
                     $titleTranslation = Translation::where('key', $question['title'])->first();
 
                     if ($titleTranslation instanceof Translation) {
-
                         // build base array
                         $help = [
                             'group' => $stepSlug,
-                            'key' => $questionKey . '.help',
+                            'key' => $questionKey.'.help',
                             'text' => ['nl' => $helpTranslation->translation],
                         ];
                         $title = [
                             'group' => $stepSlug,
-                            'key' => $questionKey . '.title',
+                            'key' => $questionKey.'.title',
                             'text' => ['nl' => $titleTranslation->translation],
                         ];
                         $this->createQuestion($step, $title, $help);
                     }
-
-
                 } else {
                     if ($this->hasSubQuestions($questions)) {
-
                         $mainQuestion = $questions['title'];
 
                         $helpTranslation = Translation::where('key', $mainQuestion['help'])->first();
@@ -134,7 +131,7 @@ class LoadUuidTranslationsToLanguageLines extends Command
 
                     // loop through the sub questions and save those
                     foreach ($questions as $subQuestionKey => $question) {
-                        if (array_key_exists('help', $question) && $subQuestionKey != 'title') {
+                        if (array_key_exists('help', $question) && 'title' != $subQuestionKey) {
                             $helpTranslation = Translation::where('key', $question['help'])->first();
                             $titleTranslation = Translation::where('key', $question['title'])->first();
 
@@ -151,13 +148,11 @@ class LoadUuidTranslationsToLanguageLines extends Command
                                 'group' => $stepSlug,
                                 'key' => $titleKey,
                                 'text' => ['nl' => $titleTranslation->translation],
-
                             ];
                             if (isset($main)) {
                                 $title['main_language_line_id'] = $main->id;
                             }
                             $this->createQuestion($step, $title, $help);
-
                         }
                     }
                     unset($main);

@@ -34,7 +34,6 @@ class ExampleBuildingRequest extends FormRequest
 
         // modify the request.
         $this->replace(array_replace($this->all(), $undotedContents));
-
     }
 
     public function failedValidation(Validator $validator)

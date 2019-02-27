@@ -6,8 +6,6 @@ use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Role;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SuccessFullLoginListener
 {
@@ -18,13 +16,13 @@ class SuccessFullLoginListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)
@@ -37,7 +35,6 @@ class SuccessFullLoginListener
         // else, redirect him to a page where he needs to create a building
         // without a building the application is useless.
         if ($building instanceof Building) {
-
             // we cant query on the Spatie\Role model so we first get the result on the "original model"
             $role = Role::findByName($user->roles->first()->name);
 
@@ -45,7 +42,7 @@ class SuccessFullLoginListener
             $inputSource = $role->inputSource;
 
             // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-            if (!$role->inputSource instanceof InputSource) {
+            if (! $role->inputSource instanceof InputSource) {
                 $inputSource = InputSource::findByShort('resident');
             }
 

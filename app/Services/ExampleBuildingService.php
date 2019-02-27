@@ -31,7 +31,8 @@ class ExampleBuildingService
         $contents = $exampleBuilding->getContentForYear($buildYear);
         if (! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
-	        self::log("No data to apply");
+            self::log('No data to apply');
+
             return;
         }
 
@@ -80,7 +81,6 @@ class ExampleBuildingService
 
                             $element = Element::find($elementId);
                             if ($element instanceof Element) {
-
                                 $buildingElement = new BuildingElement(['extra' => $extra]);
                                 $buildingElement->inputSource()->associate($inputSource);
                                 $buildingElement->element()->associate($element);

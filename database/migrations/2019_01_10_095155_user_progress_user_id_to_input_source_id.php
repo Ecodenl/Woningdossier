@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class UserProgressUserIdToInputSourceId extends Migration
 {
@@ -14,7 +14,6 @@ class UserProgressUserIdToInputSourceId extends Migration
     public function up()
     {
         Schema::table('user_progresses', function (Blueprint $table) {
-
             // drop the foreign key
             $table->dropForeign(['user_id']);
             // might drop the column aswell
@@ -23,7 +22,6 @@ class UserProgressUserIdToInputSourceId extends Migration
             // add the input source id
             $table->integer('input_source_id')->unsigned()->nullable()->after('id');
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('set null');
-
         });
 
         // seed the data
@@ -43,21 +41,17 @@ class UserProgressUserIdToInputSourceId extends Migration
     public function down()
     {
         Schema::table('user_progresses', function (Blueprint $table) {
-
             // drop the foreign
             $table->dropForeign('user_progresses_input_source_id_foreign');
             // rename it back
             $table->dropColumn('input_source_id');
 
-
             $table->integer('user_id')->unsigned()->nullable()->after('id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
         });
 
         // seed
         Schema::table('user_progresses', function (Blueprint $table) {
-
             // get the data back
             // get the user_ids with the buildingid
             $userAndBuildingIds = \DB::table('user_progresses')
@@ -70,9 +64,6 @@ class UserProgressUserIdToInputSourceId extends Migration
                 $userAndBuildingId = (array) $userAndBuildingId;
                 \DB::table('user_progresses')->where('building_id', $userAndBuildingId['building_id'])->update($userAndBuildingId);
             }
-
         });
-
-
     }
 }

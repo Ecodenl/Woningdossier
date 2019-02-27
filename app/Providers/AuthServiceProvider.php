@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\UserPolicy;
-use App\Services\HoomSessionGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -42,6 +41,5 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('participate-in-group-chat', 'App\Policies\UserPolicy@participateInGroupChat');
         Gate::define('remove-participant-from-chat', 'App\Policies\UserPolicy@removeParticipantFromChat');
         Gate::define('access-building', 'App\Policies\UserPolicy@accessBuilding');
-
     }
 }

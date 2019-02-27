@@ -23,7 +23,7 @@ class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        if (HoomdossierSession::currentRole() == 'coordinator') {
+        if ('coordinator' == HoomdossierSession::currentRole()) {
             $users = $cooperation
                 ->users()
                 ->where('id', '!=', \Auth::id())
@@ -138,13 +138,12 @@ class UserController extends Controller
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($user->hasRole('resident')) {
-
             // so create a message, with the access allowed
             PrivateMessage::create(
                 [
                     // we get the selected option from the language file, we can do this cause the submitted value = key from localization
                     'is_public' => true,
-                    'message' => "",
+                    'message' => '',
                     'from_user_id' => $user->id,
                     'from_user' => $user->getFullName(),
                     'to_cooperation_id' => $cooperation->id,
@@ -154,7 +153,6 @@ class UserController extends Controller
                 ]
             );
 
-
             $coach = User::find($coachId);
             // now give the selected coach access with permission to the new created building
             BuildingPermissionService::givePermission($coachId, $building->id);
@@ -163,7 +161,6 @@ class UserController extends Controller
             // and fire the added event twice, for the user itself and for the coach.
             event(new ParticipantAddedEvent($user, $building));
             event(new ParticipantAddedEvent($coach, $building));
-
         }
         // and send the account confirmation mail.
         $this->sendAccountConfirmationMail($cooperation, $request);
@@ -193,13 +190,14 @@ class UserController extends Controller
      * Destroy a user.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request     $request
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Cooperation $cooperation, Request $request)
     {
-
         $userId = $request->get('user_id');
 
         $user = User::find($userId);

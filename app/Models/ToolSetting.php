@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -36,11 +35,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ToolSetting extends Model
 {
-	use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait;
 
     protected $fillable = [
         'changed_input_source_id', 'has_changed', 'building_id',
-	    'input_source_id',
+        'input_source_id',
     ];
 
     protected $casts = [
@@ -58,11 +57,12 @@ class ToolSetting extends Model
     }
 
     /**
-     * Returns a collection of changed tool settings
+     * Returns a collection of changed tool settings.
      *
      * Get the changed input sources for the current input source.
      *
      * @param int $buildingId
+     *
      * @return \Illuminate\Support\Collection
      */
     public static function getChangedSettings(int $buildingId)

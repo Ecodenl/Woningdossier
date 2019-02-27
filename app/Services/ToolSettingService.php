@@ -9,12 +9,11 @@ use App\Scopes\GetValueScope;
 
 class ToolSettingService
 {
-
     /**
-     * Set the changed status
+     * Set the changed status.
      *
-     * @param int $buildingId
-     * @param int $changedInputSourceId | The input source id that changed something
+     * @param int  $buildingId
+     * @param int  $changedInputSourceId | The input source id that changed something
      * @param bool $hasChanged
      */
     public static function setChanged(int $buildingId, int $changedInputSourceId, bool $hasChanged)
@@ -35,7 +34,7 @@ class ToolSettingService
                         'changed_input_source_id' => $changedInputSourceId,
                     ],
                     [
-                        'has_changed' => $hasChanged
+                        'has_changed' => $hasChanged,
                     ]
                 );
         } else {
@@ -48,11 +47,10 @@ class ToolSettingService
                             'changed_input_source_id' => $changedInputSourceId,
                         ],
                         [
-                            'has_changed' => $hasChanged
+                            'has_changed' => $hasChanged,
                         ]
                     );
             }
         }
-
     }
 }

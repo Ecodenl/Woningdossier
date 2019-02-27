@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
-use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 

@@ -9,7 +9,7 @@
 @foreach($answersFromInputSourceExceptCurrent as $i => $answerFromInputSourceExceptCurrent)
     <?php
         // check if the commentColumn is dotted, ifso use array get.
-        if (strpos($commentColumn, '.') !== false) {
+        if (false !== strpos($commentColumn, '.')) {
             $comment = array_get($answerFromInputSourceExceptCurrent, $commentColumn);
         } else {
             $comment = $answerFromInputSourceExceptCurrent->$commentColumn;

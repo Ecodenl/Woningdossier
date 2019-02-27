@@ -190,6 +190,7 @@ class User extends Authenticatable
                 ->where('interested_in_type', $type)
                 ->where('interested_in_id', $interestedInId)->first();
         }
+
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
     }
 

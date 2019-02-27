@@ -31,8 +31,8 @@
                                         @lang('woningdossier.cooperation.my-account.side-nav.import')
                                         <?php
                                         $count = 0;
-                                        if (!is_null(\App\Helpers\HoomdossierSession::getBuilding())){
-                                        	$count = \App\Models\ToolSetting::getUndoneChangedSettings(\App\Helpers\HoomdossierSession::getBuilding())->count();
+                                        if (! is_null(\App\Helpers\HoomdossierSession::getBuilding())) {
+                                            $count = \App\Models\ToolSetting::getUndoneChangedSettings(\App\Helpers\HoomdossierSession::getBuilding())->count();
                                         }
                                         ?>
                                         <span class="badge">{{$count}}</span>

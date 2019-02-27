@@ -112,8 +112,7 @@ class StepsTableSeeder extends Seeder
                 ]);
             }
 
-            if (!DB::table('steps')->where('slug', $step['slug'])->first() instanceof stdClass) {
-
+            if (! DB::table('steps')->where('slug', $step['slug'])->first() instanceof stdClass) {
                 \DB::table('steps')->insert([
                     'slug' => $step['slug'],
                     'name' => $uuid,

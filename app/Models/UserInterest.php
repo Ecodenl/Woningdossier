@@ -60,11 +60,11 @@ class UserInterest extends Model
         return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
     }
 
-	/**
-	 * Get the input sources.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
+    /**
+     * Get the input sources.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function inputSource()
     {
         return $this->belongsTo(InputSource::class);

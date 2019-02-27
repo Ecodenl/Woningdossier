@@ -58,7 +58,7 @@
             done
         @endif
         ">
-        <?php $houseIconLink = $building->hasCompleted($buildingDetailStep) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation]) ?>
+        <?php $houseIconLink = $building->hasCompleted($buildingDetailStep) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation]); ?>
         <a href="{{$houseIconLink}}">
             <img src="{{ asset('images/building-detail.png') }}" title="" alt="@lang('woningdossier.cooperation.step.building-detail')" class="img-circle"/>
         </a>

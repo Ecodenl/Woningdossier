@@ -103,8 +103,8 @@
 
             <?php
                 $myFeatures = $building->buildingFeatures()->forMe()->first();
-                $prevBt = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id') ?? "";
-                $prevBy = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year') ?? "";
+                $prevBt = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id') ?? '';
+                $prevBy = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year') ?? '';
             ?>
             var previous_bt = "{{ $prevBt }}";
             var previous_by = "{{ $prevBy }}";

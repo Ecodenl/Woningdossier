@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;
 use App\Models\Cooperation;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class CooperationController extends Controller
 {
@@ -38,6 +37,7 @@ class CooperationController extends Controller
     public function edit(Cooperation $currentCooperation, $cooperationIdToEdit)
     {
         $cooperationToEdit = Cooperation::find($cooperationIdToEdit);
+
         return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }
 
@@ -58,6 +58,4 @@ class CooperationController extends Controller
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));
     }
-
-
 }

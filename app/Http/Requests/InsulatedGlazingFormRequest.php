@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingFormRequest extends FormRequest
 {
-    use ValidatorTrait;
+    use ValidatorTrait, DecimalReplacementTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -20,6 +20,11 @@ class InsulatedGlazingFormRequest extends FormRequest
     public function authorize()
     {
         return Auth::check();
+    }
+
+    public function prepareForValidation()
+    {
+        $this->decimals(['window_surface']);
     }
 
     public function rules()

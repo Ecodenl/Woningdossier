@@ -100,7 +100,7 @@
             {{--<div class="row">--}}
                 {{--<div class="col-sm-12">--}}
                     {{--<div class="form-group add-space{{ $errors->has('high_efficiency_heat-pump_id') ? ' has-error' : '' }}">--}}
-                        {{--<label for="high_efficiency_heat-pump_id" class=" control-label"><i data-toggle="collapse" data-target="#high-efficiency-heat-pump-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heat-pump.heat-pump-type') </label>--}}
+                        {{--<label for="high_efficiency_heat-pump_id" class=" control-label"><i data-toggle="modal" data-target="#high-efficiency-heat-pump-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heat-pump.heat-pump-type') </label>--}}
 
                         {{--<select id="high_efficiency_heat-pump_id" class="form-control" name="high_efficiency_heat-pump_id">--}}
                             {{--@foreach($heatpumpTypes as $heatpumpType)--}}
@@ -237,7 +237,7 @@
                 {{--<div class="row">--}}
                     {{--<div class="col-sm-6">--}}
                         {{--<div class="form-group add-space{{ $errors->has('current_building_heating') ? ' has-error' : '' }}">--}}
-                            {{--<label for="current_building_heating" class=" control-label"><i data-toggle="collapse" data-target="#current-building-heating-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heat-pump.full-heatpump.current-heating') </label>--}}
+                            {{--<label for="current_building_heating" class=" control-label"><i data-toggle="modal" data-target="#current-building-heating-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heat-pump.full-heatpump.current-heating') </label>--}}
 
                             {{--<select id="current_building_heating" class="form-control" name="current_building_heating">--}}
                                 {{--@foreach($buildingCurrentHeatings as $buildingCurrentHeating)--}}
@@ -253,7 +253,7 @@
                     {{--</div>--}}
                     {{--<div class="col-sm-6">--}}
                         {{--<div class="form-group add-space{{ $errors->has('wanted_heat_source') ? ' has-error' : '' }}">--}}
-                            {{--<label for="wanted_heat_source" class=" control-label"><i data-toggle="collapse" data-target="#wanted-heat-source-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heat-pump.full-heatpump.wanted-heat-source') </label>--}}
+                            {{--<label for="wanted_heat_source" class=" control-label"><i data-toggle="modal" data-target="#wanted-heat-source-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>@lang('woningdossier.cooperation.tool.heat-pump.full-heatpump.wanted-heat-source') </label>--}}
 
                             {{--<select id="wanted-heat-source" class="form-control" name="wanted_heat_source">--}}
                                 {{--@foreach($heatSources as $heatSource)--}}

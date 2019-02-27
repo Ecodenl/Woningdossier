@@ -39,7 +39,7 @@
 
                         <div class="form-group add-space {{$errors->has('user_interests.'.$measureApplication->id) ? 'has-error' : '' }}">
                             <label class=" control-label">
-                                <i data-toggle="collapse" data-target="#user_interests_{{ $measureApplication->id }}-info"
+                                <i data-toggle="modal" data-target="#user_interests_{{ $measureApplication->id }}-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.title') }}
                             </label>
@@ -63,9 +63,9 @@
                             </select>
                             @endcomponent
 
-                            <div id="user_interests_{{ $measureApplication->id }}-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                            @component('cooperation.tool.components.help-modal')
                                 {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.title.help') }}
-                            </div>
+                            @endcomponent
 
                             @if ($errors->has('user_interests.' . $measureApplication->id))
                                 <span class="help-block">
@@ -78,7 +78,7 @@
                         <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    <i data-toggle="modal" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title')}}
                                 </label>
                                 @component('cooperation.tool.components.input-group',
@@ -91,9 +91,9 @@
                                     </select>
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-insulating_glazing_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'))
                                     <span class="help-block">
@@ -105,7 +105,7 @@
                         <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    <i data-toggle="modal" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title')}}
                                 </label>
 
@@ -119,9 +119,9 @@
                                 </select>
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-building_heating_id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'))
                                     <span class="help-block">
@@ -133,7 +133,7 @@
                         <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                                    <i data-toggle="modal" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-m2-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.title')}}
                                 </label> <span> *</span>
 
@@ -143,9 +143,9 @@
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">--}}
                                 @endcomponent
 
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-m2-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.m2'))
                                     <span class="help-block">
@@ -157,7 +157,7 @@
                         <div class="col-sm-3">
                             <div class="form-group add-space {{ $errors->has('building_insulated_glazings.' . $measureApplication->id . '.windows') ? ' has-error' : '' }}">
                                 <label class=" control-label">
-                                    <i data-toggle="collapse" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
+                                    <i data-toggle="modal" data-target="#building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.title')}}
                                 </label> <span> *</span>
@@ -167,10 +167,9 @@
                                     <input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'windows', 0)) }}" class="form-control">
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}" class="form-control">--}}
                                 @endcomponent
-                                <div id="building_insulated_glazings_{{ $measureApplication->id }}-windows-info"
-                                     class="collapse alert alert-info remove-collapse-space alert-top-space">
+                                @component('cooperation.tool.components.help-modal')
                                     {{\App\Helpers\Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.help')}}
-                                </div>
+                                @endcomponent
 
                                 @if ($errors->has('building_insulated_glazings.' . $measureApplication->id . '.windows'))
                                     <span class="help-block">
@@ -192,7 +191,7 @@
                     <h4 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('insulated-glazing.cracking-seal.title')}}</h4>
                     <div class="form-group add-space {{ $errors->has('building_elements.'.$crackSealing->id.'.crack-sealing') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#building-elements-crack-sealing-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#building-elements-crack-sealing-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('insulated-glazing.moving-parts-quality.title')}}
                         </label>
 
@@ -207,9 +206,9 @@
                         @endcomponent
 
 
-                        <div id="building-elements-crack-sealing-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('insulated-glazing.moving-parts-quality.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_elements.crack-sealing'))
                             <span class="help-block">
@@ -232,7 +231,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space {{ $errors->has('window_surface') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#window-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#window-surface-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('insulated-glazing.windows-surface.title')}}
                         </label>
 
@@ -242,9 +241,9 @@
                             <input type="text" name="window_surface"  value="{{ old('window_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'window_surface')) }}" class="form-control">
                             {{--<input type="text" name="window_surface"  value="{{ old('window_surface') || isset($building->buildingFeatures->window_surface) ? $building->buildingFeatures->window_surface : '' }}" class="form-control">--}}
                         @endcomponent
-                        <div id="window-surface-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('insulated-glazing.windows-surface.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('window_surface'))
                             <span class="help-block">
@@ -258,7 +257,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space {{ $errors->has('building_elements.'.$frames->id.'.frames') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#which-frames-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#which-frames-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.which-frames.title')}}
                         </label>
 
@@ -272,9 +271,9 @@
                         </select>
                         @endcomponent
 
-                        <div id="which-frames-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.which-frames.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_elements.frames'))
                             <span class="help-block">
@@ -288,13 +287,13 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space {{ $errors->has('building_elements.'.$woodElements->id.'.wood-elements') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#wood-elements-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#wood-elements-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.other-wood-elements.title')}}
                         </label>
 
-                        <div id="wood-elements-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.other-wood-elements.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_elements.wood-elements'))
                             <span class="help-block">
@@ -345,7 +344,7 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.last_painted_year') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#building-paintwork-statuses-last-painted-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#building-paintwork-statuses-last-painted-year-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.last-paintjob.title')}}
                         </label>
 
@@ -356,9 +355,9 @@
                                 {{--<input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">--}}
                         @endcomponent
 
-                        <div id="building-paintwork-statuses-last-painted-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.last-paintjob.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building-paintwork-statuses-last-painted-year'))
                             <span class="help-block">
@@ -370,7 +369,7 @@
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.paintwork_status_id') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#building-paintwork-statuses-paintwork-status-id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#building-paintwork-statuses-paintwork-status-id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.paint-damage-visible.title')}}
                         </label>
 
@@ -384,9 +383,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="building-paintwork-statuses-paintwork-status-id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.paint-damage-visible.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_paintwork_statuses.paintwork_status_id'))
                             <span class="help-block">
@@ -401,7 +400,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space {{ $errors->has('building_paintwork_statuses.wood_rot_status_id') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#building-paintwork-statuses-wood-rot-status-id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#building-paintwork-statuses-wood-rot-status-id-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.wood-rot-visible.title') }}
                         </label>
 
@@ -415,9 +414,9 @@
                             </select>
                         @endcomponent
 
-                        <div id="building-paintwork-statuses-wood-rot-status-id-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.wood-rot-visible.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('building_paintwork_statuses.wood_rot_status_id'))
                             <span class="help-block">
@@ -431,7 +430,7 @@
                 <div class="col-sm-12">
                     <div class="form-group add-space {{ $errors->has('comments') ? ' has-error' : '' }}">
                         <label for="" class="control-label">
-                            <i data-toggle="collapse" data-target="#comments-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <i data-toggle="modal" data-target="#comments-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                             @lang('default.form.input.comment')
                         </label>
 
@@ -443,9 +442,9 @@
 
                         <textarea name="comment" id="" class="form-control">{{ $comment }}</textarea>
 
-                        <div id="comments-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                        @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('general.specific-situation.help')}}
-                        </div>
+                        @endcomponent
 
                         @if ($errors->has('comments'))
                             <span class="help-block">
@@ -476,7 +475,7 @@
                                 $coachInputSource = \App\Models\BuildingService::getCoachInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
                                 $comment = is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra) ? $coachInputSource->extra['comment'] : '';
                             ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <label for="" class=" control-label"><i data-toggle="modal" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('default.form.input.comment') ({{$coachInputSource->getInputSourceName()}})
                             </label>
 
@@ -492,7 +491,7 @@
                                 $residentInputSource = \App\Models\BuildingService::getResidentInput(collect($currentMeasureBuildingInsulatedGlazingForMe));
                                 $comment = is_array($residentInputSource->extra) && array_key_exists('comment', $residentInputSource->extra) ? $residentInputSource->extra['comment'] : '';
                             ?>
-                            <label for="" class=" control-label"><i data-toggle="collapse" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
+                            <label for="" class=" control-label"><i data-toggle="modal" data-target="#comment" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
                                 @lang('default.form.input.comment') ({{$residentInputSource->getInputSourceName()}})
                             </label>
 

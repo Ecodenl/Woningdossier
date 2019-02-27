@@ -8363,6 +8363,41 @@ button.close {
   color: white;
 }
 
+.modal-lg {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.modal-lg:before,
+.modal-lg:after {
+  content: " ";
+  display: table;
+}
+
+.modal-lg:after {
+  clear: both;
+}
+
+@media (min-width: 768px) {
+  .modal-lg {
+    width: 750px;
+  }
+}
+
+@media (min-width: 992px) {
+  .modal-lg {
+    width: 970px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal-lg {
+    width: 1170px;
+  }
+}
+
 /**
   Helper classes for the html markup
  */

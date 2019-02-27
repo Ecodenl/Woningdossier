@@ -24,15 +24,15 @@
                 <div class="form-group add-space">
 
                     <label for="" class=" control-label">
-                        <i data-toggle="collapse" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                        <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                         {{\App\Helpers\Translation::translate($translation['title'])}} ({{$inputSourceName}})
                     </label>
 
                     <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
 
-                    <div id="{{$helpId}}" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    @component('cooperation.tool.components.help-modal')
                         {{\App\Helpers\Translation::translate($translation['help'])}}
-                    </div>
+                    @endcomponent
                 </div>
             </div>
         </div>

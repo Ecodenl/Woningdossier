@@ -307,6 +307,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('', 'CooperationController@store')->name('store');
                     Route::post('edit', 'CooperationController@update')->name('update');
                 });
+                Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
 
             });
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {

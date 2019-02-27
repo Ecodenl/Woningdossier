@@ -207,15 +207,15 @@
 	                            <?php $checked = (int) old('monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument')); ?>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="1"
-                                       @if($checked == 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.radio.yes.title')}}
+                                       @if($checked == 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="2"
-                                       @if($checked == 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.radio.no.title')}}
+                                       @if($checked == 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.no.title')}}
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="0"
-                                       @if($checked == 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.radio.unknown.title')}}
+                                       @if($checked == 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.unknown.title')}}
                                 </label>
 
                                 @component('cooperation.tool.components.help-modal')
@@ -554,11 +554,11 @@
                         <div class="input-group input-source-group">
                             <br>
                             <label class="radio-inline">
-                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.radio.yes.title')}}
+                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                 {{--<input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.radio.no.title')}}
+                                <input type="radio" name="cook_gas" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
                             </label>
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>

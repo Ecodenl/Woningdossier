@@ -224,7 +224,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <hr>
-                    <h4 style="margin-left: -5px;" >{{\App\Helpers\Translation::translate('insulated-glazing.paint-work.title')}} </h4>
+                    <h4 style="margin-left: -5px;" >{{\App\Helpers\Translation::translate('insulated-glazing.paint-work.title.title')}} </h4>
                 </div>
             </div>
             <div class="row">

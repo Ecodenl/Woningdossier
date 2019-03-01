@@ -92,11 +92,8 @@
                             <div class="row">
                                 <!-- is the {{ $roofCat }} roof insulated? -->
                                 <div class="col-sm-12 col-md-12">
-                                    <div class="form-group add-space {{ $errors->has('building_roof_types.' . $roofCat . '.element_value_id') ? ' has-error' : '' }}">
 
-                                        <label for="{{ $roofCat }}_roof_insulation" class="control-label">
-                                            <i data-toggle="modal" data-target="#{{ $roofCat }}-roof-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated.title')}}</label>
+                                    @component('cooperation.tool.components.step-question', ['id' => $roofCat .'_roof_insulation', 'name' => 'building_roof_types.' . $roofCat . '.element_value_id', 'translation' => 'roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated'])
 
                                         @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofInsulation->values, 'userInputValues' => $building->roofTypes()->where('roof_type_id', $roofType->id)->forMe()->get(), 'userInputColumn' => 'element_value_id'])
                                         <select id="{{ $roofCat }}_roof_insulation" class="form-control" name="building_roof_types[{{ $roofCat }}][element_value_id]" >
@@ -109,15 +106,7 @@
                                         </select>
                                         @endcomponent
 
-                                        <div id="{{ $roofCat }}-roof-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
-                                            {{\App\Helpers\Translation::translate('roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated.title')}}
-                                        </div>
-                                        @if ($errors->has('building_roof_types.' . $roofCat . '.element_value_id'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('building_roof_types.' . $roofCat . '.element_value_id') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
+                                    @endcomponent
                                 </div>
                             </div>
                             @include('cooperation.tool.includes.savings-alert', ['buildingElement' => $roofCat])

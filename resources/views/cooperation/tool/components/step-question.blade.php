@@ -17,7 +17,7 @@
 
 ?>
 
-<div class="form-group add-space{{ $errors->has($id) ? ' has-error' : '' }}">
+<div class="form-group add-space{{ $errors->has($name) ? ' has-error' : '' }}">
     <label for="{{ $id }}" class=" control-label">
         <?php // show help icon? ?>
         @if(\App\Helpers\Translation::hasTranslation($translation . '.help'))

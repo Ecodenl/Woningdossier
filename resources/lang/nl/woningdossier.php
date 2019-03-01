@@ -951,6 +951,8 @@ return [
             'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
             'is-user-comparing-input-sources' => 'U bent nu de data aan het vergelijken, de velden die rood zijn gemarkeerd bevat een andere waarde',
 
+	        'back-to-overview' => 'Terug naar overzicht',
+
             'unit' => [
                 'year' => 'jaar',
                 'liter' => 'liter',

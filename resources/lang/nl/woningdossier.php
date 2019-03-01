@@ -1033,21 +1033,12 @@ return [
 
                 'example-building' => [
                     'example-building-type' => 'Kies de best passende voorbeeldwoning',
-                    'no-match' => 'Er is geen passende voorbeeldwoning',
-                    'apply-are-you-sure' => 'Weet u zeker dat u deze voorbeeldwoning wilt toepassen?',
-                    'generic' => [
-                        'apply-are-you-sure' => 'Let op: Op basis van woningtype en bouwjaar wordt een voorbeeldwoning geselecteerd. Het veranderen van het woningtype heeft invloed op een aantal gegevens in het Hoomdossier.',
-                    ],
                 ],
             ],
 
             'wall-insulation' => [
                 'intro' => [
                     'title' => 'Gevelisolatie',
-                ],
-
-                'alert' => [
-                    'description' => 'Let op: geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie',
                 ],
             ],
 

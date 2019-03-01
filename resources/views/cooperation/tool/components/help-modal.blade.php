@@ -1,4 +1,5 @@
-<div class="modal fade" id="{{isset($id) ? $id :''}}">
+@if(!empty($slot))
+<div class="modal fade" id="{{ $id ?? ''}}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -10,3 +11,6 @@
         </div>
     </div>
 </div>
+    @else
+    Je moeder
+@endif

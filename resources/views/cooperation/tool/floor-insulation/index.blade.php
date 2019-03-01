@@ -16,7 +16,7 @@
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
-                    @include('cooperation.layouts.section-title', ['translationKey' => 'floor-insulation.intro.title'])
+                    @include('cooperation.layouts.section-title', ['translation' => 'floor-insulation.intro.title', 'id' => 'intro',])
                 </div>
             </div>
             <div class="row">

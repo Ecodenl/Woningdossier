@@ -704,7 +704,7 @@ return [
                         ],
                         'create' => [
                             'leave-creation-tool' => 'Keer terug naar overzicht',
-                            'leave-creation-tool-warning' => 'Letop!, alle wijzigingen zullen verloren gaan. U hiervoor gemaakte formulier is niet meer terug te krijgen',
+                            'leave-creation-tool-warning' => 'Let op!, alle wijzigingen zullen verloren gaan. Uw hiervoor gemaakte formulier is dan niet meer terug te krijgen!',
                         ],
                     ],
                 ],

@@ -86,12 +86,11 @@ class TranslationController extends Controller
             foreach ($languageLineData as $type => $languageLines) {
                 // we dont do stuff with the type yet, could be helpfull in the future.
                 foreach ($languageLines as $languageLineId => $text) {
+					$text = $text ?? "";
                     $languageLine = LanguageLine::find($languageLineId);
                     if ($languageLine instanceof LanguageLine) {
-                        if (! empty($text)) {
-                            $languageLine->setTranslation($locale, $text);
-                            $languageLine->save();
-                        }
+                        $languageLine->setTranslation($locale, $text);
+                        $languageLine->save();
                     }
                 }
             }

@@ -17,7 +17,8 @@
                 <div class="col-sm-12">
                     <form action="{{route('cooperation.admin.super-admin.translations.update', ['step-slug' => $stepSlug])}}" method="post">
                         <div class="form-group">
-                            <button type="submit" class="btn btn-block btn-primary">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
+                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')</a>
+                            <button type="submit" class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
                         </div>
                         {{csrf_field()}}
                         {{method_field('PUT')}}
@@ -71,7 +72,8 @@
                             </div>
                         @endforeach
                         <div class="form-group">
-                            <button type="submit" class="btn btn-block btn-primary">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
+                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')</a>
+                            <button type="submit" class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
                         </div>
                     </form>
                 </div>

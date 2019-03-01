@@ -12,9 +12,8 @@
             ])
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('house_has_insulation') ? ' has-error' : '' }}">
-
-                        <label for="element_{{ $facadeInsulation->element->id }}" class="control-label"><i data-toggle="modal" data-target="#house-insulation-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i> {{\App\Helpers\Translation::translate('wall-insulation.intro.filled-insulation.title')}}</label>
+                    <?php // todo: something seems off with the name ?>
+                    @component('cooperation.tool.components.step-question', ['id' => 'element_' . $facadeInsulation->element->id, 'name' => 'house_has_insulation', 'translation' => 'wall-insulation.intro.filled-insulation'])
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
@@ -25,12 +24,7 @@
                             </select>
                         @endcomponent
 
-                        @if ($errors->has('house_has_insulation'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('house_has_insulation') }}</strong>
-                            </span>
-                        @endif
-                    </div>
+                    @endcomponent
                 </div>
 
                 @component('cooperation.tool.components.help-modal')
@@ -60,7 +54,7 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
+                    @component('cooperation.tool.components.step-question', ['id' => 'cavity_wall', 'translation' => 'wall-insulation.intro.has-cavity-wall', 'required' => true])
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio',
@@ -70,7 +64,6 @@
                             0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                         ],
                         'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                            <label for="cavity_wall" class=" control-label"><i data-toggle="modal" data-target="#cavity-info" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}} </label><span> *</span>
                             <label class="radio-inline">
                                     <input type="radio" name="cavity_wall" @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title') }}
                                 {{--<input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
@@ -84,23 +77,13 @@
                         @endcomponent
                         <br>
 
-                            @component('cooperation.tool.components.help-modal')
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.help')}}
-                            @endcomponent
-
-                        @if ($errors->has('cavity_wall'))
-                            <span class="help-block">
-                            <strong>{{ $errors->first('cavity_wall') }}</strong>
-                        </span>
-                        @endif
-
-                    </div>
+                    @endcomponent
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
+                @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_painted', 'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true])
 
                     @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio',
@@ -110,8 +93,6 @@
                         3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                         ],
                         'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
-
-                    <label for="facade_plastered_painted" class=" control-label"><i data-toggle="modal" data-target="#wall-painted" class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.title')}} </label> <span> *</span>
 
                     <label class="radio-inline">
                         <input class="is-painted" @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 1) checked @endif type="radio" name="facade_plastered_painted" value="1">{{ \App\Helpers\Translation::translate('general.options.yes.title') }}
@@ -125,18 +106,7 @@
                     @endcomponent
                     <br>
 
-                        @component('cooperation.tool.components.help-modal')
-                        {{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.help')}}
-                        @endcomponent
-
-                    @if ($errors->has('facade_plastered_painted'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('facade_plastered_painted') }}</strong>
-                        </span>
-                    @endif
-
-
-                </div>
+                @endcomponent
             </div>
         </div>
 
@@ -153,9 +123,6 @@
                             @endforeach
                         </select>@endcomponent
 
-                        @component('cooperation.tool.components.help-modal')
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.surface-paintwork.help')}}
-                        @endcomponent
                         @component('cooperation.tool.components.help-modal')
                             {{\App\Helpers\Translation::translate('wall-insulation.intro.surface-paintwork.help')}}
                         @endcomponent
@@ -320,7 +287,7 @@
                 <div class="row" id="cavity-wall-alert" style="display: none;">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
-                            <p><strong>{{ \App\Helpers\Translation::translate('wall-insulation.alerts.description.title') }}</strong></p>p>
+                            <p><strong>{{ \App\Helpers\Translation::translate('wall-insulation.alerts.description.title') }}</strong></p>
                         </div>
                     </div>
                 </div>

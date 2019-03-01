@@ -36,10 +36,9 @@
                         </select>
                     @endcomponent
 
-                    <div id="building-type-info"
-                         class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    @component('cooperation.tool.components.help-modal')
                         {{\App\Helpers\Translation::translate('building-detail.building-type.what-type.help')}}
-                    </div>
+                    @endcomponent
                     @if ($errors->has('building_type_id'))
                         <span class="help-block">
                                 <strong>{{ $errors->first('building_type_id') }}</strong>
@@ -63,9 +62,9 @@
                                required autofocus>
                     @endcomponent
 
-                    <div id="what-building-year-info" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    @component('cooperation.tool.components.help-modal')
                         {{\App\Helpers\Translation::translate('building-detail.building-type.what-building-year.help')}}
-                    </div>
+                    @endcomponent
 
                     @if ($errors->has('build_year'))
                         <span class="help-block">
@@ -101,11 +100,11 @@
                 }
             });
 
-            <?php
+                <?php
                 $myFeatures = $building->buildingFeatures()->forMe()->first();
                 $prevBt = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id') ?? '';
                 $prevBy = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year') ?? '';
-            ?>
+                ?>
             var previous_bt = "{{ $prevBt }}";
             var previous_by = "{{ $prevBy }}";
 

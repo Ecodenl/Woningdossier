@@ -8364,6 +8364,7 @@ button.close {
 }
 
 .modal-lg {
+  top: 40% !important;
   margin-right: auto;
   margin-left: auto;
   padding-left: 15px;

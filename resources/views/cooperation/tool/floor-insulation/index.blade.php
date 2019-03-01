@@ -112,7 +112,7 @@
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
-                                    <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
+                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
                                 </div>
                             </div>
 
@@ -160,8 +160,7 @@
 
                                 <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
                                     <div class="alert alert-warning show" role="alert">
-                                        {{--<p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>--}}
-                                        <p>@lang('woningdossier.cooperation.tool.floor-insulation.crawlspace-access.no-access')</p>
+                                        <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
                                     </div>
                                 </div>
 
@@ -341,7 +340,7 @@
         <div class="row" id="no-crawlspace-error">
             <div class="col-md-12">
                 <div class="alert alert-danger show" role="alert">
-                    <p>@lang('woningdossier.cooperation.tool.floor-insulation.has-crawlspace.no-crawlspace')</p>
+                    <p>{{ \App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title') }}</p>
                 </div>
             </div>
         </div>

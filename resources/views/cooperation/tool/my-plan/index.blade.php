@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.my-plan.title'))
+@section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
 @section('page_class', 'page-my-plan')
 
@@ -8,16 +8,14 @@
 
     <div class="row">
         <div class="col-md-12">
-            <p>@lang('woningdossier.cooperation.tool.my-plan.description')</p>
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#messagesModal">@lang('woningdossier.cooperation.tool.my-plan.coach-comments.title')</button>
+            <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
         </div>
     </div>
 
-
-
     @component('cooperation.tool.components.modal', ['id' => 'messagesModal'])
         @slot('title')
-            @lang('woningdossier.cooperation.tool.my-plan.coach-comments.title')
+            {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
         @endslot
 
         @foreach($coachComments as $stepName => $coachComment)
@@ -33,7 +31,7 @@
         <div class="row">
 
             <div class="col-md-12">
-                <h2>@if($measureType == 'energy_saving') @lang('woningdossier.cooperation.tool.my-plan.energy-saving-measures') @else @lang('woningdossier.cooperation.tool.my-plan.maintenance-measures') @endif</h2>
+                <h2>@if($measureType == 'energy_saving') {{ \App\Helpers\Translation::translate('my-plan.energy-saving-measures.title') }} @else {{ \App\Helpers\Translation::translate('my-plan.maintenance-measures.title') }} @endif</h2>
             </div>
 
 
@@ -41,13 +39,13 @@
                 <table class="table table-condensed table-responsive">
                     <thead>
                     <tr>
-                        <th style="width: 8%">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th>
-                        <th style="width: 5%">@lang('woningdossier.cooperation.tool.my-plan.columns.interest')</th>
-                        <th style="width: 45%">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th>
-                        <th style="width: 12%">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th>
-                        <th style="width: 12%">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th>
-                        <th style="width: 9%">@lang('woningdossier.cooperation.tool.my-plan.columns.advice-year')</th>
-                        <th style="width: 9%">@lang('woningdossier.cooperation.tool.my-plan.columns.planned-year')</th>
+                        <th style="width: 8%">{{ \App\Helpers\Translation::translate('my-plan.columns.more-info.title') }}</th>
+                        <th style="width: 5%">{{ \App\Helpers\Translation::translate('my-plan.columns.interest.title') }}</th>
+                        <th style="width: 45%">{{ \App\Helpers\Translation::translate('my-plan.columns.measure.title') }}</th>
+                        <th style="width: 12%">{{ \App\Helpers\Translation::translate('my-plan.columns.costs.title') }}</th>
+                        <th style="width: 12%">{{ \App\Helpers\Translation::translate('my-plan.columns.savings-costs.title') }}</th>
+                        <th style="width: 9%">{{ \App\Helpers\Translation::translate('my-plan.columns.advice-year.title') }}</th>
+                        <th style="width: 9%">{{ \App\Helpers\Translation::translate('my-plan.columns.planned-year.title') }}</th>
                     </tr>
                     </thead>
                 <tbody>
@@ -88,9 +86,9 @@
                     <tr class="collapse" id="more-info-{{$advice->id}}" >
                         <td colspan="2"></td>
                         <td colspan="">
-                            <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong>
+                            <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong>
                             <br>
-                            <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong>
+                            <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong>
                         </td>
                         <td>
                             {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
@@ -114,7 +112,7 @@
 
     <div class="row">
         <div class="plan-preview col-md-12">
-            <h2>@lang('woningdossier.cooperation.tool.my-plan.maintenance-plan')</h2>
+            <h2>{{ \App\Helpers\Translation::translate('my-plan.maintenance-plan.title') }}</h2>
             <ul id="years">
 
             </ul>
@@ -158,7 +156,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.download')</a>
+                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">{{ \App\Helpers\Translation::translate('my-plan.download.title') }}</a>
             </div>
         </div>
     </div>
@@ -212,7 +210,7 @@
                         var slugYear = year;
                         var header = "<h1>" + year + "</h1>";
 
-                        var table = "<table class=\"table table-responsive\"><thead><tr><th style=\"width: 8%\">@lang('woningdossier.cooperation.tool.my-plan.columns.more-info')</th><th style=\"width: 62%\">@lang('woningdossier.cooperation.tool.my-plan.columns.measure')</th><th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.costs')</th><th style=\"width: 15%\">@lang('woningdossier.cooperation.tool.my-plan.columns.savings-costs')</th><th>@lang('woningdossier.cooperation.tool.my-plan.columns.take-action')</th></tr></thead><tbody>";
+                        var table = "<table class=\"table table-responsive\"><thead><tr><th style=\"width: 8%\">{{ \App\Helpers\Translation::translate('my-plan.columns.more-info.title') }}</th><th style=\"width: 62%\">{{ \App\Helpers\Translation::translate('my-plan.columns.measure.title') }}</th><th style=\"width: 15%\">{{ \App\Helpers\Translation::translate('my-plan.columns.costs.title') }}</th><th style=\"width: 15%\">{{ \App\Helpers\Translation::translate('my-plan.columns.savings-costs.title') }}</th><th>{{ \App\Helpers\Translation::translate('my-plan.columns.take-action.title') }}</th></tr></thead><tbody>";
                         var totalCosts = 0;
                         var totalSavingsGas = 0;
                         var totalSavingsElectricity = 0;
@@ -233,15 +231,15 @@
 
                             var slug = stepName.replace(/\s+/g, '');
 
-                                table += "<tr><td><a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"><i class=\"glyphicon glyphicon-chevron-down\"></i></a></td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td><div class='input-group'><div class='input-group-btn'><button class='take-action btn btn-default' type='button'>@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</button><button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'><span class='caret'></span> </button> <ul class='dropdown-menu'><li><a href='{{ url('request/coach-conversation') }}'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION)</span></a></li><li><a href='{{ url('request/more-information') }}/"+stepData.measure_short+"'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION)</span></a></li><li><a href='{{ url('request/other') }}/"+stepData.measure_short+"'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_OTHER)</span></a></li></ul></div></div></td></tr>";
-                                table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'></td></tr>";
+                                table += "<tr><td><a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"><i class=\"glyphicon glyphicon-chevron-down\"></i></a></td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td><div class='input-group'><div class='input-group-btn'><button class='take-action btn btn-default' type='button'>{{ \App\Helpers\Translation::translate('my-plan.columns.take-action.title') }}</button><button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'><span class='caret'></span> </button> <ul class='dropdown-menu'><li><a href='{{ url('request/coach-conversation') }}'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION)</span></a></li><li><a href='{{ url('request/more-information') }}/"+stepData.measure_short+"'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION)</span></a></li><li><a href='{{ url('request/other') }}/"+stepData.measure_short+"'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_OTHER)</span></a></li></ul></div></div></td></tr>";
+                                table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>"+ Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') +" m<sup>3</sup> <br>"+Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}')+" kWh </td><td colspan='1'></td></tr>";
                         });
 
                     });
 
                     // total calculation
                     table += "<tr><td><a type='#' class='turn-on-click' data-toggle='collapse' data-target='#total-costs-" + slugYear + "-total'> <i class=\"glyphicon glyphicon-chevron-down\"></i> </a> </td><td><strong>Totaal</strong></td><td><strong>&euro; " + Math.round(totalCosts).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td><strong>&euro; " + Math.round(totalSavingsMoney).toLocaleString('{{ app()->getLocale() }}') + "</strong></td><td colspan='1'></td></tr>";
-                    table += "<tr class='collapse' id='total-costs-" + slugYear + "-total' > <td colspan='1'></td><td colspan=''> <strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-gas'):</strong> <br><strong>@lang('woningdossier.cooperation.tool.my-plan.columns.savings-electricity'):</strong> </td><td>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'> </td></tr>";
+                    table += "<tr class='collapse' id='total-costs-" + slugYear + "-total' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(totalSavingsGas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(totalSavingsElectricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'> </td></tr>";
 
                     table += "</tbody></table>";
 
@@ -320,15 +318,15 @@
                 if (getPlanned(ROOF_INSULATION_FLAT_REPLACE_CURRENT)) {
                     if (!getPlanned(REPLACE_ROOF_INSULATION)) {
                         // set warning
-                        setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')');
-                        setWarning(REPLACE_ROOF_INSULATION, '@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')');
+                        setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
+                        setWarning(REPLACE_ROOF_INSULATION, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
                     }
                     else {
                         // both were planned
                         if (getPlannedYear(ROOF_INSULATION_FLAT_REPLACE_CURRENT) !== getPlannedYear(REPLACE_ROOF_INSULATION)) {
                             // set warning
-                            setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')');
-                            setWarning(REPLACE_ROOF_INSULATION, '@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')');
+                            setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
+                            setWarning(REPLACE_ROOF_INSULATION, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
                         }
                     }
                 }
@@ -337,15 +335,15 @@
                 if (getPlanned(ROOF_INSULATION_PITCHED_REPLACE_TILES)) {
                     if (!getPlanned(REPLACE_TILES)) {
                         // set warning
-                        setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')');
-                        setWarning(REPLACE_TILES, '@lang('woningdossier.cooperation.tool.my-plan.warnings.check-order')');
+                        setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
+                        setWarning(REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
                     }
                     else {
                         // both were planned
                         if (getPlannedYear(ROOF_INSULATION_PITCHED_REPLACE_TILES) !== getPlannedYear(REPLACE_TILES)) {
                             // set warning
-                            setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')');
-                            setWarning(REPLACE_TILES, '@lang('woningdossier.cooperation.tool.my-plan.warnings.planned-year')');
+                            setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
+                            setWarning(REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
                         }
                     }
                 }

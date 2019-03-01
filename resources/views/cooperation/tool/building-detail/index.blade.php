@@ -11,14 +11,8 @@
                 <p>{{ \App\Helpers\Translation::translate('building-detail.intro.title') }}</p>
             </div>
             <div class="col-md-6">
-                <div class="form-group add-space{{ $errors->has('building_type_id') ? ' has-error' : '' }}">
-                    <label for="building_type_id" class=" control-label">
-                        <i data-toggle="modal" data-target="#building-type-info"
-                           class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                           aria-expanded="false"></i>
-                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-type.title')}}
-                    </label>
 
+                @component('cooperation.tool.components.step-question', ['id' => 'building_type_id', 'translation' => 'building-detail.building-type.what-type'])
                     @component('cooperation.tool.components.input-group', [
                         'inputType' => 'select',
                         'inputValues' => $buildingTypes,
@@ -36,24 +30,12 @@
                         </select>
                     @endcomponent
 
-                    @component('cooperation.tool.components.help-modal')
-                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-type.help')}}
-                    @endcomponent
-                    @if ($errors->has('building_type_id'))
-                        <span class="help-block">
-                                <strong>{{ $errors->first('building_type_id') }}</strong>
-                            </span>
-                    @endif
-                </div>
+                @endcomponent
             </div>
+
             <div class="col-md-6">
-                <div class="form-group add-space{{ $errors->has('build_year') ? ' has-error' : '' }}">
-                    <label for="build_year" class=" control-label">
-                        <i data-toggle="modal" data-target="#what-building-year-info"
-                           class="glyphicon glyphicon-info-sign glyphicon-padding"></i>
-                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-building-year.title')}}
-                        <span>*</span>
-                    </label>
+
+                @component('cooperation.tool.components.step-question', ['id' => 'build_year', 'translation' => 'building-detail.building-type.what-building-year', 'required' => true])
 
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'build_year'])
@@ -62,16 +44,7 @@
                                required autofocus>
                     @endcomponent
 
-                    @component('cooperation.tool.components.help-modal')
-                        {{\App\Helpers\Translation::translate('building-detail.building-type.what-building-year.help')}}
-                    @endcomponent
-
-                    @if ($errors->has('build_year'))
-                        <span class="help-block">
-                                <strong>{{ $errors->first('build_year') }}</strong>
-                            </span>
-                    @endif
-                </div>
+                @endcomponent
             </div>
         </div>
         <div class="row">

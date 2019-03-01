@@ -9,15 +9,15 @@
 
 <div class="section-title">
     <h4 style="margin-left: -5px;">
-        @isset($infoAlertId)
-            <i data-toggle="modal" data-target="#{{$infoAlertId}}"
+        @if(\App\Helpers\Translation::hasTranslation($translation.'.help'))
+            <i data-target="#{{$id}}-info"
                class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-        @endisset
-        {{\App\Helpers\Translation::translate($translationKey.'.title')}}
+        @endif
+        {{\App\Helpers\Translation::translate($translation.'.title')}}
     </h4>
-    @isset($infoAlertId)
-        @component('cooperation.tool.components.help-modal')
-            {{\App\Helpers\Translation::translate($translationKey.'.help')}}
+    @if(\App\Helpers\Translation::hasTranslation($translation.'.help'))
+        @component('cooperation.tool.components.help-modal', ['id' => $id])
+            {{\App\Helpers\Translation::translate($translation.'.help')}}
         @endcomponent
-    @endisset
+    @endif
 </div>

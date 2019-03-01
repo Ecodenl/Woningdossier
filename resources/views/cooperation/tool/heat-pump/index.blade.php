@@ -1,13 +1,13 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.heat-pump.title'))
+@section('step_title', \App\Helpers\Translation::translate('heat-pump.title.title'))
 
 
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.heat-pump.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="start-information">
-            <h4 style="margin-left: -5px">@lang('woningdossier.cooperation.tool.heat-pump.description')</h4>
+            <h4 style="margin-left: -5px">{!! \App\Helpers\Translation::translate('heat-pump.description.title') !!}</h4>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space">

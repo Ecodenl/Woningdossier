@@ -58,10 +58,10 @@ class TranslationController extends Controller
                 ->mainQuestions()
                 ->get();
 
-            // if it isnt a instace, then its a general translation group
-        } elseif ('general' == $stepSlug) {
+            // if it isn't a instance, then its a general translation group
+        } elseif (in_array($stepSlug, ['general', 'my-plan', 'home'])) {
             $questions = LanguageLine::with(['subQuestions', 'helpText'])
-                ->where('group', 'general')
+                ->where('group', $stepSlug)
                 ->mainQuestions()
                 ->get();
         }

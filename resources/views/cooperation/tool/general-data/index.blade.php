@@ -15,9 +15,10 @@
                 @if(count($exampleBuildings) > 0)
                 <div class="row">
                     <div id="example-building" class="col-sm-12">
-                        <div class="form-group add-space{{ $errors->has('example_building_id') ? ' has-error' : '' }}">
-                            <label for="example_building_id" class=" control-label"><i data-toggle="modal" data-target="#example-building-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>{{ \App\Helpers\Translation::translate('general-data.example-building.title') }}</label>
-                            <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
+
+                        @component('cooperation.tool.components.step-question', ['id' => 'example_building_id', 'translation' => 'general-data.example-building',])
+
+                        <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                 @foreach($exampleBuildings as $exampleBuilding)
                                     <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !$building->hasCompleted($step) && $exampleBuilding->is_default)
                                             selected="selected"
@@ -34,31 +35,18 @@
                                         // we select this empty value as default.
                                         $currentNotInExampleBuildings = ! $exampleBuildings->contains('id', '=', $building->example_building_id);
                                 ?>
-                                @if(empty(old('example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >@lang('woningdossier.cooperation.tool.general-data.example-building.no-match')</option>
+                                @if(empty(old('example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >{{ \App\Helpers\Translation::translate('general-data.example-building.no-match.title') }}</option>
                             </select>
 
-                            @if ($errors->has('example_building_id'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('example_building_id') }}</strong>
-                                </span>
-                            @endif
-
-                            @component('cooperation.tool.components.help-modal')
-                                {{ \App\Helpers\Translation::translate('general-data.example-building.help') }}
-                            @endcomponent
-                        </div>
+                        @endcomponent
                     </div>
                 </div>
                 @endif
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group add-space{{ $errors->has('surface') ? ' has-error' : '' }}">
-                            <label for="surface" class=" control-label">
-                                <i data-toggle="modal" data-target="#user-surface-info"
-                                   class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                                   aria-expanded="false"></i>{{\App\Helpers\Translation::translate('general-data.building-type.what-user-surface.title')}}
-                            </label> <span>*</span>
+
+                        @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'general-data.building-type.what-user-surface', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'surface', 'needsFormat' => true])
@@ -68,23 +56,12 @@
                                        required autofocus>
                             @endcomponent
 
-                            @component('cooperation.tool.components.help-modal')
-                                {{\App\Helpers\Translation::translate('general-data.building-type.what-user-surface.help')}}
-                            @endcomponent
+                        @endcomponent
 
-                            @if ($errors->has('surface'))
-                                <span class="help-block">
-                                <strong>{{ $errors->first('surface') }}</strong>
-                            </span>
-                            @endif
-                        </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group add-space{{ $errors->has('building_layers') ? ' has-error' : '' }}">
-                            <label for="building_layers" class=" control-label">
-                                <i data-toggle="modal" data-target="#roof-layers-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false">
-                                </i>{{\App\Helpers\Translation::translate('general-data.building-type.how-much-building-layers.title')}}
-                            </label>
+
+                        @component('cooperation.tool.components.step-question', ['id' => 'building_layers', 'translation' => 'general-data.building-type.how-much-building-layers',])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
@@ -92,28 +69,14 @@
                                        value="{{ old('building_layers', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_layers')) }}" autofocus>
                             @endcomponent
 
-
-
-                            @component('cooperation.tool.components.help-modal')
-                                {{\App\Helpers\Translation::translate('general-data.building-type.how-much-building-layers.help')}}
-                            @endcomponent
-
-                            @if ($errors->has('building_layers'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('building_layers') }}</strong>
-                                </span>
-                            @endif
-                        </div>
+                        @endcomponent
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group add-space{{ $errors->has('roof_type_id') ? ' has-error' : '' }}">
-                            <label for="roof_type_id" class=" control-label">
-                                <i data-toggle="modal" data-target="#roof-type-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                                {{\App\Helpers\Translation::translate('general-data.building-type.type-roof.title')}}
-                            </label>
+
+                        @component('cooperation.tool.components.step-question', ['id' => 'roof_type_id', 'translation' => 'general-data.building-type.type-roof',])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
@@ -128,17 +91,7 @@
                                 </select>
                             @endcomponent
 
-
-                            @component('cooperation.tool.components.help-modal')
-                                {{\App\Helpers\Translation::translate('general-data.building-type.type-roof.help')}}
-                            @endcomponent
-
-                            @if ($errors->has('roof_type_id'))
-                                <span class="help-block">
-                                <strong>{{ $errors->first('roof_type_id') }}</strong>
-                            </span>
-                            @endif
-                        </div>
+                        @endcomponent
                     </div>
                     <div class="col-md-6">
                         <div class="form-group add-space{{ $errors->has('energy_label_id') ? ' has-error' : '' }}">
@@ -257,8 +210,8 @@
 
         <div id="energy-saving-measures">
             @include('cooperation.layouts.section-title', [
-                'translationKey' => 'general-data.energy-saving-measures.title',
-                'infoAlertId' => 'energy-saving-measures-info'
+                'translation' => 'general-data.energy-saving-measures.title',
+                'id' => 'energy-saving-measures'
             ])
 
             @foreach($elements as $i => $element)
@@ -515,8 +468,8 @@
 
             <div id="data-about-usage">
                 @include('cooperation.layouts.section-title', [
-                    'translationKey' => 'general-data.data-about-usage.title',
-                    'infoAlertId' => 'data-about-usage-info'
+                    'translation' => 'general-data.data-about-usage.title',
+                    'id' => 'data-about-usage'
                 ])
             <div class="row">
                 <div class="col-sm-6">
@@ -927,8 +880,8 @@
                     <div class="row">
                         <div class="col-sm-12">
                             @include('cooperation.layouts.section-title', [
-                                'translationKey' => 'general-data.motivation.title',
-                                'infoAlertId' => 'motivation-info'
+                                'translation' => 'general-data.motivation.title',
+                                'id' => 'motivation'
                             ])
                         </div>
 
@@ -1041,7 +994,7 @@
                 var current_eb = parseInt(this.value);
                 // Do something with the previous value after the change
                 if (current_eb !== previous_eb ){
-                    if (previous_eb === "" || confirm('@lang('woningdossier.cooperation.tool.general-data.example-building.apply-are-you-sure')')) {
+                    if (previous_eb === "" || confirm('{{ \App\Helpers\Translation::translate('general-data.example-building.apply-are-you-sure.title') }}')) {
                         @if(App::environment('local'))
                         console.log("Let's save it. EB id: " + current_eb);
                         @endif

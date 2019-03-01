@@ -9,7 +9,7 @@
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-12">
-                    @include('cooperation.layouts.section-title', ['translationKey' => 'solar-panels.title'])
+                    @include('cooperation.layouts.section-title', ['translation' => 'solar-panels.title', 'id' => 'title',])
                 </div>
             </div>
             <div class="row">
@@ -91,7 +91,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'number'])
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.solar-panels.amount')</span>
+                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
                             <input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'number', 0)) }}" />
                             {{--<input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />--}}
                         @endcomponent
@@ -213,8 +213,8 @@
             <div id="indication-for-costs">
                 <hr>
                 @include('cooperation.layouts.section-title', [
-                    'translationKey' => 'solar-panels.indication-for-costs.title',
-                    'infoAlertId' => 'indication-for-costs-info'
+                    'translation' => 'solar-panels.indication-for-costs.title',
+                    'id' => 'indication-for-costs',
                 ])
 
                 <div id="costs" class="row">

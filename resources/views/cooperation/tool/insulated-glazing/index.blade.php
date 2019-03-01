@@ -504,7 +504,7 @@
 
         <div id="indication-for-costs">
             <hr>
-            @include('cooperation.layouts.section-title', ['translationKey' => 'general.costs.cost-and-benefits'])
+            @include('cooperation.layouts.section-title', ['translation' => 'general.costs.cost-and-benefits', 'id' => 'cost-and-benefits',])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
@@ -529,7 +529,7 @@
 
         <div id="taking-into-account">
             <hr>
-            @include('cooperation.layouts.section-title', ['translationKey' => 'insulated-glazing.taking-into-account.title'])
+            @include('cooperation.layouts.section-title', ['translation' => 'insulated-glazing.taking-into-account.title', 'id' => 'taking-into-account',])
 
             <div class="row">
                 <div class="col-sm-6">

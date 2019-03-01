@@ -234,7 +234,7 @@
                                 <span class="input-group-addon">%</span>
                                 <input type="text" id="percentage_consumption" class="form-control disabled" disabled="" value="0">
                             </div>
-                            @component('cooperation.tool.components.help-modal')
+                            @component('cooperation.tool.components.help-modal', ['id' => 'percentage-consumption-info'])
                                 {{\App\Helpers\Translation::translate('heater.indication-for-costs.percentage-consumption.help')}}
                             @endcomponent
                         </div>

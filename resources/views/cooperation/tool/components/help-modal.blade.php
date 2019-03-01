@@ -11,6 +11,4 @@
         </div>
     </div>
 </div>
-    @else
-    Je moeder
 @endif

@@ -127,15 +127,15 @@
                 {{csrf_field()}}
                 <div class="form-group">
                     <label for="" class=" control-label">
-                        <i data-toggle="modal" data-target="#my-plan-own-comment" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                        <i data-target="#my-plan-own-comment-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                         {{\App\Helpers\Translation::translate('general.specific-situation.title')}} ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
                     </label>
 
                     <textarea name="comment" class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
 
-                    <div id="my-plan-own-comment" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    @component('cooperation.tool.components.help-modal', ['id' => 'my-plan-own-comment-info'])
                         {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
-                    </div>
+                    @endcomponent
                 </div>
                 <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
             </form>

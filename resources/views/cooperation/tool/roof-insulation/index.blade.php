@@ -57,11 +57,9 @@
                 <div class="if-roof">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group add-space {{ $errors->has('building_features.roof_type_id') ? ' has-error' : '' }}">
 
                                 @component('cooperation.tool.components.step-question', ['id' => 'building_features.roof_type_id', 'translation' => 'roof-insulation.current-situation.main-roof', 'required' => false])
 
-                                    {{--@component('cooperation.tool.components.input-group', ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id', 'additionalConditionColumn' => true])--}}
                                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
                                         <select id="main_roof" class="form-control"
                                                 name="building_features[roof_type_id]">
@@ -75,7 +73,6 @@
                                     @endcomponent
 
                                 @endcomponent
-                            </div>
                         </div>
                     </div>
 
@@ -271,100 +268,102 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+            </div>
+        </div>
+        @foreach(['flat', 'pitched'] as $roofCat)
+            <div class="row">
 
-                    @foreach(['flat', 'pitched'] as $roofCat)
-                        <div class="costs {{ $roofCat }}-roof col-md-12">
+                <div class="costs {{ $roofCat }}-roof col-md-12">
 
-                            <div class="row">
+                    <div class="row">
 
-                                <div class="col-md-12">
-                                    @include('cooperation.tool.includes.section-title', [
-                                        'translation' => 'roof-insulation.'.$roofCat.'.costs.title',
-                                        'id' => $roofCat.'costs'
-                                    ])
-                                </div>
+                        <div class="col-md-12">
+                            @include('cooperation.tool.includes.section-title', [
+                                'translation' => 'roof-insulation.'.$roofCat.'.costs.title',
+                                'id' => $roofCat.'costs'
+                            ])
+                        </div>
 
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 {{$roofCat}}-hideable">
-                                    @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
-                                </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 {{$roofCat}}-hideable">
+                            @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                        </div>
 
-                                <div class="col-md-4 {{$roofCat}}-hideable">
-                                    @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
-                                </div>
-                                <div class="col-md-4 {{$roofCat}}-hideable">
-                                    @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat])
-                                </div>
-                            </div>
+                        <div class="col-md-4 {{$roofCat}}-hideable">
+                            @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                        </div>
+                        <div class="col-md-4 {{$roofCat}}-hideable">
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat])
+                        </div>
+                    </div>
 
-                            <div class="row">
-                                <div class="col-md-4 {{$roofCat}}-hideable">
-                                    @include('cooperation.layouts.indication-for-costs.indicative-costs', ['id' => $roofCat])
-                                </div>
-                                <div class="col-md-4">
-                                    @component('cooperation.tool.components.step-question', ['id' => 'indicative-costs-id', 'translation' => 'roof-insulation.'.$roofCat.'.indicative-costs-replacement', 'required' => false])
-                                        <div class="input-group">
+                    <div class="row">
+                        <div class="col-md-4 {{$roofCat}}-hideable">
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs', ['id' => $roofCat])
+                        </div>
+                        <div class="col-md-4">
+                            @component('cooperation.tool.components.step-question', ['id' => 'indicative-costs-id', 'translation' => 'roof-insulation.'.$roofCat.'.indicative-costs-replacement', 'required' => false])
+                                <div class="input-group">
                                             <span class="input-group-addon"><i
                                                         class="glyphicon glyphicon-euro"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_replace_cost"
-                                                   class="form-control disabled" disabled="" value="0">
-                                        </div>
-                                    @endcomponent
+                                    <input type="text" id="{{ $roofCat }}_replace_cost"
+                                           class="form-control disabled" disabled="" value="0">
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 @if($roofCat == 'pitched') cover-tiles @endif">
-                                    @component('cooperation.tool.components.step-question', ['id' => 'indicative-replacement-year-info', 'translation' => 'roof-insulation.'.$roofCat.'.indicative-replacement.year', 'required' => false])
-                                        <div class="input-group">
+                            @endcomponent
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 @if($roofCat == 'pitched') cover-tiles @endif">
+                            @component('cooperation.tool.components.step-question', ['id' => 'indicative-replacement-year-info', 'translation' => 'roof-insulation.'.$roofCat.'.indicative-replacement.year', 'required' => false])
+                                <div class="input-group">
                                         <span class="input-group-addon"><i
                                                     class="glyphicon glyphicon-calendar"></i></span>
-                                            <input type="text" id="{{ $roofCat }}_replace_year"
-                                                   class="form-control disabled" disabled="" value="">
-                                        </div>
-                                    @endcomponent
+                                    <input type="text" id="{{ $roofCat }}_replace_year"
+                                           class="form-control disabled" disabled="" value="">
                                 </div>
-                                <div class="col-md-4 {{$roofCat}}-hideable">
-                                    @include('cooperation.layouts.indication-for-costs.comparable-rent', ['id' => $roofCat])
-                                </div>
-                            </div>
+                            @endcomponent
                         </div>
-                    @endforeach
+                        <div class="col-md-4 {{$roofCat}}-hideable">
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent', ['id' => $roofCat])
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
 
 
-                    @foreach(['flat', 'pitched'] as $roofCat)
-                        @include('cooperation.tool.includes.comment', [
-                          'collection' => collect($currentCategorizedRoofTypesForMe[$roofCat]),
-                          'commentColumn' => 'extra.comment',
-                          'translation' => [
-                              'title' => 'general.specific-situation.title',
-                              'help' => 'general.specific-situation.help'
-                          ]
-                        ])
-                    @endforeach
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">@lang('default.buttons.download')</div>
-                                <div class="panel-body">
-                                    <ol>
-                                        <li><a download=""
-                                               href="{{asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')))))}}</a>
-                                        </li>
-                                    </ol>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group add-space">
-                                <div class="">
-                                    <a class="btn btn-success pull-left"
-                                       href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                                    <button type="submit" class=" btn btn-primary pull-right">
-                                        @lang('default.buttons.next')
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+        @foreach(['flat', 'pitched'] as $roofCat)
+            @include('cooperation.tool.includes.comment', [
+              'collection' => collect($currentCategorizedRoofTypesForMe[$roofCat]),
+              'commentColumn' => 'extra.comment',
+              'translation' => [
+                  'title' => 'general.specific-situation.title',
+                  'help' => 'general.specific-situation.help'
+              ]
+            ])
+        @endforeach
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li><a download=""
+                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Dakisolatie.pdf')))))}}</a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <hr>
+                <div class="form-group add-space">
+                    <div class="">
+                        <a class="btn btn-success pull-left"
+                           href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
+                        <button type="submit" class=" btn btn-primary pull-right">
+                            @lang('default.buttons.next')
+                        </button>
                     </div>
                 </div>
             </div>

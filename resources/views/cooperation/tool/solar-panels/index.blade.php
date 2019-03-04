@@ -9,7 +9,7 @@
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-12">
-                    @include('cooperation.layouts.section-title', ['translation' => 'solar-panels.title', 'id' => 'title',])
+                    @include('cooperation.tool.includes.section-title', ['translation' => 'solar-panels.title', 'id' => 'title',])
                 </div>
             </div>
             <div class="row">
@@ -212,7 +212,7 @@
 
             <div id="indication-for-costs">
                 <hr>
-                @include('cooperation.layouts.section-title', [
+                @include('cooperation.tool.includes.section-title', [
                     'translation' => 'solar-panels.indication-for-costs.title',
                     'id' => 'indication-for-costs',
                 ])

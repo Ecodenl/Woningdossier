@@ -8,7 +8,7 @@
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="start-information">
-            @include('cooperation.layouts.section-title', ['translation' => 'high-efficiency-boiler.title', 'id' => 'title',])
+            @include('cooperation.tool.includes.section-title', ['translation' => 'high-efficiency-boiler.title', 'id' => 'title',])
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group add-space {{ $errors->has('habit.gas_usage') ? ' has-error' : '' }}">

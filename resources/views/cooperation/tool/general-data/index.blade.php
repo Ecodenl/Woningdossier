@@ -209,7 +209,7 @@
         </div>
 
         <div id="energy-saving-measures">
-            @include('cooperation.layouts.section-title', [
+            @include('cooperation.tool.includes.section-title', [
                 'translation' => 'general-data.energy-saving-measures.title',
                 'id' => 'energy-saving-measures'
             ])
@@ -467,7 +467,7 @@
 
 
             <div id="data-about-usage">
-                @include('cooperation.layouts.section-title', [
+                @include('cooperation.tool.includes.section-title', [
                     'translation' => 'general-data.data-about-usage.title',
                     'id' => 'data-about-usage'
                 ])
@@ -879,7 +879,7 @@
 
                     <div class="row">
                         <div class="col-sm-12">
-                            @include('cooperation.layouts.section-title', [
+                            @include('cooperation.tool.includes.section-title', [
                                 'translation' => 'general-data.motivation.title',
                                 'id' => 'motivation'
                             ])

@@ -217,15 +217,10 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.'.$woodElements->id.'.wood-elements', 'translation' => 'insulated-glazing.paint-work.other-wood-elements', 'required' => false])
+                @component('cooperation.tool.components.step-question',
+                ['id' => 'building_elements.'.$woodElements->id.'.wood-elements', 'translation' => 'insulated-glazing.paint-work.other-wood-elements', 'required' => false])
 
 
-                    @component('cooperation.tool.components.help-modal')
-                        {{\App\Helpers\Translation::translate('insulated-glazing.paint-work.other-wood-elements.help')}}
-                    @endcomponent
-                @endcomponent
-            </div>
-            <div class="form-group add-space">
 
 
                 <?php
@@ -266,7 +261,8 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            @endcomponent
+        </div>
         </div>
 
         <div class="row">

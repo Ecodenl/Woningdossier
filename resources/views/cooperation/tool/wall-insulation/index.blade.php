@@ -55,7 +55,6 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('cavity_wall') ? ' has-error' : '' }}">
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio',
@@ -65,10 +64,7 @@
                             0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                         ],
                         'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                            <label for="cavity_wall" class=" control-label"><i data-toggle="modal"
-                                                                               data-target="#cavity-info"
-                                                                               class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.title')}}
-                            </label><span> *</span>
+                        @component('cooperation.tool.components.step-question', ['id' => 'cavity_wall', 'translation' => 'wall-insulation.intro.has-cavity-wall', 'required' => true])
                             <label class="radio-inline">
                                 <input type="radio" name="cavity_wall"
                                        @if(old('cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'cavity_wall')) == 1) checked
@@ -88,23 +84,13 @@
                         @endcomponent
                         <br>
 
-                        @component('cooperation.tool.components.help-modal')
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.has-cavity-wall.help')}}
                         @endcomponent
 
-                        @if ($errors->has('cavity_wall'))
-                            <span class="help-block">
-                            <strong>{{ $errors->first('cavity_wall') }}</strong>
-                        </span>
-                        @endif
-
-                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-group add-space{{ $errors->has('facade_plastered_painted') ? ' has-error' : '' }}">
 
                     @component('cooperation.tool.components.input-group',
                         ['inputType' => 'radio',
@@ -115,11 +101,7 @@
                         ],
                         'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
 
-                        <label for="facade_plastered_painted" class=" control-label"><i data-toggle="modal"
-                                                                                        data-target="#wall-painted"
-                                                                                        class="glyphicon glyphicon-info-sign glyphicon-padding"></i>{{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.title')}}
-                        </label> <span> *</span>
-
+                    @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_painted', 'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true])
                         <label class="radio-inline">
                             <input class="is-painted"
                                    @if(old('facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'facade_plastered_painted')) == 1) checked
@@ -140,18 +122,8 @@
                     @endcomponent
                     <br>
 
-                    @component('cooperation.tool.components.help-modal')
-                        {{\App\Helpers\Translation::translate('wall-insulation.intro.is-facade-plastered-painted.help')}}
                     @endcomponent
 
-                    @if ($errors->has('facade_plastered_painted'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('facade_plastered_painted') }}</strong>
-                        </span>
-                    @endif
-
-
-                </div>
             </div>
         </div>
 

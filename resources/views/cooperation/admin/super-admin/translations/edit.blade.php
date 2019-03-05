@@ -29,6 +29,8 @@
                         {{csrf_field()}}
                         {{method_field('PUT')}}
                         @foreach($questions as $question)
+                            <?php // since we dont want the helptexts to show right here. ?>
+                            @if($question->isNotHelpText())
                             <div class="translations panel panel-default">
                                 <div class="panel-body">
                                     <div class="row">
@@ -81,6 +83,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         @endforeach
                         <div class="form-group">
                             <a href="{{route('cooperation.admin.super-admin.translations.index')}}"

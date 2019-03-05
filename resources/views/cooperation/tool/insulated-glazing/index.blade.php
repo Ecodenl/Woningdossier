@@ -69,7 +69,7 @@
 
                     </div>
 
-                <div class="values">
+                    <div class="values">
 
 
                         <div class="col-sm-3">
@@ -227,46 +227,46 @@
 
 
 
-                <?php
-                // TODO: should do something with a component
-                // the current problem is there are only 2 places where checkboxes are used and those are used in a different way
-                ?>
-                <div class="input-group input-source-group">
-                    @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
-                        <label for="building_elements.wood-elements.{{ $woodElement->id }}"
-                               class="checkbox-inline">
-                            <input
-                                    @if(old('building_elements.wood-elements.' . $woodElements->id . '.' . $woodElement->id,\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id), 'element_value_id')))
-                                    checked="checked"
+                    <?php
+                    // TODO: should do something with a component
+                    // the current problem is there are only 2 places where checkboxes are used and those are used in a different way
+                    ?>
+                    <div class="input-group input-source-group">
+                        @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
+                            <label for="building_elements.wood-elements.{{ $woodElement->id }}"
+                                   class="checkbox-inline">
+                                <input
+                                        @if(old('building_elements.wood-elements.' . $woodElements->id . '.' . $woodElement->id,\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id), 'element_value_id')))
+                                        checked="checked"
+                                        @endif
+                                        type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}"
+                                        value="{{$woodElement->id}}"
+                                        name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">
+                                {{ $woodElement->value }}
+                            </label>
+                        @endforeach
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
+                                    <?php
+                                    $myWoodElement = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first();
+                                    $notNull = null != $myWoodElement;
+                                    ?>
+                                    @if ($notNull && $myWoodElement->element_value_id == $woodElement->id)
+                                        <li class="change-input-value" data-input-value="{{$woodElement->id}}"
+                                            data-input-source-short="{{$myWoodElement->inputSource()->first()->short}}">
+                                            <a href="#">{{$myWoodElement->getInputSourceName()}}
+                                                : {{$woodElement->value}}</a>
+                                        </li>
                                     @endif
-                                    type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}"
-                                    value="{{$woodElement->id}}"
-                                    name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">
-                            {{ $woodElement->value }}
-                        </label>
-                    @endforeach
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
-                                <?php
-                                $myWoodElement = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first();
-                                $notNull = null != $myWoodElement;
-                                ?>
-                                @if ($notNull && $myWoodElement->element_value_id == $woodElement->id)
-                                    <li class="change-input-value" data-input-value="{{$woodElement->id}}"
-                                        data-input-source-short="{{$myWoodElement->inputSource()->first()->short}}">
-                                        <a href="#">{{$myWoodElement->getInputSourceName()}}
-                                            : {{$woodElement->value}}</a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            @endcomponent
-        </div>
+                @endcomponent
+            </div>
         </div>
 
         <div class="row">

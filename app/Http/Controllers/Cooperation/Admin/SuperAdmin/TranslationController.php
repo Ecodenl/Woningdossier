@@ -53,10 +53,14 @@ class TranslationController extends Controller
     {
         $step = Step::where('slug', $stepSlug)->first();
         if ($step instanceof Step) {
-            $questions = LanguageLine::with(['subQuestions', 'helpText'])
+
+            $questions = LanguageLine::
+            with(['subQuestions', 'helpText'])
                 ->where('step_id', $step->id)
                 ->mainQuestions()
                 ->get();
+
+
 
             // if it isn't a instance, then its a general translation group
         } elseif (in_array($stepSlug, ['general', 'my-plan', 'home'])) {

@@ -442,7 +442,6 @@
                         <div class="col-sm-6">
 
                             @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'translation' => 'general-data.data-about-usage.cooked-on-gas', 'required' => true])
-                                >
 
                                 <div class="input-group input-source-group">
                                     <br>
@@ -671,7 +670,7 @@
                         {{-- Start at 1 so the translation will too. --}}
                         @for($i = 1; $i < 5; $i++)
                             <div class="col-sm-6">
-                                @component('cooperation.tool.components.step-question', ['id' => 'motivation.'.$i, 'translation' => \App\Helpers\Translation::translate('general-data.motivation.priority.title', ['prio' => $i]), 'required' => false])
+                                @component('cooperation.tool.components.step-question', ['id' => 'motivation.'.$i, 'translation' => 'general-data.motivation.priority', 'translationReplace' => ['prio' => $i], 'required' => false])
                                     <select id="motivation[{{ $i }}]" class="form-control"
                                             name="motivation[{{ $i }}]">
 

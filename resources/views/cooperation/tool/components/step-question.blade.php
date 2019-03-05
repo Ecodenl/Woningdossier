@@ -18,6 +18,8 @@
     $labelClass = $labelClass ?? '';
     $labelStyling = $labelStyling ?? '';
 
+    $translationReplace = $translationReplace ?? [];
+
 ?>
 
 <div class="form-group add-space{{ $errors->has($name) ? ' has-error' : '' }}" style="{{$labelStyling}}">
@@ -28,7 +30,7 @@
                class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                aria-expanded="false"></i>
         @endif
-        {{\App\Helpers\Translation::translate($translation . '.title')}}
+        {{\App\Helpers\Translation::translate($translation . '.title', $translationReplace)}}
         @if($required)
             <span>*</span>
         @endif
@@ -36,7 +38,7 @@
 
     {{ $slot }}
 
-	<?php // show include modal for help icon? ?>
+    <?php // show include modal for help icon? ?>
     @if(\App\Helpers\Translation::hasTranslation($translation . '.help'))
     @component('cooperation.tool.components.help-modal', ['id' => $id . "-info"])
         {{\App\Helpers\Translation::translate($translation . '.help')}}

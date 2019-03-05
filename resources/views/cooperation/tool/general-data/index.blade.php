@@ -243,7 +243,7 @@
                         </div>
                         @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
                             <div class="col-sm-2">
-                                @component('cooperation.tool.components.step-question', ['id' => 'user_interest.element.' . $element->id, 'translation' => 'general.interested-in-improvement', 'required' => true])
+                                @component('cooperation.tool.components.step-question', ['id' => 'user_interest.element.' . $element->id, 'translation' => 'general.interested-in-improvement', 'required' => true, 'labelStyling' => 'font-size:12px;'])
                                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'element')->where('interested_in_id', $element->id),  'userInputColumn' => 'interest_id'])
                                         <select id="user_interest_element_{{ $element->id }}" class="form-control"
                                                 name="user_interest[element][{{ $element->id }}]">
@@ -352,7 +352,7 @@
                             {{-- interest is not asked for current boiler --}}
                             @if($service->short != 'boiler')
                                 <div class="col-sm-2">
-                                    @component('cooperation.tool.components.step-question', ['id' => 'user_interest.service.' . $service->id, 'translation' => 'general.interested-in-improvement', 'required' => true])
+                                    @component('cooperation.tool.components.step-question', ['id' => 'user_interest.service.' . $service->id, 'translation' => 'general.interested-in-improvement', 'required' => true, 'labelStyling' => 'font-size:12px;'])
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'service')->where('interested_in_id', $service->id),  'userInputColumn' => 'interest_id'])
                                             <select id="user_interest_service_{{ $service->id }}"

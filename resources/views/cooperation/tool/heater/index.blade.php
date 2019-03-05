@@ -16,10 +16,8 @@
             </div>
 
             <div class="row">
-
                 <div class="col-sm-4">
                     @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.water_comfort_id', 'translation' => 'heater.comfort-level-warm-tap-water', 'required' => false])
-
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'select', 'inputValues' => $comfortLevels, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                             <select id="user_energy_habits_water_comfort_id" class="form-control"
@@ -32,11 +30,9 @@
                         @endcomponent
                     @endcomponent
                 </div>
-            </div>
 
             <div class="col-sm-4">
-                @component('cooperation.tool.components.step-question', ['id' => 'building_heaters.pv_panel_orientation_id', 'translation' => 'heater.pv-panel-orientation-', 'required' => false])
-
+                @component('cooperation.tool.components.step-question', ['id' => 'building_heaters.pv_panel_orientation_id', 'translation' => 'heater.pv-panel-orientation-id', 'required' => false])
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'select', 'inputValues' => $collectorOrientations, 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'pv_panel_orientation_id'])
                         <select id="building_heaters_pv_panel_orientation_id" class="form-control"
@@ -48,14 +44,11 @@
                             @endforeach
                         </select>
                     @endcomponent
-
                 @endcomponent
-
             </div>
 
             <div class="col-sm-4">
                 @component('cooperation.tool.components.step-question', ['id' => 'building_heaters.angle', 'translation' => 'heater.angle', 'required' => false])
-
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'select', 'inputValues' => \App\Helpers\KeyFigures\Heater\KeyFigures::getAngles(), 'userInputValues' => $currentHeatersForMe, 'userInputColumn' => 'angle'])
                         <span class="input-group-addon">&deg;</span>
@@ -66,7 +59,6 @@
                             @endforeach
                         </select>
                     @endcomponent
-
                 @endcomponent
 
             </div>
@@ -106,14 +98,15 @@
                         </div>
                     @endcomponent
                 </div>
-            </div>
-            <div class="col-sm-6">
-                @component('cooperation.tool.components.step-question', ['id' => 'consumtion-gas', 'translation' => 'heater.consumption-gas', 'required' => false])
-                    <div class="input-group">
-                        <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                        <input type="text" id="consumption_gas" class="form-control disabled" disabled="" value="0">
-                    </div>
-                @endcomponent
+
+                <div class="col-sm-6">
+                    @component('cooperation.tool.components.step-question', ['id' => 'consumption-gas', 'translation' => 'heater.consumption-gas', 'required' => false])
+                        <div class="input-group">
+                            <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
+                            <input type="text" id="consumption_gas" class="form-control disabled" disabled="" value="0">
+                        </div>
+                    @endcomponent
+                </div>
             </div>
         </div>
 
@@ -133,18 +126,18 @@
                         </div>
                     @endcomponent
                 </div>
-            </div>
-            <div class="col-sm-6">
-                @component('cooperation.tool.components.step-question', ['id' => 'size-collector', 'translation' => 'heater.size-collector', 'required' => false])
-                    <div class="input-group">
-                        <span class="input-group-addon">m<sup>2</sup></span>
-                        <input type="text" id="size_collector" class="form-control disabled" disabled=""
-                               value="0">
-                    </div>
-                @endcomponent
-            </div>
 
-        </div>
+                <div class="col-sm-6">
+                    @component('cooperation.tool.components.step-question', ['id' => 'size-collector', 'translation' => 'heater.size-collector', 'required' => false])
+                        <div class="input-group">
+                            <span class="input-group-addon">m<sup>2</sup></span>
+                            <input type="text" id="size_collector" class="form-control disabled" disabled=""
+                                   value="0">
+                        </div>
+                    @endcomponent
+                </div>
+
+            </div>
         </div>
 
         <div id="indication-for-costs">
@@ -196,7 +189,6 @@
                 @include('cooperation.layouts.indication-for-costs.comparable-rent')
             </div>
         </div>
-        </div>
 
         <div class="row system-performance">
             <div class="col-sm-12 col-md-8 col-md-offset-2">
@@ -237,8 +229,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
         </div>
 
     </form>

@@ -35,7 +35,11 @@
                     <div class="col-sm-12">
                         {{-- since there is no title / subtitle for the hr3p --}}
                         @if(array_key_exists($measureApplication->id, $titles))
-                            <h4>{{\App\Helpers\Translation::translate('insulated-glazing.subtitles.'.$measureApplication->short.'.title')}}</h4>
+                            @include('cooperation.tool.includes.section-title', [
+                              'translation' => 'insulated-glazing.subtitles.'.$measureApplication->short,
+                                'id' => 'insulated-glazing-subtitles-'.$measureApplication->short
+                            ])
+
                         @endif
 
                         @component('cooperation.tool.components.step-question', 

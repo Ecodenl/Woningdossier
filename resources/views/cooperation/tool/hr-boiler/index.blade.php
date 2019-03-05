@@ -113,8 +113,10 @@
         </div>
         <div id="indication-for-costs">
             <hr>
-            <h4 style="margin-left: -5px">{{\App\Helpers\Translation::translate('high-efficiency-boiler.indication-for-costs.title.title')}}</h4>
-
+            @include('cooperation.tool.includes.section-title', [
+                'translation' => 'high-efficiency-boiler.indication-for-costs.title',
+                'id' => 'indication-for-costs-title'
+            ])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">

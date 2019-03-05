@@ -7,7 +7,10 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.heat-pump.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="start-information">
-            <h4 style="margin-left: -5px">{!! \App\Helpers\Translation::translate('heat-pump.description.title') !!}</h4>
+            @include('cooperation.tool.includes.section-title', [
+               'translation' => 'heat-pump.description',
+                'id' => 'heat-pump-title'
+             ])
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space">

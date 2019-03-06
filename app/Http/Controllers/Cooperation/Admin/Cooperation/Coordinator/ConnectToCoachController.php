@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
-use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;

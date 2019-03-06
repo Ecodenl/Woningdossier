@@ -55,8 +55,9 @@ class NumberFormatter
                 self::$formatLocaleSeparators[$locale]['decimal'],
                 self::$formatLocaleSeparators[$locale]['thousands']
             );
-        } else
+        } else {
             return $number;
+        }
     }
 
     public static function reverseFormat($number)
@@ -84,9 +85,9 @@ class NumberFormatter
         $locale = app()->getLocale();
         // check if multiple decimals were added to the input
 
-        if ($locale != 'en') {
+        if ('en' != $locale) {
             // always for dot.
-            $number = self::countAndRemoveDownToOne($number, ".");
+            $number = self::countAndRemoveDownToOne($number, '.');
         }
 
         $number = self::countAndRemoveDownToOne($number, self::$reverseLocaleSeparators[$locale]['decimal']);
@@ -100,6 +101,7 @@ class NumberFormatter
      *
      * @param string $number
      * @param string $sign
+     *
      * @return string
      */
     protected static function countAndRemoveDownToOne($number, $sign)
@@ -107,7 +109,7 @@ class NumberFormatter
         $decimalSignCount = substr_count($number, '.');
 
         $len = strlen($sign);
-        while ($decimalSignCount-- > 1 && ($pos = strpos($number, $sign)) !== false) {
+        while ($decimalSignCount-- > 1 && false !== ($pos = strpos($number, $sign))) {
             $number = substr_replace($number, '', $pos, $len);
         }
 

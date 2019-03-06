@@ -6,10 +6,9 @@ namespace App\Helpers;
  * Helper class that can be use full when the old data needs to be modified.
  *
  * Class Old
- * @package App\Helpers
  */
-class Old {
-
+class Old
+{
     protected static function setOld($key, $value)
     {
         session()->flash('_modified_old_input.'.$key, $value);
@@ -21,9 +20,10 @@ class Old {
     }
 
     /**
-     * Determine if a given key exists in the _modified_old_input session
+     * Determine if a given key exists in the _modified_old_input session.
      *
      * @param $key
+     *
      * @return bool
      */
     protected static function hasOld($key): bool
@@ -49,8 +49,8 @@ class Old {
     /**
      * Get a value from the _modified_old_input session.
      *
-     * @param string $key | old value to retrieve
-     * @param string $default | if the key does not exist in the session, return the default value.
+     * @param string $key     | old value to retrieve
+     * @param string $default | if the key does not exist in the session, return the default value
      *
      * @return mixed|string
      */
@@ -58,8 +58,9 @@ class Old {
     {
         if (empty($key)) {
             return self::all();
-        } else if (self::hasOld($key)) {
+        } elseif (self::hasOld($key)) {
             $modifiedOldInput = array_dot(self::all());
+
             return array_get($modifiedOldInput, $key);
         } else {
             return $default;
@@ -67,7 +68,7 @@ class Old {
     }
 
     /**
-     * Retrieve all the _modified_old_input data
+     * Retrieve all the _modified_old_input data.
      *
      * @return mixed
      */

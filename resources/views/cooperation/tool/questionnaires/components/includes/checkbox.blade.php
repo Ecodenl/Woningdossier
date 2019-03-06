@@ -6,7 +6,7 @@
     foreach ($userInputValues as $userInputValue) {
         $userInputValuesArray[] = [
             'answers' => collect(explode('|', $userInputValue->answer)),
-            'input_source' => $userInputValue->inputSource
+            'input_source' => $userInputValue->inputSource,
         ];
     }
 

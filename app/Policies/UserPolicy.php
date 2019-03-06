@@ -121,11 +121,11 @@ class UserPolicy
         return false;
     }
 
-
     /**
      * Check if a user is authorized to delete a user.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function deleteUser(User $user): bool
@@ -133,6 +133,7 @@ class UserPolicy
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'super-admin'])) {
             return true;
         }
+
         return false;
     }
 
@@ -141,6 +142,7 @@ class UserPolicy
      *
      * @param User $user
      * @param User $userToDestroy
+     *
      * @return bool
      */
     public function destroy(User $user, User $userToDestroy)
@@ -149,6 +151,7 @@ class UserPolicy
         if ($user->can('delete-user') && $userToDestroy->cooperations->contains('id', HoomdossierSession::getCooperation())) {
             return true;
         }
+
         return false;
     }
 
@@ -177,6 +180,7 @@ class UserPolicy
      *
      * @param User $user             | Auth user
      * @param User $groupParticipant | Participant from the group chat
+     *
      * @return bool
      */
     public function removeParticipantFromChat(User $user, User $groupParticipant): bool

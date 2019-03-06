@@ -115,7 +115,7 @@ class HeaterController extends Controller
             $orientation = PvPanelOrientation::find($orientationId);
 
             $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
-            $helpFactor = 0;
+            $helpFactor = 1;
             if ($orientation instanceof PvPanelOrientation && $angle > 0) {
                 $yield = KeyFigures::getYield($orientation, $angle);
                 \Log::debug('Heater: Yield for '.$orientation->name.' at '.$angle.' degrees = '.$yield->yield);

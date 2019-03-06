@@ -25,16 +25,17 @@ class Arr
      * Check if a whole array is empty.
      *
      * @param array $array
+     *
      * @return bool
      */
     public static function isWholeArrayEmpty(array $array): bool
     {
-        foreach($array as $key => $value) {
-            if (!Str::isConsideredEmptyAnswer($value)) {
+        foreach ($array as $key => $value) {
+            if (! Str::isConsideredEmptyAnswer($value)) {
                 return false;
             }
         }
+
         return true;
     }
-
 }

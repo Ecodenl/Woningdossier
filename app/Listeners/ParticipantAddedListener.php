@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ParticipantAddedListener
 {
@@ -16,13 +14,13 @@ class ParticipantAddedListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)

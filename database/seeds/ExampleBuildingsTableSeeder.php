@@ -17,14 +17,14 @@ class ExampleBuildingsTableSeeder extends Seeder
                     'nl' => 'Vrijstaande woning',
                 ],
                 'order' => 100,
-	            'building_type_id' => 1,
+                'building_type_id' => 1,
             ],
             [
                 'names' => [
                     'nl' => '2 onder 1 kap',
                 ],
                 'order' => 101,
-	            'building_type_id' => 2,
+                'building_type_id' => 2,
             ],
             [
                 'names' => [
@@ -40,20 +40,20 @@ class ExampleBuildingsTableSeeder extends Seeder
                 'order' => 103,
                 'building_type_id' => 4,
             ],
-	        [
-		        'names' => [
-			        'nl' => 'Bovenwoning hoek',
-		        ],
-		        'order' => 104,
-		        'building_type_id' => 5,
-	        ],
-	        [
-		        'names' => [
-			        'nl' => 'Bovenwoning tussen',
-		        ],
-		        'order' => 105,
-		        'building_type_id' => 6,
-	        ],
+            [
+                'names' => [
+                    'nl' => 'Bovenwoning hoek',
+                ],
+                'order' => 104,
+                'building_type_id' => 5,
+            ],
+            [
+                'names' => [
+                    'nl' => 'Bovenwoning tussen',
+                ],
+                'order' => 105,
+                'building_type_id' => 6,
+            ],
             [
                 'names' => [
                     'nl' => 'Bovenwoning hoek',
@@ -97,7 +97,7 @@ class ExampleBuildingsTableSeeder extends Seeder
             \DB::table('example_buildings')->insert([
                 'name' => $uuid,
                 'order' => $exampleBuilding['order'],
-	            'building_type_id' => $exampleBuilding['building_type_id'],
+                'building_type_id' => $exampleBuilding['building_type_id'],
             ]);
         }
     }

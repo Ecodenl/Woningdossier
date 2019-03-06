@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddBuildingDetailToStepsTable extends Migration
@@ -20,16 +18,16 @@ class AddBuildingDetailToStepsTable extends Migration
 
         // increment the step order
         foreach ($steps as $i => $step) {
-            \DB::table('steps')->where('id', '=', $step->id)->update(['order' => $i+1 ]);
+            \DB::table('steps')->where('id', '=', $step->id)->update(['order' => $i + 1]);
         }
 
         // now for every cooperation we update de step order as well
         foreach ($cooperations as $cooperation) {
             foreach ($steps as $i => $step) {
                 \DB::table('cooperation_steps')
-	                ->where('step_id', '=', $step->id)
-	                ->where('cooperation_id', '=', $cooperation->id)
-                   ->update(['order' => $i+1]);
+                    ->where('step_id', '=', $step->id)
+                    ->where('cooperation_id', '=', $cooperation->id)
+                   ->update(['order' => $i + 1]);
             }
         }
 
@@ -48,8 +46,8 @@ class AddBuildingDetailToStepsTable extends Migration
 
         // create it
         // connecting will be handled through the observer
-	    \DB::table('steps')->insert($buildingDetailStep);
-	    \DB::table('translations')->insert($buildingDetailStepTranslation);
+        \DB::table('steps')->insert($buildingDetailStep);
+        \DB::table('translations')->insert($buildingDetailStepTranslation);
     }
 
     /**
@@ -60,35 +58,34 @@ class AddBuildingDetailToStepsTable extends Migration
     public function down()
     {
         // collect the data we need
-	    $cooperations = \DB::table('cooperations')->get();
+        $cooperations = \DB::table('cooperations')->get();
         $steps = DB::table('steps')->get();
 
-        foreach($steps as $i => $step){
-        	\DB::table('steps')->where('id', '=', $step->id)->update(['order' => $i]);
+        foreach ($steps as $i => $step) {
+            \DB::table('steps')->where('id', '=', $step->id)->update(['order' => $i]);
         }
 
         // now for every cooperation we update de step order as well
         foreach ($cooperations as $cooperation) {
             foreach ($steps as $i =>  $step) {
-	            \DB::table('cooperation_steps')
-		            ->where('step_id', '=', $step->id)
-		            ->where('cooperation_id', '=', $cooperation->id)
-	               ->update(['order' => $i]);
-
+                \DB::table('cooperation_steps')
+                    ->where('step_id', '=', $step->id)
+                    ->where('cooperation_id', '=', $cooperation->id)
+                   ->update(['order' => $i]);
             }
         }
 
         // get the added step
         $stepQuery = \DB::table('steps')->where('slug', 'building-detail')->first();
         // remove the translations
-	    if ($stepQuery instanceof \stdClass) {
-		    \DB::table( 'translations' )->where( 'key',
-			    $stepQuery->name )->delete();
-		    // remove the step from all the cooperations
-		    \DB::table( 'cooperation_steps' )->where( 'step_id',
-			    $stepQuery->id )->delete();
-		    // delete the step itself
-		    \DB::table('steps')->where('slug', 'building-detail')->limit(1)->delete();
-	    }
+        if ($stepQuery instanceof \stdClass) {
+            \DB::table('translations')->where('key',
+                $stepQuery->name)->delete();
+            // remove the step from all the cooperations
+            \DB::table('cooperation_steps')->where('step_id',
+                $stepQuery->id)->delete();
+            // delete the step itself
+            \DB::table('steps')->where('slug', 'building-detail')->limit(1)->delete();
+        }
     }
 }

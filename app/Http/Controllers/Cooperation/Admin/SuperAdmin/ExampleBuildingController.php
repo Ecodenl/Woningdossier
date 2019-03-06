@@ -281,7 +281,7 @@ class ExampleBuildingController extends Controller
                     'options' => $this->createOptions($surfaces),
                 ],
             ],
-            
+
             'insulated-glazing' => [
                 // will be filled in later
                 'element.'.$crackSealing->id => [

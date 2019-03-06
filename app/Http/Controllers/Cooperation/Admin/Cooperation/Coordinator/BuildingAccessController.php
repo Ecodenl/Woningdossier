@@ -4,18 +4,15 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class BuildingAccessController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-
         // we want to show the coordinators all the buildings that initiated a requested to the cooperation.
         $privateMessageBuildingIds = PrivateMessage::forMyCooperation()
             ->accessAllowed()

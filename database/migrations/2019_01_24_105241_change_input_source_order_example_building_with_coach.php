@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeInputSourceOrderExampleBuildingWithCoach extends Migration
@@ -21,13 +19,13 @@ class ChangeInputSourceOrderExampleBuildingWithCoach extends Migration
             DB::table('input_sources')
                 ->where('short', 'coach')
                 ->update([
-                    'order' => $exampleBuilding->order
+                    'order' => $exampleBuilding->order,
                 ]);
 
             DB::table('input_sources')
                 ->where('short', 'example-building')
                 ->update([
-                    'order' => $coach->order
+                    'order' => $coach->order,
                 ]);
         }
     }
@@ -47,13 +45,13 @@ class ChangeInputSourceOrderExampleBuildingWithCoach extends Migration
             DB::table('input_sources')
                 ->where('short', 'coach')
                 ->update([
-                    'order' => $exampleBuilding->order
+                    'order' => $exampleBuilding->order,
                 ]);
 
             DB::table('input_sources')
                 ->where('short', 'example-building')
                 ->update([
-                    'order' => $coach->order
+                    'order' => $coach->order,
                 ]);
         }
     }

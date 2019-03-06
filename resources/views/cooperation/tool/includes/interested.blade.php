@@ -15,7 +15,7 @@
             <div class="col-sm-12">
                 <div class="form-group add-space">
                     <label for="interest_{{ $type }}_{{ $typeId }}" class="control-label">
-                        <i data-toggle="collapse" data-target="#interest_{{ $type }}_{{ $typeId }}_help" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                        <i data-toggle="modal" data-target="#interest_{{ $type }}_{{ $typeId }}_help" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                         {{\App\Helpers\Translation::translate('general.change-interested.title', ['item' => $typeName])}}
                     </label>
                     @component('cooperation.tool.components.input-group',
@@ -27,9 +27,9 @@
                             @endforeach
                         </select>
                     @endcomponent
-                    <div id="interest_{{ $type }}_{{ $typeId }}_help" class="collapse alert alert-info remove-collapse-space alert-top-space">
+                    @component('cooperation.tool.components.help-modal')
                         {{\App\Helpers\Translation::translate('general.change-interested.help', ['item' => $typeName])}}
-                    </div>
+                    @endcomponent
                     @if ($errors->has('interest.'.$typeId))
                         <span class="help-block">
                             <strong>{{ $errors->first('interest.'.$typeId) }}</strong>

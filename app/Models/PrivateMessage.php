@@ -301,7 +301,6 @@ class PrivateMessage extends Model
             return BuildingCoachStatus::hasCoachAccess($buildingCoachStatus->building_id, $buildingCoachStatus->coach_id);
         })->unique('coach_id');
 
-
         // create a collection of group members
         $groupMembers = collect();
 
@@ -399,9 +398,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to returned the messages where building access is allowed
+     * Scope a query to returned the messages where building access is allowed.
      *
      * @param $query
+     *
      * @return mixed
      */
     public function scopeAccessAllowed($query)

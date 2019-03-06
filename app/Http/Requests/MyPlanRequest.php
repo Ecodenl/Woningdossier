@@ -24,7 +24,7 @@ class MyPlanRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => 'sometimes|required'
+            'comment' => 'sometimes|required',
         ];
     }
 }

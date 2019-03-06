@@ -71,7 +71,13 @@
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
                     <li><a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a></li>
-                    <li><a href="{{ route('cooperation.tool.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.tool.title')</a></li>
+                    <li>
+                        <a href="{{
+                                    \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->hasCompleted(\App\Models\Step::where('slug', 'building-detail')->first()) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])
+                                 }}">
+                            @lang('woningdossier.cooperation.tool.title')
+                        </a>
+                    </li>
 
                     @if (!Auth::user()->isFillingToolForOtherBuilding())
                         @if (\App\Helpers\HoomdossierSession::currentRole() == 'resident')
@@ -85,16 +91,16 @@
                             <li>
                                 @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                     @case('coach')
-                                        <?php $messageUrl = route('cooperation.admin.coach.messages.index') ?>
+                                        <?php $messageUrl = route('cooperation.admin.coach.messages.index'); ?>
                                         @break
                                     @case('coordinator')
-                                        <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index') ?>
+                                        <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index'); ?>
                                         @break
                                     @case('cooperation-admin')
-                                        <?php $messageUrl = route('cooperation.admin.cooperation.cooperation-admin.messages.index') ?>
+                                        <?php $messageUrl = route('cooperation.admin.cooperation.cooperation-admin.messages.index'); ?>
                                         @break
                                     @default
-                                        <?php $messageUrl = route('cooperation.admin.index') ?>
+                                        <?php $messageUrl = route('cooperation.admin.index'); ?>
                                 @endswitch
                                 <a href="{{$messageUrl}}">
                                     <span class="glyphicon glyphicon-envelope"></span>

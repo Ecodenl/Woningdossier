@@ -1,6 +1,6 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', __('woningdossier.cooperation.tool.ventilation-information.title'))
+@section('step_title', \App\Helpers\Translation::translate('ventilation-information.title.title'))
 
 
 @section('step_content')
@@ -8,7 +8,7 @@
         {{ csrf_field() }}
         <div class="row">
             <div class="col-sm-12">
-                <p style="margin-left: -5px">@lang('woningdossier.cooperation.tool.ventilation-information.description')</p>
+                <p style="margin-left: -5px">{!! \App\Helpers\Translation::translate('ventilation-information.description.title') !!}</p>
             </div>
         </div>
 
@@ -46,12 +46,7 @@
     <script>
         $(document).ready(function() {
 
-            $(window).keydown(function(event){
-                if(event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+
 
 
         });

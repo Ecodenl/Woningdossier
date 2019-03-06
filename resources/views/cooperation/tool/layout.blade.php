@@ -64,7 +64,7 @@
                             @else
                                 @if(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
                                     <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}" class="pull-right btn btn-primary">
-                                        @lang('woningdossier.cooperation.tool.my-plan.download')
+                                        {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
                                     </a>
                                 @endif
                             @endif
@@ -84,6 +84,14 @@
 
 @push('js')
     <script>
+        $('input').keypress(function(event) {
+            // get the current keycode
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode === 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
 
         $(document).ready(function () {
             // get the current url

@@ -426,7 +426,6 @@ class QuestionnaireController extends Controller
 
         // since a newly added question that is not saved yet, can still be deleted. If that happens we would get an exception which we dont want
         if ($question instanceof Question) {
-
             $questionnaire = $question->questionnaire;
             $this->authorize('delete', $questionnaire);
 
@@ -460,7 +459,6 @@ class QuestionnaireController extends Controller
 
             // since the question could exist, but the option dont. So check.
             if ($questionOption instanceof QuestionOption) {
-
                 $questionOption->deleteTranslations('name');
                 $questionOption->delete();
             }

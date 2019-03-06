@@ -8,7 +8,9 @@ use App\Events\PrivateMessageReceiverEvent;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\SuccessFullLoginListener;
 use App\Listeners\UserEventSubscriber;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -23,11 +25,14 @@ class EventServiceProvider extends ServiceProvider
             PrivateMessageReceiverListener::class,
         ],
         ParticipantRevokedEvent::class => [
-            ParticipantRevokedListener::class
+            ParticipantRevokedListener::class,
         ],
         ParticipantAddedEvent::class => [
-            ParticipantAddedListener::class
-        ]
+            ParticipantAddedListener::class,
+        ],
+        Login::class => [
+            SuccessFullLoginListener::class,
+        ],
     ];
 
     /**

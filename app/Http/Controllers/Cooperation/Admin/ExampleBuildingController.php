@@ -26,7 +26,6 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\WoodRotStatus;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class ExampleBuildingController extends Controller
@@ -273,7 +272,7 @@ class ExampleBuildingController extends Controller
                     'options' => $this->createOptions($surfaces),
                 ],
             ],
-            
+
             'insulated-glazing' => [
                 // will be filled in later
                 'element.'.$crackSealing->id => [

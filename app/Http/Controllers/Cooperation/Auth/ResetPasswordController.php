@@ -120,13 +120,13 @@ class ResetPasswordController extends Controller
 
             // set the redirect url
             if (1 == $user->roles->count()) {
-            	// don't check the user as he's not logged in yet
+                // don't check the user as he's not logged in yet
                 $this->redirectTo = RoleHelper::getUrlByRole($role, false);
             } else {
                 $this->redirectTo = '/admin';
             }
 
-            \Log::debug("Redirect to: " . $this->redirectTo);
+            \Log::debug('Redirect to: '.$this->redirectTo);
 
             $this->guard()->login($user);
         }

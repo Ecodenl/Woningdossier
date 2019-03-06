@@ -14,3 +14,21 @@
     }
   }
 }
+
+// overide the modal-lg with the same properties as a bootstrap container.
+.modal-lg {
+  top:40% !important;
+
+  @include container-fixed;
+
+  @media (min-width: $screen-sm-min) {
+    width: $container-sm;
+  }
+  @media (min-width: $screen-md-min) {
+    width: $container-md;
+  }
+  @media (min-width: $screen-lg-min) {
+    width: $container-lg;
+  }
+}
+

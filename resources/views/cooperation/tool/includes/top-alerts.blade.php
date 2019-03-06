@@ -3,7 +3,7 @@ $changedToolSettings = $toolSettings->where('has_changed', true);
 $totalChangedToolSettings = $changedToolSettings->count();
 $toolSettingsLoopCount = 1;
 
-if (!isset($building)) {
+if (! isset($building)) {
     $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
 }
 ?>
@@ -68,7 +68,7 @@ if (!isset($building)) {
 --}}
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
-            <?php $toolSettingsLoopCount++; ?>
+            <?php ++$toolSettingsLoopCount; ?>
             <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post">
                 <input type="hidden" name="input_source" value="{{$toolSetting->changedInputSource->short}}">
                 {{csrf_field()}}

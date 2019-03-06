@@ -7,13 +7,14 @@ use App\Models\BuildingPermission;
 class BuildingPermissionService
 {
     /** @noinspection PhpDocMissingThrowsInspection */
+
     /**
      * Delete the building permission for a coach and specific building.
      *
      * @param $userId
      * @param $buildingId
-     * @return bool
      *
+     * @return bool
      */
     public static function revokePermission($userId, $buildingId): bool
     {
@@ -23,16 +24,17 @@ class BuildingPermissionService
     }
 
     /**
-     * Give a user permission to a building
+     * Give a user permission to a building.
      *
      * @param $userId
      * @param $buildingId
+     *
      * @return bool
      */
     public static function givePermission($userId, $buildingId)
     {
         BuildingPermission::create([
-            'user_id' => $userId, 'building_id' => $buildingId
+            'user_id' => $userId, 'building_id' => $buildingId,
         ]);
 
         return true;

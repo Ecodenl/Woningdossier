@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator;
 
-use App\Rules\isUserMemberOfCooperation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MessageRequest extends FormRequest

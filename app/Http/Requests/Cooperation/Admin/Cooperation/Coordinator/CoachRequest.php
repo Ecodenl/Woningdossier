@@ -29,7 +29,7 @@ class CoachRequest extends FormRequest
         // collecting the rules for the fields that need to be required if the role field contains value 5 / resident
         // finding a cleaner way would be nice
         $postalCodeRule = [];
-        if (count($this->request->get('roles')) > 1) {
+        if (count($this->request->get('roles', [])) > 1) {
             foreach ($this->request->get('roles') as $inputKey => $roleId) {
                 array_push($postalCodeRule, 'required_if:roles.'.$inputKey.',5');
             }

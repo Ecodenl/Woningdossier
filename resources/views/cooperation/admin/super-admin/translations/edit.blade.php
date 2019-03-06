@@ -4,7 +4,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group">
-                <input type="text" class="form-control" id="search" placeholder="@lang('woningdossier.cooperation.admin.super-admin.translations.edit.search.placeholder')">
+                <input type="text" class="form-control" id="search"
+                       placeholder="@lang('woningdossier.cooperation.admin.super-admin.translations.edit.search.placeholder')">
             </div>
         </div>
     </div>
@@ -15,14 +16,21 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['step-slug' => $stepSlug])}}" method="post">
+                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['step-slug' => $stepSlug])}}"
+                          method="post">
                         <div class="form-group">
-                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')</a>
-                            <button type="submit" class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
+                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}"
+                               class="btn btn-default"><i
+                                        class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')
+                            </a>
+                            <button type="submit"
+                                    class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
                         </div>
                         {{csrf_field()}}
                         {{method_field('PUT')}}
                         @foreach($questions as $question)
+                            <?php // since we dont want the helptexts to show right here. ?>
+                            @if($question->isNotHelpText())
                             <div class="translations panel panel-default">
                                 <div class="panel-body">
                                     <div class="row">
@@ -30,23 +38,28 @@
                                             @foreach($question->text as $locale => $text)
                                                 <div class="form-group">
                                                     <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.question', ['locale' => $locale])</label>
-                                                    <input class="form-control question-input" name="language_lines[{{$locale}}][question][{{$question->id}}]" value="{{$text}}">
+                                                    <input class="form-control question-input"
+                                                           name="language_lines[{{$locale}}][question][{{$question->id}}]"
+                                                           value="{{$text}}">
                                                     <label for="">key: {{$question->group}}.{{$question->key}}</label>
                                                 </div>
                                             @endforeach
-                                            @forelse($question->helpText->text as $locale => $text)
-                                                <div class="form-group">
-                                                    <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
-                                                    <textarea class="form-control" name="language_lines[{{$locale}}][help][{{$question->helpText->id}}]">{{$text}}</textarea>
-                                                    <label for="">key: {{$question->helpText->group}}.{{$question->helpText->key}}</label>
-                                                </div>
-                                            @empty
-                                            @endforelse
+                                            @if($question->helpText instanceof \Spatie\TranslationLoader\LanguageLine)
+                                                @foreach($question->helpText->text as $locale => $text)
+                                                    <div class="form-group">
+                                                        <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
+                                                        <textarea class="form-control"
+                                                                  name="language_lines[{{$locale}}][help][{{$question->helpText->id}}]">{{$text}}</textarea>
+                                                        <label for="">key: {{$question->helpText->group}}
+                                                            .{{$question->helpText->key}}</label>
+                                                    </div>
+                                                @endforeach
+                                            @endif
                                         </div>
                                     </div>
                                     @if($question->subQuestions->isNotEmpty())
                                         <a data-toggle="collapse" data-target="#sub-questions-{{$question->id}}"
-                                                class="btn btn-primary">
+                                           class="btn btn-primary">
                                             @lang('woningdossier.cooperation.admin.super-admin.translations.edit.sub-question')
                                         </a>
                                     @endif
@@ -70,10 +83,15 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         @endforeach
                         <div class="form-group">
-                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')</a>
-                            <button type="submit" class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
+                            <a href="{{route('cooperation.admin.super-admin.translations.index')}}"
+                               class="btn btn-default"><i
+                                        class="glyphicon glyphicon-chevron-left"></i> @lang('woningdossier.cooperation.tool.back-to-overview')
+                            </a>
+                            <button type="submit"
+                                    class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
                         </div>
                     </form>
                 </div>

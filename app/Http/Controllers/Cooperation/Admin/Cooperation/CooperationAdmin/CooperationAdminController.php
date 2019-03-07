@@ -11,6 +11,6 @@ class CooperationAdminController extends Controller
     {
         $users = $cooperation->users;
 
-        return view('cooperation.admin.cooperation.cooperation-admin.index', compact('users'));
+        return view('cooperation.admin.cooperation.users.index', compact('users'));
     }
 }

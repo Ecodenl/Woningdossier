@@ -18,33 +18,38 @@
                     <table id="table" class="table table-striped table-bordered compact nowrap table-responsive">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.first-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.last-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.email')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.role')</th>
-                            @can('delete-user')
-                                <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.actions')</th>
-                            @endcan
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.street-house-number')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.zip-code')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.city')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.status')</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
+                            <?php $building = $user->buildings()->first(); ?>
                             <tr>
-                                <td>{{$user->first_name}}</td>
-                                <td>{{$user->last_name}}</td>
-                                <td>{{$user->email}}</td>
+                                <td>{{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : __('woningdossier.cooperation.admin.cooperation.users.index.table.columns.no-known-created-at')}}</td>
+                                <td>{{$user->getFullName()}}</td>
                                 <td>
-                                    <?php
-                                    $user->roles->map(function ($role) {
-                                        echo ucfirst($role->human_readable_name).', ';
-                                    });
-                                    ?>
+                                    <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $user->id])}}">
+                                        {{$building->street}} {{$building->house_number}} {{$building->house_number_ext}}
+                                    </a>
                                 </td>
-                                @can('delete-user')
-                                    <td>
-                                        <button  data-user-id="{{$user->id}}" type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-trash"></i></button>
-                                    </td>
-                                @endcan
+                                <td>{{$building->postal_code}}</td>
+                                <td>
+                                    {{$building->city}}
+                                </td>
+                                <td>
+                                    <?php $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last() ?>
+                                    @if($lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastKnownBuildingCoachStatus->appointment_date))
+                                        {{$lastKnownBuildingCoachStatus->appointment_date}}
+                                    @else
+                                        @lang('woningdossier.cooperation.admin.coach.buildings.index.no-appointment')
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -54,17 +59,6 @@
             </div>
         </div>
     </div>
-
-
-    @can('delete-user')
-        @foreach($users as $user)
-            <form action="{{route('cooperation.admin.cooperation.users.destroy')}}" method="post" id="user-form-{{$user->id}}">
-                {{csrf_field()}}
-                <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="user_id" value="{{$user->id}}">
-            </form>
-        @endforeach
-    @endcan
 @endsection
 
 @push('js')
@@ -72,18 +66,16 @@
         $(document).ready(function () {
             var table = $('table');
             table.DataTable({
-                responsive: true
+                responsive: true,
+                columns: [
+                    { responsivePriority: 1 },
+                    { responsivePriority: 2 },
+                    { responsivePriority: 3 },
+                    { responsivePriority: 4 },
+                    { responsivePriority: 6 },
+                    { responsivePriority: 5 }
+                ]
             });
-            table.on('click', '.remove', function (event) {
-                if (confirm("{{__('woningdossier.cooperation.admin.cooperation.users.destroy.warning')}}")) {
-                    // submit the form, datatables strips non valid html.
-                    var userId = $(this).data('user-id');
-                    $('form#user-form-'+userId).submit();
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            })
         })
     </script>
 @endpush

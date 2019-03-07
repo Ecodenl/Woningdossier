@@ -23,16 +23,8 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         @foreach(__('woningdossier.cooperation.admin.coach.buildings.edit.form.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                            @if($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT && $buildingCoachStatuses->contains('status',  \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT))
-
-                                            @elseif($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT && !$buildingCoachStatuses->contains('status', \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT))
-
-                                            @elseif($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_REMOVED)
-                                                {{-- Coach is not allowed to remove it from here he can do this from the chat--}}
-                                            @else
-                                                <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
-                                                <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
-                                            @endif
+                                            <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
+                                            <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
                                         @endforeach
                                     </ul>
                                 </div><!-- /btn-group -->

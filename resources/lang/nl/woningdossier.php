@@ -9,6 +9,15 @@ return [
             'en' => 'Engels',
         ],
     ],
+    'building-coach-statuses' => [
+        \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
+        \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT => 'Nieuwe afspraak',
+        \App\Models\BuildingCoachStatus::STATUS_DONE => 'Afgehandeld',
+        \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
+        \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
+
+        'awaiting-status' => 'In afwachting',
+    ],
     'cooperation' => [
         'create-building' => [
             'current-login-info' => [
@@ -202,7 +211,7 @@ return [
                                 \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT => 'Nieuwe afspraak',
                                 \App\Models\BuildingCoachStatus::STATUS_DONE => 'Afgehandeld',
                                 \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
-                                \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd', ],
+                                \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',],
                         ],
                     ],
                     'edit' => [
@@ -305,14 +314,61 @@ return [
 
                         'table' => [
                             'columns' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'email' => 'E-mail adres',
-                                'role' => 'Huidige rollen van gebruiker',
-                                'total-houses' => 'Totale woningen',
-                                'actions' => 'Acties',
+                                'date' => 'Datum',
+                                'name' => 'Naam',
+                                'street-house-number' => 'Straat en huisnummer',
+                                'zip-code' => 'Postcode',
+                                'city' => 'Stadt',
+                                'status' => 'Status',
+                                'no-known-created-at' => 'Niet bekend'
                             ],
                         ],
+                    ],
+
+                    'show' => [
+                        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
+
+                        'observe-building' => [
+                            'label' => 'Woning bekijken',
+                            'button' => '<i class="glyphicon glyphicon-eye-open">'
+                        ],
+                        'delete-account' => [
+                            'label' => 'Account verwijderen',
+                            'button' => '<i class="glyphicon glyphicon-trash">'
+                        ],
+                        'role' => [
+                            'label' => 'Rol',
+                            'button' => 'Bijwerken'
+                        ],
+                        'status' => [
+                            'label' => 'Huidge status: ',
+                            'button' => 'Kies status'
+                        ],
+                        'associated-coach' => [
+                            'label' => 'Gekoppelde coach',
+                            'button' => 'Kies coach'
+                        ],
+                        'appointment-date' => [
+                            'label' => 'Datum afspraak',
+                            'button' => 'Kies datum'
+                        ],
+
+                        'tabs' => [
+                            'messages-resident' => [
+                                'title' => 'Berichten bewoner'
+                            ],
+                            'messages-intern' => [
+                                'title' => 'Berichten intern'
+                            ],
+                            'comments-on-building' => [
+                                'title' => 'Opmerkingen bij woning'
+                            ],
+                            'fill-in-history' => [
+                                'title' => 'Invulhistorie'
+                            ]
+                        ],
+                        'next' => 'Volgende',
+                        'previous' => 'Vorige'
                     ],
 
                     'create' => [
@@ -358,9 +414,9 @@ return [
                     'side-nav' => [
                         'label' => 'Coöperatie admin menu',
                         'step' => 'Stappen',
-                        'home' => 'Home',
-                        'users' => 'Gebruikers van uw coöperatie',
-                        'create-user' => 'Voeg een gebruiker toe',
+                        'home' => 'Account overzicht',
+                        'coaches' => 'Coaches',
+                        'create-user' => 'Voeg Coach/bewoner toe',
                         'assign-role' => 'Rollen toewijzen',
                         'messages' => 'Berichten',
                     ],
@@ -372,15 +428,16 @@ return [
                     ],
 
                     'index' => [
-                        'header' => 'Welkom op het coöperatie admin panel',
+                        'header' => 'Alle gebruikers van uw coöperatie',
 
                         'table' => [
                             'columns' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'email' => 'E-mail adres',
-                                'role' => 'Huidige rollen van gebruiker',
-                                'actions' => 'Acties',
+                                'date' => 'Datum',
+                                'name' => 'Naam',
+                                'street-house-number' => 'Straat en huisnummer',
+                                'zip-code' => 'Postcode',
+                                'city' => 'Stadt',
+                                'status' => 'Status'
                             ],
                         ],
                     ],
@@ -529,7 +586,7 @@ return [
                         'download' => [
                             'by-year' => 'Actieplan per jaar',
                             'by-measure' => 'Actieplan per maatregel',
-                            'download-questionnaire-results' => 'Download de antwoorden van de bewoners op de custom vragenlijsten', ],
+                            'download-questionnaire-results' => 'Download de antwoorden van de bewoners op de custom vragenlijsten',],
                         'csv-columns' => [
                             'first-name' => 'Voornaam',
                             'last-name' => 'Achternaam',
@@ -951,7 +1008,7 @@ return [
             'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
             'is-user-comparing-input-sources' => 'U bent nu de data aan het vergelijken, de velden die rood zijn gemarkeerd bevat een andere waarde',
 
-	        'back-to-overview' => 'Terug naar overzicht',
+            'back-to-overview' => 'Terug naar overzicht',
 
             'unit' => [
                 'year' => 'jaar',

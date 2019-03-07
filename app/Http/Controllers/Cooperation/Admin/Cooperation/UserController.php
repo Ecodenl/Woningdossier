@@ -47,6 +47,14 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
 
+    public function show(Cooperation $cooperation, $userId)
+    {
+        $user = $cooperation->users()->find($userId);
+        $building = $user->buildings()->first();
+
+        return view('cooperation.admin.cooperation.users.show', compact('user', 'building'));
+    }
+
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
         \Log::debug($postalCode.' '.$number.' '.$pointer);

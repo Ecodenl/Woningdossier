@@ -110,7 +110,7 @@ class BuildingCoachStatus extends Model
         $currentStatus = self::where('building_id', $buildingId)->get()->last();
 
         if ($currentStatus instanceof self) {
-            return __('woningdossier.cooperation.admin.coach.buildings.index.table.options.'.$currentStatus->status);
+            return __('woningdossier.building-coach-statuses.'.$currentStatus->status);
         }
 
         return '';

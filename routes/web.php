@@ -181,6 +181,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                     Route::get('', 'UserController@index')->name('index');
+                    Route::get('show/{id}', 'UserController@show')->name('show');
                     Route::get('create', 'UserController@create')->name('create');
                     Route::post('create', 'UserController@store')->name('store');
 

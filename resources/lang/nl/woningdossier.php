@@ -330,11 +330,11 @@ return [
 
                         'observe-building' => [
                             'label' => 'Woning bekijken',
-                            'button' => '<i class="glyphicon glyphicon-eye-open">'
+                            'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
                         ],
                         'delete-account' => [
                             'label' => 'Account verwijderen',
-                            'button' => '<i class="glyphicon glyphicon-trash">'
+                            'button' => '<i class="glyphicon glyphicon-trash"></i>'
                         ],
                         'role' => [
                             'label' => 'Rol',

@@ -50,12 +50,6 @@
 
 @push('js')
     <script>
-        // not needed with the format option
-        // just to be sure.
-        $('#appointmentdate').datetimepicker({
-            format: "YYYY-MM-DD HH:mm:ss",
-            locale: '{{app()->getLocale()}}',
-        });
 
         $(document).ready(function () {
             // put the label text from the selected option inside the input for ux

@@ -12,40 +12,65 @@
 
         <div class="panel-body">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="form-group">
-                        <label>@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.status')</label>
-                        <div class="input-group" id="current-building-status">
-                            <input disabled
-                                   placeholder="@lang('woningdossier.cooperation.admin.cooperation.users.show.status.label')"
-                                   type="text" class="form-control disabled" aria-label="...">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
-                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.status.button')
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <?php $buildingCoachStatuses = $building->buildingCoachStatuses ?>
-                                    @foreach(__('woningdossier.building-coach-statuses') as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                        @if(!empty(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id)))
-                                            <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
-                                            <li>
-                                                <a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >
-                                                    {{$buildingCoachStatusName}}
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li>
-                                                <a href="javascript:;" id="current">@lang('woningdossier.building-coach-statuses.awaiting-status')</a>
-                                            </li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </div><!-- /btn-group -->
-                        </div><!-- /input-group -->
+                        <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.status')</label>
+                        <select class="form-control" name="user[building_coach_status][status]"
+                                id="building-coach-status">
+                            @foreach(__('woningdossier.building-coach-statuses') as $buildingCoachStatusKey => $buildingCoachStatusName)
+                                <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                            @endforeach
+                            <option value="">@lang('woningdossier.building-coach-statuses.awaiting-status')</option>
+                        </select>
                     </div>
                 </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
+                        <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                            @foreach($roles as $role)
+                                <option value="{{$role->id}}">{{$role->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <p>@lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.label')</p>
+                    <a class="btn btn-primary" id="observe-building">
+                        @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.button')
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="associated-coaches">@lang('woningdossier.cooperation.admin.cooperation.users.show.associated-coach.label')</label>
+                        <select name="user[associated_coaches]" id="associated-coaches" class="form-control">
+                            @foreach($coaches as $coach)
+                                <option value="{{$coach->id}}">{{$coach->getFullName()}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.appointment-date')</label>
+                        <div class='input-group date' id="appointment-date">
+                            <input id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control" value="{{$lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $lastKnownBuildingCoachStatus->appointment_date : ''}}"/>
+                            <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                @can('delete-user')
+                    <div class="col-sm-4">
+                        <p>@lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.label')</p>
+                        <a class="btn btn-danger" id="delete-user">
+                            @lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.button')
+                        </a>
+                    </div>
+                @endcan
             </div>
         </div>
     </div>
@@ -54,35 +79,16 @@
 @push('js')
     <script>
         $(document).ready(function () {
-            var table = $('table');
-            table.DataTable({
-                responsive: true,
-                columns: [
-                    {responsivePriority: 1},
-                    {responsivePriority: 2},
-                    {responsivePriority: 3},
-                    {responsivePriority: 4},
-                    {responsivePriority: 6},
-                    {responsivePriority: 5}
-                ]
+            // pretty selects.
+            $('#building-coach-status').select2();
+            $('#role-select').select2();
+            $('#associated-coaches').select2();
+
+            $('#appointment-date').datetimepicker({
+                format: "YYYY-MM-DD HH:mm",
+                locale: '{{app()->getLocale()}}',
             });
 
-            // put the label text from the selected option inside the input for ux
-            var buildingCoachStatus = $('#current-building-status');
-            var input = $(buildingCoachStatus).find('input.form-control');
-            var currentStatus = $(buildingCoachStatus).find('li a[id=current]');
-            var status = $(buildingCoachStatus).find('li a');
-            var dropdown = $(buildingCoachStatus).find('ul');
-
-            var inputValPrefix = '{{__('woningdossier.cooperation.admin.cooperation.users.show.status.label')}} ';
-            $(input).val(inputValPrefix + $(currentStatus).text().trim());
-
-            $(status).on('click', function () {
-                var buildingCoachStatus = $(dropdown).find('[data-coach-status="' + $(this).text().trim() + '"]').val();
-
-                $('input[name=building_coach_status]').val(buildingCoachStatus);
-                $(input).val(inputValPrefix + $(this).text().trim());
-            });
         })
     </script>
 @endpush

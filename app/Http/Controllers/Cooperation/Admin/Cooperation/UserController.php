@@ -51,8 +51,11 @@ class UserController extends Controller
     {
         $user = $cooperation->users()->find($userId);
         $building = $user->buildings()->first();
+        $roles = Role::all();
+        $coaches = $cooperation->getCoaches()->get();
+        $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last();
 
-        return view('cooperation.admin.cooperation.users.show', compact('user', 'building'));
+        return view('cooperation.admin.cooperation.users.show', compact('user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus'));
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)

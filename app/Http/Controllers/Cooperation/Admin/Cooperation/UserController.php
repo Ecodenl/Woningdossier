@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\CoachRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -17,7 +18,9 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Prophecy\Doubler\ClassPatch\TraversablePatch;
 use Spatie\Permission\Models\Role;
+use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class UserController extends Controller
 {
@@ -55,18 +58,49 @@ class UserController extends Controller
         $coaches = $cooperation->getCoaches()->get();
         $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last();
 
-        return view('cooperation.admin.cooperation.users.show', compact('user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus'));
+        $activeCount = \DB::raw('(
+                SELECT coach_id, building_id, count(`status`) AS count_active
+	            FROM building_coach_statuses
+	            WHERE building_id = ' . $building->id . ' AND `status` = \'' . BuildingCoachStatus::STATUS_ACTIVE . ' \'
+	            group by coach_id, building_id
+            )  AS bcs2');
+        $removedCount = \DB::raw('(
+                SELECT building_id, coach_id, count(`status`) AS count_removed
+	            FROM building_coach_statuses
+	            WHERE building_id = ' . $building->id . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            group by coach_id, building_id
+            ) AS bcs3');
+        $buildingPermissionCount = \DB::raw('(
+                SELECT user_id, count(`building_id`) as count_building_permission
+	            FROM building_permissions
+	            WHERE building_id = ' . $building->id . '
+	            GROUP BY user_id
+            ) as bp');
+
+
+        /**
+         * Retrieves the coaches that have a active building status, also returns the building_permission count so we can check if the coach can access the building
+         */
+        $coachesWithActiveBuildingCoachStatus =
+            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_active AS count_active', 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
+                ->from($activeCount)
+                ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
+                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
+                ->havingRaw('(count_active > count_removed) OR count_removed IS NULL')
+                ->get();
+
+        return view('cooperation.admin.cooperation.users.show', compact('user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus'));
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
-        \Log::debug($postalCode.' '.$number.' '.$pointer);
+        \Log::debug($postalCode . ' ' . $number . ' ' . $pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (! is_null($pointer)) {
+        if (!is_null($pointer)) {
             foreach ($response as $addrInfo) {
                 if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];
@@ -185,7 +219,7 @@ class UserController extends Controller
      * Send the mail to the created user.
      *
      * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param Request $request
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
     {
@@ -201,7 +235,7 @@ class UserController extends Controller
      * Destroy a user.
      *
      * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param Request $request
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      *

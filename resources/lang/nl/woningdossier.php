@@ -353,6 +353,11 @@ return [
                             'button' => 'Kies datum'
                         ],
 
+                        'has-building-access' => [
+                            'no' => 'Geen toegang tot gebouw',
+                            'yes' => 'Toegang tot gebouw'
+                        ],
+
                         'tabs' => [
                             'messages-resident' => [
                                 'title' => 'Berichten bewoner'

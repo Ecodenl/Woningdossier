@@ -3,11 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @else
-                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.header')
-            @endif
-            <a href="{{route('cooperation.admin.cooperation.users.create')}}" class="btn btn-md btn-primary pull-right"><span
-                        class="glyphicon glyphicon-plus"></span></a>
+            @lang('woningdossier.cooperation.admin.cooperation.users.index.header')
         </div>
 
         <div class="panel-body">

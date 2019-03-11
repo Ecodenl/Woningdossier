@@ -62,18 +62,10 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="associated-coaches">@lang('woningdossier.cooperation.admin.cooperation.users.show.associated-coach.label')</label>
-                        <select name="user[associated_coaches]" id="associated-coaches" class="form-control"
-                                multiple="multiple">
-                            @foreach($coaches as $coach)
-                                <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
-                                <option
-                                        @if($coach->hasRole(['cooperation-admin', 'coordinator'])) locked="locked"
-                                        @endif
-                                        @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected="selected"
-                                        @endif value="{{$coach->id}}">
-                                    {{$coach->getFullName()}}
+                        <select name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
+                                <option>
+                                    {{Auth::user()->getFullName()}}
                                 </option>
-                            @endforeach
                         </select>
                     </div>
                 </div>

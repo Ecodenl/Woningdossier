@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
@@ -20,7 +20,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        return view('cooperation.admin.cooperation.coordinator.reports.index');
+        return view('cooperation.admin.cooperation.reports.index');
     }
 
     /**
@@ -120,16 +120,16 @@ class ReportController extends Controller
 
         // set the csv headers
         $csvHeaders = [
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.first-name'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.last-name'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.email'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.mobilenumber'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.street'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.house-number'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.city'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.zip-code'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.country-code'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.country-code'),
         ];
 
         // put the measures inside the header array
@@ -211,16 +211,16 @@ class ReportController extends Controller
 
         // set the csv headers
         $csvHeaders = [
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.first-name'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.last-name'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.email'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.mobilenumber'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.street'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.house-number'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.city'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.zip-code'),
-            __('woningdossier.cooperation.admin.cooperation.coordinator.reports.csv-columns.country-code'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.country-code'),
         ];
 
         // get all the measures

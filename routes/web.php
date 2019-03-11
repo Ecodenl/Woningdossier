@@ -195,19 +195,31 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     });
                 });
                 Route::resource('coaches', 'CoachController')->only('index');
-                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
-                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-                        Route::get('', 'ReportController@index')->name('index');
-                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
-                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+
+                Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
+                    Route::get('', 'ReportController@index')->name('index');
+                    Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
+                    Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                    Route::group(['middleware' => 'role:cooperation-admin'], function () {
                         Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('download.questionnaire-results');
                     });
+                });
 
-                    Route::group(['prefix' => 'users', 'as' => 'user.'], function () {
-                        Route::get('', 'UserController@index')->name('index');
-                        Route::get('create', 'UserController@create')->name('create');
-                        Route::post('create', 'UserController@store')->name('store');
-                    });
+                Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
+                    Route::get('', 'QuestionnaireController@index')->name('index');
+                    Route::post('', 'QuestionnaireController@update')->name('update');
+                    Route::get('create', 'QuestionnaireController@create')->name('create');
+                    Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
+                    Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
+
+                    Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
+                    Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
+                    Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
+                });
+
+
+
+                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
 
                     Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {
                         Route::get('', 'BuildingAccessController@index')->name('index');
@@ -216,11 +228,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::delete('destroy', 'BuildingAccessController@destroy')->name('destroy');
                     });
 
-                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-                        Route::get('', 'ReportController@index')->name('index');
-                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
-                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-                    });
 
                     Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
                         Route::get('', 'AssignRoleController@index')->name('index');
@@ -228,17 +235,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('edit/{userId}', 'AssignRoleController@update')->name('update');
                     });
 
-                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
-                        Route::get('', 'QuestionnaireController@index')->name('index');
-                        Route::post('', 'QuestionnaireController@update')->name('update');
-                        Route::get('create', 'QuestionnaireController@create')->name('create');
-                        Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
-                        Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
-
-                        Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
-                        Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
-                        Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
-                    });
 
                     Route::group(['prefix' => 'conversation-requests', 'as' => 'conversation-requests.'], function () {
                         Route::get('', 'ConversationRequestsController@index')->name('index');
@@ -282,12 +278,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('message', 'MessagesController@store')->name('store');
                     });
 
-                    Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
-                        Route::get('', 'ReportController@index')->name('index');
-                        Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
-                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-                    });
-
                     Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                         Route::get('', 'StepController@index')->name('index');
                         Route::post('set-active', 'StepController@setActive')->name('set-active');
@@ -316,6 +306,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');
+                    Route::get('show/{id}', 'BuildingController@show')->name('show');
                     Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
                     Route::post('edit', 'BuildingController@update')->name('update');
                     Route::get('{id}', 'BuildingController@fillForUser')->name('fill-for-user');

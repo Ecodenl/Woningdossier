@@ -10,6 +10,7 @@ use App\Models\BuildingNotes;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\InputSource;
+use App\Models\PrivateMessage;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
@@ -52,8 +53,10 @@ class BuildingController extends Controller
             ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
             ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
             ->leftJoin('private_messages', 'private_messages.id', '=', 'building_coach_statuses.private_message_id')
-            ->select('buildings.*', 'users.first_name', 'users.last_name', 'private_messages.allow_access')
+            ->select('buildings.*', 'users.first_name', 'users.last_name', 'private_messages.allow_access', 'users.id')
             ->get()->unique('id');
+
+        dd($buildingsFromCoachStatuses);
 
         $buildingCoachStatuses = BuildingCoachStatus::all();
 
@@ -96,6 +99,34 @@ class BuildingController extends Controller
         );
 
         return redirect()->route('cooperation.admin.coach.buildings.index')->with('success', __('woningdossier.cooperation.admin.coach.buildings.set-building-status.success'));
+    }
+
+    public function show(Cooperation $cooperation, $buildingId)
+    {
+        $building = Building::find($buildingId);
+        $user = $cooperation->users()->find($building->user_id);
+        $buildingId = $building->id;
+        $roles = Role::all();
+        $coaches = $cooperation->getCoaches()->get();
+        $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last();
+
+
+        $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
+        $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
+
+        // get all the building notes
+        $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
+
+        // get previous user id
+        $previous = $cooperation->users()->where('id', '<', $user->id)->max('id');
+        // get next user id
+        $next = $cooperation->users()->where('id', '>', $user->id)->min('id');
+
+        return view('cooperation.admin.coach.buildings.show', compact(
+                'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
+                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next'
+            )
+        );
     }
 
     /**

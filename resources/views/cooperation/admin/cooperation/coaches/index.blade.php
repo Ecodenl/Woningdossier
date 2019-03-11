@@ -4,8 +4,6 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.cooperation.coaches.index.header')
-            <a href="{{route('cooperation.admin.cooperation.users.create')}}" class="btn btn-md btn-primary pull-right"><span
-                        class="glyphicon glyphicon-plus"></span></a>
         </div>
 
         <div class="panel-body">

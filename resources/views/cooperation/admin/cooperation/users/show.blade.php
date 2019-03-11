@@ -268,6 +268,22 @@
                 locale: '{{app()->getLocale()}}',
             });
 
+            // delete the current user
+            $('#delete-user').click(function () {
+                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.delete-user')')) {
+
+                    $.ajax({
+                        url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
+                        method: 'DELETE',
+                        data: {
+                            user_id: userId
+                        }
+                    }).done(function () {
+                        window.location.href = '{{route('cooperation.admin.cooperation.users.index')}}'
+                    })
+                }
+            });
+
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
                     var option = $('#associated-coaches option[value="' + tag.id + '"]');
@@ -415,7 +431,6 @@
                 var tab = $(tabId);
                 var chat = tab.find('.panel-chat-body')[0];
 
-                console.log('bier');
                 chat.scrollTop = chat.scrollHeight - chat.clientHeight;
             });
 

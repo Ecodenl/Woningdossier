@@ -255,10 +255,10 @@ class UserController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Cooperation $cooperation, Request $request)
     {
+
         $userId = $request->get('user_id');
 
         $user = User::find($userId);
@@ -269,7 +269,6 @@ class UserController extends Controller
             UserService::deleteUser($user);
         }
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.users.destroy.success'));
     }
 
 }

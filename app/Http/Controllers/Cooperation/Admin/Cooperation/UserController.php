@@ -26,17 +26,9 @@ class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        if ('coordinator' == HoomdossierSession::currentRole()) {
-            $users = $cooperation
-                ->users()
-                ->where('id', '!=', \Auth::id())
-                ->role('coach')
-                ->get();
-        } else {
             $users = $cooperation
                 ->users()
                 ->get();
-        }
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));

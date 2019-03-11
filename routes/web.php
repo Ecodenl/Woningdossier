@@ -194,7 +194,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::delete('delete', 'UserController@destroy')->name('destroy');
                     });
                 });
-
+                Route::resource('coaches', 'CoachController')->only('index');
                 Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');

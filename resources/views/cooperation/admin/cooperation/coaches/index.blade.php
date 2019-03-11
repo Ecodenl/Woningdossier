@@ -3,9 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @else
-                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.users.index.header')
-            @endif
+            @lang('woningdossier.cooperation.admin.cooperation.coaches.index.header')
             <a href="{{route('cooperation.admin.cooperation.users.create')}}" class="btn btn-md btn-primary pull-right"><span
                         class="glyphicon glyphicon-plus"></span></a>
         </div>
@@ -16,12 +14,12 @@
                     <table id="table" class="table table-striped table-bordered compact nowrap table-responsive">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.date')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.street-house-number')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.zip-code')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.status')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.street-house-number')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.zip-code')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.city')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.status')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -29,7 +27,7 @@
                         @foreach($users as $user)
                             <?php $building = $user->buildings()->first(); ?>
                             <tr>
-                                <td>{{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : __('woningdossier.cooperation.admin.cooperation.users.index.table.columns.no-known-created-at')}}</td>
+                                <td>{{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : __('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.no-known-created-at')}}</td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $user->id])}}">

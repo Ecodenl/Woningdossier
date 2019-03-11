@@ -308,6 +308,81 @@ return [
                     'header' => 'Welkom',
                     'text' => 'U kunt hier verschillende dingen doen.',
                 ],
+                'coaches' => [
+                    'index' => [
+                        'header' => 'Overzicht van alle coaches voor uw coöperatie',
+
+                        'table' => [
+                            'columns' => [
+                                'date' => 'Datum',
+                                'name' => 'Naam',
+                                'street-house-number' => 'Straat en huisnummer',
+                                'zip-code' => 'Postcode',
+                                'city' => 'Stadt',
+                                'status' => 'Status',
+                                'no-known-created-at' => 'Niet bekend'
+                            ],
+                        ],
+                    ],
+
+                    'show' => [
+                        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
+
+                        'observe-building' => [
+                            'label' => 'Woning bekijken',
+                            'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
+                        ],
+                        'delete-account' => [
+                            'label' => 'Account verwijderen',
+                            'button' => '<i class="glyphicon glyphicon-trash"></i>'
+                        ],
+                        'role' => [
+                            'label' => 'Rol',
+                            'button' => 'Bijwerken'
+                        ],
+                        'status' => [
+                            'label' => 'Huidge status: ',
+                            'button' => 'Kies status'
+                        ],
+                        'associated-coach' => [
+                            'label' => 'Gekoppelde coaches',
+                            'button' => 'Kies coach'
+                        ],
+                        'appointment-date' => [
+                            'label' => 'Datum afspraak',
+                            'button' => 'Kies datum'
+                        ],
+
+                        'has-building-access' => [
+                            'no' => 'Geen toegang tot gebouw',
+                            'yes' => 'Toegang tot gebouw'
+                        ],
+
+                        'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
+                        'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
+                        'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
+
+                        'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
+                        'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
+
+                        'tabs' => [
+                            'messages-public' => [
+                                'title' => 'Berichten bewoner'
+                            ],
+                            'messages-intern' => [
+                                'title' => 'Berichten intern'
+                            ],
+                            'comments-on-building' => [
+                                'title' => 'Opmerkingen bij woning'
+                            ],
+                            'fill-in-history' => [
+                                'title' => 'Invulhistorie'
+                            ]
+                        ],
+                        'next' => 'Volgende',
+                        'previous' => 'Vorige'
+                    ],
+                ],
                 'users' => [
                     'index' => [
                         'header' => 'Overzicht van alle gebruikers voor uw coöperatie',
@@ -535,17 +610,11 @@ return [
                         ],
                     ],
                     'side-nav' => [
-                        'reports' => 'Rapporten',
                         'label' => 'Coördinator menu',
-                        'home' => 'Home',
-                        'my-messages' => 'Mijn berichten',
-                        'questionnaire' => 'Vragenlijsten',
-                        'connect-to-coach' => 'Woning toewijzen',
-                        'assign-roles' => 'Rollen toewijzen',
-                        'messages' => 'Berichten',
-                        'buildings' => 'Gebouwen',
+                        'home' => 'Account overzicht',
                         'coach' => 'Coaches',
                         'add-user' => 'Voeg Coach / Bewoner toe',
+                        'reports' => 'Rapporten',
                     ],
                     'building-access' => [
                         'index' => [

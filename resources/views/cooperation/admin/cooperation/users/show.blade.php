@@ -203,11 +203,35 @@
 @push('js')
     <script>
         $(document).ready(function () {
+
             // get some basic information
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             var userId = $('input[name=user\\[id\\]]').val();
 
-            scrollChatsToBottom();
+            // scrollChatsToBottom();
+            keepNavTabOpenOnRedirect();
+            setUrlHashInHiddenInput();
+            $('.nav-tabs .active a').trigger('shown.bs.tab');
+
+
+            var chatPanelBodys = $('.panel-chat-body');
+
+            chatPanelBodys.each(function (index, chatPanelBody) {
+                var chat = $(chatPanelBody)[0];
+
+                var chatMessages = $(chat).find('li').length;
+
+                var add = setInterval(function () {
+
+                    var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
+
+                    if (isScrolledToBottom) {
+                        chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                    }
+
+                }, 1000);
+
+            });
 
             $('#appointment-date').datetimepicker({
                 format: "YYYY-MM-DD HH:mm",
@@ -312,15 +336,55 @@
                         return false;
                     }
                 });
-
         });
+
+
+
+        /**
+         * Sets the hash / fragment in the url.
+         */
+        function keepNavTabOpenOnRedirect() {
+            // get the current url
+            var url = document.location.href;
+
+            // scroll to top off page for less retarded behaviour
+            window.scrollTo(0, 0);
+
+            // check if the current url matches a hashtag
+            if (url.match('#')) {
+                // see if there is a tab and show it.
+                $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+            }
+
+            // set the hash in url
+            $('.nav-tabs a').on('shown.bs.tab', function (e) {
+                window.location.hash = e.target.hash;
+            });
+        }
+
+        /**
+         * Function that sets the url has in a hidden input in all the forms on the page, so we can redirect back with the hash / fragment.
+         */
+        function setUrlHashInHiddenInput() {
+            // set the hash in url
+            $('.nav-tabs a').on('shown.bs.tab', function () {
+                var forms = $('form');
+                forms.each(function (index, form) {
+                    var fragmentInput = $(form).find('input[name=fragment]');
+                    if (fragmentInput.length > 0) {
+                        fragmentInput.val(window.location.hash);
+                    } else {
+                        $(form).append($('<input>').attr('type', 'hidden').attr('name', 'fragment').val(window.location.hash));
+                    }
+                });
+            });
+        }
 
 
         /**
          * scroll the chat windows to the bottom messages.
          */
-        function scrollChatsToBottom()
-        {
+        function scrollChatsToBottom() {
             // get all the chats
             var chats = $('.panel-chat-body');
 

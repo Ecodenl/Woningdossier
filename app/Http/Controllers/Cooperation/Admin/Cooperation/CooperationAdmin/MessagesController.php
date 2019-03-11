@@ -69,7 +69,10 @@ class MessagesController extends Controller
     public function store(Cooperation $cooperation, MessageRequest $request)
     {
         MessageService::create($request);
+        $redirect = back()->getTargetUrl();
+        $urlFragment = $request->get('fragment', '');
 
-        return redirect()->back();
+        $url = $redirect.$urlFragment;
+        return redirect($url);
     }
 }

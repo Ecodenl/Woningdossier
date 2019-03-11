@@ -345,7 +345,7 @@ return [
                             'button' => 'Kies status'
                         ],
                         'associated-coach' => [
-                            'label' => 'Gekoppelde coach',
+                            'label' => 'Gekoppelde coaches',
                             'button' => 'Kies coach'
                         ],
                         'appointment-date' => [
@@ -358,6 +358,7 @@ return [
                             'yes' => 'Toegang tot gebouw'
                         ],
 
+                        'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
                         'tabs' => [
                             'messages-resident' => [
                                 'title' => 'Berichten bewoner'

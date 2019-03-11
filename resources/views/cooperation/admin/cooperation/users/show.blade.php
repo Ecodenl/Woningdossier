@@ -10,6 +10,7 @@
             ])
         </div>
 
+        <input type="hidden" name="building[id]" value="{{$building->id}}">
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-6">
@@ -19,7 +20,6 @@
                                 id="building-coach-status">
                             @foreach(__('woningdossier.building-coach-statuses') as $buildingCoachStatusKey => $buildingCoachStatusName)
                                 <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
-
                             @endforeach
                             <option value="">@lang('woningdossier.building-coach-statuses.awaiting-status')</option>
                         </select>
@@ -45,11 +45,11 @@
                                 <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
                                 <option @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected="selected" @endif value="{{$coach->id}}">
                                     {{$coach->getFullName()}}
-                                    @if($coachBuildingStatus instanceof stdClass && $coachBuildingStatus->count_building_permission > 0)
-                                        @lang('woningdossier.cooperation.admin.cooperation.users.show.has-building-access.yes')
-                                    @else
-                                        @lang('woningdossier.cooperation.admin.cooperation.users.show.has-building-access.no')
-                                    @endif
+{{--                                    @if($coachBuildingStatus instanceof stdClass && $coachBuildingStatus->count_building_permission > 0)--}}
+                                        {{--@lang('woningdossier.cooperation.admin.cooperation.users.show.has-building-access.yes')--}}
+                                    {{--@else--}}
+{{--                                        @lang('woningdossier.cooperation.admin.cooperation.users.show.has-building-access.no')--}}
+                                    {{--@endif--}}
                                 </option>
                             @endforeach
                         </select>
@@ -93,14 +93,30 @@
         $(document).ready(function () {
             // pretty selects.
             var associatedCoaches = $('#associated-coaches');
+            var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             $('#building-coach-status').select2();
             $('#role-select').select2();
             associatedCoaches.select2();
 
+            console.log(buildingOwnerId);
             associatedCoaches.on('select2:unselecting', function (event) {
-                var optionToUnselect = event.params.args.data.element
-
-
+                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.revoke-access')')) {
+                    var optionToUnselect = $(event.params.args.data.element);
+                    $.ajax({
+                        url: '{{route('cooperation.messages.participants.revoke-access')}}',
+                        method: 'POST',
+                        data: {
+                            user_id: optionToUnselect.val(),
+                            building_owner_id: buildingOwnerId
+                        }
+                    }).done(function () {
+                        // just reload the page
+                        location.reload();
+                    });
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
             });
 
             $('#appointment-date').datetimepicker({

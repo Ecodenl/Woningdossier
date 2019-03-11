@@ -43,7 +43,9 @@
                         <select name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
                             @foreach($coaches as $coach)
                                 <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
-                                <option @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected="selected" @endif value="{{$coach->id}}">
+                                <option
+                                @if($coach->hasRole(['cooperation-admin', 'coordinator'])) locked="locked" @endif
+                                @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected="selected" @endif value="{{$coach->id}}">
                                     {{$coach->getFullName()}}
 {{--                                    @if($coachBuildingStatus instanceof stdClass && $coachBuildingStatus->count_building_permission > 0)--}}
                                         {{--@lang('woningdossier.cooperation.admin.cooperation.users.show.has-building-access.yes')--}}
@@ -92,27 +94,45 @@
         // select2-removing
         $(document).ready(function () {
             // pretty selects.
-            var associatedCoaches = $('#associated-coaches');
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             $('#building-coach-status').select2();
             $('#role-select').select2();
-            associatedCoaches.select2();
 
-            console.log(buildingOwnerId);
-            associatedCoaches.on('select2:unselecting', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.revoke-access')')) {
-                    var optionToUnselect = $(event.params.args.data.element);
-                    $.ajax({
-                        url: '{{route('cooperation.messages.participants.revoke-access')}}',
-                        method: 'POST',
-                        data: {
-                            user_id: optionToUnselect.val(),
-                            building_owner_id: buildingOwnerId
-                        }
-                    }).done(function () {
-                        // just reload the page
-                        location.reload();
-                    });
+            $('#associated-coaches').select2({
+                templateSelection: function (tag, container) {
+                    console.log(tag.id);
+                    var option = $('#associated-coaches option[value="'+tag.id+'"]');
+                    if (option.attr('locked')) {
+                        $(container).addClass('select2-locked-tag');
+                        tag.locked = true
+                    }
+
+                    return tag.text;
+                }
+            }).on('select2:unselecting', function (event) {
+                var optionToUnselect = $(event.params.args.data.element);
+
+
+
+                // check if the option is locked
+                if (typeof optionToUnselect.attr('locked') === "undefined") {
+                    if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.revoke-access')')) {
+                        $.ajax({
+                            url: '{{route('cooperation.messages.participants.revoke-access')}}',
+                            method: 'POST',
+                            data: {
+                                user_id: optionToUnselect.val(),
+                                building_owner_id: buildingOwnerId
+                            }
+                        }).done(function () {
+                            // just reload the page
+                            location.reload();
+                        });
+                    } else {
+                        event.preventDefault();
+                        return false;
+                    }
+
                 } else {
                     event.preventDefault();
                     return false;
@@ -123,6 +143,7 @@
                 format: "YYYY-MM-DD HH:mm",
                 locale: '{{app()->getLocale()}}',
             });
+
         })
     </script>
 @endpush

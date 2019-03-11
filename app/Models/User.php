@@ -418,6 +418,7 @@ class User extends Authenticatable
     public function hasNotMultipleRoles(): bool
     {
         return ! $this->hasMultipleRoles();
+
     }
 
     public function completedQuestionnaires()

@@ -92,26 +92,32 @@
         </div>
 
         <ul class="nav nav-tabs">
+
             <li class="active">
                 <a data-toggle="tab" href="#messages-intern">
                     @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-intern.title')
                 </a>
             </li>
+            @if($user->allowedAccessToHisBuilding($building->id))
             <li>
-                <a data-toggle="tab" href="#messages-private">
-                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-private.title')
+                <a data-toggle="tab" href="#messages-public">
+                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-public.title')
                 </a>
             </li>
+            @endif
+
             <li>
                 <a data-toggle="tab" href="#comments-on-building">
                     @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.comments-on-building.title')
                 </a>
             </li>
-            <li>
-                <a data-toggle="tab" href="#fill-in-history">
-                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.fill-in-history.title')
-                </a>
-            </li>
+            @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']) && $user->allowedAccessToHisBuilding($building->id))
+                <li>
+                    <a data-toggle="tab" href="#fill-in-history">
+                        @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.fill-in-history.title')
+                    </a>
+                </li>
+            @endif
         </ul>
 
         <div class="tab-content">
@@ -159,7 +165,7 @@
                     @endcomponent
                 </div>
             </div>
-            <div id="messages-private" class="tab-pane fade">
+            <div id="messages-public" class="tab-pane fade">
                 <div class="panel">
                     <div class="panel-body panel-chat-body">
                         @component('cooperation.layouts.chat.messages')

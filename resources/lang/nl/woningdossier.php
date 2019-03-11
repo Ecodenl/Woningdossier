@@ -365,7 +365,7 @@ return [
                         'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
 
                         'tabs' => [
-                            'messages-private' => [
+                            'messages-public' => [
                                 'title' => 'Berichten bewoner'
                             ],
                             'messages-intern' => [

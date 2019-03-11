@@ -13,6 +13,7 @@
         <input type="hidden" name="building[id]" value="{{$building->id}}">
         <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
+            {{--delete a pipo--}}
             <div class="row">
                 <div class="col-sm-12">
                     <div class="btn-group">
@@ -29,6 +30,7 @@
                     </div>
                 </div>
             </div>
+            {{--status and roles--}}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -53,6 +55,7 @@
                     </div>
                 </div>
             </div>
+            {{--coaches and appointmentdate--}}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -86,114 +89,154 @@
                     </div>
                 </div>
             </div>
-            <!-- chat -->
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a data-toggle="tab" href="#messages-intern">
-                        @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-intern.title')
-                    </a>
-                </li>
-                <li>
-                    <a data-toggle="tab" href="#messages-private">
-                        @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-private.title')
-                    </a>
-                </li>
-            </ul>
+        </div>
 
-            <div class="tab-content">
-                <div id="messages-intern" class="tab-pane fade in active">
-                    <div class="panel">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#messages-intern">
+                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-intern.title')
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#messages-private">
+                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-private.title')
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#comments-on-building">
+                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.comments-on-building.title')
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#fill-in-history">
+                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.fill-in-history.title')
+                </a>
+            </li>
+        </ul>
 
+        <div class="tab-content">
+            <div id="messages-intern" class="tab-pane fade in active">
+                <div class="panel">
+                    <div class="panel-body panel-chat-body">
+                        @component('cooperation.layouts.chat.messages')
+                            @forelse($privateMessages as $privateMessage)
 
-                        <div class="panel-body panel-chat-body">
-                            @component('cooperation.layouts.chat.messages')
-                                @forelse($privateMessages as $privateMessage)
+                                <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            @if($privateMessage->isMyMessage())
 
-                                    <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
-                                        <div class="chat-body clearfix">
-                                            <div class="header">
-                                                @if($privateMessage->isMyMessage())
+                                                <small class="text-muted">
+                                                    <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
+                                                </small>
+                                                <strong class="pull-right primary-font">{{$privateMessage->getSender()}}</strong>
 
-                                                    <small class="text-muted">
-                                                        <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
-                                                    </small>
-                                                    <strong class="pull-right primary-font">{{$privateMessage->getSender()}}</strong>
+                                            @else
 
-                                                @else
+                                                <strong class="primary-font">{{$privateMessage->getSender()}}</strong>
+                                                <small class="pull-right text-muted">
+                                                    <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
+                                                </small>
 
-                                                    <strong class="primary-font">{{$privateMessage->getSender()}}</strong>
-                                                    <small class="pull-right text-muted">
-                                                        <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
-                                                    </small>
-
-                                                @endif
-                                            </div>
-                                            <p>
-                                                {{$privateMessage->message}}
-                                            </p>
+                                            @endif
                                         </div>
-                                    </li>
-                                @empty
+                                        <p>
+                                            {{$privateMessage->message}}
+                                        </p>
+                                    </div>
+                                </li>
+                            @empty
 
-                                @endforelse
-                            @endcomponent
-                        </div>
+                            @endforelse
+                        @endcomponent
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $building->id, 'url' => route('cooperation.admin.cooperation.cooperation-admin.messages.store'), 'isPublic' => false])
+                        <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
+                            @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
+                        </button>
+                    @endcomponent
+                </div>
+            </div>
+            <div id="messages-private" class="tab-pane fade">
+                <div class="panel">
+                    <div class="panel-body panel-chat-body">
+                        @component('cooperation.layouts.chat.messages')
+                            @forelse($publicMessages as $publicMessage)
+
+                                <li class="@if($publicMessage->isMyMessage()) right @else left @endif clearfix">
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            @if($publicMessage->isMyMessage())
+
+                                                <small class="text-muted">
+                                                    <span class="glyphicon glyphicon-time"></span>{{$publicMessage->created_at->diffForHumans()}}
+                                                </small>
+                                                <strong class="pull-right primary-font">{{$publicMessage->getSender()}}</strong>
+
+                                            @else
+
+                                                <strong class="primary-font">{{$publicMessage->getSender()}}</strong>
+                                                <small class="pull-right text-muted">
+                                                    <span class="glyphicon glyphicon-time"></span>{{$publicMessage->created_at->diffForHumans()}}
+                                                </small>
+
+                                            @endif
+                                        </div>
+                                        <p>
+                                            {{$publicMessage->message}}
+                                        </p>
+                                    </div>
+                                </li>
+                            @empty
+
+                            @endforelse
+                        @endcomponent
                     </div>
                     <div class="panel-footer">
-                        @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $building->id, 'url' => route('cooperation.admin.cooperation.cooperation-admin.messages.store'), 'isPublic' => false])
+                        @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $building->id, 'url' => route('cooperation.admin.cooperation.cooperation-admin.messages.store'), 'isPublic' => true])
                             <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
                                 @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
                             </button>
                         @endcomponent
                     </div>
                 </div>
-                <div id="messages-private" class="tab-pane fade">
-                    <div class="panel">
-                        <div class="panel-body panel-chat-body">
-                            @component('cooperation.layouts.chat.messages')
-                                @forelse($publicMessages as $publicMessage)
+            </div>
+            <div id="comments-on-building" class="tab-pane fade">
+                <div class="panel">
+                    <div class="panel-body">
 
-                                    <li class="@if($publicMessage->isMyMessage()) right @else left @endif clearfix">
-                                        <div class="chat-body clearfix">
-                                            <div class="header">
-                                                @if($publicMessage->isMyMessage())
-
-                                                    <small class="text-muted">
-                                                        <span class="glyphicon glyphicon-time"></span>{{$publicMessage->created_at->diffForHumans()}}
-                                                    </small>
-                                                    <strong class="pull-right primary-font">{{$publicMessage->getSender()}}</strong>
-
-                                                @else
-
-                                                    <strong class="primary-font">{{$publicMessage->getSender()}}</strong>
-                                                    <small class="pull-right text-muted">
-                                                        <span class="glyphicon glyphicon-time"></span>{{$publicMessage->created_at->diffForHumans()}}
-                                                    </small>
-
-                                                @endif
-                                            </div>
-                                            <p>
-                                                {{$publicMessage->message}}
-                                            </p>
-                                        </div>
-                                    </li>
-                                @empty
-
-                                @endforelse
-                            @endcomponent
-                        </div>
-                        <div class="panel-footer">
-                            @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $building->id, 'url' => route('cooperation.admin.cooperation.cooperation-admin.messages.store'), 'isPublic' => true])
-                                <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
-                                    @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
-                                </button>
-                            @endcomponent
-                        </div>
+                        @forelse($buildingNotes as $buildingNote)
+                            <p class="pull-right">{{$buildingNote->created_at->format('Y-m-d H:i')}}</p>
+                            <p>{{$buildingNote->note}}</p>
+                            <hr>
+                        @empty
+                        @endforelse
                     </div>
                 </div>
-                <div id="menu2" class="tab-pane fade">
-                    <h3>Menu 2</h3>
-                    <p>Some content in menu 2.</p>
+            </div>
+            <div id="fill-in-history" class="tab-pane fade">
+                <div class="panel">
+                    <div class="panel-body">
+                        content.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $previous])}}" type="button" id="previous" class="btn btn-default">
+                            <i class="glyphicon glyphicon-chevron-left"></i>
+                            @lang('woningdossier.cooperation.admin.cooperation.users.show.previous')
+                        </a>
+                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $next])}}" id="observe-building" class="btn btn-default">
+                            @lang('woningdossier.cooperation.admin.cooperation.users.show.next')
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -319,7 +362,6 @@
         });
 
 
-
         /**
          * Sets the hash / fragment in the url.
          */
@@ -360,8 +402,7 @@
             });
         }
 
-        function scrollChatToMostRecentMessage()
-        {
+        function scrollChatToMostRecentMessage() {
             $('.nav-tabs a').on('shown.bs.tab', function () {
 
                 var tabId = $(this).attr('href');

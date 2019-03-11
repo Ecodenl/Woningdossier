@@ -93,9 +93,16 @@ class UserController extends Controller
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
         $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 
+        $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
+
+        // get previous user id
+        $previous = $cooperation->users()->where('id', '<', $user->id)->max('id');
+        // get next user id
+        $next = $cooperation->users()->where('id', '>', $user->id)->min('id');
+
         return view('cooperation.admin.cooperation.users.show', compact(
             'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
-                'privateMessages', 'publicMessages'
+                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next'
             )
         );
     }

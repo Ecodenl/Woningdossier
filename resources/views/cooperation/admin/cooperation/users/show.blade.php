@@ -149,7 +149,7 @@
                 </div>
                 <div id="messages-private" class="tab-pane fade">
                     <div class="panel">
-                        <div class="panel-body panel-chat-body chat">
+                        <div class="panel-body panel-chat-body">
                             @component('cooperation.layouts.chat.messages')
                                 @forelse($publicMessages as $publicMessage)
 
@@ -211,27 +211,8 @@
             // scrollChatsToBottom();
             keepNavTabOpenOnRedirect();
             setUrlHashInHiddenInput();
+            scrollChatToMostRecentMessage();
             $('.nav-tabs .active a').trigger('shown.bs.tab');
-
-
-            var chatPanelBodys = $('.panel-chat-body');
-
-            chatPanelBodys.each(function (index, chatPanelBody) {
-                var chat = $(chatPanelBody)[0];
-
-                var chatMessages = $(chat).find('li').length;
-
-                var add = setInterval(function () {
-
-                    var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
-
-                    if (isScrolledToBottom) {
-                        chat.scrollTop = chat.scrollHeight - chat.clientHeight;
-                    }
-
-                }, 1000);
-
-            });
 
             $('#appointment-date').datetimepicker({
                 format: "YYYY-MM-DD HH:mm",
@@ -240,7 +221,6 @@
 
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
-                    console.log(tag.id);
                     var option = $('#associated-coaches option[value="' + tag.id + '"]');
                     if (option.attr('locked')) {
                         $(container).addClass('select2-locked-tag');
@@ -380,23 +360,18 @@
             });
         }
 
+        function scrollChatToMostRecentMessage()
+        {
+            $('.nav-tabs a').on('shown.bs.tab', function () {
 
-        /**
-         * scroll the chat windows to the bottom messages.
-         */
-        function scrollChatsToBottom() {
-            // get all the chats
-            var chats = $('.panel-chat-body');
+                var tabId = $(this).attr('href');
+                var tab = $(tabId);
+                var chat = tab.find('.panel-chat-body')[0];
 
-            chats.each(function (index, chatBody) {
-                var chat = $(chatBody);
-                // some quick maths
-                chat.scrollTop(chat[0].scrollHeight);
-                chat.scrollTop = chat[0].scrollHeight - chat[0].clientHeight;
-
-                // scroll the chat to the bottom.
-                $(chat).scrollTop(chat.scrollTop);
+                console.log('bier');
+                chat.scrollTop = chat.scrollHeight - chat.clientHeight;
             });
+
         }
 
     </script>

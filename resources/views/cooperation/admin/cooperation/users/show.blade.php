@@ -202,11 +202,17 @@
 
 @push('js')
     <script>
-        // select2-removing
         $(document).ready(function () {
-            // pretty selects.
+            // get some basic information
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             var userId = $('input[name=user\\[id\\]]').val();
+
+            scrollChatsToBottom();
+
+            $('#appointment-date').datetimepicker({
+                format: "YYYY-MM-DD HH:mm",
+                locale: '{{app()->getLocale()}}',
+            });
 
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
@@ -307,23 +313,27 @@
                     }
                 });
 
-            $('#appointment-date').datetimepicker({
-                format: "YYYY-MM-DD HH:mm",
-                locale: '{{app()->getLocale()}}',
+        });
+
+
+        /**
+         * scroll the chat windows to the bottom messages.
+         */
+        function scrollChatsToBottom()
+        {
+            // get all the chats
+            var chats = $('.panel-chat-body');
+
+            chats.each(function (index, chatBody) {
+                var chat = $(chatBody);
+                // some quick maths
+                chat.scrollTop(chat[0].scrollHeight);
+                chat.scrollTop = chat[0].scrollHeight - chat[0].clientHeight;
+
+                // scroll the chat to the bottom.
+                $(chat).scrollTop(chat.scrollTop);
             });
+        }
 
-            //
-            // var chats = $('.panel-chat-body');
-            //
-            // chats.each(function (index, chat) {
-            //     var chat = $(chat);
-            //
-            //     chat.scrollTop(chat[0].scrollHeight);
-            //     chat.scrollTop = chat[0].scrollHeight - chat[0].clientHeight;
-            //
-            //     $(chat).scrollTop(chat.scrollTop);
-            // });
-
-        })
     </script>
 @endpush

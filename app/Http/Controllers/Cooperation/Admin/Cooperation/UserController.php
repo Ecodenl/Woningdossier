@@ -54,6 +54,7 @@ class UserController extends Controller
     {
         $user = $cooperation->users()->find($userId);
         $building = $user->buildings()->first();
+        $buildingId = $building->id;
         $roles = Role::all();
         $coaches = $cooperation->getCoaches()->get();
         $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last();
@@ -61,19 +62,19 @@ class UserController extends Controller
         $activeCount = \DB::raw('(
                 SELECT coach_id, building_id, count(`status`) AS count_active
 	            FROM building_coach_statuses
-	            WHERE building_id = ' . $building->id . ' AND `status` = \'' . BuildingCoachStatus::STATUS_ACTIVE . ' \'
+	            WHERE building_id = ' . $buildingId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_ACTIVE . ' \'
 	            group by coach_id, building_id
             )  AS bcs2');
         $removedCount = \DB::raw('(
                 SELECT building_id, coach_id, count(`status`) AS count_removed
 	            FROM building_coach_statuses
-	            WHERE building_id = ' . $building->id . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            WHERE building_id = ' . $buildingId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
 	            group by coach_id, building_id
             ) AS bcs3');
         $buildingPermissionCount = \DB::raw('(
                 SELECT user_id, count(`building_id`) as count_building_permission
 	            FROM building_permissions
-	            WHERE building_id = ' . $building->id . '
+	            WHERE building_id = ' . $buildingId . '
 	            GROUP BY user_id
             ) as bp');
 
@@ -89,7 +90,14 @@ class UserController extends Controller
                 ->havingRaw('(count_active > count_removed) OR count_removed IS NULL')
                 ->get();
 
-        return view('cooperation.admin.cooperation.users.show', compact('user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus'));
+        $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
+        $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
+
+        return view('cooperation.admin.cooperation.users.show', compact(
+            'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
+                'privateMessages', 'publicMessages'
+            )
+        );
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)

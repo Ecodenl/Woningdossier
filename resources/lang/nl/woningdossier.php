@@ -359,6 +359,11 @@ return [
                         ],
 
                         'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
+                        'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
+
+                        'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
+                        'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
+
                         'tabs' => [
                             'messages-resident' => [
                                 'title' => 'Berichten bewoner'

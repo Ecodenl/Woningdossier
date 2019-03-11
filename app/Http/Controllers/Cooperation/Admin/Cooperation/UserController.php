@@ -255,4 +255,5 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.users.destroy.success'));
     }
+
 }

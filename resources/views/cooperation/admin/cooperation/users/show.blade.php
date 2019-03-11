@@ -11,6 +11,7 @@
         </div>
 
         <input type="hidden" name="building[id]" value="{{$building->id}}">
+        <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-6">
@@ -30,7 +31,7 @@
                         <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
                         <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
-                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                <option @if($user->hasRole($role)) selected="selected" @endif value="{{$role->id}}">{{$role->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -47,11 +48,6 @@
                                 @if($coach->hasRole(['cooperation-admin', 'coordinator'])) locked="locked" @endif
                                 @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected="selected" @endif value="{{$coach->id}}">
                                     {{$coach->getFullName()}}
-{{--                                    @if($coachBuildingStatus instanceof stdClass && $coachBuildingStatus->count_building_permission > 0)--}}
-                                        {{--@lang('woningdossier.cooperation.admin.cooperation.users.show.has-building-access.yes')--}}
-                                    {{--@else--}}
-{{--                                        @lang('woningdossier.cooperation.admin.cooperation.users.show.has-building-access.no')--}}
-                                    {{--@endif--}}
                                 </option>
                             @endforeach
                         </select>
@@ -95,8 +91,8 @@
         $(document).ready(function () {
             // pretty selects.
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
+            var userId = $('input[name=user\\[id\\]]').val();
             $('#building-coach-status').select2();
-            $('#role-select').select2();
 
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
@@ -111,8 +107,6 @@
                 }
             }).on('select2:unselecting', function (event) {
                 var optionToUnselect = $(event.params.args.data.element);
-
-
 
                 // check if the option is locked
                 if (typeof optionToUnselect.attr('locked') === "undefined") {
@@ -132,7 +126,67 @@
                         event.preventDefault();
                         return false;
                     }
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
+            }).on('select2:selecting', function (event) {
+                var optionToSelect = $(event.params.args.data.element);
 
+                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.add-with-building-access')')) {
+                    $.ajax({
+                        url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
+                        method: 'POST',
+                        data: {
+                            user_id: optionToSelect.val(),
+                            building_id: buildingOwnerId
+                        }
+                    }).done(function () {
+                        // just reload the page
+                        location.reload();
+                    });
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#role-select').select2()
+                .on('select2:selecting', function (event) {
+                    var roleToSelect = $(event.params.args.data.element);
+
+                    if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.give-role')')) {
+                        $.ajax({
+                            url: '{{route('cooperation.admin.roles.assign-role')}}',
+                            method: 'POST',
+                            data: {
+                                role_id: roleToSelect.val(),
+                                user_id: userId
+                            }
+                        }).done(function () {
+                            // just reload the page
+                            location.reload();
+                        });
+                    } else {
+                        event.preventDefault();
+                        return false;
+                    }
+                })
+            .on('select2:unselecting', function (event) {
+                var roleToUnselect = $(event.params.args.data.element);
+
+                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.remove-role')')) {
+                    $.ajax({
+                        url: '{{route('cooperation.admin.roles.remove-role')}}',
+                        method: 'POST',
+                        data: {
+                            role_id: roleToUnselect.val(),
+                            user_id: userId
+                        }
+                    }).done(function () {
+                        // just reload the page
+                        location.reload();
+                    });
                 } else {
                     event.preventDefault();
                     return false;

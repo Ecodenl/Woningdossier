@@ -170,6 +170,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::get('/', 'AdminController@index')->name('index');
             Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
+            Route::group(['prefix' => 'roles', 'as' => 'roles.'], function () {
+                Route::post('assign-role', 'RoleController@assignRole')->name('assign-role');
+                Route::post('remove-role', 'RoleController@removeRole')->name('remove-role');
+            });
+
             Route::group(['middleware' => ['role:cooperation-admin|super-admin']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');

@@ -73,7 +73,7 @@ class BuildingController extends Controller
 
     public function show(Cooperation $cooperation, $buildingId)
     {
-        $building = Building::find($buildingId);
+        $building = Building::withTrashed()->find($buildingId);
         $user = $cooperation->users()->find($building->user_id);
         $buildingId = $building->id;
         $roles = Role::all();
@@ -87,10 +87,13 @@ class BuildingController extends Controller
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
-        // get previous user id
-        $previous = $cooperation->users()->where('id', '<', $user->id)->max('id');
-        // get next user id
-        $next = $cooperation->users()->where('id', '>', $user->id)->min('id');
+        // since a user can be deleted, a buildin
+        if ($user instanceof User) {
+            // get previous user id
+            $previous = $cooperation->users()->where('id', '<', $user->id)->max('id');
+            // get next user id
+            $next = $cooperation->users()->where('id', '>', $user->id)->min('id');
+        }
 
         return view('cooperation.admin.coach.buildings.show', compact(
                 'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',

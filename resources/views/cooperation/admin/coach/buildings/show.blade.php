@@ -4,17 +4,17 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.cooperation.users.show.header', [
-                'name' => $user->getFullName(),
+                'name' => $user instanceof \App\Models\User ? $user->getFullName() : '-',
                 'street-and-number' => $building->street.' '.$building->house_number.$building->house_number_extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city
             ])
         </div>
 
         <input type="hidden" name="building[id]" value="{{$building->id}}">
-        <input type="hidden" name="user[id]" value="{{$user->id}}">
+        <input type="hidden" name="user[id]" value="{{$user instanceof \App\Models\User ? $user->id : ''}}">
         <div class="panel-body">
             {{--delete a pipo--}}
-            @if($user->allowedAccessToHisBuilding($building->id))
+            @if($user instanceof \App\Models\User && $user->allowedAccessToHisBuilding($building->id))
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="btn-group">
@@ -82,7 +82,7 @@
                         <select disabled="" class="form-control" name="user[roles]" id="role-select"
                                 multiple="multiple">
                             @foreach($roles as $role)
-                                <option @if($user->hasRole($role)) selected="selected"
+                                <option @if($user instanceof \App\Models\User && $user->hasRole($role)) selected="selected"
                                         @endif value="{{$role->id}}">{{$role->name}}</option>
                             @endforeach
                         </select>
@@ -94,7 +94,7 @@
 
         <ul class="nav nav-tabs">
 
-            @if($user->allowedAccessToHisBuilding($building->id))
+            @if($user instanceof \App\Models\User && $user->allowedAccessToHisBuilding($building->id))
                 <li>
                     <a data-toggle="tab" href="#messages-public">
                         @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-public.title')
@@ -112,7 +112,7 @@
                     @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.comments-on-building.title')
                 </a>
             </li>
-            @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']) && $user->allowedAccessToHisBuilding($building->id))
+            @if($user instanceof \App\Models\User && (Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']) && $user->allowedAccessToHisBuilding($building->id)))
                 <li>
                     <a data-toggle="tab" href="#fill-in-history">
                         @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.fill-in-history.title')
@@ -146,17 +146,20 @@
                                 <input type="hidden" name="building_id" value="{{ $building->id }}">
                                 {{csrf_field()}}
                                 <textarea class="form-control" name="note"></textarea>
-                                <button class="btn btn-primary pull-right"
-                                        style="margin-top: 2em;">@lang('woningdossier.cooperation.admin.coach.buildings.show.save-building-detail')</button>
+                                <button class="btn btn-primary pull-right" style="margin-top: 2em;">
+                                    @lang('woningdossier.cooperation.admin.coach.buildings.show.save-building-detail')
+                                </button>
                             </form>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
+        @if($user instanceof \App\Models\User)
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-12">
+
                     <div class="btn-group">
                         <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $previous])}}"
                            type="button" id="previous" class="btn btn-default">
@@ -169,9 +172,11 @@
                             <i class="glyphicon glyphicon-chevron-right"></i>
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>
+        @endif
     </div>
 @endsection
 

@@ -180,6 +180,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
             });
 
+            Route::post('message', 'MessagesController@sendMessage')->name('send-message');
+
+            /* Section for the cooperation-admin and coordinator */
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
@@ -194,6 +197,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::delete('delete', 'UserController@destroy')->name('destroy');
                     });
                 });
+
                 Route::resource('coaches', 'CoachController')->only('index');
 
                 Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
@@ -275,7 +279,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('', 'MessagesController@index')->name('index');
                         Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
                         Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
-                        Route::post('message', 'MessagesController@store')->name('store');
                     });
 
                     Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
@@ -304,6 +307,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
             });
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
+
+
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');
                     Route::get('show/{id}', 'BuildingController@show')->name('show');
@@ -312,10 +317,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('{id}', 'BuildingController@fillForUser')->name('fill-for-user');
                     Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
 
-                    Route::group(['prefix' => 'details', 'as' => 'details.'], function () {
-                        Route::get('{building_id}', 'BuildingDetailsController@index')->name('index');
-                        Route::post('', 'BuildingDetailsController@store')->name('store');
-                    });
+                    Route::resource('details', 'BuildingDetailsController')->only('store');
                 });
 
                 Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {

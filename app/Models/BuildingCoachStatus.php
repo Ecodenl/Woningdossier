@@ -53,8 +53,10 @@ class BuildingCoachStatus extends Model
     const STATUS_NEW_APPOINTMENT = 'new_appointment';
     // status that will be used after the appointment is completed.
     const STATUS_DONE = 'done';
-
+    // when a user is removed from a building
     const STATUS_REMOVED = 'removed';
+    // will be used when there is no status set, will not be saved to the db.
+    const STATUS_AWAITING = 'awaiting_status';
 
     /**
      * Get the building from the status.
@@ -63,17 +65,17 @@ class BuildingCoachStatus extends Model
      */
     public function building()
     {
-        return $this->belongsTo('App\Models\Building');
+        return $this->belongsTo(Building::class);
     }
 
     /**
-     * Get the user from the status.
+     * Get the user / coach from the status this does NOT return the owner from the building.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
-        return $this->belongsTo('App\Models\User', 'coach_id', 'id');
+        return $this->belongsTo(User::class, 'coach_id', 'id');
     }
 
     /**

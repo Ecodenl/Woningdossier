@@ -14,32 +14,38 @@
         <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
             {{--delete a pipo--}}
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="btn-group">
-                        @can('delete-user')
-                            <button type="button" id="delete-user" class="btn btn-danger">
-                                @lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.label')
-                                @lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.button')
-                            </button>
-                        @endcan
-                        @if($user->allowedAccessToHisBuilding($building->id))
+            @if($user->allowedAccessToHisBuilding($building->id))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="btn-group">
+                            <a href="{{route('cooperation.admin.coach.buildings.fill-for-user', ['buildingId' => $building->id])}}"
+                               id="edit-building" class="btn btn-warning">
+                                @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
+                                @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
+                            </a>
                             <button type="button" id="observe-building" class="btn btn-primary">
                                 @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.label')
                                 @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.button')
                             </button>
-                        @endif
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
             {{--status and roles--}}
+            <?php
+            $statuses = collect(__('woningdossier.building-coach-statuses'));
+            // coach cant remove himself.
+            $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_REMOVED);
+            // cant be saved to the db, just for the show.
+            $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_AWAITING);
+            ?>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.status')</label>
-                        <select disabled class="form-control" name="user[building_coach_status][status]"
+                        <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.show.status.label')</label>
+                        <select class="form-control" name="user[building_coach_status][status]"
                                 id="building-coach-status">
-                            @foreach(__('woningdossier.building-coach-statuses') as $buildingCoachStatusKey => $buildingCoachStatusName)
+                            @foreach($statuses as $buildingCoachStatusKey => $buildingCoachStatusName)
                                 <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
                             @endforeach
                         </select>
@@ -47,31 +53,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
-                        <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
-                            @foreach($roles as $role)
-                                <option @if($user->hasRole($role)) selected="selected"
-                                        @endif value="{{$role->id}}">{{$role->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
-            {{--coaches and appointmentdate--}}
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="associated-coaches">@lang('woningdossier.cooperation.admin.cooperation.users.show.associated-coach.label')</label>
-                        <select name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
-                                <option>
-                                    {{Auth::user()->getFullName()}}
-                                </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.appointment-date')</label>
+                        <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
                             <input disabled id="appointment-date" name="user[building_coach_status][appointment_date]"
                                    type='text' class="form-control"
@@ -83,22 +65,47 @@
                     </div>
                 </div>
             </div>
+            {{--coaches and role --}}
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="associated-coaches">@lang('woningdossier.cooperation.admin.cooperation.users.show.associated-coach.label')</label>
+                        <select disabled="" name="user[associated_coaches]" id="associated-coaches" class="form-control"
+                                multiple="multiple">
+                            <option locked="locked" selected>{{Auth::user()->getFullName()}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
+                        <select disabled="" class="form-control" name="user[roles]" id="role-select"
+                                multiple="multiple">
+                            @foreach($roles as $role)
+                                <option @if($user->hasRole($role)) selected="selected"
+                                        @endif value="{{$role->id}}">{{$role->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
         <ul class="nav nav-tabs">
 
+            @if($user->allowedAccessToHisBuilding($building->id))
+                <li>
+                    <a data-toggle="tab" href="#messages-public">
+                        @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-public.title')
+                    </a>
+                </li>
+            @endif
             <li class="active">
                 <a data-toggle="tab" href="#messages-intern">
                     @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-intern.title')
                 </a>
             </li>
-            @if($user->allowedAccessToHisBuilding($building->id))
-            <li>
-                <a data-toggle="tab" href="#messages-public">
-                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-public.title')
-                </a>
-            </li>
-            @endif
 
             <li>
                 <a data-toggle="tab" href="#comments-on-building">
@@ -115,94 +122,15 @@
         </ul>
 
         <div class="tab-content">
+            {{--messages intern (cooperation to cooperation --}}
             <div id="messages-intern" class="tab-pane fade in active">
-                <div class="panel">
-                    <div class="panel-body panel-chat-body">
-                        @component('cooperation.layouts.chat.messages')
-                            @forelse($privateMessages as $privateMessage)
-
-                                <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            @if($privateMessage->isMyMessage())
-
-                                                <small class="text-muted">
-                                                    <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
-                                                </small>
-                                                <strong class="pull-right primary-font">{{$privateMessage->getSender()}}</strong>
-
-                                            @else
-
-                                                <strong class="primary-font">{{$privateMessage->getSender()}}</strong>
-                                                <small class="pull-right text-muted">
-                                                    <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
-                                                </small>
-
-                                            @endif
-                                        </div>
-                                        <p>
-                                            {{$privateMessage->message}}
-                                        </p>
-                                    </div>
-                                </li>
-                            @empty
-
-                            @endforelse
-                        @endcomponent
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $building->id, 'url' => route('cooperation.admin.cooperation.cooperation-admin.messages.store'), 'isPublic' => false])
-                        <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
-                            @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
-                        </button>
-                    @endcomponent
-                </div>
+                @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
+            {{--public messages / between the resident and cooperation--}}
             <div id="messages-public" class="tab-pane fade">
-                <div class="panel">
-                    <div class="panel-body panel-chat-body">
-                        @component('cooperation.layouts.chat.messages')
-                            @forelse($publicMessages as $publicMessage)
-
-                                <li class="@if($publicMessage->isMyMessage()) right @else left @endif clearfix">
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            @if($publicMessage->isMyMessage())
-
-                                                <small class="text-muted">
-                                                    <span class="glyphicon glyphicon-time"></span>{{$publicMessage->created_at->diffForHumans()}}
-                                                </small>
-                                                <strong class="pull-right primary-font">{{$publicMessage->getSender()}}</strong>
-
-                                            @else
-
-                                                <strong class="primary-font">{{$publicMessage->getSender()}}</strong>
-                                                <small class="pull-right text-muted">
-                                                    <span class="glyphicon glyphicon-time"></span>{{$publicMessage->created_at->diffForHumans()}}
-                                                </small>
-
-                                            @endif
-                                        </div>
-                                        <p>
-                                            {{$publicMessage->message}}
-                                        </p>
-                                    </div>
-                                </li>
-                            @empty
-
-                            @endforelse
-                        @endcomponent
-                    </div>
-                    <div class="panel-footer">
-                        @component('cooperation.layouts.chat.input', ['privateMessages' => $privateMessages, 'buildingId' => $building->id, 'url' => route('cooperation.admin.cooperation.cooperation-admin.messages.store'), 'isPublic' => true])
-                            <button type="submit" class="btn btn-primary btn-md" id="btn-chat">
-                                @lang('woningdossier.cooperation.admin.coach.messages.edit.send')
-                            </button>
-                        @endcomponent
-                    </div>
-                </div>
+                @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
             </div>
+            {{-- comments on the building, read only. --}}
             <div id="comments-on-building" class="tab-pane fade">
                 <div class="panel">
                     <div class="panel-body">
@@ -213,13 +141,15 @@
                             <hr>
                         @empty
                         @endforelse
-                    </div>
-                </div>
-            </div>
-            <div id="fill-in-history" class="tab-pane fade">
-                <div class="panel">
-                    <div class="panel-body">
-                        content.
+                        @if($building instanceof \App\Models\Building)
+                            <form action="{{route('cooperation.admin.coach.buildings.details.store')}}" method="post">
+                                <input type="hidden" name="building_id" value="{{ $building->id }}">
+                                {{csrf_field()}}
+                                <textarea class="form-control" name="note"></textarea>
+                                <button class="btn btn-primary pull-right"
+                                        style="margin-top: 2em;">@lang('woningdossier.cooperation.admin.coach.buildings.show.save-building-detail')</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -228,11 +158,13 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="btn-group">
-                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $previous])}}" type="button" id="previous" class="btn btn-default">
+                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $previous])}}"
+                           type="button" id="previous" class="btn btn-default">
                             <i class="glyphicon glyphicon-chevron-left"></i>
                             @lang('woningdossier.cooperation.admin.cooperation.users.show.previous')
                         </a>
-                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $next])}}" id="observe-building" class="btn btn-default">
+                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $next])}}"
+                           id="observe-building" class="btn btn-default">
                             @lang('woningdossier.cooperation.admin.cooperation.users.show.next')
                             <i class="glyphicon glyphicon-chevron-right"></i>
                         </a>
@@ -262,21 +194,28 @@
                 locale: '{{app()->getLocale()}}',
             });
 
-            // delete the current user
-            $('#delete-user').click(function () {
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.delete-user')')) {
+            $('#building-coach-status').select2()
+                .on('select2:selecting', function (event) {
+                    var statusToSelect = $(event.params.args.data.element);
 
-                    $.ajax({
-                        url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
-                        method: 'DELETE',
-                        data: {
-                            user_id: userId
-                        }
-                    }).done(function () {
-                        window.location.href = '{{route('cooperation.admin.cooperation.users.index')}}'
-                    })
-                }
-            });
+                    if (confirm('@lang('woningdossier.cooperation.admin.coach.show.add-status-alert')')) {
+                        $.ajax({
+                            url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
+                            method: 'POST',
+                            data: {
+                                status: statusToSelect.val(),
+                                building_id: buildingOwnerId
+                            }
+                        }).done(function () {
+                            // just reload the page
+                            location.reload();
+                        });
+                    } else {
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+            $('#role-select').select2();
 
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
@@ -288,93 +227,7 @@
 
                     return tag.text;
                 }
-            }).on('select2:unselecting', function (event) {
-                var optionToUnselect = $(event.params.args.data.element);
-
-                // check if the option is locked
-                if (typeof optionToUnselect.attr('locked') === "undefined") {
-                    if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.revoke-access')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.messages.participants.revoke-access')}}',
-                            method: 'POST',
-                            data: {
-                                user_id: optionToUnselect.val(),
-                                building_owner_id: buildingOwnerId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            }).on('select2:selecting', function (event) {
-                var optionToSelect = $(event.params.args.data.element);
-
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.add-with-building-access')')) {
-                    $.ajax({
-                        url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
-                        method: 'POST',
-                        data: {
-                            user_id: optionToSelect.val(),
-                            building_id: buildingOwnerId
-                        }
-                    }).done(function () {
-                        // just reload the page
-                        location.reload();
-                    });
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
             });
-
-            $('#role-select').select2()
-                .on('select2:selecting', function (event) {
-                    var roleToSelect = $(event.params.args.data.element);
-
-                    if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.give-role')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.admin.roles.assign-role')}}',
-                            method: 'POST',
-                            data: {
-                                role_id: roleToSelect.val(),
-                                user_id: userId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                })
-                .on('select2:unselecting', function (event) {
-                    var roleToUnselect = $(event.params.args.data.element);
-
-                    if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.remove-role')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.admin.roles.remove-role')}}',
-                            method: 'POST',
-                            data: {
-                                role_id: roleToUnselect.val(),
-                                user_id: userId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
         });
 
 
@@ -425,7 +278,9 @@
                 var tab = $(tabId);
                 var chat = tab.find('.panel-chat-body')[0];
 
-                chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                if (typeof chat !== "undefined") {
+                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                }
             });
 
         }

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.header')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.index.header')</div>
 
         <div class="panel-body">
             <div class="row">
@@ -16,21 +16,24 @@
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.zip-code')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.city')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.appointment-date')</th>
                         </tr>
                         </thead>
                         <tbody>
                      
                         <?php /** @var \App\Models\User $user */ ?>
-                        @foreach($buildingsFromCoachStatuses as $user)
-                            <?php $building = \App\Models\Building::where('user_id', $user->id)->first() ?>
+                        @foreach($buildingCoachStatuses as $buildingCoachStatus)
+                            <?php
+                                $building = $buildingCoachStatus->building;
+                                $user = $building->user;
+                            ?>
 
                             <tr>
-                                <td>{{$user->first_name.' '.$user->last_name}}</td>
+                                <td>{{$user instanceof \App\Models\User ? $user->created_at : '-'}}</td>
+                                <td>{{$user instanceof \App\Models\User ? $user->getFullName() : '-'}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.coach.buildings.show', ['id' => $building->id])}}">
-                                        {{$building->street}} {{$building->house_number}} {{$building->house_number_ext}}
+                                        {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                 </td>
                                 <td>{{$building->postal_code}}</td>
@@ -38,12 +41,10 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    <?php $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last() ?>
-                                    @if($lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastKnownBuildingCoachStatus->appointment_date))
-                                        {{$lastKnownBuildingCoachStatus->appointment_date}}
-                                    @else
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.index.no-appointment')
-                                    @endif
+                                    {{$buildingCoachStatus->status}}
+                                </td>
+                                <td>
+                                    {{$buildingCoachStatus->appointment_date}}
                                 </td>
                             </tr>
                         @endforeach
@@ -53,13 +54,6 @@
             </div>
         </div>
     </div>
-
-    @include('coach.layouts.chat.private-public-modal', [
-        'buildings' => $buildingsFromCoachStatuses,
-        'privateRoute' => 'cooperation.admin.coach.messages.private.edit',
-        'publicRoute' => 'cooperation.admin.coach.messages.public.edit'
-    ])
-
 @endsection
 
 

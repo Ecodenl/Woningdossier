@@ -21,46 +21,16 @@ class BuildingController extends Controller
 {
     public function index()
     {
-        // @note, no need to do a withThrashed.
-//
-//        // get the buildings from the notes
-//        $buildingsFromNotes = \DB::table('building_notes')
-//            ->where('building_notes.coach_id', '=', \Auth::id())
-//            ->leftJoin('buildings', 'buildings.id', '=', 'building_notes.building_id')
-//            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
-//            ->select('buildings.*', 'users.first_name', 'users.last_name')
-//            ->distinct()
-//            ->get();
-//
-        ////        $buildingsFromNotes = BuildingNotes::where('coach_id', \Auth::id())->with(['building' => function ($query) {
-        ////            $query->withTrashed();
-        ////        }])->get();
-//
-//        // get the buildings from the buildings permissions
-//        $buildingsFromPermissions = \DB::table('building_permissions')
-//            ->where('building_permissions.user_id', '=', \Auth::id())
-//            ->leftJoin('buildings', 'buildings.id', '=', 'building_permissions.building_id')
-//            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
-//            ->select('buildings.*', 'users.first_name', 'users.last_name')
-//            ->distinct()
-//            ->get();
-//
-//        // merge the results and make them unique
-//        $buildings = $buildingsFromNotes->merge($buildingsFromPermissions)->unique();
+        // retrieve all the coach statuses from the coach.
+        $buildingCoachStatuses = BuildingCoachStatus::where('coach_id', \Auth::id())
+            ->with(
+                ['building' => function($query) {
+                    $query->withTrashed()
+                        ->with('user');
+                }]
+            )->get();
 
-        $buildingsFromCoachStatuses = \DB::table('building_coach_statuses')
-            ->where('building_coach_statuses.coach_id', '=', \Auth::id())
-            ->leftJoin('buildings', 'buildings.id', '=', 'building_coach_statuses.building_id')
-            ->leftJoin('users', 'users.id', '=', 'buildings.user_id')
-            ->leftJoin('private_messages', 'private_messages.id', '=', 'building_coach_statuses.private_message_id')
-            ->select('buildings.*', 'users.first_name', 'users.last_name', 'private_messages.allow_access', 'users.id')
-            ->get()->unique('id');
-
-        dd($buildingsFromCoachStatuses);
-
-        $buildingCoachStatuses = BuildingCoachStatus::all();
-
-        return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildingCoachStatuses', 'buildingsFromCoachStatuses'));
+        return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildingCoachStatuses'));
     }
 
     public function edit(Cooperation $cooperation, $buildingId)

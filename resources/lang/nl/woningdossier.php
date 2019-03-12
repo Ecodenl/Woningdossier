@@ -16,7 +16,7 @@ return [
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
         \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
 
-        'awaiting-status' => 'In afwachting',
+        \App\Models\BuildingCoachStatus::STATUS_AWAITING=> 'In afwachting',
     ],
     'cooperation' => [
         'create-building' => [
@@ -210,23 +210,23 @@ return [
                     ],
 
                     'show' => [
+                        'save-building-detail' => 'Opmerking opslaan',
                         'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
 
                         'observe-building' => [
                             'label' => 'Woning bekijken',
                             'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
                         ],
-                        'delete-account' => [
-                            'label' => 'Account verwijderen',
-                            'button' => '<i class="glyphicon glyphicon-trash"></i>'
+                        'fill-for-user' => [
+                            'label' => 'Woning als coach bewerken',
+                            'button' => '<i class="glyphicon glyphicon-edit"></i>'
                         ],
                         'role' => [
                             'label' => 'Rol',
                             'button' => 'Bijwerken'
                         ],
                         'status' => [
-                            'label' => 'Huidge status: ',
-                            'button' => 'Kies status'
+                            'label' => 'Kies status: ',
                         ],
                         'associated-coach' => [
                             'label' => 'Gekoppelde coaches',
@@ -242,13 +242,7 @@ return [
                             'yes' => 'Toegang tot gebouw'
                         ],
 
-                        'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
-                        'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
-                        'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
-
-                        'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
-                        'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
-
+                        'add-status-alert' => 'Weet u zeker dat u deze status aan het gebouw wilt hangen?',
                         'tabs' => [
                             'messages-public' => [
                                 'title' => 'Berichten bewoner'

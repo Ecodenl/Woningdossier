@@ -33,11 +33,11 @@
             @endif
             {{--status and roles--}}
             <?php
-            $statuses = collect(__('woningdossier.building-coach-statuses'));
-            // coach cant remove himself.
-            $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_REMOVED);
-            // cant be saved to the db, just for the show.
-            $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_AWAITING);
+                $statuses = collect(__('woningdossier.building-coach-statuses'));
+                // coach cant remove himself.
+                $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_REMOVED);
+                // cant be saved to the db, just for the show.
+                $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_AWAITING);
             ?>
             <div class="row">
                 <div class="col-sm-6">

@@ -223,33 +223,12 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 
 
+                /* Section for the coordinator */
                 Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
-
-                    Route::group(['prefix' => 'buildings', 'as' => 'building-access.'], function () {
-                        Route::get('', 'BuildingAccessController@index')->name('index');
-                        Route::get('/manage-connect-coaches/{buildingId}', 'BuildingAccessController@manageConnectedCoaches')->name('manage-connected-coaches');
-                        Route::get('{buildingId}', 'BuildingAccessController@edit')->name('edit');
-                        Route::delete('destroy', 'BuildingAccessController@destroy')->name('destroy');
-                    });
-
-
-                    Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
-                        Route::get('', 'AssignRoleController@index')->name('index');
-                        Route::get('edit/{userId}', 'AssignRoleController@edit')->name('edit');
-                        Route::post('edit/{userId}', 'AssignRoleController@update')->name('update');
-                    });
-
 
                     Route::group(['prefix' => 'conversation-requests', 'as' => 'conversation-requests.'], function () {
                         Route::get('', 'ConversationRequestsController@index')->name('index');
                         Route::get('request/{messageId}', 'ConversationRequestsController@show')->name('show');
-                    });
-
-                    Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
-                        Route::get('', 'MessagesController@index')->name('index');
-                        Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
-                        Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
-                        Route::post('message', 'MessagesController@store')->name('store');
                     });
 
                     Route::group(['prefix' => 'connect-to-coach', 'as' => 'connect-to-coach.'], function () {
@@ -262,24 +241,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
 
                 Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
-                    Route::group(['prefix' => 'assign-roles', 'as' => 'assign-roles.'], function () {
-                        Route::get('', 'AssignRoleController@index')->name('index');
-                        Route::get('edit/{userId}', 'AssignRoleController@edit')->name('edit');
-                        Route::post('edit/{userId}', 'AssignRoleController@update')->name('update');
-                    });
-
-                    Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
-                        Route::get('', 'UserController@index')->name('index');
-                        Route::get('create', 'UserController@create')->name('create');
-                        Route::delete('delete', 'UserController@destroy')->name('destroy');
-                        Route::post('', 'UserController@store')->name('store');
-                    });
-
-                    Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
-                        Route::get('', 'MessagesController@index')->name('index');
-                        Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
-                        Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
-                    });
 
                     Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                         Route::get('', 'StepController@index')->name('index');

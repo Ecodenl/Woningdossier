@@ -2,12 +2,12 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{ route('cooperation.admin.cooperation.coordinator.questionnaires.store') }}" method="post">
+            <form action="{{ route('cooperation.admin.cooperation.questionnaires.store') }}" method="post">
                 {{csrf_field()}}
                 <div class="row">
                     <div class="col-sm-6">
-                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-warning">
-                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool')
+                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.questionnaires.index')}}" class="btn btn-warning">
+                            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
                         </a>
                     </div>
                     <div class="col-sm-6">

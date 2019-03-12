@@ -77,7 +77,7 @@ class ParticipantController extends Controller
         }
 
         // since the coordinator is the only one who can do this atm.
-        return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')
+        return redirect()->back()
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }
 }

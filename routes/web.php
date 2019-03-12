@@ -209,7 +209,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     });
                 });
 
-                Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
+                // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
+                Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['role:cooperation-admin']], function () {
                     Route::get('', 'QuestionnaireController@index')->name('index');
                     Route::post('', 'QuestionnaireController@update')->name('update');
                     Route::get('create', 'QuestionnaireController@create')->name('create');
@@ -222,24 +223,14 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
 
 
-
                 /* Section for the coordinator */
                 Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
-
-                    Route::group(['prefix' => 'conversation-requests', 'as' => 'conversation-requests.'], function () {
-                        Route::get('', 'ConversationRequestsController@index')->name('index');
-                        Route::get('request/{messageId}', 'ConversationRequestsController@show')->name('show');
-                    });
-
-                    Route::group(['prefix' => 'connect-to-coach', 'as' => 'connect-to-coach.'], function () {
-                        Route::get('', 'ConnectToCoachController@index')->name('index');
-                        Route::get('connect/{buildingId}', 'ConnectToCoachController@create')->name('create');
-                    });
 
                     // needs to be the last route due to the param
                     Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
+                /* section for the cooperation-admin */
                 Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
 
                     Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
@@ -255,6 +246,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
             });
 
+            /* Section for the super admin */
             Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['role:super-admin']], function () {
                 Route::get('home', 'SuperAdminController@index')->name('index');
 
@@ -267,6 +259,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
                 Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
             });
+
+            /* Section for the coach */
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
 
 
@@ -279,14 +273,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
 
                     Route::resource('details', 'BuildingDetailsController')->only('store');
-                });
-
-                Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
-                    Route::get('', 'MessagesController@index')->name('index');
-                    Route::get('public/{buildingId}', 'MessagesController@publicGroup')->name('public.edit');
-                    Route::get('private/{buildingId}', 'MessagesController@privateGroup')->name('private.edit');
-                    Route::post('message', 'MessagesController@store')->name('store');
-                    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
                 // needs to be the last route due to the param

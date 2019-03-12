@@ -58,12 +58,12 @@ return [
         'admin' => [
             'example-buildings' => [
                 'index' => [
-                    'header' => 'Voorbeeldwoningen',
+                        'header' => 'Voorbeeldwoningen',
                 ],
             ],
             'super-admin' => [
                 'side-nav' => [
-                    'label' => 'Super admin menu',
+                        'label' => 'Super admin menu',
                     'home' => 'Home',
                     'cooperations' => 'Cooperaties',
                     'translations' => 'Vertalingen',
@@ -143,7 +143,6 @@ return [
                 'reports' => 'Rapportages',
                 'example-buildings' => 'Example buildings',
             ],
-
             'custom-fields' => [
                 'index' => [
                     'rules' => [
@@ -162,11 +161,11 @@ return [
                     ],
                 ],
             ],
-
             'choose-roles' => [
                 'header' => 'Als welke rol wilt u doorgaan?',
                 'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
             ],
+            /* translations for the coach environment */
             'coach' => [
                 'side-nav' => [
                     'label' => 'Coach menu',
@@ -261,122 +260,11 @@ return [
                         'previous' => 'Vorige'
                     ],
                 ],
-                'buildings-2' => [
-                    'index' => [
-                        'no-appointment' => 'Nog geen afspraak',
-                        'table' => [
-                            'columns' => [
-                                'street' => 'Straatnaam',
-                                'city' => 'Stad',
-                                'owner' => 'Eigenaar',
-                                'actions' => 'Acties',
-                                'status' => 'Status',
-                                'appointment' => 'Datum van afspraak',
-                            ],
-                            'status' => 'Kies status',
-                            'current-status' => 'Huidige status:',
-                            'options' => [
-                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
-                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT => 'Nieuwe afspraak',
-                                \App\Models\BuildingCoachStatus::STATUS_DONE => 'Afgehandeld',
-                                \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
-                                \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',],
-                        ],
-                    ],
-                    'edit' => [
-                        'header' => 'Bewerk de status van het gebouw',
-                        'form' => [
-                            'status' => 'Status',
-                            'appointment-date' => 'Tijdstip van afspraak',
-                            'submit' => 'Opslaan',
-                            'options' => [
-                                \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
-                                \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT => 'Nieuwe afspraak',
-                                \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
-                                \App\Models\BuildingCoachStatus::STATUS_DONE => 'Afgehandeld',
-                            ],
-                        ],
-                    ],
-                    'set-building-status' => [
-                        'success' => 'Status is gekoppeld aan het gebouw',
-                    ],
-                    'fill-for-user' => [
-                        'warning' => 'Er is iets fout gegaan, probeer het later opnieuw',
-                    ],
-                    'header' => 'Gebouwen waar u toegang toe heeft',
-
-                    'details' => [
-                        'index' => [
-                            'header' => 'Details van het gebouw',
-                            'form' => [
-                                'submit' => 'Toevoegen',
-                            ],
-                        ],
-                    ],
-                ],
-                'messages' => [
-                    'index' => [
-                        'header' => 'Uw berichten / chats',
-
-                        'filter' => [
-                            'residents' => 'Filter op gesprekken met bewoners',
-                            'coordinators' => 'Filter op gesprekken met coordinatoren',
-                        ],
-                    ],
-                    'edit' => [
-                        'header' => 'U gesprek met :firstName :lastName',
-                        'send' => 'Verstuur',
-                    ],
-                ],
-
-                'connect-to-resident' => [
-                    'index' => [
-                        'header' => 'Bewoners waarmee u een gesprek kunt beginnen',
-                        'table' => [
-                            'columns' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'email' => 'Email',
-                                'actions' => 'Acties',
-                                'start-conversation' => 'Start gesprek met bewoner',
-                            ],
-                        ],
-                    ],
-                    'create' => [
-                        'header' => 'Een gesprek beginnen met :firstName :lastName',
-                        'form' => [
-                            'title' => [
-                                'label' => 'Onderwerp van het gesprek',
-                                'placeholder' => 'Vul hier het onderwerp van het gesprek in',
-                            ],
-                            'message' => [
-                                'label' => 'Bericht aan de bewoner',
-                                'placeholder' => 'Vul hier uw bericht in voor de bewoner',
-                            ],
-                            'request-type' => [
-                                'label' => 'Waar wilde de bewoner het over hebben?',
-                                'placeholder' => 'Selecteer optie',
-                            ],
-
-                            'options' => [
-                                \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                                \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
-                                \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
-                            ],
-                            'submit' => 'Gesprek met bewoner beginnen',
-                        ],
-                    ],
-                    'store' => [
-                        'warning' => 'De bewoner is op dit moment niet geïnteresseerd',
-                    ],
-                ],
             ],
 
+            /* translations for the coordinator and cooperation-admin */
             'cooperation' => [
-                'coordination' => [
-                    'header' => 'Welkom',
-                    'text' => 'U kunt hier verschillende dingen doen.',
-                ],
+
                 'coaches' => [
                     'index' => [
                         'header' => 'Overzicht van alle coaches voor uw coöperatie',
@@ -582,6 +470,46 @@ return [
                         'success' => 'Gebruiker is verwijderd',
                     ],
                 ],
+                'questionnaires' => [
+                    'index' => [
+                        'header' => 'Alle vragenlijsten voor uw cooperatie',
+                        'table' => [
+                            'columns' => [
+                                'questionnaire-name' => 'Vragenlijst naam',
+                                'step' => 'Komt na stap',
+                                'active' => 'Actief',
+                                'actions' => 'Acties',
+                                'see-results' => 'Bekijk resultaten',
+                                'edit' => 'Bewerk vragenlijst',
+                            ],
+                        ],
+                        'types' => [
+                            'text' => 'Kort antwoord',
+                            'textarea' => 'Alinea',
+                            'select' => 'Dropdownmenu',
+                            'radio' => 'Selectievakjes',
+                            'checkbox' => 'Meerkeuze',
+                            'date' => 'Datum',
+                        ],
+                    ],
+                    'edit' => [
+                        'types' => [
+                            'text' => 'Kort antwoord',
+                            'textarea' => 'Alinea',
+                            'select' => 'Dropdownmenu',
+                            'radio' => 'Meerkeuze',
+                            'date' => 'Datum',
+                            'checkbox' => 'Selectievakjes',
+                        ],
+                        'add-validation' => 'Voeg validatie toe',
+                        'success' => 'Vragenlijst is bijgewerkt',
+                    ],
+                    'create' => [
+                        'leave-creation-tool' => 'Keer terug naar overzicht',
+                        'leave-creation-tool-warning' => 'Let op!, alle wijzigingen zullen verloren gaan. Uw hiervoor gemaakte formulier is dan niet meer terug te krijgen!',
+                    ],
+                ],
+                /* translations specific for the cooperation-admin */
                 'cooperation-admin' => [
                     'users' => [
                         'index' => [
@@ -599,26 +527,6 @@ return [
                         'step' => 'Stappen aan en uitzetten',
                     ],
 
-                    'messages' => [
-                        'index' => [
-                            'header' => 'Uw berichten / chats',
-                        ],
-                    ],
-
-                    'index' => [
-                        'header' => 'Alle gebruikers van uw coöperatie',
-
-                        'table' => [
-                            'columns' => [
-                                'date' => 'Datum',
-                                'name' => 'Naam',
-                                'street-house-number' => 'Straat en huisnummer',
-                                'zip-code' => 'Postcode',
-                                'city' => 'Stadt',
-                                'status' => 'Status'
-                            ],
-                        ],
-                    ],
 
                     'steps' => [
                         'index' => [
@@ -629,45 +537,6 @@ return [
                                     'active' => 'Actief',
                                 ],
                             ],
-                        ],
-                    ],
-
-                    'assign-roles' => [
-                        'index' => [
-                            'header' => 'Overzicht gebruikers - rollen toewijzen',
-
-                            'table' => [
-                                'columns' => [
-                                    'first-name' => 'Voornaam',
-                                    'last-name' => 'Achternaam',
-                                    'email' => 'E-mail adres',
-                                    'role' => 'Huidige rollen van gebruiker',
-                                    'actions' => 'Acties',
-                                ],
-                            ],
-                        ],
-                        'edit' => [
-                            'header' => 'Verander rollen voor :firstName :lastName',
-
-                            'form' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'roles' => 'Rol toewijzen aan gebruiker',
-                                'email' => 'E-mail adres',
-                                'role' => 'Koppel rol aan de nieuwe gebruiker',
-                                'select-role' => 'Selecteer een rol...',
-                                'password' => [
-                                    'header' => 'Wachtwoord instellen',
-                                    'label' => 'Wachtwoord',
-                                    'placeholder' => 'Wachtwoord invullen...',
-                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen',
-                                ],
-
-                                'submit' => 'Rollen bijwerken',
-                            ],
-                        ],
-                        'update' => [
-                            'success' => 'Rollen zijn bijgewerkt',
                         ],
                     ],
 
@@ -693,7 +562,7 @@ return [
                         ],
                     ],
                 ],
-
+                /* translations specific for the cooperation */
                 'coordinator' => [
                     'users' => [
                         'index' => [
@@ -706,214 +575,6 @@ return [
                         'coach' => 'Coaches',
                         'add-user' => 'Voeg Coach / Bewoner toe',
                         'reports' => 'Rapporten',
-                    ],
-                    'building-access' => [
-                        'index' => [
-                            'header' => 'Bewoners die de woning hebben vrijgegeven',
-                            'no-appointment' => 'Nog geen afspraak',
-                            'table' => [
-                                'columns' => [
-                                    'street' => 'Straatnaam',
-                                    'city' => 'Stad',
-                                    'owner' => 'Eigenaar',
-                                    'actions' => 'Acties',
-                                    'status' => 'Status',
-                                    'appointment' => 'Datum van afspraak',
-                                ],
-                                'multiple-coaches-connected' => 'Er zijn meerdere coaches verbonden met dit gebouw.',
-                                'no-coach-connected' => 'Geen coach verbonden met dit gebouw',
-                                'no-status-available' => 'Nog geen status beschikbaar',
-                                'status' => 'Kies status',
-                                'current-status' => 'Huidige status:',
-                                'options' => [
-                                    \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
-                                    \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT => 'Nieuwe afspraak',
-                                    \App\Models\BuildingCoachStatus::STATUS_DONE => 'Afgehandeld',
-                                    \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
-                                    \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
-                                ],
-                            ],
-                        ],
-                        'edit' => [
-                            'header' => 'Gebruikers die toegang hebben tot gebouw :street :postal_code',
-                            'table' => [
-                                'columns' => [
-                                    'actions' => 'Acties',
-                                    'name' => 'Naam',
-                                    'email' => 'Email',
-                                ],
-                            ],
-                        ],
-                        'manage-connected-coaches' => [
-                            'redirect-message' => 'U kunt een of meerdere gebruikers toegang tot de woning ontzeggen door op het kruisje te klikken bij een gebruiker bovenin het chatvenster.',
-                        ],
-                        'destroy' => [
-                            'success' => 'Toegang is ontzegd',
-                        ],
-                    ],
-                    'messages' => [
-                        'index' => [
-                            'header' => 'Uw berichten',
-                        ],
-                    ],
-                    'conversation-requests' => [
-                        'index' => [
-                            'header' => 'Berichten center',
-                            'no-messages' => [
-                                'title' => 'Geen openstaande aanvragen',
-                                'text' => 'Er zijn op het moment geen openstaande aanvragen',
-                            ],
-                        ],
-                        'show' => [
-                            'header' => 'U bent de aanvraag van :firstName :lastName aan het bekijken',
-                        ],
-                    ],
-                    'connect-to-coach' => [
-                        'index' => [
-                            'header' => 'Overzicht van openstaande gespreks aanvragen',
-
-                            'table' => [
-                                'columns' => [
-                                    'see-message' => 'Bekijk bericht',
-                                    'connect-to-coach' => 'Verbind met coach',
-                                    'talk-to-coach' => 'Stuur bericht aan coach',
-                                    'type-request' => 'Type aanvraag',
-                                    'first-name' => 'Voornaam',
-                                    'last-name' => 'Achternaam',
-                                    'email' => 'E-mail adres', 'requested-on' => 'Aangevraagd op',
-                                    'role' => 'Huidige rollen van gebruiker',
-                                    'actions' => 'Acties',
-                                ],
-                            ],
-
-                            \App\Models\PrivateMessage::REQUEST_TYPE_USER_CREATED_BY_COOPERATION => 'Gebruiker aangemaakt door cooperatie',
-                            \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie',
-                            \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
-                            \App\Models\PrivateMessage::REQUEST_TYPE_QUOTATION => 'Offerte',
-                            \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek',
-                        ],
-                        'create' => [
-                            'header' => 'U bent de aanvraag van :name aan het koppelen met een coach',
-
-                            'form' => [
-                                'message-to-coach' => [
-                                    'label' => 'Uw bericht aan de coach',
-                                    'placeholder' => 'Bijv: De heer Jan wilde meer weten over vloerisolatie...',
-                                ],
-                                'title' => 'Titel van het bericht',
-                                'select-coach' => 'Selecteer een coach',
-                                'submit' => 'Coach koppelen',
-                                'submit-warning' => 'Weet u zeker dat u deze coach met :name wilt koppelen?',
-                            ],
-                        ],
-                        'talk-to-coach' => [
-                            'header' => 'U kunt hier een bericht naar een coach sturen',
-
-                            'form' => [
-                                'message-to-coach' => [
-                                    'label' => 'Uw bericht aan de coach',
-                                    'placeholder' => 'Bijv: bent u beschikbaar de komende tijd?',
-                                ],
-                                'title' => 'Titel van het bericht',
-                                'select-coach' => 'Naar welke coach wilt u dit bericht sturen?',
-                                'submit' => 'Coach bericht sturen',
-//							'submit-warning'   => 'Weet u zeker dat u deze coach met :firstName :lastName wilt koppelen?'
-                            ],
-                        ],
-                        'store' => [
-                            'success' => 'De coach is verbonden, de coach kan nu verdere actie ondernemen.',
-                        ],
-                    ],
-                    'assign-roles' => [
-                        'index' => [
-                            'header' => 'Overzicht gebruikers - rollen toewijzen',
-
-                            'table' => [
-                                'columns' => [
-                                    'first-name' => 'Voornaam',
-                                    'last-name' => 'Achternaam',
-                                    'email' => 'E-mail adres',
-                                    'role' => 'Huidige rollen van gebruiker',
-                                    'actions' => 'Acties',
-                                ],
-                            ],
-                        ],
-                        'edit' => [
-                            'header' => 'Verander rollen voor :firstName :lastName',
-
-                            'form' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'roles' => 'Rol toewijzen aan gebruiker',
-                                'email' => 'E-mail adres',
-                                'role' => 'Koppel rol aan de nieuwe gebruiker',
-                                'select-role' => 'Selecteer een rol...',
-                                'password' => [
-                                    'header' => 'Wachtwoord instellen',
-                                    'label' => 'Wachtwoord',
-                                    'placeholder' => 'Wachtwoord invullen...',
-                                    'help' => 'U kunt het wachtwoord leeg laten, de gebruiker kan deze dan zelf invullen',
-                                ],
-
-                                'submit' => 'Rollen wijzigen',
-                            ],
-                        ],
-                        'update' => [
-                            'success' => 'Rollen zijn bijgewerkt',
-                        ],
-                    ],
-                    'questionnaires' => [
-                        'index' => [
-                            'header' => 'Alle vragenlijsten voor uw cooperatie',
-                            'table' => [
-                                'columns' => [
-                                    'questionnaire-name' => 'Vragenlijst naam',
-                                    'step' => 'Komt na stap',
-                                    'active' => 'Actief',
-                                    'actions' => 'Acties',
-                                    'see-results' => 'Bekijk resultaten',
-                                    'edit' => 'Bewerk vragenlijst',
-                                ],
-                            ],
-                            'types' => [
-                                'text' => 'Kort antwoord',
-                                'textarea' => 'Alinea',
-                                'select' => 'Dropdownmenu',
-                                'radio' => 'Selectievakjes',
-                                'checkbox' => 'Meerkeuze',
-                                'date' => 'Datum',
-                            ],
-                        ],
-                        'edit' => [
-                            'types' => [
-                                'text' => 'Kort antwoord',
-                                'textarea' => 'Alinea',
-                                'select' => 'Dropdownmenu',
-                                'radio' => 'Meerkeuze',
-                                'date' => 'Datum',
-                                'checkbox' => 'Selectievakjes',
-                            ],
-                            'add-validation' => 'Voeg validatie toe',
-                            'success' => 'Vragenlijst is bijgewerkt',
-                        ],
-                    ],
-                    'index' => [
-                        'header' => 'Alle gebruikers van uw coöperatie',
-                        'text' => 'Een overzicht van alle <strong>gebruikers</strong> van uw huidige cooperatie',
-
-                        'table' => [
-                            'columns' => [
-                                'first-name' => 'Voornaam',
-                                'last-name' => 'Achternaam',
-                                'email' => 'E-mail adres',
-                                'role' => 'Huidige rollen van gebruiker',
-                                'actions' => 'Acties',
-                            ],
-                        ],
-                        'create' => [
-                            'leave-creation-tool' => 'Keer terug naar overzicht',
-                            'leave-creation-tool-warning' => 'Let op!, alle wijzigingen zullen verloren gaan. Uw hiervoor gemaakte formulier is dan niet meer terug te krijgen!',
-                        ],
                     ],
                 ],
             ],

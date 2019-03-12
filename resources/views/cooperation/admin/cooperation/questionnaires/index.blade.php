@@ -3,8 +3,8 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.header')
-            <a href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.header')
+            <a href="{{route('cooperation.admin.cooperation.questionnaires.create')}}" class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
 
         <div class="panel-body">
@@ -13,10 +13,10 @@
                     <table class="table table-responsive ">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.questionnaire-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.step')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.active')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.actions')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.questionnaire-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.step')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.active')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -29,7 +29,7 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-success" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.edit', ['id' => $questionnaire->id])}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.table.columns.edit')</a>
+                                        <a class="btn btn-success" href="{{route('cooperation.admin.cooperation.questionnaires.edit', ['id' => $questionnaire->id])}}">@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.edit')</a>
                                     </div>
                                 </td>
                             </tr>
@@ -70,13 +70,11 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         type: "post",
-                        url: '{{route('cooperation.admin.cooperation.coordinator.questionnaires.set-active')}}',
+                        url: '{{route('cooperation.admin.cooperation.questionnaires.set-active')}}',
                         data: {
                             questionnaire_active: $(this).prop('checked'),
                             questionnaire_id: $(this).data('questionnaire-id')
                         }
-                    }).done(function () {
-                        console.log('bier!');
                     })
                 });
                 $('table').DataTable(

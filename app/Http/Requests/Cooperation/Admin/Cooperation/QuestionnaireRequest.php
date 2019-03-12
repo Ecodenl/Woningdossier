@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator;
+namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
 use App\Models\Questionnaire;
 use Illuminate\Foundation\Http\FormRequest;

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\Cooperation\Coordinator;
+namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\QuestionnaireRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\QuestionnaireRequest;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;

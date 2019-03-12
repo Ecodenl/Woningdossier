@@ -5,17 +5,17 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{ route('cooperation.admin.cooperation.coordinator.questionnaires.update') }}" method="post">
+            <form action="{{ route('cooperation.admin.cooperation.questionnaires.update') }}" method="post">
                 <input type="hidden" name="questionnaire[id]" value="{{$questionnaire->id}}">
                 {{csrf_field()}}
                 <div class="row">
                     <div class="col-sm-6">
-                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-warning">
-                            @lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool')
+                        <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.questionnaires.index')}}" class="btn btn-warning">
+                            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
                         </a>
                     </div>
                     <div class="col-sm-6">
-                        <button type="submit" href="{{route('cooperation.admin.cooperation.coordinator.questionnaires.index')}}" class="btn btn-primary pull-right">
+                        <button type="submit" href="{{route('cooperation.admin.cooperation.questionnaires.index')}}" class="btn btn-primary pull-right">
                             Opslaan
                         </button>
                     </div>
@@ -25,22 +25,22 @@
                     <div class="col-md-3">
                         <div id="tool-box" class="list-group">
                             <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i>
-                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.text')
+                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.text')
                             </a>
                             <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>
-                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.textarea')
+                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.textarea')
                             </a>
                             <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i> 
-                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.radio')
+                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.radio')
                             </a>
                             <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> 
-                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.checkbox')
+                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.checkbox')
                             </a>
                             <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> 
-                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.select')
+                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.select')
                             </a>
                             <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>
-                                @lang('woningdossier.cooperation.admin.cooperation.coordinator.questionnaires.index.types.date')
+                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.date')
                             </a>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                             <div class="panel-body" >
                                 <div id="sortable">
                                     @forelse($questionnaire->questions()->orderBy('order')->get() as $question)
-                                        @component('cooperation.admin.cooperation.coordinator.questionnaires.layouts.form-build-panel', ['question' => $question])
+                                        @component('cooperation.admin.cooperation.questionnaires.layouts.form-build-panel', ['question' => $question])
 
                                         @endcomponent
                                     @empty
@@ -676,7 +676,7 @@
         });
 
         $('#leave-creation-tool').on('click', function (event) {
-           if (confirm('@lang('woningdossier.cooperation.admin.cooperation.coordinator.index.create.leave-creation-tool-warning')')) {
+           if (confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool-warning')')) {
 
            } else {
                event.preventDefault();

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -16,16 +17,19 @@ class RequestAccountConfirmationEmail extends Mailable
      */
     public $user;
 
+    public $cooperation;
+
     /**
      * Create a new message instance.
      *
      * @param User $user
-     *
+     * @param Cooperation $cooperation
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user, Cooperation $cooperation)
     {
         $this->user = $user;
+        $this->cooperation = $cooperation;
     }
 
     /**

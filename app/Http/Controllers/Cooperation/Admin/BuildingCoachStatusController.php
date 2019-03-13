@@ -6,6 +6,7 @@ use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class BuildingCoachStatusController extends Controller
 {
@@ -29,6 +30,34 @@ class BuildingCoachStatusController extends Controller
                 'coach_id' => $connectedCoachToBuilding->coach_id,
                 'building_id' => $connectedCoachToBuilding->building_id,
                 'status' => $status
+            ]);
+        }
+    }
+
+    /**
+     * Set a appointment date for a building id, we will set this for all the permitted coaches on the building.
+     * We get the most recent building status and will use that as status for the appointment date
+     *
+     * @param Cooperation $cooperation
+     * @param Request $request
+     */
+    public function setAppointmentDate(Cooperation $cooperation, Request $request)
+    {
+        $buildingId = $request->get('building_id');
+        $appointmentDate = $request->get('appointment_date');
+
+        $mostRecentBuildingCoachStatus = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId)->first();
+
+        // we only want to set it for the coaches that are currently 'active'
+        $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
+
+        foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+            // now create the new status for all the coaches
+            BuildingCoachStatus::create([
+                'coach_id' => $connectedCoachToBuilding->coach_id,
+                'building_id' => $connectedCoachToBuilding->building_id,
+                'status' => $mostRecentBuildingCoachStatus->status,
+                'appointment_date' => $appointmentDate
             ]);
         }
     }

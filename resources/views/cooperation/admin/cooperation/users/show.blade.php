@@ -182,15 +182,36 @@
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             var userId = $('input[name=user\\[id\\]]').val();
 
-            // scrollChatsToBottom();
+            var appointmentDate = $('#appointment-date');
+
+            // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
+            var appointmentDateValue = appointmentDate.val();
+
             keepNavTabOpenOnRedirect();
             setUrlHashInHiddenInput();
             scrollChatToMostRecentMessage();
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
-            $('#appointment-date').datetimepicker({
+            appointmentDate.datetimepicker({
                 format: "YYYY-MM-DD HH:mm",
                 locale: '{{app()->getLocale()}}',
+            }).on('dp.hide', function (event) {
+                console.log(event);
+                var date = $("#appointment-date").find("input").val();
+                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.set-appointment-date')')) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('cooperation.admin.building-coach-status.set-appointment-date')}}',
+                        data: {
+                            building_id: buildingOwnerId,
+                            appointment_date: date
+                        },
+                    }).done(function () {
+                        location.reload();
+                    })
+                } else {
+                    // event.date = appointmentDateValue;
+                }
             });
 
             // delete the current user
@@ -216,6 +237,7 @@
 
                 if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.set-status')')) {
                     $.ajax({
+                        method: 'POST',
                         url: '{{route('cooperation.admin.building-coach-status.set-status')}}',
                         data: {
                             building_id: buildingOwnerId,

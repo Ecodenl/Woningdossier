@@ -176,7 +176,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             Route::group(['prefix' => 'building-coach-status', 'as' => 'building-coach-status.'], function () {
-                Route::get('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');
+                Route::post('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');
+                Route::post('set-appointment-date', 'BuildingCoachStatusController@setAppointmentDate')->name('set-appointment-date');
             });
             Route::group(['middleware' => ['role:cooperation-admin|super-admin']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');

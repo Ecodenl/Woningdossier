@@ -175,6 +175,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::post('remove-role', 'RoleController@removeRole')->name('remove-role');
             });
 
+            Route::group(['prefix' => 'building-coach-status', 'as' => 'building-coach-status.'], function () {
+                Route::get('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');
+            });
             Route::group(['middleware' => ['role:cooperation-admin|super-admin']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
@@ -198,7 +201,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     });
                 });
 
-                Route::resource('coaches', 'CoachController')->only('index');
+                Route::resource('coaches', 'CoachController')->only(['index', 'show']);
 
                 Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                     Route::get('', 'ReportController@index')->name('index');

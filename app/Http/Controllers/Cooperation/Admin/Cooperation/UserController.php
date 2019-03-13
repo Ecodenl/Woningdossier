@@ -49,38 +49,13 @@ class UserController extends Controller
         $buildingId = $building->id;
         $roles = Role::all();
         $coaches = $cooperation->getCoaches()->get();
-        $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last();
 
-        $activeCount = \DB::raw('(
-                SELECT coach_id, building_id, count(`status`) AS count_active
-	            FROM building_coach_statuses
-	            WHERE building_id = ' . $buildingId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_ACTIVE . ' \'
-	            group by coach_id, building_id
-            )  AS bcs2');
-        $removedCount = \DB::raw('(
-                SELECT building_id, coach_id, count(`status`) AS count_removed
-	            FROM building_coach_statuses
-	            WHERE building_id = ' . $buildingId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
-	            group by coach_id, building_id
-            ) AS bcs3');
-        $buildingPermissionCount = \DB::raw('(
-                SELECT user_id, count(`building_id`) as count_building_permission
-	            FROM building_permissions
-	            WHERE building_id = ' . $buildingId . '
-	            GROUP BY user_id
-            ) as bp');
+        $manageableStatuses = BuildingCoachStatus::getManageableStatuses();
+        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
-
-        /**
-         * Retrieves the coaches that have a active building status, also returns the building_permission count so we can check if the coach can access the building
-         */
-        $coachesWithActiveBuildingCoachStatus =
-            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_active AS count_active', 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
-                ->from($activeCount)
-                ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
-                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
-                ->havingRaw('(count_active > count_removed) OR count_removed IS NULL')
-                ->get();
+        $mostRecentStatusesForBuildingId = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
+        // pick the first one, since its ordered on the created_at.
+        $mostRecentBuildingCoachStatus = $mostRecentStatusesForBuildingId->first();
 
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
         $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
@@ -95,7 +70,7 @@ class UserController extends Controller
 
         return view('cooperation.admin.cooperation.users.show', compact(
             'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
-                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next'
+                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses', 'mostRecentBuildingCoachStatus'
             )
         );
     }

@@ -36,10 +36,13 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.status')</label>
-                        <select disabled class="form-control" name="user[building_coach_status][status]"
-                                id="building-coach-status">
-                            @foreach(__('woningdossier.building-coach-statuses') as $buildingCoachStatusKey => $buildingCoachStatusName)
+                        <label for="building-coach-status">@lang('woningdossier.cooperation.admin.cooperation.users.show.status.label')</label>
+                        <select class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                            <option disabled selected value="">
+                                @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
+                                {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
+                            </option>
+                            @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
                                 <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
                             @endforeach
                         </select>
@@ -47,13 +50,14 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
-                        <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
-                            @foreach($roles as $role)
-                                <option @if($user->hasRole($role)) selected="selected"
-                                        @endif value="{{$role->id}}">{{$role->name}}</option>
-                            @endforeach
-                        </select>
+                        <label for="appointment-date">@lang('woningdossier.cooperation.admin.cooperation.users.show.appointment-date.label')</label>
+                        <div class='input-group date' id="appointment-date">
+                            <input id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                                   value="{{$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $mostRecentBuildingCoachStatus->appointment_date : ''}}"/>
+                            <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -79,15 +83,13 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.edit.form.appointment-date')</label>
-                        <div class='input-group date' id="appointment-date">
-                            <input disabled id="appointment-date" name="user[building_coach_status][appointment_date]"
-                                   type='text' class="form-control"
-                                   value="{{$lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $lastKnownBuildingCoachStatus->appointment_date : ''}}"/>
-                            <span class="input-group-addon">
-                               <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
+                        <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
+                        <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                            @foreach($roles as $role)
+                                <option @if($user->hasRole($role)) selected="selected"
+                                        @endif value="{{$role->id}}">{{$role->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
@@ -207,6 +209,26 @@
                 }
             });
 
+            $('#building-coach-status').select2({
+
+            }).on('select2:selecting', function (event) {
+                var statusToSelect = $(event.params.args.data.element);
+
+                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.set-status')')) {
+                    $.ajax({
+                        url: '{{route('cooperation.admin.building-coach-status.set-status')}}',
+                        data: {
+                            building_id: buildingOwnerId,
+                            status: statusToSelect.val(),
+                        }
+                    }).done(function () {
+                        location.reload();
+                    })
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
+            });
             $('#associated-coaches').select2({
                 templateSelection: function (tag, container) {
                     var option = $('#associated-coaches option[value="' + tag.id + '"]');

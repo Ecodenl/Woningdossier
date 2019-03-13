@@ -41,7 +41,7 @@
                                     @if($lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastKnownBuildingCoachStatus->appointment_date))
                                         {{$lastKnownBuildingCoachStatus->appointment_date}}
                                     @else
-                                        @lang('woningdossier.building-coach-statuses.'.\App\Models\BuildingCoachStatus::STATUS_AWAITING)
+                                        @lang('woningdossier.building-coach-statuses.'.\App\Models\BuildingCoachStatus::STATUS_ACTIVE)
                                     @endif
                                 </td>
                             </tr>

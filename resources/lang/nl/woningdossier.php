@@ -10,13 +10,17 @@ return [
         ],
     ],
     'building-coach-statuses' => [
-        \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT => 'Afspraak is gemaakt',
-        \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT => 'Nieuwe afspraak',
-        \App\Models\BuildingCoachStatus::STATUS_DONE => 'Afgehandeld',
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
+
+        \App\Models\BuildingCoachStatus::STATUS_PENDING => 'In afwachting',
+
+        \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS => 'In uitvoering',
+        \App\Models\BuildingCoachStatus::STATUS_EXECUTED => 'Uitgevoerd',
+        \App\Models\BuildingCoachStatus::STATUS_NO_EXECUTION => 'Geen uitvoering',
+
+
         \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
 
-        \App\Models\BuildingCoachStatus::STATUS_AWAITING=> 'In afwachting',
     ],
     'cooperation' => [
         'create-building' => [
@@ -394,7 +398,8 @@ return [
                             'button' => 'Bijwerken'
                         ],
                         'status' => [
-                            'label' => 'Huidge status: ',
+                            'current' => 'Huige status: ',
+                            'label' => 'Status: ',
                             'button' => 'Kies status'
                         ],
                         'associated-coach' => [
@@ -415,6 +420,8 @@ return [
                         'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
                         'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
 
+                        'set-status' => 'Weet u zeker dat u deze status wilt zetten voor de gekoppelde coaches ?',
+                        'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor de gekoppelde coaches ?',
                         'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
                         'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
 

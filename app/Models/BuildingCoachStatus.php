@@ -240,7 +240,7 @@ class BuildingCoachStatus extends Model
                     ->whereRaw('building_id = '.$buildingId.' and bcs1.coach_id = bcs2.coach_id');
             })
             ->whereIn('coach_id', $coachIdsThatAreConnectedToBuilding)
-            ->orderByDesc('coach_id', 'created_at')
+            ->orderByDesc('created_at')
             ->get();
 
     }

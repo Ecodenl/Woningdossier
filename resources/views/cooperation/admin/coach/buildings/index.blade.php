@@ -24,7 +24,7 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
-                                $building = $buildingCoachStatus->building;
+                                $building = $buildingCoachStatus->building()->withTrashed()->first();
                                 $user = $building->user;
                             ?>
 
@@ -41,7 +41,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{$buildingCoachStatus->status}}
+                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
                                 </td>
                                 <td>
                                     {{$buildingCoachStatus->appointment_date}}

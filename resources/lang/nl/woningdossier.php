@@ -245,7 +245,8 @@ return [
                             'yes' => 'Toegang tot gebouw'
                         ],
 
-                        'add-status-alert' => 'Weet u zeker dat u deze status aan het gebouw wilt hangen?',
+                        'set-status' => 'Weet u zeker dat u deze status aan het gebouw wilt hangen?',
+                        'set-appointment-date' => 'Weet u zeker dat u de afspraak wilt vastzetten op de gekozen datum?',
                         'tabs' => [
                             'messages-public' => [
                                 'title' => 'Berichten bewoner'

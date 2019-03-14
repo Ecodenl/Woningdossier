@@ -48,19 +48,33 @@ class BuildingCoachStatusController extends Controller
         $appointmentDate = $request->get('appointment_date');
 
         $appointmentDate = Carbon::parse($appointmentDate);
-        $mostRecentBuildingCoachStatus = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId)->first();
+        $mostRecentBuildingCoachStatuses = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
 
         // we only want to set it for the coaches that are currently 'active'
         $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
-        foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+        // if the user is a coach, then he may only set the appointment date forhimself
+        // if the user is a coordinator or cooperation-admin we set the building coach statuses for every connected active coach
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coach'])) {
+            $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', \Auth::id())->first();
             // now create the new status for all the coaches
             BuildingCoachStatus::create([
-                'coach_id' => $connectedCoachToBuilding->coach_id,
-                'building_id' => $connectedCoachToBuilding->building_id,
+                'coach_id' => \Auth::id(),
+                'building_id' => $buildingId,
                 'status' => $mostRecentBuildingCoachStatus->status,
-                'appointment_date' => $appointmentDate
+                'appointment_date' => $appointmentDate,
             ]);
+        } else if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->first();
+            foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+                // now create the new status for all the coaches
+                BuildingCoachStatus::create([
+                    'coach_id' => $connectedCoachToBuilding->coach_id,
+                    'building_id' => $connectedCoachToBuilding->building_id,
+                    'status' => $mostRecentBuildingCoachStatus->status,
+                    'appointment_date' => $appointmentDate
+                ]);
+            }
         }
     }
 }

@@ -11,7 +11,6 @@
         </div>
 
         <input type="hidden" name="building[id]" value="{{$building->id}}">
-        <input type="hidden" name="user[id]" value="{{$user instanceof \App\Models\User ? $user->id : ''}}">
         <div class="panel-body">
             {{--delete a pipo--}}
             @if($user instanceof \App\Models\User && $user->allowedAccessToHisBuilding($building->id))
@@ -32,20 +31,18 @@
                 </div>
             @endif
             {{--status and roles--}}
-            <?php
-                $statuses = collect(__('woningdossier.building-coach-statuses'));
-                // coach cant remove himself.
-                $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_REMOVED);
-                // cant be saved to the db, just for the show.
-                $statuses->pull(\App\Models\BuildingCoachStatus::STATUS_AWAITING);
-            ?>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.show.status.label')</label>
-                        <select class="form-control" name="user[building_coach_status][status]"
-                                id="building-coach-status">
-                            @foreach($statuses as $buildingCoachStatusKey => $buildingCoachStatusName)
+                        <select class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                            @if($mostRecentBuildingCoachStatus instanceof stdClass)
+                                <option disabled selected value="">
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
+                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
+                                </option>
+                            @endif
+                            @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
                                 <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
                             @endforeach
                         </select>
@@ -55,8 +52,7 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <input disabled id="appointment-date" name="user[building_coach_status][appointment_date]"
-                                   type='text' class="form-control"
+                            <input id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
                                    value="{{$lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $lastKnownBuildingCoachStatus->appointment_date : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
@@ -186,7 +182,11 @@
 
             // get some basic information
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
-            var userId = $('input[name=user\\[id\\]]').val();
+
+            var appointmentDate = $('#appointment-date');
+
+            // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
+            var originalAppointmentDate = appointmentDate.find('input').val();
 
             // scrollChatsToBottom();
             keepNavTabOpenOnRedirect();
@@ -194,32 +194,53 @@
             scrollChatToMostRecentMessage();
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
-            $('#appointment-date').datetimepicker({
-                format: "YYYY-MM-DD HH:mm",
-                locale: '{{app()->getLocale()}}',
+            $('#building-coach-status').select2({
+
+            }).on('select2:selecting', function (event) {
+                var statusToSelect = $(event.params.args.data.element);
+
+                if (confirm('@lang('woningdossier.cooperation.admin.coach.buildings.show.set-status')')) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('cooperation.admin.building-coach-status.set-status')}}',
+                        data: {
+                            building_id: buildingOwnerId,
+                            status: statusToSelect.val(),
+                        }
+                    }).done(function () {
+                        location.reload();
+                    })
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
             });
 
-            $('#building-coach-status').select2()
-                .on('select2:selecting', function (event) {
-                    var statusToSelect = $(event.params.args.data.element);
+            appointmentDate.datetimepicker({
+                format: "YYYY-MM-DD HH:mm",
+                locale: '{{app()->getLocale()}}',
+            }).on('dp.hide', function (event) {
+                var date = appointmentDate.find('input').val();
 
-                    if (confirm('@lang('woningdossier.cooperation.admin.coach.show.add-status-alert')')) {
-                        $.ajax({
-                            url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
-                            method: 'POST',
-                            data: {
-                                status: statusToSelect.val(),
-                                building_id: buildingOwnerId
-                            }
-                        }).done(function () {
-                            // just reload the page
-                            location.reload();
-                        });
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
+                if (confirm('@lang('woningdossier.cooperation.admin.coach.buildings.show.set-appointment-date')')) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('cooperation.admin.building-coach-status.set-appointment-date')}}',
+                        data: {
+                            building_id: buildingOwnerId,
+                            appointment_date: date
+                        },
+                    }).done(function () {
+                        location.reload();
+                    })
+                } else {
+                    var formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD HH:mm');
+                    // if the user does not want to set / change the appointment date
+                    // we set the date back to the one we got onload.
+                    appointmentDate.find('input').val(formattedDate);
+                }
+            });
+
             $('#role-select').select2();
 
             $('#associated-coaches').select2({

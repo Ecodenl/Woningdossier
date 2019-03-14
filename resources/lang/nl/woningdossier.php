@@ -386,6 +386,7 @@ return [
 
                         'set-status' => 'Weet u zeker dat u deze status wilt zetten voor de gekoppelde coaches ?',
                         'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor de gekoppelde coaches ?',
+                        'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
                         'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
                         'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
 

@@ -232,8 +232,9 @@ class BuildingCoachStatus extends Model
         // so we can where in on the most recent statuses, so we only get the statuses for the coaches that aren't removed
         $coachIdsThatAreConnectedToBuilding = $coachesWithActiveBuildingCoachStatus->pluck('coach_id')->toArray();
 
+        \DB::enableQueryLog();
         return \DB::table('building_coach_statuses as bcs1')
-            ->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')
+            ->select('coach_id', 'building_id', 'created_at', 'status', 'bcs1.appointment_date')
             ->where('created_at', function ($query) use ($buildingId) {
                 $query->select(\DB::raw('MAX(created_at)'))
                     ->from('building_coach_statuses as bcs2')

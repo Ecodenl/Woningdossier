@@ -55,7 +55,13 @@ class UserController extends Controller
 
         $mostRecentStatusesForBuildingId = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
         // pick the first one, since its ordered on the created_at.
-        $mostRecentBuildingCoachStatus = $mostRecentStatusesForBuildingId->first();
+
+        $mostRecentBuildingCoachStatusArray = $mostRecentStatusesForBuildingId->all();
+        // get the most recent status for the current coach and hydrate it.
+        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
+            [$mostRecentBuildingCoachStatusArray[0]]
+        );
+
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
         $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 

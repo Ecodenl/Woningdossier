@@ -427,7 +427,7 @@ return [
                             'street' => 'Straat',
                             'city' => 'Plaats',
                             'phone-number' => 'Telefoonnummer',
-
+                            'select-coach' => 'Selecteer een coach om te koppelen aan de gebruiker',
                             'submit' => 'Gebruiker aanmaken',
                         ],
                     ],

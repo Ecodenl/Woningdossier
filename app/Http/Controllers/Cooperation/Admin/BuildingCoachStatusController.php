@@ -6,6 +6,7 @@ use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BuildingCoachStatusController extends Controller
@@ -46,6 +47,7 @@ class BuildingCoachStatusController extends Controller
         $buildingId = $request->get('building_id');
         $appointmentDate = $request->get('appointment_date');
 
+        $appointmentDate = Carbon::parse($appointmentDate);
         $mostRecentBuildingCoachStatus = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId)->first();
 
         // we only want to set it for the coaches that are currently 'active'

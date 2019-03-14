@@ -230,7 +230,7 @@ class BuildingCoachStatus extends Model
         $coachIdsThatAreConnectedToBuilding = $coachesWithActiveBuildingCoachStatus->pluck('coach_id')->toArray();
 
         return \DB::table('building_coach_statuses as bcs1')
-            ->select('coach_id', 'building_id', 'created_at', 'status')
+            ->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')
             ->where('created_at', function ($query) use ($buildingId) {
                 $query->select(\DB::raw('MAX(created_at)'))
                     ->from('building_coach_statuses as bcs2')

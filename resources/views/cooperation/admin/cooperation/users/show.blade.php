@@ -38,10 +38,12 @@
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.cooperation.users.show.status.label')</label>
                         <select class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                            @if($mostRecentBuildingCoachStatus instanceof stdClass)
                             <option disabled selected value="">
                                 @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
                                 {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
                             </option>
+                            @endif
                             @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
                                 <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
                             @endforeach
@@ -53,7 +55,7 @@
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.cooperation.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
                             <input id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
-                                   value="{{$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $mostRecentBuildingCoachStatus->appointment_date : ''}}"/>
+                                   value="{{$mostRecentBuildingCoachStatus instanceof stdClass ? $mostRecentBuildingCoachStatus->appointment_date : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -185,7 +187,7 @@
             var appointmentDate = $('#appointment-date');
 
             // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-            var appointmentDateValue = appointmentDate.val();
+            var originalAppointmentDate = appointmentDate.find('input').val();
 
             keepNavTabOpenOnRedirect();
             setUrlHashInHiddenInput();
@@ -197,7 +199,7 @@
                 locale: '{{app()->getLocale()}}',
             }).on('dp.hide', function (event) {
                 console.log(event);
-                var date = $("#appointment-date").find("input").val();
+                var date = event.date._i;
                 if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.set-appointment-date')')) {
                     $.ajax({
                         method: 'POST',
@@ -210,7 +212,10 @@
                         location.reload();
                     })
                 } else {
-                    // event.date = appointmentDateValue;
+                    var formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD HH:mm');
+                    // if the user does not want to set / change the appointment date
+                    // we set the date back to the one we got onload.
+                    appointmentDate.find('input').val(formattedDate);
                 }
             });
 

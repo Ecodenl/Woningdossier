@@ -198,8 +198,8 @@
                 format: "YYYY-MM-DD HH:mm",
                 locale: '{{app()->getLocale()}}',
             }).on('dp.hide', function (event) {
-                console.log(event);
-                var date = event.date._i;
+                var date = appointmentDate.find('input').val();
+
                 if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.set-appointment-date')')) {
                     $.ajax({
                         method: 'POST',

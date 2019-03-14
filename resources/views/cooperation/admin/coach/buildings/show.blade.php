@@ -35,8 +35,8 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.show.status.label')</label>
-                        <select @if(!$user instanceof \App\Models\User) disabled @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
-                            @if($mostRecentBuildingCoachStatus instanceof stdClass)
+                        <select @if(!$user instanceof \App\Models\User || !is_null($mostRecentBuildingCoachStatus->appointment_date)) disabled @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                            @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus)
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
@@ -53,7 +53,7 @@
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
                             <input @if(!$user instanceof \App\Models\User) disabled @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
-                                   value="{{$mostRecentBuildingCoachStatus instanceof stdClass ? $mostRecentBuildingCoachStatus->appointment_date : ''}}"/>
+                                   value="{{$mostRecentBuildingCoachStatus instanceof stdClass ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -217,12 +217,20 @@
             });
 
             appointmentDate.datetimepicker({
-                format: "YYYY-MM-DD HH:mm",
+                format: "YYYY-MM-DD",
                 locale: '{{app()->getLocale()}}',
+                showClear: true,
             }).on('dp.hide', function (event) {
                 var date = appointmentDate.find('input').val();
+                var confirmMessage = '';
 
-                if (confirm('@lang('woningdossier.cooperation.admin.coach.buildings.show.set-appointment-date')')) {
+                if (date.length > 0) {
+                    confirmMessage = "@lang('woningdossier.cooperation.admin.coach.buildings.show.set-appointment-date')"
+                } else {
+                    confirmMessage = "@lang('woningdossier.cooperation.admin.coach.buildings.show.set-empty-appointment-date')"
+                }
+
+                if (confirm(confirmMessage)) {
                     $.ajax({
                         method: 'POST',
                         url: '{{route('cooperation.admin.building-coach-status.set-appointment-date')}}',
@@ -234,7 +242,7 @@
                         location.reload();
                     })
                 } else {
-                    var formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD HH:mm');
+                    var formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD');
                     // if the user does not want to set / change the appointment date
                     // we set the date back to the one we got onload.
                     appointmentDate.find('input').val(formattedDate);

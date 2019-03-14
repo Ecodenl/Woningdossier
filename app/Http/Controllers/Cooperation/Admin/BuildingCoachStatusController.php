@@ -58,7 +58,10 @@ class BuildingCoachStatusController extends Controller
         $buildingId = $request->get('building_id');
         $appointmentDate = $request->get('appointment_date');
 
-        $appointmentDate = Carbon::parse($appointmentDate);
+        if (!is_null($appointmentDate)) {
+            $appointmentDate = Carbon::parse($appointmentDate);
+        }
+
         $mostRecentBuildingCoachStatuses = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
 
         // we only want to set it for the coaches that are currently 'active'
@@ -73,7 +76,7 @@ class BuildingCoachStatusController extends Controller
             BuildingCoachStatus::create([
                 'coach_id' => \Auth::id(),
                 'building_id' => $buildingId,
-                'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus),
+                'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus, $appointmentDate),
                 'appointment_date' => $appointmentDate,
             ]);
         } else if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
@@ -83,7 +86,7 @@ class BuildingCoachStatusController extends Controller
                 BuildingCoachStatus::create([
                     'coach_id' => $connectedCoachToBuilding->coach_id,
                     'building_id' => $connectedCoachToBuilding->building_id,
-                    'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus),
+                    'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus, $appointmentDate),
                     'appointment_date' => $appointmentDate
                 ]);
             }
@@ -96,13 +99,18 @@ class BuildingCoachStatusController extends Controller
      * @param $mostRecentBuildingCoachStatus
      * @return string
      */
-    public function getStatusToSetForAppointment($mostRecentBuildingCoachStatus): string
+    public function getStatusToSetForAppointment($mostRecentBuildingCoachStatus, $appointmentDate): string
     {
-        // if a coach tries to make a appointment date while the status is still set to pending, then we set the status to in progress ourself
-        if ($mostRecentBuildingCoachStatus->status == BuildingCoachStatus::STATUS_PENDING) {
-            $status = BuildingCoachStatus::STATUS_IN_PROGRESS;
+        // if the appointment date is set to null, we set the status to no execution.
+        if (!is_null($appointmentDate)) {
+            // if a coach tries to make a appointment date while the status is still set to pending, then we set the status to in progress ourself
+            if ($mostRecentBuildingCoachStatus->status == BuildingCoachStatus::STATUS_PENDING) {
+                $status = BuildingCoachStatus::STATUS_IN_PROGRESS;
+            } else {
+                $status = $mostRecentBuildingCoachStatus->status;
+            }
         } else {
-            $status = $mostRecentBuildingCoachStatus->status;
+            $status = BuildingCoachStatus::STATUS_NO_EXECUTION;
         }
         return $status;
     }

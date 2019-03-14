@@ -250,6 +250,7 @@ return [
 
                         'set-status' => 'Weet u zeker dat u deze status aan het gebouw wilt hangen?',
                         'set-appointment-date' => 'Weet u zeker dat u de afspraak wilt vastzetten op de gekozen datum?',
+                        'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
                         'tabs' => [
                             'messages-public' => [
                                 'title' => 'Berichten bewoner'

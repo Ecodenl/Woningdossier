@@ -85,8 +85,11 @@ class BuildingController extends Controller
 
         $mostRecentStatusesForBuildingId = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
 
-        // get the most recent status for the current coach
-        $mostRecentBuildingCoachStatus = $mostRecentStatusesForBuildingId->where('coach_id', \Auth::id())->first();
+        // get the most recent status for the current coach and hydrate it.
+        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
+            $mostRecentStatusesForBuildingId->where('coach_id', \Auth::id())->all()
+        )->first();
+
 
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
         $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();

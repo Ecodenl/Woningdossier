@@ -297,7 +297,8 @@ return [
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stadt',
                                 'status' => 'Status',
-                                'no-known-created-at' => 'Niet bekend'
+                                'appointment-date' => 'Datum afspraak',
+                                'no-known-created-at' => 'Niet bekend',
                             ],
                         ],
                     ],

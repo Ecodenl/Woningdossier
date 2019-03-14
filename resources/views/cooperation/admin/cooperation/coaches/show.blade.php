@@ -53,7 +53,7 @@
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
                                 </td>
                                 <td>
-                                    {{$buildingCoachStatus->appointment_date}}
+                                    {{!is_null($buildingCoachStatus->appointment_date) ? $buildingCoachStatus->appointment_date->format('Y-m-d H:i') : ''}}
                                 </td>
                             </tr>
                         @endforeach

@@ -140,7 +140,7 @@
                     <ul id="sidebar-main"
                         class="sidebar list-group panel-collapse @if(str_replace(['.coach.index', '.buildings.', '.messages.', '.connect-to-resident.'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif"
                         aria-expanded="true">
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.buildings.index'])) active @endif">
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.buildings.index', 'cooperation.admin.coach.buildings.show'])) active @endif">
                             <a href="{{route('cooperation.admin.coach.buildings.index')}}">@lang('woningdossier.cooperation.admin.coach.side-nav.buildings')</a>
                         </li>
                     </ul>

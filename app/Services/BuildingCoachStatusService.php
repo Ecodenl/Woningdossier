@@ -37,7 +37,7 @@ class BuildingCoachStatusService
         BuildingCoachStatus::create([
             'coach_id' => $userId,
             'building_id' => $buildingId,
-            'status' => BuildingCoachStatus::STATUS_ACTIVE,
+            'status' => BuildingCoachStatus::STATUS_PENDING,
         ]);
 
         return true;

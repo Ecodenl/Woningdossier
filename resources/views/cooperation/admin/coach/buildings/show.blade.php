@@ -53,7 +53,7 @@
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
                             <input @if(!$user instanceof \App\Models\User) disabled @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
-                                   value="{{$lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $lastKnownBuildingCoachStatus->appointment_date : ''}}"/>
+                                   value="{{$mostRecentBuildingCoachStatus instanceof stdClass ? $mostRecentBuildingCoachStatus->appointment_date : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                             </span>

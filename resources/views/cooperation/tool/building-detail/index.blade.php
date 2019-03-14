@@ -47,7 +47,9 @@
                 @endcomponent
             </div>
         </div>
+        @if(\App\Helpers\HoomdossierSession::isUserNotObserving())
         <div class="row">
+
             <div class="col-md-12">
                 <hr>
                 <div class="form-group add-space">
@@ -59,6 +61,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </form>
 @endsection
 

@@ -28,7 +28,7 @@ class HoomdossierSession extends Session
         // default to false
         self::setIsUserComparingInputSources(false);
 
-        self::setIsObserving();
+        self::setIsObserving(false);
     }
 
     /**
@@ -124,7 +124,12 @@ class HoomdossierSession extends Session
         self::setHoomdossierSession('is_observing', $observing);
     }
 
-    public function getIsObserving(): bool
+    /**
+     * Check if a user is observing someones tool / building
+     *
+     * @return bool
+     */
+    public static function getIsObserving(): bool
     {
         return self::getHoomdossierSession('is_observing');
     }
@@ -286,6 +291,26 @@ class HoomdossierSession extends Session
     public static function isUserNotComparingInputSources(): bool
     {
         return ! self::getIsUserComparingInputSources();
+    }
+
+    /**
+     * Check if a user is observing a building / tool
+     *
+     * @return bool
+     */
+    public static function isUserObserving(): bool
+    {
+        return self::getIsObserving();
+    }
+
+    /**
+     * Check if a users is not observing a building / tool
+     *
+     * @return bool
+     */
+    public static function isUserNotObserving(): bool
+    {
+        return !self::isUserObserving();
     }
 
     /**

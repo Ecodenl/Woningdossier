@@ -80,6 +80,9 @@ class ToolController extends Controller
         // But the input source value is from the building owner so the coach can see the input, the coach can switch this in the tool itself.
         HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue, $role);
 
+        // so the user isnt able to save anything
+        HoomdossierSession::setIsObserving(true);
+
         return redirect()->route('cooperation.tool.index');
     }
 }

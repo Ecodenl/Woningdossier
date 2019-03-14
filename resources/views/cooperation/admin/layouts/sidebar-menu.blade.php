@@ -26,8 +26,8 @@
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.coaches')
                             </a>
                         </li>
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.steps.index', 'cooperation.admin.cooperation.users.create'])) active @endif">
-                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.steps.index')}}">
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.create'])) active @endif">
+                            <a href="{{route('cooperation.admin.cooperation.users.create')}}">
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.create-user')
                             </a>
                         </li>
@@ -46,7 +46,7 @@
                                 @lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')
                             </a>
                         </li>
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.example-buildings.index', 'cooperation.admin.example-buildings.edit', 'cooperation.admin.example-buildings.create'])) active @endif">
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.steps.index'])) active @endif">
                             <a href="{{route('cooperation.admin.cooperation.cooperation-admin.steps.index')}}">
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.step')
                             </a>

@@ -24,10 +24,10 @@
                             </button>
                         @endcan
                         @if($user->allowedAccessToHisBuilding($building->id))
-                            <button type="button" id="observe-building" class="btn btn-primary">
+                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}" id="observe-building" class="btn btn-primary">
                                 @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.label')
                                 @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.button')
-                            </button>
+                            </a>
                         @endif
                     </div>
                 </div>

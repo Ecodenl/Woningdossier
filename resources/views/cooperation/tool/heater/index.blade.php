@@ -231,6 +231,7 @@
                         </div>
                     </div>
                     <hr>
+                    @if(\App\Helpers\HoomdossierSession::isUserNotObserving())
                     <div class="form-group add-space">
                         <div class="">
                             <a class="btn btn-success pull-left"
@@ -240,6 +241,7 @@
                             </button>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

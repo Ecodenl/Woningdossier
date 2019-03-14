@@ -184,6 +184,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
             });
 
+            Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
+                Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
+                Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')->name('observe-tool-for-user');
+            });
+
             Route::post('message', 'MessagesController@sendMessage')->name('send-message');
 
             /* Section for the cooperation-admin and coordinator */
@@ -273,7 +278,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('show/{id}', 'BuildingController@show')->name('show');
                     Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
                     Route::post('edit', 'BuildingController@update')->name('update');
-                    Route::get('{id}', 'BuildingController@fillForUser')->name('fill-for-user');
                     Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
 
                     Route::resource('details', 'BuildingDetailsController')->only('store');

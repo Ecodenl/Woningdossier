@@ -141,7 +141,7 @@ class BuildingCoachStatus extends Model
     public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
     {
 //        $buildingCoachStatuses = static::where('building_id', $buildingId)->get();
-        $buildingCoachStatuses = static::getConnectedCoaches($buildingId);
+        $buildingCoachStatuses = static::getConnectedCoachesByBuildingId($buildingId);
 
         $buildingConversationRequest = PrivateMessage::conversationRequest($buildingId)->first();
 

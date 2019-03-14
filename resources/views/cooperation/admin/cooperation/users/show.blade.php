@@ -32,17 +32,22 @@
                     </div>
                 </div>
             </div>
-            {{--status and roles--}}
+            {{--status and appointment date--}}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.cooperation.users.show.status.label')</label>
-                        <select class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select @if($coachesWithActiveBuildingCoachStatus->isEmpty()) disabled="disabled" @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
                             @if($mostRecentBuildingCoachStatus instanceof stdClass)
-                            <option disabled selected value="">
-                                @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
-                                {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
-                            </option>
+                                <option disabled selected value="">
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
+                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
+                                </option>
+                            @else
+                                <option disabled selected value="">
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
+                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusForBuildingId($building->id)}}
+                                </option>
                             @endif
                             @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
                                 <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
@@ -54,7 +59,7 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.cooperation.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <input id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                            <input @if($coachesWithActiveBuildingCoachStatus->isEmpty()) disabled="disabled" @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
                                    value="{{$mostRecentBuildingCoachStatus instanceof stdClass ? $mostRecentBuildingCoachStatus->appointment_date : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
@@ -63,7 +68,8 @@
                     </div>
                 </div>
             </div>
-            {{--coaches and appointmentdate--}}
+            {{--coaches and role--}}
+            @if($user->allowedAccessToHisBuilding($building->id))
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -95,6 +101,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
 
         <ul class="nav nav-tabs">

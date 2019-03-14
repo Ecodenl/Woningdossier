@@ -169,6 +169,9 @@ return [
                 'header' => 'Als welke rol wilt u doorgaan?',
                 'text' => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
             ],
+            'messages' => [
+                'send' => 'Versturen'
+            ],
             /* translations for the coach environment */
             'coach' => [
                 'side-nav' => [

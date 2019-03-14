@@ -20,10 +20,10 @@ class CoachController extends Controller
     public function index(Cooperation $cooperation)
     {
         $users = $cooperation
-                ->users()
-                ->role('coach')
-                ->where('id', '!=', \Auth::id())
-                ->get();
+            ->users()
+            ->role(['coach', 'coordinator'])
+            ->where('id', '!=', \Auth::id())
+            ->get();
 
         $roles = Role::all();
 
@@ -32,19 +32,24 @@ class CoachController extends Controller
 
     public function show(Cooperation $cooperation, $userId)
     {
-        // retrieve all the coach statuses from the coach.
-        $buildingCoachStatuses = BuildingCoachStatus::select('building_id')
-//            ->orderByDesc('created_at')
-            ->where('coach_id', \Auth::id())
-            ->groupBy('building_id')
-            ->with(
-                ['building' => function($query) {
-                    $query->withTrashed()
-                        ->with('user');
-                }]
-            )->get();
+
+        $userToShow = User::findOrFail($userId);
+        $buildingFromUser = $userToShow->buildings()->first();
 
 
-        return view('cooperation.admin.cooperation.coaches.show', compact('buildingCoachStatuses'));
+        $buildingCoachStatuses = BuildingCoachStatus::hydrate(
+            \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status')
+                ->where('created_at', function ($query) use ($userId) {
+                    $query->select(\DB::raw('MAX(created_at)'))
+                        ->from('building_coach_statuses as bcs2')
+                        ->whereRaw('coach_id = ' . $userId . ' and bcs1.building_id = bcs2.building_id');
+                })->where('coach_id', $userId)
+                ->orderBy('created_at')
+                ->get()->all()
+        );
+
+        $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
+
+        return view('cooperation.admin.cooperation.coaches.show', compact('buildingCoachStatuses', 'userToShow', 'roles', 'buildingFromUser'));
     }
 }

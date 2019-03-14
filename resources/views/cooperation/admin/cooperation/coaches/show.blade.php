@@ -2,7 +2,16 @@
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.buildings.index.header')</div>
+        <div class="panel-heading">
+            @lang('woningdossier.cooperation.admin.cooperation.coaches.show.header', [
+                'role' => implode(' / ', $roles),
+                'full_name' => $userToShow->getFullName(),
+                'street' => $buildingFromUser->street,
+                'number' => $buildingFromUser->number,
+                'zip_code' => strtoupper($buildingFromUser->postal_code),
+                'city' => $buildingFromUser->city
+            ])
+        </div>
 
         <div class="panel-body">
             <div class="row">
@@ -10,13 +19,13 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.date')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.street-house-number')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.zip-code')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.appointment-date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.street-house-number')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.zip-code')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.city')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.status')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.appointment-date')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -24,7 +33,7 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
-                                $building = $buildingCoachStatus->building;
+                                $building = $buildingCoachStatus->building()->withTrashed()->first();
                                 $user = $building->user;
                             ?>
 
@@ -32,7 +41,7 @@
                                 <td>{{$user instanceof \App\Models\User ? $user->created_at : '-'}}</td>
                                 <td>{{$user instanceof \App\Models\User ? $user->getFullName() : '-'}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.coach.buildings.show', ['id' => $building->id])}}">
+                                    <a href="{{route('cooperation.admin.cooperation.coaches.show', ['id' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                 </td>

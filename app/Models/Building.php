@@ -112,6 +112,7 @@ class Building extends Model
         });
     }
 
+
     /**
      * Check if a step is completed for a building with matching input source id.
      *

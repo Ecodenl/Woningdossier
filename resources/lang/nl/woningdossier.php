@@ -271,7 +271,7 @@ return [
 
                 'coaches' => [
                     'index' => [
-                        'header' => 'Overzicht van alle coaches voor uw coöperatie',
+                        'header' => 'Alle gebruikers van uw coöperatie',
 
                         'table' => [
                             'columns' => [
@@ -287,61 +287,19 @@ return [
                     ],
 
                     'show' => [
-                        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
+                        'header' => '<b>:role:</b> :full_name, :street :number, :zip_code :city',
 
-                        'observe-building' => [
-                            'label' => 'Woning bekijken',
-                            'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
-                        ],
-                        'delete-account' => [
-                            'label' => 'Account verwijderen',
-                            'button' => '<i class="glyphicon glyphicon-trash"></i>'
-                        ],
-                        'role' => [
-                            'label' => 'Rol',
-                            'button' => 'Bijwerken'
-                        ],
-                        'status' => [
-                            'label' => 'Huidge status: ',
-                            'button' => 'Kies status'
-                        ],
-                        'associated-coach' => [
-                            'label' => 'Gekoppelde coaches',
-                            'button' => 'Kies coach'
-                        ],
-                        'appointment-date' => [
-                            'label' => 'Datum afspraak',
-                            'button' => 'Kies datum'
-                        ],
-
-                        'has-building-access' => [
-                            'no' => 'Geen toegang tot gebouw',
-                            'yes' => 'Toegang tot gebouw'
-                        ],
-
-                        'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
-                        'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
-                        'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
-
-                        'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
-                        'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
-
-                        'tabs' => [
-                            'messages-public' => [
-                                'title' => 'Berichten bewoner'
+                        'table' => [
+                            'columns' => [
+                                'date' => 'Datum',
+                                'name' => 'Naam',
+                                'street-house-number' => 'Straat en huisnummer',
+                                'zip-code' => 'Postcode',
+                                'city' => 'Stadt',
+                                'status' => 'Status',
+                                'no-known-created-at' => 'Niet bekend'
                             ],
-                            'messages-intern' => [
-                                'title' => 'Berichten intern'
-                            ],
-                            'comments-on-building' => [
-                                'title' => 'Opmerkingen bij woning'
-                            ],
-                            'fill-in-history' => [
-                                'title' => 'Invulhistorie'
-                            ]
                         ],
-                        'next' => 'Volgende',
-                        'previous' => 'Vorige'
                     ],
                 ],
                 'reports' => [
@@ -526,7 +484,7 @@ return [
                     'side-nav' => [
                         'label' => 'Coöperatie admin menu',
                         'home' => 'Account overzicht',
-                        'coaches' => 'Coaches',
+                        'coaches' => 'Coaches / coördinatoren',
                         'create-user' => 'Voeg Coach/bewoner toe',
                         'reports' => 'Rapporten',
                         'example-buildings' => 'Voorbeeldwoningen',
@@ -579,7 +537,7 @@ return [
                     'side-nav' => [
                         'label' => 'Coördinator menu',
                         'home' => 'Account overzicht',
-                        'coach' => 'Coaches',
+                        'coaches' => 'Coaches / coördinatoren',
                         'add-user' => 'Voeg Coach / Bewoner toe',
                         'reports' => 'Rapporten',
                     ],

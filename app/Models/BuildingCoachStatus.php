@@ -35,6 +35,9 @@ use Illuminate\Support\Collection;
  */
 class BuildingCoachStatus extends Model
 {
+
+    protected $table = 'building_coach_statuses';
+
     protected $fillable = [
         'coach_id', 'status', 'building_id', 'appointment_date', 'private_message_id',
     ];

@@ -35,7 +35,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.show.status.label')</label>
-                        <select class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select @if(!$user instanceof \App\Models\User) disabled @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
                             @if($mostRecentBuildingCoachStatus instanceof stdClass)
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <input id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                            <input @if(!$user instanceof \App\Models\User) disabled @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
                                    value="{{$lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $lastKnownBuildingCoachStatus->appointment_date : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>

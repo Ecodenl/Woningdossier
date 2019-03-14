@@ -7,7 +7,7 @@
                         {{$questionnaire->name}}
                     </h3>
 
-                    @if(\App\Helpers\HoomdossierSession::isUserNotObserving())
+                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
                     <button id="submit-custom-questionnaire-{{$questionnaire->id}}" data-questionnaire-id="{{$questionnaire->id}}" class="pull-right btn btn-primary">
                         @lang('default.buttons.next')
                     </button>
@@ -42,7 +42,7 @@
                                     @break
                             @endswitch
                         @endforeach
-                        @if(\App\Helpers\HoomdossierSession::isUserNotObserving())
+                        @if(!\App\helpers\HoomdossierSession::isUserObserving())
                         <div class="row">
                             <div class="col-md-12">
                                 <hr>

@@ -787,6 +787,7 @@ return [
         'tool' => [
             'current-building-address' => 'Huidig adres: :street :number, :zip_code :city',
             'filling-for' => 'U bewerkt de woning van :first_name :last_name als :input_source_name.',
+            'observing-tool' => 'U bekijkt de woning van :first_name :last_name als :input_source_name, u kunt geen aanpassing doen.',
             'change-interest' => 'U heeft in de eerste stap uw interesse over :item aangegeven, u kunt deze hier veranderen of zo laten.',
             'is-user-comparing-input-sources' => 'U bent nu de data aan het vergelijken, de velden die rood zijn gemarkeerd bevat een andere waarde',
 

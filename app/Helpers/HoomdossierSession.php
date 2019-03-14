@@ -304,16 +304,6 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Check if a users is not observing a building / tool
-     *
-     * @return bool
-     */
-    public static function isUserNotObserving(): bool
-    {
-        return !self::isUserObserving();
-    }
-
-    /**
      * Return the Hoomdossier session data.
      *
      * @return array

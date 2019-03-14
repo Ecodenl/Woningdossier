@@ -60,7 +60,7 @@ class UserController extends Controller
         // get the most recent status for the current coach and hydrate it.
         $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
             [$mostRecentBuildingCoachStatusArray[0]]
-        );
+        )->first();
 
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
         $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();

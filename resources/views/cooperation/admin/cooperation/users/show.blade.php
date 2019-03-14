@@ -37,7 +37,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.cooperation.users.show.status.label')</label>
-                        <select @if($coachesWithActiveBuildingCoachStatus->isEmpty()) disabled="disabled" @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select @if($coachesWithActiveBuildingCoachStatus->isEmpty() || !is_null($mostRecentBuildingCoachStatus->appointment_date)) disabled="disabled" @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
                             @if($mostRecentBuildingCoachStatus instanceof stdClass)
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
@@ -59,8 +59,9 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.cooperation.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
+                            <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !is_null($mostRecentBuildingCoachStatus->appointment_date); ?>
                             <input @if($coachesWithActiveBuildingCoachStatus->isEmpty()) disabled="disabled" @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
-                            value="{{$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
+                            value="{{$hasCoachStatusAndAppointmentIsNotNull ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                             </span>

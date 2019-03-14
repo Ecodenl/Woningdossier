@@ -25,13 +25,24 @@ class BuildingCoachStatusController extends Controller
         // we only want to set it for the coaches that are currently 'active'
         $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
-        foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+        // if the user is a coach, then he may only set the status for himself
+        // if the user is a coordinator or cooperation-admin we set the status for every connected coach
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coach'])) {
             // now create the new status for all the coaches
             BuildingCoachStatus::create([
-                'coach_id' => $connectedCoachToBuilding->coach_id,
-                'building_id' => $connectedCoachToBuilding->building_id,
+                'coach_id' => \Auth::id(),
+                'building_id' => $buildingId,
                 'status' => $status
             ]);
+        } else {
+            foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+                // now create the new status for all the coaches
+                BuildingCoachStatus::create([
+                    'coach_id' => $connectedCoachToBuilding->coach_id,
+                    'building_id' => $buildingId,
+                    'status' => $status
+                ]);
+            }
         }
     }
 
@@ -57,11 +68,12 @@ class BuildingCoachStatusController extends Controller
         // if the user is a coordinator or cooperation-admin we set the building coach statuses for every connected active coach
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coach'])) {
             $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', \Auth::id())->first();
+
             // now create the new status for all the coaches
             BuildingCoachStatus::create([
                 'coach_id' => \Auth::id(),
                 'building_id' => $buildingId,
-                'status' => $mostRecentBuildingCoachStatus->status,
+                'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus),
                 'appointment_date' => $appointmentDate,
             ]);
         } else if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
@@ -71,10 +83,27 @@ class BuildingCoachStatusController extends Controller
                 BuildingCoachStatus::create([
                     'coach_id' => $connectedCoachToBuilding->coach_id,
                     'building_id' => $connectedCoachToBuilding->building_id,
-                    'status' => $mostRecentBuildingCoachStatus->status,
+                    'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus),
                     'appointment_date' => $appointmentDate
                 ]);
             }
         }
+    }
+
+    /**
+     * Get the right status to set for an appointment.
+     *
+     * @param $mostRecentBuildingCoachStatus
+     * @return string
+     */
+    public function getStatusToSetForAppointment($mostRecentBuildingCoachStatus): string
+    {
+        // if a coach tries to make a appointment date while the status is still set to pending, then we set the status to in progress ourself
+        if ($mostRecentBuildingCoachStatus->status == BuildingCoachStatus::STATUS_PENDING) {
+            $status = BuildingCoachStatus::STATUS_IN_PROGRESS;
+        } else {
+            $status = $mostRecentBuildingCoachStatus->status;
+        }
+        return $status;
     }
 }

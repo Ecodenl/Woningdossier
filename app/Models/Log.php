@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Log extends Model
 {
     protected $fillable = [
-        'user_id', 'building_id', 'message', 'about_user_id'
+        'user_id', 'building_id', 'message', 'for_user_id'
     ];
 
     public function scopeForBuildingId($query, $buildingId)

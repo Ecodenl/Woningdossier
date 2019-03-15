@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Events\FillingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -46,6 +47,7 @@ class ToolController extends Controller
         // But the input source value is from the building owner so the coach can see the input, the coach can switch this in the tool itself.
         HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue, $role);
 
+        \Event::dispatch(new FillingToolForUserEvent($building, $user, \Auth::user()));
         return redirect()->route('cooperation.tool.index');
     }
 

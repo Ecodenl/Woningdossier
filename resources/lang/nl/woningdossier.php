@@ -12,8 +12,9 @@ return [
     'log-messages' => [
         'logged-in' => 'Gebruiker :full_name heeft ingelogd op de applicatie om :time',
         'registered' => 'Gebruiker :full_name heeft geregistreerd op :time',
+        'filling-tool-for' => 'Gebruiker :full_name is ingelogd op de tool van :for_full_name om :time',
         'action-plan-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan om :time',
-        'participant-added' => 'Gebruiker :full_name heeft :participant_added_full_name gekoppeld aan dit gebouw om :time',
+        'participant-added' => 'Gebruiker :full_name heeft :for_full_name gekoppeld aan dit gebouw om :time',
     ],
     'building-coach-statuses' => [
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',

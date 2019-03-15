@@ -292,7 +292,10 @@
                         location.reload();
                     })
                 } else {
-                    var formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD');
+                    var formattedDate = originalAppointmentDate;
+                    if (originalAppointmentDate.length > 0) {
+                        formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD');
+                    }
                     // if the user does not want to set / change the appointment date
                     // we set the date back to the one we got onload.
                     appointmentDate.find('input').val(formattedDate);

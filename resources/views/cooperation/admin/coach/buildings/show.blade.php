@@ -36,10 +36,15 @@
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.show.status.label')</label>
                         <select autocomplete="off" @if($userDoesNotExist) disabled @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
-                            @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus)
+                            @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
+                                </option>
+                            @else
+                                <option @if($building->isNotActive()) disabled selected @endif>
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
+                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
                                 </option>
                             @endif
                             @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
@@ -63,7 +68,7 @@
 
                             @endforeach
                             {{--This status can ALWAYS be choosen.--}}
-                            <option @if($building->isNotActive()) selected="selected" @endif value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
+                            <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
                                 {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
                             </option>
                         </select>
@@ -73,7 +78,7 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <input @if($userDoesNotExist) disabled @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                            <input @if($userDoesNotExist || $building->isNotActive()) disabled @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
                                    value="{{$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate() ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>

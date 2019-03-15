@@ -28,7 +28,7 @@
                                 <td>{{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : __('woningdossier.cooperation.admin.cooperation.users.index.table.columns.no-known-created-at')}}</td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.users.show', ['id' => $user->id])}}">
+                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
                                         {{$building->street}} {{$building->house_number}} {{$building->house_number_ext}}
                                     </a>
                                 </td>

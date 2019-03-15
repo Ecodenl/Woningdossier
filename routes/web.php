@@ -191,7 +191,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
             Route::post('message', 'MessagesController@sendMessage')->name('send-message');
 
-            Route::get('users/show/{id}', 'UserController@show')->name('users.show');
+            Route::get('buildings/show/{buildingId}', 'BuildingController@show')->name('buildings.show');
 
             /* Section for the cooperation-admin and coordinator */
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
@@ -200,7 +200,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                     Route::get('', 'UserController@index')->name('index');
-                    Route::get('show/{id}', 'UserController@show')->name('show');
                     Route::get('create', 'UserController@create')->name('create');
                     Route::post('create', 'UserController@store')->name('store');
 
@@ -277,7 +276,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');
-                    Route::get('show/{id}', 'BuildingController@show')->name('show');
                     Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
                     Route::post('edit', 'BuildingController@update')->name('update');
                     Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');

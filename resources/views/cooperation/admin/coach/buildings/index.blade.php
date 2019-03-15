@@ -32,7 +32,7 @@
                                 <td>{{$user instanceof \App\Models\User ? $user->created_at : '-'}}</td>
                                 <td>{{$user instanceof \App\Models\User ? $user->getFullName() : '-'}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.users.show', ['id' => $building->id])}}">
+                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                 </td>

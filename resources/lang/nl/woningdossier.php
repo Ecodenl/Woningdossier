@@ -9,6 +9,12 @@ return [
             'en' => 'Engels',
         ],
     ],
+    'log-messages' => [
+        'logged-in' => 'Gebruiker :full_name heeft ingelogd op de applicatie om :time',
+        'registered' => 'Gebruiker :full_name heeft geregistreerd op :time',
+        'action-plan-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan om :time',
+        'coach-got-connected-to-building' => 'Gebruiker :full_name heeft coach :full_name_coach gekoppeld aan dit gebouw om :time',
+    ],
     'building-coach-statuses' => [
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
 
@@ -175,6 +181,69 @@ return [
             ],
             'messages' => [
                 'send' => 'Versturen'
+            ],
+            'users' => [
+                'show' => [
+                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
+
+                    'observe-building' => [
+                        'label' => 'Woning bekijken',
+                        'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
+                    ],
+                    'delete-account' => [
+                        'label' => 'Account verwijderen',
+                        'button' => '<i class="glyphicon glyphicon-trash"></i>'
+                    ],
+                    'role' => [
+                        'label' => 'Rol',
+                        'button' => 'Bijwerken'
+                    ],
+                    'status' => [
+                        'current' => 'Huige status: ',
+                        'label' => 'Status: ',
+                        'button' => 'Kies status'
+                    ],
+                    'associated-coach' => [
+                        'label' => 'Gekoppelde coaches',
+                        'button' => 'Kies coach'
+                    ],
+                    'appointment-date' => [
+                        'label' => 'Datum afspraak',
+                        'button' => 'Kies datum'
+                    ],
+
+                    'has-building-access' => [
+                        'no' => 'Geen toegang tot gebouw',
+                        'yes' => 'Toegang tot gebouw'
+                    ],
+
+                    'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
+                    'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
+                    'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
+
+                    'set-status' => 'Weet u zeker dat u deze status wilt zetten voor de gekoppelde coaches ?',
+                    'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor de gekoppelde coaches ?',
+                    'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
+                    'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
+                    'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
+
+                    'tabs' => [
+                        'messages-public' => [
+                            'title' => 'Berichten bewoner'
+                        ],
+                        'messages-intern' => [
+                            'title' => 'Berichten intern'
+                        ],
+                        'comments-on-building' => [
+                            'title' => 'Opmerkingen bij woning'
+                        ],
+                        'fill-in-history' => [
+                            'title' => 'Invulhistorie'
+                        ]
+                    ],
+                    'next' => 'Volgende',
+                    'previous' => 'Vorige'
+                ],
             ],
             /* translations for the coach environment */
             'coach' => [
@@ -350,67 +419,6 @@ return [
                         ],
                     ],
 
-                    'show' => [
-                        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
-
-                        'observe-building' => [
-                            'label' => 'Woning bekijken',
-                            'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
-                        ],
-                        'delete-account' => [
-                            'label' => 'Account verwijderen',
-                            'button' => '<i class="glyphicon glyphicon-trash"></i>'
-                        ],
-                        'role' => [
-                            'label' => 'Rol',
-                            'button' => 'Bijwerken'
-                        ],
-                        'status' => [
-                            'current' => 'Huige status: ',
-                            'label' => 'Status: ',
-                            'button' => 'Kies status'
-                        ],
-                        'associated-coach' => [
-                            'label' => 'Gekoppelde coaches',
-                            'button' => 'Kies coach'
-                        ],
-                        'appointment-date' => [
-                            'label' => 'Datum afspraak',
-                            'button' => 'Kies datum'
-                        ],
-
-                        'has-building-access' => [
-                            'no' => 'Geen toegang tot gebouw',
-                            'yes' => 'Toegang tot gebouw'
-                        ],
-
-                        'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
-                        'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
-                        'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
-
-                        'set-status' => 'Weet u zeker dat u deze status wilt zetten voor de gekoppelde coaches ?',
-                        'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor de gekoppelde coaches ?',
-                        'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
-                        'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
-                        'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
-
-                        'tabs' => [
-                            'messages-public' => [
-                                'title' => 'Berichten bewoner'
-                            ],
-                            'messages-intern' => [
-                                'title' => 'Berichten intern'
-                            ],
-                            'comments-on-building' => [
-                                'title' => 'Opmerkingen bij woning'
-                            ],
-                            'fill-in-history' => [
-                                'title' => 'Invulhistorie'
-                            ]
-                        ],
-                        'next' => 'Volgende',
-                        'previous' => 'Vorige'
-                    ],
 
                     'create' => [
                         'form' => [

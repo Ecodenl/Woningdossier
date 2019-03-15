@@ -47,7 +47,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
-                        <select class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select autocomplete="off" class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
                             @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
@@ -121,7 +121,7 @@
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
-                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
+                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach') && $coachesWithActiveBuildingCoachStatus->where('coach_id', Auth::id()) instanceof stdClass)
                                     <option locked="locked" selected>{{Auth::user()->getFullName()}}</option>
                                 @else
                                     @foreach($coaches as $coach)

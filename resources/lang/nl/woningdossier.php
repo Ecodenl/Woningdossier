@@ -13,7 +13,7 @@ return [
         'logged-in' => 'Gebruiker :full_name heeft ingelogd op de applicatie om :time',
         'registered' => 'Gebruiker :full_name heeft geregistreerd op :time',
         'action-plan-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan om :time',
-        'coach-got-connected-to-building' => 'Gebruiker :full_name heeft coach :full_name_coach gekoppeld aan dit gebouw om :time',
+        'participant-added' => 'Gebruiker :full_name heeft :participant_added_full_name gekoppeld aan dit gebouw om :time',
     ],
     'building-coach-statuses' => [
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',

@@ -273,4 +273,14 @@ class BuildingCoachStatus extends Model
             return false;
         }
     }
+
+    /**
+     * Check if a BuildingCoachStatus row has a appointment_date thats not null.
+     *
+     * @return bool
+     */
+    public function hasAppointmentDate(): bool
+    {
+        return !is_null($this->appointment_date);
+    }
 }

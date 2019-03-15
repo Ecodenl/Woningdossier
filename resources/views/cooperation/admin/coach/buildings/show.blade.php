@@ -13,7 +13,7 @@
         <input type="hidden" name="building[id]" value="{{$building->id}}">
         <div class="panel-body">
             {{--delete a pipo--}}
-            @if($user instanceof \App\Models\User && $user->allowedAccessToHisBuilding($building->id))
+            @if(!$userDoesNotExist && $user->allowedAccessToHisBuilding($building->id))
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="btn-group">
@@ -35,7 +35,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.coach.buildings.show.status.label')</label>
-                        <select @if(!$user instanceof \App\Models\User || !is_null($mostRecentBuildingCoachStatus->appointment_date)) disabled @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select autocomplete="off" @if($userDoesNotExist) disabled @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
                             @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus)
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
@@ -43,7 +43,22 @@
                                 </option>
                             @endif
                             @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                                <?php
+                                    // the if logic
+                                    $manageableStatusIsExecuted =  $buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_EXECUTED;
+                                    $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
+
+                                    // if there is an appointment date then it isn't allowed to change the status
+                                    // but if that day is today and the manageable status is executed, then the coach may change it.
+                                    // else we just want to show all the manageable statuses
+                                ?>
+                                @if($mostRecentBuildingCoachStatus->hasAppointmentDate())
+                                    @if($hasAppointmentThatIsToday && $manageableStatusIsExecuted)
+                                        <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                                    @endif
+                                @else
+                                    <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
@@ -52,8 +67,8 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.coach.buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <input @if(!$user instanceof \App\Models\User) disabled @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
-                                   value="{{$mostRecentBuildingCoachStatus instanceof stdClass ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
+                            <input @if($userDoesNotExist) disabled @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                                   value="{{$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate() ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -242,7 +257,12 @@
                         location.reload();
                     })
                 } else {
-                    var formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD');
+                    var formattedDate = originalAppointmentDate;
+
+                    if (originalAppointmentDate.length > 0) {
+                        formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD');
+                    }
+
                     // if the user does not want to set / change the appointment date
                     // we set the date back to the one we got onload.
                     appointmentDate.find('input').val(formattedDate);

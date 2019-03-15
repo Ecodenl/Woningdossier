@@ -41,7 +41,7 @@ class BuildingCoachStatusController extends Controller
             // we need to copy the most recent status and see if it has an appointment date.
             // if it has we need to create a new row without it otherwise the building is inactive and the appointment date is still set.
             foreach ($mostRecentBuildingCoachStatuses as $mostRecentBuildingCoachStatus) {
-                if (!is_null($mostRecentBuildingCoachStatuses->appointment_date)) {
+                if (!is_null($mostRecentBuildingCoachStatus->appointment_date)) {
                     BuildingCoachStatus::create([
                         'coach_id' => $mostRecentBuildingCoachStatus->coach_id,
                         'building_id' => $mostRecentBuildingCoachStatus->building_id,

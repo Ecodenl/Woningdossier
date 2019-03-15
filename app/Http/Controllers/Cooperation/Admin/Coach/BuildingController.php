@@ -100,7 +100,7 @@ class BuildingController extends Controller
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
         // since a user can be deleted, a buildin
-        if ($user instanceof User) {
+        if ($userExists) {
             // get previous user id
             $previous = $cooperation->users()->where('id', '<', $user->id)->max('id');
             // get next user id

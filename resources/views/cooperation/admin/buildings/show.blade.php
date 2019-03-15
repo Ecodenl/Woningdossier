@@ -480,8 +480,9 @@
                 var tabId = $(this).attr('href');
                 var tab = $(tabId);
                 var chat = tab.find('.panel-chat-body')[0];
-
-                chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                if (typeof chat !== "undefined") {
+                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                }
             });
 
         }

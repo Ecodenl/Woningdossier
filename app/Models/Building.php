@@ -76,8 +76,12 @@ class Building extends Model
         'deleted_at',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension',
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active'
     ];
 
     public static function boot()

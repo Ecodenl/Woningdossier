@@ -104,7 +104,7 @@
                         <select disabled="" class="form-control" name="user[roles]" id="role-select"
                                 multiple="multiple">
                             @foreach($roles as $role)
-                                <option @if($user instanceof \App\Models\User && $user->hasRole($role)) selected="selected"
+                                <option @if($userExists && $user->hasRole($role)) selected="selected"
                                         @endif value="{{$role->id}}">{{$role->name}}</option>
                             @endforeach
                         </select>
@@ -116,7 +116,7 @@
 
         <ul class="nav nav-tabs">
 
-            @if($user instanceof \App\Models\User && $user->allowedAccessToHisBuilding($building->id))
+            @if($userExists && $user->allowedAccessToHisBuilding($building->id))
                 <li>
                     <a data-toggle="tab" href="#messages-public">
                         @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-public.title')
@@ -134,7 +134,7 @@
                     @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.comments-on-building.title')
                 </a>
             </li>
-            @if($user instanceof \App\Models\User && (Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']) && $user->allowedAccessToHisBuilding($building->id)))
+            @if($userExists && (Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']) && $user->allowedAccessToHisBuilding($building->id)))
                 <li>
                     <a data-toggle="tab" href="#fill-in-history">
                         @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.fill-in-history.title')
@@ -177,7 +177,7 @@
                 </div>
             </div>
         </div>
-        @if($user instanceof \App\Models\User)
+        @if($userExists)
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-12">

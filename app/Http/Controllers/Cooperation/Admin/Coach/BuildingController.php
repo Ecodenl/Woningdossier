@@ -77,6 +77,7 @@ class BuildingController extends Controller
         $building = Building::withTrashed()->find($buildingId);
         $user = $cooperation->users()->find($building->user_id);
         $userDoesNotExist = !$user instanceof User;
+        $userExists = !$userDoesNotExist;
         $buildingId = $building->id;
         $roles = Role::all();
         $coaches = $cooperation->getCoaches()->get();
@@ -109,7 +110,7 @@ class BuildingController extends Controller
         return view('cooperation.admin.coach.buildings.show', compact(
                 'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
                 'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses', 'mostRecentBuildingCoachStatus',
-                'userDoesNotExist'
+                'userDoesNotExist', 'userExists'
             )
         );
     }

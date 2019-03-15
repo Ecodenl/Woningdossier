@@ -46,6 +46,8 @@ class UserController extends Controller
     {
         $user = $cooperation->users()->find($userId);
         $building = $user->buildings()->first();
+        $userDoesNotExist = !$user instanceof User;
+        $userExists = !$userDoesNotExist;
         $buildingId = $building->id;
         $roles = Role::all();
         $coaches = $cooperation->getCoaches()->get();
@@ -75,7 +77,8 @@ class UserController extends Controller
 
         return view('cooperation.admin.cooperation.users.show', compact(
             'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
-                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses', 'mostRecentBuildingCoachStatus'
+                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses', 'mostRecentBuildingCoachStatus',
+                'userDoesNotExist', 'userExists'
             )
         );
     }

@@ -38,20 +38,40 @@
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.cooperation.users.show.status.label')</label>
                         <select @if($coachesWithActiveBuildingCoachStatus->isEmpty() || !is_null($mostRecentBuildingCoachStatus->appointment_date)) disabled="disabled" @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
-                            @if($mostRecentBuildingCoachStatus instanceof stdClass)
+                            @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
                                 </option>
                             @else
-                                <option disabled selected value="">
+                                <option @if($building->isNotActive()) disabled selected @endif>
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusForBuildingId($building->id)}}
+                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
                                 </option>
                             @endif
                             @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                                <?php
+                                    // the if logic
+                                    $manageableStatusIsExecuted =  $buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_EXECUTED;
+                                    $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
+
+                                    // if there is an appointment date then it isn't allowed to change the status
+                                    // but if that day is today and the manageable status is executed, then the coach may change it.
+                                    // else we just want to show all the manageable statuses
+                                ?>
+                                @if($mostRecentBuildingCoachStatus->hasAppointmentDate())
+                                    @if($hasAppointmentThatIsToday && $manageableStatusIsExecuted)
+                                        <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                                    @endif
+                                @else
+                                    <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                                @endif
+
                             @endforeach
+                            {{--This status can ALWAYS be choosen.--}}
+                            <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
+                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -60,7 +80,7 @@
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.cooperation.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
                             <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !is_null($mostRecentBuildingCoachStatus->appointment_date); ?>
-                            <input @if($coachesWithActiveBuildingCoachStatus->isEmpty()) disabled="disabled" @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                            <input @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive()) disabled="disabled" @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
                             value="{{$hasCoachStatusAndAppointmentIsNotNull ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>

@@ -59,7 +59,13 @@
                                 @else
                                     <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
                                 @endif
+
+
                             @endforeach
+                            {{--This status can ALWAYS be choosen.--}}
+                            <option @if($building->isNotActive()) selected="selected" @endif value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
+                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                            </option>
                         </select>
                     </div>
                 </div>

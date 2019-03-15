@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddIsActiveColumnToBuildingsTable extends Migration
+class AddStatusColumnToBuildingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddIsActiveColumnToBuildingsTable extends Migration
     public function up()
     {
         Schema::table('buildings', function (Blueprint $table) {
-            $table->boolean('is_active')->after('user_id')->default(1);
+            $table->string('status')->after('user_id')->default('active');
         });
     }
 
@@ -26,7 +26,7 @@ class AddIsActiveColumnToBuildingsTable extends Migration
     public function down()
     {
         Schema::table('buildings', function (Blueprint $table) {
-            $table->dropColumn('is_active');
+            $table->dropColumn('status');
         });
     }
 }

@@ -72,6 +72,9 @@ class Building extends Model
 {
     use SoftDeletes;
 
+    const STATUS_IS_ACTIVE = 'active';
+    const STATUS_IS_NOT_ACTIVE = 'in_active';
+
     protected $dates = [
         'deleted_at',
     ];
@@ -478,5 +481,34 @@ class Building extends Model
     public function getFullAddress()
     {
         return "{$this->postal_code}, {$this->street}, {$this->number}";
+    }
+
+    /**
+     * Check if a building is active
+     *
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        if ($this->status == static::STATUS_IS_ACTIVE) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isNotActive()
+    {
+        return !$this->isActive();
+    }
+
+    /**
+     * Return the translation from a status
+     *
+     * @param $status
+     * @return string
+     */
+    public static function getTranslationForStatus($status): string
+    {
+        return __('woningdossier.building-statuses.'.$status);
     }
 }

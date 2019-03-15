@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin;
 
+use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -31,7 +32,7 @@ class BuildingCoachStatusRequest extends FormRequest
             ],
             'status' => [Rule::in([
                 BuildingCoachStatus::STATUS_NO_EXECUTION, BuildingCoachStatus::STATUS_EXECUTED, BuildingCoachStatus::STATUS_IN_PROGRESS,
-                BuildingCoachStatus::STATUS_PENDING, BuildingCoachStatus::STATUS_REMOVED,
+                BuildingCoachStatus::STATUS_PENDING, BuildingCoachStatus::STATUS_REMOVED, Building::STATUS_IS_NOT_ACTIVE
             ])]
         ];
     }

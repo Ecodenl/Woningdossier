@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
+use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
@@ -16,34 +17,46 @@ class BuildingCoachStatusController extends Controller
      *
      * @param Cooperation $cooperation
      * @param BuildingCoachStatusRequest $request
+     *
      */
     public function setStatus(Cooperation $cooperation, BuildingCoachStatusRequest $request)
     {
         $status = $request->get('status');
         $buildingId = $request->get('building_id');
+        $building = Building::withTrashed()->find($buildingId);
 
-        // we only want to set it for the coaches that are currently 'active'
-        $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
-
-        // if the user is a coach, then he may only set the status for himself
-        // if the user is a coordinator or cooperation-admin we set the status for every connected coach
-        if (\Auth::user()->hasRoleAndIsCurrentRole(['coach'])) {
-            // now create the new status for all the coaches
-            BuildingCoachStatus::create([
-                'coach_id' => \Auth::id(),
-                'building_id' => $buildingId,
-                'status' => $status
-            ]);
+        // if the in active status get chosen, we will set the building status to inactive.
+        // we wont do anything will the building_coach_status at this point.
+        // else we change the building status itself to active
+        // and apply the chosen building coach status.
+        if ($status == Building::STATUS_IS_NOT_ACTIVE) {
+            $building->status = Building::STATUS_IS_NOT_ACTIVE;
         } else {
-            foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+            $building->status = Building::STATUS_IS_ACTIVE;
+            // we only want to set it for the coaches that are currently 'active'
+            $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
+
+            // if the user is a coach, then he may only set the status for himself
+            // if the user is a coordinator or cooperation-admin we set the status for every connected coach
+            if (\Auth::user()->hasRoleAndIsCurrentRole(['coach'])) {
                 // now create the new status for all the coaches
                 BuildingCoachStatus::create([
-                    'coach_id' => $connectedCoachToBuilding->coach_id,
+                    'coach_id' => \Auth::id(),
                     'building_id' => $buildingId,
                     'status' => $status
                 ]);
+            } else {
+                foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+                    // now create the new status for all the coaches
+                    BuildingCoachStatus::create([
+                        'coach_id' => $connectedCoachToBuilding->coach_id,
+                        'building_id' => $buildingId,
+                        'status' => $status
+                    ]);
+                }
             }
         }
+        $building->save();
     }
 
     /**

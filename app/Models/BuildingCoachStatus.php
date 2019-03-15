@@ -140,30 +140,42 @@ class BuildingCoachStatus extends Model
      */
     public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
     {
-//        $buildingCoachStatuses = static::where('building_id', $buildingId)->get();
-        $buildingCoachStatuses = static::getConnectedCoachesByBuildingId($buildingId);
+        // get the building, even if its deleted.
+        $building = Building::withTrashed()->find($buildingId);
 
+        $buildingCoachStatuses = static::getConnectedCoachesByBuildingId($buildingId);
         $buildingConversationRequest = PrivateMessage::conversationRequest($buildingId)->first();
 
-        // check if a coach is connected with the building
-        if ($buildingCoachStatuses->isNotEmpty()) {
-            $lastKnownBuildingCoachStatus = static::where('status', '!=', BuildingCoachStatus::STATUS_REMOVED)->get()->last();
-            // and the status from it
-            $status = $lastKnownBuildingCoachStatus->status;
-            // get the translation
-            $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+        // first we need to check if the building is active
+        // this is the base for every status
+        // is the building is active, we try to get the building from the building coach status
+        // if the building is not active we return the in active status.
+        if ($building->isActive()) {
 
-        } else if ($buildingConversationRequest instanceof PrivateMessage) {
-            // if a conversation request has been sent, the status is pending.
-            $status = static::STATUS_PENDING;
-            // get the translation
-            $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+            // check if a coach is connected with the building
+            if ($buildingCoachStatuses->isNotEmpty()) {
+                $lastKnownBuildingCoachStatus = static::where('status', '!=', BuildingCoachStatus::STATUS_REMOVED)->get()->last();
+                // and the status from it
+                $status = $lastKnownBuildingCoachStatus->status;
+                // get the translation
+                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
 
+            } else if ($buildingConversationRequest instanceof PrivateMessage) {
+                // if a conversation request has been sent, the status is pending.
+                $status = static::STATUS_PENDING;
+                // get the translation
+                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+
+            } else {
+                // no coach status and no conversation request, the status is active.
+                $status = static::STATUS_ACTIVE;
+                // get the translation
+                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+            }
         } else {
-            // no coach status and no conversation request, the status is active.
-            $status = static::STATUS_ACTIVE;
-            // get the translation
-            $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+            // see comments in the if statement above.
+            $status = 'in-active-status';
+            $statusTranslation = __('woningdossier.building.in-active-status');
         }
 
 

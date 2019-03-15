@@ -16,7 +16,7 @@
                     <ul id="sidebar-main"
                         class="sidebar list-group panel-collapse  {{--@if(str_replace(['users.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} open collapse in {{--@else collapse @endif--}}"
                         aria-expanded="true">
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.index', 'cooperation.admin.cooperation.users.show'])) active @endif">
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.index', 'cooperation.admin.users.show'])) active @endif">
                             <a href="{{route('cooperation.admin.cooperation.users.index')}}">
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.home')
                             </a>
@@ -73,7 +73,7 @@
                     <ul id="sidebar-main"
                         class="sidebar list-group panel-collapse {{-- @if(str_replace(['assign-roles.', '.coach.', 'coordinator.index'], '', \Route::currentRouteName()) != \Route::currentRouteName()) --}}open collapse in {{--@else collapse @endif --}}"
                         aria-expanded="true">
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.index', 'cooperation.admin.cooperation.users.show'])) active @endif">
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.index', 'cooperation.admin.users.show'])) active @endif">
                             <a href="{{route('cooperation.admin.cooperation.users.index')}}">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.home')</a>
                         </li>
                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.coaches.index', 'cooperation.admin.cooperation.coaches.show'])) active @endif">
@@ -132,15 +132,15 @@
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">
                                 @lang('woningdossier.cooperation.admin.coach.side-nav.label')
-                                <span class="glyphicon glyphicon-text  @if(str_replace(['.coach.index', '.buildings.'], '', \Route::currentRouteName()) != \Route::currentRouteName()) glyphicon-chevron-up @else glyphicon-chevron-down @endif">
+                                <span class="glyphicon glyphicon-text  glyphicon-chevron-up ">
                                 </span>
                             </a>
                         </h4>
                     </div>
                     <ul id="sidebar-main"
-                        class="sidebar list-group panel-collapse @if(str_replace(['.coach.index', '.buildings.', '.messages.', '.connect-to-resident.'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif"
+                        class="sidebar list-group panel-collapse open collapse in "
                         aria-expanded="true">
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.buildings.index', 'cooperation.admin.coach.buildings.show'])) active @endif">
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.coach.buildings.index', 'cooperation.admin.users.show'])) active @endif">
                             <a href="{{route('cooperation.admin.coach.buildings.index')}}">@lang('woningdossier.cooperation.admin.coach.side-nav.buildings')</a>
                         </li>
                     </ul>

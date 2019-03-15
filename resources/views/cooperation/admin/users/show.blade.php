@@ -14,30 +14,42 @@
         <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
             {{--delete a pipo--}}
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="btn-group">
-                        @can('delete-user')
-                            <button type="button" id="delete-user" class="btn btn-danger">
-                                @lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.label')
-                                @lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.button')
-                            </button>
-                        @endcan
-                        @if($user->allowedAccessToHisBuilding($building->id))
-                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}" id="observe-building" class="btn btn-primary">
-                                @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.label')
-                                @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.button')
-                            </a>
-                        @endif
+            @if($userExists)
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="btn-group">
+                            @can('delete-user')
+                                <button type="button" id="delete-user" class="btn btn-danger">
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.label')
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.delete-account.button')
+                                </button>
+                            @endcan
+                            @if($user->allowedAccessToHisBuilding($building->id))
+                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
+                                   id="observe-building" class="btn btn-primary">
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.label')
+                                    @lang('woningdossier.cooperation.admin.cooperation.users.show.observe-building.button')
+                                </a>
+                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
+                                    <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
+                                       id="edit-building" class="btn btn-warning">
+                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
+                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
+                                    </a>
+                                @endif
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
             {{--status and appointment date--}}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.cooperation.users.show.status.label')</label>
-                        <select @if($coachesWithActiveBuildingCoachStatus->isEmpty() || !is_null($mostRecentBuildingCoachStatus->appointment_date)) disabled="disabled" @endif class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select @if($coachesWithActiveBuildingCoachStatus->isEmpty() || !is_null($mostRecentBuildingCoachStatus->appointment_date)) disabled="disabled"
+                                @endif class="form-control" name="user[building_coach_status][status]"
+                                id="building-coach-status">
                             @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.cooperation.users.show.status.current')
@@ -51,13 +63,13 @@
                             @endif
                             @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
                                 <?php
-                                    // the if logic
-                                    $manageableStatusIsExecuted =  $buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_EXECUTED;
-                                    $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
+                                // the if logic
+                                $manageableStatusIsExecuted = $buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_EXECUTED;
+                                $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
 
-                                    // if there is an appointment date then it isn't allowed to change the status
-                                    // but if that day is today and the manageable status is executed, then the coach may change it.
-                                    // else we just want to show all the manageable statuses
+                                // if there is an appointment date then it isn't allowed to change the status
+                                // but if that day is today and the manageable status is executed, then the coach may change it.
+                                // else we just want to show all the manageable statuses
                                 ?>
                                 @if($mostRecentBuildingCoachStatus->hasAppointmentDate())
                                     @if($hasAppointmentThatIsToday && $manageableStatusIsExecuted)
@@ -79,9 +91,18 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.cooperation.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !is_null($mostRecentBuildingCoachStatus->appointment_date); ?>
-                            <input @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive()) disabled="disabled" @endif id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
-                            value="{{$hasCoachStatusAndAppointmentIsNotNull ? $mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d') : ''}}"/>
+                            <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
+                            <input
+                                    @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive())
+                                        disabled
+                                    @endif
+                                    id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                                    @if($hasCoachStatusAndAppointmentIsNotNull)
+                                        value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d')}}"
+                                    @endif
+                            />
+
+
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -90,39 +111,45 @@
                 </div>
             </div>
             {{--coaches and role--}}
-            @if($user->allowedAccessToHisBuilding($building->id))
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="associated-coaches">@lang('woningdossier.cooperation.admin.cooperation.users.show.associated-coach.label')</label>
-                        <select name="user[associated_coaches]" id="associated-coaches" class="form-control"
-                                multiple="multiple">
-                            @foreach($coaches as $coach)
-                                <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
-                                <option
-                                        @if($coach->hasRole(['cooperation-admin', 'coordinator'])) locked="locked"
-                                        @endif
-                                        @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id)) selected="selected"
-                                        @endif value="{{$coach->id}}">
-                                    {{$coach->getFullName()}}
-                                </option>
-                            @endforeach
-                        </select>
+                @if($user->allowedAccessToHisBuilding($building->id))
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="associated-coaches">@lang('woningdossier.cooperation.admin.cooperation.users.show.associated-coach.label')</label>
+                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
+                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
+                                    <option locked="locked" selected>{{Auth::user()->getFullName()}}</option>
+                                @else
+                                    @foreach($coaches as $coach)
+                                        <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
+                                        <option @if($coach->hasRole(['cooperation-admin', 'coordinator']))
+                                                    locked="locked"
+                                                @endif
+                                                @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
+                                                    selected="selected"
+                                                @endif value="{{$coach->id}}">{{$coach->getFullName()}}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
-                        <select class="form-control" name="user[roles]" id="role-select" multiple="multiple">
-                            @foreach($roles as $role)
-                                <option @if($user->hasRole($role)) selected="selected"
-                                        @endif value="{{$role->id}}">{{$role->name}}</option>
-                            @endforeach
-                        </select>
+                @endif
+                @if($userExists)
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="role-select">@lang('woningdossier.cooperation.admin.cooperation.users.show.role.label')</label>
+                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                                @foreach($roles as $role)
+                                    <option @if($user->hasRole($role)) selected="selected" @endif value="{{$role->id}}">
+                                        {{$role->human_readable_name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
-            @endif
         </div>
 
         <ul class="nav nav-tabs">
@@ -133,11 +160,11 @@
                 </a>
             </li>
             @if($user->allowedAccessToHisBuilding($building->id))
-            <li>
-                <a data-toggle="tab" href="#messages-public">
-                    @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-public.title')
-                </a>
-            </li>
+                <li>
+                    <a data-toggle="tab" href="#messages-public">
+                        @lang('woningdossier.cooperation.admin.cooperation.users.show.tabs.messages-public.title')
+                    </a>
+                </li>
             @endif
 
             <li>
@@ -186,22 +213,24 @@
             </div>
         </div>
         @if($userExists)
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="btn-group">
-                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $previous])}}" type="button" id="previous" class="btn btn-default">
-                            <i class="glyphicon glyphicon-chevron-left"></i>
-                            @lang('woningdossier.cooperation.admin.cooperation.users.show.previous')
-                        </a>
-                        <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $next])}}" id="observe-building" class="btn btn-default">
-                            @lang('woningdossier.cooperation.admin.cooperation.users.show.next')
-                            <i class="glyphicon glyphicon-chevron-right"></i>
-                        </a>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="btn-group">
+                            <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $previous])}}"
+                               type="button" id="previous" class="btn btn-default">
+                                <i class="glyphicon glyphicon-chevron-left"></i>
+                                @lang('woningdossier.cooperation.admin.cooperation.users.show.previous')
+                            </a>
+                            <a href="{{route('cooperation.admin.cooperation.users.show', ['id' => $next])}}"
+                               id="observe-building" class="btn btn-default">
+                                @lang('woningdossier.cooperation.admin.cooperation.users.show.next')
+                                <i class="glyphicon glyphicon-chevron-right"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endif
     </div>
 @endsection
@@ -273,9 +302,7 @@
                 }
             });
 
-            $('#building-coach-status').select2({
-
-            }).on('select2:selecting', function (event) {
+            $('#building-coach-status').select2({}).on('select2:selecting', function (event) {
                 var statusToSelect = $(event.params.args.data.element);
 
                 if (confirm('@lang('woningdossier.cooperation.admin.cooperation.users.show.set-status')')) {

@@ -191,6 +191,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
             Route::post('message', 'MessagesController@sendMessage')->name('send-message');
 
+            Route::get('users/show/{id}', 'UserController@show')->name('users.show');
+
             /* Section for the cooperation-admin and coordinator */
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');

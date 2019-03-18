@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
@@ -200,6 +201,7 @@ class SolarPanelsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
         return redirect($url);
     }
 

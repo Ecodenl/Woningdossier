@@ -221,9 +221,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-sm-12">
-
-
-                                    <table id="log-table" class="table table-striped table-bordered compact nowrap table-responsive">
+                                    <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap" width="100%">
                                         <thead>
                                         <tr>
                                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
@@ -282,6 +280,7 @@
 
 @push('js')
     <script>
+
         $(document).ready(function () {
 
             // get some basic information
@@ -297,6 +296,14 @@
             setUrlHashInHiddenInput();
             scrollChatToMostRecentMessage();
             $('.nav-tabs .active a').trigger('shown.bs.tab');
+
+            // some weird stuff to get the responsivenes to work..
+            setTimeout(function () {
+                $('table').DataTable({
+                    responsive: true
+                });
+            }, 500);
+
 
             appointmentDate.datetimepicker({
                 format: "YYYY-MM-DD",
@@ -466,10 +473,6 @@
                         return false;
                     }
                 });
-            var table = $('table');
-            table.DataTable({
-                responsive: true,
-            });
         });
 
 

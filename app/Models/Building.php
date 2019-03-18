@@ -474,16 +474,6 @@ class Building extends Model
     }
 
     /**
-     * Get the full address.
-     *
-     * @return string
-     */
-    public function getFullAddress()
-    {
-        return "{$this->postal_code}, {$this->street}, {$this->number}";
-    }
-
-    /**
      * Check if a building is active
      *
      * @return bool

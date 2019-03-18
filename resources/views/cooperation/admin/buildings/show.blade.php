@@ -47,7 +47,8 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
-                        <select autocomplete="off" class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select autocomplete="off" class="form-control" name="user[building_coach_status][status]"
+                                id="building-coach-status">
                             @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
@@ -98,11 +99,12 @@
                             <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
                             <input
                                     @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive())
-                                        disabled
+                                    disabled
                                     @endif
-                                    id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                                    id="appointment-date" name="user[building_coach_status][appointment_date]"
+                                    type='text' class="form-control"
                                     @if($hasCoachStatusAndAppointmentIsNotNull)
-                                        value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d')}}"
+                                    value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d')}}"
                                     @endif
                             />
 
@@ -120,17 +122,19 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
-                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
+                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
+                                    @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
+                                    multiple="multiple">
                                 @if(Auth::user()->hasRoleAndIsCurrentRole('coach') && $coachesWithActiveBuildingCoachStatus->where('coach_id', Auth::id()) instanceof stdClass)
                                     <option locked="locked" selected>{{Auth::user()->getFullName()}}</option>
                                 @else
                                     @foreach($coaches as $coach)
                                         <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
                                         <option @if($coach->hasRole(['cooperation-admin', 'coordinator']))
-                                                    locked="locked"
+                                                locked="locked"
                                                 @endif
                                                 @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                                    selected="selected"
+                                                selected="selected"
                                                 @endif value="{{$coach->id}}">{{$coach->getFullName()}}
                                         </option>
                                     @endforeach
@@ -143,7 +147,8 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
-                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
+                                    @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                                 @foreach($roles as $role)
                                     <option @if($user->hasRole($role)) selected="selected" @endif value="{{$role->id}}">
                                         {{$role->human_readable_name}}
@@ -190,10 +195,10 @@
                 @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
             @if($user->allowedAccessToHisBuilding($building->id))
-            {{--public messages / between the resident and cooperation--}}
-            <div id="messages-public" class="tab-pane fade">
-                @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
-            </div>
+                {{--public messages / between the resident and cooperation--}}
+                <div id="messages-public" class="tab-pane fade">
+                    @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
+                </div>
             @endif
             {{-- comments on the building, read only. --}}
             <div id="comments-on-building" class="tab-pane fade">
@@ -211,18 +216,45 @@
             </div>
             {{-- Fill in history or the log --}}
             @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
-            <div id="fill-in-history" class="tab-pane fade">
-                <div class="panel">
-                    <div class="panel-body">
-                        @forelse($logs as $log)
-                            <p class="pull-right">{{$log->created_at->format('Y-m-d H:i')}}</p>
-                            <p>{{$log->message}}</p>
-                            <hr>
-                        @empty
-                        @endforelse
+                <div id="fill-in-history" class="tab-pane fade">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+
+
+                                    <table id="log-table" class="table table-striped table-bordered compact nowrap table-responsive">
+                                        <thead>
+                                        <tr>
+                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
+                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.message')</th>
+                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
+                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.building')</th>
+                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php /** @var \App\Models\Log $log */ ?>
+                                        @foreach($logs as $log)
+                                            <?php
+                                                $building = $log->building;
+                                                $address = strtoupper($building->postal_code).' '.$building->city.', '.$building->street.' '.$building->number.' '.$building->extenstion
+                                            ?>
+                                            <tr>
+                                                <td>{{$log->user instanceof \App\Models\User ? $log->user->getFullName() : ''}}</td>
+                                                <td>{{$log->message}}</td>
+                                                <td>{{$log->forUser instanceof \App\Models\User ? $log->forUser->getFullName() : ''}}</td>
+                                                <td>{{$address}}</td>
+                                                <td>{{$log->created_at}}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
             @endif
         </div>
         @if($userExists)
@@ -434,6 +466,10 @@
                         return false;
                     }
                 });
+            var table = $('table');
+            table.DataTable({
+                responsive: true,
+            });
         });
 
 

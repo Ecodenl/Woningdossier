@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Events\FillingToolForUserEvent;
+use App\Events\ObservingToolForUserEvent;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -84,6 +85,8 @@ class ToolController extends Controller
 
         // so the user isnt able to save anything
         HoomdossierSession::setIsObserving(true);
+
+        \Event::dispatch(new ObservingToolForUserEvent($building, $user, \Auth::user()));
 
         return redirect()->route('cooperation.tool.index');
     }

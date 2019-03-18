@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Events\FillingToolForUserEvent;
+use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
 use App\Listeners\FillingToolForUserListener;
+use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
@@ -37,6 +39,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         FillingToolForUserEvent::class => [
             FillingToolForUserListener::class
+        ],
+        ObservingToolForUserEvent::class => [
+            ObservingToolForUserListener::class
         ],
     ];
 

@@ -12,7 +12,8 @@ return [
     'log-messages' => [
         'logged-in' => 'Gebruiker :full_name heeft ingelogd op de applicatie om :time',
         'registered' => 'Gebruiker :full_name heeft geregistreerd op :time',
-        'filling-tool-for' => 'Gebruiker :full_name is ingelogd op de tool van :for_full_name om :time',
+        'filling-tool-for' => 'Gebruiker :full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name om :time',
+        'observing-tool-for' => 'Gebruiker :full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name om :time ',
         'action-plan-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan om :time',
         'participant-added' => 'Gebruiker :full_name heeft :for_full_name gekoppeld aan dit gebouw om :time',
     ],
@@ -336,7 +337,16 @@ return [
                                 'title' => 'Opmerkingen bij woning'
                             ],
                             'fill-in-history' => [
-                                'title' => 'Invulhistorie'
+                                'title' => 'Invulhistorie',
+                                'table' => [
+                                    'columns' => [
+                                        'user' => 'Gebruiker die de actie heeft gedaan',
+                                        'building' => 'Actie voor gebouw',
+                                        'for-user' => 'Actie op gebruiker',
+                                        'message' => 'Bericht',
+                                        'happened-on' => 'Gebeurt op'
+                                    ]
+                                ]
                             ]
                         ],
                         'next' => 'Volgende',

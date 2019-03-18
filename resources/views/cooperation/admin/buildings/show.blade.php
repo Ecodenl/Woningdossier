@@ -64,18 +64,23 @@
                                 If there is no active coach connected to the building, then there is no point in setting these statuses
                                 and, it also cant be set since there arent ant coaches to give a status.
                             --}}
-                            @if($coachesWithActiveBuildingCoachStatus->isEmpty())
+                            @if($coachesWithActiveBuildingCoachStatus->isNotEmpty())
                                 @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
                                     <?php
                                     // the if logic
                                     $manageableStatusIsExecuted = $buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_EXECUTED;
                                     $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
+                                    $mostRecentBuildingCoachStatusExists = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus;
 
+                                    if ($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate()) {
+                                        // check if the appointment day is past.
+                                        $appointmentDayDateIsPast = !$mostRecentBuildingCoachStatus->appointment_date->lessThan(\Carbon\Carbon::now()->format('Y-m-d'));
+                                    }
                                     // if there is an appointment date then it isn't allowed to change the status
                                     // but if that day is today and the manageable status is executed, then the coach may change it.
                                     // else we just want to show all the manageable statuses
                                     ?>
-                                    @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate())
+                                    @if($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate() && (isset($appointmentDayDateIsPast) && $appointmentDayDateIsPast == true))
                                         @if($hasAppointmentThatIsToday && $manageableStatusIsExecuted)
                                             <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
                                         @endif
@@ -97,7 +102,7 @@
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
                             <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
-                            <input
+                            <input autocomplete="off"
                                     @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive())
                                     disabled
                                     @endif
@@ -300,7 +305,11 @@
             scrollChatToMostRecentMessage();
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
+            var currentDate = new Date();
+            currentDate.setDate(currentDate.getDate()-1);
             appointmentDate.datetimepicker({
+                minDate: currentDate,
+                disabledDates: [currentDate],
                 format: "YYYY-MM-DD",
                 locale: '{{app()->getLocale()}}',
                 showClear: true,

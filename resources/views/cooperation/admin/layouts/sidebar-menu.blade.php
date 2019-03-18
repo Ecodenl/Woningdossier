@@ -16,7 +16,7 @@
                     <ul id="sidebar-main"
                         class="sidebar list-group panel-collapse  {{--@if(str_replace(['users.', 'cooperation-admin.index', 'assign-role'], '', \Route::currentRouteName()) != \Route::currentRouteName())--}} open collapse in {{--@else collapse @endif--}}"
                         aria-expanded="true">
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.index', 'cooperation.admin.users.show'])) active @endif">
+                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.users.index', 'cooperation.admin.buildings.show'])) active @endif">
                             <a href="{{route('cooperation.admin.cooperation.users.index')}}">
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.home')
                             </a>

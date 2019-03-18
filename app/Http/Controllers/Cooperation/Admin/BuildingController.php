@@ -9,6 +9,7 @@ use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
 use App\Models\User;
+use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 
 class BuildingController extends Controller
@@ -48,6 +49,7 @@ class BuildingController extends Controller
                 $mostRecentBcs = [$mostRecentBuildingCoachStatusArray[0]];
             }
         }
+
 
         // hydrate the building coach status model so it will be easier to do stuff in the views
         $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(

@@ -8,6 +8,7 @@ use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
 use App\Listeners\FillingToolForUserListener;
+use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
@@ -15,6 +16,7 @@ use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\SuccessFullLoginListener;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -36,6 +38,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Login::class => [
             SuccessFullLoginListener::class,
+        ],
+        Registered::class => [
+            LogRegisteredUserListener::class
         ],
         FillingToolForUserEvent::class => [
             FillingToolForUserListener::class

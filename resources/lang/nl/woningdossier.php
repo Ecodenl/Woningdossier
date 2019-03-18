@@ -11,7 +11,7 @@ return [
     ],
     'log-messages' => [
         'logged-in' => 'Gebruiker :full_name heeft ingelogd op de applicatie om :time',
-        'registered' => 'Gebruiker :full_name heeft geregistreerd op :time',
+        'registered-user' => 'Gebruiker :full_name heeft geregistreerd op :time',
         'filling-tool-for' => 'Gebruiker :full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name om :time',
         'observing-tool-for' => 'Gebruiker :full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name om :time ',
         'action-plan-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan om :time',

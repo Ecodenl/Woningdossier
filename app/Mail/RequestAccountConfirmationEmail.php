@@ -39,7 +39,8 @@ class RequestAccountConfirmationEmail extends Mailable
      */
     public function build()
     {
-        // note we use the default 'from' here as there's no association yet
-        return $this->view('cooperation.mail.user.confirm_account');
+        return $this
+            ->view('cooperation.mail.user.confirm_account');
+
     }
 }

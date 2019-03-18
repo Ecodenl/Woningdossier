@@ -151,9 +151,7 @@ class RegisterController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect()
-                ->route('register')
-                ->withErrors($validator);
+            return redirect(route('cooperation.home'));
         }
 
         $email = $request->get('u');

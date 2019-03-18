@@ -283,6 +283,9 @@
 
         $(document).ready(function () {
 
+            setTimeout(function () {
+                $('table').DataTable();
+            }, 10);
             // get some basic information
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             var userId = $('input[name=user\\[id\\]]').val();
@@ -296,14 +299,6 @@
             setUrlHashInHiddenInput();
             scrollChatToMostRecentMessage();
             $('.nav-tabs .active a').trigger('shown.bs.tab');
-
-            // some weird stuff to get the responsivenes to work..
-            setTimeout(function () {
-                $('table').DataTable({
-                    responsive: true
-                });
-            }, 500);
-
 
             appointmentDate.datetimepicker({
                 format: "YYYY-MM-DD",

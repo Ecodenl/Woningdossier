@@ -75,14 +75,14 @@ class PrivateMessageView extends Model
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && !is_null($buildingId)) {
             return self::where('cooperation_id', HoomdossierSession::getCooperation())
                 ->whereIn('private_message_id', $privateMessageIds)
-                ->where('read_at', null)
+                ->whereNull('read_at')
                 ->count();
         } else {
 
 
             return self::where('user_id', \Auth::id())
                 ->whereIn('private_message_id', $privateMessageIds)
-                ->where('read_at', null)
+                ->whereNull('read_at')
                 ->count();
         }
     }

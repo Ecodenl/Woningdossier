@@ -194,6 +194,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     });
                 });
 
+                Route::resource('messages', 'MessagesController')->only('index');
                 Route::resource('coaches', 'CoachController')->only(['index', 'show']);
 
                 Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {

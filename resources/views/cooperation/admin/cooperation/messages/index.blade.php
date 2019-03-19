@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.coach.messages.index.header')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.messages.index.header')</div>
 
         <div class="panel-body">
             <div class="row">
@@ -10,24 +10,20 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.coach.messages.index.table.columns.date')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.messages.index.table.columns.name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.messages.index.table.columns.street-house-number')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.messages.index.table.columns.zip-code')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.messages.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.messages.index.table.columns.unread-messages')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.street-house-number')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.zip-code')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.city')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.unread-messages')</th>
                         </tr>
                         </thead>
                         <tbody>
-                     
-                        <?php /** @var \App\Models\User $user */ ?>
-                        @foreach($buildingCoachStatuses as $buildingCoachStatus)
+                        @foreach($buildings as $building)
                             <?php
-                                $building = $buildingCoachStatus->building()->withTrashed()->first();
                                 $user = $building->user;
                                 $userExists = $user instanceof \App\Models\User;
                             ?>
-
                             <tr>
                                 <td>{{$userExists ? $user->created_at : '-'}}</td>
                                 <td>{{$userExists ? $user->getFullName() : '-'}}</td>
@@ -41,7 +37,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\PrivateMessageView::getTotalUnreadMessagesCountByBuildingId($building->id)}}
+                                    {{\App\Models\PrivateMessageView::getTotalUnreadMessagesCountForABuildingByUserId(Auth::id())}}
                                 </td>
                             </tr>
                         @endforeach

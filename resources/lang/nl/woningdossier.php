@@ -375,6 +375,23 @@ return [
             /* translations for the coordinator and cooperation-admin */
             'cooperation' => [
 
+                'messages' => [
+                    'index' => [
+                        'header' => 'Overzicht van woningen waar een conversatie is',
+
+                        'table' => [
+                            'columns' => [
+                                'date' => 'Datum',
+                                'name' => 'Naam',
+                                'street-house-number' => 'Straat en huisnummer',
+                                'zip-code' => 'Postcode',
+                                'city' => 'Stadt',
+                                'unread-messages' => 'Aantal ongelezen berichten'
+                            ],
+                        ],
+                    ]
+                ],
+
                 'coaches' => [
                     'index' => [
                         'header' => 'Alle gebruikers van uw coöperatie',

@@ -27,6 +27,7 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
         // since we dont use the active status as a measurement to see if a coach has access or not
         // we have to update the active to pending and create a new row for it wit hstatus in progress
         foreach ($bcsActives as $bcsActive) {
+            sleep(1);
             DB::table('building_coach_statuses')->insert([
                 'coach_id' => $bcsActive->coach_id,
                 'building_id' => $bcsActive->building_id,

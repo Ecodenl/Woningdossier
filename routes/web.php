@@ -18,7 +18,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             $user = \App\Models\User::find(2);
             $cooperation = \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation());
 
-            return new \App\Mail\RequestAccountConfirmationEmail($user, $cooperation);
+            return new \App\Mail\UserCreatedEmail($cooperation, $user, 'dsdfsfsdfs');
         });
         Route::get('/', function () {
             return view('cooperation.welcome');

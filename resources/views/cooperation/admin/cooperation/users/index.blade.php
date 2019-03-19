@@ -23,7 +23,8 @@
                         <tbody>
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
-                            <?php $building = $user->buildings()->first(); ?>
+                            <?php $building = $user->buildings()->withTrashed()->first(); ?>
+                            @if($building instanceof \App\Models\Building)
                             <tr>
                                 <td>{{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : __('woningdossier.cooperation.admin.cooperation.users.index.table.columns.no-known-created-at')}}</td>
                                 <td>{{$user->getFullName()}}</td>
@@ -45,6 +46,9 @@
                                     @endif
                                 </td>
                             </tr>
+                            @else
+                                {{Log::debug('View: cooperation.admin.cooperation.users.index: There is a user id '.$user->id.' without a building')}}
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

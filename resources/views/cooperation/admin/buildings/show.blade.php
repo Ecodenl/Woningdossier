@@ -56,6 +56,11 @@
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
                                 </option>
+                            @elseif(!$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
+                                <option disabled selected>
+                                    @lang('woningdossier.cooperation.admin.users.show.status.current')
+                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_PENDING)}}
+                                </option>
                             @else
                                 <option @if($building->isNotActive()) disabled selected @endif>
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')

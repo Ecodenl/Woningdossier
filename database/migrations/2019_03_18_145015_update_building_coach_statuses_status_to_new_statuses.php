@@ -30,7 +30,8 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
             DB::table('building_coach_statuses')->insert([
                 'coach_id' => $bcsActive->coach_id,
                 'building_id' => $bcsActive->building_id,
-                'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS
+                'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS,
+                'created_at' => \Carbon\Carbon::now(),
             ]);
         }
 

@@ -42,6 +42,8 @@ class BuildingCoachStatusService
             'status' => BuildingCoachStatus::STATUS_PENDING,
         ]);
 
+        // so we dont get the same created_at, if thatwould happen the query for the most recent status would fail cause we max(created_at)
+        sleep(1);
         // then we set the status in progress.
         // we cant use this status to count it since the coach, coordinator and cooperation admin would be able to set it again
         // and that would mess up the counting.

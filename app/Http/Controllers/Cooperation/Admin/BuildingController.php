@@ -50,7 +50,6 @@ class BuildingController extends Controller
             }
         }
 
-
         // hydrate the building coach status model so it will be easier to do stuff in the views
         $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
             $mostRecentBcs

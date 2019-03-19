@@ -91,13 +91,13 @@
                             <li>
                                 @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                     @case('coach')
-                                        <?php $messageUrl = route('cooperation.admin.coach.buildings.index'); ?>
+                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                         @break
                                     @case('coordinator')
-                                        <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
+                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                         @break
                                     @case('cooperation-admin')
-                                        <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
+                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                         @break
                                     @default
                                         <?php $messageUrl = route('cooperation.admin.index'); ?>

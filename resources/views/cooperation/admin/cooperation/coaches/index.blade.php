@@ -17,7 +17,6 @@
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.street-house-number')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.zip-code')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.index.table.columns.status')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -36,14 +35,6 @@
                                 <td>
                                     {{$building->city}}
                                 </td>
-                                <td>
-                                    <?php $lastKnownBuildingCoachStatus = $building->buildingCoachStatuses->last() ?>
-                                    @if($lastKnownBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastKnownBuildingCoachStatus->appointment_date))
-                                        {{$lastKnownBuildingCoachStatus->appointment_date}}
-                                    @else
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.index.no-appointment')
-                                    @endif
-                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -59,17 +50,7 @@
     <script>
         $(document).ready(function () {
             var table = $('table');
-            table.DataTable({
-                responsive: true,
-                columns: [
-                    { responsivePriority: 1 },
-                    { responsivePriority: 2 },
-                    { responsivePriority: 3 },
-                    { responsivePriority: 4 },
-                    { responsivePriority: 6 },
-                    { responsivePriority: 5 }
-                ]
-            });
+            table.DataTable();
         })
     </script>
 @endpush

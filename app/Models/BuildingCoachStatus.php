@@ -233,6 +233,7 @@ class BuildingCoachStatus extends Model
      * Returns the most recent statuses for a building id grouped on coach id.
      *
      * @NOTE only returns the statuses if the coach is active.
+     * @ANOTHERNOTE If there are duplicate created_at for a coach it will return weird stuff.
      *
      * @param $buildingId
      * @return Collection

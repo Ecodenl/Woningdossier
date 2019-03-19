@@ -36,7 +36,6 @@ class CoachController extends Controller
         $userToShow = User::findOrFail($userId);
         $buildingFromUser = $userToShow->buildings()->first();
 
-
         $buildingCoachStatuses = BuildingCoachStatus::hydrate(
             \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')
                 ->where('created_at', function ($query) use ($userId) {
@@ -47,6 +46,7 @@ class CoachController extends Controller
                 ->orderBy('created_at')
                 ->get()->all()
         );
+
 
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 

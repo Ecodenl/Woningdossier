@@ -41,9 +41,9 @@
                                 <td>{{$user instanceof \App\Models\User ? $user->created_at : '-'}}</td>
                                 <td>{{$user instanceof \App\Models\User ? $user->getFullName() : '-'}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.cooperation.coaches.show', ['id' => $building->id])}}">
+{{--                                    <a href="{{route('cooperation.admin.cooperation.coaches.show', ['id' => $building->id])}}">--}}
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
-                                    </a>
+                                    {{--</a>--}}
                                 </td>
                                 <td>{{$building->postal_code}}</td>
                                 <td>
@@ -53,7 +53,7 @@
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
                                 </td>
                                 <td>
-                                    {{!is_null($buildingCoachStatus->appointment_date) ? $buildingCoachStatus->appointment_date->format('Y-m-d H:i') : ''}}
+                                    {{$buildingCoachStatus->hasAppointmentDate() ? $buildingCoachStatus->appointment_date->format('Y-m-d H:i') : ''}}
                                 </td>
                             </tr>
                         @endforeach

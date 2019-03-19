@@ -4,14 +4,16 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.users.show.header', [
-                'name' => $user->getFullName(),
+                'name' => $userExists ? $user->getFullName() : '-',
                 'street-and-number' => $building->street.' '.$building->house_number.$building->house_number_extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city
             ])
         </div>
 
         <input type="hidden" name="building[id]" value="{{$building->id}}">
-        <input type="hidden" name="user[id]" value="{{$user->id}}">
+        @if($userExists)
+            <input type="hidden" name="user[id]" value="{{$user->id}}">
+        @endif
         <div class="panel-body">
             {{--delete a pipo--}}
             @if($userExists)
@@ -24,7 +26,7 @@
                                     @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
                                 </button>
                             @endcan
-                            @if($user->allowedAccessToHisBuilding($building->id))
+                            @can('access-building', $building->id)
                                 <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
                                    id="observe-building" class="btn btn-primary">
                                     @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
@@ -37,7 +39,7 @@
                                         @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
                                     </a>
                                 @endif
-                            @endif
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -123,7 +125,7 @@
             </div>
             {{--coaches and role--}}
             <div class="row">
-                @if($user->allowedAccessToHisBuilding($building->id))
+                @can('access-building', $building->id)
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
@@ -147,7 +149,7 @@
                             </select>
                         </div>
                     </div>
-                @endif
+                @endcan
                 @if($userExists)
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -173,13 +175,13 @@
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
-            @if($user->allowedAccessToHisBuilding($building->id))
+            @can('access-building', $building->id)
                 <li>
                     <a data-toggle="tab" href="#messages-public">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
                     </a>
                 </li>
-            @endif
+            @endcan
             <li>
                 <a data-toggle="tab" href="#comments-on-building">
                     @lang('woningdossier.cooperation.admin.users.show.tabs.comments-on-building.title')
@@ -199,12 +201,12 @@
             <div id="messages-intern" class="tab-pane fade in active">
                 @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
-            @if($user->allowedAccessToHisBuilding($building->id))
+            @can('access-building', $building->id)
                 {{--public messages / between the resident and cooperation--}}
                 <div id="messages-public" class="tab-pane fade">
                     @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
                 </div>
-            @endif
+            @endcan
             {{-- comments on the building, read only. --}}
             <div id="comments-on-building" class="tab-pane fade">
                 <div class="panel">

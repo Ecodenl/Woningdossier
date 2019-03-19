@@ -17,6 +17,7 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
         $statusActive = 'active';
         $statusAppointment = 'appointment';
         $statusNewAppointment = 'new_appointment';
+        $statusNoAppointment = 'no_appointment';
         $statusDone = 'done';
 
         $bcsActives = DB::table('building_coach_statuses')->where('status', $statusActive)->get();
@@ -36,6 +37,10 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
         // update the remaining statuses.
         DB::table('building_coach_statuses')->where('status', $statusAppointment)->update([
             'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS
+        ]);
+
+        DB::table('building_coach_statuses')->where('status', $statusNoAppointment)->update([
+            'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS,
         ]);
 
         DB::table('building_coach_statuses')->where('status', $statusNewAppointment)->update([

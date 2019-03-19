@@ -274,6 +274,22 @@ return [
                     ],
                 ],
 
+                'messages' => [
+                    'index' => [
+                        'header' => 'Overzicht van woningen waar u contact mee kunt opnemen',
+
+                        'table' => [
+                            'columns' => [
+                                'date' => 'Datum',
+                                'name' => 'Naam',
+                                'street-house-number' => 'Straat en huisnummer',
+                                'zip-code' => 'Postcode',
+                                'city' => 'Stadt',
+                                'unread-messages' => 'Aantal ongelezen berichten'
+                            ],
+                        ],
+                    ]
+                ],
                 'buildings' => [
                     'index' => [
                         'header' => 'Overzicht woningen waaraan ik gekoppeld ben',

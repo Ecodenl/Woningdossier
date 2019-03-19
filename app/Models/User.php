@@ -444,7 +444,7 @@ class User extends Authenticatable
      */
     public function allowedAccessToHisBuilding($buildingId)
     {
-        $conversationRequest = PrivateMessage::conversationRequest($buildingId)->first();
+        $conversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
 
         if ($conversationRequest instanceof PrivateMessage && $conversationRequest->allow_access) {
             return true;

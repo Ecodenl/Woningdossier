@@ -24,7 +24,7 @@ use Illuminate\Support\Collection;
  * @property \App\Models\Building|null $building
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest($buildingId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequestByBuildingId($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myCoachConversationRequest()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myOpenConversationRequest()
@@ -91,10 +91,23 @@ class PrivateMessage extends Model
      *
      * @return mixed
      */
-    public function scopeConversationRequest($query, $buildingId)
+    public function scopeConversationRequestByBuildingId($query, $buildingId)
     {
         return $query->public()->conversation($buildingId)->where('request_type', '!=', null);
     }
+
+    /**
+     * Scope a query to return all the conversation requests
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeConversationRequest($query)
+    {
+        return $query->public()->whereNotNull('request_type');
+    }
+
 
     public static function isConversationRequestConnectedToCoach($conversationRequest)
     {
@@ -293,13 +306,8 @@ class PrivateMessage extends Model
      */
     public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
     {
-        // all the buildingCoachStatuses for a building
-        $buildingCoachStatuses = BuildingCoachStatus::where('building_id', $buildingId)->get();
-
-        // filter the coaches that have access to a building
-        $coachesWithAccess = $buildingCoachStatuses->filter(function ($buildingCoachStatus) {
-            return BuildingCoachStatus::hasCoachAccess($buildingCoachStatus->building_id, $buildingCoachStatus->coach_id);
-        })->unique('coach_id');
+        // get the coaches with access to the building
+        $coachesWithAccess = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
         // create a collection of group members
         $groupMembers = collect();
@@ -348,18 +356,6 @@ class PrivateMessage extends Model
     public function isNotMyMessage(): bool
     {
         return ! $this->isMyMessage();
-    }
-
-    /**
-     * Scope a query to get the unread messages from a user.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeUnreadMessages($query)
-    {
-        return $query;
     }
 
     /**

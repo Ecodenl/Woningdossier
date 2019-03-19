@@ -85,20 +85,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::post('', 'ConversationRequestController@store')->name('store');
                 Route::post('/edit', 'ConversationRequestController@update')->name('update');
 
-                //			    Route::group(['prefix' => 'coachgresprek', 'as' => 'coach.'], function () {
-//			        Route::resource('', 'CoachController');
-//                });
-
-//			    Route::group(['prefix' => 'meer-informatie', 'as' => 'more-information.'], function () {
-//
-//			        Route::get('{measure}', 'MoreInfoController@index')->name('index');
-//			        Route::post('', 'MoreInfoController@store')->name('store');
-//                });
-//
-//			    Route::group(['prefix' => 'offerte', 'as' => 'quotation.'], function () {
-//                    Route::get('{measure}', 'QuotationController@index')->name('index');
-//                    Route::post('', 'QuotationController@store')->name('store');
-//                });
             });
 
             // the tool
@@ -273,6 +259,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             /* Section for the coach */
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
 
+                Route::resource('messages', 'MessagesController')->only('index');
 
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');

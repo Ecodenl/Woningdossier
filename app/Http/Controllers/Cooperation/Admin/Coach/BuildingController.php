@@ -17,17 +17,11 @@ class BuildingController extends Controller
 {
     public function index()
     {
+
         $userId = \Auth::id();
         // get most recent building coach statuses for
         $buildingCoachStatuses = BuildingCoachStatus::hydrate(
-            \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')
-                ->where('created_at', function ($query) use ($userId) {
-                    $query->select(\DB::raw('MAX(created_at)'))
-                        ->from('building_coach_statuses as bcs2')
-                        ->whereRaw('coach_id = ' . $userId . ' and bcs1.building_id = bcs2.building_id');
-                })->where('coach_id', $userId)
-                ->orderBy('created_at')
-                ->get()->all()
+            BuildingCoachStatus::getConnectedBuildingsByUserId($userId)->all()
         );
 
 

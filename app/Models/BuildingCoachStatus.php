@@ -144,7 +144,7 @@ class BuildingCoachStatus extends Model
         $building = Building::withTrashed()->find($buildingId);
 
         $buildingCoachStatuses = static::getConnectedCoachesByBuildingId($buildingId);
-        $buildingConversationRequest = PrivateMessage::conversationRequest($buildingId)->first();
+        $buildingConversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
 
         // first we need to check if the building is active
         // this is the base for every status
@@ -229,6 +229,7 @@ class BuildingCoachStatus extends Model
         return $coachesWithPendingBuildingCoachStatus;
     }
 
+
     /**
      * Returns the most recent statuses for a building id grouped on coach id.
      *
@@ -257,9 +258,79 @@ class BuildingCoachStatus extends Model
             ->get();
 
     }
+
+    /**
+     * Returns all the buildings whom a coach / user is 'connected'
+     * A user / building is considered to be connected when he has more pending statuses then removed statuses.
+     *
+     * @param int $userId
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getConnectedBuildingsByUserId(int $userId): Collection
+    {
+        $pendingCount = \DB::raw('(
+                SELECT coach_id, building_id, count(`status`) AS count_pending
+	            FROM building_coach_statuses
+	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_PENDING. ' \'
+	            group by coach_id, building_id
+            )  AS bcs2');
+        $removedCount = \DB::raw('(
+                SELECT building_id, coach_id, count(`status`) AS count_removed
+	            FROM building_coach_statuses
+	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            group by coach_id, building_id
+            ) AS bcs3');
+        $buildingPermissionCount = \DB::raw('(
+                SELECT user_id, count(`building_id`) as count_building_permission
+	            FROM building_permissions
+	            WHERE user_id = ' . $userId. '
+	            GROUP BY user_id
+            ) as bp');
+
+
+        /**
+         * Retrieves the buildings from a coach that have a higher pending count status then a removed_count
+         * Retrieves the coaches that have a pending building status, also returns the building_permission count so we can check if the coach can access the building
+         */
+        $buildingsTheCoachIsConnectedTo =
+            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending', 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
+                ->from($pendingCount)
+                ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
+                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
+                ->havingRaw('(count_pending > count_removed) OR count_removed IS NULL')
+                ->get();
+
+        return $buildingsTheCoachIsConnectedTo;
+    }
+
+    /**
+     * Returns the most recent statuses for a building by a user id
+     *
+     * @NOTE only returns the statuses if the coach is active.
+     *
+     * @param int $userId
+     * @return Collection
+     */
+    public static function getMostRecentStatusesForUserId($userId): Collection
+    {
+        $connectedBuildingsByUserId = static::getConnectedBuildingsByUserId($userId);
+
+        // so we can where in on the most recent statuses, so we only get the statuses for the coaches that aren't removed
+        $coachIdsThatAreConnectedToBuilding = $connectedBuildingsByUserId->pluck($userId, 'user_id')->toArray();
+
+        return \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')
+            ->where('created_at', function ($query) use ($userId) {
+                $query->select(\DB::raw('MAX(created_at)'))
+                    ->from('building_coach_statuses as bcs2')
+                    ->whereRaw('coach_id = ' . $userId . ' and bcs1.building_id = bcs2.building_id');
+            })->where('coach_id', $userId)
+            ->whereIn('building_id', $coachIdsThatAreConnectedToBuilding)
+            ->orderBy('created_at')
+            ->get();
+    }
     /**
      * A function to check if a coach has 'access' to a a building
-     * if the active count i higher then the remove count he has 'access'
+     * if the pending count is higher then the remove count he has 'access'
      * i say 'access' because he cant access the building without a building_permission, however he can access the building details and a groupchat.
      *
      * @param $buildingId
@@ -269,17 +340,17 @@ class BuildingCoachStatus extends Model
      */
     public static function hasCoachAccess($buildingId, $coachId): bool
     {
-        // count the active statuses
-        $buildingCoachStatusActive = self::where('coach_id', '=', $coachId)
+        // count the pending statuses
+        $buildingCoachStatusPending = self::where('coach_id', '=', $coachId)
             ->where('building_id', $buildingId)
-            ->where('status', '=', self::STATUS_ACTIVE)->count();
+            ->where('status', '=', self::STATUS_PENDING)->count();
 
         // count the removed statuses
         $buildingCoachStatusRemoved = self::where('coach_id', '=', $coachId)
             ->where('building_id', $buildingId)
             ->where('status', '=', self::STATUS_REMOVED)->count();
 
-        if ($buildingCoachStatusActive > $buildingCoachStatusRemoved) {
+        if ($buildingCoachStatusPending> $buildingCoachStatusRemoved) {
             return true;
         } else {
             return false;

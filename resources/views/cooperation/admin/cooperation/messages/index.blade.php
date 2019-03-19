@@ -10,8 +10,7 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.date')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.most-recent-message-date')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.street-house-number')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.zip-code')</th>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.messages.index.table.columns.city')</th>
@@ -21,12 +20,10 @@
                         <tbody>
                         @foreach($buildings as $building)
                             <?php
-                                $user = $building->user;
-                                $userExists = $user instanceof \App\Models\User;
+                                $mostRecentMessageDate = \App\Models\PrivateMessage::where('building_id', $building->id)->get()->last()->created_at
                             ?>
                             <tr>
-                                <td>{{$userExists ? $user->created_at : '-'}}</td>
-                                <td>{{$userExists ? $user->getFullName() : '-'}}</td>
+                                <td>{{$mostRecentMessageDate}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}

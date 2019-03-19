@@ -280,8 +280,7 @@ return [
 
                         'table' => [
                             'columns' => [
-                                'date' => 'Datum',
-                                'name' => 'Naam',
+                                'most-recent-message-date' => 'Meest recente ontvangst datum',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stadt',
@@ -381,8 +380,7 @@ return [
 
                         'table' => [
                             'columns' => [
-                                'date' => 'Datum',
-                                'name' => 'Naam',
+                                'most-recent-message-date' => 'Meest recente ontvangst datum',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stadt',

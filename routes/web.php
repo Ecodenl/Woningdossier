@@ -161,23 +161,31 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::post('remove-role', 'RoleController@removeRole')->name('remove-role');
             });
 
-            Route::group(['prefix' => 'building-coach-status', 'as' => 'building-coach-status.'], function () {
-                Route::post('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');
-                Route::post('set-appointment-date', 'BuildingCoachStatusController@setAppointmentDate')->name('set-appointment-date');
-            });
             Route::group(['middleware' => ['role:cooperation-admin|super-admin']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
             });
 
-            Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
-                Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
-                Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')->name('observe-tool-for-user');
+            /* Section that a coach, coordinator and cooperation-admin can access */
+            Route::group(['middleware' => ['role:cooperation-admin|coach|coordinator']], function () {
+
+                Route::resource('messages', 'MessagesController')->only('index');
+
+                Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
+                    Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
+                    Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')->name('observe-tool-for-user');
+                });
+
+                Route::post('message', 'MessagesController@sendMessage')->name('send-message');
+
+                Route::get('buildings/show/{buildingId}', 'BuildingController@show')->name('buildings.show');
+
+                Route::group(['prefix' => 'building-coach-status', 'as' => 'building-coach-status.'], function () {
+                    Route::post('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');
+                    Route::post('set-appointment-date', 'BuildingCoachStatusController@setAppointmentDate')->name('set-appointment-date');
+                });
             });
 
-            Route::post('message', 'MessagesController@sendMessage')->name('send-message');
-
-            Route::get('buildings/show/{buildingId}', 'BuildingController@show')->name('buildings.show');
 
             /* Section for the cooperation-admin and coordinator */
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
@@ -194,7 +202,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     });
                 });
 
-                Route::resource('messages', 'MessagesController')->only('index');
                 Route::resource('coaches', 'CoachController')->only(['index', 'show']);
 
                 Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
@@ -259,8 +266,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
             /* Section for the coach */
             Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
-
-                Route::resource('messages', 'MessagesController')->only('index');
 
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');

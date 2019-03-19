@@ -24,8 +24,6 @@ class MessagesController extends Controller
 
         $buildingCoachStatuses = BuildingCoachStatus::hydrate($connectedBuildingsByUserId->all());
 
-        dd(PrivateMessageView::getTotalUnreadMessagesCountForUserAndBuildingId($userId, $buildingCoachStatuses->first()->building_id));
-
         return view('cooperation.admin.coach.messages.index', compact('buildingCoachStatuses'));
     }
 }

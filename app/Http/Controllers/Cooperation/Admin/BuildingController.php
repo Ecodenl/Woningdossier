@@ -8,7 +8,9 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
+use App\Models\PrivateMessageView;
 use App\Models\User;
+use App\Services\PrivateMessageViewService;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 
@@ -60,7 +62,10 @@ class BuildingController extends Controller
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
         $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 
-//        PrivateMessageViewService::setRead($privateMessages);
+        // and set them all to read.
+        PrivateMessageViewService::setRead($privateMessages);
+        PrivateMessageViewService::setRead($publicMessages);
+
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 

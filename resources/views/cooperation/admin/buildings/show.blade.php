@@ -310,11 +310,10 @@
 
             var appointmentDate = $('#appointment-date');
 
+            $('table').DataTable();
             // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
-            $('.nav-tabs a#trigger-fill-in-history-tab').on('shown.bs.tab', function (event) {
-                if (!$.fn.dataTable.isDataTable('#log-table')) {
-                    $('#log-table').DataTable();
-                }
+            $('.nav-tabs a').on('shown.bs.tab', function (event) {
+                $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
             });
 
             // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.

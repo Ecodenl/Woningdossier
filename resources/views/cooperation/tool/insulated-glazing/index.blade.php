@@ -327,7 +327,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group add-space {{ $errors->has('comments') ? ' has-error' : '' }}">
-                    @component('cooperation.tool.components.step-question', ['id' => 'comments', 'translation' => 'default.form.input.comment', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'comments', 'translation' => 'insulated-glazing.paint-work.comments-paintwork', 'required' => false])
 
                         <?php
                         // We do this because we store the comment with every glazing

@@ -134,16 +134,18 @@ return [
                     'create' => [
                         'header' => 'Cooperaie toevoegen',
                         'form' => [
-                            'name' => 'Naam van de cooperatie',
-                            'slug' => 'Slug / subdomein',
+                            'name' => 'Naam van de cooperatie *',
+                            'slug' => 'Slug / subdomein *',
+                            'website_url' => 'Website URL',
                             'create' => 'Aanmaken',
                         ],
                     ],
                     'edit' => [
                         'header' => 'Cooperatie :name bewerken',
                         'form' => [
-                            'name' => 'Naam van de cooperatie',
-                            'slug' => 'Slug / subdomein',
+                            'name' => 'Naam van de cooperatie *',
+                            'slug' => 'Slug / subdomein *',
+                            'website_url' => 'Website URL',
                             'update' => 'Bijwerken',
                         ],
                     ],

@@ -34,6 +34,17 @@
                             @endif
                         </div>
 
+                        <div class="form-group {{ $errors->has('website_url') ? ' has-error' : '' }}">
+                            <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.website_url')</label>
+                            <input value="{{old('website_url', $cooperationToEdit->website_url)}}"  type="text" class="form-control" name="website_url" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.website_url')">
+
+                            @if ($errors->has('website_url'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('website_url') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+
                         <button class="btn btn-success" type="submit">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.update')</button>
                     </form>
                 </div>

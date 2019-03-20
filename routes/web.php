@@ -180,6 +180,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::post('message', 'MessagesController@sendMessage')->name('send-message');
 
                 Route::get('buildings/show/{buildingId}', 'BuildingController@show')->name('buildings.show');
+                Route::resource('building-notes', 'BuildingNoteController')->only('store');
 
                 Route::group(['prefix' => 'building-coach-status', 'as' => 'building-coach-status.'], function () {
                     Route::post('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');

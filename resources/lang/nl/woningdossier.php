@@ -352,7 +352,9 @@ return [
                                 'title' => 'Berichten intern'
                             ],
                             'comments-on-building' => [
-                                'title' => 'Opmerkingen bij woning'
+                                'title' => 'Opmerkingen bij woning',
+                                'note' => 'Opmerking',
+                                'save' => 'Opmerking opslaan',
                             ],
                             'fill-in-history' => [
                                 'title' => 'Invulhistorie',

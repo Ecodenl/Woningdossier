@@ -206,7 +206,7 @@
             </li>
             @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <li>
-                    <a data-toggle="tab" href="#fill-in-history">
+                    <a data-toggle="tab" id="trigger-fill-in-history-tab" href="#fill-in-history">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.fill-in-history.title')
                     </a>
                 </li>
@@ -243,37 +243,33 @@
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">
                         <div class="panel-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap" width="100%">
-                                        <thead>
-                                        <tr>
-                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
-                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.message')</th>
-                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
-                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.building')</th>
-                                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php /** @var \App\Models\Log $log */ ?>
-                                        @foreach($logs as $log)
-                                            <?php
-                                                $building = $log->building;
-                                                $address = strtoupper($building->postal_code).' '.$building->city.', '.$building->street.' '.$building->number.' '.$building->extenstion
-                                            ?>
-                                            <tr>
-                                                <td>{{$log->user instanceof \App\Models\User ? $log->user->getFullName() : ''}}</td>
-                                                <td>{{$log->message}}</td>
-                                                <td>{{$log->forUser instanceof \App\Models\User ? $log->forUser->getFullName() : ''}}</td>
-                                                <td>{{$address}}</td>
-                                                <td>{{$log->created_at}}</td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap">
+                                <thead>
+                                <tr>
+                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
+                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.message')</th>
+                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
+                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.building')</th>
+                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php /** @var \App\Models\Log $log */ ?>
+                                @foreach($logs as $log)
+                                    <?php
+                                    $building = $log->building;
+                                    $address = strtoupper($building->postal_code).' '.$building->city.', '.$building->street.' '.$building->number.' '.$building->extenstion
+                                    ?>
+                                    <tr>
+                                        <td>{{$log->user instanceof \App\Models\User ? $log->user->getFullName() : ''}}</td>
+                                        <td>{{$log->message}}</td>
+                                        <td>{{$log->forUser instanceof \App\Models\User ? $log->forUser->getFullName() : ''}}</td>
+                                        <td>{{$address}}</td>
+                                        <td>{{$log->created_at}}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -305,16 +301,21 @@
 @push('js')
     <script>
 
+
         $(document).ready(function () {
 
-            setTimeout(function () {
-                $('table').DataTable();
-            }, 10);
             // get some basic information
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             var userId = $('input[name=user\\[id\\]]').val();
 
             var appointmentDate = $('#appointment-date');
+
+            // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
+            $('.nav-tabs a#trigger-fill-in-history-tab').on('shown.bs.tab', function (event) {
+                if (!$.fn.dataTable.isDataTable('#log-table')) {
+                    $('#log-table').DataTable();
+                }
+            });
 
             // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
             var originalAppointmentDate = appointmentDate.find('input').val();
@@ -322,7 +323,9 @@
             keepNavTabOpenOnRedirect();
             setUrlHashInHiddenInput();
             scrollChatToMostRecentMessage();
+
             $('.nav-tabs .active a').trigger('shown.bs.tab');
+
 
             var currentDate = new Date();
             currentDate.setDate(currentDate.getDate()-1);

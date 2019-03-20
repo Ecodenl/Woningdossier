@@ -9,7 +9,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive">
+                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive" style="width: 100%">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.date')</th>
@@ -47,7 +47,7 @@
                         @endforeach
                         </tbody>
                     </table>
-
+                </div>
                 </div>
             </div>
         </div>

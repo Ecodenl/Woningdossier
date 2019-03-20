@@ -243,7 +243,7 @@
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">
                         <div class="panel-body">
-                            <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap">
+                            <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap"  style="width: 100%">
                                 <thead>
                                 <tr>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
@@ -257,8 +257,8 @@
                                 <?php /** @var \App\Models\Log $log */ ?>
                                 @foreach($logs as $log)
                                     <?php
-                                    $building = $log->building;
-                                    $address = strtoupper($building->postal_code).' '.$building->city.', '.$building->street.' '.$building->number.' '.$building->extenstion
+                                        $building = $log->building;
+                                        $address = strtoupper($building->postal_code).' '.$building->city.', '.$building->street.' '.$building->number.' '.$building->extenstion
                                     ?>
                                     <tr>
                                         <td>{{$log->user instanceof \App\Models\User ? $log->user->getFullName() : ''}}</td>

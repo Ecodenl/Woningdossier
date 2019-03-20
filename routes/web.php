@@ -193,7 +193,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
-
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                     Route::get('', 'UserController@index')->name('index');
                     Route::get('create', 'UserController@create')->name('create');

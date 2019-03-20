@@ -189,7 +189,7 @@ return [
             ],
             'users' => [
                 'show' => [
-                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
+                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email',
 
                     'observe-building' => [
                         'label' => 'Woning bekijken',

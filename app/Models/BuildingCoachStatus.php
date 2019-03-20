@@ -175,7 +175,7 @@ class BuildingCoachStatus extends Model
         } else {
             // see comments in the if statement above.
             $status = 'in-active-status';
-            $statusTranslation = __('woningdossier.building.in-active-status');
+            $statusTranslation = __('woningdossier.building-statuses.'.Building::STATUS_IS_NOT_ACTIVE);
         }
 
 

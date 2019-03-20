@@ -405,8 +405,8 @@ return [
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stadt',
-                                'status' => 'Status',
-                                'no-known-created-at' => 'Niet bekend'
+                                'email' => 'Email',
+                                'roles' => 'Huidige rollen'
                             ],
                         ],
                     ],

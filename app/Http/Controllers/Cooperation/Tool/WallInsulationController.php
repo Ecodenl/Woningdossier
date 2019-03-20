@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
@@ -135,6 +136,10 @@ class WallInsulationController extends Controller
                 'facade_plastered_painted' => $facadePlasteredOrPainted,
             ]
         );
+
+
+//        if (($buildingFeature->wasRecentlyCreated || $buildingFeature->wasChanged() || $buildingElement->wasChanged() || $buildingElement->wasRecentlyCreated)
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
 
         // Save progress
         $this->saveAdvices($request);

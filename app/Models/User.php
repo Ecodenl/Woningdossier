@@ -418,6 +418,7 @@ class User extends Authenticatable
     public function hasNotMultipleRoles(): bool
     {
         return ! $this->hasMultipleRoles();
+
     }
 
     public function completedQuestionnaires()
@@ -433,5 +434,21 @@ class User extends Authenticatable
     public function completeQuestionnaire(Questionnaire $questionnaire)
     {
         $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
+    }
+
+    /**
+     * Check if a user gave permission to let cooperations access his building.
+     *
+     * @param $buildingId
+     * @return bool
+     */
+    public function allowedAccessToHisBuilding($buildingId)
+    {
+        $conversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
+
+        if ($conversationRequest instanceof PrivateMessage && $conversationRequest->allow_access) {
+            return true;
+        }
+        return false;
     }
 }

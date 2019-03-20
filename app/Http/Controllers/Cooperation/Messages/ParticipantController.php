@@ -64,7 +64,7 @@ class ParticipantController extends Controller
         if ($user instanceof User) {
             $residentBuilding = Building::find($buildingId);
 
-            $privateMessage = PrivateMessage::forMyCooperation()->conversationRequest($buildingId)->first();
+            $privateMessage = PrivateMessage::forMyCooperation()->conversationRequestByBuildingId($buildingId)->first();
 
             if ($privateMessage->allow_access) {
                 // give the coach permission to the resident his building
@@ -77,7 +77,7 @@ class ParticipantController extends Controller
         }
 
         // since the coordinator is the only one who can do this atm.
-        return redirect()->route('cooperation.admin.cooperation.coordinator.connect-to-coach.index')
+        return redirect()->back()
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
     }
 }

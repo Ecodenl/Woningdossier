@@ -72,12 +72,19 @@ class Building extends Model
 {
     use SoftDeletes;
 
+    const STATUS_IS_ACTIVE = 'active';
+    const STATUS_IS_NOT_ACTIVE = 'in_active';
+
     protected $dates = [
         'deleted_at',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension',
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active'
     ];
 
     public static function boot()
@@ -111,6 +118,7 @@ class Building extends Model
             $building->userUsage()->withoutGlobalScope(GetValueScope::class)->delete();
         });
     }
+
 
     /**
      * Check if a step is completed for a building with matching input source id.
@@ -466,12 +474,31 @@ class Building extends Model
     }
 
     /**
-     * Get the full address.
+     * Check if a building is active
      *
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        if ($this->status == static::STATUS_IS_ACTIVE) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isNotActive()
+    {
+        return !$this->isActive();
+    }
+
+    /**
+     * Return the translation from a status
+     *
+     * @param $status
      * @return string
      */
-    public function getFullAddress()
+    public static function getTranslationForStatus($status): string
     {
-        return "{$this->postal_code}, {$this->street}, {$this->number}";
+        return __('woningdossier.building-statuses.'.$status);
     }
 }

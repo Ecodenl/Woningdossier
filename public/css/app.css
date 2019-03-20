@@ -8619,3 +8619,7 @@ ul.progress-list li.not-available a:focus img {
   cursor: move;
 }
 
+.select2-container .select2-locked-tag .select2-selection__choice__remove {
+  display: none !important;
+}
+

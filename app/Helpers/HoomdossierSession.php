@@ -27,6 +27,8 @@ class HoomdossierSession extends Session
         self::setCompareInputSourceShort($inputSource->short);
         // default to false
         self::setIsUserComparingInputSources(false);
+
+        self::setIsObserving(false);
     }
 
     /**
@@ -108,6 +110,28 @@ class HoomdossierSession extends Session
     public static function setRole(Role $role)
     {
         self::setHoomdossierSession('role_id', $role->id);
+    }
+
+    /**
+     * Set the observing boolean
+     *
+     * @NOTE key meant to determine if a user is observing someones tool / building.
+     *
+     * @param bool $observing
+     */
+    public static function setIsObserving(bool $observing = false)
+    {
+        self::setHoomdossierSession('is_observing', $observing);
+    }
+
+    /**
+     * Check if a user is observing someones tool / building
+     *
+     * @return bool
+     */
+    public static function getIsObserving(): bool
+    {
+        return self::getHoomdossierSession('is_observing');
     }
 
     /**
@@ -267,6 +291,16 @@ class HoomdossierSession extends Session
     public static function isUserNotComparingInputSources(): bool
     {
         return ! self::getIsUserComparingInputSources();
+    }
+
+    /**
+     * Check if a user is observing a building / tool
+     *
+     * @return bool
+     */
+    public static function isUserObserving(): bool
+    {
+        return self::getIsObserving();
     }
 
     /**

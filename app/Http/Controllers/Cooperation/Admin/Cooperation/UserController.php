@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\CoachRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -17,23 +18,17 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Prophecy\Doubler\ClassPatch\TraversablePatch;
 use Spatie\Permission\Models\Role;
+use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        if ('coordinator' == HoomdossierSession::currentRole()) {
-            $users = $cooperation
-                ->users()
-                ->where('id', '!=', \Auth::id())
-                ->role('coach')
-                ->get();
-        } else {
             $users = $cooperation
                 ->users()
                 ->get();
-        }
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));
@@ -47,15 +42,59 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
 
+    public function show(Cooperation $cooperation, $userId)
+    {
+        $user = $cooperation->users()->find($userId);
+        $building = $user->buildings()->first();
+        $userDoesNotExist = !$user instanceof User;
+        $userExists = !$userDoesNotExist;
+        $buildingId = $building->id;
+        $roles = Role::all();
+        $coaches = $cooperation->getCoaches()->get();
+
+        $manageableStatuses = BuildingCoachStatus::getManageableStatuses();
+        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
+
+        $mostRecentStatusesForBuildingId = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
+        // pick the first one, since its ordered on the created_at.
+
+        $mostRecentBuildingCoachStatusArray = $mostRecentStatusesForBuildingId->all();
+        // get the most recent status for the current coach and hydrate it.
+        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
+            [$mostRecentBuildingCoachStatusArray[0]]
+        )->first();
+
+        $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
+        $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
+
+        // get all the building notes
+        $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
+
+        // since a user can be deleted, a buildin
+        if ($userExists) {
+            // get previous user id
+            $previous = $cooperation->users()->where('id', '<', $user->id)->max('id');
+            // get next user id
+            $next = $cooperation->users()->where('id', '>', $user->id)->min('id');
+        }
+
+        return view('cooperation.admin.cooperation.users.show', compact(
+            'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
+                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses', 'mostRecentBuildingCoachStatus',
+                'userDoesNotExist', 'userExists'
+            )
+        );
+    }
+
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
-        \Log::debug($postalCode.' '.$number.' '.$pointer);
+        \Log::debug($postalCode . ' ' . $number . ' ' . $pointer);
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (! is_null($pointer)) {
+        if (!is_null($pointer)) {
             foreach ($response as $addrInfo) {
                 if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];
@@ -174,7 +213,7 @@ class UserController extends Controller
      * Send the mail to the created user.
      *
      * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param Request $request
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
     {
@@ -190,14 +229,14 @@ class UserController extends Controller
      * Destroy a user.
      *
      * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param Request $request
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      *
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Cooperation $cooperation, Request $request)
     {
+
         $userId = $request->get('user_id');
 
         $user = User::find($userId);
@@ -208,6 +247,6 @@ class UserController extends Controller
             UserService::deleteUser($user);
         }
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.admin.cooperation.users.destroy.success'));
     }
+
 }

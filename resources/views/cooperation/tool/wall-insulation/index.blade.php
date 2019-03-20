@@ -382,15 +382,17 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="form-group add-space">
-                        <div class="">
-                            <a class="btn btn-success pull-left"
-                               href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
-                            <button type="submit" class="btn btn-primary pull-right">
-                                @lang('default.buttons.next')
-                            </button>
-                        </div>
+                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
+                <div class="form-group add-space">
+                    <div class="">
+                        <a class="btn btn-success pull-left"
+                           href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
+                        <button type="submit" class="btn btn-primary pull-right">
+                            @lang('default.buttons.next')
+                        </button>
                     </div>
+                </div>
+                @endif
                 </div>
             </div>
         </div>

@@ -34,10 +34,23 @@ class BuildingCoachStatusService
      */
     public static function giveAccess($userId, $buildingId): bool
     {
+        // We first set the status pending, we do this so we can count the pending statuses end the removed status to determine
+        // if a coach has access
         BuildingCoachStatus::create([
             'coach_id' => $userId,
             'building_id' => $buildingId,
-            'status' => BuildingCoachStatus::STATUS_ACTIVE,
+            'status' => BuildingCoachStatus::STATUS_PENDING,
+        ]);
+
+        // so we dont get the same created_at, if thatwould happen the query for the most recent status would fail cause we max(created_at)
+        sleep(1);
+        // then we set the status in progress.
+        // we cant use this status to count it since the coach, coordinator and cooperation admin would be able to set it again
+        // and that would mess up the counting.
+        BuildingCoachStatus::create([
+            'coach_id' => $userId,
+            'building_id' => $buildingId,
+            'status' => BuildingCoachStatus::STATUS_IN_PROGRESS,
         ]);
 
         return true;

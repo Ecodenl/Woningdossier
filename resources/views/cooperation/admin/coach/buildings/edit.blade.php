@@ -23,16 +23,8 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         @foreach(__('woningdossier.cooperation.admin.coach.buildings.edit.form.options') as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                            @if($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT && $buildingCoachStatuses->contains('status',  \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT))
-
-                                            @elseif($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_NEW_APPOINTMENT && !$buildingCoachStatuses->contains('status', \App\Models\BuildingCoachStatus::STATUS_APPOINTMENT))
-
-                                            @elseif($buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_REMOVED)
-                                                {{-- Coach is not allowed to remove it from here he can do this from the chat--}}
-                                            @else
-                                                <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
-                                                <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
-                                            @endif
+                                            <input type="hidden" value="{{$buildingCoachStatusKey}}" data-coach-status="{{$buildingCoachStatusName}}">
+                                            <li><a href="javascript:;" @if(\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id) == $buildingCoachStatusName) id="current" @endif >{{$buildingCoachStatusName}}</a></li>
                                         @endforeach
                                     </ul>
                                 </div><!-- /btn-group -->
@@ -58,12 +50,6 @@
 
 @push('js')
     <script>
-        // not needed with the format option
-        // just to be sure.
-        $('#appointmentdate').datetimepicker({
-            format: "YYYY-MM-DD HH:mm:ss",
-            locale: '{{app()->getLocale()}}',
-        });
 
         $(document).ready(function () {
             // put the label text from the selected option inside the input for ux

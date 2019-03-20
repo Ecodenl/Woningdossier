@@ -387,9 +387,10 @@
 
                     $.ajax({
                         url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
-                        method: 'DELETE',
+                        method: 'POST',
                         data: {
-                            user_id: userId
+                            user_id: userId,
+                            _method: 'DELETE'
                         }
                     }).done(function () {
                         window.location.href = '{{route('cooperation.admin.cooperation.users.index')}}'

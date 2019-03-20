@@ -216,7 +216,7 @@
 
             </div>
 
-            <div class="hideable">
+            <div class="hideable" id="surfaces">
                 <div class="row">
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
@@ -407,8 +407,10 @@
             $("select, input[type=radio], input[type=text]").change(function () {
                 if ($('.is-painted').is(':checked')) {
                     $('#painted-options').show();
+                    $('#surfaces').show()
                 } else {
                     $('#painted-options').hide();
+                    $('#surfaces').hide()
                 }
 
                 var form = $(this).closest("form").serialize();
@@ -515,13 +517,10 @@
         function checkInterestAndCurrentInsulation() {
             var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-            console.log(elementCalculateValue);
             if (elementCalculateValue >= 3) {
-                console.log('hide');
                 $('.hideable').hide();
                 $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
             } else {
-                console.log('show');
                 $('.hideable').show();
                 $('#wall-insulation-info-alert').find('.alert').addClass('hide');
             }

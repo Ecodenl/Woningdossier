@@ -385,6 +385,7 @@ return [
                         'table' => [
                             'columns' => [
                                 'most-recent-message-date' => 'Meest recente ontvangst datum',
+                                'sender-name' => 'Verzender',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stadt',

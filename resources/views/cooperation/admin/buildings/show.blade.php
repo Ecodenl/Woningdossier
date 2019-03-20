@@ -261,11 +261,11 @@
                                    style="width: 100%">
                                 <thead>
                                 <tr>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
+                                    <th data-priority="1">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.message')</th>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
+                                    <th data-priority="3">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.building')</th>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
+                                    <th data-priority="2">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -325,7 +325,9 @@
 
             var appointmentDate = $('#appointment-date');
 
-            $('table').DataTable();
+            $('table').DataTable({
+                "order": [[ 4, "desc" ]]
+            });
             // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
             $('.nav-tabs a').on('shown.bs.tab', function (event) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();

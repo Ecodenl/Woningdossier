@@ -129,7 +129,7 @@
                                    id="appointment-date" name="user[building_coach_status][appointment_date]"
                                    type='text' class="form-control"
                                    @if($hasCoachStatusAndAppointmentIsNotNull)
-                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d')}}"
+                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('d/m/Y')}}"
                                     @endif
                             />
 
@@ -343,13 +343,15 @@
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
 
+
             var currentDate = new Date();
             currentDate.setDate(currentDate.getDate() - 1);
+
             appointmentDate.datetimepicker({
                 minDate: currentDate,
                 disabledDates: [currentDate],
-                format: "YYYY-MM-DD",
-                locale: '{{app()->getLocale()}}',
+                locale: 'nl',
+                format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
                 var date = appointmentDate.find('input').val();
@@ -375,7 +377,7 @@
                 } else {
                     var formattedDate = originalAppointmentDate;
                     if (originalAppointmentDate.length > 0) {
-                        formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD');
+                        formattedDate = moment(originalAppointmentDate).format('DD/MM/YYYY');
                     }
                     // if the user does not want to set / change the appointment date
                     // we set the date back to the one we got onload.

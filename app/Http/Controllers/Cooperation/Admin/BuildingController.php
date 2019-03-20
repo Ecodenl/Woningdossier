@@ -81,6 +81,7 @@ class BuildingController extends Controller
             $next = $building->where('id', '>', $buildingId)->min('id');
         }
 
+
         return view('cooperation.admin.buildings.show', compact(
                 'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
                 'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses', 'mostRecentBuildingCoachStatus',

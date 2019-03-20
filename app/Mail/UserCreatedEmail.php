@@ -37,7 +37,6 @@ class UserCreatedEmail extends Mailable
      */
     public function build()
     {
-        // we cant send $cooperation, will be overwritten
         return $this->view('cooperation.mail.user.created')
             ->with('userCooperation', $this->cooperation)
             ->with('createdUser', $this->createdUser)

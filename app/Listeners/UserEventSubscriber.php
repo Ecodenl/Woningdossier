@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Helpers\HoomdossierSession;
 use App\Jobs\SendRequestAccountConfirmationEmail;
+use App\Models\Cooperation;
 use Illuminate\Auth\Events\Registered;
 
 class UserEventSubscriber
@@ -33,6 +35,7 @@ class UserEventSubscriber
      */
     public function onUserRegistration(Registered $event)
     {
-        SendRequestAccountConfirmationEmail::dispatch($event->user);
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        SendRequestAccountConfirmationEmail::dispatch($event->user, $cooperation);
     }
 }

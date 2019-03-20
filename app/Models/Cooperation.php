@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
  *
  * @property int $id
  * @property string $name
+ * @property string $website_url
  * @property string $slug
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -31,6 +32,7 @@ class Cooperation extends Model
 {
     public $fillable = [
         'name',
+        'website_url',
         'slug',
     ];
 

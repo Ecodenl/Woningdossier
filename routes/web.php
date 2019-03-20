@@ -13,6 +13,7 @@
 
 Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function () {
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
+
         Route::get('/', function () {
             return view('cooperation.welcome');
         }

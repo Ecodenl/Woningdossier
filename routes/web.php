@@ -14,6 +14,13 @@
 Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function () {
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
 
+        Route::get('mailable', function () {
+            $user = \App\Models\User::find(2);
+            $cooperation = \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation());
+
+//            return new \App\Mail\UserCreatedEmail($cooperation, $user, 'hahabier');
+            return new \App\Mail\RequestAccountConfirmationEmail($user, $cooperation);
+        });
         Route::get('/', function () {
             return view('cooperation.welcome');
         }

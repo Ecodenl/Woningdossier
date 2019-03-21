@@ -48,7 +48,7 @@ class BuildingPolicy
      */
     public function userCanAccessBuilding(User $user, int $buildingId): bool
     {
-        $buildingPermission = Building::find($buildingId)->buildingPermissions()->where('user_id', $user->id)->first();
+        $buildingPermission = Building::withTrashed()->find($buildingId)->buildingPermissions()->where('user_id', $user->id)->first();
         if ($this->accessBuilding($user, $buildingId) && $buildingPermission instanceof BuildingPermission) {
             return true;
         }

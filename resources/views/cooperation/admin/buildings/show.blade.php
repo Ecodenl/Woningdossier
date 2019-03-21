@@ -274,7 +274,7 @@
                                 <?php /** @var \App\Models\Log $log */ ?>
                                 @foreach($logs as $log)
                                     <?php
-                                    $building = $log->building;
+                                    $building = $log->building()->withTrashed()->first();
                                     $address = strtoupper($building->postal_code) . ' ' . $building->city . ', ' . $building->street . ' ' . $building->number . ' ' . $building->extenstion
                                     ?>
                                     <tr>
@@ -282,7 +282,7 @@
                                         <td>{{$log->message}}</td>
                                         <td>{{$log->forUser instanceof \App\Models\User ? $log->forUser->getFullName() : ''}}</td>
                                         <td>{{$address}}</td>
-                                        <td>{{$log->created_at}}</td>
+                                        <td data-sort="{{strtotime($log->created_at->format('d-m-Y H:i'))}}">{{$log->created_at->format('d-m-Y H:i')}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

@@ -32,10 +32,11 @@ class BuildingController extends Controller
         $userExists = !$userDoesNotExist;
         $buildingId = $building->id;
 
-        $roles = Role::where('name', '!=', 'superuser')->where('name', '!=', 'super-admin')->where('name', '!=', 'cooperation-admin')->get();
-        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach'])) {
-            $roles = $roles->where('name', '!=', 'coordinator');
-        }
+        $roles = Role::where('name', '!=', 'superuser')
+            ->where('name', '!=', 'super-admin')
+            ->where('name', '!=', 'cooperation-admin')
+            ->get();
+
         $coaches = $cooperation->getCoaches()->get();
 
         $manageableStatuses = BuildingCoachStatus::getManageableStatuses();

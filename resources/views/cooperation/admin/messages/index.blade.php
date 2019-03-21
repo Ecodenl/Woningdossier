@@ -24,7 +24,9 @@
                                 $mostRecentMessage = \App\Models\PrivateMessage::where('building_id', $building->id)->get()->last();
                             ?>
                             <tr>
-                                <td>{{$mostRecentMessage->created_at}}</td>
+                                <td data-sort="{{strtotime($mostRecentMessage->created_at->format('d-m-Y H:i'))}}">
+                                    {{$mostRecentMessage->created_at->format('d-m-Y H:i')}}
+                                </td>
                                 <td>{{$mostRecentMessage->getSender()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">

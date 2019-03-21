@@ -377,7 +377,7 @@
                 } else {
                     var formattedDate = originalAppointmentDate;
                     if (originalAppointmentDate.length > 0) {
-                        formattedDate = moment(originalAppointmentDate).format('DD/MM/YYYY');
+                        formattedDate = moment(originalAppointmentDate).format('d/m/Y');
                     }
                     // if the user does not want to set / change the appointment date
                     // we set the date back to the one we got onload.

@@ -24,8 +24,10 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
+                                $mostRecentForBuildingAndCoachId = \App\Models\BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingCoachStatus->building_id)->where('coach_id', Auth::id())->first();
                                 $building = $buildingCoachStatus->building()->withTrashed()->first();
                                 $user = $building->user;
+                                $appointmentDate = !is_null($mostRecentForBuildingAndCoachId->appointment_date) ? \Carbon\Carbon::parse($mostRecentForBuildingAndCoachId->appointment_date)->format('d-m-Y') : '';
                             ?>
 
                             <tr>
@@ -41,10 +43,10 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
+                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentForBuildingAndCoachId->status)}}
                                 </td>
                                 <td>
-                                    {{$buildingCoachStatus->appointment_date}}
+                                    {{$appointmentDate}}
                                 </td>
                             </tr>
                         @endforeach

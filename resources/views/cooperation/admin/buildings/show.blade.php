@@ -348,8 +348,6 @@
             currentDate.setDate(currentDate.getDate() - 1);
 
             appointmentDate.datetimepicker({
-                minDate: currentDate,
-                disabledDates: [currentDate],
                 showTodayButton: true,
                 allowInputToggle: true,
                 locale: 'nl',

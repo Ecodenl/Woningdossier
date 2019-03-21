@@ -362,7 +362,7 @@
 
         <div id="indication-for-costs">
             <hr>
-            @include('cooperation.tool.includes.section-title', ['translation' => 'general.costs.cost-and-benefits', 'id' => 'cost-and-benefits',])
+            @include('cooperation.tool.includes.section-title', ['translation' => 'insulated-glazing.costs.cost-and-benefits', 'id' => 'cost-and-benefits',])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">

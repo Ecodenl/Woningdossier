@@ -20,7 +20,7 @@ class AddElementValueVeryGoodInsulationToElementValuesTable extends Migration
 
         $translation = ['key' => $uuid, 'translation' => 'Zeer goede isolatie (meer dan 20 cm isolatie)', 'language' => 'nl'];
 
-        $elementValue = [
+        $newElementValue = [
             'element_id' => $floorInsulationElement->id,
             'value' => $uuid,
             'order' => 4,
@@ -28,7 +28,15 @@ class AddElementValueVeryGoodInsulationToElementValuesTable extends Migration
         ];
 
         \DB::table('translations')->insert($translation);
-        \DB::table('element_values')->insert($elementValue);
+
+        // the niet van toepassing calculate value to 6
+        DB::table('element_values')
+            ->where('element_id', $floorInsulationElement->id)
+            ->where('calculate_value', 5)
+            ->update(['calculate_value' => 6]);
+
+        // now add the new zeer goede isolatie
+        \DB::table('element_values')->insert($newElementValue);
     }
 
     /**

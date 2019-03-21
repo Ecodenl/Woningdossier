@@ -25,7 +25,7 @@ class BuildingController extends Controller
      */
     public function show(Cooperation $cooperation, $buildingId)
     {
-        $building = Building::withTrashed()->find($buildingId);
+        $building = Building::withTrashed()->findOrFail($buildingId);
         $user = $building->user()->first();
 
         $userDoesNotExist = !$user instanceof User;

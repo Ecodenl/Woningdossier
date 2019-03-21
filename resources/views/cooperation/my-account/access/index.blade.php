@@ -9,24 +9,24 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form id="allow-access-form" action="{{route('cooperation.my-account.access.allow-access')}}" method="post">
-                        {{csrf_field()}}
-                        <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
-                            <label for="allow_access">
-                                <input id="allow_access" name="allow_access" type="checkbox"
-                                       @if(old('allow_access') && old('allow_access') == 'on' || $lastKnownConversationRequest->allow_access)
-                                            checked="checked"
-                                        @endif>
-                                @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
-                            </label>
-                            @if ($errors->has('allow_access'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('allow_access') }}</strong>
-                                </span>
-                            @endif
-                            <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
-                        </div>
-                    </form>
+                    {{--<form id="allow-access-form" action="{{route('cooperation.my-account.access.allow-access')}}" method="post">--}}
+                        {{--{{csrf_field()}}--}}
+                        {{--<div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">--}}
+                            {{--<label for="allow_access">--}}
+                                {{--<input id="allow_access" name="allow_access" type="checkbox"--}}
+                                       {{--@if(old('allow_access') && old('allow_access') == 'on' || $lastKnownConversationRequest->allow_access)--}}
+                                            {{--checked="checked"--}}
+                                        {{--@endif>--}}
+                                {{--@lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])--}}
+                            {{--</label>--}}
+                            {{--@if ($errors->has('allow_access'))--}}
+                                {{--<span class="help-block">--}}
+                                    {{--<strong>{{ $errors->first('allow_access') }}</strong>--}}
+                                {{--</span>--}}
+                            {{--@endif--}}
+                            {{--<p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>--}}
+                        {{--</div>--}}
+                    {{--</form>--}}
                 </div>
             </div>
             <div class="row">

@@ -20,11 +20,11 @@
                         <li>
                             <a href="{{ route('cooperation.admin.cooperation.reports.download.by-measure') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-measure') (CSV)</a>
                         </li>
-                        @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+{{--                        @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))--}}
                             <li>
                                 <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results') (CSV)</a>
                             </li>
-                        @endif
+                        {{--@endif--}}
                     </ul>
                 </div>
             </div>

@@ -28,6 +28,7 @@
                                 </button>
                             @endcan
                             @can('access-building', $building->id)
+                                @can('user-access-building', $building->id)
                                 <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
                                    id="observe-building" class="btn btn-primary">
                                     @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
@@ -40,6 +41,7 @@
                                         @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
                                     </a>
                                 @endif
+                                @endcan
                             @endcan
                         </div>
                     </div>

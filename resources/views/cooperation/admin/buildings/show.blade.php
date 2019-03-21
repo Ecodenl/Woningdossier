@@ -177,7 +177,7 @@
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                                 @foreach($roles as $role)
-                                    <option @if($user->hasRole($role)) selected="selected" @endif value="{{$role->id}}">
+                                    <option @if($user->hasNotMultipleRoles()) locked="locked" @endif @if($user->hasRole($role)) selected="selected" @endif value="{{$role->id}}">
                                         {{$role->human_readable_name}}
                                     </option>
                                 @endforeach
@@ -474,7 +474,17 @@
                 }
             });
 
-            $('#role-select').select2()
+            $('#role-select').select2({
+                templateSelection: function (tag, container) {
+                    var option = $('#role-select option[value="' + tag.id + '"]');
+                    if (option.attr('locked')) {
+                        $(container).addClass('select2-locked-tag');
+                        tag.locked = true
+                    }
+
+                    return tag.text;
+                }
+            })
                 .on('select2:selecting', function (event) {
                     var roleToSelect = $(event.params.args.data.element);
 

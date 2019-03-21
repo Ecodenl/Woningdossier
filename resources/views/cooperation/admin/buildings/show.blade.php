@@ -29,18 +29,18 @@
                             @endcan
                             @can('access-building', $building->id)
                                 @can('user-access-building', $building->id)
-                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
-                                   id="observe-building" class="btn btn-primary">
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
-                                </a>
-                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
-                                    <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
-                                       id="edit-building" class="btn btn-warning">
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
+                                    <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
+                                       id="observe-building" class="btn btn-primary">
+                                        @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
+                                        @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
                                     </a>
-                                @endif
+                                    @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
+                                        <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
+                                           id="edit-building" class="btn btn-warning">
+                                            @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
+                                            @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
+                                        </a>
+                                    @endif
                                 @endcan
                             @endcan
                         </div>
@@ -152,20 +152,14 @@
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
                                     multiple="multiple">
-                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach') && $coachesWithActiveBuildingCoachStatus->where('coach_id', Auth::id()) instanceof stdClass)
-                                    <option locked="locked" selected>{{Auth::user()->getFullName()}}</option>
-                                @else
-                                    @foreach($coaches as $coach)
-                                        <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
-                                        <option @if($coach->hasRole(['cooperation-admin', 'coordinator']))
-                                                locked="locked"
-                                                @endif
-                                                @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                                selected="selected"
-                                                @endif value="{{$coach->id}}">{{$coach->getFullName()}}
-                                        </option>
-                                    @endforeach
-                                @endif
+                                @foreach($coaches as $coach)
+                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
+                                    <option
+                                            @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
+                                            selected="selected"
+                                            @endif value="{{$coach->id}}">{{$coach->getFullName()}}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -177,7 +171,9 @@
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                                 @foreach($roles as $role)
-                                    <option @if($user->hasNotMultipleRoles()) locked="locked" @endif @if($user->hasRole($role)) selected="selected" @endif value="{{$role->id}}">
+                                    <option @if($user->hasNotMultipleRoles()) locked="locked"
+                                            @endif @if($user->hasRole($role)) selected="selected"
+                                            @endif value="{{$role->id}}">
                                         {{$role->human_readable_name}}
                                     </option>
                                 @endforeach
@@ -244,7 +240,8 @@
                             <div class="form-group">
 
                                 <label for="building-note">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.note')</label>
-                                <textarea id="building-note" name="building[note]" class="form-control">{{old('building.note')}}</textarea>
+                                <textarea id="building-note" name="building[note]"
+                                          class="form-control">{{old('building.note')}}</textarea>
                             </div>
                             <button type="submit" class="btn btn-default">
                                 @lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.save')
@@ -328,7 +325,7 @@
             var appointmentDate = $('#appointment-date');
 
             $('table').DataTable({
-                "order": [[ 4, "desc" ]]
+                "order": [[4, "desc"]]
             });
             // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
             $('.nav-tabs a').on('shown.bs.tab', function (event) {

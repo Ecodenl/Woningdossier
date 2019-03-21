@@ -16,11 +16,6 @@
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
-                    @include('cooperation.tool.includes.section-title', ['translation' => 'floor-insulation.intro.title', 'id' => 'intro',])
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
                     @component('cooperation.tool.components.step-question', ['id' => 'element.' . $floorInsulation->id, 'translation' => 'floor-insulation.floor-insulation', 'required' => false])
 
                         @component('cooperation.tool.components.input-group',

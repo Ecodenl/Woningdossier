@@ -10,7 +10,6 @@
         @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div class="row">
             <div id="current-situation" class="col-md-12">
-                @include('cooperation.tool.includes.section-title', ['translation' => 'roof-insulation.title', 'id' => 'roof-insulation',])
 
                 <div class="row">
                     <div class="col-sm-12">

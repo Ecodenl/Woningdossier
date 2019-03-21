@@ -35,11 +35,14 @@
                             <?php
                                 $building = $buildingCoachStatus->building()->withTrashed()->first();
                                 $user = $building->user;
+                                $userExists = $user instanceof \App\Models\User;
                             ?>
 
                             <tr>
-                                <td>{{$user instanceof \App\Models\User && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('Y-m-d') : '-'}}</td>
-                                <td>{{$user instanceof \App\Models\User ? $user->getFullName() : '-'}}</td>
+                                <td data-sort="{{$userExists && $user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
+                                    {{$userExists && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                </td>
+                                <td>{{$userExists ? $user->getFullName() : '-'}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['id' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
@@ -52,8 +55,8 @@
                                 <td>
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
                                 </td>
-                                <td>
-                                    {{$buildingCoachStatus->hasAppointmentDate() ? $buildingCoachStatus->appointment_date->format('Y-m-d') : ''}}
+                                <td data-sort="{{$buildingCoachStatus->hasAppointmentDate() ? strtotime($buildingCoachStatus->appointment_date->format('d-m-Y')) : ''}}">
+                                    {{$buildingCoachStatus->hasAppointmentDate() ? $buildingCoachStatus->appointment_date->format('d-m-Y') : ''}}
                                 </td>
                             </tr>
                         @endforeach

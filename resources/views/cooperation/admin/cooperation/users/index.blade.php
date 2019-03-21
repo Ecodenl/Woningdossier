@@ -24,9 +24,12 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
                             <?php $building = $user->buildings()->withTrashed()->first(); ?>
+
                             @if($building instanceof \App\Models\Building)
                             <tr>
-                                <td>{{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : __('woningdossier.cooperation.admin.cooperation.users.index.table.columns.no-known-created-at')}}</td>
+                                <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
+                                    {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
@@ -57,6 +60,7 @@
 @push('js')
     <script>
         $(document).ready(function () {
+
             var table = $('table');
             table.DataTable({
                 responsive: true,

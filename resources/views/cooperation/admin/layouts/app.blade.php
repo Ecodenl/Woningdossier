@@ -57,11 +57,16 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/moment/moment.js') }}"></script>
+<!-- moment.js -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js" />
+<!-- datetimepicker -->
 <script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
-
+<!-- datatable -->
 <script src="{{ asset('js/datatables.js') }}"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js" />
+<!-- nutty stuff -->
 <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
+<!-- select2 -->
 <script src="{{asset('js/select2.js')}}"></script>
 
 <script>

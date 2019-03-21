@@ -129,7 +129,7 @@
                                    id="appointment-date" name="user[building_coach_status][appointment_date]"
                                    type='text' class="form-control"
                                    @if($hasCoachStatusAndAppointmentIsNotNull)
-                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('d/m/Y')}}"
+                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('d-m-Y')}}"
                                     @endif
                             />
 
@@ -376,9 +376,6 @@
                     })
                 } else {
                     var formattedDate = originalAppointmentDate;
-                    if (originalAppointmentDate.length > 0) {
-                        formattedDate = moment(originalAppointmentDate).format('d/m/Y');
-                    }
                     // if the user does not want to set / change the appointment date
                     // we set the date back to the one we got onload.
                     appointmentDate.find('input').val(formattedDate);

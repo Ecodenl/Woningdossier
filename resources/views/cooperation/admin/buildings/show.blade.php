@@ -149,20 +149,14 @@
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
                                     multiple="multiple">
-                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach') && $coachesWithActiveBuildingCoachStatus->where('coach_id', Auth::id()) instanceof stdClass)
-                                    <option locked="locked" selected>{{Auth::user()->getFullName()}}</option>
-                                @else
                                     @foreach($coaches as $coach)
                                         <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
-                                        <option @if($coach->hasRole(['cooperation-admin', 'coordinator']))
-                                                locked="locked"
-                                                @endif
+                                        <option
                                                 @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
                                                 selected="selected"
                                                 @endif value="{{$coach->id}}">{{$coach->getFullName()}}
                                         </option>
                                     @endforeach
-                                @endif
                             </select>
                         </div>
                     </div>

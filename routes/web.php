@@ -155,6 +155,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         // todo add admin middleware checking ACLs
         Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
             Route::get('/', 'AdminController@index')->name('index');
+            Route::get('stop-session', 'AdminController@stopSession')->name('stop-session');
             Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
             Route::group(['prefix' => 'roles', 'as' => 'roles.'], function () {

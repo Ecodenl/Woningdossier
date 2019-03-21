@@ -17,7 +17,6 @@
     @endif
     <style>
         .add-space {
-            margin: 10px;
             padding: 0 10px 0 10px;
         }
     </style>

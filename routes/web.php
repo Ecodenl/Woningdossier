@@ -72,7 +72,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['as' => 'access.', 'prefix' => 'access'], function () {
                     Route::get('', 'AccessController@index')->name('index');
-                    Route::post('revoke-access', 'AccessController@revokeAccess')->name('revoke-access');
+                    Route::post('allow-access', 'AccessController@allowAccess')->name('allow-access');
                 });
 
                 //Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');

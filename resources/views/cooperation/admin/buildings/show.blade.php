@@ -350,6 +350,8 @@
             appointmentDate.datetimepicker({
                 minDate: currentDate,
                 disabledDates: [currentDate],
+                showTodayButton: true,
+                allowInputToggle: true,
                 locale: 'nl',
                 format: 'L',
                 showClear: true,

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -58,14 +59,12 @@ class PrivateMessageObserver
                         'building_id' => $coachWithAccessToResidentBuildingStatus->building_id,
                     ]);
                 }
-            } elseif (! $privateMessage->allow_access) {
+            } elseif ($privateMessage->allow_access == false) {
                 // the user wants to revoke the access for all the connected coaches.
 
-                $buildingFromSender = Building::find($privateMessage->building_id);
-                $buildingId = $buildingFromSender->id;
 
                 // delete all the building permissions for this building
-                BuildingPermission::where('building_id', $buildingId)->delete();
+                BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->delete();
             }
         }
     }

@@ -299,12 +299,12 @@
             <div id="taking-into-account">
                 <hr>
                 @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
-                <h6 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</h6>
+                <span>{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</span>
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <span id="repair_joint_year">(in 2018)</span>
                         @component('cooperation.tool.components.step-question', ['id' => 'repair_joint', 'translation' => 'wall-insulation.taking-into-account.repair-joint', 'required' => false])
+                            <span id="repair_joint_year">(in 2018)</span>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="repair_joint" class="form-control disabled" disabled=""

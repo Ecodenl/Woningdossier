@@ -164,21 +164,21 @@
                             </div>
                         @endcomponent
                     </div>
-                </div>
 
-                <div class="col-sm-4">
-                    <div class="form-group add-space">
-                        @component('cooperation.tool.components.step-question', ['id' => 'raise-own-consumption', 'translation' => 'solar-panels.indication-for-costs.raise-own-consumption', 'required' => false])
-                            <div class="input-group">
-                                <span class="input-group-addon">%</span>
-                                <input type="text" id="raise_own_consumption" class="form-control disabled"
-                                       disabled="" value="0">
-                            </div>
-                        @endcomponent
+                    <div class="col-sm-4">
+                        <div class="form-group add-space">
+                            @component('cooperation.tool.components.step-question', ['id' => 'raise-own-consumption', 'translation' => 'solar-panels.indication-for-costs.raise-own-consumption', 'required' => false])
+                                <div class="input-group">
+                                    <span class="input-group-addon">%</span>
+                                    <input type="text" id="raise_own_consumption" class="form-control disabled"
+                                           disabled="" value="0">
+                                </div>
+                            @endcomponent
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    <div class="col-sm-4">
+                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    </div>
                 </div>
             </div>
             <div class="row">

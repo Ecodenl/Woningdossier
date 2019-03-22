@@ -25,13 +25,18 @@ class BuildingController extends Controller
      */
     public function show(Cooperation $cooperation, $buildingId)
     {
-        $building = Building::withTrashed()->find($buildingId);
+        $building = Building::withTrashed()->findOrFail($buildingId);
         $user = $building->user()->first();
 
         $userDoesNotExist = !$user instanceof User;
         $userExists = !$userDoesNotExist;
         $buildingId = $building->id;
-        $roles = Role::all();
+
+        $roles = Role::where('name', '!=', 'superuser')
+            ->where('name', '!=', 'super-admin')
+            ->where('name', '!=', 'cooperation-admin')
+            ->get();
+
         $coaches = $cooperation->getCoaches()->get();
 
         $manageableStatuses = BuildingCoachStatus::getManageableStatuses();
@@ -76,6 +81,7 @@ class BuildingController extends Controller
             // get next user id
             $next = $building->where('id', '>', $buildingId)->min('id');
         }
+
 
         return view('cooperation.admin.buildings.show', compact(
                 'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',

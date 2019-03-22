@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group add-space">
-                    <label for="interest_{{ $type }}_{{ $typeId }}" class="control-label">
+                    <label for="interest_{{ $type }}_{{ $typeId }}" class="control-label" style="display: inline;">
                         <i data-toggle="modal" data-target="#interest_{{ $type }}_{{ $typeId }}_help" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
                         {{\App\Helpers\Translation::translate('general.change-interested.title', ['item' => $typeName])}}
                     </label>

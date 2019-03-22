@@ -65,6 +65,7 @@
                     return false;
                 }
             });
+
             var chat = $('.panel-chat-body')[0];
             if (typeof chat !== "undefined") {
                 chat.scrollTop = chat.scrollHeight - chat.clientHeight;

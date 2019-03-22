@@ -19,11 +19,11 @@ class BuildingController extends Controller
     {
 
         $userId = \Auth::id();
+
         // get most recent building coach statuses for
         $buildingCoachStatuses = BuildingCoachStatus::hydrate(
             BuildingCoachStatus::getConnectedBuildingsByUserId($userId)->all()
         );
-
 
         return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildingCoachStatuses'));
     }

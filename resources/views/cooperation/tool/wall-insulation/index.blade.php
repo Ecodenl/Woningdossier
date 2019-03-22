@@ -303,8 +303,8 @@
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <span id="repair_joint_year">(in 2018)</span>
                         @component('cooperation.tool.components.step-question', ['id' => 'repair_joint', 'translation' => 'wall-insulation.taking-into-account.repair-joint', 'required' => false])
+                            <span id="repair_joint_year">(in 2018)</span>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="repair_joint" class="form-control disabled" disabled=""

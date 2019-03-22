@@ -20,7 +20,7 @@
         @auth
             <ul class="nav navbar-nav">
                 @if (Auth::user()->isFillingToolForOtherBuilding())
-                    <a href="{{route('cooperation.admin.index')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
+                    <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
             </ul>
         @endauth

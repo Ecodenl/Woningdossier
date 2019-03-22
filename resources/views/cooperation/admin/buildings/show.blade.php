@@ -6,7 +6,8 @@
             @lang('woningdossier.cooperation.admin.users.show.header', [
                 'name' => $userExists ? $user->getFullName() : '-',
                 'street-and-number' => $building->street.' '.$building->house_number.$building->house_number_extension,
-                'zipcode-and-city' => $building->postal_code.' '.$building->city
+                'zipcode-and-city' => $building->postal_code.' '.$building->city,
+                'email' => $userExists ? $user->email : ''
             ])
         </div>
 
@@ -27,18 +28,20 @@
                                 </button>
                             @endcan
                             @can('access-building', $building->id)
-                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
-                                   id="observe-building" class="btn btn-primary">
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
-                                </a>
-                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
-                                    <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
-                                       id="edit-building" class="btn btn-warning">
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
+                                @can('user-access-building', $building->id)
+                                    <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
+                                       id="observe-building" class="btn btn-primary">
+                                        @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
+                                        @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
                                     </a>
-                                @endif
+                                    @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
+                                        <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
+                                           id="edit-building" class="btn btn-warning">
+                                            @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
+                                            @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
+                                        </a>
+                                    @endif
+                                @endcan
                             @endcan
                         </div>
                     </div>
@@ -128,7 +131,7 @@
                                    id="appointment-date" name="user[building_coach_status][appointment_date]"
                                    type='text' class="form-control"
                                    @if($hasCoachStatusAndAppointmentIsNotNull)
-                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d')}}"
+                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('d-m-Y')}}"
                                     @endif
                             />
 
@@ -150,13 +153,13 @@
                                     @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
                                     multiple="multiple">
                                     @foreach($coaches as $coach)
-                                        <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
-                                        <option
-                                                @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                                selected="selected"
-                                                @endif value="{{$coach->id}}">{{$coach->getFullName()}}
-                                        </option>
-                                    @endforeach
+                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
+                                    <option
+                                            @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
+                                            selected="selected"
+                                            @endif value="{{$coach->id}}">{{$coach->getFullName()}}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -168,7 +171,9 @@
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                                 @foreach($roles as $role)
-                                    <option @if($user->hasRole($role)) selected="selected" @endif value="{{$role->id}}">
+                                    <option @if($user->hasNotMultipleRoles()) locked="locked"
+                                            @endif @if($user->hasRole($role)) selected="selected"
+                                            @endif value="{{$role->id}}">
                                         {{$role->human_readable_name}}
                                     </option>
                                 @endforeach
@@ -235,7 +240,8 @@
                             <div class="form-group">
 
                                 <label for="building-note">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.note')</label>
-                                <textarea id="building-note" name="building[note]" class="form-control">{{old('building.note')}}</textarea>
+                                <textarea id="building-note" name="building[note]"
+                                          class="form-control">{{old('building.note')}}</textarea>
                             </div>
                             <button type="submit" class="btn btn-default">
                                 @lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.save')
@@ -254,18 +260,18 @@
                                    style="width: 100%">
                                 <thead>
                                 <tr>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
+                                    <th data-priority="1">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.message')</th>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
+                                    <th data-priority="3">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.building')</th>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
+                                    <th data-priority="2">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php /** @var \App\Models\Log $log */ ?>
                                 @foreach($logs as $log)
                                     <?php
-                                    $building = $log->building;
+                                    $building = $log->building()->withTrashed()->first();
                                     $address = strtoupper($building->postal_code) . ' ' . $building->city . ', ' . $building->street . ' ' . $building->number . ' ' . $building->extenstion
                                     ?>
                                     <tr>
@@ -273,7 +279,7 @@
                                         <td>{{$log->message}}</td>
                                         <td>{{$log->forUser instanceof \App\Models\User ? $log->forUser->getFullName() : ''}}</td>
                                         <td>{{$address}}</td>
-                                        <td>{{$log->created_at}}</td>
+                                        <td data-sort="{{strtotime($log->created_at->format('d-m-Y H:i'))}}">{{$log->created_at->format('d-m-Y H:i')}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -318,7 +324,9 @@
 
             var appointmentDate = $('#appointment-date');
 
-            $('table').DataTable();
+            $('table').DataTable({
+                "order": [[4, "desc"]]
+            });
             // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
             $('.nav-tabs a').on('shown.bs.tab', function (event) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
@@ -333,14 +341,14 @@
 
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
-
             var currentDate = new Date();
             currentDate.setDate(currentDate.getDate() - 1);
+
             appointmentDate.datetimepicker({
-                minDate: currentDate,
-                disabledDates: [currentDate],
-                format: "YYYY-MM-DD",
-                locale: '{{app()->getLocale()}}',
+                showTodayButton: true,
+                allowInputToggle: true,
+                locale: 'nl',
+                format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
                 var date = appointmentDate.find('input').val();
@@ -365,9 +373,6 @@
                     })
                 } else {
                     var formattedDate = originalAppointmentDate;
-                    if (originalAppointmentDate.length > 0) {
-                        formattedDate = moment(originalAppointmentDate).format('YYYY-MM-DD');
-                    }
                     // if the user does not want to set / change the appointment date
                     // we set the date back to the one we got onload.
                     appointmentDate.find('input').val(formattedDate);
@@ -380,9 +385,10 @@
 
                     $.ajax({
                         url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
-                        method: 'DELETE',
+                        method: 'POST',
                         data: {
-                            user_id: userId
+                            user_id: userId,
+                            _method: 'DELETE'
                         }
                     }).done(function () {
                         window.location.href = '{{route('cooperation.admin.cooperation.users.index')}}'
@@ -465,7 +471,17 @@
                 }
             });
 
-            $('#role-select').select2()
+            $('#role-select').select2({
+                templateSelection: function (tag, container) {
+                    var option = $('#role-select option[value="' + tag.id + '"]');
+                    if (option.attr('locked')) {
+                        $(container).addClass('select2-locked-tag');
+                        tag.locked = true
+                    }
+
+                    return tag.text;
+                }
+            })
                 .on('select2:selecting', function (event) {
                     var roleToSelect = $(event.params.args.data.element);
 

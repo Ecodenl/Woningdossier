@@ -57,12 +57,19 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/moment/moment.js') }}"></script>
+<!-- moment.js -->
+<script src="{{asset('js/moment/moment.js')}}"></script>
+<!-- datetimepicker -->
 <script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
-
+<!-- datatable -->
 <script src="{{ asset('js/datatables.js') }}"></script>
+<!-- nutty stuff -->
 <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
+<!-- select2 -->
 <script src="{{asset('js/select2.js')}}"></script>
+
+
+
 
 <script>
     $(document).ready(function () {

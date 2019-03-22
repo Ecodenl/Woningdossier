@@ -13,13 +13,21 @@ class Hoomdossier
         return str_replace(',', '.', $input);
     }
 
-    public static function getMostCredibleValue(Relation $relation, $column, $default = null)
+    public static function getMostCredibleValue(Relation $relation, $column, $default = null, $onlyReturnForInputSource = null)
     {
-        $found = $relation
+        $baseQuery = $relation
             ->withoutGlobalScope(GetValueScope::class)
             ->join('input_sources', $relation->getRelated()->getTable().'.input_source_id', '=', 'input_sources.id')
-            ->orderBy('input_sources.order', 'ASC')
-            ->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
+            ->orderBy('input_sources.order', 'ASC');
+
+        // if is not empty, we need to search the answers for a particular input source
+        if (!is_null($onlyReturnForInputSource)) {
+            $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
+            $found = $baseQuery->where('input_source_id', $inputSourceToReturn->id);
+        } else {
+            // if the $onlyReturnForInputSource is empty, the base query is enough
+            $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
+        }
 
         $results = $found->pluck($column, 'short');
 
@@ -79,5 +87,37 @@ class Hoomdossier
         }
         // No value found
         return $default;
+    }
+
+    /**
+     * Return the most credible input source for a relationship
+     *
+     * @param Relation $relation
+     * @return int|mixed|null
+     */
+    public static function getMostCredibleInputSource(Relation $relation)
+    {
+        $found = $relation
+            ->withoutGlobalScope(GetValueScope::class)
+            ->join('input_sources', $relation->getRelated()->getTable().'.input_source_id', '=', 'input_sources.id')
+            ->orderBy('input_sources.order', 'ASC')
+            ->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
+
+        $results = $found->pluck( 'short');
+
+        // Always check my own input source first. If that is properly filled
+        // return that.
+        $myInputSource = InputSource::find(HoomdossierSession::getInputSource());
+
+        // if the results contain answers from me.
+        if ($results->contains($myInputSource->short)) {
+            return $myInputSource->short;
+        }
+
+        // my own inputsource is not available, so we return the most trust worthy / credible input source short
+        foreach ($results as $inputSourceShort) {
+            return $inputSourceShort;
+        }
+        return null;
     }
 }

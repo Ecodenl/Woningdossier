@@ -14,7 +14,9 @@ class AddWebsiteUrlToCooperationsTable extends Migration
     public function up()
     {
         Schema::table('cooperations', function (Blueprint $table) {
-            $table->string('website_url')->nullable()->default(null);
+            if (!Schema::hasColumn('cooperations', 'website_url')) {
+                $table->string('website_url')->nullable()->default(null);
+            }
         });
     }
 

@@ -16,27 +16,32 @@ class AddElementValueVeryGoodInsulationToElementValuesTable extends Migration
 
         $floorInsulationElement = DB::table('elements')->where('short', 'floor-insulation')->first();
 
-        $uuid = \App\Helpers\Str::uuid();
+        if (!is_null($floorInsulationElement)) {
+	        $uuid = \App\Helpers\Str::uuid();
 
-        $translation = ['key' => $uuid, 'translation' => 'Zeer goede isolatie (meer dan 20 cm isolatie)', 'language' => 'nl'];
+	        $translation = [ 'key'         => $uuid,
+	                         'translation' => 'Zeer goede isolatie (meer dan 20 cm isolatie)',
+	                         'language'    => 'nl'
+	        ];
 
-        $newElementValue = [
-            'element_id' => $floorInsulationElement->id,
-            'value' => $uuid,
-            'order' => 4,
-            'calculate_value' => 5
-        ];
+	        $newElementValue = [
+		        'element_id'      => $floorInsulationElement->id,
+		        'value'           => $uuid,
+		        'order'           => 4,
+		        'calculate_value' => 5
+	        ];
 
-        \DB::table('translations')->insert($translation);
+	        \DB::table( 'translations' )->insert( $translation );
 
-        // the niet van toepassing calculate value to 6
-        DB::table('element_values')
-            ->where('element_id', $floorInsulationElement->id)
-            ->where('calculate_value', 5)
-            ->update(['calculate_value' => 6]);
+	        // the niet van toepassing calculate value to 6
+	        DB::table( 'element_values' )
+	          ->where( 'element_id', $floorInsulationElement->id )
+	          ->where( 'calculate_value', 5 )
+	          ->update( [ 'calculate_value' => 6 ] );
 
-        // now add the new zeer goede isolatie
-        \DB::table('element_values')->insert($newElementValue);
+	        // now add the new zeer goede isolatie
+	        \DB::table( 'element_values' )->insert( $newElementValue );
+        }
     }
 
     /**
@@ -47,13 +52,18 @@ class AddElementValueVeryGoodInsulationToElementValuesTable extends Migration
     public function down()
     {
         $floorInsulationElement = DB::table('elements')->where('short', 'floor-insulation')->first();
+        if (!is_null($floorInsulationElement)) {
 
-        $elementValueToDelete = DB::table('element_values')->where('element_id', $floorInsulationElement->id)->first();
+	        $elementValueToDelete = DB::table( 'element_values' )->where( 'element_id',
+		        $floorInsulationElement->id )->first();
 
-        // first delete the translations and then the element value itself
-        DB::table('translations')->where('key', $elementValueToDelete->value)->delete();
-        // and delete the element_values
-        DB::table('element_values')->where('element_id', $floorInsulationElement->id)->delete();
+	        // first delete the translations and then the element value itself
+	        DB::table( 'translations' )->where( 'key',
+		        $elementValueToDelete->value )->delete();
+	        // and delete the element_values
+	        DB::table( 'element_values' )->where( 'element_id',
+		        $floorInsulationElement->id )->delete();
+        }
 
     }
 }

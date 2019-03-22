@@ -8457,6 +8457,11 @@ body i.glyphicon-info-sign {
   height: 50px;
 }
 
+#energy-saving-measures label.user-interest-label {
+  display: inline-block !important;
+  line-height: 22px;
+}
+
 .page-my-plan h3 {
   display: inline;
 }

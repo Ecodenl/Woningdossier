@@ -134,16 +134,18 @@ return [
                     'create' => [
                         'header' => 'Cooperaie toevoegen',
                         'form' => [
-                            'name' => 'Naam van de cooperatie',
-                            'slug' => 'Slug / subdomein',
+                            'name' => 'Naam van de cooperatie *',
+                            'slug' => 'Slug / subdomein *',
+                            'website_url' => 'Website URL',
                             'create' => 'Aanmaken',
                         ],
                     ],
                     'edit' => [
                         'header' => 'Cooperatie :name bewerken',
                         'form' => [
-                            'name' => 'Naam van de cooperatie',
-                            'slug' => 'Slug / subdomein',
+                            'name' => 'Naam van de cooperatie *',
+                            'slug' => 'Slug / subdomein *',
+                            'website_url' => 'Website URL',
                             'update' => 'Bijwerken',
                         ],
                     ],
@@ -350,7 +352,9 @@ return [
                                 'title' => 'Berichten intern'
                             ],
                             'comments-on-building' => [
-                                'title' => 'Opmerkingen bij woning'
+                                'title' => 'Opmerkingen bij woning',
+                                'note' => 'Opmerking',
+                                'save' => 'Opmerking opslaan',
                             ],
                             'fill-in-history' => [
                                 'title' => 'Invulhistorie',

@@ -24,10 +24,12 @@ class CooperationController extends Controller
     {
         $cooperationName = $request->get('name');
         $cooperationSlug = $request->get('slug');
+        $cooperationWebsiteUrl = $request->get('website_url');
 
         Cooperation::create([
             'name' => $cooperationName,
             'slug' => $cooperationSlug,
+            'website_url' => $cooperationWebsiteUrl
         ]);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
@@ -45,6 +47,7 @@ class CooperationController extends Controller
     {
         $cooperationName = $request->get('name');
         $cooperationSlug = $request->get('slug');
+        $cooperationWebsiteUrl = $request->get('website_url');
         $cooperationId = $request->get('cooperation_id');
 
         $cooperationToEdit = Cooperation::find($cooperationId);
@@ -52,6 +55,7 @@ class CooperationController extends Controller
         if ($cooperationToEdit instanceof Cooperation) {
             $cooperationToEdit->name = $cooperationName;
             $cooperationToEdit->slug = $cooperationSlug;
+            $cooperationToEdit->website_url = $cooperationWebsiteUrl;
             $cooperationToEdit->save();
         }
 

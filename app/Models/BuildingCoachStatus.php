@@ -223,7 +223,7 @@ class BuildingCoachStatus extends Model
                 ->from($pendingCount)
                 ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
                 ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
-                ->havingRaw('(count_pending > count_removed) OR count_removed IS NULL')
+                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                 ->get();
 
         return $coachesWithPendingBuildingCoachStatus;
@@ -288,6 +288,7 @@ class BuildingCoachStatus extends Model
             ) as bp');
 
 
+
         /**
          * Retrieves the buildings from a coach that have a higher pending count status then a removed_count
          * Retrieves the coaches that have a pending building status, also returns the building_permission count so we can check if the coach can access the building
@@ -297,7 +298,7 @@ class BuildingCoachStatus extends Model
                 ->from($pendingCount)
                 ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
                 ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
-                ->havingRaw('(count_pending > count_removed) OR count_removed IS NULL')
+                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                 ->get();
 
         return $buildingsTheCoachIsConnectedTo;

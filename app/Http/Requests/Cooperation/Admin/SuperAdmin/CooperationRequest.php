@@ -28,7 +28,8 @@ class CooperationRequest extends FormRequest
 
         return [
             'name' => 'required',
-            'slug' => [Rule::unique('cooperations', 'slug')->ignore($cooperationId)],
+            'slug' => ['required', Rule::unique('cooperations', 'slug')->ignore($cooperationId)],
+            'website_url' => 'nullable|url'
         ];
     }
 }

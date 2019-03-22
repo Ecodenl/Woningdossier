@@ -57,7 +57,7 @@
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
                                 </option>
-                            {{--the user does not have a coach connected but the building is active--}}
+                                {{--the user does not have a coach connected but the building is active--}}
                             @elseif(!$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 {{--The user had some sort of message history so, pending.--}}
                                 @if($publicMessages->isNotEmpty())
@@ -65,14 +65,14 @@
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
                                         {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_PENDING)}}
                                     </option>
-                                {{--The user has no message history--}}
+                                    {{--The user has no message history--}}
                                 @else
                                     <option disabled selected>
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
                                         {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_ACTIVE)}}
                                     </option>
                                 @endif
-                            {{--The user has no building coach status and his building is set to inactive--}}
+                                {{--The user has no building coach status and his building is set to inactive--}}
                             @else
                                 <option @if($building->isNotActive()) disabled selected @endif>
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
@@ -122,13 +122,13 @@
                         <div class='input-group date' id="appointment-date">
                             <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
                             <input autocomplete="off"
-                                    @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive())
-                                    disabled
-                                    @endif
-                                    id="appointment-date" name="user[building_coach_status][appointment_date]"
-                                    type='text' class="form-control"
-                                    @if($hasCoachStatusAndAppointmentIsNotNull)
-                                    value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d')}}"
+                                   @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive())
+                                   disabled
+                                   @endif
+                                   id="appointment-date" name="user[building_coach_status][appointment_date]"
+                                   type='text' class="form-control"
+                                   @if($hasCoachStatusAndAppointmentIsNotNull)
+                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('Y-m-d')}}"
                                     @endif
                             />
 
@@ -222,13 +222,25 @@
             <div id="comments-on-building" class="tab-pane fade">
                 <div class="panel">
                     <div class="panel-body">
-
                         @forelse($buildingNotes as $buildingNote)
                             <p class="pull-right">{{$buildingNote->created_at->format('Y-m-d H:i')}}</p>
                             <p>{{$buildingNote->note}}</p>
                             <hr>
                         @empty
                         @endforelse
+
+                        <form action="{{route('cooperation.admin.building-notes.store')}}" method="post">
+                            {{csrf_field()}}
+                            <input type="hidden" name="building[id]" value="{{$building->id}}">
+                            <div class="form-group">
+
+                                <label for="building-note">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.note')</label>
+                                <textarea id="building-note" name="building[note]" class="form-control">{{old('building.note')}}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-default">
+                                @lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.save')
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -237,7 +249,9 @@
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">
                         <div class="panel-body">
-                            <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap"  style="width: 100%">
+                            <table id="log-table"
+                                   class="table-responsive table table-striped table-bordered compact nowrap"
+                                   style="width: 100%">
                                 <thead>
                                 <tr>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
@@ -251,8 +265,8 @@
                                 <?php /** @var \App\Models\Log $log */ ?>
                                 @foreach($logs as $log)
                                     <?php
-                                        $building = $log->building;
-                                        $address = strtoupper($building->postal_code).' '.$building->city.', '.$building->street.' '.$building->number.' '.$building->extenstion
+                                    $building = $log->building;
+                                    $address = strtoupper($building->postal_code) . ' ' . $building->city . ', ' . $building->street . ' ' . $building->number . ' ' . $building->extenstion
                                     ?>
                                     <tr>
                                         <td>{{$log->user instanceof \App\Models\User ? $log->user->getFullName() : ''}}</td>
@@ -321,7 +335,7 @@
 
 
             var currentDate = new Date();
-            currentDate.setDate(currentDate.getDate()-1);
+            currentDate.setDate(currentDate.getDate() - 1);
             appointmentDate.datetimepicker({
                 minDate: currentDate,
                 disabledDates: [currentDate],

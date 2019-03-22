@@ -37,7 +37,9 @@ class UserCreatedEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('cooperation.mail.user.created')
+        return $this
+            ->subject(__('mail.account-created-by-cooperation.subject'))
+            ->view('cooperation.mail.user.created')
             ->with('userCooperation', $this->cooperation)
             ->with('createdUser', $this->createdUser)
             ->with('token', $this->token);

@@ -40,6 +40,7 @@ class RequestAccountConfirmationEmail extends Mailable
     public function build()
     {
         return $this
+            ->subject(__('mail.confirm-account.subject'))
             ->view('cooperation.mail.user.confirm_account');
 
     }

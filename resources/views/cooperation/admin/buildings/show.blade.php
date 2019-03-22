@@ -152,7 +152,7 @@
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
                                     multiple="multiple">
-                                @foreach($coaches as $coach)
+                                    @foreach($coaches as $coach)
                                     <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
                                     <option
                                             @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))

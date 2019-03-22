@@ -76,6 +76,7 @@ if (! isset($building)) {
 {{--
     Alerts that will show when a resident / user is not comparing input sources
 --}}
+    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
     <div class="row" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
             <?php ++$toolSettingsLoopCount; ?>
@@ -108,6 +109,7 @@ if (! isset($building)) {
             </div>
         @endforeach
     </div>
+    @endif
 @endif
 
 @push('js')

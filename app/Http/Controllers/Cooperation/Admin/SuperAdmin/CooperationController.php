@@ -38,7 +38,7 @@ class CooperationController extends Controller
 
     public function edit(Cooperation $currentCooperation, $cooperationIdToEdit)
     {
-        $cooperationToEdit = Cooperation::find($cooperationIdToEdit);
+        $cooperationToEdit = Cooperation::findOrFail($cooperationIdToEdit);
 
         return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }

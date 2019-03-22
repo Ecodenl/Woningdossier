@@ -24,13 +24,18 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
+                                $mostRecentForBuildingAndCoachId = \App\Models\BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingCoachStatus->building_id)->where('coach_id', Auth::id())->first();
                                 $building = $buildingCoachStatus->building()->withTrashed()->first();
                                 $user = $building->user;
+                                $userExists = $user instanceof \App\Models\User;
+                                $appointmentDate = !is_null($mostRecentForBuildingAndCoachId->appointment_date) ? \Carbon\Carbon::parse($mostRecentForBuildingAndCoachId->appointment_date)->format('d-m-Y') : '';
                             ?>
 
                             <tr>
-                                <td>{{$user instanceof \App\Models\User ? $user->created_at : '-'}}</td>
-                                <td>{{$user instanceof \App\Models\User ? $user->getFullName() : '-'}}</td>
+                                <td data-sort="{{$userExists && $user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
+                                    {{$userExists && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                </td>
+                                <td>{{$userExists ? $user->getFullName() : '-'}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
@@ -41,10 +46,10 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
+                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentForBuildingAndCoachId->status)}}
                                 </td>
-                                <td>
-                                    {{$buildingCoachStatus->appointment_date}}
+                                <td data-sort="{{strtotime($appointmentDate)}}">
+                                    {{$appointmentDate}}
                                 </td>
                             </tr>
                         @endforeach

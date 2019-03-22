@@ -6,6 +6,8 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
+use App\Models\PrivateMessage;
+use Illuminate\Http\Request;
 
 class AccessController extends Controller
 {
@@ -13,6 +15,24 @@ class AccessController extends Controller
     {
         $buildingPermissions = BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->get();
 
-        return view('cooperation.my-account.access.index', compact('buildingPermissions'));
+        $lastKnownConversationRequest = PrivateMessage::conversationRequest(HoomdossierSession::getBuilding())->forMyCooperation()->get()->last();
+
+        return view('cooperation.my-account.access.index', compact('buildingPermissions', 'lastKnownConversationRequest'));
+    }
+
+    public function allowAccess(Request $request)
+    {
+        $lastKnownConversationRequest = PrivateMessage::conversationRequest(HoomdossierSession::getBuilding())
+            ->forMyCooperation()->get()->last();
+        if ($request->has('allow_access')) {
+
+            $lastKnownConversationRequest->allow_access = true;
+            $lastKnownConversationRequest->save();
+        } else {
+            $lastKnownConversationRequest->allow_access = false;
+            $lastKnownConversationRequest->save();
+        }
+
+        return redirect()->back();
     }
 }

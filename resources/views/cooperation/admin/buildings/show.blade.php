@@ -94,7 +94,7 @@
                                     $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
                                     $mostRecentBuildingCoachStatusExists = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus;
 
-                                    if ($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate()) {
+                                    if ($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->status != \App\Models\BuildingCoachStatus::STATUS_EXECUTED) {
                                         // check if the appointment day is past.
                                         $appointmentDayDateIsPast = !$mostRecentBuildingCoachStatus->appointment_date->lessThan(\Carbon\Carbon::now()->format('Y-m-d'));
                                     }

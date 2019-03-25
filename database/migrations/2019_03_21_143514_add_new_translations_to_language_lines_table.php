@@ -88,8 +88,6 @@ class AddNewTranslationsToLanguageLinesTable extends Migration
             }
         }
 
-        dd('edf');
-
     }
 
     /**

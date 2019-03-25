@@ -5,7 +5,7 @@
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.users.show.header', [
                 'name' => $userExists ? $user->getFullName() : '-',
-                'street-and-number' => $building->street.' '.$building->house_number.$building->house_number_extension,
+                'street-and-number' => $building->street.' '.$building->number,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
                 'email' => $userExists ? $user->email : ''
             ])

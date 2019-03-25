@@ -63,7 +63,7 @@
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
-                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
+                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace.unknown-error.title')}}</p>
                                 </div>
                             </div>
 

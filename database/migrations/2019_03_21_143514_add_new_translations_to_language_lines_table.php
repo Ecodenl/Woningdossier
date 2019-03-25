@@ -17,23 +17,39 @@ class AddNewTranslationsToLanguageLinesTable extends Migration
     {
         $languageLinesData = [
             'solar-panels' => [
-                'indication-for-costs.performance.ideal' => ['nl' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.ideal')],
-                'indication-for-costs.performance.no-go' => ['nl' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.no-go')],
-                'indication-for-costs.performance.possible' => ['nl' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.possible')],
-                'advice-text' => ['nl' => __('woningdossier.cooperation.tool.solar-panels.advice-text')],
-                'total-power' => ['nl' => __('woningdossier.cooperation.tool.solar-panels.total-power')]
+                'indication-for-costs.performance.ideal' => ['nl' => 'Ideaal'],
+                'indication-for-costs.performance.no-go' => ['nl' => 'Onrendabel'],
+                'indication-for-costs.performance.possible' => ['nl' => 'Mogelijk'],
+                'advice-text' => ['nl' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.'],
+                'total-power' => ['nl' => 'Totale Wp vermogen van de installatie: :wp']
             ],
             'insulated-glazing' => [
                 'paint-work.comments-paintwork' => [
                     'help' => ['nl' => 'Opmerking over schilderwerk helptext'],
                     'title' => ['nl' => 'Opmerking over schilderwerk'],
                 ]
+            ],
+            'floor-insulation' => [
+                'crawlspace.unknown-error.title' => ['nl' => 'Onbekend! Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.']
+            ],
+            'boiler' => [
+                'already-efficient' => ['nl' => 'Het vervangen van de huidige ketel zal alleen een beperkte energiebesparing opleveren omdat u al een HR ketel hebt.']
+            ],
+            'general' => [
+                'need-advice-from-specialist-alert' => ['nl' => 'Hoeveel u met deze maatregel kunt besparen hangt ervan wat de isolatiewaarde van de huidige isolatielaag is. Voor het uitrekenen van de daadwerkelijke besparing bij het na- isoleren van een reeds geïsoleerde gevel/vloer/dak is aanvullend en gespecialiseerd advies nodig.']
             ]
-
         ];
 
         foreach ($languageLinesData as $group => $languageLines) {
-            $stepId = DB::table('steps')->where('slug', $group)->first()->id;
+            // some stuff to deal with things.
+            if ($group == 'boiler') {
+                $stepId = DB::table('steps')->where('slug', 'high-efficiency-boiler')->first()->id;
+            } else if (DB::table('steps')->where('slug', $group)->first() instanceof stdClass) {
+                $stepId = DB::table('steps')->where('slug', $group)->first()->id;
+            } else {
+                $stepId = null;
+            }
+
             foreach ($languageLines as $key => $translation) {
                 if (count($translation) > 1) {
                     $fullHelpKey = $key.'.help';

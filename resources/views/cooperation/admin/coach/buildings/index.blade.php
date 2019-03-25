@@ -46,7 +46,11 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentForBuildingAndCoachId->status)}}
+                                    @if($building->isActive())
+                                        {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentForBuildingAndCoachId->status)}}
+                                    @else
+                                        {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                                    @endif
                                 </td>
                                 <td data-sort="{{strtotime($appointmentDate)}}">
                                     {{$appointmentDate}}

@@ -174,7 +174,7 @@ class BuildingCoachStatus extends Model
             }
         } else {
             // see comments in the if statement above.
-            $status = 'in-active-status';
+            $status = Building::STATUS_IS_NOT_ACTIVE;
             $statusTranslation = __('woningdossier.building-statuses.'.Building::STATUS_IS_NOT_ACTIVE);
         }
 
@@ -233,8 +233,8 @@ class BuildingCoachStatus extends Model
     /**
      * Returns the most recent statuses for a building id grouped on coach id.
      *
-     * @NOTE only returns the statuses if the coach is active.
-     * @ANOTHERNOTE If there are duplicate created_at for a coach it will return weird stuff.
+     * @note Only returns the statuses if the coach is active.
+     * @note If there are duplicate created_at for a coach it will return weird stuff.
      *
      * @param $buildingId
      * @return Collection
@@ -287,8 +287,6 @@ class BuildingCoachStatus extends Model
 	            GROUP BY user_id
             ) as bp');
 
-
-
         /**
          * Retrieves the buildings from a coach that have a higher pending count status then a removed_count
          * Retrieves the coaches that have a pending building status, also returns the building_permission count so we can check if the coach can access the building
@@ -296,9 +294,10 @@ class BuildingCoachStatus extends Model
         $buildingsTheCoachIsConnectedTo =
             \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending', 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
                 ->from($pendingCount)
-                ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
+                ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
                 ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
                 ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
+                ->groupBy('building_id', 'coach_id', 'count_removed')
                 ->get();
 
         return $buildingsTheCoachIsConnectedTo;

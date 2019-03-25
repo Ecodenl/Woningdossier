@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\PrivateMessage;
+use App\Services\BuildingCoachStatusService;
 use App\Services\PrivateMessageViewService;
 
 class PrivateMessageObserver
@@ -34,9 +35,9 @@ class PrivateMessageObserver
                 // check if the coach has permission to talk to a resident
                 foreach ($uniqueBuildingCoachStatuses as $key => $buildingCoachStatus) {
                     // the coach can talk to a resident if there is a coach status where the active status is higher then the deleted status
-                    $buildingCoachStatusActive = BuildingCoachStatus::where('coach_id', '=', $buildingCoachStatus->coach_id)
+                    $buildingCoachStatusPending = BuildingCoachStatus::where('coach_id', '=', $buildingCoachStatus->coach_id)
                         ->where('building_id', '=', $buildingId)
-                        ->where('status', '=', BuildingCoachStatus::STATUS_ACTIVE)->count();
+                        ->where('status', '=', BuildingCoachStatus::STATUS_PENDING)->count();
 
                     $buildingCoachStatusRemoved = BuildingCoachStatus::where('coach_id', '=', $buildingCoachStatus->coach_id)
                         ->where('building_id', '=', $buildingId)
@@ -44,7 +45,7 @@ class PrivateMessageObserver
 
                     // if there are as many OR more records with removed remove it from the the collection
                     // the coach does not have access to that building
-                    if ($buildingCoachStatusRemoved >= $buildingCoachStatusActive) {
+                    if ($buildingCoachStatusRemoved >= $buildingCoachStatusPending) {
                         // we remove the building coach status that the user already removed in the past
                         $uniqueBuildingCoachStatuses->forget($key);
                     }
@@ -62,6 +63,12 @@ class PrivateMessageObserver
             } elseif ($privateMessage->allow_access == false) {
                 // the user wants to revoke the access for all the connected coaches.
 
+                // get all the connected coaches to the building
+                $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId(HoomdossierSession::getBuilding());
+                // and revoke them the access to the building
+                foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
+                    BuildingCoachStatusService::revokeAccess($connectedCoachToBuilding->coach_id, $connectedCoachToBuilding->building_id);
+                }
 
                 // delete all the building permissions for this building
                 BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->delete();

@@ -372,7 +372,7 @@
                             @if(strpos($service->name, 'geventileerd') || $service->short == "total-sun-panels")
                                 <div class="col-sm-6 {{ $errors->has(''.$service->id.'.extra') ? ' show' : '' }}">
 
-                                    <div id="{{$service->id.'-extra'}}"
+                                    <div id="{{$service->id.'-extra'}}">
                                     @if(strpos($service->name, 'geventileerd'))
                                         <?php $translationKey = 'general-data.energy-saving-measures.house-ventilation.if-mechanic' ?>
                                     @elseif($service->short == 'total-sun-panels')
@@ -398,6 +398,7 @@
                                         {{--@component('cooperation.tool.components.help-modal')--}}
                                         {{--                                                    {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.help')}}--}}
                                     @endcomponent
+                                    </div>
 
                                 </div>
                             @endif

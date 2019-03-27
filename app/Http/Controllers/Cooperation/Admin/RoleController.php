@@ -35,7 +35,10 @@ class RoleController extends Controller
         $role = Role::findById($roleId);
         $user = User::find($userId);
 
-        $user->removeRole($role);
+        // we cant delete a role if the user only has 1 role.
+        if ($user->hasMultipleRoles()) {
+            $user->removeRole($role);
+        }
 
         return redirect()->back();
     }

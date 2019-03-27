@@ -72,7 +72,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['as' => 'access.', 'prefix' => 'access'], function () {
                     Route::get('', 'AccessController@index')->name('index');
-                    Route::post('revoke-access', 'AccessController@revokeAccess')->name('revoke-access');
+                    Route::post('allow-access', 'AccessController@allowAccess')->name('allow-access');
                 });
 
                 //Route::get('cooperations', 'CooperationsController@index')->name('cooperations.index');
@@ -155,6 +155,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         // todo add admin middleware checking ACLs
         Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
             Route::get('/', 'AdminController@index')->name('index');
+            Route::get('stop-session', 'AdminController@stopSession')->name('stop-session');
             Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
 
             Route::group(['prefix' => 'roles', 'as' => 'roles.'], function () {
@@ -193,7 +194,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
-
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                     Route::get('', 'UserController@index')->name('index');
                     Route::get('create', 'UserController@create')->name('create');

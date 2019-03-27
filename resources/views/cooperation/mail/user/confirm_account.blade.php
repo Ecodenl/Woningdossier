@@ -14,7 +14,7 @@
 
 ?>
 @lang('mail.confirm-account.text', [
-    'hoomdossier_link' => $cooperation->slug,
+    'hoomdossier_link' => $cooperationHoomdossierHref,
     'home_url' => config('app.url'),
     'confirm_url' => $confirmHref,
     'cooperation_link' => $cooperationWebsiteHref

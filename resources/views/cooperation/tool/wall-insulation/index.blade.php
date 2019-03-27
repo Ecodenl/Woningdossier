@@ -129,21 +129,6 @@
 
         <div class="row">
             <div id="painted-options" style="display: none;">
-                <div class="col-md-6">
-
-                    @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'general-data.building-type.what-user-surface', 'required' => true])
-
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'surface', 'needsFormat' => true])
-                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            <input id="surface" type="text" class="form-control" name="surface"
-                                   value="{{ old('surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'surface'), 1)) }}"
-                                   required autofocus>
-                        @endcomponent
-
-                    @endcomponent
-
-                </div>
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_surface_id', 'translation' => 'wall-insulation.intro.surface-paintwork', 'required' => false])
                         @component('cooperation.tool.components.input-group',
@@ -216,7 +201,7 @@
 
             </div>
 
-            <div class="hideable">
+            <div class="hideable" id="surfaces">
                 <div class="row">
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
@@ -299,12 +284,12 @@
             <div id="taking-into-account">
                 <hr>
                 @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
-                <h6 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</h6>
+                <span>{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</span>
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <span id="repair_joint_year">(in 2018)</span>
                         @component('cooperation.tool.components.step-question', ['id' => 'repair_joint', 'translation' => 'wall-insulation.taking-into-account.repair-joint', 'required' => false])
+                            <span id="repair_joint_year">(in 2018)</span>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="repair_joint" class="form-control disabled" disabled=""
@@ -407,8 +392,10 @@
             $("select, input[type=radio], input[type=text]").change(function () {
                 if ($('.is-painted').is(':checked')) {
                     $('#painted-options').show();
+                    $('#surfaces').show()
                 } else {
                     $('#painted-options').hide();
+                    // $('#surfaces').hide()
                 }
 
                 var form = $(this).closest("form").serialize();
@@ -503,7 +490,6 @@
             // Trigger the change event so it will load the data
             $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
 
-
         });
 
         $('#wall_surface').on('change', function () {
@@ -515,13 +501,10 @@
         function checkInterestAndCurrentInsulation() {
             var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-            console.log(elementCalculateValue);
             if (elementCalculateValue >= 3) {
-                console.log('hide');
                 $('.hideable').hide();
                 $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
             } else {
-                console.log('show');
                 $('.hideable').show();
                 $('#wall-insulation-info-alert').find('.alert').addClass('hide');
             }

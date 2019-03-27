@@ -28,7 +28,7 @@
                                         <input data-calculate-value="{{$roofType->calculate_value}}"
                                                type="checkbox" name="building_roof_types[]"
                                                value="{{ $roofType->id }}"
-                                               @if(in_array($roofType->id, old('building_roof_types',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id') ])))
+                                               @if(in_array($roofType->id, old('building_roof_types',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
                                                checked="checked"
                                                 @endif
                                                 {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||

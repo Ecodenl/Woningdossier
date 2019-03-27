@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
+use App\Models\Cooperation;
+use App\Models\InputSource;
+use App\Models\Role;
 
 class AdminController extends Controller
 {
+    public function stopSession(Cooperation $cooperation)
+    {
+        return redirect()->route('cooperation.admin.switch-role', HoomdossierSession::currentRole());
+    }
+
     public function index()
     {
         $user = \Auth::user();

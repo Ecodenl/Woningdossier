@@ -189,7 +189,7 @@ return [
             ],
             'users' => [
                 'show' => [
-                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
+                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email',
 
                     'observe-building' => [
                         'label' => 'Woning bekijken',
@@ -385,6 +385,7 @@ return [
                         'table' => [
                             'columns' => [
                                 'most-recent-message-date' => 'Meest recente ontvangst datum',
+                                'sender-name' => 'Verzender',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stadt',
@@ -405,8 +406,8 @@ return [
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stadt',
-                                'status' => 'Status',
-                                'no-known-created-at' => 'Niet bekend'
+                                'email' => 'Email',
+                                'roles' => 'Huidige rollen'
                             ],
                         ],
                     ],

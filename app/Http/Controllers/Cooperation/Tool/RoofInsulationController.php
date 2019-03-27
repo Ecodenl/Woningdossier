@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
@@ -247,7 +248,7 @@ class RoofInsulationController extends Controller
             }
             if (array_key_exists('tiles_condition', $extra)) {
                 $tilesCondition = (int) $extra['tiles_condition'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.roof_surface', 0);
                 if ($tilesCondition > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
                     // no year here. Default is this year. It is incremented by factor * maintenance years
@@ -273,7 +274,7 @@ class RoofInsulationController extends Controller
                 if ($bitumenReplaceYear <= 0) {
                     $bitumenReplaceYear = Carbon::now()->year - 10;
                 }
-                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
+                $surface = $request->input('building_roof_types.'.$roofCat.'.roof_surface', 0);
 
                 if ($bitumenReplaceYear > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();

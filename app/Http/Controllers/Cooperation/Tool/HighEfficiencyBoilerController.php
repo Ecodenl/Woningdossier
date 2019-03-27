@@ -9,6 +9,7 @@ use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HighEfficiencyBoilerFormRequest;
 use App\Models\Building;
@@ -88,7 +89,7 @@ class HighEfficiencyBoilerController extends Controller
 
                 $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
                 if ($boilerEfficiency->heating > 95) {
-                    $result['boiler_advice'] = __('woningdossier.cooperation.tool.boiler.already-efficient');
+                    $result['boiler_advice'] = Translation::translate('boiler.already-efficient');
                 }
 
                 if (array_key_exists('extra', $options)) {

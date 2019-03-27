@@ -9,11 +9,6 @@
         @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="solar-panels">
             <div class="row">
-                <div class="col-sm-12">
-                    @include('cooperation.tool.includes.section-title', ['translation' => 'solar-panels.title', 'id' => 'title',])
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_electricity', 'translation' => 'solar-panels.electra-usage', 'required' => false])
 

@@ -297,7 +297,7 @@ class BuildingCoachStatus extends Model
                 ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
                 ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
                 ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
-                ->groupBy('building_id', 'coach_id', 'count_removed', 'count_pending')
+                ->groupBy('building_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
                 ->get();
 
         return $buildingsTheCoachIsConnectedTo;

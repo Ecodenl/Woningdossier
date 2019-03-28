@@ -263,6 +263,7 @@ class ExampleBuildingService
 	    $heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
 	    $crackSealing = Element::where('short', 'crack-sealing')->first();
 	    $frames = Element::where('short', 'frames')->first();
+	    $woodElements = Element::where('short', 'wood-elements')->first();
 	    $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
 	    $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
@@ -503,6 +504,11 @@ class ExampleBuildingService
 				    'type' => 'select',
 				    'options' => static::createOptions($woodRotStatuses),
 			    ],
+			    'element.'.$woodElements->id => [
+			    	'label' => Translation::translate('insulated-glazing.paint-work.other-wood-elements.title'),
+				    'type' => 'multiselect',
+				    'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
+			    ],
 		    ],
 		    'floor-insulation' => [
 			    'user_interest.element.'.$floorInsulation->id => [
@@ -553,6 +559,11 @@ class ExampleBuildingService
 				    'label' => $roofInsulation->name . ': ' . Translation::translate('general.interested-in-improvement.title'),
 				    'type' => 'select',
 				    'options' => $interestOptions,
+			    ],
+			    'building_roof_types' => [
+				    'label' => Translation::translate('roof-insulation.current-situation.roof-types.title'),
+				    'type' => 'multiselect',
+				    'options' => static::createOptions($roofTypes),
 			    ],
 			    'building_features.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.main-roof.title'),

@@ -77,6 +77,15 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                                 </option>
                             @endforeach
                         </select>
+                    @elseif($rowData['type'] == 'multiselect')
+                        <?php if (empty($fallback)){ $fallback = []; } ?>
+                        <select class="form-control" name="{{ $fname }}" multiple>
+                            @foreach($rowData['options'] as $value => $label)
+                                <option value="{{ $value }}" @if(in_array($value, App\Helpers\Old::get($fvalKey, $fallback)))selected="selected"@endif>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
                     @endif
 
                     @if(isset($rowData['unit']))

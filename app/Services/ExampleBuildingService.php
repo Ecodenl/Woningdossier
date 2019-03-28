@@ -21,6 +21,7 @@ use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\FacadeDamagedPaintwork;
+use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
@@ -243,6 +244,7 @@ class ExampleBuildingService
 	    $wallInsulation = Element::where('short', 'wall-insulation')->first();
 	    $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 	    $surfaces = FacadeSurface::orderBy('order')->get();
+	    $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
 
 	    // Insulated glazing
 	    $insulatedGlazings = InsulatingGlazing::all();
@@ -334,6 +336,11 @@ class ExampleBuildingService
 					    2 => __('woningdossier.cooperation.radiobutton.no'),
 					    3 => __('woningdossier.cooperation.radiobutton.mostly'),
 				    ],
+			    ],
+			    'building_features.facade_plastered_surface_id' => [
+					'label' => Translation::translate('wall-insulation.intro.surface-paintwork.title'),
+				    'type' => 'select',
+				    'options' => static::createOptions($facadePlasteredSurfaces),
 			    ],
 			    'building_features.facade_damaged_paintwork_id' => [
 				    'label' => Translation::translate('wall-insulation.intro.damage-paintwork.title'),

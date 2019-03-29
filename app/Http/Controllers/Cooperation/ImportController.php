@@ -116,7 +116,9 @@ class ImportController extends Controller
             'building_user_usages',
             'building_paintwork_statuses',
             'building_user_usages',
-            'user_progresses',
+            'user_progresses' => [
+                'where_column' => 'step_id',
+            ],
             'questions_answers',
             'building_features',
             'building_pv_panels',
@@ -165,6 +167,7 @@ class ImportController extends Controller
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get();
 
+
             // now check if the $whereColumn isset
             // if so we need to add it to the query from the resident during the loop from the $desiredInputSourceValues
             if (isset($whereColumn)) {
@@ -184,6 +187,7 @@ class ImportController extends Controller
                             ->where($whereColumn, $desiredInputSourceValue->$whereColumn)
                             ->count();
 
+
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
                         if ($targetInputSourceValueCount > 1) {
@@ -191,6 +195,7 @@ class ImportController extends Controller
                             // add the where to the query
                             $targetInputSourceValueQuery = $targetInputSourceValueQuery
                                 ->where($additionalWhereColumn, $desiredInputSourceValue->$additionalWhereColumn);
+
 
                             // get the result
                             $targetInputSourceValue = $targetInputSourceValueQuery->first();
@@ -212,12 +217,25 @@ class ImportController extends Controller
                             }
                         } else {
                             $targetInputSourceValue = $targetInputSourceValueQuery->first();
+
                             // cast the results to a array
                             $targetInputSourceValue = (array) $targetInputSourceValue;
                             $desiredInputSourceValue = (array) $desiredInputSourceValue;
 
-                            // YAY! data has been copied so update the resident his records.
-                            $targetInputSourceValueQuery->update($this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue));
+                            // YAY! data has been copied so update or create the target input source his records.
+                            if ($targetInputSourceValueQuery->first() instanceof \stdClass) {
+                                $targetInputSourceValueQuery->update($this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue));
+                            } else {
+                                // we cant create an update array since there is no data from the target input source
+
+                                $desiredInputSourceValue = (array) $desiredInputSourceValue;
+                                // unset the stuff we dont want to insert
+                                unset($desiredInputSourceValue['id'], $desiredInputSourceValue['input_source_id']);
+                                // change the input source id to the resident
+                                $desiredInputSourceValue['input_source_id'] = $targetInputSource->id;
+
+                                \DB::table($table)->insert($desiredInputSourceValue);
+                            }
                         }
                     }
                 }
@@ -226,6 +244,7 @@ class ImportController extends Controller
                 $targetInputSourceValueQuery = \DB::table($table)
                     ->where('input_source_id', $targetInputSource->id)
                     ->where($buildingOrUserColumn, $buildingOrUserId);
+
 
                 // get the first result from the desired input source
                 $desiredInputSourceValue = $desiredInputSourceValues->first();
@@ -240,6 +259,7 @@ class ImportController extends Controller
                     unset($desiredInputSourceValue['id'], $desiredInputSourceValue['input_source_id']);
                     // change the input source id to the resident
                     $desiredInputSourceValue['input_source_id'] = $targetInputSource->id;
+
                     // and insert a new row!
                     \DB::table($table)->insert($desiredInputSourceValue);
                 }

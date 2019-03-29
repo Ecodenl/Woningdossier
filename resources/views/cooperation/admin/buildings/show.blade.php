@@ -21,12 +21,6 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="btn-group">
-                            @can('delete-user')
-                                <button type="button" id="delete-user" class="btn btn-danger">
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
-                                </button>
-                            @endcan
                             @can('access-building', $building->id)
                                 @can('user-access-building', $building->id)
                                     <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"

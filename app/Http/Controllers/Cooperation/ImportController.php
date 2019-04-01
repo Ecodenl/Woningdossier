@@ -93,45 +93,53 @@ class ImportController extends Controller
         return $updateArray;
     }
 
+    /**
+     * @param  Request  $request
+     *
+     * @note if there are "bugs" or problems, check if the tables have the right where columns etc.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function copy(Request $request)
     {
         // the input source to copy from.
         $desiredInputSourceName = $request->get('input_source');
 
-
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
-//            'building_features',
-//            'building_elements' => [
-//                'where_column' => 'element_id',
-//                'additional_where_column' => 'element_value_id',
-//            ],
-//            'building_services' => [
-//                'where_column' => 'service_id',
-//                'additional_where_column' => 'service_value_id',
-//            ],
-//            'building_roof_types' => [
-//                'where_column' => 'roof_type_id',
-//            ],
-//            'building_insulated_glazings' => [
-//                'where_column' => 'measure_application_id',
-//            ],
-//            'building_user_usages',
-//            'building_paintwork_statuses',
-//            'building_user_usages',
-//            'user_progresses' => [
-//                'where_column' => 'step_id',
-//            ],
-//            'questions_answers',
-//            'building_features',
-//            'building_pv_panels',
-//            'building_heaters',
-//            'building_appliances',
-//
-//            'user_action_plan_advices' => [
-//                'where_column' => 'measure_application_id',
-//            ],
-//            'user_energy_habits',
+            'building_features',
+            'building_elements' => [
+                'where_column' => 'element_id',
+                'additional_where_column' => 'element_value_id',
+            ],
+            'building_services' => [
+                'where_column' => 'service_id',
+                'additional_where_column' => 'service_value_id',
+            ],
+            'building_roof_types' => [
+                'where_column' => 'roof_type_id',
+            ],
+            'building_insulated_glazings' => [
+                'where_column' => 'measure_application_id',
+            ],
+            'building_user_usages',
+            'building_paintwork_statuses',
+            'building_user_usages',
+            'user_progresses' => [
+                'where_column' => 'step_id',
+            ],
+            'questions_answers' => [
+                'where_column' => 'question_id',
+            ],
+            'building_features',
+            'building_pv_panels',
+            'building_heaters',
+            'building_appliances',
+
+            'user_action_plan_advices' => [
+                'where_column' => 'measure_application_id',
+            ],
+            'user_energy_habits',
             'user_interests' => [
                 'where_column' => 'interested_in_type',
                 'additional_where_column' => 'interested_in_id',
@@ -171,7 +179,6 @@ class ImportController extends Controller
                 ->where('input_source_id', $desiredInputSource->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get();
-
 
             // now check if the $whereColumn isset
             // if so we need to add it to the query from the resident during the loop from the $desiredInputSourceValues
@@ -272,6 +279,7 @@ class ImportController extends Controller
             }
         }
 
+        dd('Bier tiet!');
         ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
         HoomdossierSession::stopUserComparingInputSources();
 

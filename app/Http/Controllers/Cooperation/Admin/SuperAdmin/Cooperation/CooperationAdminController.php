@@ -33,6 +33,6 @@ class CooperationAdminController extends Controller
             ]
         ];
 
-        return view('cooperation.admin.super-admin.cooperations.cooperation-admin.index', compact('users', 'breadcrumbs'));
+        return view('cooperation.admin.super-admin.cooperations.cooperation-admin.index', compact('users', 'breadcrumbs', 'cooperationToManage'));
     }
 }

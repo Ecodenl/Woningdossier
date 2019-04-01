@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
+                        <label for="role-select">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show.role.label')</label>
                         <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                 @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)

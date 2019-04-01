@@ -17,11 +17,13 @@ class CooperationController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Cooperation::class);
         return view('cooperation.admin.super-admin.cooperations.create');
     }
 
     public function store(Cooperation $cooperation, CooperationRequest $request)
     {
+        $this->authorize('store', Cooperation::class);
         $cooperationName = $request->get('name');
         $cooperationSlug = $request->get('slug');
         $cooperationWebsiteUrl = $request->get('website_url');
@@ -36,15 +38,16 @@ class CooperationController extends Controller
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.store.success'));
     }
 
-    public function edit(Cooperation $currentCooperation, $cooperationIdToEdit)
+    public function edit(Cooperation $currentCooperation, Cooperation $cooperationToEdit)
     {
-        $cooperationToEdit = Cooperation::findOrFail($cooperationIdToEdit);
+        $this->authorize('edit', $cooperationToEdit);
 
         return view('cooperation.admin.super-admin.cooperations.edit', compact('cooperationToEdit'));
     }
 
     public function update(Cooperation $cooperation, CooperationRequest $request)
     {
+        $this->authorize('update', Cooperation::class);
         $cooperationName = $request->get('name');
         $cooperationSlug = $request->get('slug');
         $cooperationWebsiteUrl = $request->get('website_url');

@@ -260,7 +260,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 /* Section for the cooperations */
                 Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
                     Route::get('', 'CooperationController@index')->name('index');
-                    Route::get('edit/{cooperation_slug}', 'CooperationController@edit')->name('edit');
+                    Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
                     Route::get('create', 'CooperationController@create')->name('create');
                     Route::post('', 'CooperationController@store')->name('store');
                     Route::post('edit', 'CooperationController@update')->name('update');

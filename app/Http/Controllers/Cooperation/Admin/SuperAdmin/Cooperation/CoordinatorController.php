@@ -32,7 +32,7 @@ class CoordinatorController extends Controller
             ]
         ];
 
-        return view('cooperation.admin.super-admin.cooperations.coordinator.index', compact('users', 'breadcrumbs'));
+        return view('cooperation.admin.super-admin.cooperations.coordinator.index', compact('users', 'breadcrumbs', 'cooperationToManage'));
     }
 }
 

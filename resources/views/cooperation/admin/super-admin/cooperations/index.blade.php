@@ -25,8 +25,8 @@
                                     <td>{{$cooperation->name}}</td>
                                     <td>{{$cooperation->slug}}</td>
                                     <td>
-                                        <a href="{{route('cooperation.admin.super-admin.cooperations.edit', ['cooperation' => $currentCooperation,  'cooperation_slug' => $cooperation->slug])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
-                                        <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-managehome.index', [$currentCooperation, $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.show')</a>
+                                        <a href="{{route('cooperation.admin.super-admin.cooperations.edit', ['cooperation' => $currentCooperation, 'cooperationToEdit' => $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
+                                        <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', ['cooperation' => $currentCooperation, 'cooperationToManage' => $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.show')</a>
                                     </td>
                                 </tr>
                             @endforeach

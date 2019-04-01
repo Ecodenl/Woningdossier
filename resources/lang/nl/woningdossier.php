@@ -129,6 +129,7 @@ return [
                             ],
                         ],
                         'edit' => 'Bewerken',
+                        'show' => 'Details van deze cooperatië',
                         'create' => 'Aanmaken',
                     ],
                     'create' => [
@@ -154,6 +155,43 @@ return [
                     ],
                     'update' => [
                         'success' => 'Cooperatie is bijgewerkt.',
+                    ],
+                    'cooperation-to-manage' => [
+                        'alert-on-top' => 'Alle wijzigingen die u nu doorvoert zullen worden gedaan op de cooperatie <strong>:cooperation</strong>',
+                        'back-to-normal-environment' => 'Keer terug naar de admin omgeving',
+                        'side-nav' => [
+                            'label' => ':cooperation_name menu',
+                            'home' => 'Home',
+                            'coordinator' => 'Coordinatoren',
+                            'cooperation-admin' => 'Cooperatie admins',
+                            'users' => 'Alle gebruikers',
+//                            'promote-user' => ''
+                        ],
+                        'cooperation-admin' => [
+                            'index' => [
+                                'header' => 'Overzicht van alle cooperatie admins',
+                                'table' => [
+                                    'name' => 'Naam',
+                                    'email' => 'E-mail',
+                                ]
+                            ]
+                        ],
+                        'coordinator' => [
+                            'index' => [
+                                'header' => 'Overzicht van alle coordinatoren',
+                                'table' => [
+                                    'name' => 'Naam',
+                                    'email' => 'E-mail',
+                                ]
+                            ]
+                        ],
+                        'home' => [
+                            'index' => [
+                                'cooperation-admin-count' => 'Cooperatie admins',
+                                'coordinator-count' => 'Coordinatoren',
+                                'user-count' => 'Gebruikers',
+                            ]
+                        ],
                     ],
                 ],
             ],

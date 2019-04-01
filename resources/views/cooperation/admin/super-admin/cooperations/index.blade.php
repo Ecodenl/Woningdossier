@@ -1,6 +1,7 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
+
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.header')
@@ -24,7 +25,8 @@
                                     <td>{{$cooperation->name}}</td>
                                     <td>{{$cooperation->slug}}</td>
                                     <td>
-                                        <a href="{{route('cooperation.admin.super-admin.cooperations.edit', ['cooperation' => $currentCooperation,  'cooperationId' => $cooperation->id])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
+                                        <a href="{{route('cooperation.admin.super-admin.cooperations.edit', ['cooperation' => $currentCooperation,  'cooperation_slug' => $cooperation->slug])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
+                                        <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-managehome.index', [$currentCooperation, $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.show')</a>
                                     </td>
                                 </tr>
                             @endforeach

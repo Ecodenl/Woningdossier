@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
+namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;

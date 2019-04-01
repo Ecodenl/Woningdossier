@@ -12,6 +12,7 @@
 */
 
 Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function () {
+
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
 
         Route::get('/', function () {
@@ -192,8 +193,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
             /* Section for the cooperation-admin and coordinator */
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
-                Route::resource('example-buildings', 'ExampleBuildingController');
-                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+//                Route::resource('example-buildings', 'ExampleBuildingController');
+//                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                     Route::get('', 'UserController@index')->name('index');
                     Route::get('create', 'UserController@create')->name('create');
@@ -244,8 +245,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::post('set-active', 'StepController@setActive')->name('set-active');
                     });
 
-                    Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+//                    Route::resource('example-buildings', 'ExampleBuildingController');
+//                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
                     // needs to be the last route due to the param
                     Route::get('home', 'CooperationAdminController@index')->name('index');
@@ -256,12 +257,21 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['role:super-admin']], function () {
                 Route::get('home', 'SuperAdminController@index')->name('index');
 
-                Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.'], function () {
+                /* Section for the cooperations */
+                Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
                     Route::get('', 'CooperationController@index')->name('index');
-                    Route::get('edit/{cooperationId}', 'CooperationController@edit')->name('edit');
+                    Route::get('edit/{cooperation_slug}', 'CooperationController@edit')->name('edit');
                     Route::get('create', 'CooperationController@create')->name('create');
                     Route::post('', 'CooperationController@store')->name('store');
                     Route::post('edit', 'CooperationController@update')->name('update');
+
+                    /* Actions that will be done per cooperation */
+                    Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'], function () {
+                        Route::resource('home', 'HomeController')->only('index');
+
+                        Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
+                        Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                    });
                 });
                 Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
             });
@@ -276,6 +286,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
 
                     Route::resource('details', 'BuildingDetailsController')->only('store');
+
                 });
 
                 // needs to be the last route due to the param

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\ToolSettingService;
 use Illuminate\Http\Request;
@@ -94,41 +95,43 @@ class ImportController extends Controller
 
     public function copy(Request $request)
     {
+        // the input source to copy from.
         $desiredInputSourceName = $request->get('input_source');
+
 
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
-            'building_features',
-            'building_elements' => [
-                'where_column' => 'element_id',
-                'additional_where_column' => 'element_value_id',
-            ],
-            'building_services' => [
-                'where_column' => 'service_id',
-                'additional_where_column' => 'service_value_id',
-            ],
-            'building_roof_types' => [
-                'where_column' => 'roof_type_id',
-            ],
-            'building_insulated_glazings' => [
-                'where_column' => 'measure_application_id',
-            ],
-            'building_user_usages',
-            'building_paintwork_statuses',
-            'building_user_usages',
-            'user_progresses' => [
-                'where_column' => 'step_id',
-            ],
-            'questions_answers',
-            'building_features',
-            'building_pv_panels',
-            'building_heaters',
-            'building_appliances',
-
-            'user_action_plan_advices' => [
-                'where_column' => 'measure_application_id',
-            ],
-            'user_energy_habits',
+//            'building_features',
+//            'building_elements' => [
+//                'where_column' => 'element_id',
+//                'additional_where_column' => 'element_value_id',
+//            ],
+//            'building_services' => [
+//                'where_column' => 'service_id',
+//                'additional_where_column' => 'service_value_id',
+//            ],
+//            'building_roof_types' => [
+//                'where_column' => 'roof_type_id',
+//            ],
+//            'building_insulated_glazings' => [
+//                'where_column' => 'measure_application_id',
+//            ],
+//            'building_user_usages',
+//            'building_paintwork_statuses',
+//            'building_user_usages',
+//            'user_progresses' => [
+//                'where_column' => 'step_id',
+//            ],
+//            'questions_answers',
+//            'building_features',
+//            'building_pv_panels',
+//            'building_heaters',
+//            'building_appliances',
+//
+//            'user_action_plan_advices' => [
+//                'where_column' => 'measure_application_id',
+//            ],
+//            'user_energy_habits',
             'user_interests' => [
                 'where_column' => 'interested_in_type',
                 'additional_where_column' => 'interested_in_id',
@@ -137,8 +140,6 @@ class ImportController extends Controller
 
         // input sources
         $desiredInputSource = InputSource::findByShort($desiredInputSourceName);
-        //$residentInputSource = InputSource::findByShort('resident');
-
         $targetInputSource = InputSource::find(HoomdossierSession::getInputSource());
 
         foreach ($tables as $tableOrInt => $tableOrWhereColumns) {
@@ -151,15 +152,19 @@ class ImportController extends Controller
             } else {
                 $table = $tableOrWhereColumns;
             }
+            // building to copy data from
+            $building = Building::find(HoomdossierSession::getBuilding());
+            $user = $building->user()->first();
 
             // set the building or user id, depending on which column exists on the table
             if (\Schema::hasColumn($table, 'user_id')) {
-                $buildingOrUserId = \Auth::id();
+                $buildingOrUserId = $user->id;
                 $buildingOrUserColumn = 'user_id';
             } else {
-                $buildingOrUserId = HoomdossierSession::getBuilding();
+                $buildingOrUserId = $building->id;
                 $buildingOrUserColumn = 'building_id';
             }
+
 
             // now we get all the answers from the desired input source
             $desiredInputSourceValues = \DB::table($table)
@@ -186,6 +191,7 @@ class ImportController extends Controller
                             ->where($buildingOrUserColumn, $buildingOrUserId)
                             ->where($whereColumn, $desiredInputSourceValue->$whereColumn)
                             ->count();
+
 
 
                         // if there are multiple, then we need to add another where to the query.

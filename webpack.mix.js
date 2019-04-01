@@ -11,6 +11,7 @@ let mix = require('laravel-mix');
  |
  */
 
+tinymce
 mix.js('resources/assets/js/app.js', 'public/js')
     .scripts(
         [
@@ -26,6 +27,11 @@ mix.js('resources/assets/js/app.js', 'public/js')
             'resources/assets/js/datatables/responsive.bootstrap.js',
 
         ], 'public/js/datatables.js'
+    )
+    .scripts(
+        [
+            'resources/assets/js/tinymce/tinymce.min.js',
+        ], 'public/js/tinymce.js'
     )
     .scripts(
         [

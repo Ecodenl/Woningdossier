@@ -1,6 +1,8 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
+    <script src="{{asset('js/tinymce.min.js')}}"></script>
+    <script>tinymce.init({ selector:'textarea' });</script>
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group">

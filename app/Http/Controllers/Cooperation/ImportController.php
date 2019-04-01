@@ -279,7 +279,6 @@ class ImportController extends Controller
             }
         }
 
-        dd('Bier tiet!');
         ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
         HoomdossierSession::stopUserComparingInputSources();
 

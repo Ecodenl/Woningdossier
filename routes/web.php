@@ -257,6 +257,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['role:super-admin']], function () {
                 Route::get('home', 'SuperAdminController@index')->name('index');
 
+                Route::resource('kengetallen', 'KengetallenController')->only('index');
+                Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
+
                 /* Section for the cooperations */
                 Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
                     Route::get('', 'CooperationController@index')->name('index');
@@ -274,7 +277,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::resource('users', 'UserController')->only(['index', 'show']);
                     });
                 });
-                Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
             });
 
             /* Section for the coach */

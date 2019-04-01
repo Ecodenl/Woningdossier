@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpParamsInspection */
 
 /*
 |--------------------------------------------------------------------------
@@ -271,6 +271,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                         Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
                         Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                        Route::resource('users', 'UserController')->only(['index', 'show']);
                     });
                 });
                 Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);

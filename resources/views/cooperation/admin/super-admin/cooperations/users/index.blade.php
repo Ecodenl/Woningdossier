@@ -4,7 +4,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index.header')
+            @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.header')
 
         </div>
         <div class="panel-body">
@@ -13,8 +13,9 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index.table.name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index.table.email')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.table.name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.table.email')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.table.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -24,6 +25,14 @@
                             <tr>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>{{$user->email}}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', [
+                                        'cooperationToManage' => $cooperationToManage,
+                                        'user' => $user->id
+                                    ])}}">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

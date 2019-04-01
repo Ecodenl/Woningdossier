@@ -18,21 +18,13 @@ class HomeController extends Controller
             ]
         ];
 
-        $cooperationAdminCount = $cooperationToManage->users()->role('cooperation-admin')->count();
-        $coordinatorAdminCount = $cooperationToManage->users()->role('coordinator')->count();
-        $userCount = $cooperationToManage->users()->count();
-
-        // because relationship counting aint working.
-        $buildingCount = \DB::table('cooperations')
-            ->where('slug', $cooperationToManage->slug)
-            ->leftJoin('cooperation_user', 'cooperation_user.cooperation_id', '=', 'cooperations.id')
-            ->leftJoin('users', 'cooperation_user.user_id', '=', 'users.id')
-            ->leftJoin('buildings', 'buildings.user_id', '=', 'users.id')
-            ->select('buildings.*')->count();
+        $residentCount = $cooperationToManage->users()->role('resident')->count();
+        $coachCount = $cooperationToManage->users()->role('coach')->count();
+        $coordinatorCount = $cooperationToManage->users()->role('coordinator')->count();
 
         return view('cooperation.admin.super-admin.cooperations.home.index', compact(
-            'cooperationCount', 'userCount', 'buildingCount', 'cooperationAdminCount', 'coordinatorAdminCount',
-            'breadcrumbs'
+            'coachCount', 'residentCount', 'coordinatorCount',
+            'breadcrumbs', 'cooperationToManage'
         ));
     }
 }

@@ -173,6 +173,7 @@ return [
                                 'table' => [
                                     'name' => 'Naam',
                                     'email' => 'E-mail',
+                                    'actions' => 'Acties'
                                 ]
                             ]
                         ],
@@ -185,11 +186,29 @@ return [
                                 ]
                             ]
                         ],
+                        'users' => [
+                            'index' => [
+                                'header' => 'Overzicht van alle gebruikers',
+                                'table' => [
+                                    'name' => 'Naam',
+                                    'email' => 'E-mail',
+                                    'actions' => 'Acties',
+                                ]
+                            ],
+                            'show' => [
+                                'header' => 'Overzicht van de gebruiker :name',
+                                'role' => [
+                                    'label' => 'Rol',
+                                    'alert' => 'Weet u zeker dat u deze rol wilt toepassen ?'
+                                ],
+                            ]
+                        ],
                         'home' => [
                             'index' => [
-                                'cooperation-admin-count' => 'Cooperatie admins',
+                                'header' => 'Overzicht van de cooperatie :cooperation',
+                                'coach-count' => 'Coaches',
+                                'resident-count' => 'Bewoners',
                                 'coordinator-count' => 'Coordinatoren',
-                                'user-count' => 'Gebruikers',
                             ]
                         ],
                     ],

@@ -54,7 +54,7 @@
                 @foreach($advicesForStep as $advice)
 	                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first(); ?>
                     <tr>
-                        <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_typke]" value="{{$measureType}}">
+                        <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]" value="{{$measureType}}">
                         <input type="hidden" class="measure_short" value="{{$advice->measureApplication->short}}">
                         <td>
                             <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i class="glyphicon glyphicon-chevron-down"></i> </a>
@@ -71,10 +71,10 @@
                             {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                         </td>
                         <td>
-                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs, 0, true) }}
                         </td>
                         <td>
-                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money, 0, true) }}
                         </td>
                         <td class="advice-year">
                             {{ $advice->year }}

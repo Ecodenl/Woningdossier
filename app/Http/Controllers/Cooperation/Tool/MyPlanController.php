@@ -27,6 +27,8 @@ class MyPlanController extends Controller
         $coachComments = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
+
+
         return view('cooperation.tool.my-plan.index', compact(
             'advices', 'coachComments', 'actionPlanComments'
         ));

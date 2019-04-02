@@ -66,18 +66,20 @@ class NumberFormatter
         // if the number is numeric we can format it
         // else we return the value thats not a correct number
         if (is_numeric($number)) {
+
+            if ($shouldRoundNumber) {
+                $roundedNumber = static::round($number);
+            }
+
             $formattedNumber = number_format(
-                $number,
+                $roundedNumber ?? $number,
                 $decimals,
                 self::$formatLocaleSeparators[$locale]['decimal'],
                 self::$formatLocaleSeparators[$locale]['thousands']
             );
 
-            if ($shouldRoundNumber) {
-                $roundedNumber = static::round($formattedNumber);
-            }
 
-            return $roundedNumber ?? $formattedNumber;
+            return $formattedNumber;
 
         } else {
             return $number;

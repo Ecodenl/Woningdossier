@@ -1,8 +1,7 @@
 @extends('cooperation.admin.layouts.app')
 
 @section('content')
-    <script src="{{asset('js/tinymce.min.js')}}"></script>
-    <script>tinymce.init({ selector:'textarea' });</script>
+
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group">
@@ -18,8 +17,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['step-slug' => $stepSlug])}}"
-                          method="post">
+                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['step-slug' => $stepSlug])}}" method="post" autocomplete="off">
                         <div class="form-group">
                             <a href="{{route('cooperation.admin.super-admin.translations.index')}}"
                                class="btn btn-default"><i
@@ -33,58 +31,53 @@
                         @foreach($questions as $question)
                             <?php // since we dont want the helptexts to show right here. ?>
                             @if($question->isNotHelpText())
-                            <div class="translations panel panel-default">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            @foreach($question->text as $locale => $text)
-                                                <div class="form-group">
-                                                    <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.question', ['locale' => $locale])</label>
-                                                    <input class="form-control question-input"
-                                                           name="language_lines[{{$locale}}][question][{{$question->id}}]"
-                                                           value="{{$text}}">
-                                                    <label for="">key: {{$question->group}}.{{$question->key}}</label>
-                                                </div>
-                                            @endforeach
-                                            @if($question->helpText instanceof \Spatie\TranslationLoader\LanguageLine)
-                                                @foreach($question->helpText->text as $locale => $text)
+                                <div class="translations panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                @foreach($question->text as $locale => $text)
                                                     <div class="form-group">
-                                                        <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
-                                                        <textarea class="form-control"
-                                                                  name="language_lines[{{$locale}}][help][{{$question->helpText->id}}]">{{$text}}</textarea>
-                                                        <label for="">key: {{$question->helpText->group}}
-                                                            .{{$question->helpText->key}}</label>
+                                                        <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.question', ['locale' => $locale])</label>
+                                                        <input class="form-control question-input" name="language_lines[{{$locale}}][question][{{$question->id}}]" value="{{$text}}">
+                                                        <label for="">key: {{$question->group}}.{{$question->key}}</label>
                                                     </div>
                                                 @endforeach
-                                            @endif
+                                                @if($question->helpText instanceof \Spatie\TranslationLoader\LanguageLine)
+                                                    @foreach($question->helpText->text as $locale => $text)
+                                                        <div class="form-group">
+                                                            <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
+                                                            <textarea class="form-control" name="language_lines[{{$locale}}][help][{{$question->helpText->id}}]">{{$text}}</textarea>
+                                                            <label for="">key: {{$question->helpText->group}}.{{$question->helpText->key}}</label>
+                                                            <input type="hidden" id="original-help-text" disabled="disabled" value="{{$text}}">
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if($question->subQuestions->isNotEmpty())
+                                            <a data-toggle="collapse" data-target="#sub-questions-{{$question->id}}"
+                                               class="btn btn-primary">
+                                                @lang('woningdossier.cooperation.admin.super-admin.translations.edit.sub-question')
+                                            </a>
+                                        @endif
+                                    </div>
+                                    <div class="panel-footer collapse" id="sub-questions-{{$question->id}}">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                @foreach($question->subQuestions as $subQuestion)
+                                                    <br>
+                                                    <a data-toggle="modal" data-target="#sub-question-modal-{{$subQuestion->id}}" class="label label-success">
+                                                        {{$subQuestion->text['nl']}}
+                                                    </a>
+                                                    @include('cooperation.admin.super-admin.translations.sub-question-modal', [
+                                                        'id' => 'sub-question-modal-'.$subQuestion->id,
+                                                        'subQuestion' => $subQuestion
+                                                    ])
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
-                                    @if($question->subQuestions->isNotEmpty())
-                                        <a data-toggle="collapse" data-target="#sub-questions-{{$question->id}}"
-                                           class="btn btn-primary">
-                                            @lang('woningdossier.cooperation.admin.super-admin.translations.edit.sub-question')
-                                        </a>
-                                    @endif
                                 </div>
-                                <div class="panel-footer collapse" id="sub-questions-{{$question->id}}">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            @foreach($question->subQuestions as $subQuestion)
-                                                <br>
-                                                <a data-toggle="modal"
-                                                   data-target="#sub-question-modal-{{$subQuestion->id}}"
-                                                   class="label label-success">
-                                                    {{$subQuestion->text['nl']}}
-                                                </a>
-                                                @include('cooperation.admin.super-admin.translations.sub-question-modal', [
-                                                    'id' => 'sub-question-modal-'.$subQuestion->id,
-                                                    'subQuestion' => $subQuestion
-                                                ])
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             @endif
                         @endforeach
                         <div class="form-group">
@@ -104,6 +97,29 @@
 
 @push('js')
     <script>
+
+        /* */
+
+        tinymce.init({
+            selector: 'textarea',
+            menubar: 'edit format',
+            toolbar: 'bold italic underline strikethrough cut copy paste undo redo link hr restoreOriginalText',
+            language: 'nl',
+            setup: function (editor) {
+                editor.ui.registry.addButton('restoreOriginalText', {
+                    text: 'Herstel tekst',
+                    onAction: function (buttonApi) {
+                        console.log(editor);
+                        if (confirm('Orginele helptext herstellen ? Dit verwijderd de huidige helptext en vervangt deze met de orginele.')) {
+                            var originalHelpText = $(editor.targetElm).parent().find('#original-help-text').val();
+                            editor.setContent(originalHelpText);
+                        }
+                    }
+                });
+            }
+        });
+
+
         /**
          * Remove the ï ê etc from a string.
          *

@@ -97,6 +97,8 @@ class ExampleBuildingController extends Controller
 
         $contents = $request->input('content', []);
 
+        dd($contents);
+
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
             if (! is_numeric($cid) && 'new' == $cid) {
@@ -573,6 +575,8 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->order = $request->get('order', null);
 
         $contents = $request->input('content', []);
+
+        dd($contents);
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];

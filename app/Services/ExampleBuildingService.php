@@ -560,11 +560,11 @@ class ExampleBuildingService
 				    'type' => 'select',
 				    'options' => $interestOptions,
 			    ],
-			    'building_roof_types' => [
+			    /*'building_roof_types.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.roof-types.title'),
 				    'type' => 'multiselect',
 				    'options' => static::createOptions($roofTypes),
-			    ],
+			    ],*/
 			    'building_features.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.main-roof.title'),
 				    'type' => 'select',
@@ -589,7 +589,7 @@ class ExampleBuildingService
 				    'type' => 'select',
 				    'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
 			    ],
-			    'service.'.$boiler->id.'.extra' => [
+			    'service.'.$boiler->id.'.extra.year' => [
 				    'label' => Translation::translate('boiler.boiler-placed-date.title'),
 				    'type' => 'text',
 				    'unit' => Translation::translate('general.unit.year.title'),
@@ -599,7 +599,7 @@ class ExampleBuildingService
 //
 //		    ],
 		    'solar-panels' => [
-			    'service.'.$solarPanels->id => [
+			    'service.'.$solarPanels->id . '.value' => [
 				    'label' => $solarPanels->name,
 				    'type' => 'text',
 				    'unit' => Translation::translate('general.unit.pieces.title'),

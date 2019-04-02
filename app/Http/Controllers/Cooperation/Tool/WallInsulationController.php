@@ -237,7 +237,7 @@ class WallInsulationController extends Controller
             //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         }
         $insulationAdvice = MeasureApplication::byShort($advice);
-        $result['insulation_advice'] = $insulationAdvice->measure_name;
+        $result['insulation_advice'] = __('wall-insulation.'.$advice);
 
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);

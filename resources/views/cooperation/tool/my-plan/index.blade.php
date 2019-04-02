@@ -91,9 +91,9 @@
                             <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong>
                         </td>
                         <td>
-                            {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_gas, 0, true) }} m<sup>3</sup>
                             <br>
-                            {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity, 0, true) }} kWh
                         </td>
                         <td colspan="3">
                         </td>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\ToolSettingService;
 use Illuminate\Http\Request;
@@ -92,8 +93,16 @@ class ImportController extends Controller
         return $updateArray;
     }
 
+    /**
+     * @param  Request  $request
+     *
+     * @note if there are "bugs" or problems, check if the tables have the right where columns etc.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function copy(Request $request)
     {
+        // the input source to copy from.
         $desiredInputSourceName = $request->get('input_source');
 
         // the tables that have a the where_column is used to query on the resident his answers.
@@ -116,8 +125,12 @@ class ImportController extends Controller
             'building_user_usages',
             'building_paintwork_statuses',
             'building_user_usages',
-            'user_progresses',
-            'questions_answers',
+            'user_progresses' => [
+                'where_column' => 'step_id',
+            ],
+            'questions_answers' => [
+                'where_column' => 'question_id',
+            ],
             'building_features',
             'building_pv_panels',
             'building_heaters',
@@ -135,8 +148,6 @@ class ImportController extends Controller
 
         // input sources
         $desiredInputSource = InputSource::findByShort($desiredInputSourceName);
-        //$residentInputSource = InputSource::findByShort('resident');
-
         $targetInputSource = InputSource::find(HoomdossierSession::getInputSource());
 
         foreach ($tables as $tableOrInt => $tableOrWhereColumns) {
@@ -149,15 +160,19 @@ class ImportController extends Controller
             } else {
                 $table = $tableOrWhereColumns;
             }
+            // building to copy data from
+            $building = Building::find(HoomdossierSession::getBuilding());
+            $user = $building->user()->first();
 
             // set the building or user id, depending on which column exists on the table
             if (\Schema::hasColumn($table, 'user_id')) {
-                $buildingOrUserId = \Auth::id();
+                $buildingOrUserId = $user->id;
                 $buildingOrUserColumn = 'user_id';
             } else {
-                $buildingOrUserId = HoomdossierSession::getBuilding();
+                $buildingOrUserId = $building->id;
                 $buildingOrUserColumn = 'building_id';
             }
+
 
             // now we get all the answers from the desired input source
             $desiredInputSourceValues = \DB::table($table)
@@ -184,6 +199,8 @@ class ImportController extends Controller
                             ->where($whereColumn, $desiredInputSourceValue->$whereColumn)
                             ->count();
 
+
+
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
                         if ($targetInputSourceValueCount > 1) {
@@ -191,6 +208,7 @@ class ImportController extends Controller
                             // add the where to the query
                             $targetInputSourceValueQuery = $targetInputSourceValueQuery
                                 ->where($additionalWhereColumn, $desiredInputSourceValue->$additionalWhereColumn);
+
 
                             // get the result
                             $targetInputSourceValue = $targetInputSourceValueQuery->first();
@@ -212,12 +230,25 @@ class ImportController extends Controller
                             }
                         } else {
                             $targetInputSourceValue = $targetInputSourceValueQuery->first();
+
                             // cast the results to a array
                             $targetInputSourceValue = (array) $targetInputSourceValue;
                             $desiredInputSourceValue = (array) $desiredInputSourceValue;
 
-                            // YAY! data has been copied so update the resident his records.
-                            $targetInputSourceValueQuery->update($this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue));
+                            // YAY! data has been copied so update or create the target input source his records.
+                            if ($targetInputSourceValueQuery->first() instanceof \stdClass) {
+                                $targetInputSourceValueQuery->update($this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue));
+                            } else {
+                                // we cant create an update array since there is no data from the target input source
+
+                                $desiredInputSourceValue = (array) $desiredInputSourceValue;
+                                // unset the stuff we dont want to insert
+                                unset($desiredInputSourceValue['id'], $desiredInputSourceValue['input_source_id']);
+                                // change the input source id to the resident
+                                $desiredInputSourceValue['input_source_id'] = $targetInputSource->id;
+
+                                \DB::table($table)->insert($desiredInputSourceValue);
+                            }
                         }
                     }
                 }
@@ -226,6 +257,7 @@ class ImportController extends Controller
                 $targetInputSourceValueQuery = \DB::table($table)
                     ->where('input_source_id', $targetInputSource->id)
                     ->where($buildingOrUserColumn, $buildingOrUserId);
+
 
                 // get the first result from the desired input source
                 $desiredInputSourceValue = $desiredInputSourceValues->first();
@@ -240,6 +272,7 @@ class ImportController extends Controller
                     unset($desiredInputSourceValue['id'], $desiredInputSourceValue['input_source_id']);
                     // change the input source id to the resident
                     $desiredInputSourceValue['input_source_id'] = $targetInputSource->id;
+
                     // and insert a new row!
                     \DB::table($table)->insert($desiredInputSourceValue);
                 }

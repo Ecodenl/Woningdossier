@@ -6,6 +6,7 @@ use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
+use App\Helpers\NumberFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\Building;

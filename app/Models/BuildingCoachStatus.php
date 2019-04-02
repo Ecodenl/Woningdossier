@@ -328,6 +328,7 @@ class BuildingCoachStatus extends Model
             ->orderBy('created_at')
             ->get();
     }
+
     /**
      * A function to check if a coach has 'access' to a a building
      * if the pending count is higher then the remove count he has 'access'

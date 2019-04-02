@@ -71,7 +71,16 @@
             });
 
             $('#allow_access').change(function () {
-                if (confirm('Weet u zeker dat u de toegang wilt ontzeggen voor elk gekoppelde coach ?')) {
+                // if access gets turned of, we want to show them a alert
+                // else we dont!
+                if ($(this).prop('checked') === false) {
+                    if (confirm('Weet u zeker dat u de toegang wilt ontzeggen voor elk gekoppelde coach ?')) {
+                        $('#allow-access-form').submit();
+                    } else {
+                        // otherwise this may seems weird, so on cancel. we check the box again.
+                        $(this).prop('checked', true);
+                    }
+                }  else {
                     $('#allow-access-form').submit();
                 }
             });

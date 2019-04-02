@@ -6,7 +6,15 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <p>{{$slot}}</p>
+                <?php
+                /**
+                 * @var \Illuminate\Support\HtmlString $slot
+                 */
+                    $htmlString = $slot->toHtml();
+//                    echo  $htmlString;
+                ?>
+                {!! $htmlString !!}
+
             </div>
         </div>
     </div>

@@ -164,7 +164,6 @@ class MyPlanController extends Controller
             }
         }
 
-
         ksort($sortedAdvices);
 
         return response()->json($sortedAdvices);

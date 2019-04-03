@@ -35,6 +35,17 @@
 <script src="{{ asset('js/app.js') }}"></script>
 
 <script>
+    function hoomdossierRound(data, fieldsToRound)
+    {
+        let bucket = 5;
+
+        console.log(data);
+        $(fieldsToRound).each(function (index, value) {
+            data[value] = Math.round(data[value] / bucket) * bucket;
+        });
+
+        return data;
+    }
 </script>
 @stack('js')
 </body>

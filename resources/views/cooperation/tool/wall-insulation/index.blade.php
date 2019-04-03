@@ -404,6 +404,14 @@
                     url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function (data) {
+
+                        data = hoomdossierRound(data, [
+                            'savings_gas', 'savings_co2', 'savings_money', 'cost_indication', 'repair_join.costs',
+                            'paint_wall.costs', 'impregnate_wall.costs', 'clean_brickwork.costs',
+                        ]);
+
+
+                        console.log(data);
                         if (data.hasOwnProperty('insulation_advice')) {
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
 

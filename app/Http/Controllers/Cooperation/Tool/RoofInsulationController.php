@@ -416,6 +416,7 @@ class RoofInsulationController extends Controller
             }
 
             if (isset($replaceMeasure)) {
+                $surface = $roofTypes[$cat]['roof_surface'] ?? 0;
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
                 $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);
             }

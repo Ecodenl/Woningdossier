@@ -41,9 +41,9 @@
             bucket = 5;
         }
 
-        let roundedValue = Math.round(valueToRound / bucket) * bucket;
+        return Math.round(valueToRound / bucket) * bucket;
 
-        return roundedValue;
+
     }
 </script>
 @stack('js')

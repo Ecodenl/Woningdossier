@@ -405,13 +405,6 @@
                     data: form,
                     success: function (data) {
 
-                        data = hoomdossierRound(data, [
-                            'savings_gas', 'savings_co2', 'savings_money', 'cost_indication', 'repair_join.costs',
-                            'paint_wall.costs', 'impregnate_wall.costs', 'clean_brickwork.costs',
-                        ]);
-
-
-                        console.log(data);
                         if (data.hasOwnProperty('insulation_advice')) {
                             $("#insulation-advice").html("<strong>" + data.insulation_advice + "</strong>");
 
@@ -439,22 +432,22 @@
                             $("#insulation-advice").html("");
                         }
                         if (data.hasOwnProperty('savings_gas')) {
-                            $("input#savings_gas").val(Math.round(data.savings_gas));
+                            $("input#savings_gas").val(hoomdossierRound(data.savings_gas));
                         }
                         if (data.hasOwnProperty('savings_co2')) {
-                            $("input#savings_co2").val(Math.round(data.savings_co2));
+                            $("input#savings_co2").val(hoomdossierRound(data.savings_co2));
                         }
                         if (data.hasOwnProperty('savings_money')) {
-                            $("input#savings_money").val(Math.round(data.savings_money));
+                            $("input#savings_money").val(hoomdossierRound(data.savings_money));
                         }
                         if (data.hasOwnProperty('cost_indication')) {
-                            $("input#cost_indication").val(Math.round(data.cost_indication));
+                            $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
                             $("input#interest_comparable").val(data.interest_comparable);
                         }
                         if (data.hasOwnProperty('repair_joint')) {
-                            $("input#repair_joint").val(Math.round(data.repair_joint.costs));
+                            $("input#repair_joint").val(hoomdossierRound(data.repair_joint.costs));
                             var contentYear = "";
                             if (data.repair_joint.year > 0) {
                                 contentYear = "(in " + data.repair_joint.year + ")";
@@ -462,7 +455,7 @@
                             $("span#repair_joint_year").html(contentYear);
                         }
                         if (data.hasOwnProperty('clean_brickwork')) {
-                            $("input#clean_brickwork").val(Math.round(data.clean_brickwork.costs));
+                            $("input#clean_brickwork").val(hoomdossierRound(data.clean_brickwork.costs));
                             var contentYear = "";
                             if (data.clean_brickwork.year > 0) {
                                 contentYear = "(in " + data.clean_brickwork.year + ")";
@@ -470,7 +463,7 @@
                             $("span#clean_brickwork_year").html(contentYear);
                         }
                         if (data.hasOwnProperty('impregnate_wall')) {
-                            $("input#impregnate_wall").val(Math.round(data.impregnate_wall.costs));
+                            $("input#impregnate_wall").val(hoomdossierRound(data.impregnate_wall.costs));
                             var contentYear = "";
                             if (data.impregnate_wall.year > 0) {
                                 contentYear = "(in " + data.impregnate_wall.year + ")";
@@ -478,7 +471,7 @@
                             $("span#impregnate_wall_year").html(contentYear);
                         }
                         if (data.hasOwnProperty('paint_wall')) {
-                            $("input#paint_wall").val(Math.round(data.paint_wall.costs));
+                            $("input#paint_wall").val(hoomdossierRound(data.paint_wall.costs));
                             var contentYear = "";
                             if (data.paint_wall.year > 0) {
                                 contentYear = "(in " + data.paint_wall.year + ")";

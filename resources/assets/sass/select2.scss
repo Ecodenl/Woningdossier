@@ -1,0 +1,8 @@
+// scss file to add or overwrite styling from the select2 library.
+.select2-container {
+  .select2-locked-tag {
+    .select2-selection__choice__remove {
+      display: none !important;
+    }
+  }
+}

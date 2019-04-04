@@ -57,12 +57,19 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/moment/moment.js') }}"></script>
+<!-- moment.js -->
+<script src="{{asset('js/moment/moment.js')}}"></script>
+<!-- datetimepicker -->
 <script src="{{ asset('js/datepicker/datetimepicker.js') }}"></script>
-
+<!-- datatable -->
 <script src="{{ asset('js/datatables.js') }}"></script>
+<!-- nutty stuff -->
 <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
+<!-- select2 -->
 <script src="{{asset('js/select2.js')}}"></script>
+
+
+
 
 <script>
     $(document).ready(function () {
@@ -72,13 +79,16 @@
         }).on('hidden.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-up").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
         });
+
+        $.extend(true, $.fn.dataTable.defaults, {
+            responsive: true,
+            language: {
+                url: "{{asset('js/datatables-dutch.json')}}"
+            }
+        });
+
     });
 
-    $.extend(true, $.fn.dataTable.defaults, {
-        language: {
-            url: "{{asset('js/datatables-dutch.json')}}"
-        }
-    });
     var diacriticsMap = {
         '\u0041': 'A','\u24B6': 'A','\uFF21': 'A','\u00C0': 'A','\u00C1': 'A','\u00C2': 'A','\u1EA6': 'A','\u1EA4': 'A','\u1EAA': 'A','\u1EA8': 'A',
         '\u00C3': 'A','\u0100': 'A','\u0102': 'A','\u1EB0': 'A','\u1EAE': 'A','\u1EB4': 'A','\u1EB2': 'A','\u0226': 'A','\u01E0': 'A','\u00C4': 'A',

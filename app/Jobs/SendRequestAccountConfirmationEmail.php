@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\RequestAccountConfirmationEmail;
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,14 +22,21 @@ class SendRequestAccountConfirmationEmail implements ShouldQueue
     protected $user;
 
     /**
+     * @var Cooperation
+     */
+    protected $cooperation;
+
+
+    /**
      * Create a new job instance.
      *
      * @param User $user
-     *
+     * @param Cooperation $cooperation
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user, Cooperation $cooperation)
     {
+        $this->cooperation = $cooperation;
         $this->user = $user;
     }
 
@@ -41,6 +49,6 @@ class SendRequestAccountConfirmationEmail implements ShouldQueue
     {
         // This queued job will now queue the sending of an e-mail
         Mail::to($this->user->email)
-            ->queue(new RequestAccountConfirmationEmail($this->user));
+            ->queue(new RequestAccountConfirmationEmail($this->user, $this->cooperation));
     }
 }

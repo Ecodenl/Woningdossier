@@ -43,7 +43,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusName($building->id)}}
+                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusForBuildingId($building->id)}}
                                 </td>
 
                                 <td>@if($lastBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && !empty($lastBuildingCoachStatus->appointment_date))

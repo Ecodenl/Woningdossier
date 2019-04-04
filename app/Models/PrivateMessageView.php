@@ -57,6 +57,36 @@ class PrivateMessageView extends Model
         }
     }
 
+    /**
+     * Return the unread messages count for a user on a building
+     *
+     * @param $buildingId
+     * @return int
+     */
+    public static function getTotalUnreadMessagesCountByBuildingId($buildingId)
+    {
+
+        // get ALL the private messages for the given building ids.
+        $privateMessagesForBuildingId = PrivateMessage::where('building_id', $buildingId)->get();
+
+        // now get the ALL the private message ids for a building id
+        $privateMessageIds = $privateMessagesForBuildingId->pluck('id')->all();
+
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && !is_null($buildingId)) {
+            return self::where('cooperation_id', HoomdossierSession::getCooperation())
+                ->whereIn('private_message_id', $privateMessageIds)
+                ->whereNull('read_at')
+                ->count();
+        } else {
+
+
+            return self::where('user_id', \Auth::id())
+                ->whereIn('private_message_id', $privateMessageIds)
+                ->whereNull('read_at')
+                ->count();
+        }
+    }
+
     public static function isMessageUnread($privateMessage)
     {
         // if the user is loggen in as a coordinator or cooperation admin

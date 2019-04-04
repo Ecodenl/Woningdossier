@@ -157,31 +157,31 @@
 
                             @endcomponent
 
-                        </div>
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                @foreach($building->buildingFeatures()->forMe()->get() as $userInputValue)
-                                    <?php
-                                    // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
-                                    $value = $userInputValue->monument;
-                                    if (1 === $value) {
-                                        $trans = __('woningdossier.cooperation.radiobutton.yes');
-                                    } elseif (2 === $value) {
-                                        $trans = __('woningdossier.cooperation.radiobutton.no');
-                                    } else {
-                                        $trans = __('woningdossier.cooperation.radiobutton.unknown');
-                                    }
-                                    ?>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    @foreach($building->buildingFeatures()->forMe()->get() as $userInputValue)
+                                        <?php
+                                        // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
+                                        $value = $userInputValue->monument;
+                                        if (1 === $value) {
+                                            $trans = __('woningdossier.cooperation.radiobutton.yes');
+                                        } elseif (2 === $value) {
+                                            $trans = __('woningdossier.cooperation.radiobutton.no');
+                                        } else {
+                                            $trans = __('woningdossier.cooperation.radiobutton.unknown');
+                                        }
+                                        ?>
 
-                                    <li class="change-input-value"
-                                        data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"
-                                        data-input-value="{{ $value }}"><a
-                                                href="#">{{ $userInputValue->getInputSourceName() }}
-                                            : {{ $trans }}</a></li>
-                                @endforeach
-                            </ul>
+                                        <li class="change-input-value"
+                                            data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"
+                                            data-input-value="{{ $value }}"><a
+                                                    href="#">{{ $userInputValue->getInputSourceName() }}
+                                                : {{ $trans }}</a></li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -243,7 +243,7 @@
                         </div>
                         @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
                             <div class="col-sm-2">
-                                @component('cooperation.tool.components.step-question', ['id' => 'user_interest.element.' . $element->id, 'translation' => 'general.interested-in-improvement', 'required' => true, 'labelStyling' => 'font-size:12px;'])
+                                @component('cooperation.tool.components.step-question', ['id' => 'user_interest.element.' . $element->id, 'translation' => 'general.interested-in-improvement', 'required' => true, 'labelStyling' => 'font-size:12px;', 'labelClass' => 'user-interest-label'])
                                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'element')->where('interested_in_id', $element->id),  'userInputColumn' => 'interest_id'])
                                         <select id="user_interest_element_{{ $element->id }}" class="form-control"
                                                 name="user_interest[element][{{ $element->id }}]">
@@ -352,7 +352,7 @@
                             {{-- interest is not asked for current boiler --}}
                             @if($service->short != 'boiler')
                                 <div class="col-sm-2">
-                                    @component('cooperation.tool.components.step-question', ['id' => 'user_interest.service.' . $service->id, 'translation' => 'general.interested-in-improvement', 'required' => true, 'labelStyling' => 'font-size:12px;'])
+                                    @component('cooperation.tool.components.step-question', ['id' => 'user_interest.service.' . $service->id, 'translation' => 'general.interested-in-improvement', 'required' => true, 'labelStyling' => 'font-size:12px;', 'labelClass' => 'user-interest-label'])
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', 'service')->where('interested_in_id', $service->id),  'userInputColumn' => 'interest_id'])
                                             <select id="user_interest_service_{{ $service->id }}"
@@ -372,7 +372,7 @@
                             @if(strpos($service->name, 'geventileerd') || $service->short == "total-sun-panels")
                                 <div class="col-sm-6 {{ $errors->has(''.$service->id.'.extra') ? ' show' : '' }}">
 
-                                    <div id="{{$service->id.'-extra'}}"
+                                    <div id="{{$service->id.'-extra'}}">
                                     @if(strpos($service->name, 'geventileerd'))
                                         <?php $translationKey = 'general-data.energy-saving-measures.house-ventilation.if-mechanic' ?>
                                     @elseif($service->short == 'total-sun-panels')
@@ -398,6 +398,7 @@
                                         {{--@component('cooperation.tool.components.help-modal')--}}
                                         {{--                                                    {{\App\Helpers\Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.help')}}--}}
                                     @endcomponent
+                                    </div>
 
                                 </div>
                             @endif
@@ -444,7 +445,6 @@
                             @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'translation' => 'general-data.data-about-usage.cooked-on-gas', 'required' => true])
 
                                 <div class="input-group input-source-group">
-                                    <br>
                                     <label class="radio-inline">
                                         <input type="radio" name="cook_gas"
                                                @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked
@@ -720,6 +720,7 @@
                     ])
 
 
+                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
                     <div class="row">
                         <div class="col-md-12">
                             <hr>
@@ -732,6 +733,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
     </form>
 @endsection

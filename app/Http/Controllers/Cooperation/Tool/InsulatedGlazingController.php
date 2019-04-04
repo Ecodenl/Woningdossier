@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
@@ -479,6 +480,7 @@ class InsulatedGlazingController extends Controller
             ]
         );
 
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
         $this->saveAdvices($request);
         // Save progress
         $building->complete($this->step);
@@ -491,6 +493,7 @@ class InsulatedGlazingController extends Controller
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
+
 
         return redirect($url);
     }

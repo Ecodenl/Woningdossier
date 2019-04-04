@@ -10,7 +10,6 @@
         @include('cooperation.tool.includes.interested', ['type' => 'element'])
         <div class="row">
             <div id="current-situation" class="col-md-12">
-                @include('cooperation.tool.includes.section-title', ['translation' => 'roof-insulation.title', 'id' => 'roof-insulation',])
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -29,7 +28,7 @@
                                         <input data-calculate-value="{{$roofType->calculate_value}}"
                                                type="checkbox" name="building_roof_types[]"
                                                value="{{ $roofType->id }}"
-                                               @if(in_array($roofType->id, old('building_roof_types',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id') ])))
+                                               @if(in_array($roofType->id, old('building_roof_types',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
                                                checked="checked"
                                                 @endif
                                                 {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
@@ -357,6 +356,7 @@
                     </div>
                 </div>
                 <hr>
+                @if(!\App\helpers\HoomdossierSession::isUserObserving())
                 <div class="form-group add-space">
                     <div class="">
                         <a class="btn btn-success pull-left"
@@ -366,6 +366,7 @@
                         </button>
                     </div>
                 </div>
+                    @endif
             </div>
         </div>
     </form>

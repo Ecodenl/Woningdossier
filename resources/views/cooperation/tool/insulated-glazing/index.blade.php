@@ -327,7 +327,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group add-space {{ $errors->has('comments') ? ' has-error' : '' }}">
-                    @component('cooperation.tool.components.step-question', ['id' => 'comments', 'translation' => 'default.form.input.comment', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'comments', 'translation' => 'insulated-glazing.paint-work.comments-paintwork', 'required' => false])
 
                         <?php
                         // We do this because we store the comment with every glazing
@@ -362,7 +362,7 @@
 
         <div id="indication-for-costs">
             <hr>
-            @include('cooperation.tool.includes.section-title', ['translation' => 'general.costs.cost-and-benefits', 'id' => 'cost-and-benefits',])
+            @include('cooperation.tool.includes.section-title', ['translation' => 'insulated-glazing.costs.cost-and-benefits', 'id' => 'cost-and-benefits',])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
@@ -434,6 +434,7 @@
                     </div>
                 </div>
                 <hr>
+                @if(!\App\helpers\HoomdossierSession::isUserObserving())
                 <div class="form-group add-space">
                     <div class="">
                         <a class="btn btn-success pull-left"
@@ -443,6 +444,7 @@
                         </button>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </form>

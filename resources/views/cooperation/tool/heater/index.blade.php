@@ -10,15 +10,6 @@
         @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="heater">
             <div class="row">
-                <div class="col-sm-12">
-                    @include('cooperation.tool.includes.section-title', [
-                        'translation' => 'heater.title',
-                        'id' => 'heater-title'
-                    ])
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-sm-4">
                     @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.water_comfort_id', 'translation' => 'heater.comfort-level-warm-tap-water', 'required' => false])
                         @component('cooperation.tool.components.input-group',
@@ -231,6 +222,7 @@
                         </div>
                     </div>
                     <hr>
+                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
                     <div class="form-group add-space">
                         <div class="">
                             <a class="btn btn-success pull-left"
@@ -240,6 +232,7 @@
                             </button>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

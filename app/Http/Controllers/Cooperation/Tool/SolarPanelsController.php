@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SolarPanelFormRequest;
 use App\Models\Building;
 use App\Models\BuildingPvPanel;
 use App\Models\Cooperation;
 use App\Models\Interest;
+use App\Models\LanguageLine;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
@@ -96,9 +99,9 @@ class SolarPanelsController extends Controller
 
         if ($peakPower > 0) {
             $number = ceil(($amountElectricity / KeyFigures::SOLAR_PANEL_ELECTRICITY_COST_FACTOR) / $peakPower);
-            $result['advice'] = __('woningdossier.cooperation.tool.solar-panels.advice-text', ['number' => $number]);
+            $result['advice'] = Translation::translate('solar-panels.advice-text', ['number' => $number]);
             $wp = $panels * $peakPower;
-            $result['total_power'] = __('woningdossier.cooperation.tool.solar-panels.total-power', ['wp' => $wp]);
+            $result['total_power'] = Translation::translate('solar-panels.total-power', ['wp' => $wp]);
 
             $result['yield_electricity'] = $wp * $helpFactor;
 
@@ -126,17 +129,17 @@ class SolarPanelsController extends Controller
         if ($helpFactor >= 0.84) {
             $result['performance'] = [
                 'alert' => 'success',
-                'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.ideal'),
+                'text' => Translation::translate('solar-panels.indication-for-costs.performance.ideal'),
             ];
         } elseif ($helpFactor < 0.70) {
             $result['performance'] = [
                 'alert' => 'danger',
-                'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.no-go'),
+                'text' => Translation::translate('solar-panels.indication-for-costs.performance.no-go'),
             ];
         } else {
             $result['performance'] = [
                 'alert' => 'warning',
-                'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.possible'),
+                'text' => Translation::translate('solar-panels.indication-for-costs.performance.possible'),
             ];
         }
 
@@ -200,6 +203,7 @@ class SolarPanelsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
         return redirect($url);
     }
 

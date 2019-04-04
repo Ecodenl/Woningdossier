@@ -9,8 +9,6 @@ class CooperationAdminController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $users = $cooperation->users;
-
-        return view('cooperation.admin.cooperation.cooperation-admin.index', compact('users'));
+        return redirect(route('cooperation.admin.cooperation.users.index'));
     }
 }

@@ -8457,6 +8457,11 @@ body i.glyphicon-info-sign {
   height: 50px;
 }
 
+#energy-saving-measures label.user-interest-label {
+  display: inline-block !important;
+  line-height: 22px;
+}
+
 .page-my-plan h3 {
   display: inline;
 }
@@ -8617,5 +8622,9 @@ ul.progress-list li.not-available a:focus img {
 .ui-sortable .ui-sortable-handle:hover,
 .ui-sortable .ui-sortable-handle:focus {
   cursor: move;
+}
+
+.select2-container .select2-locked-tag .select2-selection__choice__remove {
+  display: none !important;
 }
 

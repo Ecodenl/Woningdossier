@@ -20,7 +20,7 @@
         @auth
             <ul class="nav navbar-nav">
                 @if (Auth::user()->isFillingToolForOtherBuilding())
-                    <a href="{{route('cooperation.admin.index')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
+                    <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
             </ul>
         @endauth
@@ -87,17 +87,17 @@
                                     <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
                                 </a>
                             </li>
-                        @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach']))
+                        @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                             <li>
                                 @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                     @case('coach')
-                                        <?php $messageUrl = route('cooperation.admin.coach.messages.index'); ?>
+                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                         @break
                                     @case('coordinator')
-                                        <?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index'); ?>
+                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                         @break
                                     @case('cooperation-admin')
-                                        <?php $messageUrl = route('cooperation.admin.cooperation.cooperation-admin.messages.index'); ?>
+                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                         @break
                                     @default
                                         <?php $messageUrl = route('cooperation.admin.index'); ?>

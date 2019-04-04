@@ -16,11 +16,6 @@
         <div id="floor-insulation">
             <div class="row">
                 <div class="col-sm-12">
-                    @include('cooperation.tool.includes.section-title', ['translation' => 'floor-insulation.intro.title', 'id' => 'intro',])
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
                     @component('cooperation.tool.components.step-question', ['id' => 'element.' . $floorInsulation->id, 'translation' => 'floor-insulation.floor-insulation', 'required' => false])
 
                         @component('cooperation.tool.components.input-group',
@@ -68,7 +63,7 @@
 
                             <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
                                 <div class="alert alert-warning show" role="alert">
-                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
+                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace.unknown-error.title')}}</p>
                                 </div>
                             </div>
 
@@ -254,6 +249,7 @@
                         </div>
                     </div>
                     <hr>
+                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
                     <div class="form-group add-space">
                         <div class="">
                             <a class="btn btn-success pull-left"
@@ -263,9 +259,9 @@
                             </button>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
-        </div>
         </div>
     </form>
 @endsection
@@ -322,7 +318,7 @@
                         console.log(data);
                         @endif
 
-                        if ($("#floor-insulation-options select option:selected").data('calculate-value') === 5) {
+                        if ($("#floor-insulation-options select option:selected").data('calculate-value') === 6) {
                             $("input#savings_gas").val(Math.round(0));
                             $("input#savings_co2").val(Math.round(0));
                             $("input#savings_money").val(Math.round(0));
@@ -362,14 +358,14 @@
                 var interestedCalculateValue = $('#interest_element_{{$floorInsulation->id}} option:selected').data('calculate-value');
                 var elementCalculateValue = $('#element_{{$floorInsulation->id}} option:selected').data('calculate-value');
 
-                if (elementCalculateValue === 5) {
+                if (elementCalculateValue === 6) {
                     // nvt
                     $(".crawlspace-accessible").hide();
                     $("#has-no-crawlspace").hide();
                     $("#no-crawlspace-error").hide();
                     $('#floor-insulation-info-alert').find('.alert').addClass('hide');
                 } else {
-                    if ((elementCalculateValue === 3 || elementCalculateValue === 4)/* && interestedCalculateValue <= 2*/) {
+                    if ((elementCalculateValue === 3 || elementCalculateValue === 4 || elementCalculateValue === 5)/* && interestedCalculateValue <= 2*/) {
                         // insulation already present and there's interest
                         $('#hideable').hide();
                         $('#floor-insulation-info-alert').find('.alert').removeClass('hide');

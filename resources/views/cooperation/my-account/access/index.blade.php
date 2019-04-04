@@ -9,6 +9,28 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
+                    <form id="allow-access-form" action="{{route('cooperation.my-account.access.allow-access')}}" method="post">
+                        {{csrf_field()}}
+                        <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
+                            <label for="allow_access">
+                                <input id="allow_access" name="allow_access" type="checkbox"
+                                       @if(old('allow_access') && old('allow_access') == 'on' || $conversationRequests->contains('allow_access', true))
+                                            checked="checked"
+                                        @endif>
+                                @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
+                            </label>
+                            @if ($errors->has('allow_access'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('allow_access') }}</strong>
+                                </span>
+                            @endif
+                            <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
@@ -45,6 +67,21 @@
                 if (confirm('Weet u zeker dat u deze gebruiker de toegang wilt ontzetten ?')) {
                     var formId = $(this).data('form-id');
                     $('form#'+formId).submit();
+                }
+            });
+
+            $('#allow_access').change(function () {
+                // if access gets turned of, we want to show them a alert
+                // else we dont!
+                if ($(this).prop('checked') === false) {
+                    if (confirm('Weet u zeker dat u de toegang wilt ontzeggen voor elk gekoppelde coach ?')) {
+                        $('#allow-access-form').submit();
+                    } else {
+                        // otherwise this may seems weird, so on cancel. we check the box again.
+                        $(this).prop('checked', true);
+                    }
+                }  else {
+                    $('#allow-access-form').submit();
                 }
             });
         });

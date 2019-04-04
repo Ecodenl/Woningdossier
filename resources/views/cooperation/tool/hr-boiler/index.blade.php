@@ -9,7 +9,6 @@
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', ['type' => 'service'])
         <div id="start-information">
-            @include('cooperation.tool.includes.section-title', ['translation' => 'high-efficiency-boiler.title', 'id' => 'title',])
             <div class="row">
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'habit.gas_usage', 'translation' => 'high-efficiency-boiler.current-gas-usage', 'required' => false])
@@ -172,6 +171,7 @@
                     </div>
                 </div>
                 <hr>
+                @if(!\App\helpers\HoomdossierSession::isUserObserving())
                 <div class="form-group add-space">
                     <div class="">
                         <a class="btn btn-success pull-left"
@@ -181,6 +181,7 @@
                         </button>
                     </div>
                 </div>
+                    @endif
             </div>
         </div>
     </form>

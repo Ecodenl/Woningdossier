@@ -5,7 +5,9 @@ namespace App\Listeners;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Log;
 use App\Models\Role;
+use Carbon\Carbon;
 
 class SuccessFullLoginListener
 {
@@ -48,6 +50,16 @@ class SuccessFullLoginListener
 
             // set the required sessions
             HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSource, $role);
+
+            Log::create([
+                'building_id' => $building->id,
+                'user_id' => $user->id,
+                'message' => __('woningdossier.log-messages.logged-in', [
+                    'full_name' => $user->getFullName(),
+                    'time' => Carbon::now(),
+                ])
+            ]);
+
         }
         if (\Auth::viaRemember()) {
             \Log::debug('User logged in with a remember token! user id: '.$user->id);

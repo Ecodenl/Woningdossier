@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
@@ -136,6 +137,10 @@ class WallInsulationController extends Controller
             ]
         );
 
+
+//        if (($buildingFeature->wasRecentlyCreated || $buildingFeature->wasChanged() || $buildingElement->wasChanged() || $buildingElement->wasRecentlyCreated)
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
+
         // Save progress
         $this->saveAdvices($request);
         $building->complete($this->step);
@@ -232,7 +237,7 @@ class WallInsulationController extends Controller
             //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         }
         $insulationAdvice = MeasureApplication::byShort($advice);
-        $result['insulation_advice'] = $insulationAdvice->measure_name;
+        $result['insulation_advice'] = __('wall-insulation.'.$advice);
 
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);

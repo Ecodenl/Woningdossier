@@ -7,10 +7,6 @@
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.heat-pump.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="start-information">
-            @include('cooperation.tool.includes.section-title', [
-               'translation' => 'heat-pump.description',
-                'id' => 'heat-pump-title'
-             ])
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group add-space">
@@ -418,9 +414,7 @@
             {{--</div>--}}
         {{--</div>--}}
         {{--</div>--}}
-
-
-
+        @if(!\App\helpers\HoomdossierSession::isUserObserving())
         <div class="row">
             <div class="col-md-12">
                 <hr>
@@ -434,6 +428,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </form>
 @endsection
 

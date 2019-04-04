@@ -52,16 +52,16 @@
                         <li>
                             @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                 @case('coach')
-								<?php $messageUrl = route('cooperation.admin.coach.messages.index'); ?>
-                                @break
+                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
+                                    @break
                                 @case('coordinator')
-								<?php $messageUrl = route('cooperation.admin.cooperation.coordinator.messages.index'); ?>
-                                @break
+                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
+                                    @break
                                 @case('cooperation-admin')
-								<?php $messageUrl = route('cooperation.admin.cooperation.cooperation-admin.messages.index'); ?>
-                                @break
+                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
+                                    @break
                                 @default
-								<?php $messageUrl = route('cooperation.admin.index'); ?>
+                                <?php $messageUrl = route('cooperation.admin.index'); ?>
                             @endswitch
                             <a href="{{$messageUrl}}">
                                 <span class="glyphicon glyphicon-envelope"></span>
@@ -75,7 +75,6 @@
                     @endif
                     @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                         <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
-                        <li><a href="{{ route('cooperation.admin.cooperation.cooperation-admin.reports.index') }}">@lang('woningdossier.cooperation.admin.navbar.reports')</a></li>
                     @endif
 
                     @include('cooperation.admin.layouts.navbar.role-switcher')

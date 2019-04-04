@@ -22,6 +22,7 @@
 
 @import "views/cooperation/measures/index";
 
+@import "views/cooperation/tool/general-data/index";
 @import "views/cooperation/tool/my-plan/index";
 @import "views/cooperation/tool/wall-insulation/index";
 
@@ -35,4 +36,6 @@
 @import "views/cooperation/admin/choose_roles";
 @import "views/cooperation/admin/coach/buildings";
 @import "views/cooperation/admin/cooperation/coordinator/questionnaire";
+
+@import "select2";
 

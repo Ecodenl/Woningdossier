@@ -56,14 +56,14 @@
             <div class="row">
                 <div class="col-sm-12">
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'radio',
-                        'inputValues' => [
-                            1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-                            2 => \App\Helpers\Translation::translate('general.options.no.title'),
-                            0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                        ],
-                        'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
+                    @component('cooperation.tool.components.input-group',
+                    ['inputType' => 'radio',
+                    'inputValues' => [
+                        1 => \App\Helpers\Translation::translate('general.options.yes.title'),
+                        2 => \App\Helpers\Translation::translate('general.options.no.title'),
+                        0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
+                    ],
+                    'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
                         @component('cooperation.tool.components.step-question', ['id' => 'cavity_wall', 'translation' => 'wall-insulation.intro.has-cavity-wall', 'required' => true])
                             <label class="radio-inline">
                                 <input type="radio" name="cavity_wall"
@@ -84,7 +84,7 @@
                         @endcomponent
                         <br>
 
-                        @endcomponent
+                    @endcomponent
 
                 </div>
             </div>
@@ -92,14 +92,14 @@
         <div class="row">
             <div class="col-sm-12">
 
-                    @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'radio',
-                        'inputValues' => [
-                        1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-                        2 => \App\Helpers\Translation::translate('general.options.no.title'),
-                        3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                        ],
-                        'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
+                @component('cooperation.tool.components.input-group',
+                    ['inputType' => 'radio',
+                    'inputValues' => [
+                    1 => \App\Helpers\Translation::translate('general.options.yes.title'),
+                    2 => \App\Helpers\Translation::translate('general.options.no.title'),
+                    3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
+                    ],
+                    'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
 
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_painted', 'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true])
                         <label class="radio-inline">
@@ -122,28 +122,13 @@
                     @endcomponent
                     <br>
 
-                    @endcomponent
+                @endcomponent
 
             </div>
         </div>
 
         <div class="row">
             <div id="painted-options" style="display: none;">
-                <div class="col-md-6">
-
-                    @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'general-data.building-type.what-user-surface', 'required' => true])
-
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'surface', 'needsFormat' => true])
-                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            <input id="surface" type="text" class="form-control" name="surface"
-                                   value="{{ old('surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'surface'), 1)) }}"
-                                   required autofocus>
-                        @endcomponent
-
-                    @endcomponent
-
-                </div>
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_surface_id', 'translation' => 'wall-insulation.intro.surface-paintwork', 'required' => false])
                         @component('cooperation.tool.components.input-group',
@@ -159,9 +144,8 @@
                     @endcomponent
 
                 </div>
-            </div>
 
-            <div class="col-sm-6">
+                <div class="col-sm-6">
 
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_damaged_paintwork_id', 'translation' => 'wall-insulation.intro.damage-paintwork', 'required' => false])
                         @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $facadeDamages, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'facade_damaged_paintwork_id'])
@@ -176,6 +160,7 @@
                         @endcomponent
                     @endcomponent
 
+                </div>
             </div>
         </div>
 
@@ -199,26 +184,26 @@
                     @endcomponent
                 </div>
 
-            <div class="col-sm-6">
-                @component('cooperation.tool.components.step-question', ['id' => 'contaminated_wall_joints', 'translation' => 'wall-insulation.optional.is-facade-dirty', 'required' => false])
-                    @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'contaminated_wall_joints'])
-                        <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
-                            @foreach($surfaces as $surface)
-                                <option @if(old('contaminated_wall_joints') == $surface->id) selected
-                                        @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $surface->id ) selected
-                                        @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
-                            @endforeach
-                        </select>
+                <div class="col-sm-6">
+                    @component('cooperation.tool.components.step-question', ['id' => 'contaminated_wall_joints', 'translation' => 'wall-insulation.optional.is-facade-dirty', 'required' => false])
+                        @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'contaminated_wall_joints'])
+                            <select id="contaminated_wall_joints" class="form-control" name="contaminated_wall_joints">
+                                @foreach($surfaces as $surface)
+                                    <option @if(old('contaminated_wall_joints') == $surface->id) selected
+                                            @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $surface->id ) selected
+                                            @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                @endforeach
+                            </select>
+                        @endcomponent
                     @endcomponent
-                @endcomponent
+                </div>
+
             </div>
 
-        </div>
-
-        <div class="hideable">
-            <div class="row">
-                <div class="col-sm-6">
+            <div class="hideable" id="surfaces">
+                <div class="row">
+                    <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
 
                             @component('cooperation.tool.components.input-group',
@@ -230,8 +215,8 @@
                             @endcomponent
 
                         @endcomponent
-                </div>
-                <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => false])
 
                             @component('cooperation.tool.components.input-group',
@@ -243,145 +228,146 @@
                             @endcomponent
 
                         @endcomponent
-                </div>
-            </div>
-        </div>
-
-        <div class="hideable">
-            <div class="row" id="advice-help">
-                <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-info" role="alert">
-                        <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
-                        <p id="insulation-advice"></p>
                     </div>
                 </div>
             </div>
-            <div class="row" id="cavity-wall-alert" style="display: none;">
-                <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-warning" role="alert">
-                        <p>
-                            <strong>{{ \App\Helpers\Translation::translate('wall-insulation.alerts.description.title') }}</strong>
-                        </p>
+
+            <div class="hideable">
+                <div class="row" id="advice-help">
+                    <div class="col-sm-12 col-md-8 col-md-offset-2">
+                        <div class="alert alert-info" role="alert">
+                            <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
+                            <p id="insulation-advice"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="cavity-wall-alert" style="display: none;">
+                    <div class="col-sm-12 col-md-8 col-md-offset-2">
+                        <div class="alert alert-warning" role="alert">
+                            <p>
+                                <strong>{{ \App\Helpers\Translation::translate('wall-insulation.alerts.description.title') }}</strong>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="hideable">
-            <div id="indication-for-costs">
+            <div class="hideable">
+                <div id="indication-for-costs">
+                    <hr>
+                    @include('cooperation.tool.includes.section-title', [
+                            'translation' => 'wall-insulation.indication-for-costs.title',
+                            'id' => 'indication-for-costs'
+                        ])
+
+                    <div id="costs" class="row">
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                        </div>
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                        </div>
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                        </div>
+                        <div class="col-sm-4">
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="taking-into-account">
                 <hr>
-                @include('cooperation.tool.includes.section-title', [
-                        'translation' => 'wall-insulation.indication-for-costs.title',
-                        'id' => 'indication-for-costs'
-                    ])
+                @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
+                <span>{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</span>
 
-                <div id="costs" class="row">
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
-                    </div>
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
-                    </div>
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.savings-in-euro')
-                    </div>
-                </div>
                 <div class="row">
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.indicative-costs')
-                    </div>
-                    <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.comparable-rent')
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="taking-into-account">
-            <hr>
-            @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
-            <h6 style="margin-left: -5px;">{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</h6>
-
-            <div class="row">
-                <div class="col-sm-6">
-                        <span id="repair_joint_year">(in 2018)</span>
+                    <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'repair_joint', 'translation' => 'wall-insulation.taking-into-account.repair-joint', 'required' => false])
+                            <span id="repair_joint_year">(in 2018)</span>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="repair_joint" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
                         @endcomponent
-                </div>
-                <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'clean_brickwork', 'translation' => 'wall-insulation.taking-into-account.clean-brickwork', 'required' => false])
-                        <span id="clean_brickwork_year"></span>
+                            <span id="clean_brickwork_year"></span>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="clean_brickwork" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
                         @endcomponent
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'impregnate_wall', 'translation' => 'wall-insulation.taking-into-account.impregnate-wall', 'required' => false])
-                        <span id="impregnate_wall_year"></span>
+                            <span id="impregnate_wall_year"></span>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="impregnate_wall" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
                         @endcomponent
-                </div>
-                <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'paint_wall', 'translation' => 'wall-insulation.taking-into-account.wall-painting', 'required' => false])
-                        <span id="paint_wall_year"></span>
+                            <span id="paint_wall_year"></span>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="paint_wall" class="form-control disabled" disabled="" value="0">
                             </div>
                         @endcomponent
+                    </div>
                 </div>
-            </div>
 
 
-            <div class="row">
-                <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12">
                         @component('cooperation.tool.components.step-question', ['id' => 'additional_info', 'translation' => 'general.specific-situation', 'required' => false])
 
                             <textarea id="additional-info" class="form-control"
                                       name="additional_info">@if(old('additional_info')){{old('additional_info')}}@elseif(isset($buildingFeature)){{$buildingFeature->additional_info}}@endif</textarea>
 
                         @endcomponent
-                </div>
-            </div>
-        </div>
-        @include('cooperation.tool.includes.comment', [
-           'collection' => $buildingFeaturesForMe,
-           'commentColumn' => 'additional_info',
-           'translation' => [
-               'title' => 'general.specific-situation.title',
-               'help' => 'general.specific-situation.help'
-           ]
-       ])
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li><a download=""
-                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a>
-                            </li>
-                            <li><a download=""
-                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a>
-                            </li>
-                        </ol>
                     </div>
                 </div>
-                <hr>
+            </div>
+            @include('cooperation.tool.includes.comment', [
+               'collection' => $buildingFeaturesForMe,
+               'commentColumn' => 'additional_info',
+               'translation' => [
+                   'title' => 'general.specific-situation.title',
+                   'help' => 'general.specific-situation.help'
+               ]
+           ])
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">@lang('default.buttons.download')</div>
+                        <div class="panel-body">
+                            <ol>
+                                <li><a download=""
+                                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a>
+                                </li>
+                                <li><a download=""
+                                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <hr>
+                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
                 <div class="form-group add-space">
                     <div class="">
                         <a class="btn btn-success pull-left"
@@ -391,8 +377,9 @@
                         </button>
                     </div>
                 </div>
+                @endif
+                </div>
             </div>
-        </div>
         </div>
     </form>
 @endsection
@@ -405,8 +392,10 @@
             $("select, input[type=radio], input[type=text]").change(function () {
                 if ($('.is-painted').is(':checked')) {
                     $('#painted-options').show();
+                    $('#surfaces').show()
                 } else {
                     $('#painted-options').hide();
+                    // $('#surfaces').hide()
                 }
 
                 var form = $(this).closest("form").serialize();
@@ -501,7 +490,6 @@
             // Trigger the change event so it will load the data
             $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
 
-
         });
 
         $('#wall_surface').on('change', function () {
@@ -513,13 +501,10 @@
         function checkInterestAndCurrentInsulation() {
             var elementCalculateValue = $('#element_{{$buildingElements->id}} option:selected').data('calculate-value');
 
-            console.log(elementCalculateValue);
             if (elementCalculateValue >= 3) {
-                console.log('hide');
                 $('.hideable').hide();
                 $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
             } else {
-                console.log('show');
                 $('.hideable').show();
                 $('#wall-insulation-info-alert').find('.alert').addClass('hide');
             }

@@ -167,7 +167,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group" {{ $errors->has('coach_id') ? ' has-error' : '' }}>
-                                    <label for="coach">@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.select-coach')</label>
+                                    <label for="coach">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.select-coach')</label>
                                     <select name="coach_id" class="coach form-control" id="coach">
                                         @foreach($coaches as $coach)
                                             <option @if(old('coach_id') == $coach->id) selected
@@ -217,7 +217,7 @@
             }).select2('val', oldSelectedRoles);
 
             $(".coach").select2({
-                placeholder: "@lang('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.create.form.select-coach')",
+                placeholder: "@lang('woningdossier.cooperation.admin.cooperation.users.create.form.select-coach')",
                 maximumSelectionLength: Infinity,
                 allowClear: true
             });

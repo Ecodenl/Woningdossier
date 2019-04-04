@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
@@ -229,6 +230,8 @@ class HeaterController extends Controller
         $building->complete($this->step);
         ($this->step);
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

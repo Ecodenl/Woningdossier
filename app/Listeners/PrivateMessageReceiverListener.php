@@ -29,14 +29,16 @@ class PrivateMessageReceiverListener
     public function handle($event)
     {
         $groupParticipants = PrivateMessage::getGroupParticipants($event->privateMessage->building_id);
+
         $buildingFromOwner = Building::find($event->privateMessage->building_id);
         $privateMessage = PrivateMessage::find($event->privateMessage->id);
 
-        // now we creat for every group participant a privatemessageview
+        // now we create for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {
             // check the group participant is the owner of the building and the send message is private
             $isMessagePrivateAndGroupParticipantOwnerFromBuilding = $buildingFromOwner->user_id == $groupParticipant->id && PrivateMessage::isPrivate($privateMessage);
 
+            // if the message is private and the group member is the owner, we dont notify him because the message is not intended for him
             if ($groupParticipant->id != \Auth::id() && ! $isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
                 PrivateMessageView::create([
                     'private_message_id' => $event->privateMessage->id,

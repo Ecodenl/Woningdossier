@@ -22,10 +22,10 @@
                     <div class="col-sm-12">
                         <div class="btn-group">
                             @can('delete-user')
-                                <button type="button" id="delete-user" class="btn btn-danger">
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
-                                </button>
+                                {{--<button type="button" id="delete-user" class="btn btn-danger">--}}
+{{--                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.label')--}}
+{{--                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.button')--}}
+                                {{--</button>--}}
                             @endcan
                             @can('access-building', $building->id)
                                 @can('user-access-building', $building->id)
@@ -112,10 +112,17 @@
 
                                 @endforeach
                             @endif
-                            {{--This status can ALWAYS be choosen.--}}
-                            <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
-                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
-                            </option>
+
+                            @if($building->isActive())
+                                {{--This status can ALWAYS be choosen.--}}
+                                <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
+                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                                </option>
+                            @else
+                                <option value="{{\App\Models\Building::STATUS_IS_ACTIVE}}">
+                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_ACTIVE)}}
+                                </option>
+                            @endif
                         </select>
                     </div>
                 </div>

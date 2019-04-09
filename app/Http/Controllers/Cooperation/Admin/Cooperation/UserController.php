@@ -42,49 +42,6 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
 
-    public function show(Cooperation $cooperation, $userId)
-    {
-        $user = $cooperation->users()->find($userId);
-        $building = $user->buildings()->first();
-        $userDoesNotExist = !$user instanceof User;
-        $userExists = !$userDoesNotExist;
-        $buildingId = $building->id;
-        $roles = Role::all();
-        $coaches = $cooperation->getCoaches()->get();
-
-        $manageableStatuses = BuildingCoachStatus::getManageableStatuses();
-        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
-
-        $mostRecentStatusesForBuildingId = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
-        // pick the first one, since its ordered on the created_at.
-
-        $mostRecentBuildingCoachStatusArray = $mostRecentStatusesForBuildingId->all();
-        // get the most recent status for the current coach and hydrate it.
-        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
-            [$mostRecentBuildingCoachStatusArray[0]]
-        )->first();
-
-        $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
-        $publicMessages = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
-
-        // get all the building notes
-        $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
-
-        // since a user can be deleted, a buildin
-        if ($userExists) {
-            // get previous user id
-            $previous = $cooperation->users()->where('id', '<', $user->id)->max('id');
-            // get next user id
-            $next = $cooperation->users()->where('id', '>', $user->id)->min('id');
-        }
-
-        return view('cooperation.admin.cooperation.users.show', compact(
-            'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus', 'coachesWithActiveBuildingCoachStatus',
-                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses', 'mostRecentBuildingCoachStatus',
-                'userDoesNotExist', 'userExists'
-            )
-        );
-    }
 
     protected function getAddressData($postalCode, $number, $pointer = null)
     {

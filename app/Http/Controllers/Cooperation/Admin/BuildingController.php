@@ -25,7 +25,19 @@ class BuildingController extends Controller
      */
     public function show(Cooperation $cooperation, $buildingId)
     {
-        $building = Building::withTrashed()->findOrFail($buildingId);
+        $building = Building::hydrate(
+            $cooperation
+            ->users()
+            ->join('buildings', 'users.id', '=', 'buildings.user_id')
+            ->where('buildings.id', '=', $buildingId)
+            ->select('buildings.*')
+            ->get()->toArray()
+        )->first();
+
+        if (!$building instanceof Building) {
+            return redirect(route('cooperation.admin.index'));
+        }
+
         $user = $building->user()->first();
 
         $userDoesNotExist = !$user instanceof User;
@@ -77,9 +89,19 @@ class BuildingController extends Controller
         // since a user can be deleted, a buildin
         if ($userExists) {
             // get previous user id
-            $previous = $building->where('id', '<', $buildingId)->max('id');
+            $previous = $cooperation
+                ->users()
+                ->join('buildings', 'users.id', '=', 'buildings.user_id')
+                ->where('buildings.id', '<', $buildingId)
+                ->max('buildings.id');
+
             // get next user id
-            $next = $building->where('id', '>', $buildingId)->min('id');
+            $next = $cooperation
+                ->users()
+                ->join('buildings', 'users.id', '=', 'buildings.user_id')
+                ->where('buildings.id', '>', $buildingId)
+                ->min('buildings.id');
+
         }
 
 

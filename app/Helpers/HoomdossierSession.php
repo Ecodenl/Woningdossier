@@ -131,7 +131,7 @@ class HoomdossierSession extends Session
      */
     public static function getIsObserving(): bool
     {
-        return self::getHoomdossierSession('is_observing');
+        return self::getHoomdossierSession('is_observing', false);
     }
 
     /**

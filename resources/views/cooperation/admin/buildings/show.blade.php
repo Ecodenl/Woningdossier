@@ -112,10 +112,17 @@
 
                                 @endforeach
                             @endif
-                            {{--This status can ALWAYS be choosen.--}}
-                            <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
-                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
-                            </option>
+
+                            @if($building->isActive())
+                                {{--This status can ALWAYS be choosen.--}}
+                                <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
+                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                                </option>
+                            @else
+                                <option value="{{\App\Models\Building::STATUS_IS_ACTIVE}}">
+                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_ACTIVE)}}
+                                </option>
+                            @endif
                         </select>
                     </div>
                 </div>

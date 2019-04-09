@@ -6,8 +6,8 @@
 <?php
 
     // the confirm route.
-    $confirmUrl = route('cooperation.confirm', ['cooperation' => $cooperation, 'u' => $createdUser->email, 't' => $createdUser->confirm_token]);
-    $confirmHref = '<a target="_blank" href="'.$confirmUrl.'">'.$confirmUrl.'</a>';
+    $resetUrl = route('cooperation.password.reset', ['token' => $token, 'cooperation' => $userCooperation->slug]);
+    $resetHref = '<a target="_blank" href="'.$resetUrl.'">'.$resetUrl.'</a>';
 
     // the route to the hoompage.
     $cooperationHoomdossierLink = route('cooperation.home', ['cooperation' => $cooperation]);
@@ -20,7 +20,7 @@
 @lang('mail.account-created-by-cooperation.text', [
     'hoomdossier_link' => $cooperationHoomdossierHref,
     'home_url' => config('app.url'),
-    'confirm_url' => $confirmHref,
+    'confirm_url' => $resetHref,
     'cooperation_link' => $cooperationWebsiteHref
 ])
 <br><br>

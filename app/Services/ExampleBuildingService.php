@@ -83,36 +83,62 @@ class ExampleBuildingService
                     if (is_array($values)) {
                         foreach ($values as $elementId => $elementValueData) {
                             $extra = null;
+                            $elementValues = [];
                             if (is_array($elementValueData)) {
                                 if (! array_key_exists('element_value_id', $elementValueData)) {
-                                    self::log('Skipping element value as there is no element_value_id');
-                                    continue;
+                                	// perhaps a nested array (e.g. wood elements)
+                                	foreach($elementValueData as $elementValueDataItem){
+		                                if (is_array($elementValueDataItem) && array_key_exists('element_value_id', $elementValueDataItem)) {
+		                                	$d = ['element_value_id' => (int) $elementValueDataItem['element_value_id'] ];
+			                                if (array_key_exists('extra', $elementValueDataItem)) {
+												$d['extra'] = $elementValueDataItem['extra'];
+			                                }
+			                                $elementValues []= $d;
+		                                }
+		                                else {
+											$elementValues[]= ['element_value_id' => (int) $elementValueDataItem];
+		                                }
+	                                }
+                                    //self::log('Skipping element value as there is no element_value_id');
+                                    //continue;
                                 }
-                                $elementValueId = (int) $elementValueData['element_value_id'];
-                                if (array_key_exists('extra', $elementValueData)) {
-                                    $extra = $elementValueData['extra'];
+                                else {
+	                                if (array_key_exists('element_value_id', $elementValueData)) {
+		                                $d = ['element_value_id' => (int) $elementValueData['element_value_id'] ];
+		                                if (array_key_exists('extra', $elementValueData)) {
+			                                $d['extra'] = $elementValueData['extra'];
+		                                }
+		                                $elementValues []= $d;
+	                                }
+	                                else {
+		                                $elementValues[]= ['element_value_id' => (int) $elementValueData];
+	                                }
                                 }
                             } else {
-                                $elementValueId = (int) $elementValueData;
+                                $elementValues[] = ['element_value_id' => (int) $elementValueData];
                             }
 
                             $element = Element::find($elementId);
                             if ($element instanceof Element) {
-                                $buildingElement = new BuildingElement(['extra' => $extra]);
-                                $buildingElement->inputSource()->associate($inputSource);
-                                $buildingElement->element()->associate($element);
-                                $buildingElement->building()->associate($userBuilding);
+                            	foreach($elementValues as $elementValue) {
+                            		$extra = array_key_exists('extra', $elementValue) ? $elementValue['extra'] : null;
+		                            $buildingElement = new BuildingElement( [ 'extra' => $extra ] );
+		                            $buildingElement->inputSource()->associate( $inputSource );
+		                            $buildingElement->element()->associate( $element );
+		                            $buildingElement->building()->associate( $userBuilding );
 
-                                if (! is_null($elementValueId)) {
-                                    $elementValue = $element->values()->where('id', $elementValueId)->first();
+		                            if ( isset( $elementValue['element_value_id'] ) ) {
+			                            $elementValue = $element->values()->where( 'id',
+				                            $elementValue['element_value_id'] )->first();
 
-                                    if ($elementValue instanceof ElementValue) {
-                                        $buildingElement->elementValue()->associate($elementValue);
-                                    }
-                                }
+			                            if ( $elementValue instanceof ElementValue ) {
+				                            $buildingElement->elementValue()->associate( $elementValue );
+			                            }
+		                            }
 
-                                $buildingElement->save();
-                                self::log('Saving building element '.json_encode($buildingElement->toArray()));
+		                            $buildingElement->save();
+		                            self::log( 'Saving building element ' . json_encode( $buildingElement->toArray() ) );
+	                            }
                             }
                         }
                     }

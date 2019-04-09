@@ -560,11 +560,11 @@ class ExampleBuildingService
 				    'type' => 'select',
 				    'options' => $interestOptions,
 			    ],
-			    /*'building_roof_types.roof_type_id' => [
+			    'building_roof_types.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.roof-types.title'),
 				    'type' => 'multiselect',
 				    'options' => static::createOptions($roofTypes),
-			    ],*/
+			    ],
 			    'building_features.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.main-roof.title'),
 				    'type' => 'select',

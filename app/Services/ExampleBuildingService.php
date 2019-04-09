@@ -117,8 +117,6 @@ class ExampleBuildingService
 							}
 	                    }
                     }
-
-                    //continue;
                 }
                 if ('user_energy_habits' == $columnOrTable){
                     $habits = UserEnergyHabit::create($values);
@@ -147,8 +145,6 @@ class ExampleBuildingService
 											$elementValues[]= ['element_value_id' => (int) $elementValueDataItem];
 		                                }
 	                                }
-                                    //self::log('Skipping element value as there is no element_value_id');
-                                    //continue;
                                 }
                                 else {
 	                                if (array_key_exists('element_value_id', $elementValueData)) {
@@ -196,33 +192,37 @@ class ExampleBuildingService
                     if (is_array($values)) {
                         foreach ($values as $serviceId => $serviceValueData) {
                             $extra = null;
+
+                            // note: in the case of solar panels the service_value_id can be null!!
                             if (is_array($serviceValueData)) {
                                 if (! array_key_exists('service_value_id', $serviceValueData)) {
-                                	//dd($serviceValueData);
-                                    self::log('Skipping service value as there is no service_value_id');
-                                    continue;
+                                    self::log('Service ID ' . $serviceId . ': no service_value_id -> service_value_id set to NULL');
+                                    $serviceValueId = null;
                                 }
-                                $serviceValueId = (int) $serviceValueData['service_value_id'];
+                                else {
+	                                $serviceValueId = (int) $serviceValueData['service_value_id'];
+                                }
                                 if (array_key_exists('extra', $serviceValueData)) {
                                     $extra = $serviceValueData['extra'];
                                 }
                             } else {
                                 $serviceValueId = (int) $serviceValueData;
                             }
-                            if (! is_null($serviceValueId)) {
-                                $service = Service::find($serviceId);
-                                if ($service instanceof Service) {
-                                    $serviceValue = $service->values()->where('id', $serviceValueId)->first();
-                                    if ($serviceValue instanceof ServiceValue) {
-                                        $buildingService = new BuildingService(['extra' => $extra]);
-                                        $buildingService->inputSource()->associate($inputSource);
-                                        $buildingService->service()->associate($service);
-                                        $buildingService->serviceValue()->associate($serviceValue);
-                                        $buildingService->building()->associate($userBuilding);
-                                        $buildingService->save();
-                                        self::log('Saving building service '.json_encode($buildingService->toArray()));
-                                    }
+                            $service = Service::find($serviceId);
+                            if ($service instanceof Service) {
+
+                                $buildingService = new BuildingService(['extra' => $extra]);
+                                $buildingService->inputSource()->associate($inputSource);
+                                $buildingService->service()->associate($service);
+                                $buildingService->building()->associate($userBuilding);
+
+                                if (!is_null($serviceValueId)){
+	                                $serviceValue = $service->values()->where('id', $serviceValueId)->first();
+	                                $buildingService->serviceValue()->associate($serviceValue);
                                 }
+
+                                $buildingService->save();
+                                self::log('Saving building service '.json_encode($buildingService->toArray()));
                             }
                         }
                     }
@@ -679,7 +679,7 @@ class ExampleBuildingService
 //
 //		    ],
 		    'solar-panels' => [
-			    'service.'.$solarPanels->id . '.value' => [
+			    'service.'.$solarPanels->id . '.extra.value' => [
 				    'label' => $solarPanels->name,
 				    'type' => 'text',
 				    'unit' => Translation::translate('general.unit.pieces.title'),

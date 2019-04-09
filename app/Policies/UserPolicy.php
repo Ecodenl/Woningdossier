@@ -56,6 +56,21 @@ class UserPolicy
     }
 
     /**
+     * Determine if a user is authorize to delete his own account
+     *
+     * @param  User  $user
+     *
+     * @return bool
+     */
+    public function deleteOwnAccount(User $user)
+    {
+        if ($user->hasRole(['cooperation-admin'])) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Check if a user is authorized to destroy a user.
      *
      * @param User $user

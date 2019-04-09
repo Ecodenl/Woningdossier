@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\Policies\BuildingPolicy;
+use App\Policies\CooperationPolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\UserPolicy;
@@ -23,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         PrivateMessage::class => PrivateMessagePolicy::class,
         Questionnaire::class => QuestionnairePolicy::class,
+        Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
     ];
 

@@ -34,6 +34,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use Illuminate\Database\Eloquent\Model;
@@ -70,7 +71,7 @@ class ExampleBuildingService
             self::log('=====');
 
             foreach ($stepData as $columnOrTable => $values) {
-                self::log('-> '.$stepSlug.' + '.$columnOrTable.' <-');
+                self::log('-----> '.$stepSlug.' - '.$columnOrTable);
 
                 if (is_null($values)) {
                     self::log('Skipping '.$columnOrTable.' (empty)');
@@ -117,7 +118,13 @@ class ExampleBuildingService
 	                    }
                     }
 
-                    continue;
+                    //continue;
+                }
+                if ('user_energy_habits' == $columnOrTable){
+                    $habits = UserEnergyHabit::create($values);
+                    $habits->inputSource()->associate($inputSource);
+                    $habits->user()->associate($userBuilding->user);
+                    $habits->save();
                 }
                 if ('element' == $columnOrTable) {
                     // process elements
@@ -191,6 +198,7 @@ class ExampleBuildingService
                             $extra = null;
                             if (is_array($serviceValueData)) {
                                 if (! array_key_exists('service_value_id', $serviceValueData)) {
+                                	//dd($serviceValueData);
                                     self::log('Skipping service value as there is no service_value_id');
                                     continue;
                                 }
@@ -445,7 +453,7 @@ class ExampleBuildingService
 				    'options' => $interestOptions,
 			    ],
 			    // ventilation
-			    'service.'.$ventilation->id => [
+			    'service.'.$ventilation->id.'.service_value_id' => [
 				    'label' => $ventilation->name,
 				    'type' => 'select',
 				    'options' => static::createOptions($ventilation->values()->orderBy('order')->get(), 'value'),

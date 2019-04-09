@@ -27,6 +27,7 @@ mix.js('resources/assets/js/app.js', 'public/js')
 
         ], 'public/js/datatables.js'
     )
+    .copy('resources/assets/js/tinymce/', 'public/js/tinymce', false)
     .scripts(
         [
             'resources/assets/js/select2.js'

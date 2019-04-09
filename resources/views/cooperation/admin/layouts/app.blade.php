@@ -67,7 +67,8 @@
 <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
 <!-- select2 -->
 <script src="{{asset('js/select2.js')}}"></script>
-
+<!-- tinymce -->
+<script src="{{asset('js/tinymce/tinymce.min.js')}}"></script>
 
 
 

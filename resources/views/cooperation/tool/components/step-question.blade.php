@@ -41,7 +41,7 @@
     <?php // show include modal for help icon? ?>
     @if(\App\Helpers\Translation::hasTranslation($translation . '.help'))
     @component('cooperation.tool.components.help-modal', ['id' => $id . "-info"])
-        {{\App\Helpers\Translation::translate($translation . '.help')}}
+        {!!  \App\Helpers\Translation::translate($translation . '.help') !!}
     @endcomponent
     @endif
 

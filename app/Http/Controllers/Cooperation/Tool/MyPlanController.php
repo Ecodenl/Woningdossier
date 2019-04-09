@@ -6,6 +6,7 @@ use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
+use App\Helpers\NumberFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\Building;
@@ -25,6 +26,8 @@ class MyPlanController extends Controller
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
         $coachComments = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
+
+
 
         return view('cooperation.tool.my-plan.index', compact(
             'advices', 'coachComments', 'actionPlanComments'
@@ -165,10 +168,10 @@ class MyPlanController extends Controller
                         'measure_short' => $advice->measureApplication->short,
                         // In the table the costs are indexed based on the advice year
                         // Now re-index costs based on user planned year in the personal plan
-                        'costs' => Calculator::indexCosts($advice->costs, $costYear),
-                        'savings_gas' => is_null($advice->savings_gas) ? 0 : $advice->savings_gas,
-                        'savings_electricity' => is_null($advice->savings_electricity) ? 0 : $advice->savings_electricity,
-                        'savings_money' => is_null($advice->savings_money) ? 0 : Calculator::indexCosts($advice->savings_money, $costYear),
+                        'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                        'savings_gas' => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
+                        'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
+                        'savings_money' => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
                     ];
                 }
             }

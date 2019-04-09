@@ -410,16 +410,16 @@
                             //    $(".cover-zinc").show();
                             //}
                             if (data.flat.hasOwnProperty('savings_gas')) {
-                                $("input#flat_savings_gas").val(Math.round(data.flat.savings_gas).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#flat_savings_gas").val(hoomdossierRound(data.flat.savings_gas));
                             }
                             if (data.flat.hasOwnProperty('savings_co2')) {
-                                $("input#flat_savings_co2").val(Math.round(data.flat.savings_co2).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#flat_savings_co2").val(hoomdossierRound(data.flat.savings_co2));
                             }
                             if (data.flat.hasOwnProperty('savings_money')) {
-                                $("input#flat_savings_money").val(Math.round(data.flat.savings_money).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#flat_savings_money").val(hoomdossierRound(data.flat.savings_money));
                             }
                             if (data.flat.hasOwnProperty('cost_indication')) {
-                                $("input#flat_cost_indication").val(Math.round(data.flat.cost_indication).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#flat_cost_indication").val(hoomdossierRound(data.flat.cost_indication));
                             }
                             if (data.flat.hasOwnProperty('interest_comparable')) {
                                 $("input#flat_interest_comparable").val(data.flat.interest_comparable);
@@ -429,7 +429,7 @@
                                     $("input#flat_replace_year").val(data.flat.replace.year);
                                 }
                                 if (data.flat.replace.hasOwnProperty('costs')) {
-                                    $("input#flat_replace_cost").val(Math.round(data.flat.replace.costs).toLocaleString('{{ app()->getLocale() }}'));
+                                    $("input#flat_replace_cost").val(hoomdossierRound(data.flat.replace.costs));
                                 }
                             }
                         } else {
@@ -453,16 +453,16 @@
                                 }
                             }
                             if (data.pitched.hasOwnProperty('savings_gas')) {
-                                $("input#pitched_savings_gas").val(Math.round(data.pitched.savings_gas).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#pitched_savings_gas").val(hoomdossierRound(data.pitched.savings_gas));
                             }
                             if (data.pitched.hasOwnProperty('savings_co2')) {
-                                $("input#pitched_savings_co2").val(Math.round(data.pitched.savings_co2).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#pitched_savings_co2").val(hoomdossierRound(data.pitched.savings_co2));
                             }
                             if (data.pitched.hasOwnProperty('savings_money')) {
-                                $("input#pitched_savings_money").val(Math.round(data.pitched.savings_money).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#pitched_savings_money").val(hoomdossierRound(data.pitched.savings_money));
                             }
                             if (data.pitched.hasOwnProperty('cost_indication')) {
-                                $("input#pitched_cost_indication").val(Math.round(data.pitched.cost_indication).toLocaleString('{{ app()->getLocale() }}'));
+                                $("input#pitched_cost_indication").val(hoomdossierRound(data.pitched.cost_indication));
                             }
                             if (data.pitched.hasOwnProperty('interest_comparable')) {
                                 $("input#pitched_interest_comparable").val(data.pitched.interest_comparable);
@@ -472,7 +472,7 @@
                                     $("input#pitched_replace_year").val(data.pitched.replace.year);
                                 }
                                 if (data.pitched.replace.hasOwnProperty('costs')) {
-                                    $("input#pitched_replace_cost").val(Math.round(data.pitched.replace.costs).toLocaleString('{{ app()->getLocale() }}'));
+                                    $("input#pitched_replace_cost").val(hoomdossierRound(data.pitched.replace.costs));
                                 }
                             }
                         } else {

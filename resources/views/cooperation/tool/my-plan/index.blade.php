@@ -73,10 +73,10 @@
                             {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                         </td>
                         <td>
-                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs, 0, true) }}
                         </td>
                         <td>
-                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money, 0, true) }}
                         </td>
                         <td class="advice-year">
                             {{ $advice->year }}
@@ -93,9 +93,9 @@
                             <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong>
                         </td>
                         <td>
-                            {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_gas, 0, true) }} m<sup>3</sup>
                             <br>
-                            {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity, 0, true) }} kWh
                         </td>
                         <td colspan="3">
                         </td>

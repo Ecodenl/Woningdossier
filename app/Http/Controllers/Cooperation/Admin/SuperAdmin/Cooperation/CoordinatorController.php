@@ -22,12 +22,16 @@ class CoordinatorController extends Controller
         $breadcrumbs = [
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index',
-                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', [$currentCooperation, $cooperationToManage]),
+                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', [
+                    'cooperation-to-manage' => $cooperationToManage
+                ]),
                 'name' => $cooperationToManage->name,
             ],
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index',
-                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index', [$currentCooperation, $cooperationToManage]),
+                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.coordinator.index', [
+                    'cooperation-to-manage' => $cooperationToManage
+                ]),
                 'name' => __('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.coordinator')
             ]
         ];

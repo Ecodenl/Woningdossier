@@ -31,7 +31,7 @@ class BuildingPolicy
      */
     public function accessBuilding(User $user, int $buildingId): bool
     {
-        $conversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
+        $conversationRequest = PrivateMessage::forMyCooperation()->conversationRequestByBuildingId($buildingId)->first();
 
         if ($conversationRequest instanceof PrivateMessage && $conversationRequest->allow_access) {
             return true;

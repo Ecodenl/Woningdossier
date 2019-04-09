@@ -189,12 +189,18 @@ class ExampleBuildingService
                     foreach ($values as $roofTypeId => $buildingRoofTypeData) {
                         $buildingRoofTypeData['roof_type_id'] = $roofTypeId;
 
-                        $buildingRoofType = new BuildingRoofType($buildingRoofTypeData);
-                        $buildingRoofType->inputSource()->associate($inputSource);
-                        $buildingRoofType->building()->associate($userBuilding);
-                        $buildingRoofType->save();
+                        if (isset($buildingRoofTypeData['roof_surface']) && (int) $buildingRoofTypeData['roof_surface'] > 0) {
+	                        $buildingRoofType = new BuildingRoofType( $buildingRoofTypeData );
+	                        $buildingRoofType->inputSource()->associate( $inputSource );
+	                        $buildingRoofType->building()->associate( $userBuilding );
+	                        $buildingRoofType->save();
 
-                        self::log('Saving building rooftype '.json_encode($buildingRoofType->toArray()));
+	                        self::log('Saving building rooftype '.json_encode($buildingRoofType->toArray()));
+                        }
+						else {
+							self::log("Not saving building rooftype because surface is 0");
+						}
+
                     }
                 }
                 if ('building_pv_panels' == $columnOrTable) {
@@ -560,11 +566,11 @@ class ExampleBuildingService
 				    'type' => 'select',
 				    'options' => $interestOptions,
 			    ],
-			    'building_roof_types.roof_type_id' => [
+			    /*'building_roof_types.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.roof-types.title'),
 				    'type' => 'multiselect',
 				    'options' => static::createOptions($roofTypes),
-			    ],
+			    ],*/
 			    'building_features.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.main-roof.title'),
 				    'type' => 'select',

@@ -23,6 +23,10 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
+        // if the user is observing, he has nothing to do here.
+        if (HoomdossierSession::isUserObserving()) {
+            return redirect()->route('cooperation.tool.my-plan.index');
+        }
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
         // set the measure application name if there is a measure application
@@ -42,6 +46,10 @@ class ConversationRequestController extends Controller
      */
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
+        // if the user is observing, he has nothing to do here.
+        if (HoomdossierSession::isUserObserving()) {
+            return redirect()->route('cooperation.tool.my-plan.index');
+        }
         $action = $request->get('action', '');
         $message = $request->get('message', '');
         $allowAccess = 'on' == $request->get('allow_access', '');

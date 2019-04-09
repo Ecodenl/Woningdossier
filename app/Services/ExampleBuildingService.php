@@ -34,7 +34,9 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\ServiceValue;
+use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class ExampleBuildingService
@@ -75,7 +77,46 @@ class ExampleBuildingService
                     continue;
                 }
                 if ('user_interest' == $columnOrTable) {
-                    self::log('Skipping outdated user interests');
+                    foreach($values as $inType => $interests){
+                    	if (in_array($inType, ['element', 'service',])){
+							foreach($interests as $typeId => $interestId){
+								$typeId = (int) $typeId;
+								$interestId = (int) $interestId;
+
+								$interest = Interest::find($interestId);
+								if (!$interest instanceof Interest){
+									self::log("Skipping: No valid interest for ID " . $interestId);
+									continue;
+								}
+
+								$type = null;
+								switch($inType){
+									case 'element':
+										$type = Element::find($typeId);
+										break;
+									case 'service':
+										$type = Service::find($typeId);
+										break;
+								}
+
+								if (!$type instanceof Model){
+									self::log("Skipping: No valid type found for interest (" . $inType . ") with ID " . $typeId);
+									continue;
+								}
+
+								// we have:
+								//  - $interest (FK relation)
+								//  - $type (only int will be needed)
+								$userInterest = new UserInterest(['interested_in_type' => $inType, 'interested_in_id' => $type->id]);
+								$userInterest->user()->associate($userBuilding->user);
+								$userInterest->inputSource()->associate($inputSource);
+								$userInterest->interest()->associate($interest);
+								$userInterest->save();
+								self::log("Added user interest for " . $inType . " with ID " . $type->id . " -> " . $interest->name);
+							}
+	                    }
+                    }
+
                     continue;
                 }
                 if ('element' == $columnOrTable) {
@@ -256,7 +297,6 @@ class ExampleBuildingService
         $buildingFeatures->save();
         self::log('Saving building features '.json_encode($buildingFeatures->toArray()));
 
-        //dd($exampleData);
     }
 
     public static function clearExampleBuilding(Building $building)

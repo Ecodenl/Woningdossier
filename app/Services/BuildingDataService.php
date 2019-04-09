@@ -21,6 +21,7 @@ class BuildingDataService
         $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
         $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
         $building->heater()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+		$building->user->interests()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
 
         return true;
     }

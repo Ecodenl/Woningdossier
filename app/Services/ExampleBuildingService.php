@@ -368,17 +368,17 @@ class ExampleBuildingService
 				    'unit' => Translation::translate('general.unit.square-meters.title'),
 			    ],
 				// elements and services
-			    'user_interest.element.'.$livingRoomsWindows->id => [
+			    'element.'.$livingRoomsWindows->id => [
 				    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-				    'label' => $livingRoomsWindows->name . ': ' . Translation::translate('general.interested-in-improvement.title'),
+				    'label' => $livingRoomsWindows->name,
 					'type' => 'select',
-					'options' => $interestOptions,
+					'options' => self::createOptions($livingRoomsWindows->values()->orderBy('order')->get(), 'value'),
 				],
-			    'user_interest.element.'.$sleepingRoomsWindows->id => [
+			    'element.'.$sleepingRoomsWindows->id => [
 				    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-				    'label' => $sleepingRoomsWindows->name . ': ' . Translation::translate('general.interested-in-improvement.title'),
+				    'label' => $sleepingRoomsWindows->name,
 				    'type' => 'select',
-				    'options' => $interestOptions,
+				    'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
 			    ],
 
 			    // services

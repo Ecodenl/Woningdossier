@@ -249,19 +249,19 @@
                         }
 
                         if (data.hasOwnProperty('yield_electricity')) {
-                            $("input#yield_electricity").val(Math.round(data.yield_electricity));
+                            $("input#yield_electricity").val(hoomdossierRound(data.yield_electricity));
                         }
                         if (data.hasOwnProperty('raise_own_consumption')) {
-                            $("input#raise_own_consumption").val(Math.round(data.raise_own_consumption));
+                            $("input#raise_own_consumption").val(hoomdossierRound(data.raise_own_consumption));
                         }
                         if (data.hasOwnProperty('savings_co2')) {
-                            $("input#savings_co2").val(Math.round(data.savings_co2));
+                            $("input#savings_co2").val(hoomdossierRound(data.savings_co2));
                         }
                         if (data.hasOwnProperty('savings_money')) {
-                            $("input#savings_money").val(Math.round(data.savings_money));
+                            $("input#savings_money").val(hoomdossierRound(data.savings_money));
                         }
                         if (data.hasOwnProperty('cost_indication')) {
-                            $("input#cost_indication").val(Math.round(data.cost_indication));
+                            $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
                             $("input#interest_comparable").val(data.interest_comparable);

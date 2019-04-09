@@ -57,4 +57,24 @@ class NumberFormatterTest extends TestCase
 
         $this->assertEquals($expected, NumberFormatter::reverseFormat($number));
     }
+
+    public static function roundProvider()
+    {
+        return [
+            [154, 5, 155.0],
+            [1898.45, 5, 1900.0],
+            [110, 5, 110.0],
+            [2541512045, 5, 2541512045.0],
+            ['10,5', 5, 10],
+            ['108,5', 5, 110.0]
+        ];
+    }
+
+    /**
+     * @dataProvider roundProvider
+     */
+    public function testRound($number, $bucket, $expected)
+    {
+        $this->assertEquals($expected, NumberFormatter::round($number, $bucket));
+    }
 }

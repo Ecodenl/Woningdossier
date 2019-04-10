@@ -8,7 +8,7 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\SuperAdmin\ExampleBuildingRequest;
+use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
@@ -26,6 +26,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\WoodRotStatus;
+use App\Services\ExampleBuildingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -169,6 +170,8 @@ class ExampleBuildingController extends Controller
      */
     protected function getContentStructure()
     {
+    	return ExampleBuildingService::getContentStructure();
+
         // Wall insulation
         $wallInsulation = Element::where('short', 'wall-insulation')->first();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();

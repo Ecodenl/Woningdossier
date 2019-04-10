@@ -103,7 +103,8 @@
         tinymce.init({
             selector: 'textarea',
             menubar: 'edit format',
-            toolbar: 'bold italic underline strikethrough cut copy paste undo redo link hr restoreOriginalText',
+            plugins: 'code link',
+            toolbar: 'code link unlink bold italic underline strikethrough cut copy paste undo redo restoreOriginalText ',
             language: 'nl',
             setup: function (editor) {
                 editor.ui.registry.addButton('restoreOriginalText', {

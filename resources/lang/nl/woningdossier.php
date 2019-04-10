@@ -101,6 +101,7 @@ return [
 		                'table' => [
 			                'title' => 'Kengetal naam / type',
 			                'key-figure' => 'Waarde kengetal',
+			                'key-figure-unit' => 'Eenheid',
 			                'measure_applications' => [
 				                'measure-type' => 'Maatregel type',
 				                'measure-name' => 'Maatregel naam',

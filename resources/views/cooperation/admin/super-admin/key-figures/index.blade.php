@@ -19,15 +19,22 @@
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.title')</th>
                             <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.key-figure')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.key-figure-unit')</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($keyfigures as $kengetalConstant => $kengetal)
-                            <?php $kengetalTitle = __('key-figures.'.$kengetalConstant.'.title') ?>
-                            <tr>
-                                <td>{{$kengetalTitle}}</td>
+                        @foreach($keyfigures as $step => $keyfigureData)
+                            @foreach($keyfigureData as $kengetalConstant => $kengetal)
+                            <?php
+                                $translationKey = 'key-figures.' . $step . '.' .$kengetalConstant.'.title';
+                                $kengetalTitle = __($translationKey);
+                            ?>
+                            <tr @if($translationKey == $kengetalTitle)class="bg-danger"@endif>
+                                <td>{!! $kengetalTitle !!}</td>
                                 <td>{{$kengetal}}</td>
+                                <td>{!! __('key-figures.' . $step . '.' . $kengetalConstant .'.unit') !!}</td>
                             </tr>
+                            @endforeach
                         @endforeach
                         </tbody>
                     </table>

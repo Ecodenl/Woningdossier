@@ -3,22 +3,27 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.header')</th>
+            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.header')</th>
         </div>
 
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
+                    <h2>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.sections.general')</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.title')</th>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.kengetal')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.title')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.key-figure')</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($kengetallen as $kengetalConstant => $kengetal)
-                            <?php $kengetalTitle = __('woningdossier.cooperation.admin.super-admin.kengetallen.index.'.$kengetalConstant.'.title') ?>
+                        @foreach($keyfigures as $kengetalConstant => $kengetal)
+                            <?php $kengetalTitle = __('key-figures.'.$kengetalConstant.'.title') ?>
                             <tr>
                                 <td>{{$kengetalTitle}}</td>
                                 <td>{{$kengetal}}</td>
@@ -30,15 +35,20 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
+                    <h2>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.sections.measure_applications')</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
                     <table class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.measure_applications.measure-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.measure_applications.costs')</th>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.measure_applications.cost-unit')</th>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.measure_applications.minimal-costs')</th>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.measure_applications.maintenance-interval')</th>
-                            <th>@lang('woningdossier.cooperation.admin.super-admin.kengetallen.index.table.measure_applications.maintenance-unit')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.measure_applications.measure-name')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.measure_applications.costs')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.measure_applications.cost-unit')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.measure_applications.minimal-costs')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.measure_applications.maintenance-interval')</th>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.key-figures.index.table.measure_applications.maintenance-unit')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -60,6 +70,7 @@
     </div>
 @endsection
 
+{{--
 @push('js')
     <script>
         $(document).ready(function () {
@@ -67,3 +78,4 @@
         });
     </script>
 @endpush
+--}}

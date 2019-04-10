@@ -83,7 +83,7 @@ return [
                     'label'             => 'Super admin menu',
                     'home'              => 'Home',
                     'cooperations'      => 'Cooperaties',
-                    'kengetallen'       => 'Kengetallen',
+                    'key-figures'       => 'Kengetallen',
                     'translations'      => 'Vertalingen',
                     'example-buildings' => 'Voorbeeld woningen',
                 ],
@@ -91,32 +91,28 @@ return [
                     'header' => 'Super admin panel',
                     'text'   => 'Beheer de applicatie',
                 ],
-                'kengetallen'  => [
-                    'index' => [
-                        'header' => 'Kengetallen',
-                        'table' => [
-                            'title' => 'Kengetal naam / type',
-                            'kengetal' => 'Waarde kengetal',
-                            'measure_applications' => [
-                                'measure-type' => 'Maatregel type',
-                                'measure-name' => 'Maatregel naam',
-                                'application' => 'Toepassing',
-                                'costs' => 'Kosten',
-                                'cost-unit' => 'Kosten unit',
-                                'minimal-costs' => 'Minimale kosten',
-                                'maintenance-interval' => 'Onderhouds interval',
-                                'maintenance-unit' => 'Onderhouds unit'
-                            ],
-                        ],
-                        'EURO_SAVINGS_GAS'                             => ['title' => 'Euro besparing gas',],
-                        'EURO_SAVINGS_ELECTRICITY'                     => ['title' => 'Euro besparing electriciteit',],
-                        'CO2_SAVING_GAS'                               => ['title' => 'CO2 besparing gas',],
-                        'CO2_SAVINGS_ELECTRICITY'                      => ['title' => 'CO2 besparing',],
-                        'PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING'   => ['title' => 'Percentage gas besparing voor plaatsen crack sealing',],
-                        'PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING' => ['title' => 'Percentage gas besparing voor vervangen crack sealing',],
-                        'GAS_CALORIFIC_VALUE'                          => ['title' => 'Gas calorific waarde',],
-                        'GAS_CONVERSION_FACTOR'                        => ['title' => 'Gas conversie factor',],
-                    ],
+                'key-figures'  => [
+	                'index' => [
+		                'header' => 'Kengetallen',
+		                'sections' => [
+		                	'general' => 'Algemeen',
+			                'measure_applications' => 'Maatregelen'
+		                ],
+		                'table' => [
+			                'title' => 'Kengetal naam / type',
+			                'key-figure' => 'Waarde kengetal',
+			                'measure_applications' => [
+				                'measure-type' => 'Maatregel type',
+				                'measure-name' => 'Maatregel naam',
+				                'application' => 'Toepassing',
+				                'costs' => 'Kosten',
+				                'cost-unit' => 'Kosten per',
+				                'minimal-costs' => 'Minimale kosten',
+				                'maintenance-interval' => 'Onderhoudsinterval',
+				                'maintenance-unit' => 'Onderhoud per'
+			                ],
+		                ],
+	                ],
                 ],
                 'translations' => [
                     'index'  => [

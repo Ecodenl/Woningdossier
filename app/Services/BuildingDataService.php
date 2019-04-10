@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\User;
 use App\Scopes\GetValueScope;
 
 class BuildingDataService
@@ -21,6 +22,13 @@ class BuildingDataService
         $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
         $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
         $building->heater()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+        if ($building->user instanceof User) {
+        	// remove interests
+	        $building->user->interests()->withoutGlobalScope( GetValueScope::class )->where( 'input_source_id',
+		        $inputSource->id )->delete();
+			// remove energy habits
+	        $building->user->energyHabit()->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)->delete();
+        }
 
         return true;
     }

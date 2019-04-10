@@ -282,7 +282,7 @@ class GeneralDataController extends Controller
                 // if so, we will need to put the value / valueId inside the extra field.
                 if ('total-sun-panels' == $service->short) {
                     //$buildingService->extra = ['value' => $serviceValueId, 'date' => $serviceExtra];
-                    $serviceExtra['value'] = $serviceValueId;
+                    $serviceExtra['value'] = (int) $serviceValueId;
                     $buildingService->extra = array_only($serviceExtra, ['value', 'year']);
                 }
                 // if its a ventilation, is has a dropdown so it has a serviceValue

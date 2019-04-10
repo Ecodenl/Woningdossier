@@ -271,7 +271,7 @@
 
         @foreach($services as $i => $service)
             <?php
-            /** @var \App\Models\UserInterest|null $serviceInterestForCurrentUser holds the interest for the current inputsource for a resident */
+            /** @var \App\Models\UserInterest|null $serviceInterestForCurrentUser holds the interest for the current input source for a resident */
             $serviceInterestForCurrentUser = $userInterestsForMe
                 ->where('interested_in_type', 'service')
                 ->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())
@@ -300,12 +300,7 @@
 
                                         <?php
                                         $selectedSV = old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'service_value_id'));
-                                        /*if (is_null($selectedSV)){
-                                            $buildServ = $building->buildingServices()->where('service_id', $service->id)->first();
-                                            if ($buildServ instanceof \App\Models\BuildingService){
-                                                $selectedSV = $buildServ->service_value_id;
-                                            }
-                                        }*/
+
                                         if (is_null($selectedSV)) {
                                             /** @var \App\Models\Service $service */
                                             $sv = $service->values()->where('is_default', true)->first();

@@ -26,6 +26,7 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\WoodRotStatus;
+use App\Services\ExampleBuildingService;
 use Illuminate\Support\Collection;
 
 class ExampleBuildingController extends Controller
@@ -160,6 +161,8 @@ class ExampleBuildingController extends Controller
      */
     protected function getContentStructure()
     {
+	    return ExampleBuildingService::getContentStructure();
+
         // Wall insulation
         $wallInsulation = Element::where('short', 'wall-insulation')->first();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();

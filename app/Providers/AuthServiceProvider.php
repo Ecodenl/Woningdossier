@@ -45,5 +45,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
         Gate::define('user-access-building', BuildingPolicy::class.'@userCanAccessBuilding');
+
+        Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
     }
 }

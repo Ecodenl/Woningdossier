@@ -47,7 +47,7 @@ class UserInterest extends Model
 
     /**
      * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id.
+     * The UserEnergyHabit uses the user_id instead of the building_id.
      *
      * @param $query
      *

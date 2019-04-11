@@ -213,7 +213,7 @@
                                     <i data-toggle="modal" data-target="#element_{{ $element->id }}-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>
-                                    {{ $element->name }}
+                                    @lang('general-data.element.'.$element->short.'.title')
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
@@ -231,7 +231,7 @@
                                 @endcomponent
 
                                 @component('cooperation.tool.components.help-modal')
-                                    {{ $element->info }}
+                                    @lang('general-data.element.'.$element->short.'.help')
                                 @endcomponent
 
                                 @if ($errors->has('element.' . $element->id))
@@ -293,7 +293,7 @@
                                         <i data-toggle="modal" data-target="#service_{{ $service->id }}-info"
                                            class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                            aria-expanded="false"></i>
-                                        {{ $service->name }}
+                                        @lang('general-data.service.'.$service->short.'.title')
                                     </label>
                                     {{-- This will check if the service has values. If so we need a selectbox. If not: a textbox --}}
                                     @if($service->values()->where('service_id', $service->id)->first() != null)
@@ -339,7 +339,7 @@
                                     @endif
 
                                     @component('cooperation.tool.components.help-modal')
-                                        {{ $service->info }}
+                                        @lang('general-data.service.'.$service->short.'.help')
                                     @endcomponent
 
                                     @if ($errors->has('service.' . $service->id))

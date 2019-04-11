@@ -28,11 +28,13 @@
                             <?php
                                 $translationKey = 'key-figures.' . $step . '.' .$kengetalConstant.'.title';
                                 $kengetalTitle = __($translationKey);
+                                $unitTranslationKey = 'key-figures.' . $step . '.' .$kengetalConstant.'.unit';
+                                $kengetalUnit = __($unitTranslationKey);
                             ?>
                             <tr @if($translationKey == $kengetalTitle)class="bg-danger"@endif>
-                                <td>{!! $kengetalTitle !!}</td>
+                                <td>@if($translationKey == $kengetalTitle){!! $kengetalConstant !!}@else{!! $kengetalTitle !!}@endif</td>
                                 <td>{{$kengetal}}</td>
-                                <td>{!! __('key-figures.' . $step . '.' . $kengetalConstant .'.unit') !!}</td>
+                                <td>@if($unitTranslationKey != $kengetalUnit){!! __('key-figures.' . $step . '.' . $kengetalConstant .'.unit') !!}@endif</td>
                             </tr>
                             @endforeach
                         @endforeach

@@ -46,6 +46,20 @@ return [
 	'max-savings' => [
 		'prefix' => 'Maximale besparing',
 	],
+	'price-indexes' => [
+		'gas' => [
+			'title' => 'Prijsstijging gas',
+			'unit' => '% per jaar',
+		],
+		'electricity' => [
+			'title' => 'Prijsstijging elektra',
+			'unit' => '% per jaar',
+		],
+		'common' => [
+			'title' => 'Prijsstijging algemeen',
+			'unit' => '% per jaar',
+		],
+	],
 	'wall-insulation' => [
 		'AVERAGE_TEMPERATURE_NORM' => [
 			'title' => 'Gemiddelde temperatuur in de normberekening',

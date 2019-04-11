@@ -154,10 +154,24 @@ return [
 			'unit' => '',
 		],
 	],
+	'boiler' => [
+		'wtw' => 'Warm tapwater',
+		'heating' => 'Verwarming',
+	],
 	'heater'          => [
 		'M3_GAS_TO_KWH' => [
 			'title' => 'kWh per m<sup>3</sup> gas',
 			'unit'  => 'kWh',
 		],
 	],
+	'pv-panels' => [
+		'COST_WP' => [
+			'title' => 'kosten wp',
+			'unit' => '€/wp',
+		],
+		'COST_KWH' => [
+			'title' => 'kosten kWh',
+			'unit' => '€/kWh',
+		],
+	]
 ];

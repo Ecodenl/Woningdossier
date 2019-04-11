@@ -10,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\KeyFigureTemperature;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -19,7 +20,6 @@ class KeyFiguresController extends Controller {
 		// we handle translations in the view.
 		$keyfigures = [
 			'general'   => ( new \ReflectionClass( Kengetallen::class ) )->getConstants(),
-			'pv-panels' => ( new \ReflectionClass( KeyFigures\PvPanels\KeyFigures::class ) )->getConstants(),
 		];
 
 		// Bank
@@ -33,8 +33,9 @@ class KeyFiguresController extends Controller {
 		$keyfigures['roof-insulation']   = KeyFigures\RoofInsulation\Temperature::getKeyFigures();
 		$keyfigures['floor-insulation']  = KeyFigures\FloorInsulation\Temperature::getKeyFigures();
 		$keyfigures['insulated-glazing'] = $this->keyFiguresInsulatedGlazing();
-
-		$keyfigures['heater'] = KeyFigures\Heater\KeyFigures::getKeyFigures();
+		$keyfigures['heater']            = KeyFigures\Heater\KeyFigures::getKeyFigures();
+		$keyfigures['boiler']         = $this->keyFiguresBoiler();
+		$keyfigures['pv-panels'] = KeyFigures\PvPanels\KeyFigures::getKeyFigures();
 
 
 		$measureApplications = MeasureApplication::all();
@@ -102,6 +103,22 @@ class KeyFiguresController extends Controller {
 	{
 		$indexes = PriceIndexing::all();
 
-		return $indexes->pluck('percentage', 'short')->toArray();
+		return $indexes->pluck( 'percentage', 'short' )->toArray();
+	}
+
+	protected function keyFiguresBoiler()
+	{
+		$figures  = [];
+		$hrBoiler = Service::where( 'short', '=', 'boiler' )->first();
+		if ( $hrBoiler instanceof Service ) {
+			foreach($hrBoiler->values as $boiler){
+				$efficiency = $boiler->keyFigureBoilerEfficiency;
+				foreach(['heating', 'wtw'] as $for){
+					$figures[$boiler->value . ' ' . __('key-figures.boiler.' . $for)] = $efficiency->$for . '%';
+				}
+			}
+		}
+
+		return $figures;
 	}
 }

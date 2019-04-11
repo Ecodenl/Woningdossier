@@ -48,6 +48,30 @@ return [
 			'title' => 'Gemiddelde temperatuur in de normberekening',
 			'unit'  => 'graden',
 		],
+		'WALL_INSULATION_JOINTS_DEFAULT' => [
+			'title' => 'Spouwmuurisolatie, standaard',
+			'unit',
+		],
+		'WALL_INSULATION_JOINTS_CORRECTION' => [
+			'title' => 'Spouwmuurisolatie, correctiefactor',
+			'unit',
+		],
+		'WALL_INSULATION_FACADE_DEFAULT' => [
+			'title' => 'Binnengevelisolatie, standaard',
+			'unit',
+		],
+		'WALL_INSULATION_FACADE_CORRECTION' => [
+			'title' => 'Binnengevelisolatie, correctiefactor',
+			'unit',
+		],
+		'WALL_INSULATION_RESEARCH_DEFAULT' => [
+			'title' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden, standaard',
+			'unit',
+		],
+		'WALL_INSULATION_RESEARCH_CORRECTION' => [
+			'title' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden, correctiefactor',
+			'unit',
+		],
 	],
 	'roof-insulation' => [
 		'ROOF_INSULATION_PITCHED_INSIDE_2' => [

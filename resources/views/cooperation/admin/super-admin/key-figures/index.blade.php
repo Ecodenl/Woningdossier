@@ -31,7 +31,7 @@
                                 $unitTranslationKey = 'key-figures.' . $step . '.' .$kengetalConstant.'.unit';
                                 $kengetalUnit = __($unitTranslationKey);
                             ?>
-                            <tr @if($translationKey == $kengetalTitle)class="bg-danger"@endif>
+                            <tr>
                                 <td>@if($translationKey == $kengetalTitle){!! $kengetalConstant !!}@else{!! $kengetalTitle !!}@endif</td>
                                 <td>{{$kengetal}}</td>
                                 <td>@if($unitTranslationKey != $kengetalUnit){!! __('key-figures.' . $step . '.' . $kengetalConstant .'.unit') !!}@endif</td>

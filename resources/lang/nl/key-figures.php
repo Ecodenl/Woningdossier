@@ -49,6 +49,70 @@ return [
 			'unit'  => 'graden',
 		],
 	],
+	'roof-insulation' => [
+		'ROOF_INSULATION_PITCHED_INSIDE_2' => [
+			'title' => 'Isolatie hellend dak van binnen uit, verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_PITCHED_INSIDE_3' => [
+			'title' => 'Isolatie hellend dak van binnen uit, matig verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_PITCHED_INSIDE_4' => [
+			'title' => 'Isolatie hellend dak van binnen uit, niet verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_PITCHED_REPLACE_TILES_2' => [
+			'title' => 'Isolatie hellend dak met vervaning van dakpannen, verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_PITCHED_REPLACE_TILES_3' => [
+			'title' => 'Isolatie hellend dak met vervaning van dakpannen, matig verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_PITCHED_REPLACE_TILES_4' => [
+			'title' => 'Isolatie hellend dak met vervaning van dakpannen, niet verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_FLAT_ON_CURRENT_2' => [
+			'title' => 'Isolatie plat dak op huidige dakbedekking, verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_FLAT_ON_CURRENT_3' => [
+			'title' => 'Isolatie plat dak op huidige dakbedekking, matig verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_FLAT_ON_CURRENT_4' => [
+			'title' => 'Isolatie plat dak op huidige dakbedekking, niet verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_FLAT_REPLACE_2' => [
+			'title' => 'Isolatie plat dak met vervanging van dakbedekking, verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_FLAT_REPLACE_3' => [
+			'title' => 'Isolatie plat dak met vervanging van dakbedekking, matig verwarmd',
+			'unit' => '',
+		],
+		'ROOF_INSULATION_FLAT_REPLACE_4' => [
+			'title' => 'Isolatie plat dak met vervanging van dakbedekking, niet verwarmd',
+			'unit' => '',
+		],
+	],
+	'floor-insulation' => [
+		'FLOOR_INSULATION_FLOOR' => [
+			'title' => 'Vloerisolatie',
+			'unit' => '',
+		],
+		'FLOOR_INSULATION_BOTTOM' => [
+			'title' => 'Bodemisolatie',
+			'unit' => '',
+		],
+		'FLOOR_INSULATION_RESEARCH' => [
+			'title' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
+			'unit' => '',
+		],
+	],
 	'heater'          => [
 		'M3_GAS_TO_KWH' => [
 			'title' => 'kWh per m<sup>3</sup> gas',

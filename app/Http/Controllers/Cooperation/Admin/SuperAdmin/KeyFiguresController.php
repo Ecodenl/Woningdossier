@@ -17,9 +17,6 @@ class KeyFiguresController extends Controller
 	    // we handle translations in the view.
     	$keyfigures = [
     		'general' => (new \ReflectionClass(Kengetallen::class))->getConstants(),
-		    //'wall-insulation' => (new \ReflectionClass(KeyFigures\WallInsulation\Temperature::class))->getConstants(),
-		    'roof-insulation' => (new \ReflectionClass(KeyFigures\RoofInsulation\Temperature::class))->getConstants(),
-		    'floor-insulation' => (new \ReflectionClass(KeyFigures\FloorInsulation\Temperature::class))->getConstants(),
 		    'heater' => (new \ReflectionClass(KeyFigures\Heater\KeyFigures::class))->getConstants(),
 		    'pv-panels' => (new \ReflectionClass(KeyFigures\PvPanels\KeyFigures::class))->getConstants(),
 	    ];
@@ -29,7 +26,8 @@ class KeyFiguresController extends Controller
     	$keyfigures['general']['INTEREST_PERIOD'] = BankInterestCalculator::INTEREST_PERIOD;
 
     	$keyfigures['wall-insulation'] = KeyFigures\WallInsulation\Temperature::getKeyFigures();
-
+    	$keyfigures['roof-insulation'] = KeyFigures\RoofInsulation\Temperature::getKeyFigures();
+    	$keyfigures['floor-insulation'] = KeyFigures\FloorInsulation\Temperature::getKeyFigures();
 
         $measureApplications = MeasureApplication::all();
 

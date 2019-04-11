@@ -43,6 +43,9 @@ return [
 			'unit'  => 'MJ/Wh',
 		],
 	],
+	'max-savings' => [
+		'prefix' => 'Maximale besparing',
+	],
 	'wall-insulation' => [
 		'AVERAGE_TEMPERATURE_NORM' => [
 			'title' => 'Gemiddelde temperatuur in de normberekening',

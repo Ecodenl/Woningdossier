@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures as KeyFigures;
+use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Cooperation;
 use App\Models\KeyFigureTemperature;
 use App\Models\MeasureApplication;
@@ -25,10 +26,13 @@ class KeyFiguresController extends Controller {
 		$keyfigures['general']['BANK_INTEREST_PER_YEAR'] = BankInterestCalculator::BANK_INTEREST_PER_YEAR;
 		$keyfigures['general']['INTEREST_PERIOD']        = BankInterestCalculator::INTEREST_PERIOD;
 
+		$keyfigures['max-savings'] = $this->maxSavings();
+
 		$keyfigures['wall-insulation']  = KeyFigures\WallInsulation\Temperature::getKeyFigures();
 		$keyfigures['roof-insulation']  = KeyFigures\RoofInsulation\Temperature::getKeyFigures();
 		$keyfigures['floor-insulation'] = KeyFigures\FloorInsulation\Temperature::getKeyFigures();
 		$keyfigures['insulated-glazing'] = $this->keyFiguresInsulatedGlazing();
+
 
 
 		$measureApplications = MeasureApplication::all();
@@ -67,6 +71,20 @@ class KeyFiguresController extends Controller {
 				$keyFigureTemperature->buildingHeating->name
 			);
 			$figures[$k] = $keyFigureTemperature->key_figure;
+		}
+
+		return $figures;
+	}
+
+	// todo refactor
+	protected function maxSavings(){
+		$figures = [];
+
+		$maxSavings = BuildingTypeElementMaxSaving::all();
+		/** @var BuildingTypeElementMaxSaving $maxSaving */
+		foreach($maxSavings as $maxSaving){
+			$k = sprintf('%s %s - %s', __('key-figures.max-savings.prefix'), $maxSaving->buildingType->name, $maxSaving->element->name);
+			$figures[$k] = $maxSaving->max_saving . '%';
 		}
 
 		return $figures;

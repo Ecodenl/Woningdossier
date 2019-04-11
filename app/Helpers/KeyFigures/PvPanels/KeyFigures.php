@@ -2,11 +2,12 @@
 
 namespace App\Helpers\KeyFigures\PvPanels;
 
+use App\Helpers\KeyFigures\KeyFiguresInterface;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
 
-class KeyFigures
+class KeyFigures implements KeyFiguresInterface
 {
     const SOLAR_PANEL_ELECTRICITY_COST_FACTOR = 0.92; // unit of measure??
     const SOLAR_PANEL_SURFACE = 1.6; // m2
@@ -74,4 +75,17 @@ class KeyFigures
     {
         return self::$peakPowers;
     }
+
+	/**
+	 * Returns the key figures from this class
+	 *
+	 * @return array
+	 */
+	public static function getKeyFigures()
+	{
+		return [
+			'COST_KWH' => self::COST_KWH,
+			'COST_WP' => self::COST_WP,
+		];
+	}
 }

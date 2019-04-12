@@ -43,13 +43,17 @@ trait ToolSettingTrait
     {
         // we set the has changed to true if the example_building_id was already filled and to false if its null.
         static::created(function (Model $model) {
-            $building = Building::find(HoomdossierSession::getBuilding());
+            // $building = Building::find(HoomdossierSession::getBuilding());
 
-            $hasChanged = false;
+            $hasChanged = true;
+            dd($hasChanged);
 
-            if ($building instanceof Building) {
-                $hasChanged = null === $building->example_building_id ? false : true;
-            }
+            // this was a requested feature so no alert would be triggered after the first page was done
+            // i'll just comment this out cause my sixth sense tell;s me this will be requested again.
+            //
+            //  if ($building instanceof Building) {
+            //     $hasChanged = null === $building->example_building_id ? false : true;
+            //  }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
@@ -59,13 +63,15 @@ trait ToolSettingTrait
         });
 
         static::updated(function (Model $model) {
-            $building = Building::find(HoomdossierSession::getBuilding());
+            // $building = Building::find(HoomdossierSession::getBuilding());
 
-            $hasChanged = false;
+            $hasChanged = true;
 
-            if ($building instanceof Building) {
-                $hasChanged = null === $building->example_building_id ? false : true;
-            }
+            // this was a requested feature so no alert would be triggered after the first page was done
+            // i'll just comment this out cause my sixth sense tell;s me this will be requested again.
+            // if ($building instanceof Building) {
+            //     $hasChanged = null === $building->example_building_id ? false : true;
+            // }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 

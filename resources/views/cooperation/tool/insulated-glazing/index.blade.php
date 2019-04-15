@@ -49,15 +49,23 @@
                             ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
                                 <select id="{{ $measureApplication->id }}" class="user-interest form-control"
                                         name="user_interests[{{ $measureApplication->id }}]">
+                                    <?php
+                                        /** @var \Illuminate\Support\Collection $interests */
+                                        $oldInterestDataIsAvailable = $interests->contains('id', old('user_interests.' . $measureApplication->id));
+                                    ?>
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
                                         <option
-                                                @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))
-                                                selected="selected"
+                                                @if($oldInterestDataIsAvailable)
+                                                    @if($interest->id == old('user_interests.' . $measureApplication->id))
+                                                        selected="selected"
+                                                    @endif
+                                                @elseif(array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id])
+                                                    selected="selected"
                                                 @elseif($buildingOwner->getInterestedType('measure_application', $measureApplication->id) != null && $buildingOwner->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id)
-                                                selected="selected"
+                                                    selected="selected"
                                                 @elseif(!array_key_exists($measureApplication->id, $userInterests) && $interest->calculate_value == 4)
-                                                selected="selected"
+                                                    selected="selected"
                                                 @endif
                                                 value="{{ $interest->id }}">{{ $interest->name }}
                                         </option>
@@ -335,7 +343,7 @@
                         $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
                         ?>
 
-                        <textarea name="comment" id="" class="form-control">{{ $comment }}</textarea>
+                        <textarea name="comment" id="" class="form-control">{{ old('comment', $comment) }}</textarea>
 
                     @endcomponent
 

@@ -222,13 +222,22 @@
                 event.preventDefault();
             }
         });
-        var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure')';
+
+        var userCooperationCount = '{{Auth::user()->cooperations()->count()}}';
+
+
+        if (userCooperationCount === '1') {
+            var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure.complete-delete')';
+        } else {
+            var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure.delete-from-cooperation')';
+        }
+
         $('#delete-account').click(function () {
             if (confirm(areYouSureToDestroy)) {
                 $(this).closest('form').submit();
             } else {
-                return false;
                 event.preventDefault();
+                return false;
             }
         })
     </script>

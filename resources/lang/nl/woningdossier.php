@@ -859,7 +859,11 @@ return [
                     ],
                     'destroy'    => [
                         'header'       => 'Account verwijderen',
-                        'are-you-sure' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
+                        'are-you-sure' => [
+                            'complete-delete' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
+                            'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijderd uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen moet u bij elke coöperatie deze stap uitvoeren.'
+                        ],
+
                         'label'        => 'Mijn account verwijderen',
                         'submit'       => 'Verwijderen',
                     ],

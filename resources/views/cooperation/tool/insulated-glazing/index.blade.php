@@ -117,7 +117,7 @@
                                 ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'm2'])
                                     <input type="text"
                                            name="building_insulated_glazings[{{ $measureApplication->id }}][m2]"
-                                           value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'm2', 0)) }}"
+                                           value="{{ old('building_insulated_glazings.'.$measureApplication->id.'.m2', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'm2', 0)) }}"
                                            class="form-control">
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">--}}
                                 @endcomponent

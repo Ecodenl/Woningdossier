@@ -13,6 +13,7 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
+                            <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.table.created-at')</th>
                             <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.table.name')</th>
                             <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.table.email')</th>
                             <th>@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index.table.actions')</th>
@@ -23,6 +24,9 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
                             <tr>
+                                <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
+                                    {{$user->created_at}}
+                                </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>{{$user->email}}</td>
                                 <td>

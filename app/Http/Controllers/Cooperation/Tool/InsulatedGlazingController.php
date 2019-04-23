@@ -269,7 +269,8 @@ class InsulatedGlazingController extends Controller
 
             $measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 
-            $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, $windowSurface);
+
+            $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, NumberFormatter::reverseFormat($windowSurface));
 
             $buildingPaintworkStatuses = $request->get('building_paintwork_statuses', []);
             $paintworkStatus = null;

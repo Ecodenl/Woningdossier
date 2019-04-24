@@ -51,7 +51,7 @@
                                         name="user_interests[{{ $measureApplication->id }}]">
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
-                                        <option
+                                        <option data-calculate-value="{{$interest->calculate_value}}"
                                                 @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))
                                                 selected="selected"
                                                 @elseif($buildingOwner->getInterestedType('measure_application', $measureApplication->id) != null && $buildingOwner->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id)
@@ -500,10 +500,10 @@
                 $('.user-interest').each(function (i, element) {
                     // the input field
                     var userInterest = $(element);
-                    // the text from the selected interested option
-                    var userInterestText = userInterest.find('option:selected').text().trim();
+                    // the user interest calculate value
+                    var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
 
-                    if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
+                    if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
                         $(this).parent().parent().parent().parent().find('.values').hide();
                     } else {
                         $(this).parent().parent().parent().parent().find('.values').show();

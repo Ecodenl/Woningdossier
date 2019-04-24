@@ -65,33 +65,28 @@ class BuildingDetailController extends Controller
         /** @note: this is a feature that was requested, however it needs to be removed, we just keep this commented out in case it
          *  needs to be turned on again
          */
-//        if (! $currentFeatures instanceof BuildingFeature) {
-//            if ($exampleBuilding instanceof ExampleBuilding) {
-//                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
-//
-//                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
-//                $building->exampleBuilding()->associate($exampleBuilding);
-//                $building->save();
-//            }
-//        } else {
-//            $currentBuildYear = $currentFeatures->build_year;
-//            $currentBuildingTypeId = $currentFeatures->building_type_id;
-//
-//            // compare the old ones vs the request
-//            if (($currentBuildYear != $buildYear || $currentBuildingTypeId != $buildingTypeId) && $exampleBuilding instanceof ExampleBuilding) {
-//                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
-//
-//                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
-//                $building->exampleBuilding()->associate($exampleBuilding);
-//                $building->save();
-//            }
-//        }
+        if (! $currentFeatures instanceof BuildingFeature) {
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
-        if ($exampleBuilding instanceof ExampleBuilding) {
-            ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
-            $building->exampleBuilding()->associate($exampleBuilding);
-            $building->save();
+                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
+                $building->exampleBuilding()->associate($exampleBuilding);
+                $building->save();
+            }
+        } else {
+            $currentBuildYear = $currentFeatures->build_year;
+            $currentBuildingTypeId = $currentFeatures->building_type_id;
+
+            // compare the old ones vs the request
+            if (($currentBuildYear != $buildYear || $currentBuildingTypeId != $buildingTypeId) && $exampleBuilding instanceof ExampleBuilding) {
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
+                $building->exampleBuilding()->associate($exampleBuilding);
+                $building->save();
+            }
         }
+
         // finish the step
         $building->complete($this->step);
 

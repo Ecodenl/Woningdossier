@@ -59,8 +59,8 @@ return [
     'mimes'                => 'De :attribute moet een bestand zijn met type: :values.',
     'mimetypes'            => 'De :attribute moet een bestand zijn met type: :values.',
     'min'                  => [
-        'numeric' => 'De :attribute moet tenminste :min zijn.',
-        'file'    => 'De :attribute moet tenminste :min kilobytes groot zijn.',
+        'numeric' => 'Het veld :attribute moet tenminste :min zijn.',
+        'file'    => 'Het veld :attribute moet tenminste :min kilobytes groot zijn.',
         'string'  => 'De :attribute moet tenminste :min karakters bevatten.',
         'array'   => 'De :attribute moet tenminste :min items bevatten.',
     ],
@@ -136,5 +136,7 @@ return [
     'attributes' => [
         'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
         'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
+        'building_insulated_glazings.*.m2' => 'hoeveel m2 glas wilt u vervangen?',
+        'building_insulated_glazings.*.windows' => 'aantal te vervangen ruiten'
     ],
 ];

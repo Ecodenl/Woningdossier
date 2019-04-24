@@ -62,6 +62,9 @@ class BuildingDetailController extends Controller
 
         // if there are no features yet, then we can apply the example building
         // else, we need to compare the old buildingtype and buildyear against that from the request, if those differ then we apply the example building again.
+        /** @note: this is a feature that was requested, however it needs to be removed, we just keep this commented out in case it
+         *  needs to be turned on again
+         */
         if (! $currentFeatures instanceof BuildingFeature) {
             if ($exampleBuilding instanceof ExampleBuilding) {
                 ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
@@ -83,6 +86,7 @@ class BuildingDetailController extends Controller
                 $building->save();
             }
         }
+
         // finish the step
         $building->complete($this->step);
 

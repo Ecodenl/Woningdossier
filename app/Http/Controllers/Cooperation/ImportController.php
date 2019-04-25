@@ -237,7 +237,11 @@ class ImportController extends Controller
 
                             // YAY! data has been copied so update or create the target input source his records.
                             if ($targetInputSourceValueQuery->first() instanceof \stdClass) {
-                                $targetInputSourceValueQuery->update($this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue));
+                                // check if its empty ornot.
+                                $updateData = $this->createUpdateArray($targetInputSourceValue, $desiredInputSourceValue);
+                                if(!empty($updateData)) {
+                                    $targetInputSourceValueQuery->update($updateData);
+                                }
                             } else {
                                 // we cant create an update array since there is no data from the target input source
 
@@ -265,7 +269,11 @@ class ImportController extends Controller
 
                 // if it exists, we need to update it. Else we need to insert a new row.
                 if ($targetInputSourceValue instanceof \stdClass) {
-                    $targetInputSourceValueQuery->update($this->createUpdateArray((array) $targetInputSourceValue, (array) $desiredInputSourceValue));
+                    // check if its empty ornot.
+                    $updateData = $this->createUpdateArray((array) $targetInputSourceValue, (array) $desiredInputSourceValue);
+                    if(!empty($updateData)) {
+                        $targetInputSourceValueQuery->update($updateData);
+                    }
                 } else {
                     $desiredInputSourceValue = (array) $desiredInputSourceValue;
                     // unset the stuff we dont want to insert

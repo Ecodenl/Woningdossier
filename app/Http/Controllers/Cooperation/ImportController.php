@@ -265,7 +265,7 @@ class ImportController extends Controller
 
                 // if it exists, we need to update it. Else we need to insert a new row.
                 if ($targetInputSourceValue instanceof \stdClass) {
-                    $targetInputSourceValueQuery->update($this->createUpdateArray((array) $desiredInputSource, (array) $desiredInputSourceValue));
+                    $targetInputSourceValueQuery->update($this->createUpdateArray((array) $targetInputSourceValue, (array) $desiredInputSourceValue));
                 } else {
                     $desiredInputSourceValue = (array) $desiredInputSourceValue;
                     // unset the stuff we dont want to insert
@@ -279,6 +279,7 @@ class ImportController extends Controller
             }
         }
 
+        dd('Maat');
         ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
         HoomdossierSession::stopUserComparingInputSources();
 

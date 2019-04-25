@@ -49,15 +49,23 @@
                             ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
                                 <select id="{{ $measureApplication->id }}" class="user-interest form-control"
                                         name="user_interests[{{ $measureApplication->id }}]">
+                                    <?php
+                                        /** @var \Illuminate\Support\Collection $interests */
+                                        $oldInterestDataIsAvailable = $interests->contains('id', old('user_interests.' . $measureApplication->id));
+                                    ?>
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
-                                        <option
-                                                @if($interest->id == old('user_interests.' . $measureApplication->id) || (array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id]))
-                                                selected="selected"
+                                        <option data-calculate-value="{{$interest->calculate_value}}"
+                                                @if($oldInterestDataIsAvailable)
+                                                    @if($interest->id == old('user_interests.' . $measureApplication->id))
+                                                        selected="selected"
+                                                    @endif
+                                                @elseif(array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id])
+                                                    selected="selected"
                                                 @elseif($buildingOwner->getInterestedType('measure_application', $measureApplication->id) != null && $buildingOwner->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id)
-                                                selected="selected"
+                                                    selected="selected"
                                                 @elseif(!array_key_exists($measureApplication->id, $userInterests) && $interest->calculate_value == 4)
-                                                selected="selected"
+                                                    selected="selected"
                                                 @endif
                                                 value="{{ $interest->id }}">{{ $interest->name }}
                                         </option>
@@ -117,7 +125,7 @@
                                 ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'm2'])
                                     <input type="text"
                                            name="building_insulated_glazings[{{ $measureApplication->id }}][m2]"
-                                           value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'm2', 0)) }}"
+                                           value="{{ old('building_insulated_glazings.'.$measureApplication->id.'.m2', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'm2', 0)) }}"
                                            class="form-control">
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">--}}
                                 @endcomponent
@@ -335,7 +343,7 @@
                         $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
                         ?>
 
-                        <textarea name="comment" id="" class="form-control">{{ $comment }}</textarea>
+                        <textarea name="comment" id="" class="form-control">{{ old('comment', $comment) }}</textarea>
 
                     @endcomponent
 
@@ -500,10 +508,10 @@
                 $('.user-interest').each(function (i, element) {
                     // the input field
                     var userInterest = $(element);
-                    // the text from the selected interested option
-                    var userInterestText = userInterest.find('option:selected').text().trim();
+                    // the user interest calculate value
+                    var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
 
-                    if (userInterestText === "Geen actie" || userInterestText === "Niet mogelijk") {
+                    if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
                         $(this).parent().parent().parent().parent().find('.values').hide();
                     } else {
                         $(this).parent().parent().parent().parent().find('.values').show();

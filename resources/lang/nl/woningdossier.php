@@ -215,6 +215,7 @@ return [
                             'index' => [
                                 'header' => 'Overzicht van alle gebruikers',
                                 'table'  => [
+                                    'created-at' => 'Datum',
                                     'name'    => 'Naam',
                                     'email'   => 'E-mail',
                                     'actions' => 'Acties',

@@ -74,10 +74,10 @@ class InsulatedGlazingController extends Controller
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         $measureApplicationShorts = [
-            'glass-in-lead',
             'hrpp-glass-only',
             'hrpp-glass-frames',
             'hr3p-frames',
+            'glass-in-lead',
         ];
 
         $buildingInsulatedGlazings = [];

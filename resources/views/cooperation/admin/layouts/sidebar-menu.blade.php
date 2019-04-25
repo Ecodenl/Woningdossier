@@ -180,8 +180,8 @@
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.example-buildings.index', 'cooperation.admin.example-buildings.edit', 'cooperation.admin.example-buildings.create'])) active @endif">
                                     <a href="{{route('cooperation.admin.example-buildings.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')</a>
                                 </li>
-                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.kengetallen.index'])) active @endif">
-                                    <a href="{{route('cooperation.admin.super-admin.kengetallen.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.kengetallen')</a>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.key-figures.index'])) active @endif">
+                                    <a href="{{route('cooperation.admin.super-admin.key-figures.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.key-figures')</a>
                                 </li>
                             </ul>
                         </div>

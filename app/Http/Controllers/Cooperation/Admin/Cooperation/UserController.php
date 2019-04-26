@@ -198,6 +198,7 @@ class UserController extends Controller
 
         $user = User::find($userId);
 
+
         $this->authorize('destroy', $user);
 
         if ($user instanceof User) {

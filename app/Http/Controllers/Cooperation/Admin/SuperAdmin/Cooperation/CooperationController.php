@@ -18,12 +18,13 @@ class CooperationController extends Controller
     public function create()
     {
         $this->authorize('create', Cooperation::class);
+
         return view('cooperation.admin.super-admin.cooperations.create');
     }
 
     public function store(Cooperation $cooperation, CooperationRequest $request)
     {
-        $this->authorize('store', Cooperation::class);
+        $this->authorize('create', Cooperation::class);
         $cooperationName = $request->get('name');
         $cooperationSlug = $request->get('slug');
         $cooperationWebsiteUrl = $request->get('website_url');
@@ -47,19 +48,19 @@ class CooperationController extends Controller
 
     public function update(Cooperation $cooperation, CooperationRequest $request)
     {
-        $this->authorize('update', Cooperation::class);
         $cooperationName = $request->get('name');
         $cooperationSlug = $request->get('slug');
         $cooperationWebsiteUrl = $request->get('website_url');
         $cooperationId = $request->get('cooperation_id');
 
-        $cooperationToEdit = Cooperation::find($cooperationId);
+        $cooperationToUpdate = Cooperation::find($cooperationId);
 
-        if ($cooperationToEdit instanceof Cooperation) {
-            $cooperationToEdit->name = $cooperationName;
-            $cooperationToEdit->slug = $cooperationSlug;
-            $cooperationToEdit->website_url = $cooperationWebsiteUrl;
-            $cooperationToEdit->save();
+        $this->authorize('update', $cooperationToUpdate);
+        if ($cooperationToUpdate instanceof Cooperation) {
+            $cooperationToUpdate->name = $cooperationName;
+            $cooperationToUpdate->slug = $cooperationSlug;
+            $cooperationToUpdate->website_url = $cooperationWebsiteUrl;
+            $cooperationToUpdate->save();
         }
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')

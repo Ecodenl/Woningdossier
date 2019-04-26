@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 trait ToolSettingTrait
 {
     /**
+     * @var array of columns to check
+     */
+    public $toolSettingColumnsToCheck = [];
+
+    /**
      * Returns an input source id if it's present on the model, we always try to get it from the current model since the example building is a input source as well.
      * However, if we cannot get it from the model we will try to get it from the session.
      *
@@ -39,17 +44,58 @@ trait ToolSettingTrait
         return $inputSourceId;
     }
 
+    /**
+     * Can be set on the models and return specific columns to check
+     * Sometimes we dont want to check all the columns on a model
+     *
+     * @return array
+     */
+    public static function toolSettingColumnsToCheck()
+    {
+        return [];
+    }
+
+    /**
+     * Check if a model has changed
+     *
+     * @param  Model  $model
+     *
+     * @return bool
+     */
+    private static function hasChanged(Model $model): bool
+    {
+        $columnsToCheckForChanges = static::toolSettingColumnsToCheck();
+
+        $hasChanged = false;
+
+        // if there are specific columns to check we will check the property for a change.
+        if (!empty($columnsToCheckForChanges)) {
+            // walk through it.
+            foreach ($columnsToCheckForChanges as $column) {
+                // check if it is dirty, if so we will set the bool to true,
+                if ($model->isDirty($column)) {
+                    $hasChanged = true;
+                }
+            }
+            // no specific columns to check are found, so if the model is saved or updated we set the bool to true.
+        } else {
+            $hasChanged = true;
+        }
+
+        return $hasChanged;
+    }
+
     public static function bootToolSettingTrait()
     {
-        // we set the has changed to true if the example_building_id was already filled and to false if its null.
         static::created(function (Model $model) {
-            $building = Building::find(HoomdossierSession::getBuilding());
 
-            $hasChanged = false;
-
-            if ($building instanceof Building) {
-                $hasChanged = null === $building->example_building_id ? false : true;
-            }
+            $hasChanged = static::hasChanged($model);
+            // this was a requested feature so no alert would be triggered after the first page was done
+            // i'll just comment this out cause my sixth sense tell;s me this will be requested again.
+            //
+            //  if ($building instanceof Building) {
+            //     $hasChanged = null === $building->example_building_id ? false : true;
+            //  }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
@@ -59,13 +105,13 @@ trait ToolSettingTrait
         });
 
         static::updated(function (Model $model) {
-            $building = Building::find(HoomdossierSession::getBuilding());
 
-            $hasChanged = false;
-
-            if ($building instanceof Building) {
-                $hasChanged = null === $building->example_building_id ? false : true;
-            }
+            $hasChanged = static::hasChanged($model);
+            // this was a requested feature so no alert would be triggered after the first page was done
+            // i'll just comment this out cause my sixth sense tell;s me this will be requested again.
+            // if ($building instanceof Building) {
+            //     $hasChanged = null === $building->example_building_id ? false : true;
+            // }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 

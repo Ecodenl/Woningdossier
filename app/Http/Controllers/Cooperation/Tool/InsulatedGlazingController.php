@@ -74,10 +74,10 @@ class InsulatedGlazingController extends Controller
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         $measureApplicationShorts = [
-            'glass-in-lead',
             'hrpp-glass-only',
             'hrpp-glass-frames',
             'hr3p-frames',
+            'glass-in-lead',
         ];
 
         $buildingInsulatedGlazings = [];
@@ -248,7 +248,13 @@ class InsulatedGlazingController extends Controller
 
         // only applies for wooden frames
         if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short/* && $frameElementValue->calculate_value > 0*/) {
-            $windowSurface = $request->get('window_surface', 0);
+
+            $windowSurface = 0;
+
+            $windowSurfaceFormatted = NumberFormatter::reverseFormat($request->get('window_surface', 0));
+            if (is_numeric($windowSurfaceFormatted)) {
+                $windowSurface = $windowSurfaceFormatted;
+            }
             // frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
             $woodElementValues = [];
 

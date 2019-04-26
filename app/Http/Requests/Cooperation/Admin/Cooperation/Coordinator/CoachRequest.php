@@ -39,7 +39,7 @@ class CoachRequest extends FormRequest
         }
 
         $houseNumberRule = [];
-        if (count($this->request->get('roles')) > 1) {
+        if (count($this->request->get('roles', [])) > 1) {
             foreach ($this->request->get('roles') as $inputKey => $roleId) {
                 array_push($houseNumberRule, 'required_if:roles.'.$inputKey.',5');
             }
@@ -49,7 +49,7 @@ class CoachRequest extends FormRequest
         }
 
         $roleRequiredIfRule = [];
-        if (count($this->request->get('roles')) > 1) {
+        if (count($this->request->get('roles', [])) > 1) {
             foreach ($this->request->get('roles') as $inputKey => $roleId) {
                 array_push($roleRequiredIfRule, 'required_if:roles.'.$inputKey.',5');
             }

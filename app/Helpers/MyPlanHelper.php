@@ -216,11 +216,13 @@ class MyPlanHelper
                     if ($currentYear->diff($plannedYear)->y <= 3) {
                         $interest = Interest::where('calculate_value', '=', 1)->first();
                     } else {
+
                         // If the filled in year has a difference of more than 3 years than
                         // the current year, we set the interest  to 2 (Ja, op termijn)
                         $interest = Interest::where('calculate_value', '=', 2)->first();
                     }
                 } else {
+
                     // So the planned year is empty. Let's look for the advised year.
                     if (is_null($advice->year)) {
                         $advice->year = $advice->getAdviceYear();

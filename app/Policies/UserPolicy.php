@@ -48,7 +48,7 @@ class UserPolicy
      */
     public function deleteUser(User $user): bool
     {
-        if ($user->hasRoleAndIsCurrentRole(['super-admin'])) {
+        if ($user->hasRoleAndIsCurrentRole(['super-admin', 'cooperation-admin'])) {
             return true;
         }
 
@@ -64,7 +64,7 @@ class UserPolicy
      */
     public function deleteOwnAccount(User $user)
     {
-        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin'])) {
+        if ($user->hasRole(['cooperation-admin'])) {
             return false;
         }
         return true;

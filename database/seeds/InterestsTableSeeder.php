@@ -28,21 +28,21 @@ class InterestsTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Meer informatie gewenst',
+                    'nl' => 'Misschien, meer informatie gewenst',
                 ],
                 'calculate_value' => 3,
                 'order' => 2,
             ],
             [
                 'names' => [
-                    'nl' => 'Geen actie',
+                    'nl' => 'Nee, geen interesse',
                 ],
                 'calculate_value' => 4,
                 'order' => 3,
             ],
             [
                 'names' => [
-                    'nl' => 'Niet mogelijk',
+                    'nl' => 'Nee, niet mogelijk / reeds uitgevoerd',
                 ],
                 'calculate_value' => 5,
                 'order' => 4,

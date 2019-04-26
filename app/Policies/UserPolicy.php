@@ -43,12 +43,12 @@ class UserPolicy
      * Check if a user is authorized to delete a user.
      *
      * @param User $user
-     *
+     * @param User $userToDelete
      * @return bool
      */
-    public function deleteUser(User $user): bool
+    public function deleteUser(User $user, User $userToDelete): bool
     {
-        if ($user->hasRoleAndIsCurrentRole(['super-admin'])) {
+        if ($user->hasRoleAndIsCurrentRole(['super-admin', 'cooperation-admin']) && $userToDelete->id != $user->id) {
             return true;
         }
 

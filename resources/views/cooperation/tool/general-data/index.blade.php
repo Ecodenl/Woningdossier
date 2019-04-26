@@ -441,13 +441,13 @@
 
                                 <div class="input-group input-source-group">
                                     <label class="radio-inline">
-                                        <input type="radio" name="cook_gas"
+                                        <input type="radio" name="cook_gas" required="required"
                                                @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked
                                                @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                         {{--<input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" name="cook_gas"
+                                        <input type="radio" name="cook_gas" required="required"
                                                @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked
                                                @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
                                     </label>

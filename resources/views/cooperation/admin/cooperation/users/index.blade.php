@@ -23,7 +23,7 @@
                         <tbody>
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
-                            <?php $building = $user->buildings()->withTrashed()->first(); ?>
+                            <?php $building = $user->buildings()->first(); ?>
 
                             @if($building instanceof \App\Models\Building)
                             <tr>

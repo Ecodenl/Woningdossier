@@ -33,11 +33,13 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
-                                $building = $buildingCoachStatus->building()->withTrashed()->first();
-                                $user = $building->user;
-                                $userExists = $user instanceof \App\Models\User;
+                                $building = $buildingCoachStatus->building()->first();
                             ?>
-
+                            @if($building instanceof \App\Models\Building)
+                                <?php
+                                    $user = $building->user;
+                                    $userExists = $user instanceof \App\Models\User;
+                                ?>
                             <tr>
                                 <td data-sort="{{$userExists && $user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
                                     {{$userExists && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
@@ -59,6 +61,7 @@
                                     {{$buildingCoachStatus->hasAppointmentDate() ? $buildingCoachStatus->appointment_date->format('d-m-Y') : ''}}
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

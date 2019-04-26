@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
@@ -12,33 +13,50 @@ class SettingsController extends Controller
     public function index()
     {
         $user = \Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
-        return view('cooperation.my-account.settings.index', compact('user'));
+        return view('cooperation.my-account.settings.index', compact('user', 'building'));
     }
 
-    // Update account
-    public function store(MyAccountSettingsFormRequest $request)
+    /**
+     * Update the account.
+     *
+     * @param  MyAccountSettingsFormRequest  $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(MyAccountSettingsFormRequest $request)
     {
         $user = \Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
-        $attributes = $request->all();
-        $attributes['phone_number'] = is_null($attributes['phone_number']) ? '' : $attributes['phone_number'];
+        $data = $request->all();
 
-        if (! isset($attributes['password']) || empty($attributes['password'])) {
-            unset($attributes['password']);
-            unset($attributes['password_confirmation']);
-            unset($attributes['current_password']);
+        $buildingData = $data['building'];
+        $userData = $data['user'];
+        
+        $userData['phone_number'] = $userData['phone_number'] ?? '';
+        $buildingData['extension'] = $buildingData['extension'] ?? '';
+
+        // if the password is empty we remove all the password stuff from the user data
+        // else we do some checks and hash it!
+        if (empty($userData['password'])) {
+            unset($userData['password'], $userData['password_confirmation'], $userData['current_password']);
         } else {
-            $current_password = \Auth::User()->password;
-            if (! \Hash::check($request->get('current_password', ''), $current_password)) {
+            $currentPassword = $user->password;
+            $currentPasswordFromRequestToCheck = $userData['current_password'];
+
+            if (!\Hash::check($currentPasswordFromRequestToCheck, $currentPassword)) {
                 return redirect()->back()->withErrors(['current_password' => __('validation.current_password')]);
             }
-            $attributes['password'] = \Hash::make($attributes['password']);
+            $userData['password'] = \Hash::make($userData['password']);
         }
 
-        $user->update($attributes);
+        // update the user and building.
+        $user->update($userData);
+        $building->update($buildingData);
 
-        return redirect()->route('cooperation.my-account.settings.index', ['cooperation' => \App::make('Cooperation')])->with('success', trans('woningdossier.cooperation.my-account.settings.form.store.success'));
+        return redirect()->route('cooperation.my-account.settings.index')->with('success', __('woningdossier.cooperation.my-account.settings.store.success'));
     }
 
     /**

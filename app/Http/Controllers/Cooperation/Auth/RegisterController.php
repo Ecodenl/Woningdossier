@@ -65,27 +65,7 @@ class RegisterController extends Controller
         return view('cooperation.auth.register');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param array $data
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    /*protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'postal_code' => ['required', new PostalCode()],
-            'number' => ['required', new HouseNumber()],
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'phone_number' => [ 'nullable', new PhoneNumber() ],
-        ]);
-    }*/
+
 
     /**
      * Handle a registration request for the application.

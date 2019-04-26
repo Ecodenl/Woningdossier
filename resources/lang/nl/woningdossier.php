@@ -842,30 +842,51 @@ return [
             ],
 
             'settings'     => [
-                'form' => [
-                    'index'      => [
+                'index' => [
+                    'header' => 'Mijn account',
+                    'submit' => 'Update gegevens',
+                    'form' => [
                         'header' => 'Mijn account',
                         'submit' => 'Update',
-                    ],
-                    'store'      => [
-                        'success' => 'Gegevens succesvol gewijzigd',
-                    ],
-                    'reset-file' => [
-                        'header'       => 'Uw dossier verwijderen',
-                        'description'  => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
-                        'label'        => 'Reset mijn dossier',
-                        'submit'       => 'Reset',
-                        'are-you-sure' => 'Let op: dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen. Weet u zeker dat u wilt doorgaan?',
-                        'success'      => 'Uw gegevens zijn succesvol verwijderd van uw account',
-                    ],
-                    'destroy'    => [
-                        'header'       => 'Account verwijderen',
-                        'are-you-sure' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
-                        'label'        => 'Mijn account verwijderen',
-                        'submit'       => 'Verwijderen',
-                    ],
+                        'building' => [
+                            'street' => 'Straat',
+                            'number' => 'Huisnummer',
+                            'extension' => 'Toevoeging',
+                            'postal-code' => 'Postcode',
+                            'city' => 'Stad'
+                        ],
+                        'user' => [
+                            'e-mail'                => 'E-mailadres',
+                            'first-name'            => 'Voornaam',
+                            'last-name'             => 'Achternaam',
+                            'password'              => 'Wachtwoord',
+                            'password-confirmation' => 'Wachtwoord (bevestigen)',
+                            'phone_number'          => 'Telefoonnummer',
+                            'current-password'      => 'Huidig wachtwoord',
+                            'new-password'          => 'Nieuw wachtwoord',
+                            'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
+                        ],
+                    ]
+                ],
+                'store'      => [
+                    'success' => 'Gegevens succesvol gewijzigd',
+                ],
+                'reset-file' => [
+                    'header'       => 'Uw dossier verwijderen',
+                    'description'  => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
+                    'label'        => 'Reset mijn dossier',
+                    'submit'       => 'Reset',
+                    'are-you-sure' => 'Let op: dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen. Weet u zeker dat u wilt doorgaan?',
+                    'success'      => 'Uw gegevens zijn succesvol verwijderd van uw account',
+                ],
+                'destroy'    => [
+                    'header'       => 'Account verwijderen',
+                    'are-you-sure' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
+                    'label'        => 'Mijn account verwijderen',
+                    'submit'       => 'Verwijderen',
                 ],
             ],
+
             'cooperations' => [
                 'form' => [
                     'header' => 'Mijn coöperaties',

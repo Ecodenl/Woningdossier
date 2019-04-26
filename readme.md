@@ -14,7 +14,7 @@ We want clean renewable energy. We want a digital energy market which is democra
 We are cooperatives, because we believe that members, in our case normal people, are the owners of everything we do. 
 That is why we choose for Open Source software. It is also democratic, fair and accessible for everybody. 
 But we want to make sure that it remains Open Source. That is why we need the legal stuff.
-
+  
 
 ## Tech: Setup
 

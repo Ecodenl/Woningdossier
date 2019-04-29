@@ -39,9 +39,8 @@ class SettingsController extends Controller
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(
-            $buildingData['postal_code'], $buildingData['house_number'], $buildingData['house_number_extension']
+            $buildingData['postal_code'], $buildingData['house_number']
         );
-
 
         $userData['phone_number'] = $userData['phone_number'] ?? '';
 

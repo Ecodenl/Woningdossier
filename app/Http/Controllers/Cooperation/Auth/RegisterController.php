@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FillAddressRequest;
@@ -99,12 +100,16 @@ class RegisterController extends Controller
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
 
-        $address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
-        $data['bag_addressid'] = isset($address['bag_adresid']) ? $address['bag_adresid'] : '';
+        // now get the pico address data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $data['postal_code'], $data['number']
+        );
+
+        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? '';
 
         $features = new BuildingFeature([
-            'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
-            'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
+            'surface' => $picoAddressData['surface'] ?? null,
+            'build_year' => $picoAddressData['build_year'] ?? null,
         ]);
 
         $address = new Building($data);

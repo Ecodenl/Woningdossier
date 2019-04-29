@@ -13,9 +13,8 @@ class GeoController extends Controller
     {
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
         $number = trim(strip_tags($request->get('number', '')));
-        $houseNumberExtension = trim(strip_tags($request->get('house_number_extension', '')));
 
-        $address = PicoHelper::getAddressData($postalCode, $number, $houseNumberExtension);
+        $address = PicoHelper::getAddressData($postalCode, $number);
 
         return response()->json($address);
     }

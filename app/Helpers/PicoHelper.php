@@ -53,7 +53,7 @@ class PicoHelper
      *
      * @return array
      */
-    public static function getAddressData($postalCode, $number, $houseNumberExtension = null): array
+    public static function getAddressData($postalCode, $number): array
     {
         $options = static::getBagAddressData($postalCode, $number);
 

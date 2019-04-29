@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
@@ -64,6 +65,11 @@ class SettingsController extends Controller
             $userData['password'] = \Hash::make($userData['password']);
         }
 
+        // check if the user changed his email, if so we send a confirmation to the user itself.
+        //        if ($user->email != $userData['email']) {
+        //            event(new UserChangedHisEmailEvent($user->email, $userData['email']));
+        //        }
+
         // update the user stuff
         $user->update($userData);
 
@@ -75,6 +81,7 @@ class SettingsController extends Controller
             'surface' => $picoAddressData['surface'] ?? null,
             'build_year' => $picoAddressData['build_year'] ?? null,
         ]);
+
 
         return redirect()->route('cooperation.my-account.settings.index')->with('success', __('woningdossier.cooperation.my-account.settings.store.success'));
     }

@@ -12,13 +12,12 @@ class PicoHelper
      *
      * @param $postalCode
      * @param $number
-     * @param  null  $pointer
      *
      * @return array
      */
-    public static function getBagAddressData($postalCode, $number, $pointer = null)
+    public static function getBagAddressData($postalCode, $number)
     {
-        \Log::debug($postalCode.' '.$number.' '.$pointer);
+        \Log::debug($postalCode.' '.$number);
 
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
@@ -26,19 +25,6 @@ class PicoHelper
         $postalCode = str_replace(' ', '', trim($postalCode));
 
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
-
-        if ( ! is_null($pointer)) {
-            foreach ($response as $addrInfo) {
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
-                    //$data['bag_addressid'] = $addrInfo['bag_adresid'];
-                    \Log::debug(json_encode($addrInfo));
-
-                    return $addrInfo;
-                }
-            }
-
-            return [];
-        }
 
         return $response;
     }
@@ -49,7 +35,6 @@ class PicoHelper
      *
      * @param $postalCode
      * @param $number
-     * @param  null  $houseNumberExtension
      *
      * @return array
      */

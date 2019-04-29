@@ -213,6 +213,8 @@ class RegisterController extends Controller
         return redirect()->back();
     }
 
+
+
     public function formResendConfirmMail()
     {
         return view('cooperation.auth.resend-confirm-mail');
@@ -235,29 +237,5 @@ class RegisterController extends Controller
         return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.email-success'));
     }
 
-    protected function getAddressData($postalCode, $number, $pointer = null)
-    {
-        \Log::debug($postalCode.' '.$number.' '.$pointer);
 
-        /** @var PicoClient $pico */
-        $pico = app()->make('pico');
-
-        $postalCode = str_replace(' ', '', trim($postalCode));
-
-        $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
-
-        dd($response);
-        if (! is_null($pointer)) {
-            foreach ($response as $addrInfo) {
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
-                    \Log::debug(json_encode($addrInfo));
-                    return $addrInfo;
-                }
-            }
-
-            return [];
-        }
-
-        return $response;
-    }
 }

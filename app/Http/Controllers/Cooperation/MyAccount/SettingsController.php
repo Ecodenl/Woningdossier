@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Services\UserService;
 
 class SettingsController extends Controller
@@ -34,9 +36,20 @@ class SettingsController extends Controller
 
         $buildingData = $data['building'];
         $userData = $data['user'];
-        
+
+        // now get the pico address data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $buildingData['postal_code'], $buildingData['house_number'], $buildingData['house_number_extension']
+        );
+
+
         $userData['phone_number'] = $userData['phone_number'] ?? '';
+
         $buildingData['extension'] = $buildingData['extension'] ?? '';
+        $buildingData['number'] = $buildingData['house_number'] ?? '';
+        // try to obtain the address id from the api, else get the one from the request.
+        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'];
+
 
         // if the password is empty we remove all the password stuff from the user data
         // else we do some checks and hash it!
@@ -52,9 +65,17 @@ class SettingsController extends Controller
             $userData['password'] = \Hash::make($userData['password']);
         }
 
-        // update the user and building.
+        // update the user stuff
         $user->update($userData);
+
+
+        // now update the building itself.
         $building->update($buildingData);
+        // and update the building features with the data from pico.
+        $building->buildingFeatures()->update([
+            'surface' => $picoAddressData['surface'] ?? null,
+            'build_year' => $picoAddressData['build_year'] ?? null,
+        ]);
 
         return redirect()->route('cooperation.my-account.settings.index')->with('success', __('woningdossier.cooperation.my-account.settings.store.success'));
     }

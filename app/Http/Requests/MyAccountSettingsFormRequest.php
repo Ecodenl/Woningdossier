@@ -29,7 +29,7 @@ class MyAccountSettingsFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'user.assword' => 'nullable|string|confirmed|min:6',
+            'user.password' => 'nullable|string|confirmed|min:6',
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',
             'user.email' => ['required', 'email', Rule::unique('users', 'email')->ignore(\Auth::id())],
@@ -37,8 +37,8 @@ class MyAccountSettingsFormRequest extends FormRequest
 
 
             'building.postal_code' => ['required', new PostalCode('nl')],
-            'building.number' => ['required', new HouseNumber('nl')],
-            'building.house_number_extension' => [new HouseNumberExtension('nl')],
+            'building.house_number' => ['required', new HouseNumber('nl')],
+            'building.house_number_extension' => ['nullable', new HouseNumberExtension('nl')],
             'building.street' => 'required|string|max:255',
             'building.city' => 'required|string|max:255',
 

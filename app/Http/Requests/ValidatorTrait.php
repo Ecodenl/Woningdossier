@@ -26,7 +26,7 @@ trait ValidatorTrait
      */
     private function getRulesForRequest(): array
     {
-        return \Auth::user()->isFillingToolForOtherBuilding() ? $this->isFillingToolForUserRules() : $this->all();
+        return \Auth::user()->isFillingToolForOtherBuilding() ? $this->isFillingToolForUserRules() : $this->rules();
     }
 
     /**

@@ -37,7 +37,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 
             <tr>
                 <td colspan="2">
-                    <h3>{{ $step }}</h3>
+                    <h3>{{ \App\Helpers\Translation::translate('woningdossier.cooperation.tool.' . $step . '.title') }}</h3>
                 </td>
             </tr>
 

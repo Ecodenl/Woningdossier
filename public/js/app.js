@@ -109,7 +109,7 @@ $.ajaxSetup({
 });
 
 var baseUrl = window.location.origin;
-var fillAddressUrl = baseUrl + "/fill-address";
+var getAddressDataUrl = baseUrl + "/address-data";
 
 $('i.glyphicon-info-sign').click(function () {
     $(this).parent().parent().find('.modal').modal();
@@ -169,7 +169,7 @@ $(document).ready(function () {
     });
 });
 
-$("#register #street").focusin(function () {
+$(".has-address-data #street").focusin(function () {
     var postalCode = $("#register #postal_code");
     var number = $("#register #number");
     var houseNumberExtension = $("#register #house_number_extension");
@@ -179,7 +179,7 @@ $("#register #street").focusin(function () {
 
     $.ajax({
         method: 'get',
-        url: fillAddressUrl,
+        url: getAddressDataUrl,
         data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
         beforeSend: function beforeSend() {
             street.addClass("loading");

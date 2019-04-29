@@ -222,10 +222,16 @@ class MyPlanHelper
                     if (is_null($advice->year)) {
                         $advice->year = $advice->getAdviceYear();
                     }
-                    if (! is_null($advice->year) && $currentYear->diff(Carbon::create($advice->year))->y <= 3) {
+
+                    if (!is_null($advice->year) && $currentYear->diff(Carbon::create($advice->year))->y <= 3) {
                         // If there's an adviced year and it's between now and three years, set it to 1 (Ja, op korte termijn)
                         $interest = Interest::where('calculate_value', '=', 1)->first();
                     }
+                    if (is_null($advice->year)) {
+                        // if there is no advice year available, we set the interest level to 3 (Misschien, meer informatie gewenst)
+                        $interest = Interest::where('calculate_value', '=', 3)->first();
+                    }
+
                     // last resort
                     if (! isset($interest)) {
                         // interested, but we know NOTHING about years, set to 2 (Ja, op termijn)

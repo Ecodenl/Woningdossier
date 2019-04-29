@@ -71,13 +71,13 @@ class PicoHelper
                 if ((is_null($dist) || isset($newDist) && $newDist < $dist) && is_array($option)) {
                     // best match
                     $result = [
-                        'id'                     => array_key_exists('bag_adresid', $option) ? md5($option['bag_adresid']) : '',
-                        'street'                 => array_key_exists('straat', $option) ? $option['straat'] : '',
-                        'number'                 => array_key_exists('huisnummer', $option) ? $option['huisnummer'] : '',
+                        'id'                     => $option['bag_adresid'] ?? '',
+                        'street'                 => $option['straat'] ?? '',
+                        'number'                 => $option['huisnummer'] ?? '',
                         'house_number_extension' => $houseNumberExtension,
-                        'city'                   => array_key_exists('woonplaats', $option) ? $option['woonplaats'] : '',
-                        'build_year'          => $option['bouwjaar'] ?? null,
-                        'surface'                => $option['adresopp'] ?? null
+                        'city'                   => $option['woonplaats'] ?? '',
+                        'build_year'             => $option['bouwjaar'] ?? '',
+                        'surface'                => $option['adresopp'] ?? ''
                     ];
                     $dist = $newDist;
                 }

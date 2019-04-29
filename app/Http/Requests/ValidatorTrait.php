@@ -20,6 +20,16 @@ trait ValidatorTrait
     }
 
     /**
+     * Return the rules for the current request.
+     *
+     * @return array
+     */
+    private function getRulesForRequest(): array
+    {
+        return \Auth::user()->isFillingToolForOtherBuilding() ? $this->isFillingToolForUserRules() : $this->all();
+    }
+
+    /**
      * Validate the request.
      *
      * @param  Factory  $factory
@@ -28,20 +38,8 @@ trait ValidatorTrait
      */
     public function validator(Factory $factory)
     {
-        $validate = null;
-
-        // if the session set building != to the Auth user his building, then the Auth user is probably filling the tool for a resident
-        // we don't validate inputs if so
-        if (\Auth::user()->isFillingToolForOtherBuilding()) {
-            // pass empty values and rules so the validation will always pass
-            $validate = $factory->make($this->all(), $this->isFillingToolForUserRules());
-        } else {
-
-            $validate = $factory->make(
-                $this->all(), $this->container->call([$this, 'rules']), $this->messages(), $this->attributes()
-            );
-        }
-
-        return $validate;
+        return $factory->make(
+            $this->all(), $this->getRulesForRequest(), $this->messages(), $this->attributes()
+        );
     }
 }

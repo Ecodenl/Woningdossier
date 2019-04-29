@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\PicoHelper;
 use App\Http\Requests\FillAddressRequest;
-use App\Models\Cooperation;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class GeoController extends Controller

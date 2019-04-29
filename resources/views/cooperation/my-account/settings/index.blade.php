@@ -4,22 +4,58 @@
     <div class="container">
         <div class="row">
             <div class="col-md-9">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        @lang('woningdossier.cooperation.my-account.settings.index.header')
-                    </div>
+                <form class="has-address-data form-horizontal" method="POST"
+                      action="{{ route('cooperation.my-account.settings.update') }}" autocomplete="off">
+                    {{ method_field('PUT')  }}
+                    {{ csrf_field() }}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            @lang('woningdossier.cooperation.my-account.settings.index.building.header')
+                        </div>
 
-                    <div class="panel-body">
-                        <form class="form-horizontal" method="POST" action="{{ route('cooperation.my-account.settings.update') }}" autocomplete="off">
-                            {{ method_field('PUT')  }}
-                            {{ csrf_field() }}
+                        <div class="panel-body">
 
 
-                            <div class="form-group{{ $errors->has('building.street') ? ' has-error' : '' }}">
-                                <label for="street" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.street')</label>
+                            <div class="form-group{{ $errors->has('building.postal_code') ? ' has-error' : '' }}">
+                                <label for="building.postal_code" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.postal-code')</label>
 
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" name="building[street]" value="{{ old('building.street', $building->street) }}" required autofocus>
+                                    <input type="text" class="form-control" name="building[postal_code]" id="postal_code"
+                                           value="{{ old('building.postal_code', $building->postal_code) }}" required
+                                           autofocus>
+
+                                    @if ($errors->has('building.postal_code'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('building.postal_code') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
+
+                            <div class="form-group{{ $errors->has('building.number') ? ' has-error' : '' }}">
+                                <label for="building.number"
+                                       class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.number')</label>
+
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="building[number]" id="number"
+                                           value="{{ old('building.number', $building->number) }}" required autofocus>
+
+                                    @if ($errors->has('building.number'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('building.number') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group{{ $errors->has('building.street') ? ' has-error' : '' }}">
+                                <label for="street"
+                                       class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.street')</label>
+
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="building[street]" id="street"
+                                           value="{{ old('building.street', $building->street) }}" required autofocus>
 
                                     @if ($errors->has('building.street'))
                                         <span class="help-block">
@@ -29,24 +65,13 @@
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('building.number') ? ' has-error' : '' }}">
-                                <label for="building.number" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.number')</label>
-
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" name="building[number]" value="{{ old('building.number', $building->number) }}" required autofocus>
-
-                                    @if ($errors->has('building.number'))
-                                        <span class="help-block">
-                                        <strong>{{ $errors->first('building.number') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
                             <div class="form-group{{ $errors->has('building.extension') ? ' has-error' : '' }}">
-                                <label for="building.extension" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.extension')</label>
+                                <label for="building.extension"
+                                       class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.extension')</label>
 
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" name="building[extension]" value="{{ old('building.extension', $building->extension) }}" autofocus>
+                                    <input type="text" class="form-control" name="building[extension]" id="house_number_extension"
+                                           value="{{ old('building.extension', $building->extension) }}" autofocus>
 
                                     @if ($errors->has('building.extension'))
                                         <span class="help-block">
@@ -56,24 +81,14 @@
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('building.postal_code') ? ' has-error' : '' }}">
-                                <label for="building.postal_code" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.postal-code')</label>
 
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" name="building[postal_code]" value="{{ old('building.postal_code', $building->postal_code) }}" required autofocus>
-
-                                    @if ($errors->has('building.postal_code'))
-                                        <span class="help-block">
-                                        <strong>{{ $errors->first('building.postal_code') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
                             <div class="form-group{{ $errors->has('building.city') ? ' has-error' : '' }}">
-                                <label for="building.city" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.city')</label>
+                                <label for="building.city"
+                                       class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.city')</label>
 
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" name="building[city]" value="{{ old('building.city', $building->city) }}" required autofocus>
+                                    <input type="text" class="form-control" name="building[city]" id="city"
+                                           value="{{ old('building.city', $building->city) }}" required autofocus>
 
                                     @if ($errors->has('building.city'))
                                         <span class="help-block">
@@ -82,9 +97,18 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            @lang('woningdossier.cooperation.my-account.settings.index.user.header')
+                        </div>
+
+                        <div class="panel-body">
 
                             <div class="form-group{{ $errors->has('user.first_name') ? ' has-error' : '' }}">
-                                <label for="first_name" class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.first-name')</label>
+                                <label for="first_name"
+                                       class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.first-name')</label>
 
                                 <div class="col-md-8">
                                     <input id="first_name" type="text" class="form-control" name="user[first_name]"
@@ -120,7 +144,8 @@
                                        class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.e-mail')</label>
 
                                 <div class="col-md-8">
-                                    <input id="email" type="email" class="form-control" name="user[email]" value="{{ old('email', $user->email) }}" required autofocus>
+                                    <input id="email" type="email" class="form-control" name="user[email]"
+                                           value="{{ old('email', $user->email) }}" required autofocus>
 
                                     @if ($errors->has('user.email'))
                                         <span class="help-block">
@@ -195,31 +220,58 @@
                                     </button>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.reset-file.header')</div>
+
+                <div class="panel-body">
+                    @lang('woningdossier.cooperation.my-account.settings.reset-file.description')
+                    <form class="form-horizontal" method="POST"
+                          action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
+                        {{ csrf_field() }}
+
+                        <div class="form-group">
+                            <label for="reset-file"
+                                   class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.reset-file.label')</label>
+                            <div class="col-md-8">
+                                <a id="reset-account" class="btn btn-danger">
+                                    @lang('woningdossier.cooperation.my-account.settings.reset-file.submit')
+                                </a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
-
+    @can('delete-own-account')
         <div class="row">
             <div class="col-md-9">
                 <div class="panel panel-default">
-                    <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.reset-file.header')</div>
+                    <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.destroy.header')</div>
 
                     <div class="panel-body">
-                        @lang('woningdossier.cooperation.my-account.settings.reset-file.description')
                         <form class="form-horizontal" method="POST"
-                              action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
+                              action="{{ route('cooperation.my-account.settings.destroy', ['cooperation' => $cooperation]) }}">
+                            {{ method_field('DELETE') }}
                             {{ csrf_field() }}
 
                             <div class="form-group">
-                                <label for="reset-file"
-                                       class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.reset-file.label')</label>
+                                <label for="delete-account"
+                                       class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.destroy.label')</label>
                                 <div class="col-md-8">
-                                    <a id="reset-account" class="btn btn-danger">
-                                        @lang('woningdossier.cooperation.my-account.settings.reset-file.submit')
-                                    </a>
+                                    <button type="submit" id="delete-account" class="btn btn-danger">
+                                        @lang('woningdossier.cooperation.my-account.settings.destroy.submit')
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -227,37 +279,10 @@
                 </div>
             </div>
         </div>
-
-        @can('delete-own-account')
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.destroy.header')</div>
-
-                        <div class="panel-body">
-                            <form class="form-horizontal" method="POST"
-                                  action="{{ route('cooperation.my-account.settings.destroy', ['cooperation' => $cooperation]) }}">
-                                {{ method_field('DELETE') }}
-                                {{ csrf_field() }}
-
-                                <div class="form-group">
-                                    <label for="delete-account"
-                                           class="col-md-4 control-label">@lang('woningdossier.cooperation.my-account.settings.destroy.label')</label>
-                                    <div class="col-md-8">
-                                        <button type="submit" id="delete-account" class="btn btn-danger">
-                                            @lang('woningdossier.cooperation.my-account.settings.destroy.submit')
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
         @endcan
 
 
-    </div>
+        </div>
 @endsection
 
 

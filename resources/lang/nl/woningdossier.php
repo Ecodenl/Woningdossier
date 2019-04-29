@@ -843,7 +843,12 @@ return [
 
             'settings'     => [
                 'index' => [
-                    'header' => 'Mijn account',
+                    'building' => [
+                        'header' => 'Adres gegevens'
+                    ],
+                    'user' => [
+                        'header' => 'Mijn account',
+                    ],
                     'submit' => 'Update gegevens',
                     'form' => [
                         'header' => 'Mijn account',

@@ -88,7 +88,8 @@ $(document).ready(function () {
             }
 
             $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
-            //$('form').find('*').filter(':input:visible:first').trigger('change');
+            //$('for
+            // m').find('*').filter(':input:visible:first').trigger('change');
         }
     });
 

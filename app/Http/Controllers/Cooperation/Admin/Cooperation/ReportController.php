@@ -35,10 +35,10 @@ class ReportController extends Controller
         return CsvService::byYear();
     }
 
-//    public function downloadByMeasure()
-//    {
-//        return CsvService::byMeasure();
-//    }
+    public function downloadByMeasure()
+    {
+        return CsvService::byMeasure();
+    }
 
     public function downloadByMeasureAnonymized()
     {

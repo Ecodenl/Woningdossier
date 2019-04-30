@@ -14,9 +14,9 @@
             <div class="row">
                 <div class="col-sm-12">
                     <ul>
-                        <li>
-                            <a href="{{ route('cooperation.admin.cooperation.reports.download.by-year') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-year') (CSV)</a>
-                        </li>
+{{--                        <li>--}}
+{{--                            <a href="{{ route('cooperation.admin.cooperation.reports.download.by-year') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-year') (CSV)</a>--}}
+{{--                        </li>--}}
                         <li>
                             <a href="{{ route('cooperation.admin.cooperation.reports.download.by-measure') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-measure') (CSV)</a>
                         </li>

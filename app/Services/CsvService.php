@@ -20,7 +20,7 @@ use Illuminate\Support\Collection;
 
 class CsvService
 {
-    public static function byYearOLD($filename = 'by-year')
+    public static function byYear($filename = 'by-year')
     {
         // get user data
         $user        = \Auth::user();
@@ -123,7 +123,7 @@ class CsvService
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public static function byYear($filename = 'per-jaar-met-adres-gegevens')
+    public static function byMeasure($filename = 'per-jaar-met-adres-gegevens')
     {
         // Get the current cooperation
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());

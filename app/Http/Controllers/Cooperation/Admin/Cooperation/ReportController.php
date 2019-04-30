@@ -285,4 +285,71 @@ class ReportController extends Controller
 
         return CsvExportService::export($csvHeaders, $rows, 'by-measure');
     }
+
+    public function downloadByMeasureAnonymized()
+    {
+        // get user data
+        $user = \Auth::user();
+        $cooperation = $user->cooperations()->first();
+
+        // get the users from the cooperations
+        $users = $cooperation->users;
+
+        // set the csv headers
+        $csvHeaders = [
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+        ];
+
+        // get all the measures
+        $measures = MeasureApplication::all();
+
+        // put the measures inside the header array
+        foreach ($measures as $measure) {
+            $csvHeaders[] = $measure->measure_name;
+        }
+
+        // new array for the userdata
+        $rows = [];
+
+        // since we only want the reports from the resident
+        $residentInputSource = InputSource::findByShort('resident');
+
+        foreach ($users as $key => $user) {
+            $building = $user->buildings()->first();
+            if ($building instanceof Building) {
+                $postalCode = $building->postal_code;
+
+                // set the personal userinfo
+                $row[$key] = [$postalCode];
+
+                // set alle the measures to the user
+                foreach ($measures as $measure) {
+                    $row[$key][$measure->measure_name] = '';
+                }
+
+                // get the action plan advices for the user, but only for the resident his input source
+                $userActionPlanAdvices = $user
+                    ->actionPlanAdvices()
+                    ->withOutGlobalScope(GetValueScope::class)
+                    ->where('input_source_id', $residentInputSource->id)
+                    ->get();
+
+                // get the user measures / advices
+                foreach ($userActionPlanAdvices as $actionPlanAdvice) {
+                    $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+                    $measureName = $actionPlanAdvice->measureApplication->measure_name;
+
+                    if (is_null($plannedYear)) {
+                        $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
+                    }
+
+                    // fill the measure with the planned year
+                    $row[$key][$measureName] = $plannedYear;
+                }
+            }
+            $rows = $row;
+        }
+
+        return CsvExportService::export($csvHeaders, $rows, 'maatregel-anoniem');
+    }
 }

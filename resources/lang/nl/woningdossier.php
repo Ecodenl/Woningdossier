@@ -519,6 +519,7 @@ return [
                     'download'    => [
                         'by-year'                        => 'Actieplan per jaar',
                         'by-measure'                     => 'Actieplan per maatregel',
+                        'by-measure-anonymized'                     => 'Actieplan per maatregel (alleen postcode)',
                         'download-questionnaire-results' => 'Download de antwoorden van de bewoners op de custom vragenlijsten',
                     ],
                     'csv-columns' => [

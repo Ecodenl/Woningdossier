@@ -211,6 +211,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('', 'ReportController@index')->name('index');
                     Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
                     Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
+                    Route::get('by-measure-anonymized', 'ReportController@downloadByMeasureAnonymized')->name('download.by-measure-anonymized');
                     Route::group(['middleware' => 'role:cooperation-admin'], function () {
                         Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('download.questionnaire-results');
                     });

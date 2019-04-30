@@ -20,9 +20,12 @@
                         <li>
                             <a href="{{ route('cooperation.admin.cooperation.reports.download.by-measure') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-measure') (CSV)</a>
                         </li>
-                            <li>
-                                <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results') (CSV)</a>
-                            </li>
+                        <li>
+                            <a href="{{ route('cooperation.admin.cooperation.reports.download.by-measure-anonymized') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-measure-anonymized') (CSV)</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results') (CSV)</a>
+                        </li>
                     </ul>
                 </div>
             </div>

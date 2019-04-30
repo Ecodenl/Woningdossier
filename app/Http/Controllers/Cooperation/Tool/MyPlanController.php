@@ -116,7 +116,6 @@ class MyPlanController extends Controller
         $sortedAdvices = [];
 
         $myAdvices = $request->input('advice', []);
-
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
 

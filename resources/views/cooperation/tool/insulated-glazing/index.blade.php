@@ -355,12 +355,16 @@
                     <?php
                         $coachInputSource = App\Models\InputSource::findByShort('coach');
 
-                        $extraIsArray = is_array($buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra);
-                        $buildingInsulatedGlazingExists = $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first() instanceof \App\Models\BuildingInsulatedGlazing;
-                        $thereIsAComment = $extraIsArray ? array_key_exists('comment', $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra) : false;
-                    ?>
-                    @if(($buildingInsulatedGlazingExists && $extraIsArray) && $thereIsAComment)
 
+                        $buildingInsulatedGlazing = $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first();
+                        $buildingInsulatedGlazingExists = $buildingInsulatedGlazing instanceof \App\Models\BuildingInsulatedGlazing;
+
+                        $extraIsArray = $buildingInsulatedGlazingExists ? is_array($buildingInsulatedGlazing->extra) : false;
+
+                        $thereIsAComment = $extraIsArray ? array_key_exists('comment', $buildingInsulatedGlazing->extra) : false;
+                    ?>
+
+                    @if(($buildingInsulatedGlazingExists && $extraIsArray) && $thereIsAComment)
                         ({{$coachInputSource->name}})
                         @component('cooperation.tool.components.step-question', ['id' => '', 'translation' => 'general.specific-situation', 'required' => false])
 

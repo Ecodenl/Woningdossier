@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'filled-step' => \App\Http\Middleware\FilledStep::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'deny-if-filling-for-other-building' => \App\Http\Middleware\RedirectIfIsFillingForOtherBuilding::class
     ];
 }

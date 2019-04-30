@@ -41,7 +41,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
-            Route::get('home', 'HomeController@index')->name('home');
+
+            Route::get('home', 'HomeController@index')
+                 ->name('home')
+                 ->middleware('deny-if-filling-for-other-building');
+
             //Route::get('measures', 'MeasureController@index')->name('measures.index');
             Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
@@ -53,7 +57,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             // my account
-            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function () {
+            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => 'deny-if-filling-for-other-building'], function () {
                 Route::get('', 'MyAccountController@index')->name('index');
                 Route::resource('settings', 'SettingsController', ['only' => ['index', 'store']]);
                 Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');

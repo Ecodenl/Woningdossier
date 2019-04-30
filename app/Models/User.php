@@ -288,6 +288,41 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if a user is not removed from the building coach status table.
+     *
+     * @param $buildingId
+     *
+     * @return bool
+     */
+    public function isRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        // get the last known coach status for the current coach
+        $buildingCoachStatus = BuildingCoachStatus::where('coach_id', $this->id)->where('building_id', $buildingId)->get()->last();
+
+        if ($buildingCoachStatus instanceof BuildingCoachStatus) {
+            // if the coach his last known building status for the current building is removed
+            // we return true, the user either removed from the building
+            if (BuildingCoachStatus::STATUS_REMOVED == $buildingCoachStatus->status) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the opposite of the isRemovedFromBuildingCoachStatus function.
+     *
+     * @param $buildingId
+     *
+     * @return bool
+     */
+    public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
+    {
+        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
+    }
+
+    /**
      * Check if the logged in user is filling the tool for someone else.
      *
      * @return bool

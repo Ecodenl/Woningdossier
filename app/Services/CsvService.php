@@ -5,18 +5,22 @@ namespace App\Services;
 use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\PrivateMessage;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
+use App\Models\User;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class CsvService
 {
-    public static function byYear($filename = 'by-year')
+    public static function byYearOLD($filename = 'by-year')
     {
         // get user data
         $user        = \Auth::user();
@@ -113,13 +117,13 @@ class CsvService
     }
 
     /**
-     * CSV Report that returns the years by measure with full address data
+     * CSV Report that returns the measures with year with full address data
      *
      * @param  string  $filename
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public static function byMeasure($filename = 'by-measure')
+    public static function byYear($filename = 'per-jaar-met-adres-gegevens')
     {
         // Get the current cooperation
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
@@ -129,6 +133,10 @@ class CsvService
 
         // set the csv headers
         $csvHeaders = [
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
@@ -136,9 +144,11 @@ class CsvService
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.country-code'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
         ];
 
         // get all the measures
@@ -158,11 +168,21 @@ class CsvService
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
-                $street      = $building->street;
-                $number      = $building->number;
-                $city        = $building->city;
-                $postalCode  = $building->postal_code;
-                $countryCode = $building->country_code;
+
+                /** @var Collection $conversationRequestsForBuilding */
+                $conversationRequestsForBuilding = PrivateMessage::conversationRequest($building->id)->forMyCooperation()->get();
+
+                $createdAt = $user->created_at;
+                $buildingStatus = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+                $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+                $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+                $connectedCoachNames = [];
+                // get the names from the coaches and add them to a array
+                foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
+                    array_push($connectedCoachNames, User::find($coachId)->getFullName());
+                }
+                // implode it.
+                $connectedCoachNames = implode($connectedCoachNames, ', ');
 
                 $firstName    = $user->first_name;
                 $lastName     = $user->last_name;
@@ -170,10 +190,23 @@ class CsvService
                 $phoneNumber  = "'".$user->phone_number;
                 $mobileNumber = $user->mobile;
 
+                $street      = $building->street;
+                $number      = $building->number;
+                $city        = $building->city;
+                $postalCode  = $building->postal_code;
+
+
+                dd($building->buildingFeatures()->forMe()->get());
+                $buildingType = $building->getBuildingType()->name ?? '';
+                $buildYear = $building->buildingFeatures->build_year ?? '';
+                $exampleBuilding = $building->exampleBuilding->name ?? '';
+
                 // set the personal userinfo
                 $row[$key] = [
-                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode,
-                    $countryCode
+                    $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                    $street, $number, $postalCode, $city,
+                    $buildingType, $buildYear, $exampleBuilding
                 ];
 
                 // set alle the measures to the user

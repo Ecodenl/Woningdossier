@@ -108,11 +108,11 @@ class MyPlanHelper
         $interested = false;
 
         // get the type of the step
-        $type = key(self::STEP_INTERESTS[$step]);
+//        $type = key(self::STEP_INTERESTS[$step]);
         // count the total interestedInIds
-        $totalInterestInIds = count(self::STEP_INTERESTS[$step][$type]);
+//        $totalInterestInIds = count(self::STEP_INTERESTS[$step][$type]);
         // get the full user input for the current step
-        $fullRequestForUserHisAdvicesOnCurrentStep = $request->input('advice.*.'.$step);
+//        $fullRequestForUserHisAdvicesOnCurrentStep = $request->input('advice.*.'.$step);
 
         if (array_key_exists('planned_year', $myAdvice[$step])) {
             $requestPlannedYear = $myAdvice[$step]['planned_year'];
@@ -122,7 +122,7 @@ class MyPlanHelper
             $interested = true;
         }
 
-        $stepInterests = self::STEP_INTERESTS[$step];
+//        $stepInterests = self::STEP_INTERESTS[$step];
         // update the planned year
         $updates = [
             'planned' => $interested,
@@ -132,6 +132,7 @@ class MyPlanHelper
         // update the advices
         $advice->update($updates);
 
+        /*
         $plannedYearsForCurrentStep = collect();
         // check if the current step has more then 1 interest question
         if ($totalInterestInIds > 1) {
@@ -286,6 +287,7 @@ class MyPlanHelper
                 );
             }
         }
+        */
 
         return $step;
     }

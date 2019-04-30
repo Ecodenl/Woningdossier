@@ -207,8 +207,9 @@
 
         $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
 
-            var data = $(this).parent().parent().find('input').serialize();
+            // var data = $(this).parent().parent().find('input').serialize();
 
+            var data = $(this).closest("form").serialize();
             $.ajax({
                 type: "POST",
                 url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
@@ -289,7 +290,7 @@
         });
 
         // Trigger the change event so it will load the data
-        // $('form').find('*').filter(':input:visible:not(button):first').trigger('change');
+        $('form').find('*').filter(':input:visible:not(button):first').trigger('change');
 
         $('#warning-modal').on('shown.bs.modal', function (e) {
                 var clicked = $(e.relatedTarget);

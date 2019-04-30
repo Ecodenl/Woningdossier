@@ -974,6 +974,7 @@ return [
             ],
 
             'wall-insulation' => [
+            	'title' => 'Gevelisolatie',
                 'intro' => [
                     'title' => 'Gevelisolatie',
                 ],
@@ -996,6 +997,10 @@ return [
                 'no-roof' => 'Dit veld is verplicht als u een dak type heeft gekozen',
                 'title'   => 'Dakisolatie',
             ],
+
+	        'high-efficiency-boiler' => [
+	        	'title' => 'HR CV Ketel',
+	        ],
 
             'boiler' => [
                 'title' => 'HR CV Ketel',

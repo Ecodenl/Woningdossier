@@ -26,10 +26,12 @@ class ToolController extends Controller
      */
     public function fillForUser(Cooperation $cooperation, $buildingId)
     {
+
         // The building the coach wants to edit
         $building = Building::find($buildingId);
         // get the owner of the building
-        $user = User::find($building->user_id);
+        $user = $cooperation->users()->findOrFail($building->user_id);
+
         // we cant query on the Spatie\Role model so we first get the result on the "original model"
         //        $role = Role::findByName($user->roles->first()->name);
         $role = Role::findByName(HoomdossierSession::currentRole());
@@ -65,7 +67,7 @@ class ToolController extends Controller
         // The building the coach wants to edit
         $building = Building::find($buildingId);
         // get the owner of the building
-        $user = User::find($building->user_id);
+        $user = $cooperation->users()->findOrFail($building->user_id);
         // we cant query on the Spatie\Role model so we first get the result on the "original model"
 
         $role = Role::findByName(HoomdossierSession::currentRole());

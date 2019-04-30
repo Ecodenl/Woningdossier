@@ -196,12 +196,11 @@ class CsvService
                 $postalCode  = $building->postal_code;
 
 
-                $buildingFeaturesQuery = $building->buildingFeatures()->buildingTypes();
+                $buildingFeatures = $building->buildingFeatures()->forMe()->residentInput()->first();
 
-                $buildingType = $buildingFeaturesQuery;
+                $buildingType = $buildingFeatures->buildingType->name;
                 dd($buildingType);
-                \DB::enableQueryLog();
-                $buildYear = $building->buildingFeatures()->forMe()->residentInput()->first()->build_year ?? '';
+                $buildYear = $buildingFeatures->build_year ?? '';
 
                 $exampleBuilding = $building->exampleBuilding()->forMe()->residentInput()->first()->name ?? '';
 

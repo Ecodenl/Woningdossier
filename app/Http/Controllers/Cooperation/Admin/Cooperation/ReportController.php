@@ -37,6 +37,7 @@ class ReportController extends Controller
 
     public function downloadByMeasure()
     {
+
         return CsvService::byMeasure();
     }
 

@@ -35,6 +35,20 @@ trait GetMyValuesTrait
     }
 
     /**
+     * Method to only scope the resident input source
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeResidentInput($query)
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        return $query->where('input_source_id', $residentInputSource->id);
+    }
+
+    /**
      * Check on a collection that comes from the forMe() scope if it contains a
      * Coach input source.
      *

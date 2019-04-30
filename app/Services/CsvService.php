@@ -196,10 +196,14 @@ class CsvService
                 $postalCode  = $building->postal_code;
 
 
-                dd($building->buildingFeatures()->forMe()->get());
-                $buildingType = $building->getBuildingType()->name ?? '';
-                $buildYear = $building->buildingFeatures->build_year ?? '';
-                $exampleBuilding = $building->exampleBuilding->name ?? '';
+                $buildingFeaturesQuery = $building->buildingFeatures()->buildingTypes();
+
+                $buildingType = $buildingFeaturesQuery;
+                dd($buildingType);
+                \DB::enableQueryLog();
+                $buildYear = $building->buildingFeatures()->forMe()->residentInput()->first()->build_year ?? '';
+
+                $exampleBuilding = $building->exampleBuilding()->forMe()->residentInput()->first()->name ?? '';
 
                 // set the personal userinfo
                 $row[$key] = [
@@ -218,7 +222,7 @@ class CsvService
                 $userActionPlanAdvices = $user
                     ->actionPlanAdvices()
                     ->withOutGlobalScope(GetValueScope::class)
-                    ->where('input_source_id', $residentInputSource->id)
+                    ->residentInput()
                     ->get();
 
                 // get the user measures / advices

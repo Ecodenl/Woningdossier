@@ -179,9 +179,8 @@ class CsvService
 
 
                 /** @var Collection $conversationRequestsForBuilding */
-                \DB::enableQueryLog();
-                $conversationRequestsForBuilding = PrivateMessage::conversationRequest($building->id)->forMyCooperation()->get();
-                dd(\DB::getQueryLog());
+                $conversationRequestsForBuilding = PrivateMessage::conversationRequestByBuildingId($building->id)->forMyCooperation()->get();
+
                 $createdAt           = $user->created_at;
                 $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
                 $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
@@ -193,10 +192,6 @@ class CsvService
                 }
                 // implode it.
                 $connectedCoachNames = implode($connectedCoachNames, ', ');
-
-                if ($building->id != 1) {
-                    dd($allowAccess, $building->id, $conversationRequestsForBuilding);
-                }
 
                 $firstName    = $user->first_name;
                 $lastName     = $user->last_name;
@@ -403,7 +398,7 @@ class CsvService
             $building = $user->buildings()->first();
 
             /** @var Collection $conversationRequestsForBuilding */
-            $conversationRequestsForBuilding = PrivateMessage::conversationRequest($building->id)->forMyCooperation()->get();
+            $conversationRequestsForBuilding = PrivateMessage::conversationRequestByBuildingId($building->id)->forMyCooperation()->get();
 
             $createdAt           = $user->created_at;
             $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);

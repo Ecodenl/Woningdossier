@@ -6,6 +6,7 @@ use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -195,14 +196,16 @@ class CsvService
                 $city        = $building->city;
                 $postalCode  = $building->postal_code;
 
+                // get the building features from the resident
+                $buildingFeatures = $building
+                    ->buildingFeatures()
+                    ->withoutGlobalScope(GetValueScope::class)
+                    ->residentInput()
+                    ->first();
 
-                $buildingFeatures = $building->buildingFeatures()->forMe()->residentInput()->first();
-
-                $buildingType = $buildingFeatures->buildingType->name;
-                dd($buildingType);
+                $buildingType = $buildingFeatures->buildingType->name ?? '';
                 $buildYear = $buildingFeatures->build_year ?? '';
-
-                $exampleBuilding = $building->exampleBuilding()->forMe()->residentInput()->first()->name ?? '';
+                $exampleBuilding = $building->exampleBuilding->name ?? '';
 
                 // set the personal userinfo
                 $row[$key] = [

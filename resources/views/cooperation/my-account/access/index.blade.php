@@ -3,10 +3,11 @@
 @section('my_account_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.my-account.messages.index.header')
+            @lang('woningdossier.cooperation.my-account.access.index.header')
         </div>
 
         <div class="panel-body">
+        @if($conversationRequests->isNotEmpty())
             <div class="row">
                 <div class="col-sm-12">
                     <form id="allow-access-form" action="{{route('cooperation.my-account.access.allow-access')}}" method="post">
@@ -29,6 +30,7 @@
                     </form>
                 </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-sm-12">
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">

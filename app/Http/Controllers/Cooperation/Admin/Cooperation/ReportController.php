@@ -70,4 +70,9 @@ class ReportController extends Controller
     {
         return CsvService::questionnaireResultsAnonymized();
     }
+
+    public function downloadTotalDump()
+    {
+        return CsvService::totalDump();
+    }
 }

@@ -524,6 +524,8 @@ return [
 
                         'download-questionnaire-results' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens',
                         'download-questionnaire-results-anonymized' => 'Antwoorden van de bewoners op de customer vragenlijsten, zonder adresgegevens',
+
+                        'total-dump' => 'Alle ingevulde gegevens, met adresgegevens'
                     ],
                     'csv-columns' => [
                         'created-at' => 'Datum account',

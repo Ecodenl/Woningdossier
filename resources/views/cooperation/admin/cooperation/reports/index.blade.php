@@ -29,6 +29,9 @@
                         <li>
                             <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results-anonymized') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results-anonymized') (CSV)</a>
                         </li>
+                        <li>
+                            <a href="{{ route('cooperation.admin.cooperation.reports.download.total-dump') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.total-dump') (CSV)</a>
+                        </li>
                     </ul>
                 </div>
             </div>

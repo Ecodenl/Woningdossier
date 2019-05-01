@@ -68,4 +68,14 @@ class Step extends Model
 
         return false;
     }
+
+    /**
+     * Get the measure applications from a step
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function measureApplications()
+    {
+        return $this->hasMany(MeasureApplication::class);
+    }
 }

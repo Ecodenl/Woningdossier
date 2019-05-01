@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\Arr;
+use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -14,6 +15,7 @@ use App\Models\PrivateMessage;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
+use App\Models\Step;
 use App\Models\User;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
@@ -435,12 +437,12 @@ class CsvService
 
             // set the personal user info only if the user has question answers.
             if ($building->questionAnswers()->withoutGlobalScope(GetValueScope::class)->residentInput()->count() > 0) {
-                    $rows[$building->id] = [
-                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                        $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
-                        $street, $number, $postalCode, $city,
-                        $buildingType, $buildYear
-                    ];
+                $rows[$building->id] = [
+                    $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                    $street, $number, $postalCode, $city,
+                    $buildingType, $buildYear
+                ];
             }
             foreach ($questionnaires as $questionnaire) {
 
@@ -547,10 +549,10 @@ class CsvService
         foreach ($usersFromCooperation as $user) {
             $building = $user->buildings()->first();
 
-            $createdAt           = $user->created_at;
-            $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
-            $postalCode = $building->postal_code;
-            $city       = $building->city;
+            $createdAt      = $user->created_at;
+            $buildingStatus = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+            $postalCode     = $building->postal_code;
+            $city           = $building->city;
 
             // get the building features from the resident
             $buildingFeatures = $building
@@ -564,10 +566,10 @@ class CsvService
 
             // set the personal user info only if the user has question answers.
             if ($building->questionAnswers()->withoutGlobalScope(GetValueScope::class)->residentInput()->count() > 0) {
-                    $rows[$building->id] = [
-                        $createdAt, $buildingStatus, $postalCode, $city,
-                        $buildingType, $buildYear
-                    ];
+                $rows[$building->id] = [
+                    $createdAt, $buildingStatus, $postalCode, $city,
+                    $buildingType, $buildYear
+                ];
             }
             foreach ($questionnaires as $questionnaire) {
 
@@ -641,6 +643,61 @@ class CsvService
 
         return static::export($csv, $filename);
 
+    }
+
+
+    public static function totalDump($filename = 'totale-dump')
+    {
+
+        $residentInputSource = InputSource::findByShort('resident');
+
+        // Get the current cooperation with its users
+        $cooperation = Cooperation::with('users')->find(HoomdossierSession::getCooperation());
+
+        // Get the users from the cooperations
+        $users = $cooperation->users;
+
+        // Get all the steps with its measure applications
+        $steps = Step::with('measureApplications')->get();
+
+        $headers = [];
+        $rows    = [];
+
+        foreach ($users as $user) {
+            $row = [$user->id];
+            // loop through the steps
+            foreach ($steps as $step) {
+                // get the measure applications
+                foreach ($step->measureApplications as $measureApplication) {
+
+                    $row[$user->id][$step->slug][$measureApplication->measure_name] = '';
+
+
+                    // get the action plan advices for the user, but only for the resident his input source
+                    $userActionPlanAdvices = $user
+                        ->actionPlanAdvices()
+                        ->withOutGlobalScope(GetValueScope::class)
+                        ->residentInput()
+                        ->get();
+
+                    // get the user measures / advices
+                    foreach ($userActionPlanAdvices as $actionPlanAdvice) {
+                        $plannedYear = $actionPlanAdvice->planned_year ?? $actionPlanAdvice->year;
+                        $measureName = $actionPlanAdvice->measureApplication->measure_name;
+                        $co2Savings = Calculator::calculateCo2Savings($actionPlanAdvice->savings_gas);
+
+                        if (is_null($plannedYear)) {
+                            $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
+                        }
+
+                        // fill the measure with the planned year
+                        $row[$user->id][$step->slug][$measureApplication->measure_name] = $plannedYear;
+                    }
+
+                }
+            }
+            dd($row);
+        }
     }
 
     /**

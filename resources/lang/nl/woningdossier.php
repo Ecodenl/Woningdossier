@@ -522,7 +522,8 @@ return [
                         'by-measure'                     => 'Actieplan per maatregel, met alle adresgegevens',
                         'by-measure-anonymized'          => 'Actieplan per maatregel, zonder adresgegevens',
 
-                        'download-questionnaire-results' => 'Download de antwoorden van de bewoners op de custom vragenlijsten',
+                        'download-questionnaire-results' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens',
+                        'download-questionnaire-results-anonymized' => 'Antwoorden van de bewoners op de customer vragenlijsten, zonder adresgegevens',
                     ],
                     'csv-columns' => [
                         'created-at' => 'Datum account',

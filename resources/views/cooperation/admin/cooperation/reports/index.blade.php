@@ -27,7 +27,7 @@
                             <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results') (CSV)</a>
                         </li>
                         <li>
-                            <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results-anonymized') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results') (CSV)</a>
+                            <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results-anonymized') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results-anonymized') (CSV)</a>
                         </li>
                     </ul>
                 </div>

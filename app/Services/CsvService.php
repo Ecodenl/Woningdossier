@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\Arr;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingFeature;
@@ -663,41 +664,79 @@ class CsvService
         $headers = [];
         $rows    = [];
 
-        foreach ($users as $user) {
-            $row = [$user->id];
-            // loop through the steps
-            foreach ($steps as $step) {
-                // get the measure applications
-                foreach ($step->measureApplications as $measureApplication) {
+        // get the content structure of the whole tool.
+        $structure = static::getContentStructure();
 
-                    $row[$user->id][$step->slug][$measureApplication->measure_name] = '';
+        foreach ($structure as $step => $stepStructure) {
 
-
-                    // get the action plan advices for the user, but only for the resident his input source
-                    $userActionPlanAdvices = $user
-                        ->actionPlanAdvices()
-                        ->withOutGlobalScope(GetValueScope::class)
-                        ->residentInput()
-                        ->get();
-
-                    // get the user measures / advices
-                    foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-                        $plannedYear = $actionPlanAdvice->planned_year ?? $actionPlanAdvice->year;
-                        $measureName = $actionPlanAdvice->measureApplication->measure_name;
-                        $co2Savings = Calculator::calculateCo2Savings($actionPlanAdvice->savings_gas);
-
-                        if (is_null($plannedYear)) {
-                            $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
-                        }
-
-                        // fill the measure with the planned year
-                        $row[$user->id][$step->slug][$measureApplication->measure_name] = $plannedYear;
-                    }
-
-                }
+            foreach ($stepStructure as $tableAndColumnName => $question) {
+                $headers[$tableAndColumnName] = $question['label'];
             }
-            dd($row);
+            // for every step we need to set measure application and saving header.
+            $currentStep = Step::with('measureApplications')->where('slug', $step)->first();
+            // check if the step has measures
+            if ($currentStep->measureApplications->isNotEmpty()) {
+                foreach ($currentStep->measureApplications as $measureApplication) {
+                    $headers[] = $measureApplication->measure_name;
+                }
+                // get the general cost stuff.
+                foreach (__($step.'.costs') as $key => $translations) {
+                    if ( ! empty($translations)) {
+                        if (array_key_exists('title', $translations)) {
+                            $headers[] = $translations['title'];
+                        }
+                    }
+                }
+                $headers[] = __('general.costs.savings-in-euro.title');
+                $headers[] = __('general.costs.indicative-costs.title');
+                $headers[] = __('general.costs.comparable-rent.title');
+            dd($headers);
+            }
         }
+
+//        foreach ($users as $user) {
+//            $row = [];
+//
+//            // loop through the steps
+//            foreach ($steps as $step) {
+//                // get the measure applications
+//                foreach ($step->measureApplications as $measureApplication) {
+//
+//
+//                    // get the action plan advices for the user, but only for the resident his input source
+//                    $userActionPlanAdvices = $user
+//                        ->actionPlanAdvices()
+//                        ->withOutGlobalScope(GetValueScope::class)
+//                        ->residentInput()
+//                        ->get();
+//
+//                    // get the user measures / advices
+//                    foreach ($userActionPlanAdvices as $actionPlanAdvice) {
+//                        $plannedYear = $actionPlanAdvice->planned_year ?? $actionPlanAdvice->year;
+//                        $measureName = $actionPlanAdvice->measureApplication->measure_name;
+//                        $co2Savings = Calculator::calculateCo2Savings($actionPlanAdvice->savings_gas);
+//                        $savingsGas = $actionPlanAdvice->savings_gas;
+//                        $moneySavings = $actionPlanAdvice->savings_money;
+//
+//                        if (is_null($plannedYear)) {
+//                            $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
+//                        }
+//
+//                        // fill the measure with the planned year
+//                        $row[$user->id][$step->slug][$measureApplication->measure_name] = $plannedYear;
+//                        $row[$user->id][$step->slug]['Gas besparing'] = $savingsGas;
+//                        $row[$user->id][$step->slug]['Gas besparing'] = $savingsGas;
+//                    }
+//
+//                }
+//            }
+//            dd($row);
+//        }
+    }
+
+    public static function getContentStructure()
+    {
+        return ExampleBuildingService::getContentStructure();
     }
 
     /**

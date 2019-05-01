@@ -25,24 +25,49 @@ class ReportController extends Controller
         return view('cooperation.admin.cooperation.reports.index');
     }
 
-    public function downloadQuestionnaireResults()
-    {
-        return CsvService::questionnaireResults();
-    }
-
     public function downloadByYear()
     {
         return CsvService::byYear();
     }
 
+    /**
+     * Download the measure action plan
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
     public function downloadByMeasure()
     {
 
         return CsvService::byMeasure();
     }
 
+    /**
+     * Download the measure action plan, anonymized version
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
     public function downloadByMeasureAnonymized()
     {
         return CsvService::byMeasureAnonymized();
+    }
+
+    /**
+     * Download the questionnaire results
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function downloadQuestionnaireResults()
+    {
+        return CsvService::questionnaireResults();
+    }
+
+    /**
+     * Download the questionnaire results anonymized
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function downloadQuestionnaireResultsAnonymized()
+    {
+        return CsvService::questionnaireResultsAnonymized();
     }
 }

@@ -21,6 +21,13 @@ use Illuminate\Support\Collection;
 
 class CsvService
 {
+    /**
+     * CSV Report that returns the measures by year, not used anymore. Its just here in case
+     *
+     * @param  string  $filename
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
     public static function byYear($filename = 'by-year')
     {
         // get user data
@@ -173,10 +180,10 @@ class CsvService
                 /** @var Collection $conversationRequestsForBuilding */
                 $conversationRequestsForBuilding = PrivateMessage::conversationRequest($building->id)->forMyCooperation()->get();
 
-                $createdAt = $user->created_at;
-                $buildingStatus = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
-                $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
-                $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+                $createdAt           = $user->created_at;
+                $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+                $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+                $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
                 // get the names from the coaches and add them to a array
                 foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
@@ -191,10 +198,10 @@ class CsvService
                 $phoneNumber  = "'".$user->phone_number;
                 $mobileNumber = $user->mobile;
 
-                $street      = $building->street;
-                $number      = $building->number;
-                $city        = $building->city;
-                $postalCode  = $building->postal_code;
+                $street     = $building->street;
+                $number     = $building->number;
+                $city       = $building->city;
+                $postalCode = $building->postal_code;
 
                 // get the building features from the resident
                 $buildingFeatures = $building
@@ -203,8 +210,8 @@ class CsvService
                     ->residentInput()
                     ->first();
 
-                $buildingType = $buildingFeatures->buildingType->name ?? '';
-                $buildYear = $buildingFeatures->build_year ?? '';
+                $buildingType    = $buildingFeatures->buildingType->name ?? '';
+                $buildYear       = $buildingFeatures->build_year ?? '';
                 $exampleBuilding = $building->exampleBuilding->name ?? '';
 
                 // set the personal userinfo
@@ -292,11 +299,11 @@ class CsvService
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
 
-                $createdAt = $user->created_at;
+                $createdAt      = $user->created_at;
                 $buildingStatus = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
 
-                $city        = $building->city;
-                $postalCode  = $building->postal_code;
+                $city       = $building->city;
+                $postalCode = $building->postal_code;
 
                 // get the building features from the resident
                 $buildingFeatures = $building
@@ -305,8 +312,8 @@ class CsvService
                     ->residentInput()
                     ->first();
 
-                $buildingType = $buildingFeatures->buildingType->name ?? '';
-                $buildYear = $buildingFeatures->build_year ?? '';
+                $buildingType    = $buildingFeatures->buildingType->name ?? '';
+                $buildYear       = $buildingFeatures->build_year ?? '';
                 $exampleBuilding = $building->exampleBuilding->name ?? '';
 
                 // set the personal userinfo
@@ -361,15 +368,86 @@ class CsvService
         $questionnaires = Questionnaire::all();
         $rows           = [];
 
+//        $headers = [
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+//        ];
+
         // we only want to query on the buildings that belong to the cooperation of the current user
         $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $currentCooperation->users()->role('resident')->with('buildings')->get();
 
-        foreach ($questionnaires as $questionnaire) {
-            foreach ($usersFromCooperation as $user) {
-                $building = $user->buildings()->first();
+
+        foreach ($usersFromCooperation as $user) {
+            $building = $user->buildings()->first();
+
+            /** @var Collection $conversationRequestsForBuilding */
+            $conversationRequestsForBuilding = PrivateMessage::conversationRequest($building->id)->forMyCooperation()->get();
+
+            $createdAt           = $user->created_at;
+            $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+            $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+            $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+            $connectedCoachNames = [];
+            // get the names from the coaches and add them to a array
+            foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
+                array_push($connectedCoachNames, User::find($coachId)->getFullName());
+            }
+            // implode it.
+            $connectedCoachNames = implode($connectedCoachNames, ', ');
+
+            $firstName    = $user->first_name;
+            $lastName     = $user->last_name;
+            $email        = $user->email;
+            $phoneNumber  = "'".$user->phone_number;
+            $mobileNumber = $user->mobile;
+
+            $street     = $building->street;
+            $number     = $building->number;
+            $city       = $building->city;
+            $postalCode = $building->postal_code;
+
+            // get the building features from the resident
+            $buildingFeatures = $building
+                ->buildingFeatures()
+                ->withoutGlobalScope(GetValueScope::class)
+                ->residentInput()
+                ->first();
+
+            $buildingType = $buildingFeatures->buildingType->name ?? '';
+            $buildYear    = $buildingFeatures->build_year ?? '';
+
+            // set the personal user info only if the user has question answers.
+            if ($building->questionAnswers()->withoutGlobalScope(GetValueScope::class)->residentInput()->count() > 0) {
+                    $rows[$building->id] = [
+                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                        $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                        $street, $number, $postalCode, $city,
+                        $buildingType, $buildYear
+                    ];
+            }
+            foreach ($questionnaires as $questionnaire) {
+
+                //0 => "Staat op de planning"
+                //1 => "Ja je kan een nieuwe regel doen!"
+                //2 => "Nou het kan beter"
+                //3 => "Weet ik veel"
+
 
                 $questionAnswersForCurrentQuestionnaire =
                     \DB::table('questionnaires')
@@ -384,9 +462,11 @@ class CsvService
                                $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
                                         ->where('questions_answers.building_id', '=', $building->id);
                            })
-                       ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name')
+                       ->select('questions_answers.answer', 'questions.id as question_id',
+                           'translations.translation as question_name')
                        ->get();
 
+                // loop through the answers for ONE questionnaire
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
                     $answer          = $questionAnswerForCurrentQuestionnaire->answer;
                     $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
@@ -417,10 +497,12 @@ class CsvService
                             }
                         }
                         $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
+//                        $rows[$building->id][] = $answer;
                     }
                 }
             }
         }
+        dd($rows);
 
         // unset the whole empty arrays
         // so we only set rows with answers.
@@ -430,9 +512,9 @@ class CsvService
             }
         }
 
-        $headers = [];
+        // merge the csv headers with the question headers.
         if ( ! empty($rows)) {
-            $headers = array_keys(array_first($rows));
+            array_merge($headers, array_keys(array_first($rows)));
         }
 
         $csv = static::write($headers, $rows);

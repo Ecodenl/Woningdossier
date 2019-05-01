@@ -214,6 +214,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('by-measure-anonymized', 'ReportController@downloadByMeasureAnonymized')->name('download.by-measure-anonymized');
                     Route::group(['middleware' => 'role:cooperation-admin'], function () {
                         Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('download.questionnaire-results');
+                        Route::get('questionnaire-results-anonymized', 'ReportController@downloadQuestionnaireResultsAnonymized')->name('download.questionnaire-results-anonymized');
                     });
                 });
 

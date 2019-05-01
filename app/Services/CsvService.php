@@ -177,9 +177,11 @@ class CsvService
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
 
-                /** @var Collection $conversationRequestsForBuilding */
-                $conversationRequestsForBuilding = PrivateMessage::conversationRequest($building->id)->forMyCooperation()->get();
 
+                /** @var Collection $conversationRequestsForBuilding */
+                \DB::enableQueryLog();
+                $conversationRequestsForBuilding = PrivateMessage::conversationRequest($building->id)->forMyCooperation()->get();
+                dd(\DB::getQueryLog());
                 $createdAt           = $user->created_at;
                 $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
                 $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
@@ -191,6 +193,10 @@ class CsvService
                 }
                 // implode it.
                 $connectedCoachNames = implode($connectedCoachNames, ', ');
+
+                if ($building->id != 1) {
+                    dd($allowAccess, $building->id, $conversationRequestsForBuilding);
+                }
 
                 $firstName    = $user->first_name;
                 $lastName     = $user->last_name;
@@ -363,7 +369,7 @@ class CsvService
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public static function questionnaireResults($filename = 'questionnaire-results')
+    public static function questionnaireResults($filename = 'vragenlijst-met-adres-gegevens')
     {
         $questionnaires = Questionnaire::all();
         $rows           = [];
@@ -516,13 +522,13 @@ class CsvService
     }
 
     /**
-     * CSV Report that returns the questionnaire results
+     * CSV Report that returns the questionnaire results only with the zipcode and basic info
      *
      * @param  string  $filename
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public static function questionnaireResultsAnonymized($filename = 'questionnaire-results')
+    public static function questionnaireResultsAnonymized($filename = 'vragenlijst-anoniem')
     {
         $questionnaires = Questionnaire::all();
         $rows           = [];
@@ -642,6 +648,14 @@ class CsvService
 
     }
 
+    /**
+     * Write a csv file
+     *
+     * @param $headers
+     * @param $contents
+     *
+     * @return \Closure
+     */
     private static function write($headers, $contents)
     {
 
@@ -660,6 +674,14 @@ class CsvService
         return $callback;
     }
 
+    /**
+     * Export a CSV file
+     *
+     * @param $callback
+     * @param $filename
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
     private static function export($callback, $filename)
     {
         $filename = str_replace('.csv', '', $filename);

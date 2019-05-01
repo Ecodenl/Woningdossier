@@ -6,24 +6,26 @@
 
 @section('step_content')
 
-    <div class="row">
-        <div class="col-md-12">
-            <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
+    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
+        <div class="row">
+            <div class="col-md-12">
+                <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
+            </div>
         </div>
-    </div>
 
-    @component('cooperation.tool.components.modal', ['id' => 'messagesModal'])
-        @slot('title')
-            {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
-        @endslot
+        @component('cooperation.tool.components.modal', ['id' => 'messagesModal'])
+            @slot('title')
+                {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
+            @endslot
 
-        @foreach($coachComments as $stepName => $coachComment)
-            <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
-            <p>{{$coachComment}}</p>
-            <hr>
-        @endforeach
-    @endcomponent
+            @foreach($coachComments as $stepName => $coachComment)
+                <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
+                <p>{{$coachComment}}</p>
+                <hr>
+            @endforeach
+        @endcomponent
+    @endif
 
     <form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
         {{ csrf_field() }}
@@ -61,26 +63,22 @@
                         </td>
 
                         <td>
-                            @if($measureType == "energy_saving")
-                                <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\StepHelper::hasInterestInStep($step) && $advice->planned) checked @endif />
-                            @else
-                                <input class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned) checked @endif />
-                            @endif
+                            <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned) checked @endif />
                         </td>
                         <td>
                             {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                         </td>
                         <td>
-                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs) }}
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs, 0, true) }}
                         </td>
                         <td>
-                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money) }}
+                            &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money, 0, true) }}
                         </td>
                         <td class="advice-year">
                             {{ $advice->year }}
                         </td>
                         <td>
-                            <input type="text" maxlength="4" size="4" class="form-control planned-year" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" value="{{ $advice->planned_year }}" />
+                            <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif type="text" maxlength="4" size="4" class="form-control planned-year" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" value="{{ $advice->planned_year }}" />
                         </td>
                     </tr>
                     <tr class="collapse" id="more-info-{{$advice->id}}" >
@@ -91,9 +89,9 @@
                             <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong>
                         </td>
                         <td>
-                            {{ \App\Helpers\NumberFormatter::format($advice->savings_gas) }} m<sup>3</sup>
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_gas, 0, true) }} m<sup>3</sup>
                             <br>
-                            {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity) }} kWh
+                            {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity, 0, true) }} kWh
                         </td>
                         <td colspan="3">
                         </td>
@@ -102,7 +100,9 @@
             @endforeach
                     </tbody>
                 </table>
+                @if(!\App\Helpers\HoomdossierSession::isUserObserving())
                 <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
+                @endif
             </div>
 
         </div>
@@ -123,8 +123,10 @@
             <?php
                 $myActionPlanComment = $actionPlanComments->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->first();
             ?>
+            @if(!\App\Helpers\HoomdossierSession::isUserObserving())
             <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
                 {{csrf_field()}}
+            @endif
                 <div class="form-group">
                     <label for="" class=" control-label">
                         <i data-target="#my-plan-own-comment-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
@@ -137,8 +139,10 @@
                         {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
                     @endcomponent
                 </div>
-                <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
+                @if(!\App\Helpers\HoomdossierSession::isUserObserving())
+                    <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
             </form>
+                @endif
         </div>
     </div>
 
@@ -198,11 +202,14 @@
         });
 
         $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
-            var form = $(this).closest("form").serialize();
+
+            // var data = $(this).parent().parent().find('input').serialize();
+
+            var data = $(this).closest("form").serialize();
             $.ajax({
                 type: "POST",
                 url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
-                data: form,
+                data: data,
                 success: function(data){
 
                     $("ul#years").html("");
@@ -244,6 +251,10 @@
                     table += "</tbody></table>";
 
                     $("ul#years").append("<li>" + header + table + "</li>");
+                    @if(\App\Helpers\HoomdossierSession::isUserObserving())
+                        // so if the user is observeringthere is no point in using this button, we disable it and remove the dropdown.
+                        $('.take-action').addClass('disabled').attr('disabled', 'disabled').next().remove();
+                    @endif
                 });
 
                 // toggle chevron for the personal plan

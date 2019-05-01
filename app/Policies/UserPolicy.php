@@ -43,16 +43,31 @@ class UserPolicy
      * Check if a user is authorized to delete a user.
      *
      * @param User $user
-     *
+     * @param User $userToDelete
      * @return bool
      */
-    public function deleteUser(User $user): bool
+    public function deleteUser(User $user, User $userToDelete): bool
     {
-        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'super-admin'])) {
+        if ($user->hasRoleAndIsCurrentRole(['super-admin', 'cooperation-admin']) && $userToDelete->id != $user->id) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Determine if a user is authorize to delete his own account
+     *
+     * @param  User  $user
+     *
+     * @return bool
+     */
+    public function deleteOwnAccount(User $user)
+    {
+        if ($user->hasRole(['cooperation-admin'])) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -66,7 +81,7 @@ class UserPolicy
     public function destroy(User $user, User $userToDestroy)
     {
         // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
-        if ($user->can('delete-user') && $userToDestroy->cooperations->contains('id', HoomdossierSession::getCooperation())) {
+        if ($user->can('delete-user', $userToDestroy) && $userToDestroy->cooperations->contains('id', HoomdossierSession::getCooperation())) {
             return true;
         }
 

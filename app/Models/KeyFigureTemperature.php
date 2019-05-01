@@ -18,15 +18,40 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereBuildingHeatingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereInsulatingGlazingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereKeyFigure($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereMeasureApplicationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereBuildingHeatingId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereCreatedAt( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereInsulatingGlazingId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereKeyFigure( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereMeasureApplicationId( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureTemperature whereUpdatedAt( $value )
  * @mixin \Eloquent
  */
-class KeyFigureTemperature extends Model
-{
+class KeyFigureTemperature extends Model {
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function measureApplication()
+	{
+		return $this->belongsTo( MeasureApplication::class );
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function insulatingGlazing()
+	{
+		return $this->belongsTo( InsulatingGlazing::class );
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function buildingHeating()
+	{
+		return $this->belongsTo( BuildingHeating::class );
+	}
+
+
 }

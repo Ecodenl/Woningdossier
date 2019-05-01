@@ -2,6 +2,7 @@
 
 namespace App\Helpers\KeyFigures\Heater;
 
+use App\Helpers\KeyFigures\KeyFiguresInterface;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterSpecification;
 use App\Models\KeyFigureConsumptionTapWater;
@@ -10,7 +11,7 @@ use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
 use App\Models\UserEnergyHabit;
 
-class KeyFigures
+class KeyFigures implements KeyFiguresInterface
 {
     const M3_GAS_TO_KWH = 8.792; // m3 gas -> kWh
 
@@ -119,4 +120,18 @@ class KeyFigures
     {
         return self::$angles;
     }
+
+	/**
+	 * Returns the key figures from this class
+	 *
+	 * @return array
+	 */
+	public static function getKeyFigures()
+	{
+		$figures = [];
+
+		$figures['M3_GAS_TO_KWH'] = self::M3_GAS_TO_KWH;
+
+		return $figures;
+	}
 }

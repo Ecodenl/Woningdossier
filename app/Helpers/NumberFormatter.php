@@ -39,7 +39,24 @@ class NumberFormatter
         ],
     ];
 
-    public static function format($number, $decimals = 0)
+    /**
+     * Round a number.
+     *
+     * @param $number
+     * @param  int  $bucket
+     *
+     * @return float|int
+     */
+    public static function round($number, $bucket = 5)
+    {
+        if (!is_numeric($number)) {
+            $number = static::reverseFormat($number);
+        }
+        return round($number / $bucket) * $bucket;
+    }
+
+
+    public static function format($number, $decimals = 0, $shouldRoundNumber = false)
     {
         $locale = app()->getLocale();
         if (is_null($number)) {
@@ -49,12 +66,21 @@ class NumberFormatter
         // if the number is numeric we can format it
         // else we return the value thats not a correct number
         if (is_numeric($number)) {
-            return number_format(
-                $number,
+
+            if ($shouldRoundNumber) {
+                $roundedNumber = static::round($number);
+            }
+
+            $formattedNumber = number_format(
+                $roundedNumber ?? $number,
                 $decimals,
                 self::$formatLocaleSeparators[$locale]['decimal'],
                 self::$formatLocaleSeparators[$locale]['thousands']
             );
+
+
+            return $formattedNumber;
+
         } else {
             return $number;
         }

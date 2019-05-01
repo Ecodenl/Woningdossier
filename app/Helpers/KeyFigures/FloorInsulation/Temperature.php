@@ -2,7 +2,9 @@
 
 namespace App\Helpers\KeyFigures\FloorInsulation;
 
-class Temperature
+use App\Helpers\KeyFigures\KeyFiguresInterface;
+
+class Temperature implements KeyFiguresInterface
 {
     const FLOOR_INSULATION_FLOOR = 'floor-insulation';
     const FLOOR_INSULATION_BOTTOM = 'bottom-insulation';
@@ -30,4 +32,26 @@ class Temperature
 
         return number_format(self::$calculationValues[$measure], 2);
     }
+
+	/**
+	 * Returns the key figures from this class
+	 *
+	 * @return array
+	 */
+	public static function getKeyFigures()
+	{
+		$figures = [];
+
+		$consts = [
+			'FLOOR_INSULATION_FLOOR',
+			'FLOOR_INSULATION_BOTTOM',
+			'FLOOR_INSULATION_RESEARCH',
+		];
+
+		foreach($consts as $const){
+			$figures[$const] = self::$calculationValues[constant("self::$const")];
+		}
+
+		return $figures;
+	}
 }

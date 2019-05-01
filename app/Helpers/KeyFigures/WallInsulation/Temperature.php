@@ -2,7 +2,9 @@
 
 namespace App\Helpers\KeyFigures\WallInsulation;
 
-class Temperature
+use App\Helpers\KeyFigures\KeyFiguresInterface;
+
+class Temperature implements KeyFiguresInterface
 {
     const WALL_INSULATION_JOINTS = 'cavity-wall-insulation';
     const WALL_INSULATION_FACADE = 'facade-wall-insulation';
@@ -44,4 +46,22 @@ class Temperature
 
         return number_format($calcValues['default'] + $calcValues['correction'] * ($avgHouseTemp - self::AVERAGE_TEMPERATURE_NORM), 2);
     }
+
+	/**
+	 * Returns the key figures from this class
+	 *
+	 * @return array
+	 */
+	public static function getKeyFigures()
+	{
+		return [
+			'AVERAGE_TEMPERATURE_NORM' => self::AVERAGE_TEMPERATURE_NORM,
+			'WALL_INSULATION_JOINTS_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_JOINTS]['default'],
+			'WALL_INSULATION_JOINTS_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_JOINTS]['correction'],
+			'WALL_INSULATION_FACADE_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_FACADE]['default'],
+			'WALL_INSULATION_FACADE_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_FACADE]['correction'],
+			'WALL_INSULATION_RESEARCH_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_RESEARCH]['default'],
+			'WALL_INSULATION_RESEARCH_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_RESEARCH]['correction'],
+		];
+	}
 }

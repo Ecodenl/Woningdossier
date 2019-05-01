@@ -37,7 +37,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 
             <tr>
                 <td colspan="2">
-                    <h3>{{ $step }}</h3>
+                    <h3>{{ \App\Helpers\Translation::translate('woningdossier.cooperation.tool.' . $step . '.title') }}</h3>
                 </td>
             </tr>
 
@@ -73,6 +73,22 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                         <select class="form-control" name="{{ $fname }}">
                             @foreach($rowData['options'] as $value => $label)
                                 <option value="{{ $value }}" @if(App\Helpers\Old::get($fvalKey, $fallback) == $value)selected="selected"@endif>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @elseif($rowData['type'] == 'multiselect')
+                        <?php
+                                if (empty($fallback)){
+                                	$fallback = [];
+                                }
+                                elseif(!is_array($fallback)){
+                                	$fallback = [ $fallback ];
+                                }
+                                ?>
+                        <select class="form-control" name="{{ $fname }}[]" multiple>
+                            @foreach($rowData['options'] as $value => $label)
+                                <option value="{{ $value }}" @if(in_array($value, App\Helpers\Old::get($fvalKey, $fallback)))selected="selected"@endif>
                                     {{ $label }}
                                 </option>
                             @endforeach

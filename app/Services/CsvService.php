@@ -368,23 +368,23 @@ class CsvService
         $questionnaires = Questionnaire::all();
         $rows           = [];
 
-//        $headers = [
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-//            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-//        ];
+        $headers = [
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+        ];
 
         // we only want to query on the buildings that belong to the cooperation of the current user
         $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
@@ -496,13 +496,16 @@ class CsvService
                                 $answer = implode($questionOptionAnswer, '|');
                             }
                         }
-                        $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
-//                        $rows[$building->id][] = $answer;
+                        // set the question name in the headers
+                        // yes this overwrites it all the time, but thats the point.
+                        $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
+
+                        // set the question answer
+                        $rows[$building->id][] = $answer;
                     }
                 }
             }
         }
-        dd($rows);
 
         // unset the whole empty arrays
         // so we only set rows with answers.
@@ -510,11 +513,6 @@ class CsvService
             if (Arr::isWholeArrayEmpty($row)) {
                 unset($rows[$buildingId]);
             }
-        }
-
-        // merge the csv headers with the question headers.
-        if ( ! empty($rows)) {
-            array_merge($headers, array_keys(array_first($rows)));
         }
 
         $csv = static::write($headers, $rows);

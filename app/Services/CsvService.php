@@ -265,7 +265,13 @@ class CsvService
 
         // set the csv headers
         $csvHeaders = [
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
         ];
 
         // get all the measures
@@ -285,10 +291,30 @@ class CsvService
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
-                $postalCode = $building->postal_code;
+
+                $createdAt = $user->created_at;
+                $buildingStatus = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+
+                $city        = $building->city;
+                $postalCode  = $building->postal_code;
+
+                // get the building features from the resident
+                $buildingFeatures = $building
+                    ->buildingFeatures()
+                    ->withoutGlobalScope(GetValueScope::class)
+                    ->residentInput()
+                    ->first();
+
+                $buildingType = $buildingFeatures->buildingType->name ?? '';
+                $buildYear = $buildingFeatures->build_year ?? '';
+                $exampleBuilding = $building->exampleBuilding->name ?? '';
 
                 // set the personal userinfo
-                $row[$key] = [$postalCode];
+                $row[$key] = [
+                    $createdAt, $buildingStatus,
+                    $postalCode, $city,
+                    $buildingType, $buildYear, $exampleBuilding
+                ];
 
                 // set alle the measures to the user
                 foreach ($measures as $measure) {
@@ -299,7 +325,7 @@ class CsvService
                 $userActionPlanAdvices = $user
                     ->actionPlanAdvices()
                     ->withOutGlobalScope(GetValueScope::class)
-                    ->where('input_source_id', $residentInputSource->id)
+                    ->residentInput()
                     ->get();
 
                 // get the user measures / advices

@@ -15,6 +15,7 @@
                             <th>@lang('woningdossier.cooperation.my-account.notification-settings.index.table.columns.name')</th>
                             <th>@lang('woningdossier.cooperation.my-account.notification-settings.index.table.columns.interval')</th>
                             <th>@lang('woningdossier.cooperation.my-account.notification-settings.index.table.columns.last-notified-at')</th>
+                            <th>@lang('woningdossier.cooperation.my-account.notification-settings.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -22,8 +23,11 @@
                             <tr>
                                 <td>{{ $notificationSetting->type->name }}</td>
                                 <td>{{ $notificationSetting->interval->name }}</td>
-                                <td>{{ $notificationSetting->last_notified_at->format('Y-m-d') ?? __('woningdossier.cooperation.my-account.notification-settings.index.table.never-sent')}}</td>
-                                <td><a href="{{route('cooperation.my-account.notification-settings.show', ['id' => $notificationSetting->id])}}" class="btn btn-default">@lang('woningdossier.cooperation.my-account.notification-settings.index.table.edit')</a></td>
+                                <td>{{ is_null($notificationSetting->last_notified_at) ? __('woningdossier.cooperation.my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
+                                <td><a href="{{route('cooperation.my-account.notification-settings.show', ['id' => $notificationSetting->id])}}" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-th"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

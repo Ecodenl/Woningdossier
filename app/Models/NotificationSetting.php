@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class NotificationSetting extends Model
 {
+
+    protected $fillable = [
+        'user_id', 'type_id', 'interval_id', 'last_notified_at'
+    ];
     /**
      * Attributes that should be casted.
      *

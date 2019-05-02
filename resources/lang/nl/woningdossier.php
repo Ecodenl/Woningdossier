@@ -776,9 +776,20 @@ return [
                             'name' => 'Notificatie soort',
                             'interval' => 'Interval',
                             'last-notified-at' => 'Laatst gestuurd op',
+                            'actions' => 'Actie',
                         ],
                         'never-sent' => 'Notificatie is nooit verstuurd'
                     ],
+                ],
+                'show' => [
+                    'header' => 'Bewerk notificatie',
+                    'form' => [
+                        'interval' => 'Notificatie interval voor :type',
+                        'submit' => 'Interval opslaan'
+                    ],
+                ],
+                'update' => [
+                    'success' => 'Interval is opgeslagen.'
                 ],
             ],
 

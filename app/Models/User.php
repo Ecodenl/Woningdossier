@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
+use App\NotificationSetting;
 use App\Scopes\GetValueScope;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -100,6 +101,16 @@ class User extends Authenticatable
     public function buildings()
     {
         return $this->hasMany(Building::class);
+    }
+
+    /**
+     * Return the notification settings from a user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notificationSettings()
+    {
+        return $this->hasMany(NotificationSetting::class);
     }
 
     public function buildingUsage()

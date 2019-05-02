@@ -2,7 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendUnreadMessageCountEmail;
+use App\Models\NotificationType;
+use App\Models\User;
+use App\NotificationSetting;
 use Illuminate\Console\Command;
+use Illuminate\Queue\Jobs\Job;
 
 class SendNotifications extends Command
 {
@@ -37,6 +42,25 @@ class SendNotifications extends Command
      */
     public function handle()
     {
-        //
+        // get the current notification type
+        $notificationType = NotificationType::where('short', $this->argument('type'))->first();
+
+        if ($notificationType instanceof NotificationType) {
+            $this->line('Notification type: '.$this->argument('type').' exists, lets do some work.');
+            $users = User::all();
+
+            foreach ($users as $user) {
+                $notificationSetting = $user->notificationSettings()->where('type_id', $notificationType->id)->first();
+
+
+                if ($notificationSetting instanceof NotificationSetting && is_null($notificationSetting->last_notified_at)) {
+                    SendUnreadMessageCountEmail::dispatch($user);
+                }
+            }
+
+        } else {
+            $this->line('Notification type: '.$this->argument('type').' does not exist');
+        }
+
     }
 }

@@ -8,9 +8,12 @@ use App\Http\Requests\FillAddressRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
+use App\Jobs\SendUnreadMessageCountEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
+use App\Models\NotificationInterval;
+use App\Models\NotificationType;
 use App\Models\Role;
 use App\Models\User;
 use App\Rules\HouseNumber;
@@ -68,7 +71,7 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param array $data
+     * @param  array  $data
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
@@ -90,7 +93,7 @@ class RegisterController extends Controller
     /**
      * Handle a registration request for the application.
      *
-     * @param RegisterFormRequest $request
+     * @param  RegisterFormRequest  $request
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
@@ -104,26 +107,26 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param array $data
+     * @param  array  $data
      *
      * @return \App\Models\User
      */
     protected function create(array $data)
     {
         $user = User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'phone_number' => is_null($data['phone_number']) ? '' : $data['phone_number'],
+            'first_name'    => $data['first_name'],
+            'last_name'     => $data['last_name'],
+            'email'         => $data['email'],
+            'password'      => bcrypt($data['password']),
+            'phone_number'  => is_null($data['phone_number']) ? '' : $data['phone_number'],
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
 
-        $address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
+        $address               = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
         $data['bag_addressid'] = isset($address['bag_adresid']) ? $address['bag_adresid'] : '';
 
         $features = new BuildingFeature([
-            'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
+            'surface'    => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
             'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
         ]);
 
@@ -133,8 +136,19 @@ class RegisterController extends Controller
         $features->building()->associate($address)->save();
 
         $cooperationId = \Session::get('cooperation');
-        $cooperation = Cooperation::find($cooperationId);
+        $cooperation   = Cooperation::find($cooperationId);
         $user->cooperations()->attach($cooperation);
+
+        $notificationTypes = NotificationType::all();
+        $interval          = NotificationInterval::where('short', 'no-interest')->first();
+
+        foreach ($notificationTypes as $notificationType) {
+
+            $user->notificationSettings()->create([
+                'type_id'     => $notificationType->id,
+                'interval_id' => $interval->id
+            ]);
+        }
 
         $residentRole = Role::findByName('resident');
         $user->roles()->attach($residentRole);
@@ -158,7 +172,7 @@ class RegisterController extends Controller
         $token = $request->get('t');
 
         $user = User::where('email', $email)->where('confirm_token', $token)->first();
-        if (! $user instanceof User) {
+        if ( ! $user instanceof User) {
             return redirect('register')->withErrors(trans('auth.confirm.error'));
         } else {
             $user->confirm_token = null;
@@ -171,22 +185,23 @@ class RegisterController extends Controller
                 $user->roles()->attach($residentRole);
             }
 
-            return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
+            return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success',
+                trans('auth.confirm.success'));
         }
     }
 
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param  Cooperation  $cooperation
+     * @param  Request  $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function checkExistingEmail(Cooperation $cooperation, Request $request)
     {
         $email = $request->get('email');
-        $user = User::where('email', $email)->first();
+        $user  = User::where('email', $email)->first();
 
         $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
 
@@ -207,15 +222,15 @@ class RegisterController extends Controller
     /**
      * Connect the existing email to a cooperation.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param  Cooperation  $cooperation
+     * @param  Request  $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function connectExistingAccount(Cooperation $cooperation, Request $request)
     {
         $email = $request->get('existing_email');
-        $user = User::where('email', $email)->first();
+        $user  = User::where('email', $email)->first();
 
         // okay, the user does exists
         if ($user instanceof User) {
@@ -226,7 +241,8 @@ class RegisterController extends Controller
 
             $cooperation->users()->attach($user);
 
-            return redirect(url('login'))->with('account_connected', __('auth.register.form.message.account-connected'));
+            return redirect(url('login'))->with('account_connected',
+                __('auth.register.form.message.account-connected'));
         }
 
         // user is playing, redirect them back
@@ -236,30 +252,33 @@ class RegisterController extends Controller
     public function fillAddress(FillAddressRequest $request)
     {
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
-        $number = trim(strip_tags($request->get('number', '')));
-        $extension = trim(strip_tags($request->get('house_number_extension', '')));
+        $number     = trim(strip_tags($request->get('number', '')));
+        $extension  = trim(strip_tags($request->get('house_number_extension', '')));
 
         $options = $this->getAddressData($postalCode, $number);
-        $result = [];
-        $dist = null;
+        $result  = [];
+        $dist    = null;
         if (is_array($options) && count($options) > 0) {
             foreach ($options as $option) {
-                $houseNumberExtension = (! empty($option['huisnrtoev']) && 'None' != $option['huisnrtoev']) ? $option['huisnrtoev'] : '';
+                $houseNumberExtension = ( ! empty($option['huisnrtoev']) && 'None' != $option['huisnrtoev']) ? $option['huisnrtoev'] : '';
 
                 $newDist = null;
-                if (! empty($houseNumberExtension) && ! empty($extension)) {
+                if ( ! empty($houseNumberExtension) && ! empty($extension)) {
                     $newDist = levenshtein(strtolower($houseNumberExtension), strtolower($extension), 1, 10, 1);
                 }
                 if ((is_null($dist) || isset($newDist) && $newDist < $dist) && is_array($option)) {
                     // best match
                     $result = [
-                        'id'                     => array_key_exists('bag_adresid', $option) ? md5($option['bag_adresid']) : '',
+                        'id'                     => array_key_exists('bag_adresid',
+                            $option) ? md5($option['bag_adresid']) : '',
                         'street'                 => array_key_exists('straat', $option) ? $option['straat'] : '',
-                        'number'                 => array_key_exists('huisnummer', $option) ? $option['huisnummer'] : '',
+                        'number'                 => array_key_exists('huisnummer',
+                            $option) ? $option['huisnummer'] : '',
                         'house_number_extension' => $houseNumberExtension,
-                        'city'                   => array_key_exists('woonplaats', $option) ? $option['woonplaats'] : '',
+                        'city'                   => array_key_exists('woonplaats',
+                            $option) ? $option['woonplaats'] : '',
                     ];
-                    $dist = $newDist;
+                    $dist   = $newDist;
                 }
             }
         }
@@ -278,7 +297,7 @@ class RegisterController extends Controller
 
         $user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
 
-        if (! $user instanceof User) {
+        if ( ! $user instanceof User) {
             return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])
                              ->withInput()
                              ->withErrors(['email' => trans('auth.confirm.email-error')]);
@@ -286,19 +305,20 @@ class RegisterController extends Controller
 
         SendRequestAccountConfirmationEmail::dispatch($user, $cooperation);
 
-        return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])->with('success', trans('auth.confirm.email-success'));
+        return redirect()->route('cooperation.auth.resend-confirm-mail',
+            ['cooperation' => $cooperation])->with('success', trans('auth.confirm.email-success'));
     }
 
     protected function getAddressData($postalCode, $number, $pointer = null)
     {
         \Log::debug($postalCode.' '.$number.' '.$pointer);
         /** @var PicoClient $pico */
-        $pico = app()->make('pico');
+        $pico       = app()->make('pico');
         $postalCode = str_replace(' ', '', trim($postalCode));
 
         $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
 
-        if (! is_null($pointer)) {
+        if ( ! is_null($pointer)) {
             foreach ($response as $addrInfo) {
                 if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
                     //$data['bag_addressid'] = $addrInfo['bag_adresid'];

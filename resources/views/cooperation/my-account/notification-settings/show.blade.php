@@ -3,7 +3,7 @@
 @section('my_account_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.my-account.notification-settings.index.header')
+            @lang('woningdossier.cooperation.my-account.notification-settings.show.header')
         </div>
 
         <div class="panel-body">

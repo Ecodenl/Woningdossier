@@ -22,19 +22,24 @@ class NotificationTypesTableSeeder extends Seeder
         ];
 
         foreach ($notificationTypes as $notificationType) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($notificationType['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
+            if ( ! DB::table('notification_types')->where('short',
+                    $notificationType['short'])->first() instanceof stdClass) {
+
+
+                $uuid = \App\Helpers\Str::uuid();
+                foreach ($notificationType['names'] as $locale => $name) {
+                    \DB::table('translations')->insert([
+                        'key'         => $uuid,
+                        'language'    => $locale,
+                        'translation' => $name,
+                    ]);
+                }
+
+                DB::table('notification_types')->insert([
+                    'name'  => $uuid,
+                    'short' => $notificationType['short']
                 ]);
             }
-
-            DB::table('notification_types')->insert([
-                'name' => $uuid,
-                'short' => $notificationType['short']
-            ]);
         }
     }
 }

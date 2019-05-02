@@ -36,19 +36,23 @@ class NotificationIntervalsTableSeeder extends Seeder
         ];
 
         foreach ($notificationIntervals as $notificationInterval) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($notificationInterval['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
+            if ( ! DB::table('notification_intervals')->where('short',
+                $notificationInterval['short']->first() instanceof stdClass)) {
+
+                $uuid = \App\Helpers\Str::uuid();
+                foreach ($notificationInterval['names'] as $locale => $name) {
+                    \DB::table('translations')->insert([
+                        'key'         => $uuid,
+                        'language'    => $locale,
+                        'translation' => $name,
+                    ]);
+                }
+
+                DB::table('notification_intervals')->insert([
+                    'name'  => $uuid,
+                    'short' => $notificationInterval['short']
                 ]);
             }
-
-            DB::table('notification_intervals')->insert([
-                'name' => $uuid,
-                'short' => $notificationInterval['short']
-            ]);
         }
     }
 }

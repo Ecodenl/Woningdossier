@@ -48,9 +48,13 @@ class SendNotifications extends Command
 
         // if it exist only send the specific notification type
         if ($notificationType instanceof NotificationType) {
-            $this->line('Notification type: '.$this->option('type').' exists, lets do some work.');
+            $this->info('Notification type: '.$this->option('type').' exists, lets do some work.');
             // get all the users
             $users = User::all();
+
+            $bar = $this->output->createProgressBar(count($users));
+
+            $bar->start();
 
             // loop through all the users
             foreach ($users as $user) {
@@ -60,21 +64,33 @@ class SendNotifications extends Command
 
                 // if the notification setting exists do some stuff
                 if ($notificationSetting instanceof NotificationSetting) {
+                    $bar->advance();
+                    $now = Carbon::now();
 
-                    // check if the user has ever been notfied, if not we will set the last_notified_at to now.
+                    // if its null, set it to now.
                     if (is_null($notificationSetting->last_notified_at)) {
-                        $notificationSetting->last_notified_at = Carbon::now();
-                        $notificationSetting->save();
-                    } else {
+                        SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
+                    }
+
+
+                    // check when the user has been notified for the last time, and notify them again if needed.
+                    if ($notificationSetting->last_notified_at instanceof Carbon) {
+
                         $lastNotifiedAt = $notificationSetting->last_notified_at;
+                        $notifiedDiff = $now->diff($lastNotifiedAt);
 
                         switch ($notificationSetting->interval->short) {
                             case 'daily':
-                                $today = Carbon::now();
                                 // if the difference between now and the last notified date is 23 hours, send him a message
-                                if ($today->diff($lastNotifiedAt)->h >= 23) {
-                                    SendUnreadMessageCountEmail::dispatch($user);
+                                if ($notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {
+                                    SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
                                 }
+                                break;
+                            case 'weekly':
+                                if ($now->diff($lastNotifiedAt)->days >= 6 && $notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {
+                                    SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
+                                }
+                                break;
                         }
                     }
 
@@ -83,8 +99,10 @@ class SendNotifications extends Command
             }
 
         } else {
-            $this->line('Notification type: '.$this->option('type').' was not provided or does not exist');
+            $this->info('Notification type: '.$this->option('type').' was not provided or does not exist');
         }
 
+        $bar->finish();
+        $this->info("\n Done");
     }
 }

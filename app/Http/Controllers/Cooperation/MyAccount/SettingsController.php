@@ -10,6 +10,7 @@ use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Services\UserService;
+use function GuzzleHttp\Psr7\uri_for;
 
 class SettingsController extends Controller
 {
@@ -37,6 +38,12 @@ class SettingsController extends Controller
 
         $buildingData = $data['building'];
         $userData = $data['user'];
+
+        // not allowed in the current state
+        // if this happens the user is doing something fishy, so just redirect him back.
+        if (array_key_exists('email', $userData)) {
+            return redirect()->route('cooperation.my-account.settings.index');
+        }
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(

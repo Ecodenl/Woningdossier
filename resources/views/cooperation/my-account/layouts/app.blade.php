@@ -26,6 +26,12 @@
                                         <span class="glyphicon glyphicon-cog"></span>
                                     </a>
                                 </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.notification-settings.index'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.notification-settings.index')}}">
+                                        @lang('woningdossier.cooperation.my-account.side-nav.notification-settings')
+                                        <span class="glyphicon glyphicon-cog"></span>
+                                    </a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.import-center.index')}}">
                                         @lang('woningdossier.cooperation.my-account.side-nav.import')

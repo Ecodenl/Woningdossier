@@ -18,6 +18,7 @@ use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Step;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -646,6 +647,39 @@ class CsvService
 
     }
 
+    /**
+     * Get the year from the action plan advice
+     *
+     * @param  UserActionPlanAdvice  $actionPlanAdvice
+     *
+     * @return int
+     */
+    public static function getYear(UserActionPlanAdvice $actionPlanAdvice): int
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        // try to obtain the years from the action plan
+        $plannedYear = $actionPlanAdvice->planned_year ?? $actionPlanAdvice->year;
+
+        // set the year and if null get the advice year
+        $year = $plannedYear ?? $actionPlanAdvice->getAdviceYear($residentInputSource);
+
+        return $year;
+    }
+
+    public static function getCalculationForStep(Step $step): array
+    {
+        __('general.costs.savings-in-euro.title');
+        __('general.costs.indicative-costs.title');
+        __('general.costs.comparable-rent.title');
+
+        $structure = [
+            'wall-insulation' => [
+                'savings_gas' => __('wall-insulation.costs.gas.title'),
+                'savings_co2' => __('wall-insulation.costs.co2.title'),
+            ]
+        ];
+    }
 
     public static function totalDump($filename = 'totale-dump')
     {
@@ -677,7 +711,7 @@ class CsvService
             // check if the step has measures
             if ($currentStep->measureApplications->isNotEmpty()) {
                 foreach ($currentStep->measureApplications as $measureApplication) {
-                    $headers[] = $measureApplication->measure_name;
+//                    $headers[] = $measureApplication->measure_name;
                 }
                 // get the general cost stuff.
                 foreach (__($step.'.costs') as $key => $translations) {
@@ -687,9 +721,7 @@ class CsvService
                         }
                     }
                 }
-                $headers[] = __('general.costs.savings-in-euro.title');
-                $headers[] = __('general.costs.indicative-costs.title');
-                $headers[] = __('general.costs.comparable-rent.title');
+
             dd($headers);
             }
         }

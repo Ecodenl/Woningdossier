@@ -6,6 +6,7 @@ use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Models\BuildingHeating;
+use App\Models\BuildingPaintworkStatus;
 use App\Models\Element;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
@@ -317,6 +318,7 @@ class ToolHelper {
                     'label' => Translation::translate('wall-insulation.intro.damage-paintwork.title'),
                     'type' => 'select',
                     'options' => static::createOptions($facadeDamages),
+                    'relationship' => 'damagedPaintwork'
                 ],
                 'building_features.wall_joints' => [
                     'label' => Translation::translate('wall-insulation.optional.flushing.title'),
@@ -368,6 +370,7 @@ class ToolHelper {
                     'label' => Translation::translate('insulated-glazing.paint-work.paint-damage-visible.title'),
                     'type' => 'select',
                     'options' => static::createOptions($paintworkStatuses),
+                    'relationship' => 'paintworkStatus'
                 ],
                 'building_paintwork_statuses.wood_rot_status_id' => [
                     'label' => Translation::translate('insulated-glazing.paint-work.wood-rot-visible.title'),
@@ -441,6 +444,7 @@ class ToolHelper {
                     'label' => Translation::translate('roof-insulation.current-situation.main-roof.title'),
                     'type' => 'select',
                     'options' => static::createOptions($roofTypes),
+                    'relationship' => 'roofType'
                 ],
                 // rest will be added later on
 
@@ -499,6 +503,7 @@ class ToolHelper {
                     'label' => Translation::translate('solar-panels.pv-panel-orientation-id.title'),
                     'type' => 'select',
                     'options' => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
+                    'relationship' => 'orientation'
                 ],
                 'building_pv_panels.angle' => [
                     'label' => Translation::translate('solar-panels.angle.title'),
@@ -527,6 +532,7 @@ class ToolHelper {
                     'label' => Translation::translate('heater.pv-panel-orientation-id.title'),
                     'type' => 'select',
                     'options' => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
+                    'relationship' => 'orientation'
                 ],
                 'building_heaters.angle' => [
                     'label' => Translation::translate('heater.angle.title'),
@@ -572,11 +578,13 @@ class ToolHelper {
                     'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title'),
                     'type' => 'select',
                     'options' => static::createOptions($insulatedGlazings),
+                    'relationship' => 'insulatedGlazing'
                 ];
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.building_heating_id'] = [
                     'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title'),
                     'type' => 'select',
                     'options' => static::createOptions($heatings),
+                    'relationship' => 'buildingHeating'
                 ];
                 $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.m2'] = [
                     'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.title'),
@@ -609,6 +617,7 @@ class ToolHelper {
                 'label' => Translation::translate('roof-insulation.current-situation.is-'.$roofType->short.'-roof-insulated.title'),
                 'type' => 'select',
                 'options' => static::createOptions($roofInsulation->values, 'value'),
+                'relationship' => 'elementValue'
             ];
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.roof_surface'] = [
                 'label' => Translation::translate('roof-insulation.current-situation.'.$roofType->short.'-roof-surface.title'),
@@ -643,11 +652,13 @@ class ToolHelper {
                 'label' => Translation::translate('roof-insulation.'.$roofType->short.'-roof.insulate-roof.title'),
                 'type' => 'select',
                 'options' => static::createOptions(collect($roofInsulationMeasureApplications[$roofType->short]), 'measure_name'),
+                'relationship' => 'measureApplication'
             ];
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.building_heating_id'] = [
                 'label' => Translation::translate('roof-insulation.'.$roofType->short.'-roof.situation.title'),
                 'type' => 'select',
                 'options' => static::createOptions($heatings),
+                'relationship' => 'heating'
             ];
         }
 

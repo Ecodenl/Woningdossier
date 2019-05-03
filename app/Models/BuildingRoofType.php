@@ -100,4 +100,9 @@ class BuildingRoofType extends Model
     {
         return $this->belongsTo(BuildingHeating::class);
     }
+
+    public function measureApplication()
+    {
+        return $this->belongsTo(MeasureApplication::class);
+    }
 }

@@ -111,6 +111,16 @@ class BuildingFeature extends Model
         return $this->belongsTo(Building::class);
     }
 
+    public function damagedPaintwork()
+    {
+        return $this->belongsTo(FacadeDamagedPaintwork::class);
+    }
+
+    public function plasteredSurface()
+    {
+        return $this->belongsTo(FacadePlasteredSurface::class);
+    }
+
     public function buildingCategory()
     {
         return $this->belongsTo(BuildingCategory::class);

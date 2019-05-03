@@ -15,9 +15,11 @@ use App\Models\BuildingCoachStatus;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
+use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
 use App\Models\Cooperation;
 use App\Models\Element;
+use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
@@ -691,6 +693,8 @@ class CsvService
     public static function totalDump($filename = 'totale-dump')
     {
 
+        ini_set('max_execution_time', 300);
+
         $residentInputSource = InputSource::findByShort('resident');
 
         // Get the current cooperation with its users
@@ -730,12 +734,13 @@ class CsvService
             }
         }
 
+        $tablesThatNeedSpecialCase = ['user_interest', 'calculation'];
 
         $stepSlugs = Step::select('slug')->get()->pluck('slug');
         // for every user create a row
         foreach ($users as $user) {
             // collect basic info from a user.
-            $building = $user->buildings()->first();
+            $building   = $user->buildings()->first();
             $buildingId = $building->id;
 
             // loop through the headers
@@ -744,71 +749,131 @@ class CsvService
                 $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
 
                 // collect some basic info
-                $stepSlug = $tableWithColumnOrAndId[0];
-                $table    = $tableWithColumnOrAndId[1];
+                // which will apply to (most) cases.
+                $stepSlug   = $tableWithColumnOrAndId[0];
+                $table      = $tableWithColumnOrAndId[1];
                 $columnOrId = $tableWithColumnOrAndId[2];
 
-                // no, its not a table, but that's the only case.
-                if ($table == 'calculation') {
-
+                // determine what column we need to query on to get the results for the user.
+                if (\Schema::hasColumn($table, 'building_id')) {
+                    $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
+                } else {
+                    $whereUserOrBuildingId = [['user_id', '=', $user->id]];
                 }
 
-                // if so, we need to get the answers from the Building elements || services.
-                if (in_array($table, ['element', 'service'])) {
-                    $elementOrServiceId = $columnOrId;
-                    switch ($table) {
-                        case 'element':
-                            /** @var BuildingElement $element */
-                            $buildingElement = BuildingElement::withoutGlobalScope(GetValueScope::class)
-                                ->where('building_id', $buildingId)
-                                ->where('element_id', $elementOrServiceId)
-                                ->residentInput()->first();
+                if ($table == 'building_features') {
 
-                            if ($buildingElement instanceof BuildingElement) {
-                                // check if we need to get data from the extra column
-                                if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                    $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
 
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingElement->extra) ? $buildingElement->extra[$extraKey] ?? '' : '';
-                                } else {
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingElement->elementValue->value ?? '';
-                                }
-                            } else {
-                                // always set defaults
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                            }
+                    $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->where($whereUserOrBuildingId)->first();
+
+                    switch ($columnOrId) {
+                        case 'roof_type_id':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
                             break;
-                        case 'service':
-                            $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
-                                  ->where('building_id', $buildingId)
-                                  ->where('service_id', $elementOrServiceId)
-                                  ->residentInput()->first();
-
-                            if ($buildingService instanceof BuildingService) {
-
-                                // check if we need to get data from the extra column
-                                if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                    $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
-
-                                    // if is array, try to get the answer from the extra column, does the key not exist set a default value.
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingService->extra) ? $buildingService->extra[$extraKey] ?? '' : '';
-                                } else {
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
-                                }
-                            } else {
-                                // always set defaults
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                            }
-
+                        case 'energy_label_id':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
+                            break;
+                        case 'facade_damaged_paintwork_id':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->value : '';
+                            break;
+                        case 'facade_plastered_surface_id':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                            break;
+                        default:
+                            // the column does not need a relationship, so just get the column
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->$columnOrId ?? '';
+                            break;
                     }
                 }
-            }
-            if (array_key_exists($buildingId, $row)) {
-                $rows[] = $row[$buildingId];
-            }
-        }
-        dd($rows);
 
+
+                if ($table == 'building_roof_types') {
+                    $roofTypeId = $columnOrId;
+                    $column = $tableWithColumnOrAndId[3];
+
+                    $buildingRoofType = BuildingRoofType::withoutGlobalScope(GetValueScope::class)
+                        ->where('roof_type_id', $roofTypeId)
+                        ->where($whereUserOrBuildingId)
+                        ->first();
+
+                    switch ($column) {
+                        case 'element_value_id':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->elementValue instanceof ElementValue ? $buildingRoofType->elementValue->value : '';
+                            break;
+                        case 'building_heating_id':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->heating instanceof BuildingHeating ? $buildingRoofType->heating->name : '';
+                            break;
+                        case 'extra.measure_application_id':
+                            $extraIsArray                                 = is_array($buildingRoofType->extra);
+                            $measureApplicationId                         = $extraIsArray ? $buildingRoofType->extra['measure_application_id'] ?? null : null;
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($measureApplicationId) ? '' : MeasureApplication::find($measureApplicationId)->measure_name;
+                            break;
+                        default:
+
+                    }
+
+                    // no, its not a table, but that's the only case.
+                    if ($table == 'calculation') {
+
+                    }
+
+                    // if so, we need to get the answers from the Building elements || services.
+                    if (in_array($table, ['element', 'service'])) {
+                        $elementOrServiceId = $columnOrId;
+                        switch ($table) {
+                            case 'element':
+                                /** @var BuildingElement $element */
+                                $buildingElement = BuildingElement::withoutGlobalScope(GetValueScope::class)
+                                                                  ->where($whereUserOrBuildingId)
+                                                                  ->where('element_id', $elementOrServiceId)
+                                                                  ->residentInput()->first();
+
+                                if ($buildingElement instanceof BuildingElement) {
+                                    // check if we need to get data from the extra column
+                                    if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
+                                        $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
+
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingElement->extra) ? $buildingElement->extra[$extraKey] ?? '' : '';
+                                    } else {
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingElement->elementValue->value ?? '';
+                                    }
+                                } else {
+                                    // always set defaults
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                                }
+                                break;
+                            case 'service':
+                                $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
+                                                                  ->where($whereUserOrBuildingId)
+                                                                  ->where('service_id', $elementOrServiceId)
+                                                                  ->residentInput()->first();
+
+                                if ($buildingService instanceof BuildingService) {
+
+                                    // check if we need to get data from the extra column
+                                    if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
+                                        $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
+
+                                        // if is array, try to get the answer from the extra column, does the key not exist set a default value.
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingService->extra) ? $buildingService->extra[$extraKey] ?? '' : '';
+                                    } else {
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
+                                    }
+                                } else {
+                                    // always set defaults
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                                }
+
+                        }
+                    }
+                }
+                if (array_key_exists($buildingId, $row)) {
+                    $rows[] = $row[$buildingId];
+                }
+            }
+            dd($rows);
+
+        }
     }
 
 

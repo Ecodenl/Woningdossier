@@ -823,12 +823,13 @@ class CsvService
                     $interestInId = $tableWithColumnOrAndId[3];
 
                     $userInterest = UserInterest::withoutGlobalScope(GetValueScope::class)
+                        ->forMe()
                         ->where($whereUserOrBuildingId)
                         ->where('interest_in_id', $interestInId)
                         ->where('interest_in_type', $interestInType)
                         ->residentInput()->first();
 
-                    $row[$buildingId][$tableWithColumnOrAndId] = $userInterest->inte
+//                    $row[$buildingId][$tableWithColumnOrAndId] = $userInterest->inte
                 }
 
                 // if so, we need to get the answers from the Building elements || services.

@@ -764,28 +764,33 @@ class CsvService
                 if ($table == 'building_features') {
 
                     $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->where($whereUserOrBuildingId)->first();
-                    $buildingFeatureExists = $buildingFeature instanceof BuildingFeature;
 
-                    switch ($columnOrId) {
-                        case 'roof_type_id':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeatureExists && $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
-                            break;
-                        case 'energy_label_id':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeatureExists && $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
-                            break;
-                        case 'facade_damaged_paintwork_id':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeatureExists && $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->value : '';
-                            break;
-                        case 'facade_plastered_surface_id':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeatureExists && $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
-                            break;
-                        case 'monument':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeatureExists ? static::getTranslatedRadioButtonAnswer($buildingFeature->monument) : '';
-                            break;
-                        default:
-                            // the column does not need a relationship, so just get the column
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->$columnOrId ?? '';
-                            break;
+                    if ($buildingFeature instanceof BuildingFeature) {
+
+                        switch ($columnOrId) {
+                            case 'roof_type_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
+                                break;
+                            case 'energy_label_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
+                                break;
+                            case 'facade_damaged_paintwork_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->value : '';
+                                break;
+                            case 'facade_plastered_painted':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = static::getTranslatedRadioButtonAnswer($buildingFeature->facade_plastered_painted) ?? '';
+                                break;
+                            case 'facade_plastered_surface_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                                break;
+                            case 'monument':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = static::getTranslatedRadioButtonAnswer($buildingFeature->monument) ?? '';
+                                break;
+                            default:
+                                // the column does not need a relationship, so just get the column
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->$columnOrId ?? '';
+                                break;
+                        }
                     }
                 }
 
@@ -799,36 +804,37 @@ class CsvService
                                                         ->where($whereUserOrBuildingId)
                                                         ->first();
 
-                    $buildingRoofTypeExists = $buildingRoofType instanceof BuildingRoofType;
+                    if ($buildingRoofType instanceof BuildingRoofType) {
 
-                    switch ($column) {
-                        case 'element_value_id':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofTypeExists && $buildingRoofType->elementValue instanceof ElementValue ? $buildingRoofType->elementValue->value : '';
-                            break;
-                        case 'building_heating_id':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofTypeExists && $buildingRoofType->heating instanceof BuildingHeating ? $buildingRoofType->heating->name : '';
-                            break;
-                        case 'extra.measure_application_id':
-                            $extraIsArray                                 = $buildingRoofTypeExists && is_array($buildingRoofType->extra);
-                            $measureApplicationId                         = $extraIsArray ? $buildingRoofType->extra['measure_application_id'] ?? null : null;
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($measureApplicationId) ? '' : MeasureApplication::find($measureApplicationId)->measure_name;
-                            break;
-                        default:
+                        switch ($column) {
+                            case 'element_value_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->elementValue instanceof ElementValue ? $buildingRoofType->elementValue->value : '';
+                                break;
+                            case 'building_heating_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->heating instanceof BuildingHeating ? $buildingRoofType->heating->name : '';
+                                break;
+                            case 'extra.measure_application_id':
+                                $extraIsArray                                 = is_array($buildingRoofType->extra);
+                                $measureApplicationId                         = $extraIsArray ? $buildingRoofType->extra['measure_application_id'] ?? null : null;
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($measureApplicationId) ? '' : MeasureApplication::find($measureApplicationId)->measure_name;
+                                break;
+                            default:
 
+                        }
                     }
                 }
 
                 // handle the user_interest table and its columns.
                 if ($table == 'user_interest') {
                     $interestInType = $columnOrId;
-                    $interestInId = $tableWithColumnOrAndId[3];
+                    $interestInId   = $tableWithColumnOrAndId[3];
 
                     $userInterest = UserInterest::withoutGlobalScope(GetValueScope::class)
-                        ->forMe()
-                        ->where($whereUserOrBuildingId)
-                        ->where('interested_in_id', $interestInId)
-                        ->where('interested_in_type', $interestInType)
-                        ->residentInput()->first();
+                                                ->forMe()
+                                                ->where($whereUserOrBuildingId)
+                                                ->where('interested_in_id', $interestInId)
+                                                ->where('interested_in_type', $interestInType)
+                                                ->residentInput()->first();
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
                 }
@@ -836,7 +842,7 @@ class CsvService
                 // handle the element and service tables.
                 if (in_array($table, ['element', 'service'])) {
                     $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
-                    $elementOrServiceId = $columnOrId;
+                    $elementOrServiceId    = $columnOrId;
                     switch ($table) {
                         case 'element':
                             /** @var BuildingElement $element */
@@ -870,11 +876,11 @@ class CsvService
                                 // check if we need to get data from the extra column
                                 if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
 
-                                    $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
+                                    $extraKey     = explode('extra.', $tableWithColumnOrAndIdKey)[1];
                                     $extraIsArray = is_array($buildingService->extra);
 
                                     if ($extraKey == 'value' && $extraIsArray) {
-                                        $service = Service::find($buildingService->extra['value']);
+                                        $service                                      = Service::find($buildingService->extra['value']);
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $service instanceof Service ? $service->name : '';
                                     } else {
                                         // if is array, try to get the answer from the extra column, does the key not exist set a default value.

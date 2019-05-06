@@ -45,7 +45,7 @@ trait GetMyValuesTrait
      *
      * @return array
      */
-    public function determineWhereColumn(): array
+    protected function determineWhereColumn(): array
     {
         // determine what table we are using
         $currentTable = $this->table ?? $this->getTable();

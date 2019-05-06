@@ -15,7 +15,10 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
-use App\Models\BuildingHeating;
+use App\Models\buildingHeater;
+use App\Models\BuildingInsulatedGlazing;
+use App\Models\BuildingPaintworkStatus;
+use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
 use App\Models\Cooperation;
@@ -41,6 +44,7 @@ use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
@@ -735,7 +739,8 @@ class CsvService
 
             }
         }
-        // for every user create a row
+
+        // get the data for every user.
         foreach ($users as $user) {
             // collect basic info from a user.
             $building   = $user->buildings()->first();
@@ -748,7 +753,6 @@ class CsvService
 
                 // collect some basic info
                 // which will apply to (most) cases.
-                $stepSlug   = $tableWithColumnOrAndId[0];
                 $table      = $tableWithColumnOrAndId[1];
                 $columnOrId = $tableWithColumnOrAndId[2];
 
@@ -758,6 +762,12 @@ class CsvService
                     $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
                 } else {
                     $whereUserOrBuildingId = [['user_id', '=', $user->id]];
+                }
+
+                // handle the calculation table.
+                // No its not a table, but we treat it as in the structure array.
+                if ($table == 'calculation') {
+
                 }
 
                 // handle the building_features table and its columns.
@@ -778,19 +788,31 @@ class CsvService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->value : '';
                                 break;
                             case 'facade_plastered_painted':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = static::getTranslatedRadioButtonAnswer($buildingFeature->facade_plastered_painted) ?? '';
+                                $possibleAnswers                              = [
+                                    1 => \App\Helpers\Translation::translate('general.options.yes.title'),
+                                    2 => \App\Helpers\Translation::translate('general.options.no.title'),
+                                    3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
+                                ];
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->facade_plastered_painted] ?? '';
                                 break;
                             case 'facade_plastered_surface_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
                                 break;
                             case 'monument':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = static::getTranslatedRadioButtonAnswer($buildingFeature->monument) ?? '';
+                                $possibleAnswers                              = [
+                                    1 => \App\Helpers\Translation::translate('general.options.yes.title'),
+                                    2 => \App\Helpers\Translation::translate('general.options.no.title'),
+                                    0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
+                                ];
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->monument] ?? '';
                                 break;
                             default:
                                 // the column does not need a relationship, so just get the column
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->$columnOrId ?? '';
                                 break;
                         }
+                    } else {
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
                     }
                 }
 
@@ -811,7 +833,7 @@ class CsvService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->elementValue instanceof ElementValue ? $buildingRoofType->elementValue->value : '';
                                 break;
                             case 'building_heating_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->heating instanceof BuildingHeating ? $buildingRoofType->heating->name : '';
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->heating instanceof buildingHeater ? $buildingRoofType->heating->name : '';
                                 break;
                             case 'extra.measure_application_id':
                                 $extraIsArray                                 = is_array($buildingRoofType->extra);
@@ -819,8 +841,19 @@ class CsvService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($measureApplicationId) ? '' : MeasureApplication::find($measureApplicationId)->measure_name;
                                 break;
                             default:
+                                // check if we need to get data from the extra column
+                                if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
+                                    $extraKey                                     = explode('extra.',
+                                        $tableWithColumnOrAndIdKey)[1];
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
+                                } else {
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->$column ?? '';
+                                }
+                                break;
 
                         }
+                    } else {
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
                     }
                 }
 
@@ -897,35 +930,135 @@ class CsvService
                     }
                 }
 
+                // handle the building_insulated_glazing table and its columns.
+                if ($table == 'building_insulated_glazings') {
+                    $measureApplicationId = $columnOrId;
+                    $column               = $tableWithColumnOrAndId[3];
 
+                    /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
+                    $buildingInsulatedGlazing = BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)
+                                                                        ->where($whereUserOrBuildingId)
+                                                                        ->where('measure_application_id',
+                                                                            $measureApplicationId)
+                                                                        ->residentInput()->first();
+
+                    if ($buildingInsulatedGlazing instanceof BuildingInsulatedGlazing) {
+                        switch ($column) {
+                            case 'insulated_glazing_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->insulatedGlazing->name ?? '';
+                                break;
+                            case 'building_heating_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->buildingHeater->name ?? '';
+                                break;
+                            default:
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->$column ?? '';
+                                break;
+
+                        }
+                    } else {
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                    }
+                }
+
+                // handle the building_pv_panels table and its column
+                if ($table == 'building_pv_panels') {
+                    $column = $columnOrId;
+
+                    /** @var BuildingPvPanel $buildingPvPanel */
+                    $buildingPvPanel = BuildingPvPanel::withoutGlobalScope(GetValueScope::class)
+                                                      ->where($whereUserOrBuildingId)
+                                                      ->residentInput()->first();
+
+                    if ($buildingPvPanel instanceof BuildingPvPanel) {
+                        switch ($column) {
+                            case 'pv_panel_orientation_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPvPanel->orientation->name ?? '';
+                                break;
+                            default:
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPvPanel->$column ?? '';
+                                break;
+                        }
+                    } else {
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                    }
+                }
+
+                // handle the building_heaters table and its column
+                if ($table == 'building_heaters') {
+                    $column = $columnOrId;
+
+                    /** @var buildingHeater $buildingHeater */
+                    $buildingHeater = BuildingHeater::withoutGlobalScope(GetValueScope::class)
+                                                      ->where($whereUserOrBuildingId)
+                                                      ->residentInput()->first();
+
+                    if ($buildingHeater instanceof BuildingHeater) {
+                        switch ($column) {
+                            case 'pv_panel_orientation_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingHeater->orientation->name ?? '';
+                                break;
+                            default:
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingHeater->$column ?? '';
+                                break;
+                        }
+                    } else {
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                    }
+                }
+
+                // handle the user_energy_habits table and its column
+                if ($table == 'user_energy_habits') {
+                    $column = $columnOrId;
+
+                    /** @var UserEnergyHabit $userEnergyHabit */
+                    $userEnergyHabit = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)
+                        ->where($whereUserOrBuildingId)
+                        ->residentInput()->first();
+
+                    if ($userEnergyHabit instanceof UserEnergyHabit) {
+                        switch ($column) {
+                            default:
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->$column ?? '';
+                                break;
+                        }
+                    } else {
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                    }
+                }
+
+                // handle the building_paintwork_statuses table and its column
+                if ($table == 'building_paintwork_statuses') {
+                    $column = $columnOrId;
+
+                    /** @var BuildingPaintworkStatus $buildingPaintworkStatus */
+                    $buildingPaintworkStatus = BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)
+                        ->where($whereUserOrBuildingId)
+                        ->residentInput()->first();
+
+                    if ($buildingPaintworkStatus instanceof BuildingPaintworkStatus) {
+                        switch ($column) {
+                            case 'paintwork_status_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPaintworkStatus->paintworkStatus->name ?? '';
+                                break;
+                            case 'wood_rot_status_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPaintworkStatus->woodRotStatus->name ?? '';
+                                break;
+                            default:
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingPaintworkStatus->$column ?? '';
+                                break;
+                        }
+                    } else {
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                    }
+                }
             }
 
-//            dd($row);
-            // to dump
-            dd(array_merge($headers, $row[$buildingId]));
+            dd(array_merge($headers, $row[$buildingId]), $row);
             if (array_key_exists($buildingId, $row)) {
                 $rows[$buildingId] = $row[$buildingId];
             }
         }
-        dd($rows);
     }
-
-    /**
-     * Return the translated radio button answer
-     *
-     * @param $answer
-     *
-     * @return mixed
-     */
-    protected static function getTranslatedRadioButtonAnswer($answer)
-    {
-        return [
-            1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-            2 => \App\Helpers\Translation::translate('general.options.no.title'),
-            0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-        ][$answer];
-    }
-
 
     /**
      * Write a csv file

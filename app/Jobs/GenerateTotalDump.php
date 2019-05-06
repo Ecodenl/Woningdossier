@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Calculations\WallInsulation;
 use App\Exports\Cooperation\TotalExport;
 use App\Helpers\ToolHelper;
 use App\Models\BuildingElement;
@@ -35,7 +36,7 @@ class GenerateTotalDump
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $cooperation;
+    protected $cooperation;
 
     /**
      * @param  Cooperation  $cooperation
@@ -92,6 +93,27 @@ class GenerateTotalDump
             $building   = $user->buildings()->first();
             $buildingId = $building->id;
 
+            // collect some info about their building
+            $buildingFeature = $building->buildingFeatures;
+            $cavityWall = $buildingFeature->cavity_wall;
+            $buildingElementId = $facadeInsulation = $building->getBuildingElement('wall-insulation');
+
+            // wall insulation savings
+            $wallInsulationSavings = WallInsulation::calculate($building, $user, [
+                'cavity_wall' => $cavityWall,
+                'element' => $buildingElementId,
+                'insulation_wall_surface' => $buildingFeature->insulation_wall_surface,
+                'wall_joints' => $buildingFeature->wall_joins,
+                'contaminated_wall_joints' => $buildingFeature->contaminated_wall_joints,
+                'facade_plastered_painted' => $buildingFeature->facade_plastered_painted,
+                'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id,
+                'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id,
+            ]);
+
+//            dd($wallInsulationSavings);
+
+
+
             // loop through the headers
             foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
                 // explode it so we can do stuff with it.
@@ -99,6 +121,7 @@ class GenerateTotalDump
 
                 // collect some basic info
                 // which will apply to (most) cases.
+                $step = $tableWithColumnOrAndId[0];
                 $table      = $tableWithColumnOrAndId[1];
                 $columnOrId = $tableWithColumnOrAndId[2];
 
@@ -113,7 +136,14 @@ class GenerateTotalDump
                 // handle the calculation table.
                 // No its not a table, but we treat it as in the structure array.
                 if ($table == 'calculation') {
+                    $column = $columnOrId;
 
+                    switch ($step) {
+                        case 'wall-insulation':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $wallInsulationSavings[$column];
+                            break;
+
+                    }
                 }
 
                 // handle the building_features table and its columns.
@@ -397,6 +427,8 @@ class GenerateTotalDump
                     }
                 }
             }
+                dd($row);
+
             $rows[] = array_merge($headers, $row[$buildingId]);
         }
 

@@ -332,11 +332,11 @@ class ToolHelper {
                 ],
 
                 'calculations' => [
-                    'gas_savings' => Translation::translate('wall-insulation.costs.gas.title'),
-                    'co2_savings' => Translation::translate('wall-insulation.costs.co2.title'),
-                    'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                    'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                    'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                    'savings_gas' => Translation::translate('wall-insulation.costs.gas.title'),
+                    'savings_co2' => Translation::translate('wall-insulation.costs.co2.title'),
+                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
                     'repair_joint' => Translation::translate('wall-insulation.taking-into-account.repair-joint.title'),
                     'clean_brickwork' => Translation::translate('wall-insulation.taking-into-account.clean-brickwork.title'),
@@ -384,11 +384,11 @@ class ToolHelper {
                 ],
 
                 'calculations' => [
-                    'gas_savings' => Translation::translate('insulated-glazing.costs.gas.title'),
-                    'co2_savings' => Translation::translate('insulated-glazing.costs.co2.title'),
-                    'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                    'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                    'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                    'savings_gas' => Translation::translate('insulated-glazing.costs.gas.title'),
+                    'savings_co2' => Translation::translate('insulated-glazing.costs.co2.title'),
+                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
                     'paintwork' => Translation::translate('insulated-glazing.taking-into-account.paintwork.title'),
                     'paint_work' => Translation::translate('insulated-glazing.taking-into-account.paintwork_year.title')
@@ -427,11 +427,11 @@ class ToolHelper {
                 ],
 
                 'calculations' => [
-                    'gas_savings' => Translation::translate('floor-insulation.costs.gas.title'),
-                    'co2_savings' => Translation::translate('floor-insulation.costs.co2.title'),
-                    'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                    'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                    'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                    'savings_gas' => Translation::translate('floor-insulation.costs.gas.title'),
+                    'savings_co2' => Translation::translate('floor-insulation.costs.co2.title'),
+                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
                 ]
             ],
             'roof-insulation' => [
@@ -450,23 +450,23 @@ class ToolHelper {
 
                 'calculations' => [
                     'flat' => [
-                        'gas_savings' => Translation::translate('roof-insulation.flat.costs.gas.title'),
-                        'co2_savings' => Translation::translate('roof-insulation.flat.costs.co2.title'),
-                        'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                        'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                        'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                        'savings_gas' => Translation::translate('roof-insulation.flat.costs.gas.title'),
+                        'savings_co2' => Translation::translate('roof-insulation.flat.costs.co2.title'),
+                        'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                        'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                        'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-                        'indicative_costs_replacement' => Translation::translate('roof-insulation.flat.indicative-costs-replacement.title'),
+                        'cost_indication_replacement' => Translation::translate('roof-insulation.flat.indicative-costs-replacement.title'),
                         'indicative_replacement_year' => Translation::translate('roof-insulation.flat.indicative-replacement.year.title')
                     ],
                     'pitched' => [
-                        'gas_savings' => Translation::translate('roof-insulation.pitched.costs.gas.title'),
-                        'co2_savings' => Translation::translate('roof-insulation.pitched.costs.co2.title'),
-                        'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                        'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                        'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                        'savings_gas' => Translation::translate('roof-insulation.pitched.costs.gas.title'),
+                        'savings_co2' => Translation::translate('roof-insulation.pitched.costs.co2.title'),
+                        'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                        'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                        'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-                        'indicative_costs_replacement' => Translation::translate('roof-insulation.pitched.indicative-costs-replacement.title'),
+                        'cost_indication_replacement' => Translation::translate('roof-insulation.pitched.indicative-costs-replacement.title'),
                         'indicative_replacement_year' => Translation::translate('roof-insulation.pitched.indicative-replacement.year.title')
                     ]
                 ]
@@ -478,11 +478,11 @@ class ToolHelper {
                     'unit' => Translation::translate('general.unit.year.title'),
                 ],
                 'calculations' => [
-                    'gas_savings' => Translation::translate('high-efficiency-boiler.costs.gas.title'),
-                    'co2_savings' => Translation::translate('high-efficiency-boiler.costs.co2.title'),
-                    'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                    'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                    'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                    'savings_gas' => Translation::translate('high-efficiency-boiler.costs.gas.title'),
+                    'savings_co2' => Translation::translate('high-efficiency-boiler.costs.co2.title'),
+                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
                     'indicative_replacement_year' => Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title')
                 ]
@@ -515,11 +515,11 @@ class ToolHelper {
                     'yield_electricity' => Translation::translate('solar-panels.indication-for-costs.yield-electricity.title'),
                     'raise_own_consumption' => Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title'),
 
-                    'gas_savings' => Translation::translate('solar-panels.costs.gas.title'),
-                    'co2_savings' => Translation::translate('solar-panels.costs.co2.title'),
-                    'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                    'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                    'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                    'savings_gas' => Translation::translate('solar-panels.costs.gas.title'),
+                    'savings_co2' => Translation::translate('solar-panels.costs.co2.title'),
+                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
                 ],
             ],
             'heater' => [
@@ -550,11 +550,11 @@ class ToolHelper {
                     'production_heat' => Translation::translate('heater.indication-for-costs.production-heat'),
                     'percentage_consumption' => Translation::translate('heater.indication-for-costs.percentage-consumption.title'),
 
-                    'gas_savings' => Translation::translate('heater.costs.gas.title'),
-                    'co2_savings' => Translation::translate('heater.costs.co2.title'),
-                    'savings_in_euro' => Translation::translate('general.costs.savings-in-euro.title'),
-                    'indicative_costs' => Translation::translate('general.costs.indicative-costs.title'),
-                    'comparable_rent' => Translation::translate('general.costs.comparable-rent.title'),
+                    'savings_gas' => Translation::translate('heater.costs.gas.title'),
+                    'savings_co2' => Translation::translate('heater.costs.co2.title'),
+                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
                 ]
             ],
         ];

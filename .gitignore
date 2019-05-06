@@ -10,8 +10,6 @@ npm-debug.log
 yarn-error.log
 .env
 
-# reports
-resources/*
 
 # translation file
 resources/lang/*/uuid.php

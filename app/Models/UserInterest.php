@@ -52,6 +52,11 @@ class UserInterest extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Return the user interest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function interest()
     {
         return $this->belongsTo(Interest::class);

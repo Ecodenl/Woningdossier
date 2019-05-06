@@ -31,6 +31,8 @@ trait GetMyValuesTrait
     }
 
     /**
+     * Get the input source.
+     *
      * @return BelongsTo
      */
     public function inputSource()

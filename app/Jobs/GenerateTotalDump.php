@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Calculations\FloorInsulation;
 use App\Calculations\InsulatedGlazing;
 use App\Calculations\WallInsulation;
 use App\Exports\Cooperation\TotalExport;
@@ -130,6 +131,9 @@ class GenerateTotalDump
                             break;
                         case 'insulated-glazing':
                             $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['insulated-glazing'][$column][$costsOrYear] : $calculateData['insulated-glazing'][$column] ?? '';
+                            break;
+                        case 'floor-insulation':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['floor-insulation'][$column][$costsOrYear] : $calculateData['floor-insulation'][$column] ?? '';
                             break;
 
                     }
@@ -439,6 +443,7 @@ class GenerateTotalDump
     protected function getCalculateData(Building $building, User $user)
     {
         // collect some info about their building
+        /** @var BuildingFeature $buildingFeature */
         $buildingFeature   = $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
         $buildingElements = $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
         $buildingPaintworkStatus = $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
@@ -448,6 +453,8 @@ class GenerateTotalDump
         $woodElements = Element::where('short', 'wood-elements')->first();
         $frames = Element::where('short', 'frames')->first();
         $crackSealing = Element::where('short', 'crack-sealing')->first();
+        $floorInsulationElement = Element::where('short', 'floor-insulation')->first();
+        $crawlspaceElement = Element::where('short', 'crawlspace')->first();
 
         // the user interest on the insulated glazing
         // key = measure_application_id
@@ -484,6 +491,8 @@ class GenerateTotalDump
 
 
         // handle the wood / frame / crack sealing elements for the insulated glazing
+
+        // todo: refactor those shit with ids...
         $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
         $buildingElementsArray[$woodElements->short][$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
 
@@ -499,13 +508,28 @@ class GenerateTotalDump
             'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id,
         ];
 
+        // handle the stuff for the floor insulation.
+        $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
+        $buildingCrawlspaceElement = $buildingElements->where('element_id', $crawlspaceElement->id)->first();
 
-        // wall insulation savings
+        $floorInsulationBuildingElements = [
+            'crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
+            $crawlspaceElement->id => [
+                'extra' => $buildingCrawlspaceElement->extra['access'] ?? null,
+                'element_value_id' => $buildingCrawlspaceElement->element_value_id
+            ]
+        ];
+
+        $floorBuildingFeatures = [
+            'floor_surface' => $buildingFeature->floor_surface ?? null,
+            'insulation_surface' => $buildingFeature->insulation_surface ?? null,
+        ];
+
         $wallInsulationSavings = WallInsulation::calculate($building, $user, [
             'cavity_wall'                 => $cavityWall,
             'element'                     => $wallInsulationElementId,
             'insulation_wall_surface'     => $buildingFeature->insulation_wall_surface,
-            'wall_joints'                 => $buildingFeature->wall_joins,
+            'wall_joints'                 => $buildingFeature->wall_joints,
             'contaminated_wall_joints'    => $buildingFeature->contaminated_wall_joints,
             'facade_plastered_painted'    => $buildingFeature->facade_plastered_painted,
             'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id,
@@ -520,9 +544,16 @@ class GenerateTotalDump
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray
         ]);
 
+        $floorInsulationSavings = FloorInsulation::calculate($building, $user, [
+            'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
+            'building_elements' => $floorInsulationBuildingElements,
+            'building_features' => $floorBuildingFeatures
+        ]);
+
         return [
             'wall-insulation' => $wallInsulationSavings,
-            'insulated-glazing' => $insulatedGlazingSavings
+            'insulated-glazing' => $insulatedGlazingSavings,
+            'floor-insulation' => $floorInsulationSavings
         ];
     }
 }

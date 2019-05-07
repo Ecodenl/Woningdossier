@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Calculations\FloorInsulation;
 use App\Calculations\InsulatedGlazing;
+use App\Calculations\RoofInsulation;
 use App\Calculations\WallInsulation;
 use App\Exports\Cooperation\TotalExport;
 use App\Helpers\Hoomdossier;
@@ -447,6 +448,7 @@ class GenerateTotalDump
         $buildingFeature   = $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
         $buildingElements = $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
         $buildingPaintworkStatus = $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
+        $buildingRoofTypes = $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
 
         $cavityWall        = $buildingFeature->cavity_wall;
         $wallInsulationElementId = $facadeInsulation = $building->getBuildingElement('wall-insulation');
@@ -525,6 +527,22 @@ class GenerateTotalDump
             'insulation_surface' => $buildingFeature->insulation_surface ?? null,
         ];
 
+        // now lets handle the roof insulation stuff.
+        $roofTypes = RoofType::all();
+        $buildingRoofTypesArray = [];
+
+        foreach($roofTypes->where('calculate_value', '<', 5) as $roofType) {
+            $currentBuildingRoofType = $buildingRoofTypes->where('roof_type_id', $roofType->id)->first();
+            $buildingRoofTypesArray[$roofType->short] = [
+                'element_value_id' => $currentBuildingRoofType->element_value_id ?? null,
+                'roof_surface' => $currentBuildingRoofType->roof_surface ?? null,
+                'insulation_roof_surface' => $currentBuildingRoofType->insulation_roof_surface ?? null,
+                'extra' => $currentBuildingRoofType->extra ?? null,
+                'measure_application_id' => $currentBuildingRoofType->extra['measure_application_id'] ?? null,
+                'building_heating_id' => $currentBuildingRoofType->building_heating_id ?? null,
+            ];
+        }
+
         $wallInsulationSavings = WallInsulation::calculate($building, $user, [
             'cavity_wall'                 => $cavityWall,
             'element'                     => $wallInsulationElementId,
@@ -550,6 +568,11 @@ class GenerateTotalDump
             'building_features' => $floorBuildingFeatures
         ]);
 
+        $roofInsulationSavings = RoofInsulation::calculate($building, $user, [
+            'building_roof_types' => $buildingRoofTypesArray,
+        ]);
+
+        dd($roofInsulationSavings);
         return [
             'wall-insulation' => $wallInsulationSavings,
             'insulated-glazing' => $insulatedGlazingSavings,

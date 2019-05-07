@@ -62,23 +62,18 @@ class GenerateTotalDump
         // get the content structure of the whole tool.
         $structure = ToolHelper::getContentStructure();
 
+
+
         // build the header structure, we will set those in the csv and use it later on to get the answers form the users.
+        // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
             foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
                 if ($tableWithColumnOrAndId != 'calculations') {
                     $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $contents['label'];
                 } else {
-                    // calculations are 1 level deeper.
-                    $calculations = $contents;
-                    foreach ($calculations as $calculationType => $translation) {
-                        if ( ! is_array($translation)) {
-                            $headers[$stepSlug.'.calculation.'.$calculationType] = $translation;
-                        } else {
-                            foreach ($translation as $calculationTypeDeeper => $translationDeeper) {
-                                $headers[$stepSlug.'.calculation.'.$calculationType.'.'.$calculationTypeDeeper] = $translationDeeper;
-                            }
-                        }
-                    }
+                    // here we can dot it tho
+                    $deeperContents = $contents;
+                    $headers = array_merge($headers, array_dot($deeperContents, $stepSlug.'.calculation.'));
                 }
 
             }
@@ -94,7 +89,7 @@ class GenerateTotalDump
             $buildingId = $building->id;
 
             // collect some info about their building
-            $buildingFeature = $building->buildingFeatures;
+            $buildingFeature = $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->first();
             $cavityWall = $buildingFeature->cavity_wall;
             $buildingElementId = $facadeInsulation = $building->getBuildingElement('wall-insulation');
 
@@ -109,9 +104,6 @@ class GenerateTotalDump
                 'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id,
                 'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id,
             ]);
-
-//            dd($wallInsulationSavings);
-
 
 
             // loop through the headers
@@ -137,12 +129,12 @@ class GenerateTotalDump
                 // No its not a table, but we treat it as in the structure array.
                 if ($table == 'calculation') {
                     $column = $columnOrId;
+                    $costsOrYear = $tableWithColumnOrAndId[3] ?? null;
 
                     switch ($step) {
                         case 'wall-insulation':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $wallInsulationSavings[$column];
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] =  !is_null($costsOrYear) ? $wallInsulationSavings[$column][$costsOrYear] : $wallInsulationSavings[$column];
                             break;
-
                     }
                 }
 
@@ -427,7 +419,7 @@ class GenerateTotalDump
                     }
                 }
             }
-                dd($row);
+                dd(array_merge($headers, $row[$buildingId]));
 
             $rows[] = array_merge($headers, $row[$buildingId]);
         }

@@ -338,10 +338,25 @@ class ToolHelper {
                     'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-                    'repair_joint' => Translation::translate('wall-insulation.taking-into-account.repair-joint.title'),
-                    'clean_brickwork' => Translation::translate('wall-insulation.taking-into-account.clean-brickwork.title'),
-                    'impregnate_wall' => Translation::translate('wall-insulation.taking-into-account.impregnate-wall.title'),
-                    'paint_wall' => Translation::translate('wall-insulation.taking-into-account.wall-painting.title'),
+                    'repair_joint' => [
+                        'costs' => Translation::translate('wall-insulation.taking-into-account.repair-joint.title'),
+                        'year' => Translation::translate('wall-insulation.taking-into-account.repair-joint.year.title'),
+                    ],
+                    'clean_brickwork' => [
+                        'costs' => Translation::translate('wall-insulation.taking-into-account.clean-brickwork.title'),
+                        'year' => Translation::translate('wall-insulation.taking-into-account.clean-brickwork.year.title'),
+                    ],
+
+                    'impregnate_wall' => [
+                        'costs' => Translation::translate('wall-insulation.taking-into-account.impregnate-wall.title'),
+                        'year' => Translation::translate('wall-insulation.taking-into-account.impregnate-wall.year.title'),
+                    ],
+
+                    'paint_wall' => [
+                        'costs' => Translation::translate('wall-insulation.taking-into-account.wall-painting.title'),
+                        'year' => Translation::translate('wall-insulation.taking-into-account.wall-painting.year.title'),
+                    ]
+
                 ]
             ],
 
@@ -383,17 +398,8 @@ class ToolHelper {
                     'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
                 ],
 
-                'calculations' => [
-                    'savings_gas' => Translation::translate('insulated-glazing.costs.gas.title'),
-                    'savings_co2' => Translation::translate('insulated-glazing.costs.co2.title'),
-                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
-                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
-                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
-
-                    'paintwork' => Translation::translate('insulated-glazing.taking-into-account.paintwork.title'),
-                    'paint_work' => Translation::translate('insulated-glazing.taking-into-account.paintwork_year.title')
-                ],
             ],
+
             'floor-insulation' => [
                 'element.'.$floorInsulation->id => [
                     'label' => Translation::translate('floor-insulation.floor-insulation.title'),
@@ -596,7 +602,22 @@ class ToolHelper {
                     'type' => 'text',
                 ];
             }
+
+            // set the calculations on the end because of the order
+            if ($igShort == end($igShorts)) {
+                $structure['insulated-glazing']['calculations'] = [
+                    'savings_gas' => Translation::translate('insulated-glazing.costs.gas.title'),
+                    'savings_co2' => Translation::translate('insulated-glazing.costs.co2.title'),
+                    'savings_money' => Translation::translate('general.costs.savings-in-euro.title'),
+                    'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
+                    'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
+
+                    'paintwork' => Translation::translate('insulated-glazing.taking-into-account.paintwork.title'),
+                    'paint_work' => Translation::translate('insulated-glazing.taking-into-account.paintwork_year.title')
+                ];
+            }
         }
+
 
         // Roof insulation
         // have to refactor this

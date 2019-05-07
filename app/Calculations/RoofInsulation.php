@@ -145,6 +145,7 @@ class RoofInsulation {
 
             $result[$cat] = array_merge($result[$cat], $catData);
         }
+
         return $result;
     }
 }

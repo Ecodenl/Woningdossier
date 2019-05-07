@@ -71,6 +71,7 @@ class GenerateTotalDump
         $structure = ToolHelper::getContentStructure();
 
 
+
         // build the header structure, we will set those in the csv and use it later on to get the answers form the users.
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
@@ -120,23 +121,33 @@ class GenerateTotalDump
                     $whereUserOrBuildingId = [['user_id', '=', $user->id]];
                 }
 
+
                 // handle the calculation table.
                 // No its not a table, but we treat it as in the structure array.
                 if ($table == 'calculation') {
+                    // works in most cases, otherwise they will be renamed etc.
                     $column      = $columnOrId;
                     $costsOrYear = $tableWithColumnOrAndId[3] ?? null;
 
+//                    $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData[$table][$column][$costsOrYear] : $calculateData[$table][$column];
                     switch ($step) {
                         case 'wall-insulation':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['wall-insulation'][$column][$costsOrYear] : $calculateData['wall-insulation'][$column] ?? '';
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['wall-insulation'][$column] : $calculateData['wall-insulation'][$column][$costsOrYear] ?? '';
                             break;
                         case 'insulated-glazing':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['insulated-glazing'][$column][$costsOrYear] : $calculateData['insulated-glazing'][$column] ?? '';
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['insulated-glazing'][$column] : $calculateData['insulated-glazing'][$column][$costsOrYear] ?? '';
                             break;
                         case 'floor-insulation':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['floor-insulation'][$column][$costsOrYear] : $calculateData['floor-insulation'][$column] ?? '';
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['floor-insulation'][$column] : $calculateData['floor-insulation'][$column][$costsOrYear] ?? '';
                             break;
+                        case 'roof-insulation':
+                            $roofCategory = $tableWithColumnOrAndId[2];
+                            $column = $tableWithColumnOrAndId[3];
+                            $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
 
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
+                            break;
+//
                     }
                 }
 
@@ -531,6 +542,8 @@ class GenerateTotalDump
         $roofTypes = RoofType::all();
         $buildingRoofTypesArray = [];
 
+        $selectedRoofTypes = $buildingRoofTypes->pluck('roof_type_id')->toArray();
+
         foreach($roofTypes->where('calculate_value', '<', 5) as $roofType) {
             $currentBuildingRoofType = $buildingRoofTypes->where('roof_type_id', $roofType->id)->first();
             $buildingRoofTypesArray[$roofType->short] = [
@@ -542,6 +555,9 @@ class GenerateTotalDump
                 'building_heating_id' => $currentBuildingRoofType->building_heating_id ?? null,
             ];
         }
+
+        // merge them
+        $buildingRoofTypesArray = array_merge($selectedRoofTypes, $buildingRoofTypesArray);
 
         $wallInsulationSavings = WallInsulation::calculate($building, $user, [
             'cavity_wall'                 => $cavityWall,
@@ -572,11 +588,11 @@ class GenerateTotalDump
             'building_roof_types' => $buildingRoofTypesArray,
         ]);
 
-        dd($roofInsulationSavings);
         return [
             'wall-insulation' => $wallInsulationSavings,
             'insulated-glazing' => $insulatedGlazingSavings,
-            'floor-insulation' => $floorInsulationSavings
+            'floor-insulation' => $floorInsulationSavings,
+            'roof-insulation' => $roofInsulationSavings
         ];
     }
 }

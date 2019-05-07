@@ -2,9 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Calculations\InsulatedGlazing;
 use App\Calculations\WallInsulation;
 use App\Exports\Cooperation\TotalExport;
+use App\Helpers\Hoomdossier;
 use App\Helpers\ToolHelper;
+use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeater;
@@ -14,6 +17,7 @@ use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
 use App\Models\Cooperation;
+use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
@@ -21,6 +25,7 @@ use App\Models\FacadePlasteredSurface;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\Service;
+use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
@@ -30,6 +35,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateTotalDump
@@ -63,7 +69,6 @@ class GenerateTotalDump
         $structure = ToolHelper::getContentStructure();
 
 
-
         // build the header structure, we will set those in the csv and use it later on to get the answers form the users.
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
@@ -73,7 +78,7 @@ class GenerateTotalDump
                 } else {
                     // here we can dot it tho
                     $deeperContents = $contents;
-                    $headers = array_merge($headers, array_dot($deeperContents, $stepSlug.'.calculation.'));
+                    $headers        = array_merge($headers, array_dot($deeperContents, $stepSlug.'.calculation.'));
                 }
 
             }
@@ -81,30 +86,18 @@ class GenerateTotalDump
 
         $rows[] = $headers;
 
-        // get the data for every user.
+        /**
+         * Get the data for every user.
+         * @var User $user
+         */
         foreach ($users as $user) {
             $row = [];
             // collect basic info from a user.
             $building   = $user->buildings()->first();
             $buildingId = $building->id;
 
-            // collect some info about their building
-            $buildingFeature = $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->first();
-            $cavityWall = $buildingFeature->cavity_wall;
-            $buildingElementId = $facadeInsulation = $building->getBuildingElement('wall-insulation');
 
-            // wall insulation savings
-            $wallInsulationSavings = WallInsulation::calculate($building, $user, [
-                'cavity_wall' => $cavityWall,
-                'element' => $buildingElementId,
-                'insulation_wall_surface' => $buildingFeature->insulation_wall_surface,
-                'wall_joints' => $buildingFeature->wall_joins,
-                'contaminated_wall_joints' => $buildingFeature->contaminated_wall_joints,
-                'facade_plastered_painted' => $buildingFeature->facade_plastered_painted,
-                'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id,
-                'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id,
-            ]);
-
+            $calculateData = $this->getCalculateData($building, $user);
 
             // loop through the headers
             foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
@@ -113,7 +106,7 @@ class GenerateTotalDump
 
                 // collect some basic info
                 // which will apply to (most) cases.
-                $step = $tableWithColumnOrAndId[0];
+                $step       = $tableWithColumnOrAndId[0];
                 $table      = $tableWithColumnOrAndId[1];
                 $columnOrId = $tableWithColumnOrAndId[2];
 
@@ -128,12 +121,12 @@ class GenerateTotalDump
                 // handle the calculation table.
                 // No its not a table, but we treat it as in the structure array.
                 if ($table == 'calculation') {
-                    $column = $columnOrId;
+                    $column      = $columnOrId;
                     $costsOrYear = $tableWithColumnOrAndId[3] ?? null;
 
                     switch ($step) {
                         case 'wall-insulation':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] =  !is_null($costsOrYear) ? $wallInsulationSavings[$column][$costsOrYear] : $wallInsulationSavings[$column];
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['wall-insulation'][$column][$costsOrYear] : $wallInsulationSavings[$column];
                             break;
                     }
                 }
@@ -419,13 +412,114 @@ class GenerateTotalDump
                     }
                 }
             }
-                dd(array_merge($headers, $row[$buildingId]));
+            dd(array_merge($headers, $row[$buildingId]));
 
             $rows[] = array_merge($headers, $row[$buildingId]);
         }
 
         // export the csv file
-        Excel::store(new TotalExport($rows),'tests.csv', 'reports', \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new TotalExport($rows), 'tests.csv', 'reports', \Maatwebsite\Excel\Excel::CSV);
 
+    }
+
+    /**
+     * The method will return a array with calculations categorized under a step slug
+     *
+     * This method collects all data necessary to create the calculations. (spoiler alert: its a lot)
+     *
+     * @param  Building  $building
+     * @param  User  $user
+     *
+     * @return array
+     */
+    protected function getCalculateData(Building $building, User $user)
+    {
+        // collect some info about their building
+        $buildingFeature   = $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
+        $buildingElements = $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
+        $buildingPaintworkStatus = $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
+
+        $cavityWall        = $buildingFeature->cavity_wall;
+        $wallInsulationElementId = $facadeInsulation = $building->getBuildingElement('wall-insulation');
+        $woodElements = Element::where('short', 'wood-elements')->first();
+        $frames = Element::where('short', 'frames')->first();
+        $crackSealing = Element::where('short', 'crack-sealing')->first();
+
+        // the user interest on the insulated glazing
+        // key = measure_application_id
+        // val = interest_id
+        $userInterestsForInsulatedGlazing = $user
+            ->interests()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->residentInput()
+            ->where('interested_in_type', 'measure_application')
+            ->select('interested_in_id', 'interest_id')
+            ->get()
+            ->pluck('interest_id', 'interested_in_id')
+            ->toArray();
+
+        /** @var Collection $buildingInsulatedGlazings */
+        $buildingInsulatedGlazings = $building
+            ->currentInsulatedGlazing()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->residentInput()
+            ->select('measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows')
+            ->get();
+
+
+        // build the right structure for the calculation
+        $buildingInsulatedGlazingArray = [];
+        foreach ($buildingInsulatedGlazings as $buildingInsulatedGlazing) {
+            $buildingInsulatedGlazingArray[$buildingInsulatedGlazing->measure_application_id] = [
+                'insulating_glazing_id' => $buildingInsulatedGlazing->insulating_glazing_id,
+                'building_heating_id'   => $buildingInsulatedGlazing->building_heating_id,
+                'm2'                    => $buildingInsulatedGlazing->m2,
+                'windows'               => $buildingInsulatedGlazing->windows,
+            ];
+        }
+
+
+        // handle the wood / frame / crack sealing elements for the insulated glazing
+        $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
+        $buildingElementsArray[$woodElements->short][$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
+
+        $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
+        $buildingElementsArray[$frames->id][$frames->short] = $buildingFrameElement->element_value_id ?? null;
+
+        $buildingCrackSealingElement = $buildingElements->where('element_id', $crackSealing->id)->first();
+        $buildingElementsArray[$crackSealing->id][$crackSealing->short] = $buildingCrackSealingElement->element_value_id ?? null;
+
+        $buildingPaintworkStatusesArray = [
+            'last_painted_year' => $buildingPaintworkStatus->last_painted_year,
+            'paintwork_status_id' => $buildingPaintworkStatus->paintwork_status_id,
+            'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id,
+        ];
+
+
+        // wall insulation savings
+        $wallInsulationSavings = WallInsulation::calculate($building, $user, [
+            'cavity_wall'                 => $cavityWall,
+            'element'                     => $wallInsulationElementId,
+            'insulation_wall_surface'     => $buildingFeature->insulation_wall_surface,
+            'wall_joints'                 => $buildingFeature->wall_joins,
+            'contaminated_wall_joints'    => $buildingFeature->contaminated_wall_joints,
+            'facade_plastered_painted'    => $buildingFeature->facade_plastered_painted,
+            'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id,
+            'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id,
+        ]);
+
+        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $user, [
+            'user_interests' => $userInterestsForInsulatedGlazing,
+            'building_insulated_glazings' => $buildingInsulatedGlazingArray,
+            'building_elements' => $buildingElementsArray,
+            'window_surface' => $buildingFeature->window_surface,
+            'building_paintwork_statuses' => $buildingPaintworkStatusesArray
+        ]);
+
+        dd($insulatedGlazingSavings);
+        return [
+            'wall-insulation' => $wallInsulationSavings,
+            'insulated-glazing' => $insulatedGlazingSavings
+        ];
     }
 }

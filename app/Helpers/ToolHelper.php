@@ -612,8 +612,10 @@ class ToolHelper {
                     'cost_indication' => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-                    'paintwork' => Translation::translate('insulated-glazing.taking-into-account.paintwork.title'),
-                    'paint_work' => Translation::translate('insulated-glazing.taking-into-account.paintwork_year.title')
+                    'paintwork' => [
+                        'costs' => Translation::translate('insulated-glazing.taking-into-account.paintwork.title'),
+                        'year' => Translation::translate('insulated-glazing.taking-into-account.paintwork_year.title'),
+                    ]
                 ];
             }
         }

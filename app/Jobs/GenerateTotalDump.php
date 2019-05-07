@@ -126,8 +126,12 @@ class GenerateTotalDump
 
                     switch ($step) {
                         case 'wall-insulation':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['wall-insulation'][$column][$costsOrYear] : $wallInsulationSavings[$column];
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['wall-insulation'][$column][$costsOrYear] : $calculateData['wall-insulation'][$column] ?? '';
                             break;
+                        case 'insulated-glazing':
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData['insulated-glazing'][$column][$costsOrYear] : $calculateData['insulated-glazing'][$column] ?? '';
+                            break;
+
                     }
                 }
 
@@ -516,7 +520,6 @@ class GenerateTotalDump
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray
         ]);
 
-        dd($insulatedGlazingSavings);
         return [
             'wall-insulation' => $wallInsulationSavings,
             'insulated-glazing' => $insulatedGlazingSavings

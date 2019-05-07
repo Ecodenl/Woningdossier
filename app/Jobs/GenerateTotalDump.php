@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Calculations\FloorInsulation;
+use App\Calculations\HighEfficiencyBoiler;
 use App\Calculations\InsulatedGlazing;
 use App\Calculations\RoofInsulation;
 use App\Calculations\WallInsulation;
@@ -129,23 +130,16 @@ class GenerateTotalDump
                     $column      = $columnOrId;
                     $costsOrYear = $tableWithColumnOrAndId[3] ?? null;
 
-//                    $row[$buildingId][$tableWithColumnOrAndIdKey] = ! is_null($costsOrYear) ? $calculateData[$table][$column][$costsOrYear] : $calculateData[$table][$column];
                     switch ($step) {
-                        case 'wall-insulation':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['wall-insulation'][$column] : $calculateData['wall-insulation'][$column][$costsOrYear] ?? '';
-                            break;
-                        case 'insulated-glazing':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['insulated-glazing'][$column] : $calculateData['insulated-glazing'][$column][$costsOrYear] ?? '';
-                            break;
-                        case 'floor-insulation':
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['floor-insulation'][$column] : $calculateData['floor-insulation'][$column][$costsOrYear] ?? '';
-                            break;
                         case 'roof-insulation':
                             $roofCategory = $tableWithColumnOrAndId[2];
                             $column = $tableWithColumnOrAndId[3];
                             $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
 
                             $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
+                            break;
+                        default:
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['floor-insulation'][$step] : $calculateData[$step][$column][$costsOrYear] ?? '';
                             break;
 //
                     }
@@ -460,14 +454,20 @@ class GenerateTotalDump
         $buildingElements = $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
         $buildingPaintworkStatus = $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
         $buildingRoofTypes = $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
+        $buildingServices = $building->buildingServices()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
+
+        $userEnergyHabit = $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
 
         $cavityWall        = $buildingFeature->cavity_wall;
+        // todo: check this
         $wallInsulationElementId = $facadeInsulation = $building->getBuildingElement('wall-insulation');
         $woodElements = Element::where('short', 'wood-elements')->first();
         $frames = Element::where('short', 'frames')->first();
         $crackSealing = Element::where('short', 'crack-sealing')->first();
         $floorInsulationElement = Element::where('short', 'floor-insulation')->first();
         $crawlspaceElement = Element::where('short', 'crawlspace')->first();
+        $boilerService = Service::where('short', 'boiler')->first();
+
 
         // the user interest on the insulated glazing
         // key = measure_application_id
@@ -505,7 +505,6 @@ class GenerateTotalDump
 
         // handle the wood / frame / crack sealing elements for the insulated glazing
 
-        // todo: refactor those shit with ids...
         $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
         $buildingElementsArray[$woodElements->short][$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
 
@@ -559,6 +558,16 @@ class GenerateTotalDump
         // merge them
         $buildingRoofTypesArray = array_merge($selectedRoofTypes, $buildingRoofTypesArray);
 
+        // now we handle the hr boiler stuff
+        $buildingBoilerService = $buildingServices->where('service_id', $boilerService->id)->first();
+
+        $buildingBoilerArray = [
+            $boilerService->id => [
+                'service_value_id' => $buildingBoilerService->service_value_id ?? '',
+                'extra' => $buildingBoilerService->extra['date'] ?? null,
+            ]
+        ];
+
         $wallInsulationSavings = WallInsulation::calculate($building, $user, [
             'cavity_wall'                 => $cavityWall,
             'element'                     => $wallInsulationElementId,
@@ -588,6 +597,15 @@ class GenerateTotalDump
             'building_roof_types' => $buildingRoofTypesArray,
         ]);
 
+
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $user, [
+            'building_services' => $buildingBoilerArray,
+            'habit' => [
+                'amount_gas' => $userEnergyHabit->amount_gas
+            ]
+        ]);
+
+        dd($highEfficiencyBoilerSavings);
         return [
             'wall-insulation' => $wallInsulationSavings,
             'insulated-glazing' => $insulatedGlazingSavings,

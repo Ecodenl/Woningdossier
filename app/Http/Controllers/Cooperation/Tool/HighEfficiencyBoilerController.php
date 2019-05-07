@@ -77,6 +77,7 @@ class HighEfficiencyBoilerController extends Controller
         ];
 
         $services = $request->input('building_services', []);
+
         // (there's only one..)
         foreach ($services as $serviceId => $options) {
             $boilerService = Service::find($serviceId);

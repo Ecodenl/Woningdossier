@@ -80,7 +80,7 @@ class BuildingInsulatedGlazing extends Model
      */
     public function insulatedGlazing()
     {
-        return $this->belongsTo(InsulatingGlazing::class);
+        return $this->belongsTo(InsulatingGlazing::class, 'insulating_glazing_id', 'id');
     }
 
     /**
@@ -88,7 +88,7 @@ class BuildingInsulatedGlazing extends Model
      */
     public function buildingHeating()
     {
-        return $this->belongsTo(BuildingHeating::class);
+        return $this->belongsTo(BuildingHeating::class, 'building_heating_id', 'id');
     }
 
     /**

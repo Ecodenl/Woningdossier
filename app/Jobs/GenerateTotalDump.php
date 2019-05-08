@@ -234,15 +234,21 @@ class GenerateTotalDump
                 }
 
                 // handle the user_interest table and its columns.
-                if ($table == 'user_interest') {
-                    $interestInType = $columnOrId;
-                    $interestInId   = $tableWithColumnOrAndId[3];
+                if (in_array($table, ['user_interest', 'user_interests'])) {
+                    if ($step == 'insulated-glazing') {
+                        $interestInType = 'measure_application';
+                        $interestInId   = $tableWithColumnOrAndId[2];
+                    } else {
+                        $interestInType = $columnOrId;
+                        $interestInId   = $tableWithColumnOrAndId[3];
+                    }
 
                     $userInterest = UserInterest::withoutGlobalScope(GetValueScope::class)
                                                 ->where($whereUserOrBuildingId)
                                                 ->where('interested_in_id', $interestInId)
                                                 ->where('interested_in_type', $interestInType)
                                                 ->residentInput()->first();
+
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
                 }
@@ -323,7 +329,7 @@ class GenerateTotalDump
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->insulatedGlazing->name ?? '';
                                 break;
                             case 'building_heating_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->buildingHeater->name ?? '';
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->buildingHeating->name ?? '';
                                 break;
                             default:
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->$column ?? '';

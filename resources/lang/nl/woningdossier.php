@@ -516,6 +516,14 @@ return [
                     'title'       => 'Rapportages',
                     'description' => 'Rapportage downloads',
 
+                    'table' => [
+                        'columns' => [
+                            'name' => 'Rapport type',
+                            'download' => 'Download file',
+                            'available-report' => 'Beschikbaar rapport'
+                        ],
+                    ],
+
                     'download'    => [
                         'by-year'                        => 'Actieplan per jaar',
 

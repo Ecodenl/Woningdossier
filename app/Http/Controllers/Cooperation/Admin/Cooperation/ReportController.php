@@ -22,7 +22,30 @@ class ReportController extends Controller
 {
     public function index()
     {
-        return view('cooperation.admin.cooperation.reports.index');
+        $downloadables = [
+            [
+                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.total-dump'),
+                'url' => route('cooperation.admin.cooperation.reports.download.total-dump')
+            ],
+            [
+                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results-anonymized'),
+                'url' => route('cooperation.admin.cooperation.reports.download.questionnaire-results-anonymized')
+            ],
+            [
+                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results'),
+                'url' => route('cooperation.admin.cooperation.reports.download.questionnaire-results')
+            ],
+            [
+                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.by-measure'),
+                'url' => route('cooperation.admin.cooperation.reports.download.by-measure')
+            ],
+            [
+                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.by-measure-anonymized'),
+                'url' => route('cooperation.admin.cooperation.reports.download.by-measure-anonymized')
+            ]
+        ];
+
+        return view('cooperation.admin.cooperation.reports.index', compact('downloadables'));
     }
 
     public function downloadByYear()

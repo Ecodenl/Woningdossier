@@ -11,30 +11,34 @@
                     <h2>@lang('woningdossier.cooperation.admin.cooperation.reports.description')</h2>
                 </div>
             </div>
-            <div class="row">
                 <div class="col-sm-12">
-                    <ul>
-{{--                        <li>--}}
-{{--                            <a href="{{ route('cooperation.admin.cooperation.reports.download.by-year') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-year') (CSV)</a>--}}
-{{--                        </li>--}}
-                        <li>
-                            <a href="{{ route('cooperation.admin.cooperation.reports.download.by-measure') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-measure') (CSV)</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('cooperation.admin.cooperation.reports.download.by-measure-anonymized') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.by-measure-anonymized') (CSV)</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results') (CSV)</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('cooperation.admin.cooperation.reports.download.questionnaire-results-anonymized') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results-anonymized') (CSV)</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('cooperation.admin.cooperation.reports.download.total-dump') }}">@lang('woningdossier.cooperation.admin.cooperation.reports.download.total-dump') (CSV)</a>
-                        </li>
-                    </ul>
+                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive" style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.table.columns.name')}}</th>
+                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.table.columns.download')}}</th>
+                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.table.columns.available-report')}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($downloadables as $downloadable)
+                                <tr>
+                                    <td>{{$downloadable['name']}}</td>
+                                    <td><a href="{{$downloadable['url']}}" class="btn btn-primary">Download</a></td>
+                                    <td></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script>
+        $('table').dataTable({responsive: true});
+    </script>
+@endpush

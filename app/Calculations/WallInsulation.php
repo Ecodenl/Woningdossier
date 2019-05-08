@@ -31,8 +31,8 @@ class WallInsulation {
     {
         $energyHabits = $user->energyHabit;
 
-        $cavityWall = $calculateData['cavity_wall'] ?? '';
-        $elementValueId = $calculateData['element'] ?? [];
+        $cavityWall = $calculateData['cavity_wall'] ?? -1;
+        $elements = $calculateData['element'] ?? [];
         $facadeSurface = $calculateData['insulation_wall_surface'] ?? 0;
 
 
@@ -61,6 +61,7 @@ class WallInsulation {
         $insulationAdvice = MeasureApplication::byShort($advice);
         $result['insulation_advice'] = __('wall-insulation.'.$advice);
 
+        $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);
         if ($elementValue instanceof ElementValue && $energyHabits instanceof UserEnergyHabit) {
             $result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabits, $facadeSurface, $advice);

@@ -4,6 +4,7 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
@@ -12,7 +13,6 @@ use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\MeasureApplication;
-use App\Models\User;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
@@ -22,15 +22,13 @@ class WallInsulation {
      * Calculate the wall insulation costs and savings etc
      *
      * @param  Building  $building
-     * @param  User  $user
+     * @param  UserEnergyHabit|null $energyHabit
      * @param  array  $calculateData
      *
      * @return array;
      */
-    public static function calculate(Building $building, User $user, array $calculateData): array
+    public static function calculate(Building $building, $energyHabit, array $calculateData): array
     {
-        $energyHabits = $user->energyHabit;
-
         $cavityWall = $calculateData['cavity_wall'] ?? -1;
         $elements = $calculateData['element'] ?? [];
         $facadeSurface = $calculateData['insulation_wall_surface'] ?? 0;
@@ -63,9 +61,10 @@ class WallInsulation {
 
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);
-        if ($elementValue instanceof ElementValue && $energyHabits instanceof UserEnergyHabit) {
-            $result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabits, $facadeSurface, $advice);
+        if ($elementValue instanceof ElementValue && $energyHabit instanceof UserEnergyHabit) {
+            $result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabit, $facadeSurface, $advice);
         }
+
 
         $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
         $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));

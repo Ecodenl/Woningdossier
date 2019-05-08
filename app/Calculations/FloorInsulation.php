@@ -43,6 +43,7 @@ class FloorInsulation {
         $buildingElements = $calculateData['building_elements'] ?? [];
         $buildingFeatures = $calculateData['building_features'] ?? [];
 
+
         $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 
         if (array_key_exists('crawlspace', $buildingElements)) {

@@ -10,7 +10,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
 use App\Exports\Cooperation\TotalExport;
-use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolHelper;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -28,6 +28,7 @@ use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\Service;
@@ -35,7 +36,6 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
-use App\Services\CsvService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -44,7 +44,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
-class GenerateTotalDump
+class GenerateTotalDump implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -65,8 +65,14 @@ class GenerateTotalDump
      */
     public function handle()
     {
+        // temporary session to get the right data for the dumb.
+        $residentInputSource = InputSource::findByShort('resident');
+        HoomdossierSession::setInputSource($residentInputSource);
+        HoomdossierSession::setInputSourceValue($residentInputSource);
+
+
         // Get the users from the cooperations
-        $users = $this->cooperation->users->take(40);
+        $users = $this->cooperation->users;
 
         $headers = [];
         $rows    = [];
@@ -111,6 +117,10 @@ class GenerateTotalDump
                 // explode it so we can do stuff with it.
                 $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
 
+                // for debug purposes only!.
+//                $tableWithColumnOrAndIdKey = $translatedInputName;
+
+
                 // collect some basic info
                 // which will apply to (most) cases.
                 $step       = $tableWithColumnOrAndId[0];
@@ -139,12 +149,14 @@ class GenerateTotalDump
                             $column = $tableWithColumnOrAndId[3];
                             $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
 
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
+                            $calculationResult = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
                             break;
                         default:
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData[$step][$column] : $calculateData[$step][$column][$costsOrYear] ?? '';
+                            $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$column] : $calculateData[$step][$column][$costsOrYear] ?? '';
                             break;
                     }
+
+                    $row[$buildingId][$tableWithColumnOrAndIdKey] = "'".$calculationResult ?? '';
                 }
 
                 // handle the building_features table and its columns.
@@ -443,14 +455,14 @@ class GenerateTotalDump
                 }
             }
 
-            dd(array_merge($headers, $row[$buildingId]));
-//            dd(array_flip($rows[0]), $row[$buildingId], array_flip($headers));
             $rows[] = array_merge($headers, $row[$buildingId]);
-//            dd($rows);
         }
+
+        \Session::forget('hoomdossier_session');
 
         // export the csv file
         Excel::store(new TotalExport($rows), 'tests.csv', 'reports', \Maatwebsite\Excel\Excel::CSV);
+
 
     }
 
@@ -621,7 +633,7 @@ class GenerateTotalDump
             })->toArray();
 
 
-        $wallInsulationSavings = WallInsulation::calculate($building, $user, [
+        $wallInsulationSavings = WallInsulation::calculate($building, $userEnergyHabit, [
             'cavity_wall'                 => $buildingFeature->cavity_wall ?? null,
             'element'                     => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
             'insulation_wall_surface'     => $buildingFeature->insulation_wall_surface ?? null,

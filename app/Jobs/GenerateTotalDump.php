@@ -139,7 +139,10 @@ class GenerateTotalDump
                             $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
                             break;
                         default:
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['floor-insulation'][$step] : $calculateData[$step][$column][$costsOrYear] ?? '';
+//                            if ($column == 'solar-panels') {
+//                                dd($column, $step, $calculateData, $tableWithColumnOrAndId);
+//                            }
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData[$step][$column] : $calculateData[$step][$column][$costsOrYear] ?? '';
                             break;
 //
                     }
@@ -605,12 +608,15 @@ class GenerateTotalDump
             ]
         ]);
 
-        dd($highEfficiencyBoilerSavings);
+//        dd($highEfficiencyBoilerSavings);
+
+
         return [
             'wall-insulation' => $wallInsulationSavings,
             'insulated-glazing' => $insulatedGlazingSavings,
             'floor-insulation' => $floorInsulationSavings,
-            'roof-insulation' => $roofInsulationSavings
+            'roof-insulation' => $roofInsulationSavings,
+            'high-efficiency-boiler' => $highEfficiencyBoilerSavings
         ];
     }
 }

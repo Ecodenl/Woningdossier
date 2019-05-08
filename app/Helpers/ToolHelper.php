@@ -476,7 +476,7 @@ class ToolHelper
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-                    'indicative_replacement_year' => Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title')
+                    'replace_year' => Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title')
                 ]
             ],
 

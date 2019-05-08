@@ -700,15 +700,15 @@ class CsvService
      * Create a total dump of all user info available in the tool.
      *
      * @param  string  $filename
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
     public static function totalDump($filename = 'totale-dump')
     {
-        ini_set('max_execution_time', 30000);
-
         // Get the current cooperation with its users
-        $cooperation = Cooperation::find(1);
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        GenerateTotalDump::dispatch($cooperation);
+        GenerateTotalDump::dispatch($cooperation)->onQueue('high');
 
         return redirect()->back();
     }

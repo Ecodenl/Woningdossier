@@ -43,7 +43,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
-class GenerateTotalDump
+class GenerateTotalDump implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -280,26 +280,20 @@ class GenerateTotalDump
                             }
                             break;
                         case 'service':
+
                             $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
                                                               ->where($whereUserOrBuildingId)
                                                               ->where('service_id', $elementOrServiceId)
                                                               ->residentInput()->first();
-
                             if ($buildingService instanceof BuildingService) {
 
                                 // check if we need to get data from the extra column
                                 if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-
                                     $extraKey     = explode('extra.', $tableWithColumnOrAndIdKey)[1];
                                     $extraIsArray = is_array($buildingService->extra);
 
-                                    if ($extraKey == 'value' && $extraIsArray) {
-                                        $service                                      = Service::find($buildingService->extra['value']);
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $service instanceof Service ? $service->name : '';
-                                    } else {
-                                        // if is array, try to get the answer from the extra column, does the key not exist set a default value.
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $extraIsArray ? $buildingService->extra[$extraKey] ?? '' : '';
-                                    }
+                                    // if is array, try to get the answer from the extra column, does the key not exist set a default value.
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $extraIsArray ? $buildingService->extra[$extraKey] ?? '' : '';
                                 } else {
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
                                 }
@@ -434,7 +428,9 @@ class GenerateTotalDump
                 }
             }
 
+//            dd(array_flip($rows[0]), $row[$buildingId], array_flip($headers));
             $rows[] = array_merge($headers, $row[$buildingId]);
+//            dd($rows);
         }
 
         // export the csv file
@@ -624,7 +620,7 @@ class GenerateTotalDump
             'user_interests' => $userInterestsForInsulatedGlazing,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
-            'window_surface' => $buildingFeature->window_surface,
+            'window_surface' => $buildingFeature->window_surface ?? null,
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray
         ]);
 

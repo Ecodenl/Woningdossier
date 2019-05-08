@@ -50,6 +50,6 @@ class BuildingHeater extends Model
 
     public function orientation()
     {
-        return $this->belongsTo(PvPanelOrientation::class);
+        return $this->belongsTo(PvPanelOrientation::class, 'pv_panel_orientation_id', 'id');
     }
 }

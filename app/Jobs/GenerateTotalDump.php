@@ -428,7 +428,6 @@ class GenerateTotalDump
                 }
             }
             dd(array_merge($headers, $row[$buildingId]));
-
             $rows[] = array_merge($headers, $row[$buildingId]);
         }
 

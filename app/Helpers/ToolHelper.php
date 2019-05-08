@@ -507,7 +507,6 @@ class ToolHelper
                     'yield_electricity'     => Translation::translate('solar-panels.indication-for-costs.yield-electricity.title'),
                     'raise_own_consumption' => Translation::translate('solar-panels.indication-for-costs.raise-own-consumption.title'),
 
-                    'savings_gas'         => Translation::translate('solar-panels.costs.gas.title'),
                     'savings_co2'         => Translation::translate('solar-panels.costs.co2.title'),
                     'savings_money'       => Translation::translate('general.costs.savings-in-euro.title'),
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
@@ -533,15 +532,17 @@ class ToolHelper
                 ],
 
                 'calculations' => [
-                    'consumption_water' => Translation::translate('heater.consumption-water.title'),
-                    'consumption_gas'   => Translation::translate('heater.consumption-gas.title'),
+                    'consumption' => [
+                        'water' => Translation::translate('heater.consumption-water.title'),
+                        'gas' => Translation::translate('heater.consumption-gas.title'),
+                    ],
 
-                    'size_boiler'    => Translation::translate('heater.size-boiler.title'),
-                    'size_collector' => Translation::translate('heater.size-collector.title'),
-
+                    'specs' => [
+                        'size_boiler'    => Translation::translate('heater.size-boiler.title'),
+                        'size_collector' => Translation::translate('heater.size-collector.title'),
+                    ],
                     'production_heat'        => Translation::translate('heater.indication-for-costs.production-heat'),
                     'percentage_consumption' => Translation::translate('heater.indication-for-costs.percentage-consumption.title'),
-
                     'savings_gas'         => Translation::translate('heater.costs.gas.title'),
                     'savings_co2'         => Translation::translate('heater.costs.co2.title'),
                     'savings_money'       => Translation::translate('general.costs.savings-in-euro.title'),

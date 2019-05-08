@@ -3,9 +3,11 @@
 namespace App\Jobs;
 
 use App\Calculations\FloorInsulation;
+use App\Calculations\Heater;
 use App\Calculations\HighEfficiencyBoiler;
 use App\Calculations\InsulatedGlazing;
 use App\Calculations\RoofInsulation;
+use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
 use App\Exports\Cooperation\TotalExport;
 use App\Helpers\Hoomdossier;
@@ -139,12 +141,8 @@ class GenerateTotalDump
                             $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
                             break;
                         default:
-//                            if ($column == 'solar-panels') {
-//                                dd($column, $step, $calculateData, $tableWithColumnOrAndId);
-//                            }
                             $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($costsOrYear) ? $calculateData[$step][$column] : $calculateData[$step][$column][$costsOrYear] ?? '';
                             break;
-//
                     }
                 }
 
@@ -458,6 +456,8 @@ class GenerateTotalDump
         $buildingPaintworkStatus = $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
         $buildingRoofTypes = $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
         $buildingServices = $building->buildingServices()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
+        $buildingPvPanels = $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
+        $buildingHeater = $building->heater()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
 
         $userEnergyHabit = $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
 
@@ -469,7 +469,10 @@ class GenerateTotalDump
         $crackSealing = Element::where('short', 'crack-sealing')->first();
         $floorInsulationElement = Element::where('short', 'floor-insulation')->first();
         $crawlspaceElement = Element::where('short', 'crawlspace')->first();
+
         $boilerService = Service::where('short', 'boiler')->first();
+        $solarPanelService = Service::where('short', 'total-sun-panels')->first();
+        $heaterService = Service::where('short', 'sun-boiler')->first();
 
 
         // the user interest on the insulated glazing
@@ -571,6 +574,34 @@ class GenerateTotalDump
             ]
         ];
 
+        // handle the solar panel stuff.
+
+        // get the user interests for the solar panels keyed by type
+        $userInterestsForSolarPanels = $user
+            ->interests()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->residentInput()
+            ->where('interested_in_type', 'service')
+            ->where('interested_in_id', $solarPanelService->id)
+            ->select('interested_in_id', 'interest_id', 'interested_in_type')
+            ->get()
+            ->keyBy('interested_in_type')->map(function ($item) {
+                return [$item['interested_in_id'] => $item['interest_id']];
+            })->toArray();
+
+        // handle the heater stuff
+        $userInterestsForHeater = $user
+            ->interests()
+            ->withoutGlobalScope(GetValueScope::class)
+            ->residentInput()
+            ->where('interested_in_type', 'service')
+            ->where('interested_in_id', $heaterService->id)
+            ->select('interested_in_id', 'interest_id', 'interested_in_type')
+            ->get()
+            ->keyBy('interested_in_type')->map(function ($item) {
+                return [$item['interested_in_id'] => $item['interest_id']];
+            })->toArray();
+
         $wallInsulationSavings = WallInsulation::calculate($building, $user, [
             'cavity_wall'                 => $cavityWall,
             'element'                     => $wallInsulationElementId,
@@ -608,7 +639,24 @@ class GenerateTotalDump
             ]
         ]);
 
-//        dd($highEfficiencyBoilerSavings);
+        $solarPanelSavings = SolarPanel::calculate($building, $user, [
+            'building_pv_panels' => $buildingPvPanels->toArray(),
+            'user_energy_habits' => [
+                'amount_electricity' => $userEnergyHabit->amount_electricity
+            ],
+            'interest' => $userInterestsForSolarPanels
+        ]);
+
+        $heaterSavings = Heater::calculate($building, $user, [
+            'building_heaters' => [
+                $buildingHeater->toArray() ?? []
+            ],
+            'user_energy_habits' => [
+                'water_comfort_id' => $userEnergyHabit->water_comfort_id
+            ],
+            'interest' => $userInterestsForHeater,
+        ]);
+
 
 
         return [
@@ -616,7 +664,9 @@ class GenerateTotalDump
             'insulated-glazing' => $insulatedGlazingSavings,
             'floor-insulation' => $floorInsulationSavings,
             'roof-insulation' => $roofInsulationSavings,
-            'high-efficiency-boiler' => $highEfficiencyBoilerSavings
+            'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
+            'solar-panels' => $solarPanelSavings,
+            'heater' => $heaterSavings
         ];
     }
 }

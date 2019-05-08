@@ -27,6 +27,7 @@ use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
+use App\Models\FacadeSurface;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\Service;
@@ -43,7 +44,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
-class GenerateTotalDump implements ShouldQueue
+class GenerateTotalDump
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -65,7 +66,7 @@ class GenerateTotalDump implements ShouldQueue
     public function handle()
     {
         // Get the users from the cooperations
-        $users = $this->cooperation->users;
+        $users = $this->cooperation->users->take(40);
 
         $headers = [];
         $rows    = [];
@@ -161,7 +162,7 @@ class GenerateTotalDump implements ShouldQueue
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
                                 break;
                             case 'facade_damaged_paintwork_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->value : '';
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                 break;
                             case 'facade_plastered_painted':
                                 $possibleAnswers                              = [
@@ -169,6 +170,7 @@ class GenerateTotalDump implements ShouldQueue
                                     2 => \App\Helpers\Translation::translate('general.options.no.title'),
                                     3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                                 ];
+
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->facade_plastered_painted] ?? '';
                                 break;
                             case 'facade_plastered_surface_id':
@@ -181,6 +183,12 @@ class GenerateTotalDump implements ShouldQueue
                                     0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                                 ];
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->monument] ?? '';
+                                break;
+                            case 'wall_joints':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->wallJoints instanceof FacadeSurface ? $buildingFeature->wallJoints->name : '';
+                                break;
+                            case 'contaminated_wall_joints':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->contaminatedWallJoints instanceof FacadeSurface ? $buildingFeature->contaminatedWallJoints->name : '';
                                 break;
                             default:
                                 // the column does not need a relationship, so just get the column
@@ -392,6 +400,13 @@ class GenerateTotalDump implements ShouldQueue
 
                     if ($userEnergyHabit instanceof UserEnergyHabit) {
                         switch ($column) {
+                            case 'cook_gas':
+                                $radiobuttonsYesNo = [
+                                    1 => __('woningdossier.cooperation.radiobutton.yes'),
+                                    2 => __('woningdossier.cooperation.radiobutton.no')
+                                ];
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $radiobuttonsYesNo[$userEnergyHabit->cook_gas] ?? '';
+                                break;
                             default:
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->$column ?? '';
                                 break;
@@ -428,6 +443,7 @@ class GenerateTotalDump implements ShouldQueue
                 }
             }
 
+            dd(array_merge($headers, $row[$buildingId]));
 //            dd(array_flip($rows[0]), $row[$buildingId], array_flip($headers));
             $rows[] = array_merge($headers, $row[$buildingId]);
 //            dd($rows);

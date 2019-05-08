@@ -113,12 +113,32 @@ class BuildingFeature extends Model
 
     public function damagedPaintwork()
     {
-        return $this->belongsTo(FacadeDamagedPaintwork::class);
+        return $this->belongsTo(FacadeDamagedPaintwork::class, 'facade_damaged_paintwork_id', 'id');
     }
 
     public function plasteredSurface()
     {
-        return $this->belongsTo(FacadePlasteredSurface::class);
+        return $this->belongsTo(FacadePlasteredSurface::class, 'facade_plastered_surface_id', 'id');
+    }
+
+    /**
+     * Column is named wall_joints.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function wallJoints()
+    {
+        return $this->belongsTo(FacadeSurface::class, 'wall_joints', 'id');
+    }
+
+    /**
+     * Column is named contaminated_wall_joints.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contaminatedWallJoints()
+    {
+        return $this->belongsTo(FacadeSurface::class, 'contaminated_wall_joints', 'id');
     }
 
     public function buildingCategory()

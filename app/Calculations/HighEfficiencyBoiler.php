@@ -39,9 +39,13 @@ class HighEfficiencyBoiler {
                                           ->where('id', $options['service_value_id'])
                                           ->first();
 
-                $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
-                if ($boilerEfficiency->heating > 95) {
-                    $result['boiler_advice'] = Translation::translate('boiler.already-efficient');
+
+                if ($boilerType instanceof ServiceValue) {
+
+                    $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
+                    if ($boilerEfficiency->heating > 95) {
+                        $result['boiler_advice'] = Translation::translate('boiler.already-efficient');
+                    }
                 }
 
                 if (array_key_exists('extra', $options)) {
@@ -54,7 +58,7 @@ class HighEfficiencyBoiler {
                     $amountGas = $calculateData['habit']['gas_usage'] ?? null;
 
                     if ($user->energyHabit instanceof UserEnergyHabit) {
-                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas);
+                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas) ?? '';
                     }
                     $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                     $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));

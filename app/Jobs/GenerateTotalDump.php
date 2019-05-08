@@ -65,7 +65,7 @@ class GenerateTotalDump
     public function handle()
     {
         // Get the users from the cooperations
-        $users = $this->cooperation->users->take(5);
+        $users = $this->cooperation->users;
 
         $headers = [];
         $rows    = [];
@@ -433,7 +433,7 @@ class GenerateTotalDump
                     }
                 }
             }
-            dd(array_merge($headers, $row[$buildingId]));
+
             $rows[] = array_merge($headers, $row[$buildingId]);
         }
 
@@ -466,9 +466,7 @@ class GenerateTotalDump
 
         $userEnergyHabit = $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
 
-        $cavityWall        = $buildingFeature->cavity_wall;
-        // todo: check this
-        $wallInsulationElementId = $facadeInsulation = $building->getBuildingElement('wall-insulation');
+        $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
         $frames = Element::where('short', 'frames')->first();
         $crackSealing = Element::where('short', 'crack-sealing')->first();
@@ -479,7 +477,10 @@ class GenerateTotalDump
         $solarPanelService = Service::where('short', 'total-sun-panels')->first();
         $heaterService = Service::where('short', 'sun-boiler')->first();
 
+        // handle stuff for the wall insulation
+        $wallInsulationBuildingElement = $buildingElements->where('element_id', $wallInsulationElement->id)->first();
 
+        // handle the stuff for the insulated glazing
         // the user interest on the insulated glazing
         // key = measure_application_id
         // val = interest_id
@@ -526,9 +527,9 @@ class GenerateTotalDump
         $buildingElementsArray[$crackSealing->id][$crackSealing->short] = $buildingCrackSealingElement->element_value_id ?? null;
 
         $buildingPaintworkStatusesArray = [
-            'last_painted_year' => $buildingPaintworkStatus->last_painted_year,
-            'paintwork_status_id' => $buildingPaintworkStatus->paintwork_status_id,
-            'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id,
+            'last_painted_year' => $buildingPaintworkStatus->last_painted_year ?? null,
+            'paintwork_status_id' => $buildingPaintworkStatus->paintwork_status_id ?? null,
+            'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null
         ];
 
         // handle the stuff for the floor insulation.
@@ -539,7 +540,7 @@ class GenerateTotalDump
             'crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
             $crawlspaceElement->id => [
                 'extra' => $buildingCrawlspaceElement->extra['access'] ?? null,
-                'element_value_id' => $buildingCrawlspaceElement->element_value_id
+                'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null
             ]
         ];
 
@@ -574,7 +575,7 @@ class GenerateTotalDump
 
         $buildingBoilerArray = [
             $boilerService->id => [
-                'service_value_id' => $buildingBoilerService->service_value_id ?? '',
+                'service_value_id' => $buildingBoilerService->service_value_id ?? null,
                 'extra' => $buildingBoilerService->extra['date'] ?? null,
             ]
         ];
@@ -607,15 +608,16 @@ class GenerateTotalDump
                 return [$item['interested_in_id'] => $item['interest_id']];
             })->toArray();
 
+
         $wallInsulationSavings = WallInsulation::calculate($building, $user, [
-            'cavity_wall'                 => $cavityWall,
-            'element'                     => $wallInsulationElementId,
-            'insulation_wall_surface'     => $buildingFeature->insulation_wall_surface,
-            'wall_joints'                 => $buildingFeature->wall_joints,
-            'contaminated_wall_joints'    => $buildingFeature->contaminated_wall_joints,
-            'facade_plastered_painted'    => $buildingFeature->facade_plastered_painted,
-            'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id,
-            'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id,
+            'cavity_wall'                 => $buildingFeature->cavity_wall ?? null,
+            'element'                     => $wallInsulationBuildingElement->id ?? null,
+            'insulation_wall_surface'     => $buildingFeature->insulation_wall_surface ?? null,
+            'wall_joints'                 => $buildingFeature->wall_joints ?? null,
+            'contaminated_wall_joints'    => $buildingFeature->contaminated_wall_joints ?? null,
+            'facade_plastered_painted'    => $buildingFeature->facade_plastered_painted ?? null,
+            'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
+            'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $user, [
@@ -640,24 +642,24 @@ class GenerateTotalDump
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $user, [
             'building_services' => $buildingBoilerArray,
             'habit' => [
-                'amount_gas' => $userEnergyHabit->amount_gas
+                'amount_gas' => $userEnergyHabit->amount_gas ?? null
             ]
         ]);
 
         $solarPanelSavings = SolarPanel::calculate($building, $user, [
-            'building_pv_panels' => $buildingPvPanels->toArray(),
+            'building_pv_panels' => $buildingPvPanels instanceOf BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
-                'amount_electricity' => $userEnergyHabit->amount_electricity
+                'amount_electricity' => $userEnergyHabit->amount_electricity ?? null
             ],
             'interest' => $userInterestsForSolarPanels
         ]);
 
         $heaterSavings = Heater::calculate($building, $user, [
             'building_heaters' => [
-                $buildingHeater->toArray() ?? []
+                $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             ],
             'user_energy_habits' => [
-                'water_comfort_id' => $userEnergyHabit->water_comfort_id
+                'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null
             ],
             'interest' => $userInterestsForHeater,
         ]);

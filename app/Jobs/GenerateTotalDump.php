@@ -623,7 +623,7 @@ class GenerateTotalDump
 
         $wallInsulationSavings = WallInsulation::calculate($building, $user, [
             'cavity_wall'                 => $buildingFeature->cavity_wall ?? null,
-            'element'                     => $wallInsulationBuildingElement->id ?? null,
+            'element'                     => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
             'insulation_wall_surface'     => $buildingFeature->insulation_wall_surface ?? null,
             'wall_joints'                 => $buildingFeature->wall_joints ?? null,
             'contaminated_wall_joints'    => $buildingFeature->contaminated_wall_joints ?? null,

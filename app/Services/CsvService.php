@@ -329,41 +329,55 @@ class CsvService
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public static function questionnaireResults($filename = 'vragenlijst-met-adres-gegevens')
+    public static function questionnaireResults(Cooperation $cooperation, bool $anonymize)
     {
         $questionnaires = Questionnaire::all();
         $rows           = [];
 
-        $headers = [
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-        ];
+        if ($anonymize) {
+            $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
 
-        // we only want to query on the buildings that belong to the cooperation of the current user
-        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+            ];
+
+        } else {
+
+            $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+            ];
+        }
+
 
         // get the users from the current cooperation that have the resident role
-        $usersFromCooperation = $currentCooperation->users()->role('resident')->with('buildings')->get();
+        $usersFromCooperation = $cooperation->users()->role('resident')->with('buildings')->get();
 
 
         foreach ($usersFromCooperation as $user) {
             $building = $user->buildings()->first();
 
             /** @var Collection $conversationRequestsForBuilding */
-            $conversationRequestsForBuilding = PrivateMessage::conversationRequestByBuildingId($building->id)->forMyCooperation()->get();
+            $conversationRequestsForBuilding = PrivateMessage::conversationRequestByBuildingId($building->id)
+                                                             ->where('to_cooperation_id', $cooperation->id)->get();
 
             $createdAt           = $user->created_at;
             $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);

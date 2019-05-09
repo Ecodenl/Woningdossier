@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\GenerateCustomQuestionnaireReport;
 use App\Jobs\GenerateMeasureReport;
 use App\Jobs\GenerateTotalReport;
 use App\Models\Cooperation;
@@ -50,8 +51,10 @@ class ReportController extends Controller
                 GenerateMeasureReport::dispatch($cooperation, $fileType, true)->onQueue('high');
                 break;
             case 'custom-questionnaires-report':
+                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType)->onQueue('high');
                 break;
             case 'custom-questionnaires-report-anonymized':
+                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType, true)->onQueue('high');
                 break;
 
         }

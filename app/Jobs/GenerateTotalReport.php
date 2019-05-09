@@ -65,6 +65,7 @@ class GenerateTotalReport implements ShouldQueue
      * GenerateTotalReport constructor.
      *
      * @param  Cooperation  $cooperation
+     * @param  FileType $fileType
      * @param  bool  $anonymizeData
      */
     public function __construct(Cooperation $cooperation, FileType $fileType, $anonymizeData = false)

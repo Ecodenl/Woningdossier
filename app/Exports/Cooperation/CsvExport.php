@@ -4,7 +4,7 @@ namespace App\Exports\Cooperation;
 
 use Maatwebsite\Excel\Concerns\FromArray;
 
-class TotalExport implements FromArray
+class CsvExport implements FromArray
 {
     protected $totalExport;
 

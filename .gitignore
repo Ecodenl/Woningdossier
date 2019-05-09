@@ -14,7 +14,7 @@ yarn-error.log
 # translation file
 resources/lang/*/uuid.php
 
-storage/app/downloads/
+storage/app/downloads
 
 # IntelliJ project files
 *.iml

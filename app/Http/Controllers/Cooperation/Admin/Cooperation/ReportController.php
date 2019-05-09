@@ -33,9 +33,8 @@ class ReportController extends Controller
     {
         $fileType = FileType::findOrFail($fileTypeId);
 
-
         if($fileType->isBeingProcessed()) {
-            return redirect(back());
+            return redirect()->back();
         }
         switch ($fileType->short) {
             case 'total-report':

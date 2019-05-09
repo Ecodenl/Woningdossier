@@ -46,11 +46,11 @@ return [
             'root' => storage_path('app'),
         ],
 
-        'reports' => [
+        'downloads' => [
             'driver' => 'local',
-            'root' => storage_path('app/reports'),
+            'root' => storage_path('app/downloads'),
             'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
+            'visibility' => 'private',
         ],
 
         'public' => [

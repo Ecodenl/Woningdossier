@@ -2,50 +2,64 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
-use App\Helpers\Arr;
-use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
-use App\Models\Building;
+use App\Jobs\GenerateMeasureReport;
+use App\Jobs\GenerateTotalReport;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\MeasureApplication;
-use App\Models\Question;
-use App\Models\Questionnaire;
-use App\Models\QuestionOption;
-use App\Scopes\GetValueScope;
-use App\Services\CsvExportService;
-use App\Services\CsvReportService;
+use App\Models\FileStorage;
+use App\Models\FileType;
+use App\Models\FileTypeCategory;
 use App\Services\CsvService;
-use Carbon\Carbon;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        $downloadables = [
-            [
-                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.total-dump'),
-                'url' => route('cooperation.admin.cooperation.reports.download.total-dump')
-            ],
-            [
-                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results-anonymized'),
-                'url' => route('cooperation.admin.cooperation.reports.download.questionnaire-results-anonymized')
-            ],
-            [
-                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.download-questionnaire-results'),
-                'url' => route('cooperation.admin.cooperation.reports.download.questionnaire-results')
-            ],
-            [
-                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.by-measure'),
-                'url' => route('cooperation.admin.cooperation.reports.download.by-measure')
-            ],
-            [
-                'name' => \App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.download.by-measure-anonymized'),
-                'url' => route('cooperation.admin.cooperation.reports.download.by-measure-anonymized')
-            ]
-        ];
+        $reportFileTypeCategory = FileTypeCategory::short('report')->with('fileTypes.files')->first();
 
-        return view('cooperation.admin.cooperation.reports.index', compact('downloadables'));
+
+        return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory'));
+    }
+
+    /**
+     * Method that handles the right download by id.
+     *
+     * @param  Cooperation  $cooperation
+     * @param $fileTypeId
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function download(Cooperation $cooperation, $fileTypeId)
+    {
+        $fileType = FileType::findOrFail($fileTypeId);
+
+
+        if($fileType->isBeingProcessed()) {
+            return redirect(back());
+        }
+        switch ($fileType->short) {
+            case 'total-report':
+                GenerateTotalReport::dispatch($cooperation, $fileType)->onQueue('high');
+                break;
+            case 'total-report-anonymized':
+                GenerateTotalReport::dispatch($cooperation, $fileType, true)->onQueue('high');
+                break;
+            case 'measure-report':
+                GenerateMeasureReport::dispatch($cooperation, $fileType)->onQueue('high');
+                break;
+            case 'measure-report-anonymized':
+                GenerateMeasureReport::dispatch($cooperation, $fileType, true)->onQueue('high');
+                break;
+            case 'custom-questionnaires-report':
+                break;
+            case 'custom-questionnaires-report-anonymized':
+                break;
+
+        }
+
+        return redirect(route('cooperation.admin.cooperation.reports.index'))
+            ->with('success', __('woningdossier.cooperation.admin.cooperation.reports.download.success'))
+            ->with('file_type_'.$fileTypeId, __('woningdossier.cooperation.admin.cooperation.reports.download.success'));
     }
 
     public function downloadByYear()

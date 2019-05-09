@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FileStorage extends Model
 {
+    protected $fillable = [
+        'cooperation_id', 'filename', 'user_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+    ];
+
     /**
      * Attributes that should be casted to native types.
      *
@@ -27,6 +31,11 @@ class FileStorage extends Model
         return $this->belongsTo(Cooperation::class);
     }
 
+    public function fileType()
+    {
+        return $this->belongsTo(FileType::class, 'file_type_id');
+    }
+
     /**
      * Return the belongsto relationship on a user.
      *
@@ -35,5 +44,15 @@ class FileStorage extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Check if a specific file is being processed
+     *
+     * @return bool
+     */
+    public function isBeingProcessed(): bool
+    {
+        return $this->is_being_proccessed;
     }
 }

@@ -27,7 +27,7 @@ class CreateFileStoragesTable extends Migration
             $table->foreign('file_type_id')->references('id')->on('file_types')->onDelete('cascade');
             
             $table->string('filename');
-            $table->string('content_type');
+            $table->string('content_type')->nu;
             
             $table->dateTime('available_until')->nullable()->default(null);
 

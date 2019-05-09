@@ -516,15 +516,18 @@ return [
                     'title'       => 'Rapportages',
                     'description' => 'Rapportage downloads',
 
+
                     'table' => [
                         'columns' => [
                             'name' => 'Rapport type',
                             'download' => 'Download file',
                             'available-report' => 'Beschikbaar rapport'
                         ],
+                        'download-button' => 'Genereer'
                     ],
 
                     'download'    => [
+                        'success' => 'Het rapport word gemaakt.',
                         'by-year'                        => 'Actieplan per jaar',
 
                         'by-measure'                     => 'Actieplan per maatregel, met alle adresgegevens',

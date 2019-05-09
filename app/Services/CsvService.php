@@ -11,7 +11,7 @@ use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\Str;
 use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
-use App\Jobs\GenerateTotalDump;
+use App\Jobs\GenerateTotalReport;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingElement;
@@ -708,7 +708,7 @@ class CsvService
         // Get the current cooperation with its users
         $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
-        GenerateTotalDump::dispatch($cooperation)->onQueue('high');
+        GenerateTotalReport::dispatch($cooperation)->onQueue('high');
 
         return redirect()->back();
     }

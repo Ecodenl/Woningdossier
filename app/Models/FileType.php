@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FileType extends Model
 {
@@ -27,5 +28,27 @@ class FileType extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(FileTypeCategory::class);
+    }
+
+    /**
+     * Return the hasMany relationship on the file storage
+     *
+     * @return HasMany
+     */
+    public function files(): HasMany
+    {
+        return $this->hasMany(FileStorage::class);
+    }
+
+    /**
+     * Check if the filetype has a file that is being processed.
+     *
+     * @return bool
+     */
+    public function isBeingProcessed(): bool
+    {
+        return FileType::whereHas('files', function ($q) {
+            $q->where('is_being_processed', true);
+        })->where('id', $this->id)->first() instanceof FileType;
     }
 }

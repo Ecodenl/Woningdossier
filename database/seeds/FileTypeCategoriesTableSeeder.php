@@ -14,9 +14,10 @@ class FileTypeCategoriesTableSeeder extends Seeder
         $fileTypeCategories = [
             [
                 'names' => [
-                    'nl' => 'Rapporten',
+                    'nl' => 'Rapportages',
                     'en' => 'Report'
                 ],
+                'content_type' => 'text/csv',
                 'short' => 'report'
             ],
 

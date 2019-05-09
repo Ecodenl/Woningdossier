@@ -43,7 +43,7 @@ class FileTypesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Antwoorden van de bewoners op de customer vragenlijsten, met alle adresgegevens'
                 ],
-                'short' => 'total-report'
+                'short' => 'custom-questionnaires-report'
             ],
             [
                 'names' => [

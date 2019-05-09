@@ -25,7 +25,10 @@
                                 <tr>
                                     <td>{{$downloadable['name']}}</td>
                                     <td><a href="{{$downloadable['url']}}" class="btn btn-primary">Download</a></td>
-                                    <td></td>
+                                    <td><ul>
+                                            <li></li>
+                                        </ul>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

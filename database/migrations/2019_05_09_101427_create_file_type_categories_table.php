@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDownloadableFilesTable extends Migration
+class CreateFileTypeCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateDownloadableFilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('downloadable_files', function (Blueprint $table) {
+        Schema::create('file_type_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('filename');
-            $table->dateTime('available_until')->nullable()->default(null);
-            $table->boolean('is_being_processed')->default('1');
+            $table->string('name');
+            $table->string('short');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateDownloadableFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('downloadable_files');
+        Schema::dropIfExists('file_type_categories');
     }
 }

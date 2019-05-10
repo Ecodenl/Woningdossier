@@ -14,35 +14,48 @@ class ChangeVariousTranslationsForDamageToQuestions extends Migration
     public function up()
     {
         $woodRotALittle = DB::table('wood_rot_statuses')->where('calculate_value', 3)->first();
-        DB::table('translations')->where('key', $woodRotALittle->name)->update([
-            'translation' => 'Een beetje'
-        ]);
+        if ($woodRotALittle instanceof stdClass) {
+            DB::table('translations')->where('key', $woodRotALittle->name)->update([
+                'translation' => 'Een beetje'
+            ]);
+        }
+
 
         $woodRotYes = DB::table('wood_rot_statuses')->where('calculate_value', 1)->first();
-        DB::table('translations')->where('key', $woodRotYes->name)->update([
-            'translation' => 'Ja'
-        ]);
+        if ($woodRotYes instanceof stdClass) {
+            DB::table('translations')->where('key', $woodRotYes->name)->update([
+                'translation' => 'Ja'
+            ]);
+        }
 
         $paintWorkALittle = DB::table('paintwork_statuses')->where('calculate_value', 3)->first();
-        DB::table('translations')->where('key', $paintWorkALittle->name)->update([
-            'translation' => 'Een beetje'
-        ]);
+        if ($paintWorkALittle instanceof stdClass) {
+            DB::table('translations')->where('key', $paintWorkALittle->name)->update([
+                'translation' => 'Een beetje'
+            ]);
+        }
 
         $paintWorkYes = DB::table('paintwork_statuses')->where('calculate_value', 1)->first();
-        DB::table('translations')->where('key', $paintWorkYes->name)->update([
-            'translation' => 'Ja'
-        ]);
+        if ($paintWorkYes instanceof stdClass) {
+            DB::table('translations')->where('key', $paintWorkYes->name)->update([
+                'translation' => 'Ja'
+            ]);
+        }
 
 
         $facadeDamagedPaintWorksALittle = DB::table('facade_damaged_paintworks')->where('calculate_value', 3)->first();
-        DB::table('translations')->where('key', $facadeDamagedPaintWorksALittle->name)->update([
-            'translation' => 'Een beetje'
-        ]);
+        if ($facadeDamagedPaintWorksALittle instanceof stdClass) {
+            DB::table('translations')->where('key', $facadeDamagedPaintWorksALittle->name)->update([
+                'translation' => 'Een beetje'
+            ]);
+        }
 
         $facadeDamagedPaintWorksYes = DB::table('facade_damaged_paintworks')->where('calculate_value', 5)->first();
-        DB::table('translations')->where('key', $facadeDamagedPaintWorksYes->name)->update([
-            'translation' => 'Ja'
-        ]);
+        if ($facadeDamagedPaintWorksYes instanceof stdClass) {
+            DB::table('translations')->where('key', $facadeDamagedPaintWorksYes->name)->update([
+                'translation' => 'Ja'
+            ]);
+        }
 
     }
 

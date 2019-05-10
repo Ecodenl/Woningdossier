@@ -64,4 +64,9 @@ class GenerateMeasureReport implements ShouldQueue
 
         $this->fileStorage->isProcessed();
     }
+
+    public function failed(\Exception $exception)
+    {
+        $this->fileStorage->delete();
+    }
 }

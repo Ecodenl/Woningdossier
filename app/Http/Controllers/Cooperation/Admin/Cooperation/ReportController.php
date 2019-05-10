@@ -38,11 +38,11 @@ class ReportController extends Controller
 
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
-        $fileName = substr(Str::uuid(), 0, 7).$this->fileType->name.'.csv';
+        $fileName = substr(Str::uuid(), 0, 7).$fileType->name.'.csv';
 
         $fileStorage = FileStorage::create([
-            'cooperation_id' => $this->cooperation->id,
-            'file_type_id' => $this->fileType->id,
+            'cooperation_id' => $cooperation->id,
+            'file_type_id' => $fileType->id,
             'content_type' => 'text/csv',
             'filename' => $fileName,
         ]);
@@ -71,8 +71,7 @@ class ReportController extends Controller
         }
 
         return redirect(route('cooperation.admin.cooperation.reports.index'))
-            ->with('success',  __('woningdossier.cooperation.admin.cooperation.reports.generate.success'))
-            ->with('file_type_'.$fileTypeId, '');
+            ->with('success',  __('woningdossier.cooperation.admin.cooperation.reports.generate.success'));
     }
 
 }

@@ -29,16 +29,16 @@
 
                                     <td>
                                         <a
-                                            @if($fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id))
+                                            @if($fileType->isBeingProcessed() )
                                                 disabled="disabled"
                                                 href="#" data-toggle="tooltip" title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
                                             @else
-                                                href="{{route('cooperation.admin.cooperation.reports.generate', ['fileTypeId' => $fileType->id])}}"
+                                                href="{{route('cooperation.admin.cooperation.reports.generate', ['fileType' => $fileType->short])}}"
                                             @endif
-                                            class="btn btn-{{$fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id) ? 'warning' : 'primary'}}">
+                                            class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}">
 
                                             {{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.generate-btn')}}
-                                            @if($fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id))
+                                            @if($fileType->isBeingProcessed() )
                                                 <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                                             @endif
                                         </a>
@@ -47,7 +47,7 @@
                                         <ul>
                                             @foreach($fileType->files as $file)
                                                 <li>
-                                                    <a @if(!$fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id))
+                                                    <a @if(!$fileType->isBeingProcessed() )
                                                        href="{{route('cooperation.file-storage.download', [
                                                             'fileType' => $fileType->short,
                                                             'fileStorageFilename' => $file->filename

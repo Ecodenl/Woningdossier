@@ -235,7 +235,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                 Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                     Route::get('', 'ReportController@index')->name('index');
-                    Route::get('download/{FileTypeId}', 'ReportController@download')->name('download');
+                    Route::get('generate/{FileTypeId}', 'ReportController@generate')->name('generate');
 //                    Route::group(['as' => 'download.'], function () {
 //
 //                        Route::get('by-year', 'ReportController@downloadByYear')->name('by-year');

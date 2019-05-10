@@ -7,17 +7,15 @@ use App\Jobs\GenerateCustomQuestionnaireReport;
 use App\Jobs\GenerateMeasureReport;
 use App\Jobs\GenerateTotalReport;
 use App\Models\Cooperation;
-use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
-use App\Services\CsvService;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        $reportFileTypeCategory = FileTypeCategory::short('report')->with('fileTypes.files')->first();
 
+        $reportFileTypeCategory = FileTypeCategory::short('report')->with('fileTypes.files')->first();
 
         return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory'));
     }
@@ -30,13 +28,14 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function download(Cooperation $cooperation, $fileTypeId)
+    public function generate(Cooperation $cooperation, $fileTypeId)
     {
         $fileType = FileType::findOrFail($fileTypeId);
 
         if($fileType->isBeingProcessed()) {
             return redirect()->back();
         }
+
         switch ($fileType->short) {
             case 'total-report':
                 GenerateTotalReport::dispatch($cooperation, $fileType)->onQueue('high');
@@ -60,58 +59,8 @@ class ReportController extends Controller
         }
 
         return redirect(route('cooperation.admin.cooperation.reports.index'))
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.reports.download.success'))
-            ->with('file_type_'.$fileTypeId, __('woningdossier.cooperation.admin.cooperation.reports.download.success'));
+            ->with('success',  __('woningdossier.cooperation.admin.cooperation.reports.generate.success'))
+            ->with('file_type_'.$fileTypeId, '');
     }
 
-    public function downloadByYear()
-    {
-        return CsvService::byYear();
-    }
-
-    /**
-     * Download the measure action plan
-     *
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     */
-    public function downloadByMeasure()
-    {
-
-        return CsvService::byMeasure();
-    }
-
-    /**
-     * Download the measure action plan, anonymized version
-     *
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     */
-    public function downloadByMeasureAnonymized()
-    {
-        return CsvService::byMeasureAnonymized();
-    }
-
-    /**
-     * Download the questionnaire results
-     *
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     */
-    public function downloadQuestionnaireResults()
-    {
-        return CsvService::questionnaireResults();
-    }
-
-    /**
-     * Download the questionnaire results anonymized
-     *
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     */
-    public function downloadQuestionnaireResultsAnonymized()
-    {
-        return CsvService::questionnaireResultsAnonymized();
-    }
-
-    public function downloadTotalDump()
-    {
-        return CsvService::totalDump();
-    }
 }

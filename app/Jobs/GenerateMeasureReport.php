@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exports\Cooperation\CsvExport;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Models\Cooperation;

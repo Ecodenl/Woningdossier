@@ -92,28 +92,28 @@ return [
                     'text'   => 'Beheer de applicatie',
                 ],
                 'key-figures'  => [
-	                'index' => [
-		                'header' => 'Kengetallen',
-		                'sections' => [
-		                	'general' => 'Algemeen',
-			                'measure_applications' => 'Maatregelen'
-		                ],
-		                'table' => [
-			                'title' => 'Kengetal naam / type',
-			                'key-figure' => 'Waarde kengetal',
-			                'key-figure-unit' => 'Eenheid',
-			                'measure_applications' => [
-				                'measure-type' => 'Maatregel type',
-				                'measure-name' => 'Maatregel naam',
-				                'application' => 'Toepassing',
-				                'costs' => 'Kosten',
-				                'cost-unit' => 'Kosten per',
-				                'minimal-costs' => 'Minimale kosten',
-				                'maintenance-interval' => 'Onderhoudsinterval',
-				                'maintenance-unit' => 'Onderhoud per'
-			                ],
-		                ],
-	                ],
+                    'index' => [
+                        'header'   => 'Kengetallen',
+                        'sections' => [
+                            'general'              => 'Algemeen',
+                            'measure_applications' => 'Maatregelen'
+                        ],
+                        'table'    => [
+                            'title'                => 'Kengetal naam / type',
+                            'key-figure'           => 'Waarde kengetal',
+                            'key-figure-unit'      => 'Eenheid',
+                            'measure_applications' => [
+                                'measure-type'         => 'Maatregel type',
+                                'measure-name'         => 'Maatregel naam',
+                                'application'          => 'Toepassing',
+                                'costs'                => 'Kosten',
+                                'cost-unit'            => 'Kosten per',
+                                'minimal-costs'        => 'Minimale kosten',
+                                'maintenance-interval' => 'Onderhoudsinterval',
+                                'maintenance-unit'     => 'Onderhoud per'
+                            ],
+                        ],
+                    ],
                 ],
                 'translations' => [
                     'index'  => [
@@ -216,9 +216,9 @@ return [
                                 'header' => 'Overzicht van alle gebruikers',
                                 'table'  => [
                                     'created-at' => 'Datum',
-                                    'name'    => 'Naam',
-                                    'email'   => 'E-mail',
-                                    'actions' => 'Acties',
+                                    'name'       => 'Naam',
+                                    'email'      => 'E-mail',
+                                    'actions'    => 'Acties',
                                 ]
                             ],
                             'show'  => [
@@ -513,48 +513,43 @@ return [
                     ],
                 ],
                 'reports'           => [
-                    'title'       => 'Rapportages',
-                    'description' => 'Rapportage downloads',
+                    'index' => [
+
+                        'title'       => 'Rapportages',
+                        'description' => 'Rapportage downloads',
 
 
-                    'table' => [
-                        'columns' => [
-                            'name' => 'Rapport type',
-                            'download' => 'Download file',
-                            'available-report' => 'Beschikbaar rapport'
+                        'table' => [
+                            'columns'         => [
+                                'name'             => 'Rapport type',
+                                'download'         => 'Download file',
+                                'available-report' => 'Beschikbaar rapport'
+                            ],
+                            'report-in-queue' => 'Het rapport word gegenereerd',
+                            'generate-btn' => 'Genereer'
                         ],
-                        'download-button' => 'Genereer'
                     ],
 
-                    'download'    => [
+                    'generate'    => [
                         'success' => 'Het rapport word gemaakt.',
-                        'by-year'                        => 'Actieplan per jaar',
-
-                        'by-measure'                     => 'Actieplan per maatregel, met alle adresgegevens',
-                        'by-measure-anonymized'          => 'Actieplan per maatregel, zonder adresgegevens',
-
-                        'download-questionnaire-results' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens',
-                        'download-questionnaire-results-anonymized' => 'Antwoorden van de bewoners op de customer vragenlijsten, zonder adresgegevens',
-
-                        'total-dump' => 'Alle ingevulde gegevens, met adresgegevens'
                     ],
                     'csv-columns' => [
-                        'created-at' => 'Datum account',
-                        'status' => 'Status',
-                        'allow-access' => 'Toestemming aanwezig',
+                        'created-at'         => 'Datum account',
+                        'status'             => 'Status',
+                        'allow-access'       => 'Toestemming aanwezig',
                         'associated-coaches' => 'Gekoppelde coaches',
-                        'first-name'   => 'Voornaam',
-                        'last-name'    => 'Achternaam',
-                        'email'        => 'Email',
-                        'phonenumber'  => 'Telefoonnummer',
-                        'mobilenumber' => 'Mobiel nummer',
-                        'street'       => 'Straat',
-                        'house-number' => 'Huis nummer',
-                        'zip-code'     => 'Postcode',
-                        'city'         => 'Woonplaats',
-                        'building-type' => 'Woningtype',
-                        'build-year' => 'Bouwjaar',
-                        'example-building' => 'Specifieke voorbeeldwoning',
+                        'first-name'         => 'Voornaam',
+                        'last-name'          => 'Achternaam',
+                        'email'              => 'Email',
+                        'phonenumber'        => 'Telefoonnummer',
+                        'mobilenumber'       => 'Mobiel nummer',
+                        'street'             => 'Straat',
+                        'house-number'       => 'Huis nummer',
+                        'zip-code'           => 'Postcode',
+                        'city'               => 'Woonplaats',
+                        'building-type'      => 'Woningtype',
+                        'build-year'         => 'Bouwjaar',
+                        'example-building'   => 'Specifieke voorbeeldwoning',
                     ],
                 ],
                 'users'             => [
@@ -884,12 +879,12 @@ return [
                     'destroy'    => [
                         'header'       => 'Account verwijderen',
                         'are-you-sure' => [
-                            'complete-delete' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
+                            'complete-delete'         => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
                             'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijderd uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen moet u bij elke coöperatie deze stap uitvoeren.'
                         ],
 
-                        'label'        => 'Mijn account verwijderen',
-                        'submit'       => 'Verwijderen',
+                        'label'  => 'Mijn account verwijderen',
+                        'submit' => 'Verwijderen',
                     ],
                 ],
             ],
@@ -997,7 +992,7 @@ return [
             ],
 
             'wall-insulation' => [
-            	'title' => 'Gevelisolatie',
+                'title' => 'Gevelisolatie',
                 'intro' => [
                     'title' => 'Gevelisolatie',
                 ],
@@ -1021,9 +1016,9 @@ return [
                 'title'   => 'Dakisolatie',
             ],
 
-	        'high-efficiency-boiler' => [
-	        	'title' => 'HR CV Ketel',
-	        ],
+            'high-efficiency-boiler' => [
+                'title' => 'HR CV Ketel',
+            ],
 
             'boiler' => [
                 'title' => 'HR CV Ketel',

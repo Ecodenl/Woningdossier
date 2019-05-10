@@ -2,13 +2,13 @@
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.reports.title')</div>
+        <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.reports.index.title')</div>
 
         <div class="panel-body">
 
             <div class="row">
                 <div class="col-sm-12">
-                    <h2>@lang('woningdossier.cooperation.admin.cooperation.reports.description')</h2>
+                    <h2>@lang('woningdossier.cooperation.admin.cooperation.reports.index.description')</h2>
                 </div>
             </div>
             <div class="row">
@@ -17,9 +17,9 @@
                     <table id="table" class="table table-striped table-bordered compact nowrap table-responsive" style="width: 100%">
                         <thead>
                         <tr>
-                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.table.columns.name')}}</th>
-                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.table.columns.download')}}</th>
-                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.table.columns.available-report')}}</th>
+                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.columns.name')}}</th>
+                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.columns.download')}}</th>
+                            <th>{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.columns.available-report')}}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -31,11 +31,13 @@
                                         <a
                                             @if($fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id))
                                                 disabled="disabled"
+                                                href="#" data-toggle="tooltip" title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                                            @else
+                                                href="{{route('cooperation.admin.cooperation.reports.generate', ['fileTypeId' => $fileType->id])}}"
                                             @endif
-                                            href="{{route('cooperation.admin.cooperation.reports.download', ['fileTypeId' => $fileType->id])}}"
                                             class="btn btn-{{$fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id) ? 'warning' : 'primary'}}">
 
-                                            {{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.table.download-button')}}
+                                            {{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.generate-btn')}}
                                             @if($fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id))
                                                 <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                                             @endif
@@ -63,5 +65,6 @@
 @push('js')
     <script>
         $('table').dataTable({responsive: true});
+        $('[data-toggle="tooltip"]').tooltip();
     </script>
 @endpush

@@ -2,11 +2,21 @@
 
 namespace App\Models;
 
+use App\Scopes\AvailableScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FileStorage extends Model
 {
+
+    public static function boot()
+    {
+        parent::boot();
+        
+        static::addGlobalScope(new AvailableScope);
+    }
+    
     protected $fillable = [
         'cooperation_id', 'filename', 'user_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
@@ -54,5 +64,17 @@ class FileStorage extends Model
     public function isBeingProcessed(): bool
     {
         return $this->is_being_proccessed;
+    }
+
+    /**
+     * Query to scope the expired files.
+     *
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function ScopeWithExpired(Builder $query)
+    {
+        return $query->withoutGlobalScope(AvailableScope::class);
     }
 }

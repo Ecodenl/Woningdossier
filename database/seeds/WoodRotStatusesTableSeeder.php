@@ -21,14 +21,14 @@ class WoodRotStatusesTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Ja, een beetje',
+                    'nl' => 'Een beetje',
                 ],
                 'calculate_value' => 3, // year
                 'order' => 1,
             ],
             [
                 'names' => [
-                    'nl' => 'Ja, heel erg',
+                    'nl' => 'Ja',
                 ],
                 'calculate_value' => 1, // year
                 'order' => 2,

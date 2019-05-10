@@ -10,15 +10,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
 use App\Helpers\Arr;
-use App\Helpers\Calculator;
-use App\Helpers\HoomdossierSession;
-use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
-use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
-use App\Helpers\KeyFigures\RoofInsulation\Temperature;
-use App\Helpers\Str;
 use App\Helpers\ToolHelper;
-use App\Helpers\Translation;
-use App\Jobs\GenerateTotalReport;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingElement;
@@ -37,24 +29,17 @@ use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
-use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
-use App\Models\PaintworkStatus;
 use App\Models\PrivateMessage;
-use App\Models\PvPanelOrientation;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
-use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
-use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
-use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -159,9 +144,6 @@ class CsvService
             $rows = $row;
         }
 
-        $csv = static::write($csvHeaders, $rows);
-
-        return static::export($csv, $filename);
     }
 
     /**
@@ -1240,52 +1222,5 @@ class CsvService
         ];
     }
     
-    /**
-     * Write a csv file
-     *
-     * @param $headers
-     * @param $contents
-     *
-     * @return \Closure
-     */
-    private static function write($headers, $contents)
-    {
 
-        // write the CSV file
-        $callback = function () use ($headers, $contents) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $headers, ';');
-
-            foreach ($contents as $contentRow) {
-                fputcsv($file, $contentRow, ';');
-            }
-
-            fclose($file);
-        };
-
-        return $callback;
-    }
-
-    /**
-     * Export a CSV file
-     *
-     * @param $callback
-     * @param $filename
-     *
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     */
-    private static function export($callback, $filename)
-    {
-        $filename = str_replace('.csv', '', $filename);
-
-        $browserHeaders = [
-            'Content-type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename='.$filename.'.csv',
-            'Pragma'              => 'no-cache',
-            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires'             => '0',
-        ];
-
-        return \Response::stream($callback, 200, $browserHeaders);
-    }
 }

@@ -20,6 +20,11 @@ class FileType extends Model
         'duration' => 'datetime'
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'short';
+    }
+
     /**
      * Return the belongsto relationship on a categort
      *

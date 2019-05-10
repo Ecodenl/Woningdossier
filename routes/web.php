@@ -44,6 +44,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
+
+            Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
+                Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')->name('download');
+            });
+
             Route::get('home', 'HomeController@index')->name('home');
             //Route::get('measures', 'MeasureController@index')->name('measures.index');
             Route::get('input-source/{input_source_value_id}',
@@ -250,10 +255,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 //                    });
                 });
 
+
                 // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
-                Route::group(['as'         => 'questionnaires.', 'prefix' => 'questionnaire',
-                              'middleware' => ['role:cooperation-admin']
-                ], function () {
+                Route::group(['as'         => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['role:cooperation-admin']], function () {
                     Route::get('', 'QuestionnaireController@index')->name('index');
                     Route::post('', 'QuestionnaireController@update')->name('update');
                     Route::get('create', 'QuestionnaireController@create')->name('create');

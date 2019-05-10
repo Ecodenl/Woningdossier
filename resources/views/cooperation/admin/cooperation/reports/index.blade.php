@@ -47,7 +47,11 @@
                                         <ul>
                                             @foreach($fileType->files as $file)
                                                 <li>
-                                                    <a @if(!$fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id)) href="" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                                                    <a @if(!$fileType->isBeingProcessed() || session()->has('file_type_'.$fileType->id))
+                                                       href="{{route('cooperation.file-storage.download', [
+                                                            'fileType' => $fileType->short,
+                                                            'fileStorageFilename' => $file->filename
+                                                        ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
                                                 </li>
                                             @endforeach
                                         </ul>

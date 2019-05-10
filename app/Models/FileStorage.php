@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\AvailableScope;
+use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,7 @@ class FileStorage extends Model
         parent::boot();
         
         static::addGlobalScope(new AvailableScope);
+        static::addGlobalScope(new CooperationScope);
     }
     
     protected $fillable = [

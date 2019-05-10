@@ -34,6 +34,18 @@ class FileStorage extends Model
     ];
 
     /**
+     * Query to scope the expired files.
+     *
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function ScopeWithExpired(Builder $query)
+    {
+        return $query->withoutGlobalScope(AvailableScope::class);
+    }
+    
+    /**
      * Return the belongsto relationship on a cooperation.
      *
      * @return BelongsTo
@@ -69,14 +81,14 @@ class FileStorage extends Model
     }
 
     /**
-     * Query to scope the expired files.
-     *
-     * @param  Builder  $query
-     *
-     * @return Builder
+     * Method that's used when the file is done processing.
      */
-    public function ScopeWithExpired(Builder $query)
+    public function isProcessed()
     {
-        return $query->withoutGlobalScope(AvailableScope::class);
+        $availableUntil = $this->created_at->addDays($this->fileType->duration ?? 5);
+        $this->available_until = $availableUntil;
+        $this->is_being_processed = false;
+        $this->save();
     }
+
 }

@@ -24,20 +24,23 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
     protected $cooperation;
     protected $anonymizeData;
     protected $fileType;
+    protected $fileStorage;
 
     /**
-     * Generate the custom questionnaire report.
      *
      * @param  Cooperation  $cooperation
-     * @param FileType $fileType
+     * @param  FileStorage $fileStorage
+     * @param  FileType $fileType
      * @param  bool  $anonymizeData
      */
-    public function __construct(Cooperation $cooperation, FileType $fileType, bool $anonymizeData = false)
+    public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage,  bool $anonymizeData = false)
     {
         $this->fileType = $fileType;
+        $this->fileStorage = $fileStorage;
         $this->cooperation = $cooperation;
         $this->anonymizeData = $anonymizeData;
     }
+
     /**
      * Execute the job.
      *
@@ -45,15 +48,6 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
      */
     public function handle()
     {
-        $fileName = substr(Str::uuid(), 0, 7).$this->fileType->name.'.csv';
-
-        $fileStorage = FileStorage::create([
-            'cooperation_id' => $this->cooperation->id,
-            'file_type_id' => $this->fileType->id,
-            'content_type' => 'text/csv',
-            'filename' => $fileName,
-        ]);
-
         // temporary session to get the right data for the dumb.
         $residentInputSource = InputSource::findByShort('resident');
         HoomdossierSession::setInputSource($residentInputSource);
@@ -66,12 +60,9 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
         \Session::forget('hoomdossier_session');
 
         // export the csv file
-        Excel::store(new CsvExport($rows), $fileName, 'downloads', \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 
 
-        $availableUntil = $fileStorage->created_at->addDays($this->fileType->duration ?? 5);
-        $fileStorage->available_until = $availableUntil;
-        $fileStorage->is_being_processed = false;
-        $fileStorage->save();
+        $this->fileStorage->isProcessed();
     }
 }

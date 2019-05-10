@@ -55,7 +55,7 @@ return [
             'button'                => 'Login',
             'forgot_password'       => 'Wachtwoord vergeten?',
         ],
-        'warning' => 'Er is geen gebouw gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
+        'warning' => 'Er is geen woning gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
     ],
 
     'general-data' => [

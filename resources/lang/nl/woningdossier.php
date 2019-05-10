@@ -16,9 +16,9 @@ return [
         'filling-tool-for'           => 'Gebruiker :full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
         'observing-tool-for'         => 'Gebruiker :full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',
         'action-plan-changed'        => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan',
-        'participant-added'          => 'Gebruiker :full_name heeft :for_full_name gekoppeld aan dit gebouw',
-        'user-gave-access' => 'Gebruiker :full_name heeft toegang gegeven tot zijn gebouw',
-        'user-revoked-access' => 'Gebruiker :full_name heeft de toegang ingetrokken voor zijn gebouw'
+        'participant-added'          => 'Gebruiker :full_name heeft :for_full_name gekoppeld aan dit woning',
+        'user-gave-access' => 'Gebruiker :full_name heeft toegang gegeven tot zijn woning',
+        'user-revoked-access' => 'Gebruiker :full_name heeft de toegang ingetrokken voor zijn woning'
     ],
     'building-coach-statuses' => [
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
@@ -63,7 +63,7 @@ return [
                 'private' => 'Privé',
             ],
             'group-participants' => [
-                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
+                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
             ],
             'messages'           => [
                 'participant-added'   => ':participant is toegevoegd aan het gesprek',
@@ -303,13 +303,13 @@ return [
                     ],
 
                     'has-building-access' => [
-                        'no'  => 'Geen toegang tot gebouw',
-                        'yes' => 'Toegang tot gebouw'
+                        'no'  => 'Geen toegang tot woning',
+                        'yes' => 'Toegang tot woning'
                     ],
 
                     'delete-user'              => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
-                    'revoke-access'            => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot het gebouw.',
-                    'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot het gebouw',
+                    'revoke-access'            => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
+                    'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot de woning',
 
                     'set-status'                 => 'Weet u zeker dat u deze status wilt zetten voor de gekoppelde coaches ?',
                     'set-appointment-date'       => 'Weet u zeker dat u deze datum wilt zetten voor de gekoppelde coaches ?',
@@ -349,7 +349,7 @@ return [
 
                 'index' => [
                     'header' => 'Welkom op het coach panel',
-                    'text'   => 'Alle gebouwen waar u toegang tot heeft, u kunt op de pagina voor gebouwen acties uitvoeren hierop.',
+                    'text'   => 'Alle woningen waar u toegang tot heeft, u kunt op de pagina voor woningen acties uitvoeren hierop.',
 
                     'table' => [
                         'columns' => [
@@ -422,11 +422,11 @@ return [
                         ],
 
                         'has-building-access' => [
-                            'no'  => 'Geen toegang tot gebouw',
-                            'yes' => 'Toegang tot gebouw'
+                            'no'  => 'Geen toegang tot woning',
+                            'yes' => 'Toegang tot woning'
                         ],
 
-                        'set-status'                 => 'Weet u zeker dat u deze status aan het gebouw wilt hangen?',
+                        'set-status'                 => 'Weet u zeker dat u deze status aan de woning wilt hangen?',
                         'set-appointment-date'       => 'Weet u zeker dat u de afspraak wilt vastzetten op de gekozen datum?',
                         'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
                         'tabs'                       => [
@@ -446,7 +446,7 @@ return [
                                 'table' => [
                                     'columns' => [
                                         'user'        => 'Gebruiker die de actie heeft gedaan',
-                                        'building'    => 'Actie voor gebouw',
+                                        'building'    => 'Actie voor woning',
                                         'for-user'    => 'Actie op gebruiker',
                                         'message'     => 'Bericht',
                                         'happened-on' => 'Gebeurt op'
@@ -746,7 +746,7 @@ return [
                 'label'       => 'Mijn account',
                 'import'      => 'Import centrum',
                 'settings'    => 'Instellingen',
-                'access'      => 'Gebruikers met toegang tot uw gebouw',
+                'access'      => 'Gebruikers met toegang tot uw woning',
                 'my-messages' => 'Mijn berichten',
                 'my-requests' => 'Mijn aanvragen',
             ],
@@ -771,8 +771,8 @@ return [
 
             'access' => [
                 'index' => [
-                    'header' => 'Gebruikers met toegang tot mijn gebouw',
-                    'text'   => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw gebouw. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
+                    'header' => 'Gebruikers met toegang tot mijn woning',
+                    'text'   => 'Hier ziet uw de gebruikers (Coaches en Coördinatoren), die toegang hebben tot uw woning. Deze gebruikers hebben de toegang om uw Hoomdossier in te vullen.',
 
                     'table' => [
                         'columns' => [

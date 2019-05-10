@@ -843,16 +843,11 @@ return [
 
             'settings'     => [
                 'index' => [
-                    'building' => [
-                        'header' => 'Adres gegevens'
-                    ],
-                    'user' => [
-                        'header' => 'Mijn account',
-                    ],
-                    'submit' => 'Update gegevens',
+                    'header-building' => 'Adres',
+                    'header-password' => 'Wachtwoord aanpassen',
+	                'header-user' => 'Accountgegevens',
                     'form' => [
-                        'header' => 'Mijn account',
-                        'submit' => 'Update',
+                        'submit' => 'Update gevens',
                         'building' => [
                             'street' => 'Straat',
                             'number' => 'Huisnummer',
@@ -877,7 +872,7 @@ return [
                     'success' => 'Gegevens succesvol gewijzigd',
                 ],
                 'reset-file' => [
-                    'header'       => 'Uw dossier verwijderen',
+                    'header'       => 'Dossier resetten',
                     'description'  => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
                     'label'        => 'Reset mijn dossier',
                     'submit'       => 'Reset',

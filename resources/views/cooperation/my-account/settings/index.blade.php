@@ -317,10 +317,10 @@
             }
         });
 
-        var userCooperationCount = '{{Auth::user()->cooperations()->count()}}';
+        var userCooperationCount = {{Auth::user()->cooperations()->count()}};
 
 
-        if (userCooperationCount === '1') {
+        if (userCooperationCount === 1) {
             var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.destroy.are-you-sure.complete-delete')';
         } else {
             var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure.delete-from-cooperation')';

@@ -261,6 +261,7 @@ class BuildingCoachStatus extends Model
 
     /**
      * Returns all the buildings whom a coach / user is 'connected'
+     * if the building / user is deleted, it wont be returned
      * A user / building is considered to be connected when he has more pending statuses then removed statuses.
      *
      * @param int $userId
@@ -296,7 +297,9 @@ class BuildingCoachStatus extends Model
                 ->from($pendingCount)
                 ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
                 ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
+                ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
                 ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
+                ->where('buildings.deleted_at', '=', null)
                 ->groupBy('building_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
                 ->get();
 

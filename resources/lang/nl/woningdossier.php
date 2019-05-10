@@ -217,6 +217,7 @@ return [
                             'index' => [
                                 'header' => 'Overzicht van alle gebruikers',
                                 'table'  => [
+                                    'created-at' => 'Datum',
                                     'name'    => 'Naam',
                                     'email'   => 'E-mail',
                                     'actions' => 'Acties',
@@ -843,30 +844,55 @@ return [
             ],
 
             'settings'     => [
-                'form' => [
-                    'index'      => [
-                        'header' => 'Mijn account',
-                        'submit' => 'Update',
-                    ],
-                    'store'      => [
-                        'success' => 'Gegevens succesvol gewijzigd',
-                    ],
-                    'reset-file' => [
-                        'header'       => 'Uw dossier verwijderen',
-                        'description'  => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
-                        'label'        => 'Reset mijn dossier',
-                        'submit'       => 'Reset',
-                        'are-you-sure' => 'Let op: dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen. Weet u zeker dat u wilt doorgaan?',
-                        'success'      => 'Uw gegevens zijn succesvol verwijderd van uw account',
-                    ],
-                    'destroy'    => [
-                        'header'       => 'Account verwijderen',
-                        'are-you-sure' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
-                        'label'        => 'Mijn account verwijderen',
-                        'submit'       => 'Verwijderen',
-                    ],
+                'index' => [
+                    'header-building' => 'Adres',
+                    'header-password' => 'Wachtwoord aanpassen',
+	                'header-user' => 'Accountgegevens',
+                    'form' => [
+                        'submit' => 'Update gevens',
+                        'building' => [
+                            'street' => 'Straat',
+                            'number' => 'Huisnummer',
+                            'extension' => 'Toevoeging',
+                            'postal-code' => 'Postcode',
+                            'city' => 'Stad'
+                        ],
+                        'user' => [
+                            'e-mail'                => 'E-mailadres',
+                            'first-name'            => 'Voornaam',
+                            'last-name'             => 'Achternaam',
+                            'password'              => 'Wachtwoord',
+                            'password-confirmation' => 'Wachtwoord (bevestigen)',
+                            'phone_number'          => 'Telefoonnummer',
+                            'current-password'      => 'Huidig wachtwoord',
+                            'new-password'          => 'Nieuw wachtwoord',
+                            'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
+                        ],
+                    ]
+                ],
+                'store'      => [
+                    'success' => 'Gegevens succesvol gewijzigd',
+                ],
+                'reset-file' => [
+                    'header'       => 'Dossier resetten',
+                    'description'  => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
+                    'label'        => 'Reset mijn dossier',
+                    'submit'       => 'Reset',
+                    'are-you-sure' => 'Let op: dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen. Weet u zeker dat u wilt doorgaan?',
+                    'success'      => 'Uw gegevens zijn succesvol verwijderd van uw account',
+                ],
+                'destroy'    => [
+                    'header'       => 'Account verwijderen',
+                    'are-you-sure' => [
+                            'complete-delete' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
+                            'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijderd uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen moet u bij elke coöperatie deze stap uitvoeren.'
+                        ],
+
+                    'label'        => 'Mijn account verwijderen',
+                    'submit'       => 'Verwijderen',
                 ],
             ],
+
             'cooperations' => [
                 'form' => [
                     'header' => 'Mijn coöperaties',
@@ -971,6 +997,7 @@ return [
             ],
 
             'wall-insulation' => [
+            	'title' => 'Gevelisolatie',
                 'intro' => [
                     'title' => 'Gevelisolatie',
                 ],
@@ -993,6 +1020,10 @@ return [
                 'no-roof' => 'Dit veld is verplicht als u een dak type heeft gekozen',
                 'title'   => 'Dakisolatie',
             ],
+
+	        'high-efficiency-boiler' => [
+	        	'title' => 'HR CV Ketel',
+	        ],
 
             'boiler' => [
                 'title' => 'HR CV Ketel',

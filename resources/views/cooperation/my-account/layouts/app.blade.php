@@ -29,13 +29,6 @@
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.import-center.index')}}">
                                         @lang('woningdossier.cooperation.my-account.side-nav.import')
-                                        <?php
-                                        $count = 0;
-                                        if (! is_null(\App\Helpers\HoomdossierSession::getBuilding())) {
-                                            $count = \App\Models\ToolSetting::getUndoneChangedSettings(\App\Helpers\HoomdossierSession::getBuilding())->count();
-                                        }
-                                        ?>
-                                        <span class="badge">{{$count}}</span>
                                     </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.index', 'cooperation.my-account.messages.edit'])) active @endif">
@@ -64,10 +57,10 @@
 
 @prepend('css')
     <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
-    <link rel="stylesheet" rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
-
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
+@endprepend
 @prepend('js')
 
     <script src="{{ asset('js/datatables.js') }}"></script>

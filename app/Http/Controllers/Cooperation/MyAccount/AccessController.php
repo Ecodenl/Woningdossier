@@ -21,14 +21,14 @@ class AccessController extends Controller
         $buildingPermissions = BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->get();
 
         /* @var Collection $conversationRequests */
-        $conversationRequests = PrivateMessage::conversationRequest(HoomdossierSession::getBuilding())->forMyCooperation()->get();
+        $conversationRequests = PrivateMessage::conversationRequestByBuildingId(HoomdossierSession::getBuilding())->forMyCooperation()->get();
 
         return view('cooperation.my-account.access.index', compact('buildingPermissions', 'conversationRequests'));
     }
 
     public function allowAccess(Request $request)
     {
-        $conversationRequests = PrivateMessage::conversationRequest(HoomdossierSession::getBuilding())->forMyCooperation();
+        $conversationRequests = PrivateMessage::conversationRequestByBuildingId(HoomdossierSession::getBuilding())->forMyCooperation();
         if ($request->has('allow_access')) {
             $conversationRequests->update(['allow_access' => true]);
             $this->giveAccess();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\CoachRequest;
@@ -43,30 +44,6 @@ class UserController extends Controller
     }
 
 
-    protected function getAddressData($postalCode, $number, $pointer = null)
-    {
-        \Log::debug($postalCode . ' ' . $number . ' ' . $pointer);
-        /** @var PicoClient $pico */
-        $pico = app()->make('pico');
-        $postalCode = str_replace(' ', '', trim($postalCode));
-        $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
-
-        if (!is_null($pointer)) {
-            foreach ($response as $addrInfo) {
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
-                    //$data['bag_addressid'] = $addrInfo['bag_adresid'];
-                    \Log::debug(json_encode($addrInfo));
-
-                    return $addrInfo;
-                }
-            }
-
-            return [];
-        }
-
-        return $response;
-    }
-
     public function store(Cooperation $cooperation, CoachRequest $request)
     {
         $firstName = $request->get('first_name', '');
@@ -92,16 +69,15 @@ class UserController extends Controller
             ]
         );
 
-        // get the address information from the bag
-        $address = $this->getAddressData($postalCode, $houseNumber, $addressId);
-
-        // make building features
-        $features = new BuildingFeature(
-            [
-                'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
-                'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
-            ]
+        // now get the pico address data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $postalCode, $houseNumber
         );
+
+        $features = new BuildingFeature([
+            'surface' => $picoAddressData['surface'] ?? null,
+            'build_year' => $picoAddressData['build_year'] ?? null,
+        ]);
 
         // make a new building
         $building = new Building(
@@ -111,7 +87,7 @@ class UserController extends Controller
                 'extension' => $extension,
                 'postal_code' => $postalCode,
                 'city' => $city,
-                'bag_addressid' => isset($address['bag_adresid']) ? $address['bag_adresid'] : '',
+                'bag_addressid' => $picoAddressData['id'] ?? $addressId
             ]
         );
 
@@ -197,6 +173,7 @@ class UserController extends Controller
         $userId = $request->get('user_id');
 
         $user = User::find($userId);
+
 
         $this->authorize('destroy', $user);
 

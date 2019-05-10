@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exports\Cooperation\CsvExport;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Models\Cooperation;
@@ -16,7 +17,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
 
-class GenerateCustomQuestionnaireReport implements ShouldQueue
+class GenerateCustomQuestionnaireReport
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

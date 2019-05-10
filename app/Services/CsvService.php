@@ -321,15 +321,15 @@ class CsvService
     }
 
 
-
     /**
      * CSV Report that returns the questionnaire results
      *
-     * @param  string  $filename
+     * @param  Cooperation  $cooperation
+     * @param  bool  $anonymize
      *
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @return array
      */
-    public static function questionnaireResults(Cooperation $cooperation, bool $anonymize)
+    public static function questionnaireResults(Cooperation $cooperation, bool $anonymize): array
     {
         $questionnaires = Questionnaire::all();
         $rows           = [];
@@ -345,9 +345,7 @@ class CsvService
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
             ];
-
         } else {
-
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
@@ -370,7 +368,6 @@ class CsvService
 
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->users()->role('resident')->with('buildings')->get();
-
 
         foreach ($usersFromCooperation as $user) {
             $building = $user->buildings()->first();
@@ -414,12 +411,20 @@ class CsvService
 
             // set the personal user info only if the user has question answers.
             if ($building->questionAnswers()->withoutGlobalScope(GetValueScope::class)->residentInput()->count() > 0) {
-                $rows[$building->id] = [
-                    $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
-                    $street, $number, $postalCode, $city,
-                    $buildingType, $buildYear
-                ];
+                if ($anonymize) {
+                    $rows[$building->id] = [
+                        $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
+                        $buildingType, $buildYear
+                    ];
+                } else {
+
+                    $rows[$building->id] = [
+                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                        $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                        $street, $number, $postalCode, $city,
+                        $buildingType, $buildYear
+                    ];
+                }
             }
             foreach ($questionnaires as $questionnaire) {
 
@@ -439,6 +444,7 @@ class CsvService
                        ->select('questions_answers.answer', 'questions.id as question_id',
                            'translations.translation as question_name')
                        ->get();
+
 
                 // loop through the answers for ONE questionnaire
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
@@ -489,10 +495,9 @@ class CsvService
             }
         }
 
-        $csv = static::write($headers, $rows);
+        array_unshift($rows, $headers);
 
-        return static::export($csv, $filename);
-
+        return $rows;
     }
 
     /**

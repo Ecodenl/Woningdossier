@@ -2,26 +2,18 @@
 
 namespace App\Jobs;
 
-use App\Exports\Cooperation\TotalExport;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
-use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
-use App\Models\MeasureApplication;
-use App\Models\PrivateMessage;
-use App\Models\User;
-use App\Scopes\GetValueScope;
 use App\Services\CsvService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateMeasureReport implements ShouldQueue
@@ -36,6 +28,7 @@ class GenerateMeasureReport implements ShouldQueue
      * GenerateMeasureReport constructor.
      *
      * @param  Cooperation  $cooperation
+     * @param  FileType $fileType
      * @param  bool  $anonymizeData
      */
     public function __construct(Cooperation $cooperation, FileType $fileType, bool $anonymizeData = false)

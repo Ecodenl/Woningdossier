@@ -319,12 +319,12 @@
 
         var userCooperationCount = {{Auth::user()->cooperations()->count()}};
 
+        var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure.delete-from-cooperation')';
 
         if (userCooperationCount === 1) {
-            var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.destroy.are-you-sure.complete-delete')';
-        } else {
-            var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure.delete-from-cooperation')';
+            areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.destroy.are-you-sure.complete-delete')';
         }
+
         $('#delete-account').click(function () {
             if (confirm(areYouSureToDestroy)) {
                 $(this).closest('form').submit();

@@ -25,6 +25,7 @@ use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -55,7 +56,9 @@ class HighEfficiencyBoilerController extends Controller
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
         $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
+        /** @var Collection $installedBoilerForMe */
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
+
 
         return view('cooperation.tool.hr-boiler.index', compact('building',
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',

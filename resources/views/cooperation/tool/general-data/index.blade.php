@@ -213,7 +213,7 @@
                                     <i data-toggle="modal" data-target="#element_{{ $element->id }}-info"
                                        class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                        aria-expanded="false"></i>
-                                    {{ $element->name }}
+                                    @lang('general-data.element.'.$element->short.'.title')
                                 </label>
 
                                 @component('cooperation.tool.components.input-group',
@@ -231,7 +231,7 @@
                                 @endcomponent
 
                                 @component('cooperation.tool.components.help-modal')
-                                    {{ $element->info }}
+                                    @lang('general-data.element.'.$element->short.'.help')
                                 @endcomponent
 
                                 @if ($errors->has('element.' . $element->id))
@@ -293,7 +293,7 @@
                                         <i data-toggle="modal" data-target="#service_{{ $service->id }}-info"
                                            class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                            aria-expanded="false"></i>
-                                        {{ $service->name }}
+                                        @lang('general-data.service.'.$service->short.'.title')
                                     </label>
                                     {{-- This will check if the service has values. If so we need a selectbox. If not: a textbox --}}
                                     @if($service->values()->where('service_id', $service->id)->first() != null)
@@ -334,7 +334,7 @@
                                     @endif
 
                                     @component('cooperation.tool.components.help-modal')
-                                        {{ $service->info }}
+                                        @lang('general-data.service.'.$service->short.'.help')
                                     @endcomponent
 
                                     @if ($errors->has('service.' . $service->id))
@@ -441,13 +441,13 @@
 
                                 <div class="input-group input-source-group">
                                     <label class="radio-inline">
-                                        <input type="radio" name="cook_gas"
+                                        <input type="radio" name="cook_gas" required="required"
                                                @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked
                                                @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                         {{--<input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" name="cook_gas"
+                                        <input type="radio" name="cook_gas" required="required"
                                                @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked
                                                @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
                                     </label>

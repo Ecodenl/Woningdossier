@@ -12,7 +12,7 @@
                         {{csrf_field()}}
                         <input type="hidden" name="existing_email" id="existing-email">
                     </form>
-                    <form class="form-horizontal" method="POST" id="register" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
+                    <form class="form-horizontal has-address-data" method="POST" id="register" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
                         <input id="addressid" name="addressid" type="text" value="" style="display:none;">
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -70,7 +71,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Building extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, ToolSettingTrait;
 
     const STATUS_IS_ACTIVE = 'active';
     const STATUS_IS_NOT_ACTIVE = 'in_active';
@@ -87,8 +88,14 @@ class Building extends Model
         'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active'
     ];
 
+    public static function toolSettingColumnsToCheck()
+    {
+        return ['example_building_id'];
+    }
+
     public static function boot()
     {
+
         parent::boot();
 
         static::deleting(function ($building) {

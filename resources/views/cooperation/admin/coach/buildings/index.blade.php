@@ -25,12 +25,14 @@
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
                                 $mostRecentForBuildingAndCoachId = \App\Models\BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingCoachStatus->building_id)->where('coach_id', Auth::id())->first();
-                                $building = $buildingCoachStatus->building()->withTrashed()->first();
-                                $user = $building->user;
-                                $userExists = $user instanceof \App\Models\User;
-                                $appointmentDate = !is_null($mostRecentForBuildingAndCoachId->appointment_date) ? \Carbon\Carbon::parse($mostRecentForBuildingAndCoachId->appointment_date)->format('d-m-Y') : '';
+                                $building = $buildingCoachStatus->building()->first();
                             ?>
-
+                            @if($building instanceof \App\Models\Building)
+                                <?php
+                                    $user = $building->user;
+                                    $userExists = $user instanceof \App\Models\User;
+                                    $appointmentDate = !is_null($mostRecentForBuildingAndCoachId->appointment_date) ? \Carbon\Carbon::parse($mostRecentForBuildingAndCoachId->appointment_date)->format('d-m-Y') : '';
+                                ?>
                             <tr>
                                 <td data-sort="{{$userExists && $user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
                                     {{$userExists && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
@@ -56,6 +58,7 @@
                                     {{$appointmentDate}}
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

@@ -2,8 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\HouseNumber;
+use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
+use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MyAccountSettingsFormRequest extends FormRequest
 {
@@ -25,10 +29,19 @@ class MyAccountSettingsFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'password' => 'nullable|string|confirmed|min:6',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone_number' => ['nullable', new PhoneNumber()],
+            'user.password' => 'nullable|string|confirmed|min:6',
+            'user.first_name' => 'required|string|max:255',
+            'user.last_name' => 'required|string|max:255',
+//            'user.email' => ['required', 'email', Rule::unique('users', 'email')->ignore(\Auth::id())],
+            'user.phone_number' => ['nullable', new PhoneNumber()],
+
+
+            'building.postal_code' => ['required', new PostalCode('nl')],
+            'building.house_number' => ['required', new HouseNumber('nl')],
+            'building.house_number_extension' => ['nullable', new HouseNumberExtension('nl')],
+            'building.street' => 'required|string|max:255',
+            'building.city' => 'required|string|max:255',
+
         ];
     }
 }

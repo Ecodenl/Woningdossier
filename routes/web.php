@@ -46,7 +46,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         Route::group(['middleware' => 'auth'], function () {
 
             Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
-                Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')->name('download');
+
+                Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')
+                    ->middleware('file-storage-download')
+                    ->name('download');
             });
 
             Route::get('home', 'HomeController@index')->name('home');

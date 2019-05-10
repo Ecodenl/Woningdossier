@@ -17,8 +17,6 @@ class ReportController extends Controller
 
         $reportFileTypeCategory = FileTypeCategory::short('report')->with('fileTypes.files')->first();
 
-        $f = FileType::whereShort('measure-report-anonymized')->first();
-
         return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory'));
     }
 

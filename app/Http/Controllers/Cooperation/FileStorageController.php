@@ -11,18 +11,15 @@ use App\Http\Controllers\Controller;
 class FileStorageController extends Controller
 {
 
-    public function download(Cooperation $cooperation, FileStorage $fileType, $fileStorageFilename)
+    public function download(Cooperation $cooperation, FileType $fileType, $fileStorageFilename)
     {
-        $cooperationId = $cooperation->id;
 
-        dd($fileType);
         /** @var FileType $fileType */
-        $fileType
+        $file = $fileType
             ->files()
-            ->where('cooperation_id', $cooperationId)
             ->where('filename', $fileStorageFilename)
             ->first();
 
-        dd($fileType);
+        dd($file);
     }
 }

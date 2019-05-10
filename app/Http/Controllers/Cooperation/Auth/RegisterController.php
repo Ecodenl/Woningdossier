@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FillAddressRequest;
@@ -65,27 +66,7 @@ class RegisterController extends Controller
         return view('cooperation.auth.register');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param array $data
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    /*protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'postal_code' => ['required', new PostalCode()],
-            'number' => ['required', new HouseNumber()],
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'phone_number' => [ 'nullable', new PhoneNumber() ],
-        ]);
-    }*/
+
 
     /**
      * Handle a registration request for the application.
@@ -119,12 +100,16 @@ class RegisterController extends Controller
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
 
-        $address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
-        $data['bag_addressid'] = isset($address['bag_adresid']) ? $address['bag_adresid'] : '';
+        // now get the pico address data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $data['postal_code'], $data['number']
+        );
+
+        $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'];
 
         $features = new BuildingFeature([
-            'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
-            'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
+            'surface' => $picoAddressData['surface'] ?? null,
+            'build_year' => $picoAddressData['build_year'] ?? null,
         ]);
 
         $address = new Building($data);
@@ -233,39 +218,7 @@ class RegisterController extends Controller
         return redirect()->back();
     }
 
-    public function fillAddress(FillAddressRequest $request)
-    {
-        $postalCode = trim(strip_tags($request->get('postal_code', '')));
-        $number = trim(strip_tags($request->get('number', '')));
-        $extension = trim(strip_tags($request->get('house_number_extension', '')));
 
-        $options = $this->getAddressData($postalCode, $number);
-        $result = [];
-        $dist = null;
-        if (is_array($options) && count($options) > 0) {
-            foreach ($options as $option) {
-                $houseNumberExtension = (! empty($option['huisnrtoev']) && 'None' != $option['huisnrtoev']) ? $option['huisnrtoev'] : '';
-
-                $newDist = null;
-                if (! empty($houseNumberExtension) && ! empty($extension)) {
-                    $newDist = levenshtein(strtolower($houseNumberExtension), strtolower($extension), 1, 10, 1);
-                }
-                if ((is_null($dist) || isset($newDist) && $newDist < $dist) && is_array($option)) {
-                    // best match
-                    $result = [
-                        'id'                     => array_key_exists('bag_adresid', $option) ? md5($option['bag_adresid']) : '',
-                        'street'                 => array_key_exists('straat', $option) ? $option['straat'] : '',
-                        'number'                 => array_key_exists('huisnummer', $option) ? $option['huisnummer'] : '',
-                        'house_number_extension' => $houseNumberExtension,
-                        'city'                   => array_key_exists('woonplaats', $option) ? $option['woonplaats'] : '',
-                    ];
-                    $dist = $newDist;
-                }
-            }
-        }
-
-        return response()->json($result);
-    }
 
     public function formResendConfirmMail()
     {
@@ -289,28 +242,5 @@ class RegisterController extends Controller
         return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])->with('success', trans('auth.confirm.email-success'));
     }
 
-    protected function getAddressData($postalCode, $number, $pointer = null)
-    {
-        \Log::debug($postalCode.' '.$number.' '.$pointer);
-        /** @var PicoClient $pico */
-        $pico = app()->make('pico');
-        $postalCode = str_replace(' ', '', trim($postalCode));
 
-        $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
-
-        if (! is_null($pointer)) {
-            foreach ($response as $addrInfo) {
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
-                    //$data['bag_addressid'] = $addrInfo['bag_adresid'];
-                    \Log::debug(json_encode($addrInfo));
-
-                    return $addrInfo;
-                }
-            }
-
-            return [];
-        }
-
-        return $response;
-    }
 }

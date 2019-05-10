@@ -109,7 +109,8 @@ $.ajaxSetup({
 });
 
 var baseUrl = window.location.origin;
-var fillAddressUrl = baseUrl + "/fill-address";
+var apiUrl = '/api';
+var getAddressDataUrl = baseUrl + apiUrl + "/address-data";
 
 $('i.glyphicon-info-sign').click(function () {
     $(this).parent().parent().find('.modal').modal();
@@ -169,17 +170,17 @@ $(document).ready(function () {
     });
 });
 
-$("#register #street").focusin(function () {
-    var postalCode = $("#register #postal_code");
-    var number = $("#register #number");
-    var houseNumberExtension = $("#register #house_number_extension");
-    var street = $("#register #street");
-    var city = $("#register #city");
-    var addressId = $("#register #addressid");
+$(".has-address-data #street").focusin(function () {
+    var postalCode = $(".has-address-data #postal_code");
+    var number = $(".has-address-data #number");
+    var houseNumberExtension = $(".has-address-data #house_number_extension");
+    var street = $(".has-address-data #street");
+    var city = $(".has-address-data #city");
+    var addressId = $(".has-address-data #addressid");
 
     $.ajax({
         method: 'get',
-        url: fillAddressUrl,
+        url: getAddressDataUrl,
         data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
         beforeSend: function beforeSend() {
             street.addClass("loading");

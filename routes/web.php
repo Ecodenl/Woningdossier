@@ -26,7 +26,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         Route::get('check-existing-mail', 'Auth\RegisterController@checkExistingEmail')->name('check-existing-email');
         Route::post('connect-existing-account', 'Auth\RegisterController@connectExistingAccount')->name('connect-existing-account');
 
-        Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
         //		 Login, forgot password etc.
 
         Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
@@ -59,9 +58,15 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             // my account
             Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => 'deny-if-filling-for-other-building'], function () {
                 Route::get('', 'MyAccountController@index')->name('index');
-                Route::resource('settings', 'SettingsController', ['only' => ['index', 'store']]);
-                Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
-                Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
+
+                Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
+                    Route::get('', 'SettingsController@index')->name('index');
+                    Route::put('', 'SettingsController@update')->name('update');
+                    Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
+                    Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
+                });
+
+
 
                 Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
                     Route::get('', 'ImportCenterController@index')->name('index');

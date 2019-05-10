@@ -2,7 +2,6 @@
 
 namespace App\Scopes;
 
-use App\Helpers\HoomdossierSession;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +21,6 @@ class AvailableScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('available_until', '>=', Carbon::now()->toDateString());
+        $builder->where('available_until', '>=', Carbon::now()->format('Y-m-d H:i:s'));
     }
 }

@@ -9,12 +9,12 @@ use App\Jobs\GenerateTotalReport;
 use App\Models\Cooperation;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
     public function index()
     {
-
         $reportFileTypeCategory = FileTypeCategory::short('report')->with('fileTypes.files')->first();
 
         return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory'));

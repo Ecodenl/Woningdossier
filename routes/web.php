@@ -244,18 +244,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                     Route::get('', 'ReportController@index')->name('index');
                     Route::get('generate/{fileType}', 'ReportController@generate')->name('generate');
-//                    Route::group(['as' => 'download.'], function () {
-//
-//                        Route::get('by-year', 'ReportController@downloadByYear')->name('by-year');
-//                        Route::get('by-measure', 'ReportController@downloadByMeasure')->name('by-measure');
-//                        Route::get('by-measure-anonymized', 'ReportController@downloadByMeasureAnonymized')->name('by-measure-anonymized');
-//                        Route::get('total-dump', 'ReportController@downloadTotalDump')->name('total-dump');
-//                        Route::get('total-dump-anonymized', 'ReportController@downloadTotalDumpAnonymized')->name('total-dump-anonymized');
-//                        Route::group(['middleware' => 'role:cooperation-admin'], function () {
-//                            Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('questionnaire-results');
-//                            Route::get('questionnaire-results-anonymized', 'ReportController@downloadQuestionnaireResultsAnonymized')->name('questionnaire-results-anonymized');
-//                        });
-//                    });
                 });
 
 

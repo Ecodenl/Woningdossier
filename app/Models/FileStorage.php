@@ -40,7 +40,7 @@ class FileStorage extends Model
      *
      * @return Builder
      */
-    public function ScopeWithExpired(Builder $query)
+    public function scopeWithExpired(Builder $query)
     {
         return $query->withoutGlobalScope(AvailableScope::class);
     }

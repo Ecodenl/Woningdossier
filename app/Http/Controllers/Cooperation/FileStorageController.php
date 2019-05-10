@@ -11,15 +11,31 @@ use App\Http\Controllers\Controller;
 class FileStorageController extends Controller
 {
 
+    /**
+     * Download method to retrieve a file from the storage
+     *
+     * @param  Cooperation  $cooperation
+     * @param  FileType  $fileType
+     * @param $fileStorageFilename
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function download(Cooperation $cooperation, FileType $fileType, $fileStorageFilename)
     {
-
-        /** @var FileType $fileType */
-        $file = $fileType
+        $fileStorage = $fileType
             ->files()
             ->where('filename', $fileStorageFilename)
             ->first();
 
-        dd($file);
+        if ($fileStorage instanceof FileStorage) {
+            return \Storage::disk('downloads')->download($fileStorageFilename, $fileType->name.'.csv', [
+                'Content-type'        => $fileStorage->content_type,
+                'Pragma'              => 'no-cache',
+                'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+                'Expires'             => '0',
+            ]);
+        }
+
+        return redirect()->back();
     }
 }

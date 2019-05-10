@@ -26,7 +26,7 @@ class FileStorageDownload
         if (\Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator'])) {
             $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
 
-            if ($fileStorage instanceof FileStorage) {
+            if ($fileStorage instanceof FileStorage && $fileStorage->cooperation->id == HoomdossierSession::getCooperation()) {
                 return $next($request);
             }
         }

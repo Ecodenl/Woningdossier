@@ -10,13 +10,15 @@ return [
         ],
     ],
     'log-messages'            => [
-        'logged-in'                  => 'Gebruiker :full_name heeft ingelogd op de applicatie om :time',
-        'registered-user'            => 'Gebruiker :full_name heeft geregistreerd op :time',
-        'step-data-has-been-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoerd in het actieplan om :time',
-        'filling-tool-for'           => 'Gebruiker :full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name om :time',
-        'observing-tool-for'         => 'Gebruiker :full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name om :time ',
-        'action-plan-changed'        => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan om :time',
-        'participant-added'          => 'Gebruiker :full_name heeft :for_full_name gekoppeld aan dit gebouw om :time',
+        'logged-in'                  => 'Gebruiker :full_name heeft ingelogd op de applicatie',
+        'registered-user'            => 'Gebruiker :full_name heeft geregistreerd',
+        'step-data-has-been-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoerd in het actieplan',
+        'filling-tool-for'           => 'Gebruiker :full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
+        'observing-tool-for'         => 'Gebruiker :full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',
+        'action-plan-changed'        => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan',
+        'participant-added'          => 'Gebruiker :full_name heeft :for_full_name gekoppeld aan dit gebouw',
+        'user-gave-access' => 'Gebruiker :full_name heeft toegang gegeven tot zijn gebouw',
+        'user-revoked-access' => 'Gebruiker :full_name heeft de toegang ingetrokken voor zijn gebouw'
     ],
     'building-coach-statuses' => [
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',

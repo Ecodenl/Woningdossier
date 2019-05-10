@@ -352,14 +352,23 @@
             <div class="col-sm-12">
                 {{--loop through all the insulated glazings with ALL the input sources--}}
                 @foreach ($buildingInsulatedGlazingsForMe as $buildingInsulatedGlazingForMe)
-                    <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
-                    @if($buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first() instanceof \App\Models\BuildingInsulatedGlazing && array_key_exists('comment', $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra))
+                    <?php
+                        $coachInputSource = App\Models\InputSource::findByShort('coach');
 
+
+                        $buildingInsulatedGlazing = $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first();
+                        $buildingInsulatedGlazingExists = $buildingInsulatedGlazing instanceof \App\Models\BuildingInsulatedGlazing;
+
+                        $extraIsArray = $buildingInsulatedGlazingExists ? is_array($buildingInsulatedGlazing->extra) : false;
+
+                        $thereIsAComment = $extraIsArray ? array_key_exists('comment', $buildingInsulatedGlazing->extra) : false;
+                    ?>
+
+                    @if(($buildingInsulatedGlazingExists && $extraIsArray) && $thereIsAComment)
                         ({{$coachInputSource->name}})
                         @component('cooperation.tool.components.step-question', ['id' => '', 'translation' => 'general.specific-situation', 'required' => false])
 
-                            <textarea disabled="disabled"
-                                      class="disabled form-control">{{$buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra['comment']}}</textarea>
+                            <textarea disabled="disabled" class="disabled form-control">{{$buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra['comment']}}</textarea>
                         @endcomponent
 
                         @break

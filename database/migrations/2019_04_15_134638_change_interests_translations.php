@@ -14,15 +14,20 @@ class ChangeInterestsTranslations extends Migration
     public function up()
     {
         $moreInformation = DB::table('interests')->where('calculate_value', 3)->first();
-        DB::table('translations')->where('key', $moreInformation->name)->update(['translation' => 'Misschien, meer informatie gewenst']);
+        if ($moreInformation instanceof stdClass) {
+            DB::table('translations')->where('key', $moreInformation->name)->update(['translation' => 'Misschien, meer informatie gewenst']);
+        }
 
         $noAction = DB::table('interests')->where('calculate_value', 4)->first();
-        DB::table('translations')->where('key', $noAction->name)->update(['translation' => 'Nee, geen interesse']);
+        if ($noAction instanceof stdClass) {
+            DB::table('translations')->where('key', $noAction->name)->update(['translation' => 'Nee, geen interesse']);
+        }
 
         $notPossible = DB::table('interests')->where('calculate_value', 5)->first();
-        DB::table('translations')->where('key', $notPossible->name)->update(['translation' => 'Nee, niet mogelijk / reeds uitgevoerd']);
+        if ($notPossible instanceof stdClass) {
+            DB::table('translations')->where('key', $notPossible->name)->update(['translation' => 'Nee, niet mogelijk / reeds uitgevoerd']);
+        }
     }
-
 
     /**
      * Reverse the migrations.
@@ -33,13 +38,18 @@ class ChangeInterestsTranslations extends Migration
     {
 
         $moreInformation = DB::table('interests')->where('calculate_value', 3)->first();
-        DB::table('translations')->where('key', $moreInformation->name)->update(['translation' => 'Meer informatie gewenst']);
+        if ($moreInformation instanceof stdClass) {
+            DB::table('translations')->where('key', $moreInformation->name)->update(['translation' => 'Meer informatie gewenst']);
+        }
 
         $noAction = DB::table('interests')->where('calculate_value', 4)->first();
-        DB::table('translations')->where('key', $noAction->name)->update(['translation' => 'Geen actie']);
+        if ($noAction instanceof stdClass) {
+            DB::table('translations')->where('key', $noAction->name)->update(['translation' => 'Geen actie']);
+        }
 
         $notPossible = DB::table('interests')->where('calculate_value', 5)->first();
-        DB::table('translations')->where('key', $notPossible->name)->update(['translation' => 'Niet mogelijk']);
+        if ($notPossible instanceof stdClass) {
+            DB::table('translations')->where('key', $notPossible->name)->update(['translation' => 'Niet mogelijk']);
+        }
     }
-
 }

@@ -25,7 +25,7 @@
                         @foreach($users as $user)
                             <tr>
                                 <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$user->created_at}}
+                                    {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>{{$user->email}}</td>

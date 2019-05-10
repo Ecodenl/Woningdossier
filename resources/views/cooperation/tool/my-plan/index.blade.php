@@ -63,11 +63,7 @@
                         </td>
 
                         <td>
-                            @if($measureType == "energy_saving")
-                                <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if(\App\Helpers\StepHelper::hasInterestInStep($step) && $advice->planned) checked @endif />
-                            @else
-                                <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned) checked @endif />
-                            @endif
+                            <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned) checked @endif />
                         </td>
                         <td>
                             {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
@@ -206,11 +202,14 @@
         });
 
         $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function(){
-            var form = $(this).closest("form").serialize();
+
+            // var data = $(this).parent().parent().find('input').serialize();
+
+            var data = $(this).closest("form").serialize();
             $.ajax({
                 type: "POST",
                 url: '{{ route('cooperation.tool.my-plan.store', [ 'cooperation' => $cooperation ]) }}',
-                data: form,
+                data: data,
                 success: function(data){
 
                     $("ul#years").html("");

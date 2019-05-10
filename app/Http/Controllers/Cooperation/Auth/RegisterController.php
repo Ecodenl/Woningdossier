@@ -225,21 +225,21 @@ class RegisterController extends Controller
         return view('cooperation.auth.resend-confirm-mail');
     }
 
-    public function resendConfirmMail(ResendConfirmMailRequest $request)
+    public function resendConfirmMail(Cooperation $cooperation, ResendConfirmMailRequest $request)
     {
         $validated = $request->validated();
 
         $user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
 
         if (! $user instanceof User) {
-            return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])
+            return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])
                              ->withInput()
                              ->withErrors(['email' => trans('auth.confirm.email-error')]);
         }
 
-        SendRequestAccountConfirmationEmail::dispatch($user);
+        SendRequestAccountConfirmationEmail::dispatch($user, $cooperation);
 
-        return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.email-success'));
+        return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])->with('success', trans('auth.confirm.email-success'));
     }
 
 

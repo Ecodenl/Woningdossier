@@ -9,8 +9,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
+use App\Models\Log;
+use App\Models\OldEmail;
+use App\Models\User;
 use App\Services\UserService;
 use function GuzzleHttp\Psr7\uri_for;
+use Illuminate\Auth\Passwords\DatabaseTokenRepository;
+use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
@@ -39,12 +44,6 @@ class SettingsController extends Controller
         $buildingData = $data['building'];
         $userData = $data['user'];
 
-        // not allowed in the current state
-        // if this happens the user is doing something fishy, so just redirect him back.
-        if (array_key_exists('email', $userData)) {
-            return redirect()->route('cooperation.my-account.settings.index');
-        }
-
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(
             $buildingData['postal_code'], $buildingData['house_number']
@@ -72,10 +71,10 @@ class SettingsController extends Controller
             $userData['password'] = \Hash::make($userData['password']);
         }
 
-        // check if the user changed his email, if so we send a confirmation to the user itself.
-        //        if ($user->email != $userData['email']) {
-        //            event(new UserChangedHisEmailEvent($user->email, $userData['email']));
-        //        }
+        // check if the user changed his email, if so. We set the old email and send the user a email so he can change it back.
+        if ($user->email != $userData['email']) {
+            event(new UserChangedHisEmailEvent($user, $user->email, $userData['email']));
+        }
 
         // update the user stuff
         $user->update($userData);

@@ -38,6 +38,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::post('', 'CreateBuildingController@store')->name('store');
         });
 
+        Route::group(['as' => 'recover-old-email.', 'prefix' => 'recover-old-email'], function () {
+            Route::get('{token}', 'RecoverOldEmailController@recover')->name('recover');
+        });
+
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
 

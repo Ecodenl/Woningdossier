@@ -8,6 +8,13 @@ return [
         'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
     ],
 
+    'changed-email' => [
+        'subject' => 'Hoomdossier: uw e-mail adres is aangepast.',
+        'salutation' => 'Beste :first_name :last_name,',
+        'text' => 'U heeft uw e-mail adres aangepast, u kunt dit ongedaan maken door de onderstaande link te volgen: <br><br>:recover_old_email_url<br><br>Als u hierover vragen hebt, kunt u contact opnemen met :cooperation_link',
+        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
+    ],
+
     'confirm-account' => [
         'subject' => 'Welkom in het Hoomdossier',
         'salutation' => 'Beste :first_name :last_name,',

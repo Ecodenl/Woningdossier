@@ -167,11 +167,7 @@
 
                                     ?>
                                     @if(!$hasAnswerMonument)
-                                        <li>
-                                            <a href="#">
-                                                {{\App\Helpers\Translation::translate('general.input-group-addon.no-answer')}}
-                                            </a>
-                                        </li>
+                                            @include('cooperation.tool.includes.no-answer-available')
                                     @else
                                         @foreach($building->buildingFeatures()->forMe()->get() as $userInputValue)
                                             <?php
@@ -474,11 +470,7 @@
 
                                             ?>
                                             @if(!$hasAnswerCookGas)
-                                                <li>
-                                                    <a href="#">
-                                                        {{\App\Helpers\Translation::translate('general.input-group-addon.no-answer')}}
-                                                    </a>
-                                                </li>
+                                                    @include('cooperation.tool.includes.no-answer-available')
                                             @else
                                             @foreach($userEnergyHabitsForMe as $userInputValue)
                                                 <?php

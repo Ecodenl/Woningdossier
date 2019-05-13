@@ -4,20 +4,15 @@
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
         <ul class="dropdown-menu">
             <?php
-            // we need to check if there is a answer from one input source
-            if($userInputValues instanceof \Illuminate\Support\Collection) {
-                $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '');
-            } else {
-                $hasAnswer = collect($userInputValues)->contains($userInputColumn, '!=', '');
-            }
-
+                // we need to check if there is a answer from one input source
+                if($userInputValues instanceof \Illuminate\Support\Collection) {
+                    $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '');
+                } else {
+                    $hasAnswer = collect($userInputValues)->contains($userInputColumn, '!=', '');
+                }
             ?>
             @if(!$hasAnswer)
-                <li>
-                    <a href="#">
-                        {{\App\Helpers\Translation::translate('general.input-group-addon.no-answer')}}
-                    </a>
-                </li>
+                @include('cooperation.tool.includes.no-answer-available')
             @else
                 @switch($inputType)
                     @case('select')

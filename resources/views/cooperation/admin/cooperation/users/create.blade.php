@@ -219,7 +219,7 @@
                 placeholder: "@lang('woningdossier.cooperation.admin.cooperation.users.create.form.select-coach')",
                 maximumSelectionLength: Infinity,
                 allowClear: true
-            });
+            }).val(null).trigger("change");
         });
 
     </script>

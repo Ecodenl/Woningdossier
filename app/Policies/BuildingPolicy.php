@@ -22,6 +22,19 @@ class BuildingPolicy
 
     }
 
+
+    /**
+     * Determine if a user is allowed to see a building overview
+     *
+     *
+     * @param  User  $user
+     * @param  Building  $building
+     */
+    public function show(User $user, Building $building)
+    {
+        dd($user, $building);
+    }
+
     /**
      * Check if a building has allowed access to his building
      *

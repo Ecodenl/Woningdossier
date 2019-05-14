@@ -118,10 +118,13 @@ class BuildingCoachStatus extends Model
     {
         return __('woningdossier.building-coach-statuses.'.$status);
     }
+
     /**
      * Return the manageable statuses (the statuses that can be set by a coach, coordinator, cooperation-admin)
+     *
+     * @return Collection
      */
-    public static function getManageableStatuses()
+    public static function getManageableStatuses(): Collection
     {
         return collect([
             static::STATUS_IN_PROGRESS => static::getTranslationForStatus(static::STATUS_IN_PROGRESS ),

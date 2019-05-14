@@ -48,9 +48,28 @@ class BuildingPolicy
     }
 
 
-    public function talkToResident()
+    /**
+     * Determine if its possible / authorized to talk to a resident
+     *
+     * Its possible when there is 1 public message from the resident itself.
+     *
+     * @param  User  $user
+     * @param  Building  $building
+     *
+     * @return bool
+     */
+    public function talkToResident(User $user, Building $building)
     {
+        if ($user->hasRoleAndIsCurrentRole('coach')) {
 
+            // get the buildings the user is connected to.
+            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId($user->id);
+
+            // check if the current building is in that collection and if there are public messages.
+            return (bool) $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+        }
+
+        return (bool) $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
     }
 
 

@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -507,5 +508,15 @@ class Building extends Model
     public static function getTranslationForStatus($status): string
     {
         return __('woningdossier.building-statuses.'.$status);
+    }
+
+    /**
+     * Get all the private messages for a building.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function privateMessages(): HasMany
+    {
+        return $this->hasMany(PrivateMessage::class);
     }
 }

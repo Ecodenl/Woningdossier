@@ -32,7 +32,7 @@ class MyAccountSettingsFormRequest extends FormRequest
             'user.password' => 'nullable|string|confirmed|min:6',
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',
-//            'user.email' => ['required', 'email', Rule::unique('users', 'email')->ignore(\Auth::id())],
+            'user.email' => ['required', 'email', Rule::unique('users', 'email')->ignore(\Auth::id())],
             'user.phone_number' => ['nullable', new PhoneNumber()],
 
 

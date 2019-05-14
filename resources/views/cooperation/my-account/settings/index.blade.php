@@ -61,7 +61,7 @@
 
 
                             <input id="email" type="email" class="form-control" name="user[email]"
-                                   value="{{ old('email', $user->email) }}" disabled="disabled" required autofocus>
+                                   value="{{ old('email', $user->email) }}" required autofocus>
 
                             @if ($errors->has('user.email'))
                                 <span class="help-block">

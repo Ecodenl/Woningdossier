@@ -44,7 +44,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     {
         if ($this->building instanceof Building) {
             // get the unread message for a building id
-            $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesCountByBuildingId($this->building->id);
+            $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUser($this->user);
 
             if ($unreadMessageCount > 0) {
                 // send the mail to the user

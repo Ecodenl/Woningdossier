@@ -39,11 +39,37 @@ class PrivateMessageView extends Model
     ];
 
     /**
+     * Get the total unread messages for a user, this also counts the unread messages from the admin side.
+     *
+     * @param  User  $user
+     *
+     * @return int
+     */
+    public static function getTotalUnreadMessagesForUser(User $user)
+    {
+        // if the user has the role coordinator or cooperation-admin get them as well
+        if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
+            $cooperationUnreadMessagesCount = self::where('cooperation_id', HoomdossierSession::getCooperation())
+                                                  ->where('read_at', null)
+                                                  ->count();
+        }
+
+        // get the unread messages for the user itsel.
+        $userUnreadMessages = self::where('user_id', \Auth::id())
+            ->where('read_at', null)
+            ->count();
+
+        $totalUnreadMessagesCount = $userUnreadMessages + isset($cooperationUnreadMessagesCount ) ? $cooperationUnreadMessagesCount : 0;
+
+        return $totalUnreadMessagesCount;
+    }
+
+    /**
      * Get the total unread messages from a auth user.
      *
      * @return int
      */
-    public static function getTotalUnreadMessages()
+    public static function getTotalUnreadMessagesForCurrentRole()
     {
         // if the user is loggen in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {

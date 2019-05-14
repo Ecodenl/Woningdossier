@@ -8399,6 +8399,11 @@ button.close {
   }
 }
 
+.dropdown-menu {
+  right: 0;
+  left: unset;
+}
+
 /**
   Helper classes for the html markup
  */

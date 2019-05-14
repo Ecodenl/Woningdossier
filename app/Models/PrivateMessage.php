@@ -108,59 +108,6 @@ class PrivateMessage extends Model
         return $query->public()->whereNotNull('request_type');
     }
 
-
-    public static function isConversationRequestConnectedToCoach($conversationRequest)
-    {
-        return self::STATUS_LINKED_TO_COACH == $conversationRequest->status;
-    }
-
-    /**
-     * Scope a query to return the open conversation requests based on the cooperation id.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeOpenCooperationConversationRequests($query)
-    {
-        $currentCooperationId = HoomdossierSession::getCooperation();
-
-        return $query->where('to_cooperation_id', $currentCooperationId);
-//            ->where('status', self::STATUS_APPLICATION_SENT)->orWhere('status', self::STATUS_IN_CONSIDERATION);
-    }
-
-    /**
-     * Return the private message ids based on the Auth user has permission to.
-     *
-     * A "group" is defined by its building_id, one building_id has one group
-     * however, a coach or coordinator can access multiple groups. This because they need to talk to multiple residents / buildings
-     * in that case we return multiple private messages ids
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopePrivateMessagesIdsGroupedByBuildingId($query)
-    {
-        $role = Role::find(HoomdossierSession::getRole());
-        // we call it short
-        $roleShort = $role->name;
-
-        switch ($roleShort) {
-            case 'resident':
-                $query = $query
-                    ->where('building_id', HoomdossierSession::getBuilding())
-                    ->orderBy('created_at');
-
-                    // no break
-            case 'coach':
-
-            case 'coordinator':
-        }
-
-        return $query;
-    }
-
     /**
      * Determine if a private message is public.
      *
@@ -199,27 +146,6 @@ class PrivateMessage extends Model
         return $query->where('to_user_id', \Auth::id());
     }
 
-    /**
-     * Scope a query to return the coach conversation request.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeMyCoachConversationRequest($query)
-    {
-        return $query
-            ->where('from_user_id', \Auth::id())
-            ->where('to_cooperation_id', session('cooperation'))
-            ->where('request_type', self::REQUEST_TYPE_COACH_CONVERSATION);
-    }
-
-    public function scopeMyOpenConversationRequest($query)
-    {
-        return $query
-            ->where('building_id', HoomdossierSession::getBuilding())
-            ->where('to_cooperation_id', HoomdossierSession::getCooperation());
-    }
 
     /**
      * Scope a query to return the conversation ordered on created_at.
@@ -359,34 +285,6 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if the message is a conversation request.
-     *
-     * @return bool
-     */
-    public function isConversationRequest(): bool
-    {
-        if (! empty($this->request_type)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the request is a coach conversation request.
-     *
-     * @return bool
-     */
-    public function isCoachRequestConversation()
-    {
-        if (self::REQUEST_TYPE_COACH_CONVERSATION == $this->request_type) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Get the building from a message.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -406,5 +304,17 @@ class PrivateMessage extends Model
     public function scopeAccessAllowed($query)
     {
         return $query->where('allow_access', true);
+    }
+
+    /**
+     * Check if its allowed to access a building by its given building id.
+     *
+     * @param $buildingId
+     *
+     * @return bool
+     */
+    public static function allowedAccess($buildingId)
+    {
+        return (bool) static::forMyCooperation()->conversationRequestByBuildingId($buildingId)->accessAllowed()->first() instanceof PrivateMessage;
     }
 }

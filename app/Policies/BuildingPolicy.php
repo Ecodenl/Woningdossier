@@ -47,36 +47,42 @@ class BuildingPolicy
         return (bool) $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
+
     /**
-     * Check if a building has allowed access to his building
+     * Determine if a user is allowed to view the building info
      *
-     * @param User $user
-     * @param int $buildingId
+     * With building info we mean stuff like associate coaches, make appointments etc.
+     * This is authorized when a user gave access in the conversation request / the allow_access is set to true
+     *
+     * @param  User  $user
+     * @param  Building  $building
+     *
      * @return bool
      */
-    public function accessBuilding(User $user, int $buildingId): bool
+    public function viewBuildingInfo(User $user, Building $building): bool
     {
-        $conversationRequest = PrivateMessage::forMyCooperation()->conversationRequestByBuildingId($buildingId)->first();
-
-        if ($conversationRequest instanceof PrivateMessage && $conversationRequest->allow_access) {
-            return true;
-        }
-        return false;
+        return PrivateMessage::allowedAccess($building->id);
     }
 
     /**
      * Determine if a user can access his building
      *
      * @param User $user
-     * @param int $buildingId
+     * @param Building $building
      * @return bool
      */
-    public function userCanAccessBuilding(User $user, int $buildingId): bool
+    public function accessBuilding(User $user, Building $building): bool
     {
-        $buildingPermission = Building::withTrashed()->find($buildingId)->buildingPermissions()->where('user_id', $user->id)->first();
-        if ($this->accessBuilding($user, $buildingId) && $buildingPermission instanceof BuildingPermission) {
-            return true;
+
+        if ($user->hasRoleAndIsCurrentRole('coach')) {
+
+            // check if the coach has building permission
+            $coachHasBuildingPermission = Building::withTrashed()->find($building->id)->buildingPermissions()->where('user_id', $user->id)->first() instanceof BuildingPermission;
+
+            return (bool) PrivateMessage::allowedAccess($building->id) && $coachHasBuildingPermission;
         }
-        return false;
+
+        // they can always access a building (if the user / resident gave access)
+        return (bool) PrivateMessage::allowedAccess($building->id) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 }

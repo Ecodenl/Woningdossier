@@ -370,7 +370,7 @@ return [
                                 'most-recent-message-date' => 'Meest recente ontvangst datum',
                                 'street-house-number'      => 'Straat en huisnummer',
                                 'zip-code'                 => 'Postcode',
-                                'city'                     => 'Stadt',
+                                'city'                     => 'stad',
                                 'unread-messages'          => 'Aantal ongelezen berichten'
                             ],
                         ],
@@ -386,7 +386,7 @@ return [
                                 'name'                => 'Naam',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code'            => 'Postcode',
-                                'city'                => 'Stadt',
+                                'city'                => 'stad',
                                 'status'              => 'Status',
                                 'appointment-date'    => 'Datum afspraak',
                             ],
@@ -473,7 +473,7 @@ return [
                                 'sender-name'              => 'Verzender',
                                 'street-house-number'      => 'Straat en huisnummer',
                                 'zip-code'                 => 'Postcode',
-                                'city'                     => 'Stadt',
+                                'city'                     => 'stad',
                                 'unread-messages'          => 'Aantal ongelezen berichten'
                             ],
                         ],
@@ -490,7 +490,7 @@ return [
                                 'name'                => 'Naam',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code'            => 'Postcode',
-                                'city'                => 'Stadt',
+                                'city'                => 'stad',
                                 'email'               => 'Email',
                                 'roles'               => 'Huidige rollen'
                             ],
@@ -506,7 +506,7 @@ return [
                                 'name'                => 'Naam',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code'            => 'Postcode',
-                                'city'                => 'Stadt',
+                                'city'                => 'stad',
                                 'status'              => 'Status',
                                 'appointment-date'    => 'Datum afspraak',
                                 'no-known-created-at' => 'Niet bekend',
@@ -546,7 +546,7 @@ return [
                                 'name'                => 'Naam',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code'            => 'Postcode',
-                                'city'                => 'Stadt',
+                                'city'                => 'stad',
                                 'status'              => 'Status',
                                 'no-known-created-at' => 'Niet bekend'
                             ],

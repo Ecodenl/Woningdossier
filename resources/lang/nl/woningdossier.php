@@ -10,15 +10,15 @@ return [
         ],
     ],
     'log-messages'            => [
-        'logged-in'                  => 'Gebruiker :full_name heeft ingelogd op de applicatie',
-        'registered-user'            => 'Gebruiker :full_name heeft geregistreerd',
-        'step-data-has-been-changed' => 'Gebruiker :full_name heeft een wijziging doorgevoerd in het actieplan',
-        'filling-tool-for'           => 'Gebruiker :full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
-        'observing-tool-for'         => 'Gebruiker :full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',
-        'action-plan-changed'        => 'Gebruiker :full_name heeft een wijziging doorgevoert op het actieplan',
-        'participant-added'          => 'Gebruiker :full_name heeft :for_full_name gekoppeld aan dit woning',
-        'user-gave-access' => 'Gebruiker :full_name heeft toegang gegeven tot zijn woning',
-        'user-revoked-access' => 'Gebruiker :full_name heeft de toegang ingetrokken voor zijn woning'
+        'logged-in'                  => ':full_name heeft ingelogd op de applicatie',
+        'registered-user'            => ':full_name heeft geregistreerd',
+        'step-data-has-been-changed' => ':full_name heeft een wijziging doorgevoerd in het actieplan',
+        'filling-tool-for'           => ':full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
+        'observing-tool-for'         => ':full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',
+        'action-plan-changed'        => ':full_name heeft een wijziging doorgevoert op het actieplan',
+        'participant-added'          => ':full_name heeft :for_full_name gekoppeld aan dit woning',
+        'user-gave-access' => ':full_name heeft toegang gegeven tot zijn woning',
+        'user-revoked-access' => ':full_name heeft de toegang ingetrokken voor zijn woning'
     ],
     'building-coach-statuses' => [
         \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',

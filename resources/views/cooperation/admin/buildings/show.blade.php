@@ -197,13 +197,13 @@
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
-            @can('view-building-info', $building)
+{{--            @can('view-building-info', $building)--}}
                 <li>
                     <a data-toggle="tab" href="#messages-public">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
                     </a>
                 </li>
-            @endcan
+{{--            @endcan--}}
             <li>
                 <a data-toggle="tab" href="#comments-on-building">
                     @lang('woningdossier.cooperation.admin.users.show.tabs.comments-on-building.title')

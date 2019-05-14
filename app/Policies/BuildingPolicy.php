@@ -48,6 +48,12 @@ class BuildingPolicy
     }
 
 
+    public function talkToResident()
+    {
+
+    }
+
+
     /**
      * Determine if a user is allowed to view the building info
      *
@@ -66,6 +72,8 @@ class BuildingPolicy
 
     /**
      * Determine if a user can access his building
+     *
+     * With access we mean observing / filling the tool.
      *
      * @param User $user
      * @param Building $building

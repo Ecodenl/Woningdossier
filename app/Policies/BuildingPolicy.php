@@ -40,11 +40,11 @@ class BuildingPolicy
             $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId($user->id);
 
             // check if the current building is in that collection.
-            return (bool) $connectedBuildingsForUser->contains('building_id', $building->id);
+            return  $connectedBuildingsForUser->contains('building_id', $building->id);
         }
 
         // they can always view a building.
-        return (bool) $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
 
@@ -66,10 +66,10 @@ class BuildingPolicy
             $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId($user->id);
 
             // check if the current building is in that collection and if there are public messages.
-            return (bool) $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+            return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
         }
 
-        return (bool) $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+        return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
     }
 
 
@@ -106,10 +106,10 @@ class BuildingPolicy
             // check if the coach has building permission
             $coachHasBuildingPermission = Building::withTrashed()->find($building->id)->buildingPermissions()->where('user_id', $user->id)->first() instanceof BuildingPermission;
 
-            return (bool) PrivateMessage::allowedAccess($building->id) && $coachHasBuildingPermission;
+            return  PrivateMessage::allowedAccess($building->id) && $coachHasBuildingPermission;
         }
 
         // they can always access a building (if the user / resident gave access)
-        return (bool) PrivateMessage::allowedAccess($building->id) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return  PrivateMessage::allowedAccess($building->id) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 }

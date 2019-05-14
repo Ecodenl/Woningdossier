@@ -315,6 +315,6 @@ class PrivateMessage extends Model
      */
     public static function allowedAccess($buildingId)
     {
-        return (bool) static::forMyCooperation()->conversationRequestByBuildingId($buildingId)->accessAllowed()->first() instanceof PrivateMessage;
+        return static::forMyCooperation()->conversationRequestByBuildingId($buildingId)->accessAllowed()->first() instanceof PrivateMessage;
     }
 }

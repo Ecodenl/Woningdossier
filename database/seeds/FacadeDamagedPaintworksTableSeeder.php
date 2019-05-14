@@ -22,7 +22,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Ja, een beetje',
+                    'nl' => 'Een beetje',
                 ],
                 'calculate_value' => 3,
                 'order' => 1,
@@ -30,7 +30,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Ja, heel erg',
+                    'nl' => 'Ja',
                 ],
                 'calculate_value' => 5,
                 'order' => 2,

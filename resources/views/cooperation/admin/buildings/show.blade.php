@@ -262,31 +262,19 @@
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">
                         <div class="panel-body">
-                            <table id="log-table"
-                                   class="table-responsive table table-striped table-bordered compact nowrap"
-                                   style="width: 100%">
+                            <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap" style="width: 100%">
                                 <thead>
                                 <tr>
-                                    <th data-priority="1">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.user')</th>
+                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.message')</th>
-                                    <th data-priority="3">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.for-user')</th>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.building')</th>
-                                    <th data-priority="2">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php /** @var \App\Models\Log $log */ ?>
                                 @foreach($logs as $log)
-                                    <?php
-                                    $building = $log->building()->withTrashed()->first();
-                                    $address = strtoupper($building->postal_code) . ' ' . $building->city . ', ' . $building->street . ' ' . $building->number . ' ' . $building->extenstion
-                                    ?>
                                     <tr>
-                                        <td>{{$log->user instanceof \App\Models\User ? $log->user->getFullName() : ''}}</td>
-                                        <td>{{$log->message}}</td>
-                                        <td>{{$log->forUser instanceof \App\Models\User ? $log->forUser->getFullName() : ''}}</td>
-                                        <td>{{$address}}</td>
                                         <td data-sort="{{strtotime($log->created_at->format('d-m-Y H:i'))}}">{{$log->created_at->format('d-m-Y H:i')}}</td>
+                                        <td>{{$log->message}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -331,9 +319,7 @@
 
             var appointmentDate = $('#appointment-date');
 
-            $('table').DataTable({
-                "order": [[4, "desc"]]
-            });
+            $('table').DataTable();
             // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
             $('.nav-tabs a').on('shown.bs.tab', function (event) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();

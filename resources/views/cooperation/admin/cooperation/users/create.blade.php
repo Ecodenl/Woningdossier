@@ -5,8 +5,7 @@
 
         <div class="panel-body">
             <div class="row">
-                <form action="{{route('cooperation.admin.cooperation.users.store')}}" id="register"
-                      method="post">
+                <form class="has-address-data" action="{{route('cooperation.admin.cooperation.users.store')}}" method="post">
                     {{csrf_field()}}
                     <input id="addressid" name="addressid" type="text" value="" style="display:none;">
                     <div class="col-md-6">
@@ -220,7 +219,7 @@
                 placeholder: "@lang('woningdossier.cooperation.admin.cooperation.users.create.form.select-coach')",
                 maximumSelectionLength: Infinity,
                 allowClear: true
-            });
+            }).val(null).trigger("change");
         });
 
     </script>

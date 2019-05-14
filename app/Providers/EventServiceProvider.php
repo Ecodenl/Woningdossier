@@ -8,12 +8,15 @@ use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
 use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\UserChangedHisEmailEvent;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\SendUserChangeEmailConfirmationListener;
+use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
 use App\Listeners\UserEventSubscriber;
@@ -52,6 +55,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         StepDataHasBeenChangedEvent::class => [
             StepDataHasBeenChangedListener::class
+        ],
+        UserChangedHisEmailEvent::class => [
+            SetOldEmailListener::class,
         ],
     ];
 

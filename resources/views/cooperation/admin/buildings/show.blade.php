@@ -292,13 +292,13 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="btn-group">
-                            <a href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}"
-                               type="button" id="previous" class="btn btn-default">
+                            <a @if(!is_null($previous)) href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}" @endif
+                               type="button" {{is_null($previous) ? 'disabled="disabled"' : '' }} id="previous" class="btn btn-default {{is_null($previous) ? 'btn-disabled' : '' }}">
                                 <i class="glyphicon glyphicon-chevron-left"></i>
                                 @lang('woningdossier.cooperation.admin.users.show.previous')
                             </a>
-                            <a href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}"
-                               id="observe-building" class="btn btn-default">
+                            <a @if(!is_null($next)) href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}" @endif
+                               id="observe-building" {{is_null($next) ? 'disabled="disabled"' : '' }} class="btn btn-default {{is_null($next) ? 'btn-disabled' : '' }}">
                                 @lang('woningdossier.cooperation.admin.users.show.next')
                                 <i class="glyphicon glyphicon-chevron-right"></i>
                             </a>

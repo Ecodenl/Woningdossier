@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\PrivateMessage;
 use App\Models\User;
@@ -29,10 +30,21 @@ class BuildingPolicy
      *
      * @param  User  $user
      * @param  Building  $building
+     *
+     * @return bool
      */
     public function show(User $user, Building $building)
     {
-        dd($user, $building);
+        if ($user->hasRoleAndIsCurrentRole('coach')) {
+            // get the buildings the user is connected to.
+            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId($user->id);
+
+            // check if the current building is in that collection.
+            return (bool) $connectedBuildingsForUser->contains('building_id', $building->id);
+        }
+
+        // they can always view a building.
+        return (bool) $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
     /**

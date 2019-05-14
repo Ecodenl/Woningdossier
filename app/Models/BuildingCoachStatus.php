@@ -336,35 +336,6 @@ class BuildingCoachStatus extends Model
     }
 
     /**
-     * A function to check if a coach has 'access' to a a building
-     * if the pending count is higher then the remove count he has 'access'
-     * i say 'access' because he cant access the building without a building_permission, however he can access the building details and a groupchat.
-     *
-     * @param $buildingId
-     * @param $coachId
-     *
-     * @return bool
-     */
-    public static function hasCoachAccess($buildingId, $coachId): bool
-    {
-        // count the pending statuses
-        $buildingCoachStatusPending = self::where('coach_id', '=', $coachId)
-            ->where('building_id', $buildingId)
-            ->where('status', '=', self::STATUS_PENDING)->count();
-
-        // count the removed statuses
-        $buildingCoachStatusRemoved = self::where('coach_id', '=', $coachId)
-            ->where('building_id', $buildingId)
-            ->where('status', '=', self::STATUS_REMOVED)->count();
-
-        if ($buildingCoachStatusPending> $buildingCoachStatusRemoved) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Check if a BuildingCoachStatus row has a appointment_date thats not null.
      *
      * @return bool

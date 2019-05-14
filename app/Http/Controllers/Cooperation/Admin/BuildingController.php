@@ -34,6 +34,8 @@ class BuildingController extends Controller
             ->get()->toArray()
         )->first();
 
+        $this->authorize('show', $building);
+
         if (!$building instanceof Building) {
             return redirect(route('cooperation.admin.index'));
         }

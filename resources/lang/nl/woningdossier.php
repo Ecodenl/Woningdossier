@@ -743,6 +743,7 @@ return [
         'my-account'            => [
             'side-nav' => [
                 'home'        => 'Home',
+                'notification-settings' => 'Notificatie instellingen',
                 'label'       => 'Mijn account',
                 'import'      => 'Import centrum',
                 'settings'    => 'Instellingen',
@@ -766,6 +767,31 @@ return [
                     'other-source'     => 'Er zijn gegevens van een :input_source_name aanwezig',
                     'other-source-new' => 'Er zijn <strong>nieuwe</strong> gegevens van een :input_source_name aanwezig',
                     'show-differences' => 'Toon de verschillen met mijn data',
+                ],
+            ],
+            'notification-settings' => [
+                'index' => [
+                    'header' => 'Uw notificatie instellingen',
+                    'text' => 'U kunt deze hier inzien, en zo nodig wijzigen',
+                    'table' => [
+                        'columns' => [
+                            'name' => 'Notificatie soort',
+                            'interval' => 'Interval',
+                            'last-notified-at' => 'Laatst gestuurd op',
+                            'actions' => 'Actie',
+                        ],
+                        'never-sent' => 'Notificatie is nooit verstuurd'
+                    ],
+                ],
+                'show' => [
+                    'header' => 'Bewerk notificatie',
+                    'form' => [
+                        'interval' => 'Notificatie interval voor :type',
+                        'submit' => 'Interval opslaan'
+                    ],
+                ],
+                'update' => [
+                    'success' => 'Interval is opgeslagen.'
                 ],
             ],
 

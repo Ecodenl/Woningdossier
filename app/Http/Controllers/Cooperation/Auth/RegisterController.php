@@ -9,9 +9,12 @@ use App\Http\Requests\FillAddressRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
+use App\Jobs\SendUnreadMessageCountEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
+use App\Models\NotificationInterval;
+use App\Models\NotificationType;
 use App\Models\Role;
 use App\Models\User;
 use App\Rules\HouseNumber;
@@ -67,11 +70,10 @@ class RegisterController extends Controller
     }
 
 
-
     /**
      * Handle a registration request for the application.
      *
-     * @param RegisterFormRequest $request
+     * @param  RegisterFormRequest  $request
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
@@ -85,22 +87,22 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param array $data
+     * @param  array  $data
      *
      * @return \App\Models\User
      */
     protected function create(array $data)
     {
         $user = User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'phone_number' => is_null($data['phone_number']) ? '' : $data['phone_number'],
+            'first_name'    => $data['first_name'],
+            'last_name'     => $data['last_name'],
+            'email'         => $data['email'],
+            'password'      => bcrypt($data['password']),
+            'phone_number'  => is_null($data['phone_number']) ? '' : $data['phone_number'],
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
 
-        // now get the pico address data.
+        // now get the picoaddress               data.
         $picoAddressData = PicoHelper::getAddressData(
             $data['postal_code'], $data['number']
         );
@@ -108,7 +110,7 @@ class RegisterController extends Controller
         $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'];
 
         $features = new BuildingFeature([
-            'surface' => $picoAddressData['surface'] ?? null,
+            'surface'    => $picoAddressData['surface'] ?? null,
             'build_year' => $picoAddressData['build_year'] ?? null,
         ]);
 
@@ -118,8 +120,19 @@ class RegisterController extends Controller
         $features->building()->associate($address)->save();
 
         $cooperationId = \Session::get('cooperation');
-        $cooperation = Cooperation::find($cooperationId);
+        $cooperation   = Cooperation::find($cooperationId);
         $user->cooperations()->attach($cooperation);
+
+        $notificationTypes = NotificationType::all();
+        $interval          = NotificationInterval::where('short', 'no-interest')->first();
+
+        foreach ($notificationTypes as $notificationType) {
+
+            $user->notificationSettings()->create([
+                'type_id'     => $notificationType->id,
+                'interval_id' => $interval->id
+            ]);
+        }
 
         $residentRole = Role::findByName('resident');
         $user->roles()->attach($residentRole);
@@ -143,7 +156,7 @@ class RegisterController extends Controller
         $token = $request->get('t');
 
         $user = User::where('email', $email)->where('confirm_token', $token)->first();
-        if (! $user instanceof User) {
+        if ( ! $user instanceof User) {
             return redirect('register')->withErrors(trans('auth.confirm.error'));
         } else {
             $user->confirm_token = null;
@@ -156,22 +169,23 @@ class RegisterController extends Controller
                 $user->roles()->attach($residentRole);
             }
 
-            return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success', trans('auth.confirm.success'));
+            return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success',
+                trans('auth.confirm.success'));
         }
     }
 
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param  Cooperation  $cooperation
+     * @param  Request  $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function checkExistingEmail(Cooperation $cooperation, Request $request)
     {
         $email = $request->get('email');
-        $user = User::where('email', $email)->first();
+        $user  = User::where('email', $email)->first();
 
         $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
 
@@ -192,15 +206,15 @@ class RegisterController extends Controller
     /**
      * Connect the existing email to a cooperation.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param  Cooperation  $cooperation
+     * @param  Request  $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function connectExistingAccount(Cooperation $cooperation, Request $request)
     {
         $email = $request->get('existing_email');
-        $user = User::where('email', $email)->first();
+        $user  = User::where('email', $email)->first();
 
         // okay, the user does exists
         if ($user instanceof User) {
@@ -211,14 +225,13 @@ class RegisterController extends Controller
 
             $cooperation->users()->attach($user);
 
-            return redirect(url('login'))->with('account_connected', __('auth.register.form.message.account-connected'));
+            return redirect(url('login'))->with('account_connected',
+                __('auth.register.form.message.account-connected'));
         }
 
         // user is playing, redirect them back
         return redirect()->back();
     }
-
-
 
     public function formResendConfirmMail()
     {
@@ -231,7 +244,7 @@ class RegisterController extends Controller
 
         $user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
 
-        if (! $user instanceof User) {
+        if ( ! $user instanceof User) {
             return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])
                              ->withInput()
                              ->withErrors(['email' => trans('auth.confirm.email-error')]);
@@ -239,8 +252,8 @@ class RegisterController extends Controller
 
         SendRequestAccountConfirmationEmail::dispatch($user, $cooperation);
 
-        return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])->with('success', trans('auth.confirm.email-success'));
+        return redirect()->route('cooperation.auth.resend-confirm-mail',
+            ['cooperation' => $cooperation])->with('success', trans('auth.confirm.email-success'));
     }
-
 
 }

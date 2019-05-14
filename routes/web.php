@@ -77,6 +77,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('set-compare-session/{inputSourceShort}', 'ImportCenterController@setCompareSession')->name('set-compare-session');
                     Route::post('dismiss-notification', 'ImportCenterController@dismissNotification')->name('dismiss-notification');
                 });
+
+                Route::resource('notification-settings', 'NotificationSettingsController')->only([
+                    'index', 'show', 'update'
+                ]);
+
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');

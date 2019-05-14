@@ -27,4 +27,12 @@ return [
         'action' => 'Wachtwoord resetten',
         'not_requested' => 'Als u geen wachtwoord reset heeft aangevraagd hoeft u geen actie te ondernemen.',
     ],
+
+    'unread-message-count' => [
+        'subject' => 'U heeft :unread_message_count ongelezen berichten',
+        'salutation' => 'Beste :first_name :last_name,',
+        'text' => 'Er zijn :unread_message_count ongelezen berichten voor u in het Hoomdossier.',
+        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
+    ],
+
 ];

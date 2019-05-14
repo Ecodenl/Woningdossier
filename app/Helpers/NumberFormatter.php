@@ -101,6 +101,7 @@ class NumberFormatter
             $number
         );
 
+
         return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'],
             '.',
             $number);

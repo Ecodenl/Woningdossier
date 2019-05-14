@@ -26,6 +26,7 @@ class RoofInsulation {
 
         $roofTypes = $calculateData['building_roof_types'] ?? [];
 
+
         foreach ($roofTypes as $i => $details) {
             if (is_numeric($i) && is_numeric($details)) {
                 $roofType = RoofType::find($details);
@@ -43,8 +44,12 @@ class RoofInsulation {
         $adviceMap = RoofInsulationHelper::getMeasureApplicationsAdviceMap();
         $totalSurface = 0;
 
+
         foreach (array_keys($result) as $cat) {
-            $totalSurface += isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
+            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
+            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
+
+            $totalSurface += $insulationRoofSurface;
         }
 
         foreach (array_keys($result) as $cat) {
@@ -61,7 +66,10 @@ class RoofInsulation {
                 ],
             ];
 
-            $surface = $roofTypes[$cat]['insulation_roof_surface'] ?? 0;
+            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
+            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
+
+            $surface =  $insulationRoofSurface ?? 0;
             $heating = null;
             // should take the bitumen field
 

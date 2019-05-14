@@ -24,7 +24,7 @@ class SendNotifications extends Command
      *
      * @var string
      */
-    protected $description = 'Send the user notifications based on their interval and last_send_on';
+    protected $description = 'Send the user notifications based on their interval and last_notified_at';
 
     /**
      * Create a new command instance.
@@ -48,7 +48,7 @@ class SendNotifications extends Command
 
         // if it exist only send the specific notification type
         if ($notificationType instanceof NotificationType) {
-            $this->info('Notification type: '.$this->option('type').' exists, lets do some work.');
+            $this->info('Notification type: '.$this->option('type').' exists, let\'s do some work.');
             // get all the users
             $users = User::all();
 

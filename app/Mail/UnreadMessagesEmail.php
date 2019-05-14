@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -14,17 +15,20 @@ class UnreadMessagesEmail extends Mailable
 
     public $user;
     public $unreadMessageCount;
+    public $userCooperation;
 
     /**
      * UnreadMessagesEmail constructor.
      *
      * @param  User  $user
+     * @param  Cooperation $cooperation
      * @param  int  $unreadMessageCount
      */
-    public function __construct(User $user, int $unreadMessageCount)
+    public function __construct(User $user, Cooperation $cooperation, int $unreadMessageCount)
     {
         $this->user = $user;
         $this->unreadMessageCount = $unreadMessageCount;
+        $this->userCooperation = $cooperation;
     }
 
     /**
@@ -35,6 +39,7 @@ class UnreadMessagesEmail extends Mailable
     public function build()
     {
         return $this->view('cooperation.mail.user.unread-message-count')
+
                     ->subject(__('mail.unread-message-count.subject', [
                         'unread_message_count' => $this->unreadMessageCount
                     ]));

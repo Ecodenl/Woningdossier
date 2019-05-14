@@ -19,6 +19,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $user;
+    protected $cooperation;
     protected $building;
     protected $notificationSetting;
 
@@ -32,6 +33,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     {
         $this->notificationSetting = $notificationSetting;
         $this->user                = $user;
+        $this->cooperation         = $user->cooperations()->first();
         $this->building            = $user->buildings()->first();
     }
 
@@ -43,13 +45,14 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     public function handle()
     {
         if ($this->building instanceof Building) {
+
             // get the unread message for a building id
-            $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUser($this->user);
+            $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUser($this->user, $this->cooperation);
 
             if ($unreadMessageCount > 0) {
                 // send the mail to the user
                 \Mail::to($this->user->email)
-                     ->send(new UnreadMessagesEmail($this->user, $unreadMessageCount));
+                     ->send(new UnreadMessagesEmail($this->user, $this->cooperation, $unreadMessageCount));
 
                 // after that has been done, update the last_notified_at to the current date
                 $this->notificationSetting->last_notified_at = Carbon::now();

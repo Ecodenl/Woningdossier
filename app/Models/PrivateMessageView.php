@@ -45,11 +45,11 @@ class PrivateMessageView extends Model
      *
      * @return int
      */
-    public static function getTotalUnreadMessagesForUser(User $user)
+    public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation)
     {
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
-            $cooperationUnreadMessagesCount = self::where('cooperation_id', HoomdossierSession::getCooperation())
+            $cooperationUnreadMessagesCount = self::where('cooperation_id', $cooperation->id)
                                                   ->where('read_at', null)
                                                   ->count();
         }

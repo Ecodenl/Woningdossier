@@ -31,7 +31,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
         Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
 
-        Auth::routes();
 
         Route::group(['prefix' => 'create-building', 'as' => 'create-building.'], function () {
             Route::get('', 'CreateBuildingController@index')->name('index');

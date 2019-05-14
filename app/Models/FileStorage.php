@@ -85,7 +85,7 @@ class FileStorage extends Model
      */
     public function isProcessed()
     {
-        $availableUntil = $this->created_at->addDays($this->fileType->duration ?? 5);
+        $availableUntil = $this->created_at->addDays($this->fileType->duration ?? 7);
         $this->available_until = $availableUntil;
         $this->is_being_processed = false;
         $this->save();

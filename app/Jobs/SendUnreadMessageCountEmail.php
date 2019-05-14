@@ -46,13 +46,15 @@ class SendUnreadMessageCountEmail implements ShouldQueue
             // get the unread message for a building id
             $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesCountByBuildingId($this->building->id);
 
-            // send the mail to the user
-            \Mail::to($this->user->email)
-                 ->send(new UnreadMessagesEmail($this->user, $unreadMessageCount));
+            if ($unreadMessageCount > 0) {
+                // send the mail to the user
+                \Mail::to($this->user->email)
+                     ->send(new UnreadMessagesEmail($this->user, $unreadMessageCount));
 
-            // after that has been done, update the last_notified_at to the current date
-            $this->notificationSetting->last_notified_at = Carbon::now();
-            $this->notificationSetting->save();
+                // after that has been done, update the last_notified_at to the current date
+                $this->notificationSetting->last_notified_at = Carbon::now();
+                $this->notificationSetting->save();
+            }
         } else {
             \Log::debug('it seems like user id '.$this->user->id.' has no building!');
         }

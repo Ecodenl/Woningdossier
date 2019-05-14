@@ -7,6 +7,7 @@ use App\Models\NotificationType;
 use App\Models\User;
 use App\NotificationSetting;
 use Carbon\Carbon;
+use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Queue\Jobs\Job;
 
@@ -67,12 +68,6 @@ class SendNotifications extends Command
                     $bar->advance();
                     $now = Carbon::now();
 
-                    // if its null, set it to now.
-                    if (is_null($notificationSetting->last_notified_at)) {
-                        SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
-                    }
-
-
                     // check when the user has been notified for the last time, and notify them again if needed.
                     if ($notificationSetting->last_notified_at instanceof Carbon) {
 
@@ -92,17 +87,20 @@ class SendNotifications extends Command
                                 }
                                 break;
                         }
+                    } else {
+                        $notificationSetting->last_notified_at = Carbon::now()->subYear(1);
+                        $notificationSetting->save();
                     }
 
                 }
 
             }
 
+            $bar->finish();
         } else {
             $this->info('Notification type: '.$this->option('type').' was not provided or does not exist');
         }
 
-        $bar->finish();
         $this->info("\n Done");
     }
 }

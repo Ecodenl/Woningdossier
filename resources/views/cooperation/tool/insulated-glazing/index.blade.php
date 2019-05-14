@@ -257,6 +257,17 @@
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
+                                <?php
+                                    // check if there is a answer available from a input source.
+                                    $hasAnswerWoodElements = $building->buildingElements()
+                                                                      ->withoutGlobalScope(\App\Scopes\GetValueScope::class)
+                                                                      ->where('element_id', $woodElements->id)
+                                                                      ->get()
+                                                                      ->contains('element_value_id', '!=', '');
+                                ?>
+                                @if(!$hasAnswerWoodElements)
+                                    @include('cooperation.tool.includes.no-answer-available')
+                                @else
                                 @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
                                     <?php
                                     $myWoodElement = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first();
@@ -270,6 +281,7 @@
                                         </li>
                                     @endif
                                 @endforeach
+                                @endif
                             </ul>
                         </div>
                     </div>

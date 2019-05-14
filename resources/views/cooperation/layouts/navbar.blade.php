@@ -95,16 +95,16 @@
                             <li>
                                 @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                     @case('coach')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
+                                    <?php $messageUrl = route('cooperation.admin.coach.index'); ?>
+                                    @break
                                     @case('coordinator')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
+                                    <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
+                                    @break
                                     @case('cooperation-admin')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
+                                    <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
+                                    @break
                                     @default
-                                        <?php $messageUrl = route('cooperation.admin.index'); ?>
+                                    <?php $messageUrl = route('cooperation.admin.index'); ?>
                                 @endswitch
                                 <a href="{{$messageUrl}}">
                                     <span class="glyphicon glyphicon-envelope"></span>

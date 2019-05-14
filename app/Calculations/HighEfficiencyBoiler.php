@@ -49,7 +49,7 @@ class HighEfficiencyBoiler {
                 }
 
                 if (array_key_exists('extra', $options)) {
-                    $year = $options['extra'];
+                    $year = is_numeric(NumberFormatter::reverseFormat($options['extra'])) ? NumberFormatter::reverseFormat($options['extra']) : 0;
 
                     $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
                     //$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();

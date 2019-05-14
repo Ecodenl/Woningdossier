@@ -90,6 +90,11 @@ class BuildingController extends Controller
 
         // since a user can be deleted, a buildin
         if ($userExists) {
+            if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
+                $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId($user->id);
+
+                dd($connectedBuildingsForUser);
+            }
             // get previous user id
             $previous = $cooperation
                 ->users()

@@ -7,6 +7,7 @@ use App\Models\NotificationType;
 use App\Models\User;
 use App\NotificationSetting;
 use Carbon\Carbon;
+use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Queue\Jobs\Job;
 
@@ -67,13 +68,7 @@ class SendNotifications extends Command
                     $bar->advance();
                     $now = Carbon::now();
 
-                    // if its null, set it to now.
-                    if (is_null($notificationSetting->last_notified_at)) {
-                        SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
-                    }
-
-
-                    // check when the user has been notified for the last time, and notify them again if needed.
+                    // check if the user has a last notified at
                     if ($notificationSetting->last_notified_at instanceof Carbon) {
 
                         $lastNotifiedAt = $notificationSetting->last_notified_at;
@@ -82,7 +77,7 @@ class SendNotifications extends Command
                         switch ($notificationSetting->interval->short) {
                             case 'daily':
                                 // if the difference between now and the last notified date is 23 hours, send him a message
-                                if ($notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {
+                                if (($notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) || $notifiedDiff->days >= 1) {
                                     SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
                                 }
                                 break;
@@ -91,18 +86,24 @@ class SendNotifications extends Command
                                     SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
                                 }
                                 break;
+                            case 'no-interest':
+                                break;
                         }
+                    } else {
+                        // the user has never been notified, so we set subtract one year from the current one.
+                        $notificationSetting->last_notified_at = Carbon::now()->subYear(1);
+                        $notificationSetting->save();
                     }
 
                 }
 
             }
 
+            $bar->finish();
         } else {
             $this->info('Notification type: '.$this->option('type').' was not provided or does not exist');
         }
 
-        $bar->finish();
         $this->info("\n Done");
     }
 }

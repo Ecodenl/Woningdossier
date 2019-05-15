@@ -9,6 +9,6 @@ class AdminComposer
 {
     public function create(View $view)
     {
-        $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessages());
+        $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());
     }
 }

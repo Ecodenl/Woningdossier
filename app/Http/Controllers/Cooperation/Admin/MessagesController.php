@@ -22,6 +22,24 @@ class MessagesController extends Controller
         }
     }
 
+    public function index()
+    {
+        if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
+            $userId = \Auth::id();
+
+            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUserId($userId);
+            $buildingIds = $connectedBuildingsByUserId->pluck('building_id')->all();
+        } else {
+            // get all the conversation requests that were send to my cooperation.
+            $privateMessages = PrivateMessage::forMyCooperation()->conversationRequest()->get();
+            $buildingIds = $privateMessages->pluck('building_id')->all();
+        }
+
+        $buildings = Building::withTrashed()->findMany($buildingIds);
+
+        return view('cooperation.admin.messages.index', compact('buildings'));
+    }
+
     /**
      * Method that handles sending messages for the /admin section
      *

@@ -5,12 +5,12 @@
         <div class="row">
             <div class="col-md-10">
                 <div class="panel panel-default">
-                    <div class="panel-heading">@lang('woningdossier.cooperation.my-account.import-center.index.header')</div>
+                    <div class="panel-heading">@lang('my-account.import-center.index.header')</div>
 
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-12">
-                                @lang('woningdossier.cooperation.my-account.import-center.index.text')
+                                @lang('my-account.import-center.index.text')
                             </div>
                         </div>
                         @foreach($toolSettings as $toolSetting)
@@ -24,14 +24,14 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                                    @lang('woningdossier.cooperation.my-account.import-center.index.copy-data',
+                                                    @lang('my-account.import-center.index.copy-data',
                                                         ['input_source_name' => $toolSetting->changedInputSource->name
                                                     ])
                                                 </a>
                                                 <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->changedInputSource->short])}}" class="btn btn-sm btn-primary pull-right">
-                                                    @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')
+                                                    @lang('my-account.import-center.index.show-differences')
                                                 </a>
-                                                @lang('woningdossier.cooperation.my-account.import-center.index.other-source-new',
+                                                @lang('my-account.import-center.index.other-source-new',
                                                     ['input_source_name' => $toolSetting->changedInputSource->name
                                                 ])
                                             </div>

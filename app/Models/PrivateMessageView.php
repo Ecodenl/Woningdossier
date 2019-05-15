@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -39,32 +40,38 @@ class PrivateMessageView extends Model
     ];
 
     /**
-     * Get the total unread messages for a user, this also counts the unread messages from the admin side.
+     * Get the total unread messages for a user, this also counts the unread messages from the admin side, after a specific date.
      *
      * @param  User  $user
-     * @param Cooperation $cooperation
+     * @param  Cooperation  $cooperation
+     * @param  $specificDate
+     *
      * @return int
      */
-    public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation)
+    public static function getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(User $user, Cooperation $cooperation, $specificDate): int
     {
         $cooperationUnreadMessagesCount = 0;
+
 
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
             $cooperationUnreadMessagesCount = self::where('cooperation_id', $cooperation->id)
+                                                  ->where('created_at', '>=', $specificDate)
                                                   ->where('read_at', null)
                                                   ->count();
         }
 
-        // get the unread messages for the user itsel.
+        // get the unread messages for the user itself.
         $userUnreadMessages = self::where('user_id', $user->id)
-            ->where('read_at', null)
-            ->count();
+                                  ->where('created_at', '>=', $specificDate)
+                                  ->where('read_at', null)
+                                  ->count();
 
         $totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
 
         return $totalUnreadMessagesCount;
     }
+
 
     /**
      * Get the total unread messages from a auth user.

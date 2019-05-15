@@ -3,7 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Jobs\SendUnreadMessageCountEmail;
+use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\NotificationType;
+use App\Models\PrivateMessageView;
 use App\Models\User;
 use App\NotificationSetting;
 use Carbon\Carbon;
@@ -51,7 +54,7 @@ class SendNotifications extends Command
         if ($notificationType instanceof NotificationType) {
             $this->info('Notification type: '.$this->option('type').' exists, let\'s do some work.');
             // get all the users
-            $users = User::all();
+            $users = User::with(['cooperations', 'buildings'])->get();
 
             $bar = $this->output->createProgressBar(count($users));
 
@@ -60,11 +63,16 @@ class SendNotifications extends Command
             // loop through all the users
             foreach ($users as $user) {
 
+                // we dont now what cooperation to get atm. Just get the first cooperation..
+                $cooperation = $user->cooperations->first();
+                // same goes for the building
+                $building = $user->buildings->first();
+
                 // get their notification setting for the specific type.
                 $notificationSetting = $user->notificationSettings()->where('type_id', $notificationType->id)->first();
 
-                // if the notification setting exists do some stuff
-                if ($notificationSetting instanceof NotificationSetting) {
+                // if the notification setting, building and cooperation exists do some things.
+                if ($notificationSetting instanceof NotificationSetting && $building instanceof Building && $cooperation instanceof Cooperation) {
                     $bar->advance();
                     $now = Carbon::now();
 
@@ -72,22 +80,35 @@ class SendNotifications extends Command
                     if ($notificationSetting->last_notified_at instanceof Carbon) {
 
                         $lastNotifiedAt = $notificationSetting->last_notified_at;
-                        $notifiedDiff = $now->diff($lastNotifiedAt);
+                        $notifiedDiff   = $now->diff($lastNotifiedAt);
 
-                        switch ($notificationSetting->interval->short) {
-                            case 'daily':
-                                // if the difference between now and the last notified date is 23 hours, send him a message
-                                if (($notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) || $notifiedDiff->days >= 1) {
-                                    SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
-                                }
-                                break;
-                            case 'weekly':
-                                if ($now->diff($lastNotifiedAt)->days >= 6 && $notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {
-                                    SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
-                                }
-                                break;
-                            case 'no-interest':
-                                break;
+                        // get the total unread messages for a user, after the last notified at. We dont want to spam users.
+                        $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(
+                            $user, $cooperation, $lastNotifiedAt
+                        );
+
+                        // check if there actually are new messages
+                        if ($unreadMessageCount > 0) {
+
+                            switch ($notificationSetting->interval->short) {
+                                case 'daily':
+                                    // if the difference between now and the last notified date is 23 hours, send him a message
+                                    if (($notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) || $notifiedDiff->days >= 1) {
+                                        SendUnreadMessageCountEmail::dispatch(
+                                            $cooperation, $user, $building, $notificationSetting, $unreadMessageCount
+                                        );
+                                    }
+                                    break;
+                                case 'weekly':
+                                    if ($now->diff($lastNotifiedAt)->days >= 6 && $notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {
+                                        SendUnreadMessageCountEmail::dispatch(
+                                            $cooperation, $user, $building, $notificationSetting, $unreadMessageCount
+                                        );
+                                    }
+                                    break;
+                                case 'no-interest':
+                                    break;
+                            }
                         }
                     } else {
                         // the user has never been notified, so we set subtract one year from the current one.

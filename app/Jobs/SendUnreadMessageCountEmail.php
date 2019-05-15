@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Mail\UnreadMessagesEmail;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\PrivateMessageView;
 use App\Models\User;
 use App\NotificationSetting;
@@ -22,19 +23,24 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     protected $cooperation;
     protected $building;
     protected $notificationSetting;
+    protected $unreadMessageCount;
 
     /**
-     * SendUnreadMessageCountEmail constructor.
      *
+     *
+     * @param  Cooperation  $cooperation
      * @param  User  $user
+     * @param  Building  $building
      * @param  NotificationSetting  $notificationSetting
+     * @param int $unreadMessageCount
      */
-    public function __construct(User $user, NotificationSetting $notificationSetting)
+    public function __construct(Cooperation $cooperation, User $user, Building $building, NotificationSetting $notificationSetting, int $unreadMessageCount)
     {
         $this->notificationSetting = $notificationSetting;
         $this->user                = $user;
-        $this->cooperation         = $user->cooperations()->first();
-        $this->building            = $user->buildings()->first();
+        $this->cooperation         = $cooperation;
+        $this->building            = $building;
+        $this->unreadMessageCount  = $unreadMessageCount;
     }
 
     /**
@@ -46,14 +52,11 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     {
         if ($this->building instanceof Building) {
 
-            // get the unread message for a building id
-            $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUser($this->user, $this->cooperation);
-
             // only notify a user if he has unread messages.
-            if ($unreadMessageCount > 0) {
+            if ($this->unreadMessageCount > 0) {
                 // send the mail to the user
                 \Mail::to($this->user->email)
-                     ->send(new UnreadMessagesEmail($this->user, $this->cooperation, $unreadMessageCount));
+                     ->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
 
                 // after that has been done, update the last_notified_at to the current date
                 $this->notificationSetting->last_notified_at = Carbon::now();

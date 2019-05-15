@@ -93,19 +93,7 @@
                             </li>
                         @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                             <li>
-                                @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
-                                    @case('coach')
-                                    <?php $messageUrl = route('cooperation.admin.coach.index'); ?>
-                                    @break
-                                    @case('coordinator')
-                                    <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
-                                    @break
-                                    @case('cooperation-admin')
-                                    <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
-                                    @break
-                                    @default
-                                    <?php $messageUrl = route('cooperation.admin.index'); ?>
-                                @endswitch
+                                <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                 <a href="{{$messageUrl}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                     <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>

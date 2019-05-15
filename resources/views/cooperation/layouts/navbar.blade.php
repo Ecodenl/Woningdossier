@@ -88,7 +88,7 @@
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
                                 </a>
                             </li>
                         @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
@@ -108,7 +108,7 @@
                                 @endswitch
                                 <a href="{{$messageUrl}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
                                 </a>
                             </li>
                         @endif

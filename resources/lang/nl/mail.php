@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'if-you-have-any-questions' => 'Als u hierover vragen hebt, kunt u contact opnemen met :cooperation_link',
     'account-created-by-cooperation' => [
         'subject' => 'Welkom in het Hoomdossier',
         'salutation' => 'Beste :first_name :last_name,',
@@ -31,7 +32,7 @@ return [
     'unread-message-count' => [
         'subject' => 'U heeft :unread_message_count ongelezen berichten',
         'salutation' => 'Beste :first_name :last_name,',
-        'text' => 'Er zijn :unread_message_count ongelezen berichten voor u in het Hoomdossier.',
+        'text' => 'Er staan :unread_message_count ongelezen bericht(en) voor u in het Hoomdossier:<br><br> :hoomdossier_link',
         'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
     ],
 

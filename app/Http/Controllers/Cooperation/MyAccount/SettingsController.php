@@ -52,6 +52,7 @@ class SettingsController extends Controller
         $userData['phone_number'] = $userData['phone_number'] ?? '';
 
         $buildingData['extension'] = $buildingData['extension'] ?? '';
+
         $buildingData['number'] = $buildingData['house_number'] ?? '';
         // try to obtain the address id from the api, else get the one from the request.
         $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'];
@@ -79,17 +80,17 @@ class SettingsController extends Controller
         // update the user stuff
         $user->update($userData);
 
-
         // now update the building itself.
         $building->update($buildingData);
         // and update the building features with the data from pico.
         $building->buildingFeatures()->update([
-            'surface' => $picoAddressData['surface'] ?? null,
-            'build_year' => $picoAddressData['build_year'] ?? null,
+            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
+            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
         ]);
 
 
-        return redirect()->route('cooperation.my-account.settings.index')->with('success', __('woningdossier.cooperation.my-account.settings.store.success'));
+        return redirect()->route('cooperation.my-account.settings.index')
+                         ->with('success', __('my-account.settings.store.success'));
     }
 
     /**
@@ -140,7 +141,7 @@ class SettingsController extends Controller
         // remove the progress from a user
         //$user->progress()->delete();
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.my-account.settings.form.reset-file.success'));
+        return redirect()->back()->with('success', __('my-account.settings.form.reset-file.success'));
     }
 
     // Delete account

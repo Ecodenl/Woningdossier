@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -13,18 +14,22 @@ class UnreadMessagesEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $userCooperation;
     public $unreadMessageCount;
 
     /**
      * UnreadMessagesEmail constructor.
      *
      * @param  User  $user
+     * @param Cooperation $cooperation
      * @param  int  $unreadMessageCount
      */
-    public function __construct(User $user, int $unreadMessageCount)
+    public function __construct(User $user, Cooperation $cooperation, int $unreadMessageCount)
     {
         $this->user = $user;
+        $this->userCooperation = $cooperation;
         $this->unreadMessageCount = $unreadMessageCount;
+
     }
 
     /**

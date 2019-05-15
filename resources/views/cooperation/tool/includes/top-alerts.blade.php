@@ -62,7 +62,7 @@ if (! isset($building)) {
                     </div>
                     <div class="col-sm-6">
                         <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-block btn-sm btn-primary pull-right">
-                            @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
+                            @lang('my-account.import-center.index.copy-data', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
                         </a>
                         <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->short])}}" class="btn btn-block btn-sm btn-primary pull-right">
                             Stop vergelijking
@@ -95,12 +95,12 @@ if (! isset($building)) {
                     <div class="row">
                         <div class="col-sm-12">
                             <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->changedInputSource->short])}}" class="btn btn-sm btn-primary pull-right">
-                                @lang('woningdossier.cooperation.my-account.import-center.index.show-differences')
+                                @lang('my-account.import-center.index.show-differences')
                             </a>
                             <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-primary pull-right">
-                                @lang('woningdossier.cooperation.my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->changedInputSource->name])
+                                @lang('my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->changedInputSource->name])
                             </a>
-                            @lang('woningdossier.cooperation.my-account.import-center.index.other-source-new',
+                            @lang('my-account.import-center.index.other-source-new',
                                 ['input_source_name' => $toolSetting->changedInputSource->name
                             ])
                         </div>

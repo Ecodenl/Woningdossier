@@ -5,7 +5,7 @@
 <br><br>
 
 <?php
-    $cooperationHoomdossierLink = route('cooperation.login');
+    $cooperationHoomdossierLink = route('cooperation.login', $userCooperation);
     $cooperationHoomdossierHref = '<a target="_blank" href="'.$cooperationHoomdossierLink.'">http://'.$userCooperation->slug.'.'.config('app.domain').'</a>';
 
     $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>'

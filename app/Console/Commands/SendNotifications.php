@@ -77,9 +77,9 @@ class SendNotifications extends Command
                         switch ($notificationSetting->interval->short) {
                             case 'daily':
                                 // if the difference between now and the last notified date is 23 hours, send him a message
-//                                if ($notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {
+                                if ($notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {
                                     SendUnreadMessageCountEmail::dispatch($user, $notificationSetting);
-//                                }
+                                }
                                 break;
                             case 'weekly':
                                 if ($now->diff($lastNotifiedAt)->days >= 6 && $notifiedDiff->h >= 23 && $notifiedDiff->i >= 50) {

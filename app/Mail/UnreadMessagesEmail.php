@@ -29,6 +29,7 @@ class UnreadMessagesEmail extends Mailable
         $this->user = $user;
         $this->userCooperation = $cooperation;
         $this->unreadMessageCount = $unreadMessageCount;
+
     }
 
     /**

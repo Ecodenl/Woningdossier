@@ -42,11 +42,13 @@ class PrivateMessageView extends Model
      * Get the total unread messages for a user, this also counts the unread messages from the admin side.
      *
      * @param  User  $user
-     *
+     * @param Cooperation $cooperation
      * @return int
      */
     public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation)
     {
+        $cooperationUnreadMessagesCount = 0;
+
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
             $cooperationUnreadMessagesCount = self::where('cooperation_id', $cooperation->id)
@@ -55,11 +57,11 @@ class PrivateMessageView extends Model
         }
 
         // get the unread messages for the user itsel.
-        $userUnreadMessages = self::where('user_id', \Auth::id())
+        $userUnreadMessages = self::where('user_id', $user->id)
             ->where('read_at', null)
             ->count();
 
-        $totalUnreadMessagesCount = $userUnreadMessages + isset($cooperationUnreadMessagesCount ) ? $cooperationUnreadMessagesCount : 0;
+        $totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
 
         return $totalUnreadMessagesCount;
     }

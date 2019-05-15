@@ -45,9 +45,11 @@ class RecoverOldEmailController extends Controller
             return redirect()
                 ->route('cooperation.password.reset', ['token' => $token, 'cooperation' => $cooperation->slug])
                 ->with('success', __('recover-old-email.recover.success'));
+        } else {
+
+            return redirect()
+                ->route('cooperation.login')
+                ->with('warning', __('recover-old-email.recover.warning'));
         }
-        return redirect()
-            ->route('cooperation.login')
-            ->with('warning', __('recover-old-email.recover.warning'));
     }
 }

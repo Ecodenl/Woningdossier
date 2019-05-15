@@ -42,6 +42,6 @@ class NotificationSettingsController extends Controller
         ]);
 
         return redirect()->route('cooperation.my-account.notification-settings.index')
-                         ->with('success', __('woningdossier.cooperation.my-account.notification-settings.update.success'));
+                         ->with('success', __('my-account.notification-settings.update.success'));
     }
 }

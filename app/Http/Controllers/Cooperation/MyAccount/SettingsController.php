@@ -90,7 +90,7 @@ class SettingsController extends Controller
 
 
         return redirect()->route('cooperation.my-account.settings.index')
-                         ->with('success', __('woningdossier.cooperation.my-account.settings.store.success'));
+                         ->with('success', __('my-account.settings.store.success'));
     }
 
     /**
@@ -141,7 +141,7 @@ class SettingsController extends Controller
         // remove the progress from a user
         //$user->progress()->delete();
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.my-account.settings.form.reset-file.success'));
+        return redirect()->back()->with('success', __('my-account.settings.form.reset-file.success'));
     }
 
     // Delete account

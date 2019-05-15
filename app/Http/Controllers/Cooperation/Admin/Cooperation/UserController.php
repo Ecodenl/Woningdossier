@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\CoachRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\UserRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -19,9 +17,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Prophecy\Doubler\ClassPatch\TraversablePatch;
 use Spatie\Permission\Models\Role;
-use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class UserController extends Controller
 {
@@ -44,7 +40,7 @@ class UserController extends Controller
     }
 
 
-    public function store(Cooperation $cooperation, CoachRequest $request)
+    public function store(Cooperation $cooperation, UserRequest $request)
     {
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');
@@ -109,7 +105,7 @@ class UserController extends Controller
         $user->assignRole($roles);
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
-        if ($user->hasRole('resident')) {
+        if ($request->has('coach_id')) {
             // so create a message, with the access allowed
             PrivateMessage::create(
                 [

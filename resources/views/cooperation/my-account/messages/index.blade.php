@@ -3,7 +3,7 @@
 @section('my_account_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.my-account.messages.index.header')
+            @lang('my-account.messages.index.header')
         </div>
 
         <div class="panel-body">
@@ -46,12 +46,12 @@
                                     <div class="chat-body clearfix">
                                         <div class="header">
                                             <strong class="primary-font">
-                                                @lang('woningdossier.cooperation.my-account.messages.index.chat.no-messages.title')
+                                                @lang('my-account.messages.index.chat.no-messages.title')
                                             </strong>
 
                                         </div>
                                         <p>
-                                            @lang('woningdossier.cooperation.my-account.messages.index.chat.no-messages.text')
+                                            @lang('my-account.messages.index.chat.no-messages.text')
                                         </p>
                                     </div>
                                 </li>

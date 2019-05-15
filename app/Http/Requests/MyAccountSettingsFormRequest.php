@@ -32,12 +32,12 @@ class MyAccountSettingsFormRequest extends FormRequest
             'user.password' => 'nullable|string|confirmed|min:6',
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',
-//            'user.email' => ['required', 'email', Rule::unique('users', 'email')->ignore(\Auth::id())],
+            'user.email' => ['required', 'email', Rule::unique('users', 'email')->ignore(\Auth::id())],
             'user.phone_number' => ['nullable', new PhoneNumber()],
 
 
             'building.postal_code' => ['required', new PostalCode('nl')],
-            'building.house_number' => ['required', new HouseNumber('nl')],
+            'building.house_number' => ['required', 'numeric', new HouseNumber('nl')],
             'building.house_number_extension' => ['nullable', new HouseNumberExtension('nl')],
             'building.street' => 'required|string|max:255',
             'building.city' => 'required|string|max:255',

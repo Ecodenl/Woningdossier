@@ -1,6 +1,6 @@
 @switch(\App\Helpers\HoomdossierSession::currentRole())
     @case('cooperation-admin')
-    <div id="sidebar" class="col-md-3">
+    <div id="sidebar" class="col-md-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -58,7 +58,7 @@
     </div>
     @break
     @case('coordinator')
-    <div id="sidebar" class="col-md-3">
+    <div id="sidebar" class="col-md-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -93,7 +93,7 @@
     @break
     @case('super-admin')
     @if(stristr(Route::currentRouteName(), 'cooperation-to-manage'))
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="row">
                 @if(isset($breadcrumbs))
                     <div class="col-md-12">
@@ -153,7 +153,7 @@
             </div>
         </div>
     @else
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="row">
             <div id="sidebar" class="col-md-12">
                 <div class="row">
@@ -193,7 +193,7 @@
     @endif
     @break
     @case('coach')
-    <div id="sidebar" class="col-md-3">
+    <div id="sidebar" class="col-md-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">

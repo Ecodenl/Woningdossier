@@ -322,7 +322,10 @@ class RoofInsulationController extends Controller
         $totalSurface = 0;
 
         foreach (array_keys($result) as $cat) {
-            $totalSurface += isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
+
+            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
+            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
+            $totalSurface += $insulationRoofSurface;
         }
 
         foreach (array_keys($result) as $cat) {
@@ -339,7 +342,10 @@ class RoofInsulationController extends Controller
                 ],
             ];
 
-            $surface = $roofTypes[$cat]['insulation_roof_surface'] ?? 0;
+            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
+            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
+            $surface =  $insulationRoofSurface;
+
             $heating = null;
             // should take the bitumen field
 

@@ -38,6 +38,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::post('', 'CreateBuildingController@store')->name('store');
         });
 
+        Route::group(['as' => 'recover-old-email.', 'prefix' => 'recover-old-email'], function () {
+            Route::get('{token}', 'RecoverOldEmailController@recover')->name('recover');
+        });
+
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
 
@@ -73,6 +77,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('set-compare-session/{inputSourceShort}', 'ImportCenterController@setCompareSession')->name('set-compare-session');
                     Route::post('dismiss-notification', 'ImportCenterController@dismissNotification')->name('dismiss-notification');
                 });
+
+                Route::resource('notification-settings', 'NotificationSettingsController')->only([
+                    'index', 'show', 'update'
+                ]);
+
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');
@@ -180,8 +189,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
             /* Section that a coach, coordinator and cooperation-admin can access */
             Route::group(['middleware' => ['role:cooperation-admin|coach|coordinator']], function () {
-
-                Route::resource('messages', 'MessagesController')->only('index');
 
                 Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
                     Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');

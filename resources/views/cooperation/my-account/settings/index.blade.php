@@ -10,7 +10,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                @lang('woningdossier.cooperation.my-account.settings.index.header-user')
+                @lang('my-account.settings.index.header-user')
             </div>
 
             <div class="panel-body">
@@ -20,7 +20,7 @@
 
                         <div class="form-group{{ $errors->has('user.first_name') ? ' has-error' : '' }}">
                             <label for="first_name"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.first-name')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.user.first-name')</label>
 
 
                             <input id="first_name" type="text" class="form-control" name="user[first_name]"
@@ -39,7 +39,7 @@
 
                         <div class="form-group{{ $errors->has('user.last_name') ? ' has-error' : '' }}">
                             <label for="last_name"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.last-name')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.user.last-name')</label>
 
                             <input id="last_name" type="text" class="form-control" name="user[last_name]"
                                    value="{{ old('last_name', $user->last_name) }}" required autofocus>
@@ -57,11 +57,11 @@
 
                         <div class="form-group{{ $errors->has('user.email') ? ' has-error' : '' }}">
                             <label for="email"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.e-mail')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.user.e-mail')</label>
 
 
                             <input id="email" type="email" class="form-control" name="user[email]"
-                                   value="{{ old('email', $user->email) }}" disabled="disabled" required autofocus>
+                                   value="{{ old('email', $user->email) }}" required autofocus>
 
                             @if ($errors->has('user.email'))
                                 <span class="help-block">
@@ -75,7 +75,7 @@
 
                         <div class="form-group{{ $errors->has('user.phone_number') ? ' has-error' : '' }}">
                             <label for="phone_number"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.phone_number')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.user.phone_number')</label>
 
 
                             <input id="phone_number" type="text" class="form-control"
@@ -91,12 +91,12 @@
                     </div>
 
                     <div class="col-sm-12">
-                        <h3>@lang('woningdossier.cooperation.my-account.settings.index.header-password')</h3>
+                        <h3>@lang('my-account.settings.index.header-password')</h3>
                     </div>
                     <div class="col-sm-12">
                         <div class="form-group{{ $errors->has('user.current_password') ? ' has-error' : '' }}">
                             <label for="current_password"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.current-password')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.user.current-password')</label>
 
 
                             <input id="current_password" type="password" class="form-control"
@@ -112,7 +112,7 @@
                     <div class="col-sm-6">
                         <div class="form-group{{ $errors->has('user.password') ? ' has-error' : '' }}">
                             <label for="password"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.new-password')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.user.new-password')</label>
 
 
                             <input id="password" type="password" class="form-control" name="user[password]">
@@ -127,7 +127,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="password-confirm"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.user.new-password-confirmation')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.user.new-password-confirmation')</label>
 
 
                             <input id="password-confirm" type="password" class="form-control"
@@ -140,13 +140,13 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <h3>@lang('woningdossier.cooperation.my-account.settings.index.header-building')</h3>
+                        <h3>@lang('my-account.settings.index.header-building')</h3>
                     </div>
                     <div class="col-sm-4">
 
                         <div class="form-group{{ $errors->has('building.postal_code') ? ' has-error' : '' }}">
                             <label for="building.postal_code" class="control-label">
-                                @lang('woningdossier.cooperation.my-account.settings.index.form.building.postal-code')
+                                @lang('my-account.settings.index.form.building.postal-code')
                             </label>
                             <input type="text" class="form-control" name="building[postal_code]" id="postal_code"
                                    value="{{ old('building.postal_code', $building->postal_code) }}" required autofocus>
@@ -163,7 +163,7 @@
                     <div class="col-sm-4">
                         <div class="form-group{{ $errors->has('building.house_number') ? ' has-error' : '' }}">
                             <label for="building.number"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.number')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.building.number')</label>
 
                             <input type="text" class="form-control" name="building[house_number]" id="number"
                                    value="{{ old('building.house_number', $building->number) }}" required autofocus>
@@ -177,18 +177,18 @@
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group{{ $errors->has('building.house_number_extension') ? ' has-error' : '' }}">
-                            <label for="building.house_number_extension" class="control-label">
-                                @lang('woningdossier.cooperation.my-account.settings.index.form.building.extension')
+                        <div class="form-group{{ $errors->has('building.extension') ? ' has-error' : '' }}">
+                            <label for="building.extension" class="control-label">
+                                @lang('my-account.settings.index.form.building.extension')
                             </label>
 
-                            <input type="text" class="form-control" name="building[house_number_extension]"
+                            <input type="text" class="form-control" name="building[extension]"
                                    id="house_number_extension"
-                                   value="{{ old('building.house_number_extension', $building->extension) }}" autofocus>
+                                   value="{{ old('building.extension', $building->extension) }}" autofocus>
 
-                            @if ($errors->has('building.house_number_extension'))
+                            @if ($errors->has('building.extension'))
                                 <span class="help-block">
-                                                <strong>{{ $errors->first('building.house_number_extension') }}</strong>
+                                                <strong>{{ $errors->first('building.extension') }}</strong>
                                             </span>
                             @endif
                         </div>
@@ -202,7 +202,7 @@
 
                         <div class="form-group{{ $errors->has('building.street') ? ' has-error' : '' }}">
                             <label for="street"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.street')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.building.street')</label>
 
                             <input type="text" class="form-control" name="building[street]" id="street"
                                    value="{{ old('building.street', $building->street) }}" required autofocus>
@@ -220,7 +220,7 @@
 
                         <div class="form-group{{ $errors->has('building.city') ? ' has-error' : '' }}">
                             <label for="building.city"
-                                   class="control-label">@lang('woningdossier.cooperation.my-account.settings.index.form.building.city')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.building.city')</label>
 
                             <input type="text" class="form-control" name="building[city]" id="city"
                                    value="{{ old('building.city', $building->city) }}" required autofocus>
@@ -239,7 +239,7 @@
                     <div class="form-group">
                         <div class="col-sm-12">
                             <button type="submit" class="btn btn-primary">
-                                @lang('woningdossier.cooperation.my-account.settings.index.form.submit')
+                                @lang('my-account.settings.index.form.submit')
                             </button>
                         </div>
                     </div>
@@ -250,10 +250,10 @@
 
 
     <div class="panel panel-default">
-        <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.reset-file.header')</div>
+        <div class="panel-heading">@lang('my-account.settings.reset-file.header')</div>
 
         <div class="panel-body">
-            @lang('woningdossier.cooperation.my-account.settings.reset-file.description')
+            @lang('my-account.settings.reset-file.description')
             <form class="form-horizontal" method="POST"
                   action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
                 {{ csrf_field() }}
@@ -261,10 +261,10 @@
                 <div class="form-group">
                     <div class="col-sm-12">
                         <label for="reset-file"
-                               class="control-label">@lang('woningdossier.cooperation.my-account.settings.reset-file.label')</label>
+                               class="control-label">@lang('my-account.settings.reset-file.label')</label>
 
                         <a id="reset-account" class="btn btn-danger">
-                            @lang('woningdossier.cooperation.my-account.settings.reset-file.submit')
+                            @lang('my-account.settings.reset-file.submit')
                         </a>
                     </div>
                 </div>
@@ -274,7 +274,7 @@
 
     @can('delete-own-account')
         <div class="panel panel-default">
-            <div class="panel-heading">@lang('woningdossier.cooperation.my-account.settings.destroy.header')</div>
+            <div class="panel-heading">@lang('my-account.settings.destroy.header')</div>
 
             <div class="panel-body">
                 <form method="POST"
@@ -288,10 +288,10 @@
 
                             <div class="form-group">
                                 <label for="delete-account"
-                                       class="control-label">@lang('woningdossier.cooperation.my-account.settings.destroy.label')</label>
+                                       class="control-label">@lang('my-account.settings.destroy.label')</label>
 
                                 <button type="submit" id="delete-account" class="btn btn-danger">
-                                    @lang('woningdossier.cooperation.my-account.settings.destroy.submit')
+                                    @lang('my-account.settings.destroy.submit')
                                 </button>
                             </div>
                         </div>
@@ -307,7 +307,7 @@
 
 @push('js')
     <script>
-        var areYouSure = '@lang('woningdossier.cooperation.my-account.settings.reset-file.are-you-sure')';
+        var areYouSure = '@lang('my-account.settings.reset-file.are-you-sure')';
         $('#reset-account').click(function () {
             if (confirm(areYouSure)) {
                 $(this).closest('form').submit();
@@ -319,10 +319,10 @@
 
         var userCooperationCount = {{Auth::user()->cooperations()->count()}};
 
-        var areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.form.destroy.are-you-sure.delete-from-cooperation')';
+        var areYouSureToDestroy = '@lang('my-account.settings.form.destroy.are-you-sure.delete-from-cooperation')';
 
         if (userCooperationCount === 1) {
-            areYouSureToDestroy = '@lang('woningdossier.cooperation.my-account.settings.destroy.are-you-sure.complete-delete')';
+            areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.complete-delete')';
         }
 
         $('#delete-account').click(function () {

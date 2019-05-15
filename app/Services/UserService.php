@@ -33,10 +33,13 @@ class UserService
             $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the motivations from a user
             $user->motivations()->delete();
+            // remove the notification settings
+            $user->notificationSettings()->delete();
             // remove the progress from a user
             //$user->progress()->delete();
             // delete the cooperation from the user, belongsToMany so no deleting here.
             $user->cooperations()->detach();
+
 
             // finally remove the user itself :(
             $user->delete();

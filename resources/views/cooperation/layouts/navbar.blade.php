@@ -88,27 +88,27 @@
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
                                 </a>
                             </li>
                         @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                             <li>
                                 @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                     @case('coach')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
+                                    <?php $messageUrl = route('cooperation.admin.coach.index'); ?>
+                                    @break
                                     @case('coordinator')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
+                                    <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
+                                    @break
                                     @case('cooperation-admin')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
+                                    <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
+                                    @break
                                     @default
-                                        <?php $messageUrl = route('cooperation.admin.index'); ?>
+                                    <?php $messageUrl = route('cooperation.admin.index'); ?>
                                 @endswitch
                                 <a href="{{$messageUrl}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
                                 </a>
                             </li>
                         @endif

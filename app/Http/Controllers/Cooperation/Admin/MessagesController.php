@@ -35,7 +35,8 @@ class MessagesController extends Controller
             $buildingIds = $privateMessages->pluck('building_id')->all();
         }
 
-        $buildings = Building::withTrashed()->findMany($buildingIds);
+        $buildings = Building::findMany($buildingIds);
+
 
         return view('cooperation.admin.messages.index', compact('buildings'));
     }

@@ -26,22 +26,28 @@ class RecoverOldEmailController extends Controller
         // get the user that wants his email to get recovered
         $user = User::where('old_email_token', $token)->first();
 
-        // recover the old email address and set he old stuff to null.
-        $user->update([
-            'email' => $user->old_email,
-            'old_email' => null,
-            'old_email_token' => null
-        ]);
+        if ($user instanceof User) {
 
-        // generate a token and create a row in the password_resets
-        $token = app('auth.password.broker')->createToken($user);
+            // recover the old email address and set he old stuff to null.
+            $user->update([
+                'email'           => $user->old_email,
+                'old_email'       => null,
+                'old_email_token' => null
+            ]);
 
-        // send the user a notification in case he leaves the page.
-        $user->sendPasswordResetNotification($token);
+            // generate a token and create a row in the password_resets
+            $token = app('auth.password.broker')->createToken($user);
 
-        // redirect them to the password reset
+            // send the user a notification in case he leaves the page.
+            $user->sendPasswordResetNotification($token);
+
+            // redirect them to the password reset
+            return redirect()
+                ->route('cooperation.password.reset', ['token' => $token, 'cooperation' => $cooperation->slug])
+                ->with('success', __('recover-old-email.recover.success'));
+        }
         return redirect()
-            ->route('cooperation.password.reset', ['token' => $token, 'cooperation' => $cooperation->slug])
-            ->with('success', __('recover-old-email.recover.success'));
+            ->route('cooperation.login')
+            ->with('warning', __('recover-old-email.recover.warning'));
     }
 }

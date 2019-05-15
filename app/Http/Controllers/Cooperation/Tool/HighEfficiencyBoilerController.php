@@ -25,6 +25,7 @@ use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -55,7 +56,9 @@ class HighEfficiencyBoilerController extends Controller
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
         $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
+        /** @var Collection $installedBoilerForMe */
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
+
 
         return view('cooperation.tool.hr-boiler.index', compact('building',
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
@@ -93,7 +96,7 @@ class HighEfficiencyBoilerController extends Controller
                 }
 
                 if (array_key_exists('extra', $options)) {
-                    $year = $options['extra'];
+                    $year = is_numeric(NumberFormatter::reverseFormat($options['extra'])) ? NumberFormatter::reverseFormat($options['extra']) : 0;
 
                     $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
                     //$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();

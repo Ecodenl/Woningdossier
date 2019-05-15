@@ -27,7 +27,7 @@ class ToolComposer
 
         if (! in_array($view->getName(), $excludedViews)) {
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
-            $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessages());
+            $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());
 
             $view->with('steps', $cooperation->getActiveOrderedSteps());
             $view->with('interests', Interest::orderBy('order')->get());

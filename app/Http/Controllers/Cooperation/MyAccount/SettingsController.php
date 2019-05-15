@@ -2,43 +2,95 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserChangedHisEmailEvent;
+use App\Helpers\HoomdossierSession;
+use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
+use App\Models\BuildingFeature;
+use App\Models\Log;
+use App\Models\OldEmail;
+use App\Models\User;
 use App\Services\UserService;
+use function GuzzleHttp\Psr7\uri_for;
+use Illuminate\Auth\Passwords\DatabaseTokenRepository;
+use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
     public function index()
     {
         $user = \Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
-        return view('cooperation.my-account.settings.index', compact('user'));
+        return view('cooperation.my-account.settings.index', compact('user', 'building'));
     }
 
-    // Update account
-    public function store(MyAccountSettingsFormRequest $request)
+    /**
+     * Update the account.
+     *
+     * @param  MyAccountSettingsFormRequest  $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(MyAccountSettingsFormRequest $request)
     {
         $user = \Auth::user();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
-        $attributes = $request->all();
-        $attributes['phone_number'] = is_null($attributes['phone_number']) ? '' : $attributes['phone_number'];
+        $data = $request->all();
 
-        if (! isset($attributes['password']) || empty($attributes['password'])) {
-            unset($attributes['password']);
-            unset($attributes['password_confirmation']);
-            unset($attributes['current_password']);
+        $buildingData = $data['building'];
+        $userData = $data['user'];
+
+        // now get the pico address data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $buildingData['postal_code'], $buildingData['house_number']
+        );
+
+        $userData['phone_number'] = $userData['phone_number'] ?? '';
+
+        $buildingData['extension'] = $buildingData['extension'] ?? '';
+
+        $buildingData['number'] = $buildingData['house_number'] ?? '';
+        // try to obtain the address id from the api, else get the one from the request.
+        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'];
+
+
+        // if the password is empty we remove all the password stuff from the user data
+        // else we do some checks and hash it!
+        if (empty($userData['password'])) {
+            unset($userData['password'], $userData['password_confirmation'], $userData['current_password']);
         } else {
-            $current_password = \Auth::User()->password;
-            if (! \Hash::check($request->get('current_password', ''), $current_password)) {
+            $currentPassword = $user->password;
+            $currentPasswordFromRequestToCheck = $userData['current_password'];
+
+            if (!\Hash::check($currentPasswordFromRequestToCheck, $currentPassword)) {
                 return redirect()->back()->withErrors(['current_password' => __('validation.current_password')]);
             }
-            $attributes['password'] = \Hash::make($attributes['password']);
+            $userData['password'] = \Hash::make($userData['password']);
         }
 
-        $user->update($attributes);
+        // check if the user changed his email, if so. We set the old email and send the user a email so he can change it back.
+        if ($user->email != $userData['email']) {
+            event(new UserChangedHisEmailEvent($user, $user->email, $userData['email']));
+        }
 
-        return redirect()->route('cooperation.my-account.settings.index', ['cooperation' => \App::make('Cooperation')])->with('success', trans('woningdossier.cooperation.my-account.settings.form.store.success'));
+        // update the user stuff
+        $user->update($userData);
+
+        // now update the building itself.
+        $building->update($buildingData);
+        // and update the building features with the data from pico.
+        $building->buildingFeatures()->update([
+            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
+            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
+        ]);
+
+
+        return redirect()->route('cooperation.my-account.settings.index')
+                         ->with('success', __('my-account.settings.store.success'));
     }
 
     /**
@@ -89,7 +141,7 @@ class SettingsController extends Controller
         // remove the progress from a user
         //$user->progress()->delete();
 
-        return redirect()->back()->with('success', __('woningdossier.cooperation.my-account.settings.form.reset-file.success'));
+        return redirect()->back()->with('success', __('my-account.settings.form.reset-file.success'));
     }
 
     // Delete account

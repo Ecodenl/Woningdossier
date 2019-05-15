@@ -21,7 +21,7 @@
                         <tbody>
                         @foreach($buildings as $building)
                             <?php
-                                $mostRecentMessage = \App\Models\PrivateMessage::where('building_id', $building->id)->get()->last();
+                               $mostRecentMessage = \App\Models\PrivateMessage::where('building_id', $building->id)->get()->last();
                             ?>
                             <tr>
                                 <td data-sort="{{strtotime($mostRecentMessage->created_at->format('d-m-Y H:i'))}}">
@@ -57,8 +57,6 @@
             $('table').DataTable({
                 order: [[ 0, "desc" ]],
             });
-
         })
     </script>
 @endpush
-

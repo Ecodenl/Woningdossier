@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default navbar-static-top">
-    <div class="container">
+    <div class="container-fluid">
         <div class="navbar-header">
 
             <!-- Collapsed Hamburger -->
@@ -50,19 +50,7 @@
                 @else
                     @if(Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                         <li>
-                            @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
-                                @case('coach')
-                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                    @break
-                                @case('coordinator')
-                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                    @break
-                                @case('cooperation-admin')
-                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                    @break
-                                @default
-                                <?php $messageUrl = route('cooperation.admin.index'); ?>
-                            @endswitch
+                            <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                             <a href="{{$messageUrl}}">
                                 <span class="glyphicon glyphicon-envelope"></span>
                                 <span class="badge">{{$myUnreadMessagesCount}}</span>
@@ -86,7 +74,7 @@
 
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
-                            {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
+                            {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                             <li>
                                 <a href="{{ route('cooperation.admin.logout') }}"
                                    onclick="event.preventDefault();

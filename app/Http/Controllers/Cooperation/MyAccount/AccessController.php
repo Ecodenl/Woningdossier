@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\UserAllowedAccessToHisBuilding;
+use App\Events\UserRevokedAccessToHisBuilding;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
-use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
-use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Services\BuildingCoachStatusService;
 use Illuminate\Http\Request;
@@ -47,6 +47,9 @@ class AccessController extends Controller
     {
         $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatus::getConnectedCoachesByBuildingId(HoomdossierSession::getBuilding());
 
+
+        event(new UserAllowedAccessToHisBuilding());
+
         // we give the coaches that have "permission" to talk to a resident the permissions to access the building from the resident.
         foreach ($coachesWithAccessToResidentBuildingStatuses as $coachWithAccessToResidentBuildingStatus) {
             BuildingPermission::create([
@@ -65,6 +68,9 @@ class AccessController extends Controller
     {
         // get all the connected coaches to the building
         $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId(HoomdossierSession::getBuilding());
+
+        event(new UserRevokedAccessToHisBuilding());
+
         // and revoke them the access to the building
         foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
             BuildingCoachStatusService::revokeAccess($connectedCoachToBuilding->coach_id, $connectedCoachToBuilding->building_id);

@@ -177,18 +177,18 @@
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group{{ $errors->has('building.house_number_extension') ? ' has-error' : '' }}">
-                            <label for="building.house_number_extension" class="control-label">
+                        <div class="form-group{{ $errors->has('building.extension') ? ' has-error' : '' }}">
+                            <label for="building.extension" class="control-label">
                                 @lang('woningdossier.cooperation.my-account.settings.index.form.building.extension')
                             </label>
 
-                            <input type="text" class="form-control" name="building[house_number_extension]"
+                            <input type="text" class="form-control" name="building[extension]"
                                    id="house_number_extension"
-                                   value="{{ old('building.house_number_extension', $building->extension) }}" autofocus>
+                                   value="{{ old('building.extension', $building->extension) }}" autofocus>
 
-                            @if ($errors->has('building.house_number_extension'))
+                            @if ($errors->has('building.extension'))
                                 <span class="help-block">
-                                                <strong>{{ $errors->first('building.house_number_extension') }}</strong>
+                                                <strong>{{ $errors->first('building.extension') }}</strong>
                                             </span>
                             @endif
                         </div>

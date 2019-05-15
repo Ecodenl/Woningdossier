@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
+use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
@@ -73,13 +74,7 @@ class ConversationRequestController extends Controller
 
         // if the user allows access to his building on the request, log the activity.
         if ($allowAccess) {
-            Log::create([
-                'user_id'     => \Auth::id(),
-                'building_id' => HoomdossierSession::getBuilding(),
-                'message'     => __('woningdossier.log-messages.user-gave-access', [
-                    'full_name' => \Auth::user()->getFullName(),
-                ]),
-            ]);
+            event(new UserAllowedAccessToHisBuilding());
         }
 
         $cooperation = Cooperation::find($cooperationId);

@@ -319,7 +319,11 @@
 
             var appointmentDate = $('#appointment-date');
 
-            $('table').DataTable();
+
+            $('table').DataTable({
+                'order': [[0, 'desc']]
+            });
+
             // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
             $('.nav-tabs a').on('shown.bs.tab', function (event) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();

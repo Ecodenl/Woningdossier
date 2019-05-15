@@ -3,7 +3,7 @@
 @section('my_account_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.my-account.notification-settings.show.header')
+            @lang('my-account.notification-settings.show.header')
         </div>
 
         <div class="panel-body">
@@ -14,7 +14,7 @@
                         {{csrf_field()}}
 
                         <div class="form-group">
-                            <label for="">@lang('woningdossier.cooperation.my-account.notification-settings.show.form.interval', ['type' => $notificationSetting->type->name])</label>
+                            <label for="">@lang('my-account.notification-settings.show.form.interval', ['type' => $notificationSetting->type->name])</label>
                             <select name="notification_setting[interval_id]" class="form-control">
                                 @foreach($notificationIntervals as $notificationInterval)
                                     <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected" @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
@@ -22,7 +22,7 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.my-account.notification-settings.show.form.submit')</button>
+                        <button type="submit" class="btn btn-primary">@lang('my-account.notification-settings.show.form.submit')</button>
                     </form>
                 </div>
             </div>

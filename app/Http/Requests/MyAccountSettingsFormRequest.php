@@ -37,7 +37,7 @@ class MyAccountSettingsFormRequest extends FormRequest
 
 
             'building.postal_code' => ['required', new PostalCode('nl')],
-            'building.house_number' => ['required', new HouseNumber('nl')],
+            'building.house_number' => ['required', 'numeric', new HouseNumber('nl')],
             'building.house_number_extension' => ['nullable', new HouseNumberExtension('nl')],
             'building.street' => 'required|string|max:255',
             'building.city' => 'required|string|max:255',

@@ -10,40 +10,40 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">@lang('woningdossier.cooperation.my-account.side-nav.label')</a>
+                                    <a data-toggle="collapse" data-parent="#sidebar-main" href="#sidebar-main">@lang('my-account.side-nav.label')</a>
                                     <span class="glyphicon glyphicon-text @if(str_replace(['assign-roles', '.coach.index'], '', \Route::currentRouteName()) != \Route::currentRouteName()) glyphicon-chevron-up @else glyphicon-chevron-down @endif"></span>
                                 </h4>
                             </div>
                             <ul id="sidebar-main" class="sidebar list-group panel-collapse @if(str_replace(['my-account'], '', \Route::currentRouteName()) != \Route::currentRouteName()) open collapse in @else collapse @endif" aria-expanded="true">
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.index')}}">
-                                        @lang('woningdossier.cooperation.my-account.side-nav.home')
+                                        @lang('my-account.side-nav.home')
                                     </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.settings.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.settings.index')}}">
-                                        @lang('woningdossier.cooperation.my-account.side-nav.settings')
+                                        @lang('my-account.side-nav.settings')
                                         <span class="glyphicon glyphicon-cog"></span>
                                     </a>
                                 </li>
-                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.notification-settings.index', 'cooperation.my-account.notification-settings.show'])) active @endif">
-                                    <a href="{{route('cooperation.my-account.notification-settings.index')}}">
-                                        @lang('woningdossier.cooperation.my-account.side-nav.notification-settings')
-                                    </a>
-                                </li>
+{{--                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.notification-settings.index', 'cooperation.my-account.notification-settings.show'])) active @endif">--}}
+{{--                                    <a href="{{route('cooperation.my-account.notification-settings.index')}}">--}}
+{{--                                        @lang('my-account.side-nav.notification-settings')--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.import-center.index')}}">
-                                        @lang('woningdossier.cooperation.my-account.side-nav.import')
+                                        @lang('my-account.side-nav.import')
                                     </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.index', 'cooperation.my-account.messages.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.messages.index')}}">
-                                        @lang('woningdossier.cooperation.my-account.side-nav.my-messages')
+                                        @lang('my-account.side-nav.my-messages')
                                     </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.access.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.access.index')}}">
-                                        @lang('woningdossier.cooperation.my-account.side-nav.access')
+                                        @lang('my-account.side-nav.access')
 {{--                                        <span class="pull-right label label-success">{{$myUnreadMessages->count()}}</span>--}}
                                     </a>
                                 </li>

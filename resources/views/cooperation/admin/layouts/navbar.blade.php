@@ -52,13 +52,13 @@
                         <li>
                             @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
                                 @case('coach')
-                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
+                                    <?php $messageUrl = route('cooperation.admin.coach.index'); ?>
                                     @break
                                 @case('coordinator')
-                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
+                                    <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
                                     @break
                                 @case('cooperation-admin')
-                                    <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
+                                <?php $messageUrl = route('cooperation.admin.cooperation.users.index'); ?>
                                     @break
                                 @default
                                 <?php $messageUrl = route('cooperation.admin.index'); ?>
@@ -86,7 +86,7 @@
 
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('cooperation.my-account.settings.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
-                            {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
+                            {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                             <li>
                                 <a href="{{ route('cooperation.admin.logout') }}"
                                    onclick="event.preventDefault();

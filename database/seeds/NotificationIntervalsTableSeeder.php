@@ -36,8 +36,8 @@ class NotificationIntervalsTableSeeder extends Seeder
         ];
 
         foreach ($notificationIntervals as $notificationInterval) {
-            if ( ! DB::table('notification_intervals')->where('short',
-                $notificationInterval['short']->first() instanceof stdClass)) {
+            // only create it when there is no interval.
+            if (!DB::table('notification_intervals')->where('short', $notificationInterval['short'])->first() instanceof stdClass) {
 
                 $uuid = \App\Helpers\Str::uuid();
                 foreach ($notificationInterval['names'] as $locale => $name) {

@@ -20,6 +20,7 @@ use App\Models\User;
 use App\Rules\HouseNumber;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
+use Carbon\Carbon;
 use Ecodenl\PicoWrapper\PicoClient;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -126,11 +127,12 @@ class RegisterController extends Controller
         $notificationTypes = NotificationType::all();
         $interval          = NotificationInterval::where('short', 'no-interest')->first();
 
+        // we create for every notification type a setting with no-interest interval and set the last_notified_at to now
         foreach ($notificationTypes as $notificationType) {
-
             $user->notificationSettings()->create([
                 'type_id'     => $notificationType->id,
-                'interval_id' => $interval->id
+                'interval_id' => $interval->id,
+                'last_notified_at' => Carbon::now(),
             ]);
         }
 

@@ -49,6 +49,7 @@ class SendUnreadMessageCountEmail implements ShouldQueue
             // get the unread message for a building id
             $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUser($this->user, $this->cooperation);
 
+            // only notify a user if he has unread messages.
             if ($unreadMessageCount > 0) {
                 // send the mail to the user
                 \Mail::to($this->user->email)

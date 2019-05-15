@@ -68,7 +68,7 @@ class SendNotifications extends Command
                     $bar->advance();
                     $now = Carbon::now();
 
-                    // check when the user has been notified for the last time, and notify them again if needed.
+                    // check if the user has a last notified at
                     if ($notificationSetting->last_notified_at instanceof Carbon) {
 
                         $lastNotifiedAt = $notificationSetting->last_notified_at;
@@ -88,6 +88,7 @@ class SendNotifications extends Command
                                 break;
                         }
                     } else {
+                        // the user has never been notified, so we set subtract one year from the current one.
                         $notificationSetting->last_notified_at = Carbon::now()->subYear(1);
                         $notificationSetting->save();
                     }

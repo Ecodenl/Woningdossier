@@ -119,32 +119,6 @@ class PrivateMessageView extends Model
     }
 
     /**
-     * Return the unread messages count for a user on a building
-     *
-     * @param $buildingId
-     *
-     * @return int
-     */
-    public static function getTotalUnreadMessagesCountByBuildingId($buildingId)
-    {
-
-        $building = Building::find($buildingId);
-        if ($building instanceof Building) {
-
-            // get ALL the private messages for the given building ids.
-            $privateMessagesForBuildingId = PrivateMessage::where('building_id', $buildingId)->get();
-
-            // now get the ALL the private message ids for a building id
-            $privateMessageIds = $privateMessagesForBuildingId->pluck('id')->all();
-
-            return static::where('user_id', $building->user_id)
-                       ->whereIn('private_message_id', $privateMessageIds)
-                       ->whereNull('read_at')
-                       ->count();
-        }
-    }
-
-    /**
      * Check if a private message is left unread
      *
      * @param $privateMessage

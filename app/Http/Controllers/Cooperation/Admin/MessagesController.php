@@ -6,10 +6,14 @@ use App\Http\Requests\Cooperation\Admin\MessageRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Services\MessageService;
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Log;
+use stdClass;
 
 class MessagesController extends Controller
 {
@@ -24,15 +28,16 @@ class MessagesController extends Controller
 
     public function index()
     {
+
         if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
             $userId = \Auth::id();
 
             $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUserId($userId);
-            $buildingIds = $connectedBuildingsByUserId->pluck('building_id')->all();
+            $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {
             // get all the conversation requests that were send to my cooperation.
             $privateMessages = PrivateMessage::forMyCooperation()->conversationRequest()->get();
-            $buildingIds = $privateMessages->pluck('building_id')->all();
+            $buildingIds     = $privateMessages->pluck('building_id')->all();
         }
 
         $buildings = Building::findMany($buildingIds);
@@ -44,8 +49,9 @@ class MessagesController extends Controller
     /**
      * Method that handles sending messages for the /admin section
      *
-     * @param Cooperation $cooperation
-     * @param MessageRequest $request
+     * @param  Cooperation     $cooperation
+     * @param  MessageRequest  $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function sendMessage(Cooperation $cooperation, MessageRequest $request)

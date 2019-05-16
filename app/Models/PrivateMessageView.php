@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
 class PrivateMessageView extends Model
 {
     protected $fillable = [
-        'private_message_id', 'user_id', 'cooperation_id', 'read_at',
+        'input_source_id', 'private_message_id', 'user_id', 'cooperation_id', 'read_at',
     ];
 
     protected $casts = [

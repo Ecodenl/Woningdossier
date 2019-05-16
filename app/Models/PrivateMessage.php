@@ -313,6 +313,7 @@ class PrivateMessage extends Model
         // create a collection of group members
         $groupMembers = collect();
 
+
         // if its a public conversation we push the building owner in it
         if ($publicConversation) {
             // get the owner of the building,
@@ -323,6 +324,7 @@ class PrivateMessage extends Model
         foreach ($coachesWithAccess as $coachWithAccess) {
             $groupMembers->push(User::find($coachWithAccess->coach_id));
         }
+
 
         return $groupMembers;
     }

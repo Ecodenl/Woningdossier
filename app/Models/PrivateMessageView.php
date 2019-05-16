@@ -85,32 +85,34 @@ class PrivateMessageView extends Model
         }
     }
 
+
+
     /**
-     * Return the unread messages count for a building id, determined on the auth users his role and id.
+     * Get the unread messages count for a given building. The count will be determined on the auth user his role and user id.
      *
-     * @param $buildingId
+     * @param Building $building
      *
      * @return int
      */
-    public static function getTotalUnreadMessagesCountByBuildingIdForAuthUser($buildingId)
+    public static function getTotalUnreadMessagesCountByBuildingForAuthUser(Building $building): int
     {
 
-        // get ALL the private messages for the given building ids.
-        $privateMessagesForBuildingId = PrivateMessage::where('building_id', $buildingId)->get();
+        // get all the private message id's for a building
+        $privateMessageIdsForBuilding = $building->privateMessages()
+                                                 ->select('id')
+                                                 ->get()
+                                                 ->pluck('id')
+                                                 ->all();
 
-        // now get the ALL the private message ids for a building id
-        $privateMessageIds = $privateMessagesForBuildingId->pluck('id')->all();
-
-        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && ! is_null($buildingId)) {
-            return self::where('cooperation_id', HoomdossierSession::getCooperation())
-                       ->whereIn('private_message_id', $privateMessageIds)
+        // get the unread messages for the cooperation
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            return static::where('cooperation_id', HoomdossierSession::getCooperation())
+                       ->whereIn('private_message_id', $privateMessageIdsForBuilding)
                        ->whereNull('read_at')
                        ->count();
         } else {
-
-
-            return self::where('user_id', \Auth::id())
-                       ->whereIn('private_message_id', $privateMessageIds)
+            return static::where('user_id', \Auth::id())
+                       ->whereIn('private_message_id', $privateMessageIdsForBuilding)
                        ->whereNull('read_at')
                        ->count();
         }

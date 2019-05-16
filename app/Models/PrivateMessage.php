@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -406,5 +407,15 @@ class PrivateMessage extends Model
     public function scopeAccessAllowed($query)
     {
         return $query->where('allow_access', true);
+    }
+
+    /**
+     * Get the private message views
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function privateMessageViews(): HasMany
+    {
+        return $this->hasMany(PrivateMessageView::class);
     }
 }

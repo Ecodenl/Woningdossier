@@ -51,13 +51,13 @@ class PrivateMessageView extends Model
 
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
-            $cooperationUnreadMessagesCount = self::where('cooperation_id', $cooperation->id)
+            $cooperationUnreadMessagesCount = static::where('cooperation_id', $cooperation->id)
                                                   ->where('read_at', null)
                                                   ->count();
         }
 
         // get the unread messages for the user itsel.
-        $userUnreadMessages = self::where('user_id', $user->id)
+        $userUnreadMessages = static::where('user_id', $user->id)
             ->where('read_at', null)
             ->count();
 
@@ -75,11 +75,11 @@ class PrivateMessageView extends Model
     {
         // if the user is loggen in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            return self::where('cooperation_id', HoomdossierSession::getCooperation())
+            return static::where('cooperation_id', HoomdossierSession::getCooperation())
                        ->where('read_at', null)
                        ->count();
         } else {
-            return self::where('user_id', \Auth::id())
+            return static::where('user_id', \Auth::id())
                        ->where('read_at', null)
                        ->count();
         }
@@ -137,28 +137,35 @@ class PrivateMessageView extends Model
             // now get the ALL the private message ids for a building id
             $privateMessageIds = $privateMessagesForBuildingId->pluck('id')->all();
 
-            return self::where('user_id', $building->user_id)
+            return static::where('user_id', $building->user_id)
                        ->whereIn('private_message_id', $privateMessageIds)
                        ->whereNull('read_at')
                        ->count();
         }
     }
 
-    public static function isMessageUnread($privateMessage)
+    /**
+     * Check if a private message is left unread
+     *
+     * @param $privateMessage
+     *
+     * @return bool
+     */
+    public static function isMessageUnread($privateMessage): bool
     {
-        // if the user is loggen in as a coordinator or cooperation admin
+        // if the user is logged in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            $privateMessageView = self::where('private_message_id', $privateMessage->id)
+            $privateMessageView = static::where('private_message_id', $privateMessage->id)
                                       ->where('cooperation_id', HoomdossierSession::getCooperation())->first();
-            if ($privateMessageView instanceof self && is_null($privateMessageView->read_at)) {
+            if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {
                 return true;
             }
 
             return false;
         } else {
-            $privateMessageView = self::where('private_message_id', $privateMessage->id)->where('user_id',
-                \Auth::id())->first();
-            if ($privateMessageView instanceof self && is_null($privateMessageView->read_at)) {
+            $privateMessageView = static::where('private_message_id', $privateMessage->id)->where('user_id', \Auth::id())->first();
+
+            if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {
                 return true;
             }
 

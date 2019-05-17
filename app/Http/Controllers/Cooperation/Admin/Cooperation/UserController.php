@@ -83,7 +83,7 @@ class UserController extends Controller
                 'extension' => $extension,
                 'postal_code' => $postalCode,
                 'city' => $city,
-                'bag_addressid' => empty($picoAddressData['id']) ? $addressId : $picoAddressData['id']
+                'bag_addressid' => $picoAddressData['id'] ?? $addressId  ?? ''
             ]
         );
 

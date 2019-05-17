@@ -108,7 +108,8 @@ class RegisterController extends Controller
             $data['postal_code'], $data['number']
         );
 
-        $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'];
+
+        $data['bag_addressid'] = empty($picoAddressData['id']) ? $data['addressid'] : $picoAddressData['id'];
 
         $features = new BuildingFeature([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],

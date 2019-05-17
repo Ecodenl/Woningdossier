@@ -55,7 +55,8 @@ class SettingsController extends Controller
 
         $buildingData['number'] = $buildingData['house_number'] ?? '';
         // try to obtain the address id from the api, else get the one from the request.
-        $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'];
+        $buildingData['bag_addressid'] = empty($picoAddressData['id']) ? $buildingData['addressid'] : $picoAddressData['id'];
+
 
 
         // if the password is empty we remove all the password stuff from the user data

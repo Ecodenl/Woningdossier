@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\PrivateMessageView.
  *
- * @property int $id
- * @property int $private_message_id
- * @property int|null $user_id
- * @property int|null $cooperation_id
+ * @property int                             $id
+ * @property int                             $private_message_id
+ * @property int|null                        $user_id
+ * @property int|null                        $cooperation_id
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -30,6 +32,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PrivateMessageView extends Model
 {
+
+    use GetMyValuesTrait;
+
     protected $fillable = [
         'input_source_id', 'private_message_id', 'user_id', 'cooperation_id', 'read_at',
     ];
@@ -39,10 +44,27 @@ class PrivateMessageView extends Model
     ];
 
     /**
+     * Query to scope records for the current input source.
+     *
+     * Normally we would use the GetValueTrait which applies the global GetValueScope.
+     *
+     * BUT: the input_source_id will sometimes be empty (coordinator and cooperation-admin), so we cant use the global scope.
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeForCurrentInputSource($query)
+    {
+        return $query->where('input_source_id', HoomdossierSession::getInputSourceValue());
+    }
+
+    /**
      * Get the total unread messages for a user, this also counts the unread messages from the admin side.
      *
-     * @param  User  $user
-     * @param Cooperation $cooperation
+     * @param  User         $user
+     * @param  Cooperation  $cooperation
+     *
      * @return int
      */
     public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation)
@@ -52,14 +74,15 @@ class PrivateMessageView extends Model
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
             $cooperationUnreadMessagesCount = static::where('cooperation_id', $cooperation->id)
-                                                  ->where('read_at', null)
-                                                  ->count();
+                                                    ->where('read_at', null)
+                                                    ->count();
         }
 
         // get the unread messages for the user itsel.
         $userUnreadMessages = static::where('user_id', $user->id)
-            ->where('read_at', null)
-            ->count();
+                                    ->forCurrentInputSource()
+                                    ->where('read_at', null)
+                                    ->count();
 
         $totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
 
@@ -76,21 +99,21 @@ class PrivateMessageView extends Model
         // if the user is loggen in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             return static::where('cooperation_id', HoomdossierSession::getCooperation())
-                       ->where('read_at', null)
-                       ->count();
+                         ->where('read_at', null)
+                         ->count();
         } else {
             return static::where('user_id', \Auth::id())
-                       ->where('read_at', null)
-                       ->count();
+                         ->where('read_at', null)
+                         ->forCurrentInputSource()
+                         ->count();
         }
     }
-
 
 
     /**
      * Get the unread messages count for a given building. The count will be determined on the auth user his role and user id.
      *
-     * @param Building $building
+     * @param  Building  $building
      *
      * @return int
      */
@@ -107,14 +130,15 @@ class PrivateMessageView extends Model
         // get the unread messages for the cooperation
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             return static::where('cooperation_id', HoomdossierSession::getCooperation())
-                       ->whereIn('private_message_id', $privateMessageIdsForBuilding)
-                       ->whereNull('read_at')
-                       ->count();
+                         ->whereIn('private_message_id', $privateMessageIdsForBuilding)
+                         ->whereNull('read_at')
+                         ->count();
         } else {
             return static::where('user_id', \Auth::id())
-                       ->whereIn('private_message_id', $privateMessageIdsForBuilding)
-                       ->whereNull('read_at')
-                       ->count();
+                         ->forCurrentInputSource()
+                         ->whereIn('private_message_id', $privateMessageIdsForBuilding)
+                         ->whereNull('read_at')
+                         ->count();
         }
     }
 
@@ -130,14 +154,17 @@ class PrivateMessageView extends Model
         // if the user is logged in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             $privateMessageView = static::where('private_message_id', $privateMessage->id)
-                                      ->where('cooperation_id', HoomdossierSession::getCooperation())->first();
+                                        ->where('cooperation_id', HoomdossierSession::getCooperation())->first();
             if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {
                 return true;
             }
 
             return false;
         } else {
-            $privateMessageView = static::where('private_message_id', $privateMessage->id)->where('user_id', \Auth::id())->first();
+            $privateMessageView = static::where('private_message_id', $privateMessage->id)
+                                        ->forCurrentInputSource()
+                                        ->where('user_id', \Auth::id())
+                                        ->first();
 
             if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {
                 return true;

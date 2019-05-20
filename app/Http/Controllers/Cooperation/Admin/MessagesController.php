@@ -26,14 +26,11 @@ class MessagesController extends Controller
         }
     }
 
-    public function index()
+    public function index(Cooperation $cooperation)
     {
-//        dd(PrivateMessage::getReceivedMessagesForAuthUser());
 
         if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
-            $userId = \Auth::id();
-
-            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUserId($userId);
+            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
             $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {
             // get all the conversation requests that were send to my cooperation.
@@ -41,8 +38,7 @@ class MessagesController extends Controller
             $buildingIds     = $privateMessages->pluck('building_id')->all();
         }
 
-        $buildings = Building::findMany($buildingIds);
-
+        $buildings = Building::whereHas('privateMessages')->findMany($buildingIds);
 
         return view('cooperation.admin.messages.index', compact('buildings'));
     }

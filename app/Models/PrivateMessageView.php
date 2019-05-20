@@ -94,29 +94,31 @@ class PrivateMessageView extends Model
      *
      * @return int
      */
-    public static function getTotalUnreadMessagesForCurrentRole()
+    public static function getTotalUnreadMessagesForCurrentRole(): int
     {
-        // if the user is loggen in as a coordinator or cooperation admin
-        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
 
-            return static::where('to_cooperation_id', HoomdossierSession::getCooperation())
+        // if the user his current role is coordinator or cooperation admin
+        // then he talks as a cooperation itself, so we need to get the unread messages for the cooperation itself.
+        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            // get the messages that have been sent to the cooperation.
+            $totalUnreadMessagesForCurrentRole = static::where('to_cooperation_id', HoomdossierSession::getCooperation())
                          ->where('input_source_id', null)
                          ->where('read_at', null)
                          ->count();
 
         } else {
             // the user is a coach or resident at this point.
-            // so we get the private message views for the current user, that have not been read yeet.
-
-            return static::select('private_messages.*')
+            // so we get the private message views for the current user, that have not been read yet.
+            $totalUnreadMessagesForCurrentRole = static::select('private_messages.*')
                          ->where('private_message_views.user_id', \Auth::id())
                          ->where('read_at', null)
                          ->join('private_messages', function ($query) {
                              $query->on('private_message_views.private_message_id', '=', 'private_messages.id')
                                    ->where('cooperation_id', HoomdossierSession::getCooperation());
                          })->count();
-//
         }
+
+        return $totalUnreadMessagesForCurrentRole;
     }
 
 

@@ -28,6 +28,7 @@ class MessagesController extends Controller
 
     public function index()
     {
+//        dd(PrivateMessage::getReceivedMessagesForAuthUser());
 
         if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
             $userId = \Auth::id();

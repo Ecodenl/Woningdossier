@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Traits\GetMyValuesTrait;
-use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 
 /**
  * App\Models\PrivateMessageView.
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                             $id
  * @property int                             $private_message_id
  * @property int|null                        $user_id
- * @property int|null                        $cooperation_id
+ * @property int|null                        $to_cooperation_id
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -36,7 +36,7 @@ class PrivateMessageView extends Model
     use GetMyValuesTrait;
 
     protected $fillable = [
-        'input_source_id', 'private_message_id', 'user_id', 'cooperation_id', 'read_at',
+        'input_source_id', 'private_message_id', 'user_id', 'to_cooperation_id', 'read_at',
     ];
 
     protected $casts = [
@@ -73,7 +73,7 @@ class PrivateMessageView extends Model
 
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
-            $cooperationUnreadMessagesCount = static::where('cooperation_id', $cooperation->id)
+            $cooperationUnreadMessagesCount = static::where('to_cooperation_id', $cooperation->id)
                                                     ->where('read_at', null)
                                                     ->count();
         }
@@ -98,14 +98,24 @@ class PrivateMessageView extends Model
     {
         // if the user is loggen in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            return static::where('cooperation_id', HoomdossierSession::getCooperation())
+
+            return static::where('to_cooperation_id', HoomdossierSession::getCooperation())
+                         ->where('input_source_id', null)
                          ->where('read_at', null)
                          ->count();
+
         } else {
-            return static::where('user_id', \Auth::id())
+            // the user is a coach or resident at this point.
+            // so we get the private message views for the current user, that have not been read yeet.
+
+            return static::select('private_messages.*')
+                         ->where('private_message_views.user_id', \Auth::id())
                          ->where('read_at', null)
-                         ->forCurrentInputSource()
-                         ->count();
+                         ->join('private_messages', function ($query) {
+                             $query->on('private_message_views.private_message_id', '=', 'private_messages.id')
+                                   ->where('cooperation_id', HoomdossierSession::getCooperation());
+                         })->count();
+//
         }
     }
 
@@ -129,7 +139,7 @@ class PrivateMessageView extends Model
 
         // get the unread messages for the cooperation
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            return static::where('cooperation_id', HoomdossierSession::getCooperation())
+            return static::where('to_cooperation_id', HoomdossierSession::getCooperation())
                          ->whereIn('private_message_id', $privateMessageIdsForBuilding)
                          ->whereNull('read_at')
                          ->count();
@@ -154,7 +164,7 @@ class PrivateMessageView extends Model
         // if the user is logged in as a coordinator or cooperation admin
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             $privateMessageView = static::where('private_message_id', $privateMessage->id)
-                                        ->where('cooperation_id', HoomdossierSession::getCooperation())->first();
+                                        ->where('to_cooperation_id', HoomdossierSession::getCooperation())->first();
             if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {
                 return true;
             }

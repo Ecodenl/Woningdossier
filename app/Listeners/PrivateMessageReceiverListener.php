@@ -37,6 +37,7 @@ class PrivateMessageReceiverListener
 
         $connectedCoachesForBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($event->privateMessage->building_id);
 
+
         // now we create for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {
             // check the group participant is the owner of the building and the send message is private
@@ -67,7 +68,7 @@ class PrivateMessageReceiverListener
             // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
             PrivateMessageView::create([
                 'private_message_id' => $event->privateMessage->id,
-                'cooperation_id' => HoomdossierSession::getCooperation(),
+                'to_cooperation_id' => HoomdossierSession::getCooperation(),
             ]);
         }
     }

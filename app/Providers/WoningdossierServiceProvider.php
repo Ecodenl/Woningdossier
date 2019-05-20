@@ -35,7 +35,6 @@ class WoningdossierServiceProvider extends ServiceProvider
         \View::creator('cooperation.admin.*', AdminComposer::class);
         \View::creator('cooperation.my-account.*', MyAccountComposer::class);
 
-
     }
 
     /**

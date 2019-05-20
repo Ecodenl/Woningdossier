@@ -28,7 +28,7 @@
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.cooperation.coaches.show', ['id' => $user->id])}}">
-                                        {{$building->street}} {{$building->number}}
+                                        {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                 </td>
                                 <td>{{$building->postal_code}}</td>

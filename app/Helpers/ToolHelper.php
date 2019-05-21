@@ -1012,16 +1012,6 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
-                'building_features.wall_surface'                => [
-                    'label' => Translation::translate('wall-insulation.optional.facade-surface.title'),
-                    'type'  => 'text',
-                    'unit'  => Translation::translate('general.unit.square-meters.title'),
-                ],
-                'building_features.insulation_wall_surface'     => [
-                    'label' => Translation::translate('wall-insulation.optional.insulated-surface.title'),
-                    'type'  => 'text',
-                    'unit'  => Translation::translate('general.unit.square-meters.title'),
-                ],
                 'building_features.cavity_wall'                 => [
                     'label'   => Translation::translate('wall-insulation.intro.has-cavity-wall.title'),
                     'type'    => 'select',
@@ -1060,6 +1050,16 @@ class ToolHelper
                     'label'   => Translation::translate('wall-insulation.optional.is-facade-dirty.title'),
                     'type'    => 'select',
                     'options' => static::createOptions($surfaces),
+                ],
+                'building_features.wall_surface'                => [
+                    'label' => Translation::translate('wall-insulation.optional.facade-surface.title'),
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.square-meters.title'),
+                ],
+                'building_features.insulation_wall_surface'     => [
+                    'label' => Translation::translate('wall-insulation.optional.insulated-surface.title'),
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.square-meters.title'),
                 ],
 
                 'calculations' => [

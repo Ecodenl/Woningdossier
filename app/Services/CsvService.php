@@ -696,6 +696,9 @@ class CsvService
                                 case 'roof_type_id':
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
                                     break;
+                                case 'building_type_id':
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->buildingType->name ?? '';
+                                    break;
                                 case 'energy_label_id':
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
                                     break;
@@ -939,11 +942,20 @@ class CsvService
                         if ($userEnergyHabit instanceof UserEnergyHabit) {
                             switch ($column) {
                                 case 'cook_gas':
-                                    $radiobuttonsYesNo                            = [
+                                    $radiobuttonsYesNo = [
                                         1 => __('woningdossier.cooperation.radiobutton.yes'),
                                         2 => __('woningdossier.cooperation.radiobutton.no')
                                     ];
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $radiobuttonsYesNo[$userEnergyHabit->cook_gas] ?? '';
+                                    break;
+                                case 'water_comfort_id':
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->comfortLevelTapWater->name ?? '';
+                                    break;
+                                case 'heating_first_floor':
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->heatingFirstFloor->name ?? '';
+                                    break;
+                                case 'heating_second_floor':
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->heatingSecondFloor->name ?? '';
                                     break;
                                 default:
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->$column ?? '';

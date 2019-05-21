@@ -48,7 +48,7 @@
                                                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
                                                             <textarea class="form-control" name="language_lines[{{$locale}}][help][{{$question->helpText->id}}]">{{$text}}</textarea>
                                                             <label for="">key: {{$question->helpText->group}}.{{$question->helpText->key}}</label>
-                                                            <input type="hidden" id="original-help-text" disabled="disabled" value="{{$text}}">
+                                                            <input type="hidden" class="original-help-text" disabled="disabled" value="{{$text}}">
                                                         </div>
                                                     @endforeach
                                                 @endif
@@ -98,8 +98,6 @@
 @push('js')
     <script>
 
-        /* */
-
         tinymce.init({
             selector: 'textarea',
             menubar: 'edit format',
@@ -112,11 +110,19 @@
                     onAction: function (buttonApi) {
                         console.log(editor);
                         if (confirm('Orginele helptext herstellen ? Dit verwijderd de huidige helptext en vervangt deze met de orginele.')) {
-                            var originalHelpText = $(editor.targetElm).parent().find('#original-help-text').val();
+                            var originalHelpText = $(editor.targetElm).parent().find('.original-help-text').val();
                             editor.setContent(originalHelpText);
                         }
                     }
                 });
+            }
+        });
+
+        $(document).on('focusin', function(e) {
+            var target = $(e.target);
+            if (target.closest(".mce-window").length || target.closest(".tox-dialog").length) {
+                e.stopImmediatePropagation();
+                target = null;
             }
         });
 

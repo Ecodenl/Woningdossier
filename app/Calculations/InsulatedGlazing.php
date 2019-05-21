@@ -142,11 +142,14 @@ class InsulatedGlazing {
                 }
             }
 
-            $year = InsulatedGlazingCalculator::determineApplicationYear($measureApplication, $paintworkStatus, $woodRotStatus, $lastPaintedYear);
+            $year = 0;
+            $costs = 0;
 
-            $costs = Calculator::calculateMeasureApplicationCosts($measureApplication,
-                $number,
-                $year, false);
+            if($measureApplication instanceof MeasureApplication && $paintworkStatus instanceof PaintworkStatus) {
+                $year = InsulatedGlazingCalculator::determineApplicationYear($measureApplication, $paintworkStatus, $woodRotStatus, $lastPaintedYear);
+                $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
+            }
+
             $result['paintwork'] = compact('costs', 'year');
         }
 

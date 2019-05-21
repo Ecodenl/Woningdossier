@@ -511,10 +511,11 @@ class CsvService
      *
      * @return array
      */
-    public static function totalReport(Cooperation $cooperation, bool $anonymized): array 
+    public static function totalReport(Cooperation $cooperation, bool $anonymized): array
     {
         $users = $cooperation->users;
-        
+
+
         if ($anonymized) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -1024,6 +1025,8 @@ class CsvService
 
         $userEnergyHabit = $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
 
+
+
         $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
         $frames = Element::where('short', 'frames')->first();
@@ -1083,6 +1086,7 @@ class CsvService
 
         $buildingCrackSealingElement = $buildingElements->where('element_id', $crackSealing->id)->first();
         $buildingElementsArray[$crackSealing->id][$crackSealing->short] = $buildingCrackSealingElement->element_value_id ?? null;
+
 
         $buildingPaintworkStatusesArray = [
             'last_painted_year' => $buildingPaintworkStatus->last_painted_year ?? null,
@@ -1167,6 +1171,8 @@ class CsvService
             })->toArray();
 
 
+
+
         $wallInsulationSavings = WallInsulation::calculate($building, $userEnergyHabit, [
             'cavity_wall'                 => $buildingFeature->cavity_wall ?? null,
             'element'                     => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
@@ -1177,6 +1183,7 @@ class CsvService
             'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
+
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $user, [
             'user_interests' => $userInterestsForInsulatedGlazing,

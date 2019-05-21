@@ -1137,16 +1137,6 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
-                'building_features.floor_surface'                  => [
-                    'label' => Translation::translate('floor-insulation.surface.title'),
-                    'type'  => 'text',
-                    'unit'  => Translation::translate('general.unit.square-meters.title'),
-                ],
-                'building_features.insulation_surface'             => [
-                    'label' => Translation::translate('floor-insulation.insulation-surface.title'),
-                    'type'  => 'text',
-                    'unit'  => Translation::translate('general.unit.square-meters.title'),
-                ],
                 'element.'.$crawlspace->id.'.extra.has_crawlspace' => [
                     'label'   => Translation::translate('floor-insulation.has-crawlspace.title'),
                     'type'    => 'select',
@@ -1162,6 +1152,16 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($crawlspace->values()->orderBy('order')->get(), 'value'),
                 ],
+                'building_features.floor_surface'                  => [
+                    'label' => Translation::translate('floor-insulation.surface.title'),
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.square-meters.title'),
+                ],
+                'building_features.insulation_surface'             => [
+                    'label' => Translation::translate('floor-insulation.insulation-surface.title'),
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.square-meters.title'),
+                ],
 
                 'calculations' => [
                     'savings_gas'         => Translation::translate('floor-insulation.costs.gas.title'),
@@ -1171,6 +1171,7 @@ class ToolHelper
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
                 ]
             ],
+
             'roof-insulation'        => [
                 'element.'.$roofInsulation->id   => [
                     'label'   => $roofInsulation->name,
@@ -1185,6 +1186,7 @@ class ToolHelper
                 ],
                 // rest will be added later on
             ],
+
             'high-efficiency-boiler' => [
                 'service.'.$boiler->id.'.extra.year' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),

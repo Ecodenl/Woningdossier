@@ -1200,7 +1200,7 @@ class ToolHelper
                 'service.'.$boiler->id.'.service_value_id' => [
                     'label' => Translation::translate('high-efficiency-boiler.boiler-type.title'),
                     'type' => 'select',
-                    'options' => $buildingTypes
+                    'options' => $boilerTypes
                 ],
                 'service.'.$boiler->id.'.extra.year' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),
@@ -1219,6 +1219,11 @@ class ToolHelper
             ],
 
             'solar-panels' => [
+                'user_energy_habits.amount_electricity'         => [
+                    'label' => Translation::translate('general-data.data-about-usage.electricity-consumption-past-year.title'),
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.cubic-meters.title'),
+                ],
                 'building_pv_panels.peak_power'              => [
                     'label'   => Translation::translate('solar-panels.peak-power.title'),
                     'type'    => 'select',

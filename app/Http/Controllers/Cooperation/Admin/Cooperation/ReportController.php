@@ -32,9 +32,9 @@ class ReportController extends Controller
      */
     public function generate(Cooperation $cooperation, FileType $fileType)
     {
-        if($fileType->isBeingProcessed()) {
-            return redirect()->back();
-        }
+//        if($fileType->isBeingProcessed()) {
+//            return redirect()->back();
+//        }
 
         // create a short hash to prepend on the filename.
         $substrBycrypted = substr(Hash::make(Str::uuid()), 7, 5);
@@ -61,7 +61,7 @@ class ReportController extends Controller
                 GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage, true)->onQueue('high');
                 break;
             case 'measure-report':
-                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage)->onQueue('high');
+                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage);
                 break;
             case 'measure-report-anonymized':
                 GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage, true)->onQueue('high');

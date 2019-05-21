@@ -594,6 +594,7 @@ class CsvService
             $connectedCoachNames = [];
             // get the names from the coaches and add them to a array
             foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
+                dd(User::find($coachId), $coachId, $connectedCoaches);
                 array_push($connectedCoachNames, User::find($coachId)->getFullName());
             }
             // implode it.

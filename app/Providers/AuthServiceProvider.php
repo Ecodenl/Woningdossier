@@ -29,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Questionnaire::class => QuestionnairePolicy::class,
         Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
-        Building::class => BuildingPolicy::class
+        Building::class => BuildingPolicy::class,
         NotificationSetting::class => NotificationSettingPolicy::class
     ];
 

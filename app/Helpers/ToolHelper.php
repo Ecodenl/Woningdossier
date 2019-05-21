@@ -783,6 +783,7 @@ class ToolHelper
 
         $buildingTypes = BuildingType::all();
         $buildingHeatings = BuildingHeating::all();
+        $boilerTypes = $boiler->values()->orderBy('order')->get();
 
         // Common
         $interests       = Interest::orderBy('order')->get();
@@ -946,7 +947,6 @@ class ToolHelper
                     'label' => Translation::translate('general-data.data-about-usage.total-citizens.title'),
                     'type' => 'text'
                 ],
-
                 // habits
                 'user_energy_habits.cook_gas'                   => [
                     'label'   => Translation::translate('general-data.data-about-usage.cooked-on-gas.title'),
@@ -1188,6 +1188,20 @@ class ToolHelper
             ],
 
             'high-efficiency-boiler' => [
+                'user_energy_habits.resident_count' => [
+                    'label' => Translation::translate('general-data.data-about-usage.total-citizens.title'),
+                    'type' => 'text'
+                ],
+                'user_energy_habits.amount_gas'                 => [
+                    'label' => Translation::translate('general-data.data-about-usage.gas-usage-past-year.title'),
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.cubic-meters.title'),
+                ],
+                'service.'.$boiler->id.'.service_value_id' => [
+                    'label' => Translation::translate('high-efficiency-boiler.boiler-type.title'),
+                    'type' => 'select',
+                    'options' => $buildingTypes
+                ],
                 'service.'.$boiler->id.'.extra.year' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),
                     'type'  => 'text',

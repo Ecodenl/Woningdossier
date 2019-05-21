@@ -1107,6 +1107,11 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($frames->values()->orderBy('order')->get(), 'value'),
                 ],
+                'element.'.$woodElements->id                      => [
+                    'label'   => Translation::translate('insulated-glazing.paint-work.other-wood-elements.title'),
+                    'type'    => 'multiselect',
+                    'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
+                ],
                 'building_paintwork_statuses.last_painted_year'   => [
                     'label' => Translation::translate('insulated-glazing.paint-work.last-paintjob.title'),
                     'type'  => 'text',
@@ -1122,11 +1127,6 @@ class ToolHelper
                     'label'   => Translation::translate('insulated-glazing.paint-work.wood-rot-visible.title'),
                     'type'    => 'select',
                     'options' => static::createOptions($woodRotStatuses),
-                ],
-                'element.'.$woodElements->id                      => [
-                    'label'   => Translation::translate('insulated-glazing.paint-work.other-wood-elements.title'),
-                    'type'    => 'multiselect',
-                    'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
                 ],
 
             ],

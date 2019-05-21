@@ -35,7 +35,7 @@
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <?php $treatTitleAsHelpText = ['home'] ?>
+                                                <?php $treatTitleAsHelpText = ['home', 'ventilation-information'] ?>
 
                                                 @foreach($question->text as $locale => $text)
                                                     <div class="form-group">

@@ -592,9 +592,9 @@ class CsvService
             $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
             $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
+
             // get the names from the coaches and add them to a array
             foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                dd(User::find($coachId), $coachId, $connectedCoaches);
                 array_push($connectedCoachNames, User::find($coachId)->getFullName());
             }
             // implode it.

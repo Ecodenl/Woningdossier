@@ -232,8 +232,6 @@ class BuildingCoachStatus extends Model
                 ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                 ->get();
 
-        dd($coachesWithPendingBuildingCoachStatus);
-
         return $coachesWithPendingBuildingCoachStatus;
     }
 

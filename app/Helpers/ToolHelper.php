@@ -1220,7 +1220,7 @@ class ToolHelper
 
             'solar-panels' => [
                 'user_energy_habits.amount_electricity'         => [
-                    'label' => Translation::translate('general-data.data-about-usage.electricity-consumption-past-year.title'),
+                    'label' => Translation::translate('solar-panels.electra-usage.title'),
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.cubic-meters.title'),
                 ],
@@ -1261,6 +1261,11 @@ class ToolHelper
                     'label'   => $heater->name,
                     'type'    => 'select',
                     'options' => static::createOptions($heater->values()->orderBy('order')->get(), 'value'),
+                ],
+                'user_energy_habits.water_comfort_id' => [
+                    'label' => Translation::translate('heater.comfort-level-warm-tap-water.title'),
+                    'type' => 'select',
+                    'options' => $comfortLevelsTapWater
                 ],
                 'building_heaters.pv_panel_orientation_id' => [
                     'label'        => Translation::translate('heater.pv-panel-orientation-id.title'),

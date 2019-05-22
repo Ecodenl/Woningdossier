@@ -16,7 +16,7 @@
                 <div class="form-group add-space">
                     <label for="interest_{{ $type }}_{{ $typeId }}" class="control-label" style="display: inline;">
                         <i data-toggle="modal" data-target="#interest_{{ $type }}_{{ $typeId }}_help" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                        {!!       \App\Helpers\Translation::translate('general.change-interested.title', ['item' => $typeName]) !!}
+                        {!! \App\Helpers\Translation::translate('general.change-interested.title', ['item' => $typeName]) !!}
                     </label>
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_type', $type)->where('interested_in_id', $typeId),  'userInputColumn' => 'interest_id'])

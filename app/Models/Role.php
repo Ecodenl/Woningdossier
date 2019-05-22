@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Scopes\CooperationScope;
+
 /**
  * App\Models\Role.
  *
@@ -33,6 +35,14 @@ namespace App\Models;
  */
 class Role extends \Spatie\Permission\Models\Role
 {
+
+    public static function boot()
+    {
+        parent::boot();
+
+//        static::addGlobalScope(new );
+    }
+
     /**
      * Return the input source for the role.
      *

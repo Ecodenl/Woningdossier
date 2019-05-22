@@ -83,7 +83,7 @@ class User extends Authenticatable
             config('permission.table_names.model_has_roles'),
             config('permission.column_names.model_morph_key'),
             'role_id'
-        )->where('cooperation_id', HoomdossierSession::getCooperation());
+        );
     }
 
 

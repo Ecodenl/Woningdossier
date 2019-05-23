@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Role;
+use App\Models\User;
 use Carbon\Carbon;
 
 class SuccessFullLoginListener
@@ -29,16 +30,21 @@ class SuccessFullLoginListener
      */
     public function handle($event)
     {
+        /** @var User $user */
         $user = $event->user;
         // get the first building from the user
         $building = $user->buildings()->first();
+
+        $cooperation = request()->route()->parameter('cooperation');
+        HoomdossierSession::setCooperation($cooperation);
 
         // if the user has a building, log him in.
         // else, redirect him to a page where he needs to create a building
         // without a building the application is useless.
         if ($building instanceof Building) {
+
             // we cant query on the Spatie\Role model so we first get the result on the "original model"
-            $role = Role::findByName($user->roles->first()->name);
+            $role = Role::findByName($user->roles()->first()->name);
 
             // get the input source
             $inputSource = $role->inputSource;

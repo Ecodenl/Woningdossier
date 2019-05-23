@@ -29,7 +29,6 @@ class CooperationMiddleware
         }
 
         \Log::debug('Session: cooperation -> '.$cooperation->id.' ('.$cooperation->slug.')');
-        HoomdossierSession::setCooperation($cooperation);
 
         // Set as default URL parameter
         if (HoomdossierSession::hasCooperation()) {
@@ -38,6 +37,9 @@ class CooperationMiddleware
                 \Log::debug('Setting default cooperation for URL -> '.$cooperation->id.' ('.$cooperation->slug.')');
                 URL::defaults(['cooperation' => $cooperation->slug]);
             }
+        } else {
+            // only set it when there is no cooperation.
+            HoomdossierSession::setCooperation($cooperation);
         }
 
         if (HoomdossierSession::hasRole() && ! empty(HoomdossierSession::getRole())) {

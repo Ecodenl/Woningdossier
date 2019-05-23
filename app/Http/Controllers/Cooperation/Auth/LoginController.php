@@ -87,10 +87,6 @@ class LoginController extends Controller
         );
     }
 
-    public function authenticated()
-    {
-    }
-
     /**
      * Handle a login request to the application.
      *

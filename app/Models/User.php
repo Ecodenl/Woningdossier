@@ -6,11 +6,10 @@ use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use App\NotificationSetting;
 use App\Scopes\GetValueScope;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use App\Traits\HasRolesTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Spatie\Permission\Traits\HasRoles;
 
 /**
  * App\Models\User.
@@ -69,23 +68,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use Notifiable;
-    use HasRoles;
-
-
-    /**
-     * A model may have multiple roles.
-     */
-    public function roles(): MorphToMany
-    {
-        return $this->morphToMany(
-            config('permission.models.role'),
-            'model',
-            config('permission.table_names.model_has_roles'),
-            config('permission.column_names.model_morph_key'),
-            'role_id'
-        );
-    }
-
+    use HasRolesTrait;
 
     /**
      * The attributes that are mass assignable.

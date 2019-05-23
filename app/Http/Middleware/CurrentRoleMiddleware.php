@@ -29,6 +29,8 @@ class CurrentRoleMiddleware
 
         $authorizedRole = Role::findById(HoomdossierSession::getRole());
 
+        // we will need to check if the user actually has the role thats set in the session.
+        // this will occur for example, if a admin removes a coach role etc while the coach is authorized in the tool.
         if (!\Auth::user()->hasRole($authorizedRole)) {
             throw RoleInSessionHasNoAssociationWithUser::forRole($authorizedRole);
         }

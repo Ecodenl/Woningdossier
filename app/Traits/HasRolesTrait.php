@@ -30,7 +30,7 @@ trait HasRolesTrait {
             config('permission.table_names.model_has_roles'),
             config('permission.column_names.model_morph_key'),
             'role_id'
-        )->where('cooperation_id', $cooperationId);
+        )->wherePivot('cooperation_id', $cooperationId);
     }
 
     /**
@@ -105,6 +105,8 @@ trait HasRolesTrait {
         foreach ($roles as $roleId) {
             $rolesToSync[$roleId] = ['cooperation_id' => $cooperationId];
         }
+//
+//        $rolesToSync = $roles;
 
         $model = $this->getModel();
 
@@ -120,7 +122,7 @@ trait HasRolesTrait {
                     if ($modelLastFiredOn !== null && $modelLastFiredOn === $model) {
                         return;
                     }
-                    $object->roles($cooperationId)->sync($rolesToSync, false);
+                    $object->roles()->sync($rolesToSync, false);
                     $object->load('roles');
                     $modelLastFiredOn = $object;
                 });

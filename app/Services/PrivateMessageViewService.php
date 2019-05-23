@@ -35,7 +35,7 @@ class PrivateMessageViewService
 
             if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageQuery
-                    ->where('cooperation_id', HoomdossierSession::getCooperation())
+                    ->where('to_cooperation_id', HoomdossierSession::getCooperation())
                     ->update(['read_at' => Carbon::now()]);
             } else {
                 $privateMessageQuery

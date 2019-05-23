@@ -99,19 +99,15 @@ class Handler extends ExceptionHandler
 
             if ($role instanceof Role) {
                 HoomdossierSession::setRole($role);
-
                 return redirect(route('cooperation.home'));
             } else {
-                HoomdossierSession::destroy();
-                \Auth::logout();
-                $request->session()->invalidate();
-
+                \Auth::user()->logout();
                 return redirect()->route('cooperation.home');
             }
         }
 
         // Handle the exception if the user is not authorized / has the right roles
-        if ($exception instanceof SpatieUnauthorizedException) {
+        if ($exception instanceof SpatieUnauthorizedException && HoomdossierSession::hasRole()) {
 
             // the role the user currently has in his session
             $authorizedRole = Role::find(HoomdossierSession::getRole());
@@ -121,10 +117,14 @@ class Handler extends ExceptionHandler
             )->with('warning', __('default.messages.exceptions.no-right-roles'));
         }
 
+
+        // The user is not authorized at all.
         if ($exception instanceof UnauthorizedException) {
-            return redirect(route('cooperation.tool.index'));
+            \Auth::user()->logout();
+            return redirect()->route('cooperation.home');
         }
 
         return parent::render($request, $exception);
     }
+
 }

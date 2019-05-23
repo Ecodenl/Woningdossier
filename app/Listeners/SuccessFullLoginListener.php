@@ -34,14 +34,24 @@ class SuccessFullLoginListener
         $user = $event->user;
         // get the first building from the user
         $building = $user->buildings()->first();
+        // just get the first available role from the user
+        $userRole = $user->roles()->first();
 
         $cooperation = request()->route()->parameter('cooperation');
         HoomdossierSession::setCooperation($cooperation);
+
 
         // if the user has a building, log him in.
         // else, redirect him to a page where he needs to create a building
         // without a building the application is useless.
         if ($building instanceof Building) {
+
+            // if the user for some odd reason had no role attached, attach the resident rol to him.
+            if (!$userRole instanceof Role) {
+                $residentRole = Role::findByName('resident');
+                $user->assignRole($cooperation->id, $residentRole);
+                \Log::debug('User: '.$user->id.' with cooperation: '.$cooperation->id.' had no role while he tried to login, we gave him the role resident for now..');
+            }
 
             // we cant query on the Spatie\Role model so we first get the result on the "original model"
             $role = Role::findByName($user->roles()->first()->name);
@@ -62,10 +72,11 @@ class SuccessFullLoginListener
                 'user_id' => $user->id,
                 'message' => __('woningdossier.log-messages.logged-in', [
                     'full_name' => $user->getFullName(),
-                    'time' => Carbon::now(),
                 ])
             ]);
 
+        } else {
+            return redirect()->route('cooperation.create-building.index');
         }
         if (\Auth::viaRemember()) {
             \Log::debug('User logged in with a remember token! user id: '.$user->id);

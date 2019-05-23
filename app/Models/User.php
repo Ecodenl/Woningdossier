@@ -462,4 +462,11 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    public function logout()
+    {
+        HoomdossierSession::destroy();
+        \Auth::logout();
+        request()->session()->invalidate();
+    }
 }

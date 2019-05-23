@@ -105,8 +105,6 @@ trait HasRolesTrait {
         foreach ($roles as $roleId) {
             $rolesToSync[$roleId] = ['cooperation_id' => $cooperationId];
         }
-//
-//        $rolesToSync = $roles;
 
         $model = $this->getModel();
 
@@ -122,7 +120,7 @@ trait HasRolesTrait {
                     if ($modelLastFiredOn !== null && $modelLastFiredOn === $model) {
                         return;
                     }
-                    $object->roles()->sync($rolesToSync, false);
+                    $object->roles($cooperationId)->sync($rolesToSync, false);
                     $object->load('roles');
                     $modelLastFiredOn = $object;
                 });

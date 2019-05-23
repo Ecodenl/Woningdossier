@@ -39,6 +39,8 @@ class CurrentRoleMiddleware
         // check if the user has the role and if it is his current role.
         if (!\Auth::user()->hasRoleAndIsCurrentRole($roles)) {
 
+            // if the user has multiple roles, while trying to access a url he is not authorized to
+            // then it seems like a good idea to let him choose a role.
             if (\Auth::user()->hasMultipleRoles()) {
                 return redirect(route('cooperation.admin.switch-role'));
             }

@@ -229,10 +229,8 @@ class RegisterController extends Controller
             // if a users hop's from a cooperation, well assign him the role resident.
             $residentRole = Role::findByName('resident');
 
-//            $cooperation->users()->attach($user);
+            $cooperation->users()->attach($user);
             $user->assignRole($cooperation->id, $residentRole);
-
-            dd('bier');
 
             return redirect(
                 url('login')

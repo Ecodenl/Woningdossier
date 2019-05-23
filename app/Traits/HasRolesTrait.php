@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -130,4 +131,13 @@ trait HasRolesTrait {
         return $this;
     }
 
+    /**
+     * @param  null  $cooperationId
+     *
+     * @return Collection
+     */
+    public function getRoleNames($cooperationId = null): Collection
+    {
+        return $this->roles($cooperationId)->pluck('name');
+    }
 }

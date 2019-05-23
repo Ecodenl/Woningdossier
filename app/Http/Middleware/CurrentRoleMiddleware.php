@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Exceptions\RoleInSessionHasNoAssociationWithUser;
+use App\Helpers\HoomdossierSession;
+use App\Models\Role;
+use Closure;
+use Spatie\Permission\Exceptions\UnauthorizedException;
+
+class CurrentRoleMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next, $role)
+    {
+
+        // check if the user is actually authorized at all.
+        if (\Auth::guest()) {
+            throw UnauthorizedException::notLoggedIn();
+        }
+
+        $roles = is_array($role) ? $role : explode('|', $role);
+
+        $authorizedRole = Role::findById(HoomdossierSession::getRole());
+
+        if (!\Auth::user()->hasRole($authorizedRole)) {
+            throw RoleInSessionHasNoAssociationWithUser::forRole($authorizedRole);
+        }
+
+
+        // check if the user has the role and if it is his current role.
+        if (!\Auth::user()->hasRoleAndIsCurrentRole($roles)) {
+
+            if (\Auth::user()->hasMultipleRoles()) {
+                return redirect(route('cooperation.admin.switch-role'));
+            }
+
+            throw UnauthorizedException::forRoles($roles);
+        }
+
+
+
+        return $next($request);
+    }
+}

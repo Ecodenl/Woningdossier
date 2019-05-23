@@ -43,7 +43,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         });
 
         // Logged In Section
-        Route::group(['middleware' => 'auth'], function () {
+        Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
 
             Route::get('home', 'HomeController@index')
                  ->name('home')
@@ -172,7 +172,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         });
 
         // todo add admin middleware checking ACLs
-        Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
+        Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['current-role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
             Route::get('/', 'AdminController@index')->name('index');
             Route::get('stop-session', 'AdminController@stopSession')->name('stop-session');
             Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
@@ -182,13 +182,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::post('remove-role', 'RoleController@removeRole')->name('remove-role');
             });
 
-            Route::group(['middleware' => ['role:cooperation-admin|super-admin']], function () {
+            Route::group(['middleware' => ['current-role:cooperation-admin|super-admin']], function () {
                 Route::resource('example-buildings', 'ExampleBuildingController');
                 Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
             });
 
             /* Section that a coach, coordinator and cooperation-admin can access */
-            Route::group(['middleware' => ['role:cooperation-admin|coach|coordinator']], function () {
+            Route::group(['middleware' => ['current-role:cooperation-admin|coach|coordinator']], function () {
 
                 Route::resource('messages', 'MessagesController')->only('index');
 
@@ -210,7 +210,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 
             /* Section for the cooperation-admin and coordinator */
-            Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['role:cooperation-admin|coordinator']], function () {
+            Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['current-role:cooperation-admin|coordinator']], function () {
 //                Route::resource('example-buildings', 'ExampleBuildingController');
 //                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
@@ -218,7 +218,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('create', 'UserController@create')->name('create');
                     Route::post('create', 'UserController@store')->name('store');
 
-                    Route::group(['middleware' => 'role:cooperation-admin'], function () {
+                    Route::group(['middleware' => 'current-role:cooperation-admin'], function () {
                         Route::delete('delete', 'UserController@destroy')->name('destroy');
                     });
                 });
@@ -229,13 +229,13 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('', 'ReportController@index')->name('index');
                     Route::get('by-year', 'ReportController@downloadByYear')->name('download.by-year');
                     Route::get('by-measure', 'ReportController@downloadByMeasure')->name('download.by-measure');
-                    Route::group(['middleware' => 'role:cooperation-admin'], function () {
+                    Route::group(['middleware' => 'current-role:cooperation-admin'], function () {
                         Route::get('questionnaire-results', 'ReportController@downloadQuestionnaireResults')->name('download.questionnaire-results');
                     });
                 });
 
                 // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
-                Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['role:cooperation-admin']], function () {
+                Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['current-role:cooperation-admin']], function () {
                     Route::get('', 'QuestionnaireController@index')->name('index');
                     Route::post('', 'QuestionnaireController@update')->name('update');
                     Route::get('create', 'QuestionnaireController@create')->name('create');
@@ -249,14 +249,14 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
 
                 /* Section for the coordinator */
-                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['role:coordinator']], function () {
+                Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['current-role:coordinator']], function () {
 
                     // needs to be the last route due to the param
                     Route::get('home', 'CoordinatorController@index')->name('index');
                 });
 
                 /* section for the cooperation-admin */
-                Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['role:cooperation-admin|super-admin']], function () {
+                Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
 
                     Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                         Route::get('', 'StepController@index')->name('index');
@@ -272,7 +272,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             /* Section for the super admin */
-            Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['role:super-admin']], function () {
+            Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['current-role:super-admin']], function () {
                 Route::get('home', 'SuperAdminController@index')->name('index');
 
                 Route::resource('key-figures', 'KeyFiguresController')->only('index');
@@ -298,7 +298,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             /* Section for the coach */
-            Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['role:coach']], function () {
+            Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['current-role:coach']], function () {
 
                 Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                     Route::get('', 'BuildingController@index')->name('index');

@@ -370,9 +370,9 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function hasMultipleRoles(): bool
+    public function hasMultipleRoles($cooperationId = null): bool
     {
-        if ($this->getRoleNames()->count() > 1) {
+        if ($this->getRoleNames($cooperationId)->count() > 1) {
             return true;
         }
 

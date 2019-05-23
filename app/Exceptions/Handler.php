@@ -5,12 +5,12 @@ namespace App\Exceptions;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Models\Cooperation;
+use App\Models\Role;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedException;
-use Spatie\Permission\Models\Role;
 
 class Handler extends ExceptionHandler
 {
@@ -35,8 +35,8 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param \Illuminate\Http\Request                 $request
-     * @param \Illuminate\Auth\AuthenticationException $exception
+     * @param  \Illuminate\Http\Request                  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
      *
      * @return \Illuminate\Http\Response
      */
@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
             return redirect()->route('index');
         }
         $cooperation = Cooperation::find($cooperationId);
-        if (! $cooperation instanceof Cooperation) {
+        if ( ! $cooperation instanceof Cooperation) {
             return redirect()->route('index');
         }
 
@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->route('cooperation.login',
-                compact('cooperation'));
+            compact('cooperation'));
     }
 
     /**
@@ -68,7 +68,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param \Exception $exception
+     * @param  \Exception  $exception
      *
      * @return void
      */
@@ -84,16 +84,36 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Exception               $exception
+     * @param  \Illuminate\Http\Request  $request
+     * @param  Exception                 $exception
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Exception $exception)
     {
-        // Handle the exception if the user is not authorized / has the right roles
+        // Handle the exception if the role in the session is not associated with the user itself.
+        if ($exception instanceof RoleInSessionHasNoAssociationWithUser) {
 
-        if ($exception instanceof SpatieUnauthorizedException && HoomdossierSession::hasRole()) {
+            // try to obtain a role from the user.
+            $role = \Auth::user()->roles()->first();
+
+            if ($role instanceof Role) {
+                HoomdossierSession::setRole($role);
+
+                return redirect(route('cooperation.home'));
+            } else {
+                HoomdossierSession::destroy();
+                \Auth::logout();
+                $request->session()->invalidate();
+
+                return redirect()->route('cooperation.home');
+            }
+        }
+
+        // Handle the exception if the user is not authorized / has the right roles
+        if ($exception instanceof SpatieUnauthorizedException) {
+
+            // the role the user currently has in his session
             $authorizedRole = Role::find(HoomdossierSession::getRole());
 
             return redirect(

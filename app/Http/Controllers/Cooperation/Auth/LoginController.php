@@ -90,9 +90,10 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  Request  $request
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response|void
+     * @throws ValidationException
      */
     public function login(Request $request)
     {
@@ -127,36 +128,18 @@ class LoginController extends Controller
             }
         }
 
+
+        // try to login the user with the given credentials from the request.
         if ($this->attemptLogin($request)) {
+
             $user = \Auth::user();
 
-            // get the first building from the user
-            $building = $user->buildings()->first();
+            $role = $user->roles()->first();
+            dd($role);
 
-            // if he has a building redirect him, else redirect him to a page where he needs to create a building
-            // without a building the application is useless.
-            if ($building instanceof Building) {
-                // we cant query on the Spatie\Role model so we first get the result on the "original model"
-                $role = Role::findByName($user->roles->first()->name);
+            $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role->name) : $this->redirectTo = '/admin';
 
-                // set the redirect url
-                if (1 == $user->roles->count()) {
-                    $this->redirectTo = RoleHelper::getUrlByRole($role);
-                } else {
-                    $this->redirectTo = '/admin';
-                }
-
-                return $this->sendLoginResponse($request);
-            } else {
-                // there is no building connected, log the user out. destroy sessions and let them create a building
-                HoomdossierSession::destroy();
-
-                $this->guard()->logout();
-
-                $request->session()->invalidate();
-
-                return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
-            }
+            return $this->sendLoginResponse($request);
         }
 
         // If the login attempt was unsuccessful we will increment the number of attempts
@@ -167,19 +150,4 @@ class LoginController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
-    /*
-     * Send the response after the user was authenticated.
-     *
-     * @param $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    /*protected function sendLoginResponse ($request)
-    {
-        $request->session()->regenerate();
-
-        $this->clearLoginAttempts($request);
-
-        //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
-        return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
-    }*/
 }

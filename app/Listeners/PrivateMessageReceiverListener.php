@@ -37,8 +37,6 @@ class PrivateMessageReceiverListener
 
         $connectedCoachesForBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($event->privateMessage->building_id);
 
-        dd($groupParticipants);
-
         // now we create for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {
             // check the group participant is the owner of the building and the send message is private

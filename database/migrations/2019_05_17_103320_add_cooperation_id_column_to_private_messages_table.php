@@ -27,8 +27,8 @@ class AddCooperationIdColumnToPrivateMessagesTable extends Migration
     public function down()
     {
         Schema::table('private_messages', function (Blueprint $table) {
+	        $table->dropForeign('cooperation_id');
             $table->dropColumn('cooperation_id');
-            $table->dropForeign('cooperation_id');
         });
     }
 }

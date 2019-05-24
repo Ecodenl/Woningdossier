@@ -46,21 +46,19 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $cooperationId = $request->session()->get('cooperation');
+        $cooperationId = HoomdossierSession::getCooperation();
+
         if (is_null($cooperationId)) {
             return redirect()->route('index');
         }
+
         $cooperation = Cooperation::find($cooperationId);
-        if ( ! $cooperation instanceof Cooperation) {
+        if (!$cooperation instanceof Cooperation) {
             return redirect()->route('index');
         }
 
-        if ($request->routeIs('cooperation.admin.*')) {
-            return redirect()->route('cooperation.admin.login', ['cooperation' => $cooperation]);
-        }
 
-        return redirect()->route('cooperation.login',
-            compact('cooperation'));
+        return redirect()->route('cooperation.login', compact('cooperation'));
     }
 
     /**
@@ -120,7 +118,6 @@ class Handler extends ExceptionHandler
 
         // The user is not authorized at all.
         if ($exception instanceof UnauthorizedException) {
-            \Auth::user()->logout();
             return redirect()->route('cooperation.home');
         }
 

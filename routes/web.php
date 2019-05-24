@@ -171,8 +171,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
         });
 
-        // todo add admin middleware checking ACLs
-        Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['current-role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
+        Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
+
             Route::get('/', 'AdminController@index')->name('index');
             Route::get('stop-session', 'AdminController@stopSession')->name('stop-session');
             Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
@@ -211,8 +211,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
             /* Section for the cooperation-admin and coordinator */
             Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['current-role:cooperation-admin|coordinator']], function () {
-//                Route::resource('example-buildings', 'ExampleBuildingController');
-//                Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                     Route::get('', 'UserController@index')->name('index');
                     Route::get('create', 'UserController@create')->name('create');
@@ -262,9 +260,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                         Route::get('', 'StepController@index')->name('index');
                         Route::post('set-active', 'StepController@setActive')->name('set-active');
                     });
-
-//                    Route::resource('example-buildings', 'ExampleBuildingController');
-//                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
 
                     // needs to be the last route due to the param
                     Route::get('home', 'CooperationAdminController@index')->name('index');

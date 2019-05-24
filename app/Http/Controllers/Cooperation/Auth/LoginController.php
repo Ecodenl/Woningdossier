@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Building;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -134,10 +133,10 @@ class LoginController extends Controller
 
             $user = \Auth::user();
 
-            $role = $user->roles()->first();
-            dd($role);
+            // getUrlByRoleName expects spatie model.
+            $role = \Spatie\Permission\Models\Role::findByName($user->roles()->first()->name);
 
-            $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role->name) : $this->redirectTo = '/admin';
+            $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
 
             return $this->sendLoginResponse($request);
         }

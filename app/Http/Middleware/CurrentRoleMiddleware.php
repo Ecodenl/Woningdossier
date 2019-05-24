@@ -20,11 +20,6 @@ class CurrentRoleMiddleware
     public function handle($request, Closure $next, $role)
     {
 
-        // check if the user is actually authorized at all.
-        if (\Auth::guest()) {
-            throw UnauthorizedException::notLoggedIn();
-        }
-
         $roles = is_array($role) ? $role : explode('|', $role);
 
         $authorizedRole = Role::findById(HoomdossierSession::getRole());

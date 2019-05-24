@@ -31,7 +31,7 @@ class SwitchRoleController extends Controller
         if (! $user || ! $user->hasRole($role)) {
             \Log::debug('No user or user does not have this role');
 
-            return null;
+            return redirect()->route('cooperation.admin.index');
         }
 
         \Log::debug('Switching roles from '.$request->session()->get('role_id', '').' to '.$role->id);

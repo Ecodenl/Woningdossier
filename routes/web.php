@@ -26,8 +26,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         Route::get('check-existing-mail', 'Auth\RegisterController@checkExistingEmail')->name('check-existing-email');
         Route::post('connect-existing-account', 'Auth\RegisterController@connectExistingAccount')->name('connect-existing-account');
 
-        //		 Login, forgot password etc.
-
         Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
         Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
 
@@ -306,10 +304,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
     });
 });
 
-Route::post('logout', 'Cooperation\Admin\Auth\LoginController@logout')->name('logout');
-//Route::get('password/reset/{token?}', 'Cooperation\Auth\ResetPasswordController@showResetForm')->name('password.reset');
-//Route::post('password/email', 'Cooperation\Auth\PasswordController@sendResetLinkEmail');
-//Route::post('password/reset', 'Cooperation\Auth\PasswordController@reset');
 
 Route::get('/', function () {
     return view('welcome');

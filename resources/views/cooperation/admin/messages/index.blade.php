@@ -21,7 +21,7 @@
                         <tbody>
                         @foreach($buildings as $building)
                             <?php
-                               $mostRecentMessage = \App\Models\PrivateMessage::where('building_id', $building->id)->get()->last();
+                               $mostRecentMessage = $building->privateMessages->last();
                             ?>
                             <tr>
                                 <td data-sort="{{strtotime($mostRecentMessage->created_at->format('d-m-Y H:i'))}}">
@@ -38,7 +38,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\PrivateMessageView::getTotalUnreadMessagesCountByBuildingId($building->id)}}
+                                    {{\App\Models\PrivateMessageView::getTotalUnreadMessagesCountByBuildingForAuthUser($building)}}
                                 </td>
                             </tr>
                         @endforeach

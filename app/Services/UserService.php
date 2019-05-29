@@ -12,6 +12,7 @@ class UserService
 {
     public static function deleteUser(User $user)
     {
+
         // if the user is only associated with 1 cooperation, we delete the whole account with all its data
         // else we delete the relation between the cooperation and the user.
         if ($user->cooperations()->count() === 1) {
@@ -48,10 +49,13 @@ class UserService
             $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
             $user->cooperations()->detach($currentCooperation);
 
-            // the user still exists, so we have to logout the user
-            HoomdossierSession::destroy();
-            \Auth::logout();
-            request()->session()->invalidate();
+            // we only want to do this if the user is deleting himself. Otherwise admins would randomly logout.
+            if (\Auth::id() == $user->id) {
+                // the user still exists, so we have to logout the user
+                HoomdossierSession::destroy();
+                \Auth::logout();
+                request()->session()->invalidate();
+            }
         }
     }
 }

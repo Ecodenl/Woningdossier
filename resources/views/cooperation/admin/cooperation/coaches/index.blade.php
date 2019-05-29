@@ -24,6 +24,7 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
                             <?php $building = $user->buildings()->first(); ?>
+                            @if($building instanceof \App\Models\Building)
                             <tr>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
@@ -42,6 +43,7 @@
                                     {{implode(',', $user->roles->pluck('human_readable_name')->toArray())}}
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

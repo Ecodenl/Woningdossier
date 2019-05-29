@@ -15,14 +15,11 @@ use Illuminate\Http\Request;
 
 class BuildingController extends Controller
 {
-    public function index()
+    public function index(Cooperation $cooperation)
     {
-
-        $userId = \Auth::id();
-
         // get most recent building coach statuses for
         $buildingCoachStatuses = BuildingCoachStatus::hydrate(
-            BuildingCoachStatus::getConnectedBuildingsByUserId($userId)->all()
+            BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation)->all()
         );
 
         return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildingCoachStatuses'));

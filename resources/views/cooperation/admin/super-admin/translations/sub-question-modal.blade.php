@@ -17,7 +17,7 @@
                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
                             <textarea class="form-control" name="language_lines[{{$locale}}][help][{{$subQuestion->helpText->id}}]">{{$text}}</textarea>
                             <label for="">key: {{$subQuestion->helpText->group}}.{{$subQuestion->helpText->key}}</label>
-                            <input type="hidden" id="original-help-text" disabled="disabled" value="{{$text}}">
+                            <input type="hidden" class="original-help-text" disabled="disabled" value="{{$text}}">
                         </div>
                     @endforeach
                 @endif

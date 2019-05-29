@@ -316,24 +316,29 @@ class PrivateMessage extends Model
      */
     public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
     {
-        // get the coaches with access to the building
-        $coachesWithAccess = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
+	    // create a collection of group members
+	    $groupMembers = collect();
 
-        // create a collection of group members
-        $groupMembers = collect();
+	    $building = Building::find($buildingId);
 
+	    if ($building instanceof Building) {
 
-        // if its a public conversation we push the building owner in it
-        if ($publicConversation) {
-            // get the owner of the building,
-            $groupMembers->push(Building::find($buildingId)->user);
-        }
+		    // get the coaches with access to the building
+		    $coachesWithAccess = BuildingCoachStatus::getConnectedCoachesByBuildingId( $buildingId );
 
-        // put the coaches with access to the groupmembers
-        foreach ($coachesWithAccess as $coachWithAccess) {
-            $groupMembers->push(User::find($coachWithAccess->coach_id));
-        }
+		    // if its a public conversation we push the building owner in it
+		    if ( $publicConversation ) {
+			    // get the owner of the building,
+			    if ($building->user instanceof User) {
+				    $groupMembers->push( $building->user );
+			    }
+		    }
 
+		    // put the coaches with access to the groupmembers
+		    foreach ( $coachesWithAccess as $coachWithAccess ) {
+			    $groupMembers->push( User::find( $coachWithAccess->coach_id ) );
+		    }
+	    }
 
         return $groupMembers;
     }

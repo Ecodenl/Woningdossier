@@ -36,7 +36,7 @@
     @include('cooperation.admin.layouts.navbar')
     @include('cooperation.layouts.messages')
 
-    <div class="container">
+    <div class="container-fluid">
         @if(stristr(Route::currentRouteName(), 'cooperation-to-manage'))
             {{--a little magic--}}
             <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
@@ -57,7 +57,7 @@
         <div class="row">
             @if(!isset($menu) || $menu == true)
                 @include('cooperation.admin.layouts.sidebar-menu')
-                <div class="col-md-9">
+                <div class="col-md-10">
                     @yield('content')
                 </div>
             @else

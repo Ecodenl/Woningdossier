@@ -161,25 +161,34 @@
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    @foreach($building->buildingFeatures()->forMe()->get() as $userInputValue)
-                                        <?php
-                                        // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
-                                        $value = $userInputValue->monument;
-                                        if (1 === $value) {
-                                            $trans = __('woningdossier.cooperation.radiobutton.yes');
-                                        } elseif (2 === $value) {
-                                            $trans = __('woningdossier.cooperation.radiobutton.no');
-                                        } else {
-                                            $trans = __('woningdossier.cooperation.radiobutton.unknown');
-                                        }
-                                        ?>
+                                    <?php
+                                    // we need to check if there is a answer from one input source
+                                    $hasAnswerMonument = $building->buildingFeatures()->forMe()->get()->contains('monument', '!=', '');
 
-                                        <li class="change-input-value"
-                                            data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"
-                                            data-input-value="{{ $value }}"><a
-                                                    href="#">{{ $userInputValue->getInputSourceName() }}
-                                                : {{ $trans }}</a></li>
-                                    @endforeach
+                                    ?>
+                                    @if(!$hasAnswerMonument)
+                                            @include('cooperation.tool.includes.no-answer-available')
+                                    @else
+                                        @foreach($building->buildingFeatures()->forMe()->get() as $userInputValue)
+                                            <?php
+                                            // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
+                                            $value = $userInputValue->monument;
+                                            if (1 === $value) {
+                                                $trans = __('woningdossier.cooperation.radiobutton.yes');
+                                            } elseif (2 === $value) {
+                                                $trans = __('woningdossier.cooperation.radiobutton.no');
+                                            } else {
+                                                $trans = __('woningdossier.cooperation.radiobutton.unknown');
+                                            }
+                                            ?>
+
+                                            <li class="change-input-value"
+                                                data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"
+                                                data-input-value="{{ $value }}"><a
+                                                        href="#">{{ $userInputValue->getInputSourceName() }}
+                                                    : {{ $trans }}</a></li>
+                                        @endforeach
+                                    @endif
                                 </ul>
                             </div>
                         </div>
@@ -441,13 +450,13 @@
 
                                 <div class="input-group input-source-group">
                                     <label class="radio-inline">
-                                        <input type="radio" name="cook_gas"
+                                        <input type="radio" name="cook_gas" required="required"
                                                @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked
                                                @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                         {{--<input type="radio" name="cook_gas" @if(old('cook_gas') == 1) checked @elseif(isset($energyHabit) && $energyHabit->cook_gas == 1) checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" name="cook_gas"
+                                        <input type="radio" name="cook_gas" required="required"
                                                @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked
                                                @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
                                     </label>
@@ -455,6 +464,14 @@
                                         <button type="button" class="btn btn-default dropdown-toggle"
                                                 data-toggle="dropdown"><span class="caret"></span></button>
                                         <ul class="dropdown-menu">
+                                            <?php
+                                            // we need to check if there is a answer from one input source
+                                            $hasAnswerCookGas = $userEnergyHabitsForMe->contains('cook_gas', '!=', '');
+
+                                            ?>
+                                            @if(!$hasAnswerCookGas)
+                                                    @include('cooperation.tool.includes.no-answer-available')
+                                            @else
                                             @foreach($userEnergyHabitsForMe as $userInputValue)
                                                 <?php
                                                 // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
@@ -471,6 +488,7 @@
                                                             href="#">{{ $userInputValue->getInputSourceName() }}
                                                         : {{ $trans }}</a></li>
                                             @endforeach
+                                                @endif
                                         </ul>
                                     </div>
                                 </div>

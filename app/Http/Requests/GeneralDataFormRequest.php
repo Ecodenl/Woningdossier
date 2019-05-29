@@ -101,4 +101,11 @@ class GeneralDataFormRequest extends FormRequest
 
         return $rules;
     }
+
+    public function isFillingToolForUserRules()
+    {
+        return [
+            'cook_gas' => 'required|numeric'
+        ];
+    }
 }

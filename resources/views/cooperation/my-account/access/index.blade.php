@@ -3,10 +3,11 @@
 @section('my_account_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.my-account.messages.index.header')
+            @lang('my-account.access.index.header')
         </div>
 
         <div class="panel-body">
+        @if($conversationRequests->isNotEmpty())
             <div class="row">
                 <div class="col-sm-12">
                     <form id="allow-access-form" action="{{route('cooperation.my-account.access.allow-access')}}" method="post">
@@ -17,25 +18,26 @@
                                        @if(old('allow_access') && old('allow_access') == 'on' || $conversationRequests->contains('allow_access', true))
                                             checked="checked"
                                         @endif>
-                                @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
+                                @lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
                             </label>
                             @if ($errors->has('allow_access'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('allow_access') }}</strong>
                                 </span>
                             @endif
-                            <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
+                            <p>@lang('my-account.access.index.text-allow-access')</p>
                         </div>
                     </form>
                 </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-sm-12">
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.my-account.access.index.table.columns.coach')</th>
-                            <th>@lang('woningdossier.cooperation.my-account.access.index.table.columns.actions')</th>
+                            <th>@lang('my-account.access.index.table.columns.coach')</th>
+                            <th>@lang('my-account.access.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>

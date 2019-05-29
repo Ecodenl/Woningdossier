@@ -27,7 +27,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         Route::post('connect-existing-account',
             'Auth\RegisterController@connectExistingAccount')->name('connect-existing-account');
 
-        Route::get('fill-address', 'Auth\RegisterController@fillAddress')->name('fill-address');
         //		 Login, forgot password etc.
 
         Route::get('resend-confirm-account-email',
@@ -42,8 +41,17 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             Route::post('', 'CreateBuildingController@store')->name('store');
         });
 
+        Route::group(['as' => 'recover-old-email.', 'prefix' => 'recover-old-email'], function () {
+            Route::get('{token}', 'RecoverOldEmailController@recover')->name('recover');
+        });
+
         // Logged In Section
         Route::group(['middleware' => 'auth'], function () {
+
+            Route::get('home', 'HomeController@index')
+                 ->name('home')
+                 ->middleware('deny-if-filling-for-other-building');
+
 
             Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
 
@@ -52,7 +60,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     ->name('download');
             });
 
-            Route::get('home', 'HomeController@index')->name('home');
             //Route::get('measures', 'MeasureController@index')->name('measures.index');
             Route::get('input-source/{input_source_value_id}',
                 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
@@ -66,11 +73,17 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             // my account
-            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount'], function () {
+            Route::group(['as' => 'my-account.', 'prefix' => 'my-account', 'namespace' => 'MyAccount', 'middleware' => 'deny-if-filling-for-other-building'], function () {
                 Route::get('', 'MyAccountController@index')->name('index');
-                Route::resource('settings', 'SettingsController', ['only' => ['index', 'store']]);
-                Route::delete('settings', 'SettingsController@destroy')->name('settings.destroy');
-                Route::post('settings/reset-dossier', 'SettingsController@resetFile')->name('settings.reset-file');
+
+                Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
+                    Route::get('', 'SettingsController@index')->name('index');
+                    Route::put('', 'SettingsController@update')->name('update');
+                    Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
+                    Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
+                });
+
+
 
                 Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
                     Route::get('', 'ImportCenterController@index')->name('index');
@@ -79,6 +92,11 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('dismiss-notification',
                         'ImportCenterController@dismissNotification')->name('dismiss-notification');
                 });
+
+                Route::resource('notification-settings', 'NotificationSettingsController')->only([
+                    'index', 'show', 'update'
+                ]);
+
                 Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');

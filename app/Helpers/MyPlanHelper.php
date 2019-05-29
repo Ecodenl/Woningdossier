@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Building;
 use App\Models\Interest;
+use App\Models\Log;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
@@ -107,11 +108,11 @@ class MyPlanHelper
         $interested = false;
 
         // get the type of the step
-        $type = key(self::STEP_INTERESTS[$step]);
+//        $type = key(self::STEP_INTERESTS[$step]);
         // count the total interestedInIds
-        $totalInterestInIds = count(self::STEP_INTERESTS[$step][$type]);
+//        $totalInterestInIds = count(self::STEP_INTERESTS[$step][$type]);
         // get the full user input for the current step
-        $fullRequestForUserHisAdvicesOnCurrentStep = $request->input('advice.*.'.$step);
+//        $fullRequestForUserHisAdvicesOnCurrentStep = $request->input('advice.*.'.$step);
 
         if (array_key_exists('planned_year', $myAdvice[$step])) {
             $requestPlannedYear = $myAdvice[$step]['planned_year'];
@@ -121,16 +122,17 @@ class MyPlanHelper
             $interested = true;
         }
 
-        $stepInterests = self::STEP_INTERESTS[$step];
+//        $stepInterests = self::STEP_INTERESTS[$step];
         // update the planned year
         $updates = [
             'planned' => $interested,
-            'planned_year' => isset($requestPlannedYear) ? $requestPlannedYear : null,
+            'planned_year' => $requestPlannedYear,
         ];
 
         // update the advices
         $advice->update($updates);
 
+        /*
         $plannedYearsForCurrentStep = collect();
         // check if the current step has more then 1 interest question
         if ($totalInterestInIds > 1) {
@@ -161,10 +163,12 @@ class MyPlanHelper
             $plannedYear = Carbon::create($requestPlannedYear);
             $currentYear = Carbon::now()->year(date('Y'));
 
+
             // check if the current step has more then 1 interest question
             // for those, we DON'T want to change the interested level based on the planned year if the interest box is not checked
             // but if the interest box is checked and the planned year is null, we change the interest level
             if ($totalInterestInIds > 1) {
+                \Log::debug('There are multiple interested ids');
                 // we collected all the planned years for the current step / stepmeasures
                 // we always want to calculate with the lowest year possible.
                 $plannedYear = Carbon::create($plannedYearsForCurrentStep->min());
@@ -217,11 +221,13 @@ class MyPlanHelper
                     if ($currentYear->diff($plannedYear)->y <= 3) {
                         $interest = Interest::where('calculate_value', '=', 1)->first();
                     } else {
+
                         // If the filled in year has a difference of more than 3 years than
                         // the current year, we set the interest  to 2 (Ja, op termijn)
                         $interest = Interest::where('calculate_value', '=', 2)->first();
                     }
                 } else {
+
                     // So the planned year is empty. Let's look for the advised year.
                     if (is_null($advice->year)) {
                         $advice->year = $advice->getAdviceYear();
@@ -238,6 +244,7 @@ class MyPlanHelper
 
                     // last resort
                     if (! isset($interest)) {
+                        \Log::debug('$interest is not set, so the interest level is not determined yet.');
                         // interested, but we know NOTHING about years, set to 2 (Ja, op termijn)
                         $interest = Interest::where('calculate_value', '=', 2)->first();
                     }
@@ -280,6 +287,7 @@ class MyPlanHelper
                 );
             }
         }
+        */
 
         return $step;
     }

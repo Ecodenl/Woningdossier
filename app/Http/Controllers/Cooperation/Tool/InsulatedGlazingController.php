@@ -11,6 +11,7 @@ use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
@@ -35,6 +36,7 @@ use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 
 class InsulatedGlazingController extends Controller
 {
@@ -53,6 +55,7 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
+
         // we do not want the user to set his interests for this step
 //        $typeIds = [1, 2];
 

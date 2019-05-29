@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
-use App\Helpers\HoomdossierSession;
+use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\Cooperation\Coordinator\CoachRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\UserRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -18,9 +17,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Prophecy\Doubler\ClassPatch\TraversablePatch;
 use Spatie\Permission\Models\Role;
-use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class UserController extends Controller
 {
@@ -43,31 +40,7 @@ class UserController extends Controller
     }
 
 
-    protected function getAddressData($postalCode, $number, $pointer = null)
-    {
-        \Log::debug($postalCode . ' ' . $number . ' ' . $pointer);
-        /** @var PicoClient $pico */
-        $pico = app()->make('pico');
-        $postalCode = str_replace(' ', '', trim($postalCode));
-        $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
-
-        if (!is_null($pointer)) {
-            foreach ($response as $addrInfo) {
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
-                    //$data['bag_addressid'] = $addrInfo['bag_adresid'];
-                    \Log::debug(json_encode($addrInfo));
-
-                    return $addrInfo;
-                }
-            }
-
-            return [];
-        }
-
-        return $response;
-    }
-
-    public function store(Cooperation $cooperation, CoachRequest $request)
+    public function store(Cooperation $cooperation, UserRequest $request)
     {
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');
@@ -92,16 +65,15 @@ class UserController extends Controller
             ]
         );
 
-        // get the address information from the bag
-        $address = $this->getAddressData($postalCode, $houseNumber, $addressId);
-
-        // make building features
-        $features = new BuildingFeature(
-            [
-                'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
-                'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
-            ]
+        // now get the pico address data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $postalCode, $houseNumber
         );
+
+        $features = new BuildingFeature([
+            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
+            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
+        ]);
 
         // make a new building
         $building = new Building(
@@ -111,7 +83,7 @@ class UserController extends Controller
                 'extension' => $extension,
                 'postal_code' => $postalCode,
                 'city' => $city,
-                'bag_addressid' => isset($address['bag_adresid']) ? $address['bag_adresid'] : '',
+                'bag_addressid' => $picoAddressData['id'] ?? $addressId  ?? ''
             ]
         );
 
@@ -133,7 +105,7 @@ class UserController extends Controller
         $user->assignRole($roles);
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
-        if ($user->hasRole('resident')) {
+        if ($request->has('coach_id')) {
             // so create a message, with the access allowed
             PrivateMessage::create(
                 [

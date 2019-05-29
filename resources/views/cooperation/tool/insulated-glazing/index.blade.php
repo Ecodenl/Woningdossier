@@ -257,6 +257,17 @@
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
+                                <?php
+                                    // check if there is a answer available from a input source.
+                                    $hasAnswerWoodElements = $building->buildingElements()
+                                                                      ->withoutGlobalScope(\App\Scopes\GetValueScope::class)
+                                                                      ->where('element_id', $woodElements->id)
+                                                                      ->get()
+                                                                      ->contains('element_value_id', '!=', '');
+                                ?>
+                                @if(!$hasAnswerWoodElements)
+                                    @include('cooperation.tool.includes.no-answer-available')
+                                @else
                                 @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
                                     <?php
                                     $myWoodElement = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first();
@@ -270,6 +281,7 @@
                                         </li>
                                     @endif
                                 @endforeach
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -352,14 +364,23 @@
             <div class="col-sm-12">
                 {{--loop through all the insulated glazings with ALL the input sources--}}
                 @foreach ($buildingInsulatedGlazingsForMe as $buildingInsulatedGlazingForMe)
-                    <?php $coachInputSource = App\Models\InputSource::findByShort('coach'); ?>
-                    @if($buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first() instanceof \App\Models\BuildingInsulatedGlazing && array_key_exists('comment', $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra))
+                    <?php
+                        $coachInputSource = App\Models\InputSource::findByShort('coach');
 
+
+                        $buildingInsulatedGlazing = $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first();
+                        $buildingInsulatedGlazingExists = $buildingInsulatedGlazing instanceof \App\Models\BuildingInsulatedGlazing;
+
+                        $extraIsArray = $buildingInsulatedGlazingExists ? is_array($buildingInsulatedGlazing->extra) : false;
+
+                        $thereIsAComment = $extraIsArray ? array_key_exists('comment', $buildingInsulatedGlazing->extra) : false;
+                    ?>
+
+                    @if(($buildingInsulatedGlazingExists && $extraIsArray) && $thereIsAComment)
                         ({{$coachInputSource->name}})
                         @component('cooperation.tool.components.step-question', ['id' => '', 'translation' => 'general.specific-situation', 'required' => false])
 
-                            <textarea disabled="disabled"
-                                      class="disabled form-control">{{$buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra['comment']}}</textarea>
+                            <textarea disabled="disabled" class="disabled form-control">{{$buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra['comment']}}</textarea>
                         @endcomponent
 
                         @break

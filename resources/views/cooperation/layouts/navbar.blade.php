@@ -70,7 +70,11 @@
                     <li><a href="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">@lang('auth.login.form.header')</a></li>
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
-                    <li><a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a></li>
+                    @if (!Auth::user()->isFillingToolForOtherBuilding())
+                    <li>
+                        <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
+                    </li>
+                    @endif
                     <li>
                         <a href="{{
                                     \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->hasCompleted(\App\Models\Step::where('slug', 'building-detail')->first()) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])
@@ -84,27 +88,15 @@
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
                                 </a>
                             </li>
                         @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                             <li>
-                                @switch($roleShort = \App\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->name)
-                                    @case('coach')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
-                                    @case('coordinator')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
-                                    @case('cooperation-admin')
-                                        <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                        @break
-                                    @default
-                                        <?php $messageUrl = route('cooperation.admin.index'); ?>
-                                @endswitch
+                                <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                 <a href="{{$messageUrl}}">
                                     <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessages()}}</span>
+                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
                                 </a>
                             </li>
                         @endif
@@ -117,8 +109,8 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.my-account.settings.form.index.header')</a></li>
-                                    {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('woningdossier.cooperation.my-account.cooperations.form.header')</a></li>--}}
+                                    <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.my-account')</a></li>
+                                    {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                                     <li>
                                         <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"
                                            onclick="event.preventDefault();

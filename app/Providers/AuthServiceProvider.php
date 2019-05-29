@@ -7,8 +7,10 @@ use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
 use App\Models\User;
+use App\NotificationSetting;
 use App\Policies\BuildingPolicy;
 use App\Policies\CooperationPolicy;
+use App\Policies\NotificationSettingPolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\UserPolicy;
@@ -27,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Questionnaire::class => QuestionnairePolicy::class,
         Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
+        NotificationSetting::class => NotificationSettingPolicy::class
     ];
 
     /**

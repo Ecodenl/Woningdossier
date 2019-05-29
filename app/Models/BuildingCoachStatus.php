@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
+use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 
 /**
  * App\Models\BuildingCoachStatus.
  *
- * @property int $id
- * @property int $coach_id
- * @property int $building_id
- * @property string $status
+ * @property int                             $id
+ * @property int                             $coach_id
+ * @property int                             $building_id
+ * @property string                          $status
  * @property \Illuminate\Support\Carbon|null $appointment_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $private_message_id
- * @property \App\Models\Building $building
- * @property \App\Models\User $coach
+ * @property int|null                        $private_message_id
+ * @property \App\Models\Building            $building
+ * @property \App\Models\User                $coach
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus currentStatus($status)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newModelQuery()
@@ -112,6 +114,7 @@ class BuildingCoachStatus extends Model
      * Return the translation from a status
      *
      * @param $status
+     *
      * @return string
      */
     public static function getTranslationForStatus($status): string
@@ -127,9 +130,9 @@ class BuildingCoachStatus extends Model
     public static function getManageableStatuses(): Collection
     {
         return collect([
-            static::STATUS_IN_PROGRESS => static::getTranslationForStatus(static::STATUS_IN_PROGRESS ),
-            static::STATUS_EXECUTED => static::getTranslationForStatus(static::STATUS_EXECUTED ),
-            static::STATUS_NO_EXECUTION => static::getTranslationForStatus(static::STATUS_NO_EXECUTION ),
+            static::STATUS_IN_PROGRESS  => static::getTranslationForStatus(static::STATUS_IN_PROGRESS),
+            static::STATUS_EXECUTED     => static::getTranslationForStatus(static::STATUS_EXECUTED),
+            static::STATUS_NO_EXECUTION => static::getTranslationForStatus(static::STATUS_NO_EXECUTION),
         ]);
     }
 
@@ -137,8 +140,9 @@ class BuildingCoachStatus extends Model
      * Get the current status for a given building id, can return the translation or the status key
      * will return the translation by default.
      *
-     * @param int $buildingId
-     * @param bool $returnTranslation
+     * @param  int   $buildingId
+     * @param  bool  $returnTranslation
+     *
      * @return string
      */
     public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
@@ -146,7 +150,7 @@ class BuildingCoachStatus extends Model
         // get the building, even if its deleted.
         $building = Building::withTrashed()->find($buildingId);
 
-        $buildingCoachStatuses = static::getConnectedCoachesByBuildingId($buildingId);
+        $buildingCoachStatuses       = static::getConnectedCoachesByBuildingId($buildingId);
         $buildingConversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
 
         // first we need to check if the building is active
@@ -157,7 +161,8 @@ class BuildingCoachStatus extends Model
 
             // check if a coach is connected with the building
             if ($buildingCoachStatuses->isNotEmpty()) {
-                $lastKnownBuildingCoachStatus = static::where('status', '!=', BuildingCoachStatus::STATUS_REMOVED)->get()->last();
+                $lastKnownBuildingCoachStatus = static::where('status', '!=',
+                    BuildingCoachStatus::STATUS_REMOVED)->get()->last();
                 // and the status from it
                 $status = $lastKnownBuildingCoachStatus->status;
                 // get the translation
@@ -177,7 +182,7 @@ class BuildingCoachStatus extends Model
             }
         } else {
             // see comments in the if statement above.
-            $status = Building::STATUS_IS_NOT_ACTIVE;
+            $status            = Building::STATUS_IS_NOT_ACTIVE;
             $statusTranslation = __('woningdossier.building-statuses.'.Building::STATUS_IS_NOT_ACTIVE);
         }
 
@@ -193,27 +198,30 @@ class BuildingCoachStatus extends Model
      * Returns the 'connected' coaches from a given building id.
      * A coach is considered to be connected when he has more pending statuses then removed statuses.
      *
-     * @param int $buildingId
+     * @param  int  $buildingId
+     *
      * @return \Illuminate\Support\Collection
      */
     public static function getConnectedCoachesByBuildingId(int $buildingId): Collection
     {
-        $pendingCount = \DB::raw('(
+        $pendingCount            = \DB::raw('(
                 SELECT coach_id, building_id, count(`status`) AS count_pending
 	            FROM building_coach_statuses
-	            WHERE building_id = ' . $buildingId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_PENDING. ' \'
+	            WHERE coach_id is not null
+	            AND building_id = '.$buildingId.' AND `status` = \''.BuildingCoachStatus::STATUS_PENDING.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
-        $removedCount = \DB::raw('(
+        $removedCount            = \DB::raw('(
                 SELECT building_id, coach_id, count(`status`) AS count_removed
 	            FROM building_coach_statuses
-	            WHERE building_id = ' . $buildingId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+                WHERE coach_id is not null
+	            AND building_id = '.$buildingId.' AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
 	            group by coach_id, building_id
             ) AS bcs3');
         $buildingPermissionCount = \DB::raw('(
                 SELECT user_id, count(`building_id`) as count_building_permission
 	            FROM building_permissions
-	            WHERE building_id = ' . $buildingId . '
+	            WHERE building_id = '.$buildingId.'
 	            GROUP BY user_id
             ) as bp');
 
@@ -222,12 +230,13 @@ class BuildingCoachStatus extends Model
          * Retrieves the coaches that have a pending building status, also returns the building_permission count so we can check if the coach can access the building
          */
         $coachesWithPendingBuildingCoachStatus =
-            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending', 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
-                ->from($pendingCount)
-                ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
-                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
-                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
-                ->get();
+            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
+                'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
+               ->from($pendingCount)
+               ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
+               ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
+               ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
+               ->get();
 
         return $coachesWithPendingBuildingCoachStatus;
     }
@@ -240,6 +249,7 @@ class BuildingCoachStatus extends Model
      * @note If there are duplicate created_at for a coach it will return weird stuff.
      *
      * @param $buildingId
+     *
      * @return Collection
      */
     public static function getMostRecentStatusesForBuildingId($buildingId): Collection
@@ -250,61 +260,75 @@ class BuildingCoachStatus extends Model
         $coachIdsThatAreConnectedToBuilding = $coachesWithActiveBuildingCoachStatus->pluck('coach_id')->toArray();
 
         return \DB::table('building_coach_statuses as bcs1')
-            ->select('coach_id', 'building_id', 'created_at', 'status', 'bcs1.appointment_date')
-            ->where('created_at', function ($query) use ($buildingId) {
-                $query->select(\DB::raw('MAX(created_at)'))
-                    ->from('building_coach_statuses as bcs2')
-                    ->whereRaw('building_id = '.$buildingId.' and bcs1.coach_id = bcs2.coach_id');
-            })
-            ->whereIn('coach_id', $coachIdsThatAreConnectedToBuilding)
-            ->orderByDesc('created_at')
-            ->get();
+                  ->select('coach_id', 'building_id', 'created_at', 'status', 'bcs1.appointment_date')
+                  ->where('created_at', function ($query) use ($buildingId) {
+                      $query->select(\DB::raw('MAX(created_at)'))
+                            ->from('building_coach_statuses as bcs2')
+                            ->whereRaw('building_id = '.$buildingId.' and bcs1.coach_id = bcs2.coach_id');
+                  })
+                  ->whereIn('coach_id', $coachIdsThatAreConnectedToBuilding)
+                  ->orderByDesc('created_at')
+                  ->get();
 
     }
 
     /**
-     * Returns all the buildings whom a coach / user is 'connected'
-     * if the building / user is deleted, it wont be returned
-     * A user / building is considered to be connected when he has more pending statuses then removed statuses.
+     * Returns all the connected buildings from a user (coach)
      *
-     * @param int $userId
-     * @return \Illuminate\Support\Collection
+     * @param  User         $user
+     * @param  Cooperation  $cooperation
+     *
+     * @return Collection
      */
-    public static function getConnectedBuildingsByUserId(int $userId): Collection
+    public static function getConnectedBuildingsByUser(User $user, Cooperation $cooperation): Collection
     {
+        $userId        = $user->id;
+        $cooperationId = $cooperation->id;
+
         $pendingCount = \DB::raw('(
                 SELECT coach_id, building_id, count(`status`) AS count_pending
 	            FROM building_coach_statuses
-	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_PENDING. ' \'
+	            WHERE coach_id = '.$userId.' AND `status` = \''.BuildingCoachStatus::STATUS_PENDING.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
         $removedCount = \DB::raw('(
                 SELECT building_id, coach_id, count(`status`) AS count_removed
 	            FROM building_coach_statuses
-	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            WHERE coach_id = '.$userId.' AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
 	            group by coach_id, building_id
             ) AS bcs3');
         $buildingPermissionCount = \DB::raw('(
                 SELECT user_id, count(`building_id`) as count_building_permission
 	            FROM building_permissions
-	            WHERE user_id = ' . $userId. '
+	            WHERE user_id = '.$userId.'
 	            GROUP BY user_id
             ) as bp');
 
-        /**
-         * Retrieves the buildings from a coach that have a higher pending count status then a removed_count
-         * Retrieves the coaches that have a pending building status, also returns the building_permission count so we can check if the coach can access the building
-         */
+
+        // query to get the buildings a user is connected to
         $buildingsTheCoachIsConnectedTo =
-            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending', 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
-                ->from($pendingCount)
-                ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
-                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
-                ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
-                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
-                ->where('buildings.deleted_at', '=', null)
-                ->groupBy('building_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
-                ->get();
+            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
+                'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission',
+                'cooperation_user.cooperation_id')
+                // count the pending statuses
+               ->from($pendingCount)
+                // count the removed count
+               ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
+                // check the building permissions
+               ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
+                // get the buildings
+               ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
+                // check if the building its user / resident is associated with the given cooperation
+               ->join('cooperation_user', function ($joinCooperationUser) use ($cooperationId) {
+                   $joinCooperationUser->on('buildings.user_id', '=', 'cooperation_user.user_id')
+                                       ->where('cooperation_id', $cooperationId);
+               })
+                // check if the coach has access
+               ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
+               ->where('buildings.deleted_at', '=', null)
+               ->groupBy('building_id', 'cooperation_user.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
+               ->get();
+
 
         return $buildingsTheCoachIsConnectedTo;
     }
@@ -314,25 +338,28 @@ class BuildingCoachStatus extends Model
      *
      * @NOTE only returns the statuses if the coach is active.
      *
-     * @param int $userId
+     * @param  int  $userId
+     *
      * @return Collection
      */
     public static function getMostRecentStatusesForUserId($userId): Collection
     {
-        $connectedBuildingsByUserId = static::getConnectedBuildingsByUserId($userId);
+        \Log::debug(__METHOD__.' is begin used!');
+        $connectedBuildingsByUserId = static::getConnectedBuildingsByUser($userId);
 
         // so we can where in on the most recent statuses, so we only get the statuses for the coaches that aren't removed
         $coachIdsThatAreConnectedToBuilding = $connectedBuildingsByUserId->pluck($userId, 'user_id')->toArray();
 
-        return \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')
-            ->where('created_at', function ($query) use ($userId) {
-                $query->select(\DB::raw('MAX(created_at)'))
-                    ->from('building_coach_statuses as bcs2')
-                    ->whereRaw('coach_id = ' . $userId . ' and bcs1.building_id = bcs2.building_id');
-            })->where('coach_id', $userId)
-            ->whereIn('building_id', $coachIdsThatAreConnectedToBuilding)
-            ->orderBy('created_at')
-            ->get();
+        return \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status',
+            'appointment_date')
+                  ->where('created_at', function ($query) use ($userId) {
+                      $query->select(\DB::raw('MAX(created_at)'))
+                            ->from('building_coach_statuses as bcs2')
+                            ->whereRaw('coach_id = '.$userId.' and bcs1.building_id = bcs2.building_id');
+                  })->where('coach_id', $userId)
+                  ->whereIn('building_id', $coachIdsThatAreConnectedToBuilding)
+                  ->orderBy('created_at')
+                  ->get();
     }
 
     /**
@@ -342,6 +369,6 @@ class BuildingCoachStatus extends Model
      */
     public function hasAppointmentDate(): bool
     {
-        return !is_null($this->appointment_date);
+        return ! is_null($this->appointment_date);
     }
 }

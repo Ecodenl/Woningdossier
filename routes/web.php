@@ -190,6 +190,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             /* Section that a coach, coordinator and cooperation-admin can access */
             Route::group(['middleware' => ['role:cooperation-admin|coach|coordinator']], function () {
 
+                Route::resource('messages', 'MessagesController')->only('index');
+
                 Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
                     Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
                     Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')->name('observe-tool-for-user');

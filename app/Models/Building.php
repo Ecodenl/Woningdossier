@@ -482,6 +482,16 @@ class Building extends Model
     }
 
     /**
+     * Get the private messages for a building.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function privateMessages(): HasMany
+    {
+        return $this->hasMany(PrivateMessage::class);
+    }
+
+    /**
      * Check if a building is active
      *
      * @return bool

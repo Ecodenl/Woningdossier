@@ -1,6 +1,8 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', \App\Helpers\Translation::translate('heat-pump.title.title'))
+@section('step_title')
+    {!!  \App\Helpers\Translation::translate('heat-pump.title.title') !!}
+@endsection
 
 
 @section('step_content')

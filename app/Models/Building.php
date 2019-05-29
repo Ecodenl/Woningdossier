@@ -520,13 +520,4 @@ class Building extends Model
         return __('woningdossier.building-statuses.'.$status);
     }
 
-    /**
-     * Get all the private messages for a building.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function privateMessages(): HasMany
-    {
-        return $this->hasMany(PrivateMessage::class);
-    }
 }

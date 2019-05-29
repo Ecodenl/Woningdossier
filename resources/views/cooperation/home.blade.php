@@ -42,29 +42,29 @@
                                     </div>
                                     <div class="text-center col-sm-12">
                                         <a href="{{route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])}}" class="btn btn-primary">
-                                            {{ \App\Helpers\Translation::translate('home.start.get-started.title') }}
+                                            {!!  \App\Helpers\Translation::translate('home.start.get-started.title') !!}
                                         </a>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        {{ \App\Helpers\Translation::translate('home.start.your-cooperation.title', ['cooperation' => $cooperation->name]) }}
+                                        {!! \App\Helpers\Translation::translate('home.start.your-cooperation.title', ['cooperation' => $cooperation->name]) !!}
                                     </div>
                                     <div class="text-center col-sm-12">
                                         <a href="{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}"  class="btn btn-primary">
-                                            {{ \App\Helpers\Translation::translate('home.start.contact-cooperation.title', ['cooperation' => $cooperation->name]) }}
+                                            {!!  \App\Helpers\Translation::translate('home.start.contact-cooperation.title', ['cooperation' => $cooperation->name]) !!}
                                         </a>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        {{ \App\Helpers\Translation::translate('home.start.feedback.title') }}
+                                        {!! \App\Helpers\Translation::translate('home.start.feedback.title') !!}
                                     </div>
                                     <div class="text-center col-sm-12">
                                         <a href="https://form.jotformeu.com/81345355694363" target="_blank" class="btn btn-primary">
-                                            {{ \App\Helpers\Translation::translate('home.start.feedback-button.title') }}
+                                            {!! \App\Helpers\Translation::translate('home.start.feedback-button.title') !!}
                                         </a>
                                     </div>
                                 </div>

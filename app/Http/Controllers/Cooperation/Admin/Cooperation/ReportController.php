@@ -55,22 +55,22 @@ class ReportController extends Controller
 
         switch ($fileType->short) {
             case 'total-report':
-                GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage)->onQueue('high');
+                GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage);
                 break;
             case 'total-report-anonymized':
-                GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage, true)->onQueue('high');
+                GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage, true);
                 break;
             case 'measure-report':
-                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage)->onQueue('high');
+                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage);
                 break;
             case 'measure-report-anonymized':
-                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage, true)->onQueue('high');
+                GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage, true);
                 break;
             case 'custom-questionnaires-report':
-                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType, $fileStorage)->onQueue('high');
+                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType, $fileStorage);
                 break;
             case 'custom-questionnaires-report-anonymized':
-                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType, $fileStorage, true)->onQueue('high');
+                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType, $fileStorage, true);
                 break;
 
         }

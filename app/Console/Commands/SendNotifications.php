@@ -54,7 +54,7 @@ class SendNotifications extends Command
         if ($notificationType instanceof NotificationType) {
             $this->info('Notification type: '.$this->option('type').' exists, let\'s do some work.');
             // get all the users
-            $users = User::with(['cooperations', 'buildings'])->get();
+            $users = User::where('id', 1)->with(['cooperations', 'buildings'])->get();
 
             $bar = $this->output->createProgressBar(count($users));
 
@@ -87,6 +87,8 @@ class SendNotifications extends Command
                             $user, $cooperation, $lastNotifiedAt
                         );
 
+
+                        dd($unreadMessageCount);
                         // check if there actually are new messages
                         if ($unreadMessageCount > 0) {
 

@@ -30,6 +30,10 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUserId($value)
  * @mixin \Eloquent
+ *
+ *
+ * @note the model contains a input_source_id, this does not behave like it does on most models.
+ * the input_source_id will only be filled when its a coach or resident, otherwise we will just set the to_cooperation_id and no input_source_id needs to be set.
  */
 class PrivateMessageView extends Model
 {
@@ -45,8 +49,7 @@ class PrivateMessageView extends Model
     ];
 
 	/**
-	 * Get the total unread messages for a user, this also counts the unread messages from the admin side, after a specific date.
-	 * This is used for sending notifications.
+     * Get the total unread messages for a user within its given cooperation and after a specific date
 	 *
 	 * @param  User  $user
 	 * @param  Cooperation  $cooperation
@@ -67,11 +70,15 @@ class PrivateMessageView extends Model
 			                                      ->count();
 		}
 
-		// get the unread messages for the user itself.
-		$userUnreadMessages = self::where('user_id', $user->id)
-		                          ->where('created_at', '>=', $specificDate)
-		                          ->where('read_at', null)
-		                          ->count();
+		// get the unread messages for the user itself within its given cooperation after a given date.
+        $userUnreadMessages = static::select('private_messages.*')
+            ->where('private_message_views.user_id', $user->id)
+            ->where('read_at', null)
+            ->where('private_message_views.created_at', '>=', $specificDate)
+            ->join('private_messages', function ($query) use ($cooperation) {
+                $query->on('private_message_views.private_message_id', '=', 'private_messages.id')
+                      ->where('cooperation_id', $cooperation->id);
+            })->count();
 
 		$totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
 

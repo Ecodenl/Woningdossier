@@ -52,16 +52,13 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     {
         if ($this->building instanceof Building) {
 
-            // only notify a user if he has unread messages.
-            if ($this->unreadMessageCount > 0) {
-                // send the mail to the user
-                \Mail::to($this->user->email)
-                     ->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
+            // send the mail to the user
+            \Mail::to($this->user->email)->send(new UnreadMessagesEmail($this->user, $this->cooperation, $this->unreadMessageCount));
 
-                // after that has been done, update the last_notified_at to the current date
-                $this->notificationSetting->last_notified_at = Carbon::now();
-                $this->notificationSetting->save();
-            }
+            // after that has been done, update the last_notified_at to the current date
+            $this->notificationSetting->last_notified_at = Carbon::now();
+            $this->notificationSetting->save();
+
         } else {
             \Log::debug('it seems like user id '.$this->user->id.' has no building!');
         }

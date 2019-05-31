@@ -35,13 +35,13 @@ class BuildingController extends Controller
                 ->get()->toArray()
         )->first();
 
-        $this->authorize('show', $building);
-
         if ( ! $building instanceof Building) {
             return redirect(route('cooperation.admin.index'));
         }
-
         $user = $building->user()->first();
+
+        $this->authorize('show', [$building, $cooperation]);
+
 
         $userDoesNotExist = ! $user instanceof User;
         $userExists       = ! $userDoesNotExist;
@@ -93,7 +93,7 @@ class BuildingController extends Controller
         if ($userExists) {
             if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
 
-                $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId(\Auth::id());
+                $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
 
                 $previous = $connectedBuildingsForUser->where('building_id', '<', $buildingId)->max('building_id');
                 $next     = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');

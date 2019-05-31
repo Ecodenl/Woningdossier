@@ -197,7 +197,7 @@
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
-            @can('talk-to-resident', $building)
+            @can('talk-to-resident', [$building, $cooperation])
                 <li>
                     <a data-toggle="tab" href="#messages-public">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
@@ -223,7 +223,7 @@
             <div id="messages-intern" class="tab-pane fade in active">
                 @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
-            @can('talk-to-resident', $building)
+            @can('talk-to-resident', [$building, $cooperation])
                 {{--public messages / between the resident and cooperation--}}
                 <div id="messages-public" class="tab-pane fade">
                     @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])

@@ -275,8 +275,8 @@ class BuildingCoachStatus extends Model
     /**
      * Returns all the connected buildings from a user (coach)
      *
-     * @param  User         $user
-     * @param  Cooperation  $cooperation
+     * @param  User         $user, the user we want the connected buildings from.
+     * @param  Cooperation  $cooperation, from which cooperation we want to retrieve it.
      *
      * @return Collection
      */

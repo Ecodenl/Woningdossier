@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
+use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -33,11 +34,11 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function show(User $user, Building $building)
+    public function show(User $user, Building $building, Cooperation $cooperation)
     {
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId($user->id);
+            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
 
             // check if the current building is in that collection.
             return  $connectedBuildingsForUser->contains('building_id', $building->id);
@@ -58,12 +59,12 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function talkToResident(User $user, Building $building)
+    public function talkToResident(User $user, Building $building, Cooperation $cooperation)
     {
         if ($user->hasRoleAndIsCurrentRole('coach')) {
 
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUserId($user->id);
+            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
 
             // check if the current building is in that collection and if there are public messages.
             return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;

@@ -61,7 +61,6 @@ class PrivateMessageView extends Model
 	{
 		$cooperationUnreadMessagesCount = 0;
 
-
 		// if the user has the role coordinator or cooperation-admin get them as well
 		if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
 			$cooperationUnreadMessagesCount = self::where('to_cooperation_id', $cooperation->id)
@@ -143,11 +142,13 @@ class PrivateMessageView extends Model
         // if the user his current role is coordinator or cooperation admin
         // then he talks as a cooperation itself, so we need to get the unread messages for the cooperation itself.
         if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+
             // get the messages that have been sent to the cooperation.
             $totalUnreadMessagesForCurrentRole = static::where('to_cooperation_id', HoomdossierSession::getCooperation())
-                         ->where('input_source_id', null)
-                         ->where('read_at', null)
-                         ->count();
+                      ->where('input_source_id', null)
+                      ->where('read_at', null)
+//                      ->get();
+                      ->count();
 
         } else {
             // the user is a coach or resident at this point.

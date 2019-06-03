@@ -75,39 +75,55 @@
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('postal_code') ? ' has-error' : '' }}">
-                                <label for="postal_code" class="col-md-4 control-label">@lang('auth.register.form.postal_code')<span class="required">*</span></label>
+                            <div class="row">
 
-                                <div class="col-md-2">
-                                    <input id="postal_code" type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required autofocus>
+                                <div class="col-md-6">
 
-                                    @if ($errors->has('postal_code'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('postal_code') }}</strong>
-                                        </span>
-                                    @endif
+                                    <div class="form-group row {{ $errors->has('postal_code') ? ' has-error' : '' }}">
+                                        <label for="postal_code" class="col-md-8 control-label">@lang('auth.register.form.postal_code')<span class="required">*</span></label>
+
+                                        <div class="col-md-4">
+                                                <input id="postal_code" type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required autofocus>
+                                        </div>
+
+                                        @if ($errors->has('postal_code'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('postal_code') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
 
-                                <label for="number" class="col-md-2 control-label">@lang('auth.register.form.number')<span class="required">*</span></label>
+                                <div class="col-md-4">
+                                    <div class="row form-group{{ $errors->has('number') ? ' has-error' : '' }}">
+                                        <div class="col-md-6">
+                                            <label for="number" class="control-label">@lang('auth.register.form.number')<span class="required">*</span></label>
+                                        </div>
 
-                                <div class="col-md-2">
-                                    <input id="number" type="text" class="form-control" name="number" value="{{ old('number') }}" required autofocus>
+                                        <div class="col-md-6">
+                                            <input id="number" type="text" class="form-control" name="number" value="{{ old('number') }}" required autofocus>
+                                        </div>
 
-                                    @if ($errors->has('number'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('number') }}</strong>
-                                        </span>
-                                    @endif
+                                        @if ($errors->has('number'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('number') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 <div class="col-md-2">
-                                    <input id="house_number_extension" type="text" class="form-control" name="house_number_extension" placeholder="@lang('auth.register.form.house_number_extension')" value="{{ old('house_number_extension') }}" autofocus>
+                                    <div class="form-group row {{ $errors->has('house_number_extension') ? ' has-error' : '' }}">
+                                        <div class="col-sm-12">
+                                            <input id="house_number_extension" type="text" class="form-control" name="house_number_extension" placeholder="@lang('auth.register.form.house_number_extension')" value="{{ old('house_number_extension') }}" autofocus>
+                                        </div>
 
-                                    @if ($errors->has('house_number_extension'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('house_number_extension') }}</strong>
-                                        </span>
-                                    @endif
+                                        @if ($errors->has('house_number_extension'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('house_number_extension') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 

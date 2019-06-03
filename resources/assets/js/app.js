@@ -114,12 +114,22 @@ $(".has-address-data #street").focusin(
                 city.addClass("loading");
             },
             success: function(data){
-                // remove error messages, since its a success.
-                $('.help-block').remove();
+
+                removeErrorFields();
+
                 street.removeClass("loading");
                 city.removeClass("loading");
+
                 var address = data;
-                console.log(address);
+                var possibleWrongPostalCode = $('#possible-wrong-postal-code');
+
+                // if there is no postal code returned, then the given postal code is *probably* wrong.
+                if (address.postal_code === "") {
+                    possibleWrongPostalCode.show();
+                } else {
+                    possibleWrongPostalCode.show();
+                }
+
                 street.val(address.street);
                 if (address.street !== "") {
                     number.val(address.number);
@@ -136,7 +146,7 @@ $(".has-address-data #street").focusin(
 
                 $.each(errorMessage.errors, function(fieldName, message) {
                     var inputWithError = $('input[name='+fieldName+']');
-                    inputWithError.parent().pa
+                    inputWithError.parent().parent().addClass('has-error');
                     inputWithError.parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
                 });
             },
@@ -144,3 +154,10 @@ $(".has-address-data #street").focusin(
         });
     }
 );
+
+
+function removeErrorFields()
+{
+    $('.help-block').remove();
+    $('.has-error').removeClass('has-error');
+}

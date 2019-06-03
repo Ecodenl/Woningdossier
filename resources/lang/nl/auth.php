@@ -44,6 +44,8 @@ return [
                 'success'           => 'Bedankt. We hebben een e-mail met een bevestigingslink naar u toegestuurd om uw registratie te voltooien.',
                 'account-connected' => 'Het account is gekoppeld, u kunt nu inloggen met het wachtwoord waar u mee inlogde bij uw vorige coöperatie.',
             ],
+
+            'possible-wrong-postal-code' => 'De postcode die is opgegeven lijkt fout te zijn, weet u zeker dat deze correct is ingevuld ? Als u hiervan zeker bent kunt u doorgaan.'
         ],
     ],
     'login' => [

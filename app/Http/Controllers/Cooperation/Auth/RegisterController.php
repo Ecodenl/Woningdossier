@@ -103,7 +103,7 @@ class RegisterController extends Controller
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
 
-        // now get the picoaddress               data.
+        // now get the picoaddress data.
         $picoAddressData = PicoHelper::getAddressData(
             $data['postal_code'], $data['number']
         );

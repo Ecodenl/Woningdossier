@@ -125,6 +125,16 @@
                                         @endif
                                     </div>
                                 </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-group d-none" id="possible-wrong-postal-code">
+                                        <div class="col-md-offset-4 col-md-8">
+                                            @component('cooperation.tool.components.alert', ['alertType' => 'info'])
+                                                @lang('auth.register.form.possible-wrong-postal-code')
+                                            @endcomponent
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group{{ $errors->has('street') ? ' has-error' : '' }}">

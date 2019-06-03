@@ -127,7 +127,7 @@ $(".has-address-data #street").focusin(
                 if (address.postal_code === "") {
                     possibleWrongPostalCode.show();
                 } else {
-                    possibleWrongPostalCode.show();
+                    possibleWrongPostalCode.hide();
                 }
 
                 street.val(address.street);

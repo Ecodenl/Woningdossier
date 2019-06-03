@@ -198,10 +198,11 @@ $(".has-address-data #street").focusin(function () {
             var possibleWrongPostalCode = $('#possible-wrong-postal-code');
 
             // if there is no postal code returned, then the given postal code is *probably* wrong.
+            console.log(address);
             if (address.postal_code === "") {
                 possibleWrongPostalCode.show();
             } else {
-                possibleWrongPostalCode.show();
+                possibleWrongPostalCode.hide();
             }
 
             street.val(address.street);

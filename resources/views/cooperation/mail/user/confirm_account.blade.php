@@ -4,13 +4,13 @@
 ])
 <br><br>
 <?php
-    $confirmUrl = route('cooperation.confirm', ['cooperation' => $cooperation, 'u' => $user->email, 't' => $user->confirm_token]);
+    $confirmUrl = route('cooperation.confirm', ['cooperation' => $userCooperation, 'u' => $user->email, 't' => $user->confirm_token]);
     $confirmHref = '<a target="_blank" href="'.$confirmUrl.'">'.$confirmUrl.'</a>';
 
-    $cooperationHoomdossierLink = route('cooperation.home', ['cooperation' => $cooperation]);
-    $cooperationHoomdossierHref = '<a target="_blank" href="'.$cooperationHoomdossierLink.'">http://'.$cooperation->slug.'.'.config('app.domain').'</a>';
+    $cooperationHoomdossierLink = route('cooperation.home', ['cooperation' => $userCooperation]);
+    $cooperationHoomdossierHref = '<a target="_blank" href="'.$cooperationHoomdossierLink.'">http://'.$userCooperation->slug.'.'.config('app.domain').'</a>';
 
-    $cooperationWebsiteHref = '<a target="_blank" href="'.$cooperation->website_url.'">'.$cooperation->name.'</a>'
+    $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>'
 
 ?>
 @lang('mail.confirm-account.text', [

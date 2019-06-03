@@ -142,8 +142,6 @@ $(".has-address-data #street").focusin(
                 var helpBlock = '<span class="help-block"></span>';
                 var errorMessage = $.parseJSON(request.responseText);
 
-
-
                 $.each(errorMessage.errors, function(fieldName, message) {
                     var inputWithError = $('input[name='+fieldName+']');
                     inputWithError.parent().parent().addClass('has-error');

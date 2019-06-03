@@ -48,7 +48,6 @@ class SendRequestAccountConfirmationEmail implements ShouldQueue
     public function handle()
     {
         // This queued job will now queue the sending of an e-mail
-        Mail::to($this->user->email)
-            ->queue(new RequestAccountConfirmationEmail($this->user, $this->cooperation));
+        Mail::to($this->user->email)->queue(new RequestAccountConfirmationEmail($this->user, $this->cooperation));
     }
 }

@@ -17,7 +17,7 @@ class RequestAccountConfirmationEmail extends Mailable
      */
     public $user;
 
-    public $cooperation;
+    public $userCooperation;
 
     /**
      * Create a new message instance.
@@ -29,7 +29,7 @@ class RequestAccountConfirmationEmail extends Mailable
     public function __construct(User $user, Cooperation $cooperation)
     {
         $this->user = $user;
-        $this->cooperation = $cooperation;
+        $this->userCooperation = $cooperation;
     }
 
     /**

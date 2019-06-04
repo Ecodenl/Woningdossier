@@ -19,13 +19,12 @@ use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PrivateMessageReceiverListener;
-use App\Listeners\SendUserChangeEmailConfirmationListener;
 use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Auth\Events\Registered;
+use App\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider

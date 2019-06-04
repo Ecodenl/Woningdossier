@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Role;
+use App\Models\Cooperation;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -54,7 +56,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -74,7 +76,7 @@ class LoginController extends Controller
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      *
      * @return array
      */
@@ -82,21 +84,27 @@ class LoginController extends Controller
     {
         return array_merge(
             $request->only($this->username(), 'password'),
-            ['active' => 1, 'confirm_token' => null]
+            [
+                'active'        => 1,
+                'confirm_token' => null
+            ]
         );
     }
 
     /**
      * Handle a login request to the application.
      *
-     * @param  Request  $request
+     * @param  Request      $request
+     * @param  Cooperation  $cooperation
      *
      * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response|void
      * @throws ValidationException
      */
-    public function login(Request $request)
+    public function login(Request $request, Cooperation $cooperation)
     {
         $this->validateLogin($request);
+        $user = null;
+
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
@@ -106,39 +114,29 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-        if ($this->guard()->validate($this->credentials($request))) {
+        // validate the credentials from the user
+        if ($this->guard()->validate($this->credentials($request)) && $this->attemptLogin($request)) {
+
             /** @var User $user */
-            $user = $this->guard()->getLastAttempted();
+            $user = $this->guard()->user();
 
-            if (! $user->isAssociatedWith(\App::make('Cooperation'))) {
+            // check if the user is associated with the current cooperation.
+            if ($user->isAssociatedWith($cooperation)) {
+
+                $role = Role::findByName($user->roles()->first()->name);
+
+                $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
+
+                return $this->sendLoginResponse($request);
+
+            } else {
                 throw ValidationException::withMessages([
-                    'cooperation' => [trans('auth.cooperation')],
+                    'cooperation' => [__('auth.cooperation')],
                 ]);
             }
-        } else {
-            // So it wasn't alright. Check if it was because of the confirm_token
-            $userEmail = $request->get('email');
-            $isPending = User::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
-            if ($isPending) {
-                \Log::debug("The user tried to log in, but isn't confirmed yet.");
-                throw ValidationException::withMessages([
-                    'confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])],
-                ]);
-            }
-        }
 
-
-        // try to login the user with the given credentials from the request.
-        if ($this->attemptLogin($request)) {
-
-            $user = \Auth::user();
-
-            // getUrlByRoleName expects spatie model.
-            $role = \Spatie\Permission\Models\Role::findByName($user->roles()->first()->name);
-
-            $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
-
-            return $this->sendLoginResponse($request);
+        } else if ($this->accountIsNotConfirmed($request->get('email'))) {
+            $this->sendAccountNotConfirmedResponse();
         }
 
         // If the login attempt was unsuccessful we will increment the number of attempts
@@ -149,4 +147,31 @@ class LoginController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
+    /**
+     * Check if a account is confirmed based on its email address
+     *
+     * @param $email
+     *
+     * @return bool
+     */
+    private function accountIsNotConfirmed($email): bool
+    {
+        // So it wasn't alright. Check if it was because of the confirm_token
+        $isPending = User::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
+
+        return $isPending;
+    }
+
+    /**
+     * Send account not confirmed response
+     */
+    private function sendAccountNotConfirmedResponse()
+    {
+        // throw validation exception, with a confirmation resend link.
+        throw ValidationException::withMessages([
+            'confirm_token' => [
+                __('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])
+            ],
+        ]);
+    }
 }

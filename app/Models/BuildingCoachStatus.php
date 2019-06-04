@@ -218,7 +218,7 @@ class BuildingCoachStatus extends Model
 	            FROM building_coach_statuses
 	            
 	            WHERE coach_id is not null
-	            ANDbuilding_id = ' . $buildingId . ' 
+	            AND building_id = ' . $buildingId . ' 
 	            AND `coach_id` IS NOT NULL 
 	            AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
 	            group by coach_id, building_id

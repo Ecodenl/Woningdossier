@@ -273,22 +273,6 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\BuildingPermission');
     }
 
-    /**
-     * Check if a user had permissions for a specific building.
-     *
-     * @param $buildingId
-     *
-     * @return bool
-     */
-    public function hasBuildingPermission($buildingId): bool
-    {
-        if ($this->buildingPermissions()->where('building_id', $buildingId)->first() instanceof BuildingPermission) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function isBuildingOwner(Building $building)
     {
         if ($this->buildings()->find($building->id) instanceof Building) {

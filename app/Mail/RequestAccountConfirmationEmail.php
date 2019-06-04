@@ -17,7 +17,10 @@ class RequestAccountConfirmationEmail extends Mailable
      */
     public $user;
 
-    public $cooperation;
+	/**
+	 * @var Cooperation
+	 */
+    public $userCooperation;
 
     /**
      * Create a new message instance.
@@ -29,7 +32,11 @@ class RequestAccountConfirmationEmail extends Mailable
     public function __construct(User $user, Cooperation $cooperation)
     {
         $this->user = $user;
-        $this->cooperation = $cooperation;
+        // use userCooperation instead of $cooperation. Because $cooperation
+	    // will be overridden by the view composer which would try to pull
+	    // $cooperation from the Session which is not present when the queue
+	    // driver is not equal to 'sync'
+        $this->userCooperation = $cooperation;
     }
 
     /**

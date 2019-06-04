@@ -519,4 +519,5 @@ class Building extends Model
     {
         return __('woningdossier.building-statuses.'.$status);
     }
+
 }

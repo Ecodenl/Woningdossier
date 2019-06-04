@@ -28,21 +28,19 @@
                                     @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
                                 </button>
                             @endcan
-                            @can('access-building', $building->id)
-                                @can('user-access-building', $building->id)
-                                    <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
-                                       id="observe-building" class="btn btn-primary">
-                                        @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
-                                        @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
+                            @can('access-building', $building)
+                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
+                                   id="observe-building" class="btn btn-primary">
+                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
+                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
+                                </a>
+                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
+                                    <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
+                                       id="edit-building" class="btn btn-warning">
+                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
+                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
                                     </a>
-                                    @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
-                                        <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
-                                           id="edit-building" class="btn btn-warning">
-                                            @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
-                                            @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
-                                        </a>
-                                    @endif
-                                @endcan
+                                @endif
                             @endcan
                         </div>
                     </div>
@@ -97,7 +95,7 @@
 
                                     if ($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->status != \App\Models\BuildingCoachStatus::STATUS_EXECUTED) {
                                         // check if the appointment day is past.
-                                        $appointmentDayDateIsPast = !$mostRecentBuildingCoachStatus->appointment_date->lessThan(\Carbon\Carbon::now()->format('Y-m-d'));
+                                        $appointmentDayDateIsPast = ! $mostRecentBuildingCoachStatus->appointment_date->lessThan(\Carbon\Carbon::now()->format('Y-m-d'));
                                     }
                                     // if there is an appointment date then it isn't allowed to change the status
                                     // but if that day is today and the manageable status is executed, then the coach may change it.
@@ -153,15 +151,16 @@
             </div>
             {{--coaches and role--}}
             <div class="row">
-                @can('access-building', $building->id)
+                @can('view-building-info', $building)
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
                             <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
                                     multiple="multiple">
-                                    @foreach($coaches as $coach)
-                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
+                                @foreach($coaches as $coach)
+                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id',
+                                            $coach->id) instanceof stdClass ?>
                                     <option
                                             @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
                                             selected="selected"
@@ -199,7 +198,7 @@
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
-            @can('access-building', $building->id)
+            @can('talk-to-resident', [$building, $cooperation])
                 <li>
                     <a data-toggle="tab" href="#messages-public">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
@@ -225,12 +224,14 @@
             <div id="messages-intern" class="tab-pane fade in active">
                 @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
-            @can('access-building', $building->id)
+            @can('talk-to-resident', [$building, $cooperation])
                 {{--public messages / between the resident and cooperation--}}
                 <div id="messages-public" class="tab-pane fade">
                     @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
                 </div>
             @endcan
+
+
             {{-- comments on the building, read only. --}}
             <div id="comments-on-building" class="tab-pane fade">
                 <div class="panel">
@@ -263,7 +264,9 @@
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">
                         <div class="panel-body">
-                            <table id="log-table" class="table-responsive table table-striped table-bordered compact nowrap" style="width: 100%">
+                            <table id="log-table"
+                                   class="table-responsive table table-striped table-bordered compact nowrap"
+                                   style="width: 100%">
                                 <thead>
                                 <tr>
                                     <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
@@ -290,13 +293,13 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="btn-group">
-                            <a href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}"
-                               type="button" id="previous" class="btn btn-default">
+                            <a @if(!is_null($previous)) href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}" @endif
+                               type="button" {{is_null($previous) ? 'disabled="disabled"' : '' }} id="previous" class="btn btn-default {{is_null($previous) ? 'btn-disabled' : '' }}">
                                 <i class="glyphicon glyphicon-chevron-left"></i>
                                 @lang('woningdossier.cooperation.admin.users.show.previous')
                             </a>
-                            <a href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}"
-                               id="observe-building" class="btn btn-default">
+                            <a @if(!is_null($next)) href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}" @endif
+                               id="observe-building" {{is_null($next) ? 'disabled="disabled"' : '' }} class="btn btn-default {{is_null($next) ? 'btn-disabled' : '' }}">
                                 @lang('woningdossier.cooperation.admin.users.show.next')
                                 <i class="glyphicon glyphicon-chevron-right"></i>
                             </a>

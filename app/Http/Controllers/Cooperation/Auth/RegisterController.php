@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FillAddressRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
-use App\Jobs\SendUnreadMessageCountEmail;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -17,15 +16,10 @@ use App\Models\NotificationInterval;
 use App\Models\NotificationType;
 use App\Models\Role;
 use App\Models\User;
-use App\Rules\HouseNumber;
-use App\Rules\PhoneNumber;
-use App\Rules\PostalCode;
 use Carbon\Carbon;
-use Ecodenl\PicoWrapper\PicoClient;
-use Illuminate\Auth\Events\Registered;
+use App\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -78,9 +72,9 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function register(RegisterFormRequest $request)
+    public function register(RegisterFormRequest $request, Cooperation $cooperation)
     {
-        event(new Registered($user = $this->create($request->all())));
+        event(new Registered($cooperation, $user = $this->create($request->all())));
 
         return redirect($this->redirectPath())->with('success', __('auth.register.form.message.success'));
     }
@@ -103,7 +97,7 @@ class RegisterController extends Controller
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
 
-        // now get the picoaddress               data.
+        // now get the picoaddress data.
         $picoAddressData = PicoHelper::getAddressData(
             $data['postal_code'], $data['number']
         );
@@ -121,8 +115,7 @@ class RegisterController extends Controller
 
         $features->building()->associate($address)->save();
 
-        $cooperationId = \Session::get('cooperation');
-        $cooperation   = Cooperation::find($cooperationId);
+        $cooperation   = Cooperation::find(HoomdossierSession::getCooperation());
         $user->cooperations()->attach($cooperation);
 
         $notificationTypes = NotificationType::all();

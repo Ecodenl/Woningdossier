@@ -114,12 +114,22 @@ $(".has-address-data #street").focusin(
                 city.addClass("loading");
             },
             success: function(data){
-                // remove error messages, since its a success.
-                $('.help-block').remove();
+
+                removeErrorFields();
+
                 street.removeClass("loading");
                 city.removeClass("loading");
+
                 var address = data;
-                console.log(address);
+                var possibleWrongPostalCode = $('#possible-wrong-postal-code');
+
+                // if there is no postal code returned, then the given postal code is *probably* wrong.
+                if (address.postal_code === "") {
+                    possibleWrongPostalCode.show();
+                } else {
+                    possibleWrongPostalCode.hide();
+                }
+
                 street.val(address.street);
                 if (address.street !== "") {
                     number.val(address.number);
@@ -128,17 +138,24 @@ $(".has-address-data #street").focusin(
                 addressId.val(address.id);
                 city.val(address.city);
             },
-            fail: function (xhr, textStatus, errorThrown) {
-            },
             error: function (request, status, error) {
                 var helpBlock = '<span class="help-block"></span>';
                 var errorMessage = $.parseJSON(request.responseText);
 
                 $.each(errorMessage.errors, function(fieldName, message) {
-                    $('input[name='+fieldName+']').parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
+                    var inputWithError = $('input[name='+fieldName+']');
+                    inputWithError.parent().parent().addClass('has-error');
+                    inputWithError.parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
                 });
             },
             dataType: 'json'
         });
     }
 );
+
+
+function removeErrorFields()
+{
+    $('.help-block').remove();
+    $('.has-error').removeClass('has-error');
+}

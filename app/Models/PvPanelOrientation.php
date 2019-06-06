@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PvPanelOrientation.
+ * App\Models\PvPanelOrientation
  *
  * @property int $id
  * @property string $name
@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PvPanelOrientation query()

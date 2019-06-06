@@ -7,7 +7,7 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\QuestionsAnswer.
+ * App\Models\QuestionsAnswer
  *
  * @property int $id
  * @property int $question_id
@@ -16,9 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $answer
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource $inputSource
- * @property \App\Models\Question $question
- *
+ * @property-read \App\Models\InputSource $inputSource
+ * @property-read \App\Models\Question $question
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer newQuery()

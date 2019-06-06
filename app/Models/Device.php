@@ -7,7 +7,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Device.
+ * App\Models\Device
  *
  * @property int $id
  * @property int|null $measure_id
@@ -17,10 +17,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null $building
- * @property \App\Models\DeviceType|null $deviceType
- * @property \App\Models\Measure|null $measure
- *
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\DeviceType|null $deviceType
+ * @property-read \App\Models\Measure|null $measure
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device query()

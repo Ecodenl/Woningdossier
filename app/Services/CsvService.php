@@ -40,6 +40,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
+use App\Scopes\CooperationScope;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -585,7 +586,8 @@ class CsvService
             $buildingId = $building->id;
 
             /** @var Collection $conversationRequestsForBuilding */
-            $conversationRequestsForBuilding = PrivateMessage::conversationRequestByBuildingId($building->id)
+            $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+                                                             ->conversationRequestByBuildingId($building->id)
                                                              ->where('to_cooperation_id', $cooperation->id)->get();
 
             $createdAt           = $user->created_at;

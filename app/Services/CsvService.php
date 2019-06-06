@@ -213,10 +213,10 @@ class CsvService
             $building = $user->buildings()->first();
             if ($building instanceof Building) {
 
-
-                /** @var Collection $conversationRequestsForBuilding */
-                $conversationRequestsForBuilding = PrivateMessage::conversationRequestByBuildingId($building->id)
-                                                                 ->where('to_cooperation_id', $cooperation->id)->get();
+	            /** @var Collection $conversationRequestsForBuilding */
+	            $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+	                                                             ->conversationRequestByBuildingId($building->id)
+	                                                             ->where('to_cooperation_id', $cooperation->id)->get();
 
                 $createdAt           = $user->created_at;
                 $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
@@ -355,9 +355,10 @@ class CsvService
         foreach ($usersFromCooperation as $user) {
             $building = $user->buildings()->first();
 
-            /** @var Collection $conversationRequestsForBuilding */
-            $conversationRequestsForBuilding = PrivateMessage::conversationRequestByBuildingId($building->id)
-                                                             ->where('to_cooperation_id', $cooperation->id)->get();
+	        /** @var Collection $conversationRequestsForBuilding */
+	        $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+	                                                         ->conversationRequestByBuildingId($building->id)
+	                                                         ->where('to_cooperation_id', $cooperation->id)->get();
 
             $createdAt           = $user->created_at;
             $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);

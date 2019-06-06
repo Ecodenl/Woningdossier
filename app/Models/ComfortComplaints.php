@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ComfortComplaints.
+ * App\Models\ComfortComplaints
  *
  * @property int $id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortComplaints newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortComplaints newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortComplaints query()

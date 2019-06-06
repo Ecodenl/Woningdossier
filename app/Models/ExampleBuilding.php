@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\ExampleBuilding.
+ * App\Models\ExampleBuilding
  *
  * @property int $id
  * @property string $name
@@ -18,10 +18,9 @@ use Illuminate\Support\Collection;
  * @property bool $is_default
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\BuildingType|null $buildingType
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
- * @property \App\Models\Cooperation|null $cooperation
- *
+ * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property-read \App\Models\Cooperation|null $cooperation
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forAnyOrMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding generic()

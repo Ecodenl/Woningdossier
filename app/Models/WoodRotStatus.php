@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\WoodRotStatus.
+ * App\Models\WoodRotStatus
  *
  * @property int $id
  * @property string $name
@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WoodRotStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WoodRotStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WoodRotStatus query()

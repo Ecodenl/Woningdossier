@@ -46,7 +46,9 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $cooperationId = HoomdossierSession::getCooperation();
+        // get them directly from the session itself
+        // the HoomdossierSession can only be used on authenticated parts.
+        $cooperationId = session()->get('cooperation', null);
 
         if (is_null($cooperationId)) {
             return redirect()->route('index');

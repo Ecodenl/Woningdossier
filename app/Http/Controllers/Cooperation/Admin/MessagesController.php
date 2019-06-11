@@ -36,7 +36,6 @@ class MessagesController extends Controller
 
         $buildings = Building::whereHas('privateMessages')->findMany($buildingIds);
 
-
         return view('cooperation.admin.messages.index', compact('buildings'));
     }
 

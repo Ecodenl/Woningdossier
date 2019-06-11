@@ -94,7 +94,6 @@ class Building extends Model
         return ['example_building_id'];
     }
 
-
     /**
      * Check if a step is completed for a building with matching input source id.
      *

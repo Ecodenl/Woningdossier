@@ -9,16 +9,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
 /**
- * App\Models\PrivateMessageView.
+ * App\Models\PrivateMessageView
  *
- * @property int                             $id
- * @property int                             $private_message_id
- * @property int|null                        $user_id
- * @property int|null                        $to_cooperation_id
+ * @property int $id
+ * @property int $private_message_id
+ * @property int|null $user_id
+ * @property int|null $cooperation_id
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
+ * @property-read \App\Models\InputSource $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forCurrentInputSource()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView query()

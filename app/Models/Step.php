@@ -7,7 +7,7 @@ use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Step.
+ * App\Models\Step
  *
  * @property int $id
  * @property string $slug
@@ -15,8 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
- *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step query()

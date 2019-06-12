@@ -8,7 +8,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingUserUsage.
+ * App\Models\BuildingUserUsage
  *
  * @property int $id
  * @property int|null $building_id
@@ -19,10 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null $building
- * @property \App\Models\InputSource|null $inputSource
- * @property \App\Models\User|null $user
- *
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingUserUsage forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingUserUsage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingUserUsage newQuery()

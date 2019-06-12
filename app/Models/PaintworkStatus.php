@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PaintworkStatus.
+ * App\Models\PaintworkStatus
  *
  * @property int $id
  * @property string $name
@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PaintworkStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PaintworkStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PaintworkStatus query()

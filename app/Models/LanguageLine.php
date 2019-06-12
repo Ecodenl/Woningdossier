@@ -3,12 +3,33 @@
 namespace App\Models;
 
 /**
- * Although this is a model to retrieve languages, we use it to store "questions" which are ofcourse just translations.
+ * App\Models\LanguageLine
  *
- * Most of the methods found in the model will be used to treat the language_lines as questions, main questions, subquestions and helptexts.
- *
- * Class LanguageLine
- * @package App\Models
+ * @property int $id
+ * @property string $group
+ * @property string $key
+ * @property array $text
+ * @property int|null $step_id
+ * @property int|null $main_language_line_id
+ * @property int|null $help_language_line_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\LanguageLine $helpText
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LanguageLine[] $subQuestions
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine mainQuestions()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereGroup($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereHelpLanguageLineId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereMainLanguageLineId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 {

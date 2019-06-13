@@ -8,7 +8,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPaintworkStatus.
+ * App\Models\BuildingPaintworkStatus
  *
  * @property int $id
  * @property int $building_id
@@ -18,11 +18,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $wood_rot_status_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building $building
- * @property \App\Models\InputSource|null $inputSource
- * @property \App\Models\PaintworkStatus $paintworkStatus
- * @property \App\Models\WoodRotStatus $woodRotStatus
- *
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\PaintworkStatus $paintworkStatus
+ * @property-read \App\Models\WoodRotStatus $woodRotStatus
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus newQuery()

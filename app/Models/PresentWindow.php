@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PresentWindow.
+ * App\Models\PresentWindow
  *
  * @property int $id
  * @property string $name
  * @property int $calculate_value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PresentWindow newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PresentWindow newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PresentWindow query()

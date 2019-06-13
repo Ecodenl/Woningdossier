@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\KeyFigureConsumptionTapWater.
+ * App\Models\KeyFigureConsumptionTapWater
  *
  * @property int $id
  * @property int $comfort_level_tap_water_id
@@ -14,8 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $energy_consumption
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\ComfortLevelTapWater $comfortLevelTapWater
- *
+ * @property-read \App\Models\ComfortLevelTapWater $comfortLevelTapWater
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\KeyFigureConsumptionTapWater query()

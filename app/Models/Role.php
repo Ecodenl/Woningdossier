@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Scopes\CooperationScope;
 
 /**
- * App\Models\Role.
+ * App\Models\Role
  *
  * @property int $id
  * @property string $name
@@ -15,10 +15,9 @@ use App\Scopes\CooperationScope;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $level
- * @property \App\Models\InputSource|null $inputSource
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
- *
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Spatie\Permission\Models\Role permission($permissions)

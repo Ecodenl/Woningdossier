@@ -7,7 +7,7 @@ use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Questionnaire.
+ * App\Models\Questionnaire
  *
  * @property int $id
  * @property string $name
@@ -17,10 +17,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Cooperation $cooperation
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
- * @property \App\Models\Step|null $step
- *
+ * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
+ * @property-read \App\Models\Step|null $step
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire active()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newQuery()

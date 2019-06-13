@@ -6,18 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\Cooperation.
+ * App\Models\Cooperation
  *
  * @property int $id
  * @property string $name
- * @property string $website_url
  * @property string $slug
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property \App\Models\CooperationStyle $style
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
- *
+ * @property string|null $website_url
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read \App\Models\CooperationStyle $style
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation query()
@@ -26,6 +25,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation whereWebsiteUrl($value)
  * @mixin \Eloquent
  */
 class Cooperation extends Model

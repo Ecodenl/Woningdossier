@@ -8,16 +8,18 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ToolSetting.
+ * App\Models\ToolSetting
  *
  * @property int $id
  * @property int $changed_input_source_id
+ * @property int|null $input_source_id
  * @property int $building_id
  * @property bool $has_changed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource $inputSource
- *
+ * @property-read \App\Models\InputSource $changedInputSource
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting query()
@@ -26,12 +28,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereHasChanged($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereUpdatedAt($value)
  * @mixin \Eloquent
- *
- * @NOTE The model contains a changed_input_source_id and a input_source_id.
- * The changed_input_source_id contains the id from the input source that made changes / created or update records.
- * The input_source_id, behaves like it normally would. Get the data for the current input source.
  */
 class ToolSetting extends Model
 {

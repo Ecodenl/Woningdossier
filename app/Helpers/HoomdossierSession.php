@@ -65,7 +65,14 @@ class HoomdossierSession extends Session
 
     public static function getCooperation(): int
     {
-        return self::get('cooperation');
+    	$cooperation = self::get('cooperation');
+
+    	if (!is_int($cooperation)){
+    		\Log::error("Cooperation was not an integer!! ");
+    		\Log::error($cooperation);
+	    }
+
+    	return $cooperation;
     }
 
     /**

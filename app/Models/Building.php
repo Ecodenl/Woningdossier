@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Building.
+ * App\Models\Building
  *
  * @property int $id
  * @property int|null $user_id
+ * @property string $status
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -27,24 +28,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
- * @property \App\Models\BuildingFeature $buildingFeatures
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
- * @property \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
- * @property \App\Models\ExampleBuilding|null $exampleBuilding
- * @property \App\Models\BuildingHeater $heater
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
- * @property \App\Models\BuildingPvPanel $pvPanels
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
- * @property \App\Models\User|null $user
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
- *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property-read \App\Models\BuildingFeature $buildingFeatures
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property-read \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
+ * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property-read \App\Models\BuildingHeater $heater
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
+ * @property-read \App\Models\BuildingPvPanel $pvPanels
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property-read \App\Models\User|null $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newQuery()
@@ -63,6 +64,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereOwner($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePrimary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUserId($value)
@@ -93,40 +95,6 @@ class Building extends Model
     {
         return ['example_building_id'];
     }
-
-    public static function boot()
-    {
-
-        parent::boot();
-
-        static::deleting(function ($building) {
-            $building->user_id = null;
-            $building->country_code = 'nl';
-            $building->example_building_id = null;
-            $building->primary = false;
-            $building->save();
-
-            // delete the services from a building
-            $building->buildingServices()->withoutGlobalScope(GetValueScope::class)->delete();
-            // delete the elements from a building
-            $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->delete();
-            // remove the features from a building
-            $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->delete();
-            // remove the roof types from a building
-            $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->delete();
-            // remove the heater from a building
-            $building->heater()->withoutGlobalScope(GetValueScope::class)->delete();
-            // remove the solar panels from a building
-            $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->delete();
-            // remove the insulated glazings from a building
-            $building->currentInsulatedGlazing()->withoutGlobalScope(GetValueScope::class)->delete();
-            // remove the paintwork from a building
-            $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->delete();
-            // remove the user usage from a building
-            $building->userUsage()->withoutGlobalScope(GetValueScope::class)->delete();
-        });
-    }
-
 
     /**
      * Check if a step is completed for a building with matching input source id.

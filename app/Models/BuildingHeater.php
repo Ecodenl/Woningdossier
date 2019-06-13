@@ -8,19 +8,18 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingHeater.
+ * App\Models\BuildingHeater
  *
  * @property int $id
  * @property int $building_id
  * @property int|null $input_source_id
- * @property int $pv_panel_orientation_id
+ * @property int|null $pv_panel_orientation_id
  * @property int|null $angle
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string $comment
- * @property \App\Models\Building $building
- * @property \App\Models\InputSource|null $inputSource
- *
+ * @property string|null $comment
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater newQuery()

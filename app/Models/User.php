@@ -6,13 +6,13 @@ use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use App\NotificationSetting;
 use App\Scopes\GetValueScope;
+use App\Traits\HasRolesTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Spatie\Permission\Traits\HasRoles;
 
 /**
- * App\Models\User.
+ * App\Models\User
  *
  * @property int $id
  * @property string $first_name
@@ -29,25 +29,28 @@ use Spatie\Permission\Traits\HasRoles;
  * @property bool $is_admin
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
- * @property \App\Models\UserEnergyHabit $energyHabit
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
- * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
- *
+ * @property string|null $old_email
+ * @property string|null $old_email_token
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property-read \App\Models\UserEnergyHabit $energyHabit
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[] $notificationSettings
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles, $guard = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereConfirmToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
@@ -58,6 +61,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastVisit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereOldEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereOldEmailToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePhoneNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
@@ -68,7 +73,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use Notifiable;
-    use HasRoles;
+    use HasRolesTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -354,9 +359,9 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function hasMultipleRoles(): bool
+    public function hasMultipleRoles($cooperationId = null): bool
     {
-        if ($this->getRoleNames()->count() > 1) {
+        if ($this->getRoleNames($cooperationId)->count() > 1) {
             return true;
         }
 
@@ -445,5 +450,12 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function logout()
+    {
+        HoomdossierSession::destroy();
+        \Auth::logout();
+        request()->session()->invalidate();
     }
 }

@@ -8,19 +8,19 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\BuildingCoachStatus.
+ * App\Models\BuildingCoachStatus
  *
- * @property int                             $id
- * @property int                             $coach_id
- * @property int                             $building_id
- * @property string                          $status
+ * @property int $id
+ * @property int|null $coach_id
+ * @property int|null $building_id
+ * @property int|null $private_message_id
+ * @property string $status
  * @property \Illuminate\Support\Carbon|null $appointment_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null                        $private_message_id
- * @property \App\Models\Building            $building
- * @property \App\Models\User                $coach
- *
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\User|null $coach
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus currentStatus($status)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newQuery()

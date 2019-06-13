@@ -8,36 +8,35 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPvPanel.
+ * App\Models\BuildingPvPanel
  *
  * @property int $id
  * @property int $building_id
  * @property int|null $input_source_id
  * @property int|null $peak_power
  * @property int $number
- * @property int $pv_panel_orientation_id
+ * @property int|null $pv_panel_orientation_id
  * @property int|null $angle
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string $comment
- * @property \App\Models\Building $building
- * @property \App\Models\InputSource|null $inputSource
- * @property \App\Models\PvPanelOrientation $orientation
- *
+ * @property string|null $comment
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\PvPanelOrientation $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereAngle( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereBuildingId( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereComment( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereCreatedAt( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereId( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereInputSourceId( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereNumber( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePeakPower( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePvPanelOrientationId( $value )
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereUpdatedAt( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereAngle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePeakPower($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel wherePvPanelOrientationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingPvPanel extends Model

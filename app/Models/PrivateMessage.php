@@ -9,36 +9,33 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\PrivateMessage.
+ * App\Models\PrivateMessage
  *
- * @property int                             $id
- * @property int|null                        $building_id
- * @property bool|null                       $is_public
- * @property string                          $from_user
- * @property string|null                     $request_type
- * @property string                          $message
- * @property int|null                        $from_user_id
- * @property int|null                        $from_cooperation_id
- * @property int|null                        $to_cooperation_id
- * @property bool                            $allow_access
+ * @property int $id
+ * @property int|null $building_id
+ * @property bool|null $is_public
+ * @property string $from_user
+ * @property string|null $request_type
+ * @property string $message
+ * @property int|null $from_user_id
+ * @property int|null $from_cooperation_id
+ * @property int|null $to_cooperation_id
+ * @property bool $allow_access
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null       $building
- *
+ * @property-read \App\Models\Building|null $building
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage accessAllowed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequestByBuildingId($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myCoachConversationRequest()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myOpenConversationRequest()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myPrivateMessages()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage openCooperationConversationRequests()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage private ()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage privateMessagesIdsGroupedByBuildingId()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage public ()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage private()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage public()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage unreadMessages()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereAllowAccess($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereCreatedAt($value)

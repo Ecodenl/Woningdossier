@@ -10,7 +10,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserEnergyHabit.
+ * App\Models\UserEnergyHabit
  *
  * @property int $id
  * @property int|null $user_id
@@ -33,12 +33,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
- * @property \App\Models\BuildingHeating|null $heatingFirstFloor
- * @property \App\Models\BuildingHeating|null $heatingSecondFloor
- * @property \App\Models\InputSource|null $inputSource
- * @property \App\Models\User|null $user
- *
+ * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
+ * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
+ * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()

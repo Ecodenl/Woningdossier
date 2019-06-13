@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'filled-step' => \App\Http\Middleware\FilledStep::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'current-role' => \App\Http\Middleware\CurrentRoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'deny-if-filling-for-other-building' => \App\Http\Middleware\RedirectIfIsFillingForOtherBuilding::class
     ];

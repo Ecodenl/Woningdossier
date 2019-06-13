@@ -15,28 +15,26 @@ class MessagesController extends Controller
 {
     protected $fragment;
 
-    public function __construct(Cooperation $coodperation, Request $request)
+    public function __construct(Cooperation $cooperation, Request $request)
     {
         if ($request->has('fragment')) {
             $this->fragment = $request->get('fragment');
         }
     }
 
-    public function index()
+    public function index(Cooperation $cooperation)
     {
-        if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
-            $userId = \Auth::id();
 
-            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUserId($userId);
-            $buildingIds = $connectedBuildingsByUserId->pluck('building_id')->all();
+        if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
+            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
+            $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {
             // get all the conversation requests that were send to my cooperation.
             $privateMessages = PrivateMessage::forMyCooperation()->conversationRequest()->get();
-            $buildingIds = $privateMessages->pluck('building_id')->all();
+            $buildingIds     = $privateMessages->pluck('building_id')->all();
         }
 
-        $buildings = Building::findMany($buildingIds);
-
+        $buildings = Building::whereHas('privateMessages')->findMany($buildingIds);
 
         return view('cooperation.admin.messages.index', compact('buildings'));
     }
@@ -44,8 +42,9 @@ class MessagesController extends Controller
     /**
      * Method that handles sending messages for the /admin section
      *
-     * @param Cooperation $cooperation
-     * @param MessageRequest $request
+     * @param  Cooperation     $cooperation
+     * @param  MessageRequest  $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function sendMessage(Cooperation $cooperation, MessageRequest $request)

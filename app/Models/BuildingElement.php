@@ -8,7 +8,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingElement.
+ * App\Models\BuildingElement
  *
  * @property int $id
  * @property int|null $building_id
@@ -18,11 +18,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null $building
- * @property \App\Models\Element $element
- * @property \App\Models\ElementValue|null $elementValue
- * @property \App\Models\InputSource|null $inputSource
- *
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\Element $element
+ * @property-read \App\Models\ElementValue|null $elementValue
+ * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement newQuery()

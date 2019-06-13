@@ -6,7 +6,7 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\FacadeDamagedPaintwork.
+ * App\Models\FacadeDamagedPaintwork
  *
  * @property int $id
  * @property string $name
@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $term_years
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeDamagedPaintwork newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeDamagedPaintwork newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FacadeDamagedPaintwork query()

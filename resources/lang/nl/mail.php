@@ -26,11 +26,11 @@ return [
     'reset_password' => [
         'why' => 'U ontvangt deze mail omdat iemand een wachtwoord reset heeft aangevraagd voor uw account.',
         'action' => 'Wachtwoord resetten',
-        'not_requested' => 'Als u geen wachtwoord reset heeft aangevraagd hoeft u geen actie te ondernemen.',
+        'not_requested' => 'N.B.: Uit veiligheidsoverwegingen is deze link slechts eenmalig te gebruiken! Als u geen wachtwoord reset heeft aangevraagd hoeft u geen actie te ondernemen.',
     ],
 
     'unread-message-count' => [
-        'subject' => 'U heeft :unread_message_count ongelezen berichten',
+	    'subject' => '{0} U heeft :unread_message_count ongelezen berichten|{1} U heeft :unread_message_count ongelezen bericht|[2,*] U heeft :unread_message_count ongelezen berichten',
         'salutation' => 'Beste :first_name :last_name,',
         'text' => 'Er staan :unread_message_count ongelezen bericht(en) voor u in het Hoomdossier:<br><br> :hoomdossier_link',
         'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'

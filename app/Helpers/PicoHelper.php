@@ -59,6 +59,7 @@ class PicoHelper
                         'id'                     => $option['bag_adresid'] ?? '',
                         'street'                 => $option['straat'] ?? '',
                         'number'                 => $option['huisnummer'] ?? '',
+                        'postal_code'            => $option['postcode'] ?? '',
                         'house_number_extension' => $houseNumberExtension,
                         'city'                   => $option['woonplaats'] ?? '',
                         'build_year'             => $option['bouwjaar'] ?? '',

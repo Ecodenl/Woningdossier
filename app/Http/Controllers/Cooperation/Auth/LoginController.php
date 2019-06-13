@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Building;
-use App\Models\Role;
+use App\Models\Cooperation;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -55,7 +56,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -75,7 +76,7 @@ class LoginController extends Controller
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      *
      * @return array
      */
@@ -83,24 +84,27 @@ class LoginController extends Controller
     {
         return array_merge(
             $request->only($this->username(), 'password'),
-            ['active' => 1, 'confirm_token' => null]
+            [
+                'active'        => 1,
+                'confirm_token' => null
+            ]
         );
-    }
-
-    public function authenticated()
-    {
     }
 
     /**
      * Handle a login request to the application.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  Request      $request
+     * @param  Cooperation  $cooperation
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response|void
+     * @throws ValidationException
      */
-    public function login(Request $request)
+    public function login(Request $request, Cooperation $cooperation)
     {
         $this->validateLogin($request);
+        $user = null;
+
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
@@ -110,57 +114,29 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-        if ($this->guard()->validate($this->credentials($request))) {
+        // validate the credentials from the user
+        if ($this->guard()->validate($this->credentials($request)) && $this->attemptLogin($request)) {
+
             /** @var User $user */
-            $user = $this->guard()->getLastAttempted();
+            $user = $this->guard()->user();
 
-            if (! $user->isAssociatedWith(\App::make('Cooperation'))) {
-                throw ValidationException::withMessages([
-                    'cooperation' => [trans('auth.cooperation')],
-                ]);
-            }
-        } else {
-            // So it wasn't alright. Check if it was because of the confirm_token
-            $userEmail = $request->get('email');
-            $isPending = User::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
-            if ($isPending) {
-                \Log::debug("The user tried to log in, but isn't confirmed yet.");
-                throw ValidationException::withMessages([
-                    'confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])],
-                ]);
-            }
-        }
+            // check if the user is associated with the current cooperation.
+            if ($user->isAssociatedWith($cooperation)) {
 
-        if ($this->attemptLogin($request)) {
-            $user = \Auth::user();
+                $role = Role::findByName($user->roles()->first()->name);
 
-            // get the first building from the user
-            $building = $user->buildings()->first();
-
-            // if he has a building redirect him, else redirect him to a page where he needs to create a building
-            // without a building the application is useless.
-            if ($building instanceof Building) {
-                // we cant query on the Spatie\Role model so we first get the result on the "original model"
-                $role = Role::findByName($user->roles->first()->name);
-
-                // set the redirect url
-                if (1 == $user->roles->count()) {
-                    $this->redirectTo = RoleHelper::getUrlByRole($role);
-                } else {
-                    $this->redirectTo = '/admin';
-                }
+                $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
 
                 return $this->sendLoginResponse($request);
+
             } else {
-                // there is no building connected, log the user out. destroy sessions and let them create a building
-                HoomdossierSession::destroy();
-
-                $this->guard()->logout();
-
-                $request->session()->invalidate();
-
-                return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
+                throw ValidationException::withMessages([
+                    'cooperation' => [__('auth.cooperation')],
+                ]);
             }
+
+        } else if ($this->accountIsNotConfirmed($request->get('email'))) {
+            $this->sendAccountNotConfirmedResponse();
         }
 
         // If the login attempt was unsuccessful we will increment the number of attempts
@@ -171,19 +147,31 @@ class LoginController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
-    /*
-     * Send the response after the user was authenticated.
+    /**
+     * Check if a account is confirmed based on its email address
      *
-     * @param $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param $email
+     *
+     * @return bool
      */
-    /*protected function sendLoginResponse ($request)
+    private function accountIsNotConfirmed($email): bool
     {
-        $request->session()->regenerate();
+        // So it wasn't alright. Check if it was because of the confirm_token
+        $isPending = User::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
 
-        $this->clearLoginAttempts($request);
+        return $isPending;
+    }
 
-        //return $this->authenticated($request, $this->guard()->user()) ? : redirect()->route('cooperation.home');
-        return $this->authenticated($request, $this->guard()->user()) ? : redirect($this->redirectTo);
-    }*/
+    /**
+     * Send account not confirmed response
+     */
+    private function sendAccountNotConfirmedResponse()
+    {
+        // throw validation exception, with a confirmation resend link.
+        throw ValidationException::withMessages([
+            'confirm_token' => [
+                __('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])
+            ],
+        ]);
+    }
 }

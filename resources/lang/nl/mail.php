@@ -26,7 +26,7 @@ return [
     'reset_password' => [
         'why' => 'U ontvangt deze mail omdat iemand een wachtwoord reset heeft aangevraagd voor uw account.',
         'action' => 'Wachtwoord resetten',
-        'not_requested' => 'Als u geen wachtwoord reset heeft aangevraagd hoeft u geen actie te ondernemen.',
+        'not_requested' => 'N.B.: Uit veiligheidsoverwegingen is deze link slechts eenmalig te gebruiken! Als u geen wachtwoord reset heeft aangevraagd hoeft u geen actie te ondernemen.',
     ],
 
     'unread-message-count' => [

@@ -2,6 +2,7 @@
 
 namespace App\Scopes;
 
+use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -18,7 +19,7 @@ class CooperationScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $cooperationId = \Session::get('cooperation', 0);
+        $cooperationId = HoomdossierSession::getCooperation() ?? 0;
 
         $builder->where('cooperation_id', '=', $cooperationId)
             ->orWhere('cooperation_id', '=', null);

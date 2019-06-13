@@ -214,15 +214,21 @@ class RegisterController extends Controller
 
         // okay, the user does exists
         if ($user instanceof User) {
+
             // check if the is already attached
             if ($user->cooperations->contains($cooperation)) {
                 return redirect()->back();
             }
 
-            $cooperation->users()->attach($user);
+            // if a users hop's from a cooperation, well assign him the role resident.
+            $residentRole = Role::findByName('resident');
 
-            return redirect(url('login'))->with('account_connected',
-                __('auth.register.form.message.account-connected'));
+            $cooperation->users()->attach($user);
+            $user->assignRole($cooperation->id, $residentRole);
+
+            return redirect(
+                url('login')
+            )->with('account_connected', __('auth.register.form.message.account-connected'));
         }
 
         // user is playing, redirect them back

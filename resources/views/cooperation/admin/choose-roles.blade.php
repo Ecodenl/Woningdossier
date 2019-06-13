@@ -18,6 +18,7 @@
                             <?php
                                 // todo make this better maintainable (especially the col classes)
                                 $totalUserRoles = Auth::user()->roles()->count();
+
                             ?>
                             @foreach($user->roles as $i => $role)
                             <div class="@if($totalUserRoles == 2) col-sm-6 @elseif($totalUserRoles == 3) col-sm-4 @else col-sm-3 @endif">

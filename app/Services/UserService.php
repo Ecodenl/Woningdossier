@@ -45,6 +45,10 @@ class UserService
             // finally remove the user itself :(
             $user->delete();
         } else {
+
+            // get the user its first building
+            $building = $user->buildings()->first();
+
             // delete the relation between the cooperation and the user
             $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
@@ -52,6 +56,13 @@ class UserService
             $user->roles()->detach($user->roles);
             // now we can safely remove the cooperation itself from the user.
             $user->cooperations()->detach($currentCooperation);
+
+            /* @var Building */
+            if ($building instanceof Building) {
+                // delete the building its private messages, on the current cooperation (cooperationScope)
+                $building->privateMessages()->delete();
+            }
+
 
             // we only want to do this if the user is deleting himself. Otherwise admins would randomly logout.
             if (\Auth::id() == $user->id) {

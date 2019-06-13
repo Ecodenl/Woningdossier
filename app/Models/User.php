@@ -6,10 +6,10 @@ use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use App\NotificationSetting;
 use App\Scopes\GetValueScope;
+use App\Traits\HasRolesTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Spatie\Permission\Traits\HasRoles;
 
 /**
  * App\Models\User
@@ -73,7 +73,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use Notifiable;
-    use HasRoles;
+    use HasRolesTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -359,9 +359,9 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function hasMultipleRoles(): bool
+    public function hasMultipleRoles($cooperationId = null): bool
     {
-        if ($this->getRoleNames()->count() > 1) {
+        if ($this->getRoleNames($cooperationId)->count() > 1) {
             return true;
         }
 
@@ -450,5 +450,12 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function logout()
+    {
+        HoomdossierSession::destroy();
+        \Auth::logout();
+        request()->session()->invalidate();
     }
 }

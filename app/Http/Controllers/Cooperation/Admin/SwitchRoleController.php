@@ -21,6 +21,7 @@ class SwitchRoleController extends Controller
 
             return null;
         }
+
         /** @var User $user */
         $user = $request->user();
         /** @var Building $building */
@@ -31,18 +32,15 @@ class SwitchRoleController extends Controller
         if (! $user || ! $user->hasRole($role)) {
             \Log::debug('No user or user does not have this role');
 
-            return null;
+            return redirect()->route('cooperation.admin.index');
         }
 
-        \Log::debug('Switching roles from '.$request->session()->get('role_id', '').' to '.$role->id);
-        $request->session()->put('role_id', $role->id);
+        \Log::debug('Switching roles from '.HoomdossierSession::getRole().' to '.$role->id);
 
-        // set the Auth user sessions
+        // set the new sessions!
         HoomdossierSession::setRole($role);
         if ($role->inputSource instanceof InputSource) {
             HoomdossierSession::setInputSource($role->inputSource);
-            // For now, we will set the input source value to input source.
-            // The user can later on change this.
             HoomdossierSession::setInputSourceValue($role->inputSource);
         }
 

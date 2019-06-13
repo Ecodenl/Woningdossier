@@ -47,6 +47,10 @@ class UserService
         } else {
             // delete the relation between the cooperation and the user
             $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+
+            // first detach the roles from the user in its current cooperation.
+            $user->roles()->detach($user->roles);
+            // now we can safely remove the cooperation itself from the user.
             $user->cooperations()->detach($currentCooperation);
 
             // we only want to do this if the user is deleting himself. Otherwise admins would randomly logout.

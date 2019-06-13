@@ -12,6 +12,7 @@
         </div>
 
         <input type="hidden" name="building[id]" value="{{$building->id}}">
+        <input type="hidden" id="cooperation-id" value="{{\App\Helpers\HoomdossierSession::getCooperation()}}">
         @if($userExists)
             <input type="hidden" name="user[id]" value="{{$user->id}}">
         @endif
@@ -319,6 +320,7 @@
             // get some basic information
             var buildingOwnerId = $('input[name=building\\[id\\]]').val();
             var userId = $('input[name=user\\[id\\]]').val();
+            var cooperationId = $('#cooperation-id').val();
 
             var appointmentDate = $('#appointment-date');
 
@@ -491,7 +493,8 @@
                             method: 'POST',
                             data: {
                                 role_id: roleToSelect.val(),
-                                user_id: userId
+                                user_id: userId,
+                                cooperation_id: cooperationId
                             }
                         }).done(function () {
                             // just reload the page

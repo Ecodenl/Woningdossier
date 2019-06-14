@@ -20,7 +20,7 @@
                             <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')<span class="required">*</span></label>
 
                             <div class="col-md-8">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
+                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required  autofocus>
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
@@ -51,7 +51,7 @@
                                 <label for="first_name" class="col-md-4 control-label">@lang('auth.register.form.first_name')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
-                                    <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required autofocus>
+                                    <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required >
 
                                     @if ($errors->has('first_name'))
                                         <span class="help-block">
@@ -65,7 +65,7 @@
                                 <label for="last_name" class="col-md-4 control-label">@lang('auth.register.form.last_name')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
-                                    <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required autofocus>
+                                    <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required >
 
                                     @if ($errors->has('last_name'))
                                         <span class="help-block">
@@ -83,7 +83,7 @@
                                         <label for="postal_code" class="col-md-8 control-label">@lang('auth.register.form.postal_code')<span class="required">*</span></label>
 
                                         <div class="col-md-4">
-                                                <input id="postal_code" type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required autofocus>
+                                                <input id="postal_code" type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required >
                                         </div>
 
                                         @if ($errors->has('postal_code'))
@@ -101,7 +101,7 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <input id="number" type="text" class="form-control" name="number" value="{{ old('number') }}" required autofocus>
+                                            <input id="number" type="text" class="form-control" name="number" value="{{ old('number') }}" required >
                                         </div>
 
                                         @if ($errors->has('number'))
@@ -115,7 +115,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group row {{ $errors->has('house_number_extension') ? ' has-error' : '' }}">
                                         <div class="col-sm-12">
-                                            <input id="house_number_extension" type="text" class="form-control" name="house_number_extension" placeholder="@lang('auth.register.form.house_number_extension')" value="{{ old('house_number_extension') }}" autofocus>
+                                            <input id="house_number_extension" type="text" class="form-control" name="house_number_extension" placeholder="@lang('auth.register.form.house_number_extension')" value="{{ old('house_number_extension') }}" >
                                         </div>
 
                                         @if ($errors->has('house_number_extension'))
@@ -141,7 +141,7 @@
                                 <label for="street" class="col-md-4 control-label">@lang('auth.register.form.street')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
-                                    <input id="street" type="text" class="form-control" name="street" value="{{ old('street') }}" required autofocus>
+                                    <input id="street" type="text" class="form-control" name="street" value="{{ old('street') }}" required >
 
                                     @if ($errors->has('street'))
                                         <span class="help-block">
@@ -155,7 +155,7 @@
                                 <label for="city" class="col-md-4 control-label">@lang('auth.register.form.city')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
-                                    <input id="city" type="text" class="form-control" name="city" value="{{ old('city') }}" required autofocus>
+                                    <input id="city" type="text" class="form-control" name="city" value="{{ old('city') }}" required >
 
                                     @if ($errors->has('city'))
                                         <span class="help-block">
@@ -169,7 +169,7 @@
                                 <label for="phone_number" class="col-md-4 control-label">@lang('auth.register.form.phone_number')</label>
 
                                 <div class="col-md-8">
-                                    <input id="phone_number" type="text" class="form-control" name="phone_number" value="{{ old('phone_number') }}" autofocus>
+                                    <input id="phone_number" type="text" class="form-control" name="phone_number" value="{{ old('phone_number') }}" >
 
                                     @if ($errors->has('phone_number'))
                                         <span class="help-block">

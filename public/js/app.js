@@ -171,7 +171,7 @@ $(document).ready(function () {
     });
 });
 
-$(".has-address-data #street").focusin(function () {
+$(".has-address-data #number, #house_number_extension").focusout(function () {
     var postalCode = $(".has-address-data #postal_code");
     var number = $(".has-address-data #number");
     var houseNumberExtension = $(".has-address-data #house_number_extension");
@@ -198,7 +198,6 @@ $(".has-address-data #street").focusin(function () {
             var possibleWrongPostalCode = $('#possible-wrong-postal-code');
 
             // if there is no postal code returned, then the given postal code is *probably* wrong.
-            console.log(address);
             if (address.postal_code === "") {
                 possibleWrongPostalCode.show();
             } else {
@@ -214,6 +213,8 @@ $(".has-address-data #street").focusin(function () {
             city.val(address.city);
         },
         error: function error(request, status, _error) {
+            removeErrorFields();
+
             var helpBlock = '<span class="help-block"></span>';
             var errorMessage = $.parseJSON(request.responseText);
 

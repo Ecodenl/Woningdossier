@@ -102,7 +102,7 @@ class UserController extends Controller
         // attach the new user to the cooperation
         $user->cooperations()->attach($cooperation->id);
         // assign the roles to the user
-        $user->assignRole($roles);
+        $user->assignRole($cooperation->id, $roles);
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {

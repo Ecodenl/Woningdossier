@@ -30,11 +30,10 @@ use Illuminate\Support\Collection;
  */
 class Cooperation extends Model
 {
-    public $fillable = [
-        'name',
-        'website_url',
-        'slug',
-    ];
+    public $fillable
+        = [
+            'name', 'website_url', 'slug',
+        ];
 
     /**
      * The users associated with this cooperation.
@@ -62,14 +61,14 @@ class Cooperation extends Model
     /**
      * Check if the cooperation has a active step.
      *
-     * @param Step $step
+     * @param  Step  $step
      *
      * @return bool
      */
     public function isStepActive(Step $step): bool
     {
         $cooperationSteps = $this->steps();
-        $cooperationStep = $cooperationSteps->find($step->id);
+        $cooperationStep  = $cooperationSteps->find($step->id);
         if ($cooperationStep instanceof Step) {
             if ($cooperationStep->pivot->is_active) {
                 return true;
@@ -86,9 +85,7 @@ class Cooperation extends Model
      */
     public function getActiveOrderedSteps(): Collection
     {
-        return $this->steps()
-            ->orderBy('cooperation_steps.order')
-            ->where('cooperation_steps.is_active', '1')->get();
+        return $this->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
     }
 
     public function getRouteKeyName()
@@ -105,41 +102,26 @@ class Cooperation extends Model
     {
         $coaches = $this->users()->role('coach');
 
-//        $query = \DB::table('cooperations')
-//            ->select('users.*')
-//            ->where('cooperations.id', '=', $this->id)
-//            ->join('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
-//            ->join('model_has_roles', 'cooperation_user.user_id', '=', 'model_has_roles.model_id')
-//            ->where('model_has_roles.role_id', '=', 4)
-//            ->join('users', 'cooperation_user.user_id', '=', 'users.id');
-
         return $coaches;
     }
 
+
     /**
-     * Return the residents from the current cooperation.
+     * Return a collection of users for the cooperation and given role
      *
-     * @return $this
+     * This does not apply any scopes and should probably only be used in admin environments.
+     *
+     * @param  Role  $role
+     *
+     * @return Collection
      */
-    public function getResidents()
+    public function getUsersWithRole(Role $role): Collection
     {
-        $users = $this->users()->role('resident');
+        return \DB::table(config('permission.table_names.model_has_roles'))
+                  ->where('cooperation_id', $this->id)
+                  ->where('role_id', $role->id)
+                  ->leftJoin('users', 'model_has_roles.model_id', '=', 'users.id')
+                  ->get();
 
-        return $users;
-
-//        return $query = \DB::table('cooperations')
-//        ->select('users.*')
-//        ->where('cooperations.id', '=', $this->id)
-//        ->leftJoin('cooperation_user', 'cooperations.id', '=', 'cooperation_user.cooperation_id')
-//        ->leftJoin('model_has_roles', 'cooperation_user.user_id', '=', 'model_has_roles.model_id')
-//        ->where('model_has_roles.role_id', '=', 5)
-//        ->leftJoin('users', 'cooperation_user.user_id', '=', 'users.id');
-    }
-
-    public function getCoordinators()
-    {
-        $users = $this->users()->role('coordinator');
-
-        return $users;
     }
 }

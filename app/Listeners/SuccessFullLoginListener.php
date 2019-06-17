@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Role;
@@ -37,8 +38,24 @@ class SuccessFullLoginListener
         $userRole = $user->roles()->first();
 
         $cooperation = request()->route()->parameter('cooperation');
-        HoomdossierSession::setCooperation($cooperation);
 
+        // if the user logs in through the remember the router is not booted yet.
+        if (!$cooperation instanceof Cooperation) {
+            $cooperation = Cooperation::where('slug', $cooperation)->first();
+        }
+
+        // double check, if there still is no cooperation we log out the user and forget its remember me cookie.
+        if (!$cooperation instanceof Cooperation) {
+            $user->logout();
+
+            $rememberMeCookie = \Auth::getRecallerName();
+            // Tell Laravel to forget this cookie
+            $cookie = \Cookie::forget($rememberMeCookie);
+
+            return redirect()->route('login')->withCookie($cookie);
+        }
+
+        HoomdossierSession::setCooperation($cooperation);
 
         // if the user for some odd reason had no role attached, attach the resident rol to him.
         if (!$userRole instanceof Role) {

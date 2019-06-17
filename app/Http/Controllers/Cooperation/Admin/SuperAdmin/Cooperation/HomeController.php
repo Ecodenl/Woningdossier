@@ -21,16 +21,11 @@ class HomeController extends Controller
             ]
         ];
 
-        $coachRole = Role::where('name', 'coach')->first();
-        $residentRole = Role::where('name', 'resident')->first();
-        $coordinatorRole = Role::where('name', 'coordinator')->first();
+        $coachCount = $cooperationToManage->getUsersWithRole(Role::findByName('coach'))->count();
 
+        $residentCount = $cooperationToManage->getUsersWithRole(Role::findByName('resident'))->count();
 
-        $coachCount = $cooperationToManage->getUsersWithRole($coachRole)->count();
-
-        $residentCount = $cooperationToManage->getUsersWithRole($residentRole)->count();
-
-        $coordinatorCount = $cooperationToManage->getUsersWithRole($coordinatorRole)->count();
+        $coordinatorCount = $cooperationToManage->getUsersWithRole(Role::findByName('coordinator'))->count();
 
         return view('cooperation.admin.super-admin.cooperations.home.index', compact(
             'coachCount', 'residentCount', 'coordinatorCount',

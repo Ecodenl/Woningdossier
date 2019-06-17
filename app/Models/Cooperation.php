@@ -117,11 +117,13 @@ class Cooperation extends Model
      */
     public function getUsersWithRole(Role $role): Collection
     {
-        return \DB::table(config('permission.table_names.model_has_roles'))
-                  ->where('cooperation_id', $this->id)
-                  ->where('role_id', $role->id)
-                  ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
-                  ->get();
+        return User::hydrate(
+            \DB::table(config('permission.table_names.model_has_roles'))
+               ->where('cooperation_id', $this->id)
+               ->where('role_id', $role->id)
+               ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
+               ->get()->toArray()
+        );
 
     }
 }

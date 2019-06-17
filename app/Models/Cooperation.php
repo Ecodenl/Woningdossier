@@ -120,7 +120,7 @@ class Cooperation extends Model
         return \DB::table(config('permission.table_names.model_has_roles'))
                   ->where('cooperation_id', $this->id)
                   ->where('role_id', $role->id)
-                  ->leftJoin('users', 'model_has_roles.model_id', '=', 'users.id')
+                  ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
                   ->get();
 
     }

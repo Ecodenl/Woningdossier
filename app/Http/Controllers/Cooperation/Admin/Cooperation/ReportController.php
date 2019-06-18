@@ -43,7 +43,8 @@ class ReportController extends Controller
 
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
-        $fileName = $hash.$fileType->name.'.csv';
+        // remove the / to prevent unwanted directories
+        $fileName = str_replace('/', '', $hash.$fileType->name.'.csv');
 
         $fileStorage = FileStorage::create([
             'cooperation_id' => $cooperation->id,

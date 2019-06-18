@@ -34,6 +34,7 @@ use App\Models\PrivateMessage;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
+use App\Models\Role;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\User;
@@ -61,7 +62,7 @@ class CsvService
         $cooperation = $user->cooperations()->first();
 
         // get the users from the cooperations
-        $users = $cooperation->users;
+        $users = $cooperation->users()->whereHas('buildings')->get();
 
         // set the csv headers
         $csvHeaders = [
@@ -92,54 +93,52 @@ class CsvService
 
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
-            if ($building instanceof Building) {
-                $street      = $building->street;
-                $number      = $building->number;
-                $city        = $building->city;
-                $postalCode  = $building->postal_code;
-                $countryCode = $building->country_code;
+            $street      = $building->street;
+            $number      = $building->number;
+            $city        = $building->city;
+            $postalCode  = $building->postal_code;
+            $countryCode = $building->country_code;
 
-                $firstName    = $user->first_name;
-                $lastName     = $user->last_name;
-                $email        = $user->email;
-                $phoneNumber  = "'".$user->phone_number;
-                $mobileNumber = $user->mobile;
+            $firstName    = $user->first_name;
+            $lastName     = $user->last_name;
+            $email        = $user->email;
+            $phoneNumber  = "'".$user->phone_number;
+            $mobileNumber = $user->mobile;
 
-                // set the personal userinfo
-                $row[$key] = [
-                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode,
-                    $countryCode
-                ];
+            // set the personal userinfo
+            $row[$key] = [
+                $firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode,
+                $countryCode,
+            ];
 
-                // set all the years in range
-                for ($startYear = $thisYear; $startYear <= ($thisYear + 100); ++$startYear) {
-                    $row[$key][$startYear] = '';
+            // set all the years in range
+            for ($startYear = $thisYear; $startYear <= ($thisYear + 100); ++$startYear) {
+                $row[$key][$startYear] = '';
+            }
+
+            // get the action plan advices for the user, but only for the resident his input source
+            $userActionPlanAdvices = $user
+                ->actionPlanAdvices()
+                ->withOutGlobalScope(GetValueScope::class)
+                ->where('input_source_id', $residentInputSource->id)
+                ->get();
+
+            // get the user measures / advices
+            foreach ($userActionPlanAdvices as $actionPlanAdvice) {
+                $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+                $measureName = $actionPlanAdvice->measureApplication->measure_name;
+
+                if (is_null($plannedYear)) {
+                    $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
                 }
 
-                // get the action plan advices for the user, but only for the resident his input source
-                $userActionPlanAdvices = $user
-                    ->actionPlanAdvices()
-                    ->withOutGlobalScope(GetValueScope::class)
-                    ->where('input_source_id', $residentInputSource->id)
-                    ->get();
+                // create a new array with the measures for the user connected to the planned year
+                $allUserMeasures[$plannedYear][] = $measureName;
+            }
 
-                // get the user measures / advices
-                foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-                    $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
-                    $measureName = $actionPlanAdvice->measureApplication->measure_name;
-
-                    if (is_null($plannedYear)) {
-                        $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
-                    }
-
-                    // create a new array with the measures for the user connected to the planned year
-                    $allUserMeasures[$plannedYear][] = $measureName;
-                }
-
-                // loop through the user measures and add them to the row
-                foreach ($allUserMeasures as $year => $userMeasures) {
-                    $row[$key][$year] = implode(', ', $userMeasures);
-                }
+            // loop through the user measures and add them to the row
+            foreach ($allUserMeasures as $year => $userMeasures) {
+                $row[$key][$year] = implode(', ', $userMeasures);
             }
 
             $rows = $row;
@@ -158,7 +157,7 @@ class CsvService
     public static function byMeasure($cooperation, $anonymize): array
     {
         // get the users from the cooperations
-        $users = $cooperation->users;
+        $users = $cooperation->users()->whereHas('buildings')->get();
 
         if ($anonymize) {
             $csvHeaders = [
@@ -211,88 +210,88 @@ class CsvService
 
         foreach ($users as $key => $user) {
             $building = $user->buildings()->first();
-            if ($building instanceof Building) {
 
-	            /** @var Collection $conversationRequestsForBuilding */
-	            $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
-	                                                             ->conversationRequestByBuildingId($building->id)
-	                                                             ->where('to_cooperation_id', $cooperation->id)->get();
+            /** @var Collection $conversationRequestsForBuilding */
+            $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+                                                             ->conversationRequestByBuildingId($building->id)
+                                                             ->where('to_cooperation_id', $cooperation->id)->get();
 
-                $createdAt           = $user->created_at;
-                $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
-                $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
-                $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
-                $connectedCoachNames = [];
-                // get the names from the coaches and add them to a array
-                foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                    array_push($connectedCoachNames, User::find($coachId)->getFullName());
+            $createdAt           = $user->created_at;
+            $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+            $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+            $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+            $connectedCoachNames = [];
+            // get the names from the coaches and add them to a array
+            foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
+                array_push($connectedCoachNames, User::find($coachId)->getFullName());
+            }
+            // implode it.
+            $connectedCoachNames = implode($connectedCoachNames, ', ');
+
+            $firstName    = $user->first_name;
+            $lastName     = $user->last_name;
+            $email        = $user->email;
+            $phoneNumber  = "'".$user->phone_number;
+            $mobileNumber = $user->mobile;
+
+            $street     = $building->street;
+            $number     = $building->number;
+            $city       = $building->city;
+            $postalCode = $building->postal_code;
+
+            // get the building features from the resident
+            $buildingFeatures = $building
+                ->buildingFeatures()
+                ->withoutGlobalScope(GetValueScope::class)
+                ->residentInput()
+                ->first();
+
+
+
+            $buildingType    = $buildingFeatures->buildingType->name ?? '';
+            $buildYear       = $buildingFeatures->build_year ?? '';
+            $exampleBuilding = $building->exampleBuilding->name ?? '';
+
+            if ($anonymize) {
+                // set the personal userinfo
+                $row[$key] = [
+                    $createdAt, $buildingStatus, $postalCode, $city,
+                    $buildingType, $buildYear, $exampleBuilding,
+                ];
+            } else {
+                // set the personal userinfo
+                $row[$key] = [
+                    $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                    $street, $number, $postalCode, $city,
+                    $buildingType, $buildYear, $exampleBuilding,
+                ];
+            }
+
+
+            // set alle the measures to the user
+            foreach ($measures as $measure) {
+                $row[$key][$measure->measure_name] = '';
+            }
+
+            // get the action plan advices for the user, but only for the resident his input source
+            $userActionPlanAdvices = $user
+                ->actionPlanAdvices()
+                ->withOutGlobalScope(GetValueScope::class)
+                ->residentInput()
+                ->get();
+
+            // get the user measures / advices
+            foreach ($userActionPlanAdvices as $actionPlanAdvice) {
+                $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+                $measureName = $actionPlanAdvice->measureApplication->measure_name;
+
+                if (is_null($plannedYear)) {
+                    $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
                 }
-                // implode it.
-                $connectedCoachNames = implode($connectedCoachNames, ', ');
 
-                $firstName    = $user->first_name;
-                $lastName     = $user->last_name;
-                $email        = $user->email;
-                $phoneNumber  = "'".$user->phone_number;
-                $mobileNumber = $user->mobile;
-
-                $street     = $building->street;
-                $number     = $building->number;
-                $city       = $building->city;
-                $postalCode = $building->postal_code;
-
-                // get the building features from the resident
-                $buildingFeatures = $building
-                    ->buildingFeatures()
-                    ->withoutGlobalScope(GetValueScope::class)
-                    ->residentInput()
-                    ->first();
-
-                $buildingType    = $buildingFeatures->buildingType->name ?? '';
-                $buildYear       = $buildingFeatures->build_year ?? '';
-                $exampleBuilding = $building->exampleBuilding->name ?? '';
-
-                if ($anonymize) {
-                    // set the personal userinfo
-                    $row[$key] = [
-                        $createdAt, $buildingStatus, $postalCode, $city,
-                        $buildingType, $buildYear, $exampleBuilding
-                    ];
-                } else {
-                    // set the personal userinfo
-                    $row[$key] = [
-                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                        $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
-                        $street, $number, $postalCode, $city,
-                        $buildingType, $buildYear, $exampleBuilding
-                    ];
-                }
-
-
-                // set alle the measures to the user
-                foreach ($measures as $measure) {
-                    $row[$key][$measure->measure_name] = '';
-                }
-
-                // get the action plan advices for the user, but only for the resident his input source
-                $userActionPlanAdvices = $user
-                    ->actionPlanAdvices()
-                    ->withOutGlobalScope(GetValueScope::class)
-                    ->residentInput()
-                    ->get();
-
-                // get the user measures / advices
-                foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-                    $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
-                    $measureName = $actionPlanAdvice->measureApplication->measure_name;
-
-                    if (is_null($plannedYear)) {
-                        $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
-                    }
-
-                    // fill the measure with the planned year
-                    $row[$key][$measureName] = $plannedYear;
-                }
+                // fill the measure with the planned year
+                $row[$key][$measureName] = $plannedYear;
             }
 
             $rows = $row;
@@ -314,7 +313,9 @@ class CsvService
      */
     public static function questionnaireResults(Cooperation $cooperation, bool $anonymize): array
     {
-        $questionnaires = Questionnaire::all();
+        $questionnaires = Questionnaire::withoutGlobalScope(new CooperationScope)
+                                       ->where('cooperation_id', $cooperation->id)
+                                       ->get();
         $rows           = [];
 
         if ($anonymize) {
@@ -350,122 +351,125 @@ class CsvService
 
 
         // get the users from the current cooperation that have the resident role
-        $usersFromCooperation = $cooperation->users()->role('resident')->with('buildings')->get();
+        $usersFromCooperation = $cooperation->getUsersWithRole(Role::findByName('resident'));
 
+        /** @var User $user */
         foreach ($usersFromCooperation as $user) {
             $building = $user->buildings()->first();
+            if ($building instanceof Building && $user->hasRole('resident', $cooperation->id)) {
 
-	        /** @var Collection $conversationRequestsForBuilding */
-	        $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
-	                                                         ->conversationRequestByBuildingId($building->id)
-	                                                         ->where('to_cooperation_id', $cooperation->id)->get();
+                /** @var Collection $conversationRequestsForBuilding */
+                $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+                                                                 ->conversationRequestByBuildingId($building->id)
+                                                                 ->where('to_cooperation_id', $cooperation->id)->get();
 
-            $createdAt           = $user->created_at;
-            $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
-            $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
-            $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
-            $connectedCoachNames = [];
-            // get the names from the coaches and add them to a array
-            foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                array_push($connectedCoachNames, User::find($coachId)->getFullName());
-            }
-            // implode it.
-            $connectedCoachNames = implode($connectedCoachNames, ', ');
-
-            $firstName    = $user->first_name;
-            $lastName     = $user->last_name;
-            $email        = $user->email;
-            $phoneNumber  = "'".$user->phone_number;
-            $mobileNumber = $user->mobile;
-
-            $street     = $building->street;
-            $number     = $building->number;
-            $city       = $building->city;
-            $postalCode = $building->postal_code;
-
-            // get the building features from the resident
-            $buildingFeatures = $building
-                ->buildingFeatures()
-                ->withoutGlobalScope(GetValueScope::class)
-                ->residentInput()
-                ->first();
-
-            $buildingType = $buildingFeatures->buildingType->name ?? '';
-            $buildYear    = $buildingFeatures->build_year ?? '';
-
-            // set the personal user info only if the user has question answers.
-            if ($building->questionAnswers()->withoutGlobalScope(GetValueScope::class)->residentInput()->count() > 0) {
-                if ($anonymize) {
-                    $rows[$building->id] = [
-                        $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
-                        $buildingType, $buildYear
-                    ];
-                } else {
-
-                    $rows[$building->id] = [
-                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                        $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
-                        $street, $number, $postalCode, $city,
-                        $buildingType, $buildYear
-                    ];
+                $createdAt           = $user->created_at;
+                $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+                $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+                $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+                $connectedCoachNames = [];
+                // get the names from the coaches and add them to a array
+                foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
+                    array_push($connectedCoachNames, User::find($coachId)->getFullName());
                 }
-            }
-            foreach ($questionnaires as $questionnaire) {
+                // implode it.
+                $connectedCoachNames = implode($connectedCoachNames, ', ');
 
-                $questionAnswersForCurrentQuestionnaire =
-                    \DB::table('questionnaires')
-                       ->where('questionnaires.id', $questionnaire->id)
-                       ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
-                       ->leftJoin('translations', function ($leftJoin) {
-                           $leftJoin->on('questions.name', '=', 'translations.key')
-                                    ->where('language', '=', app()->getLocale());
-                       })
-                       ->leftJoin('questions_answers',
-                           function ($leftJoin) use ($building) {
-                               $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
-                                        ->where('questions_answers.building_id', '=', $building->id);
+                $firstName    = $user->first_name;
+                $lastName     = $user->last_name;
+                $email        = $user->email;
+                $phoneNumber  = "'".$user->phone_number;
+                $mobileNumber = $user->mobile;
+
+                $street     = $building->street;
+                $number     = $building->number;
+                $city       = $building->city;
+                $postalCode = $building->postal_code;
+
+                // get the building features from the resident
+                $buildingFeatures = $building
+                    ->buildingFeatures()
+                    ->withoutGlobalScope(GetValueScope::class)
+                    ->residentInput()
+                    ->first();
+
+                $buildingType = $buildingFeatures->buildingType->name ?? '';
+                $buildYear    = $buildingFeatures->build_year ?? '';
+
+                // set the personal user info only if the user has question answers.
+                if ($building->questionAnswers()->withoutGlobalScope(GetValueScope::class)->residentInput()->count() > 0) {
+                    if ($anonymize) {
+                        $rows[$building->id] = [
+                            $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
+                            $buildingType, $buildYear,
+                        ];
+                    } else {
+
+                        $rows[$building->id] = [
+                            $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                            $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                            $street, $number, $postalCode, $city,
+                            $buildingType, $buildYear,
+                        ];
+                    }
+                }
+                foreach ($questionnaires as $questionnaire) {
+
+                    $questionAnswersForCurrentQuestionnaire =
+                        \DB::table('questionnaires')
+                           ->where('questionnaires.id', $questionnaire->id)
+                           ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
+                           ->leftJoin('translations', function ($leftJoin) {
+                               $leftJoin->on('questions.name', '=', 'translations.key')
+                                        ->where('language', '=', app()->getLocale());
                            })
-                       ->select('questions_answers.answer', 'questions.id as question_id',
-                           'translations.translation as question_name')
-                       ->get();
+                           ->leftJoin('questions_answers',
+                               function ($leftJoin) use ($building) {
+                                   $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
+                                            ->where('questions_answers.building_id', '=', $building->id);
+                               })
+                           ->select('questions_answers.answer', 'questions.id as question_id',
+                               'translations.translation as question_name')
+                           ->get();
 
 
-                // loop through the answers for ONE questionnaire
-                foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
-                    $answer          = $questionAnswerForCurrentQuestionnaire->answer;
-                    $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
+                    // loop through the answers for ONE questionnaire
+                    foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
+                        $answer          = $questionAnswerForCurrentQuestionnaire->answer;
+                        $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
 
-                    // check if the question
-                    if ($currentQuestion instanceof Question) {
-                        // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
-                        if ($currentQuestion->hasQuestionOptions()) {
-                            $questionOptionAnswer = [];
+                        // check if the question
+                        if ($currentQuestion instanceof Question) {
+                            // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
+                            if ($currentQuestion->hasQuestionOptions()) {
+                                $questionOptionAnswer = [];
 
-                            // explode on array since some questions are multi select
-                            $explodedAnswers = explode('|', $answer);
+                                // explode on array since some questions are multi select
+                                $explodedAnswers = explode('|', $answer);
 
-                            foreach ($explodedAnswers as $explodedAnswer) {
-                                // check if the current question has options
-                                // the question can contain a int but can be a answer to a question like "How old are you"
-                                if ($currentQuestion->hasQuestionOptions() && ! empty($explodedAnswer)) {
-                                    $questionOption = QuestionOption::find($explodedAnswer);
-                                    array_push($questionOptionAnswer, $questionOption->name);
+                                foreach ($explodedAnswers as $explodedAnswer) {
+                                    // check if the current question has options
+                                    // the question can contain a int but can be a answer to a question like "How old are you"
+                                    if ($currentQuestion->hasQuestionOptions() && ! empty($explodedAnswer)) {
+                                        $questionOption = QuestionOption::find($explodedAnswer);
+                                        array_push($questionOptionAnswer, $questionOption->name);
+                                    }
+                                }
+
+                                // the questionOptionAnswer can be empty if the the if statements did not pass
+                                // so we check that before assigning it.
+                                if ( ! empty($questionOptionAnswer)) {
+                                    // implode it
+                                    $answer = implode($questionOptionAnswer, '|');
                                 }
                             }
+                            // set the question name in the headers
+                            // yes this overwrites it all the time, but thats the point.
+                            $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
 
-                            // the questionOptionAnswer can be empty if the the if statements did not pass
-                            // so we check that before assigning it.
-                            if ( ! empty($questionOptionAnswer)) {
-                                // implode it
-                                $answer = implode($questionOptionAnswer, '|');
-                            }
+                            // set the question answer
+                            $rows[$building->id][] = $answer;
                         }
-                        // set the question name in the headers
-                        // yes this overwrites it all the time, but thats the point.
-                        $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
-
-                        // set the question answer
-                        $rows[$building->id][] = $answer;
                     }
                 }
             }
@@ -507,7 +511,7 @@ class CsvService
 
     /**
      * Get the total report for all users by the cooperation
-     * 
+     *
      * @param  Cooperation  $cooperation
      * @param bool $anonymized
      *
@@ -515,7 +519,7 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, bool $anonymized): array
     {
-        $users = $cooperation->users;
+        $users = $cooperation->users()->whereHas('buildings')->get();
 
 
         if ($anonymized) {
@@ -631,14 +635,14 @@ class CsvService
                 // set the personal userinfo
                 $row[$building->id] = [
                     $createdAt, $buildingStatus, $postalCode, $city,
-                    $buildingType, $buildYear, $exampleBuilding
+                    $buildingType, $buildYear, $exampleBuilding,
                 ];
             } else {
                 $row[$building->id] = [
                     $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
                     $street, $number, $postalCode, $city,
-                    $buildingType, $buildYear, $exampleBuilding
+                    $buildingType, $buildYear, $exampleBuilding,
                 ];
             }
 
@@ -949,7 +953,7 @@ class CsvService
                                 case 'cook_gas':
                                     $radiobuttonsYesNo = [
                                         1 => __('woningdossier.cooperation.radiobutton.yes'),
-                                        2 => __('woningdossier.cooperation.radiobutton.no')
+                                        2 => __('woningdossier.cooperation.radiobutton.no'),
                                     ];
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $radiobuttonsYesNo[$userEnergyHabit->cook_gas] ?? '';
                                     break;
@@ -1094,7 +1098,7 @@ class CsvService
         $buildingPaintworkStatusesArray = [
             'last_painted_year' => $buildingPaintworkStatus->last_painted_year ?? null,
             'paintwork_status_id' => $buildingPaintworkStatus->paintwork_status_id ?? null,
-            'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null
+            'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
         ];
 
         // handle the stuff for the floor insulation.
@@ -1105,8 +1109,8 @@ class CsvService
             'crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
             $crawlspaceElement->id => [
                 'extra' => $buildingCrawlspaceElement->extra['access'] ?? null,
-                'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null
-            ]
+                'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null,
+            ],
         ];
 
         $floorBuildingFeatures = [
@@ -1142,7 +1146,7 @@ class CsvService
             $boilerService->id => [
                 'service_value_id' => $buildingBoilerService->service_value_id ?? null,
                 'extra' => $buildingBoilerService->extra['date'] ?? null,
-            ]
+            ],
         ];
 
         // handle the solar panel stuff.
@@ -1193,13 +1197,13 @@ class CsvService
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
             'window_surface' => $buildingFeature->window_surface ?? null,
-            'building_paintwork_statuses' => $buildingPaintworkStatusesArray
+            'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
         ]);
 
         $floorInsulationSavings = FloorInsulation::calculate($building, $user, [
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
             'building_elements' => $floorInsulationBuildingElements,
-            'building_features' => $floorBuildingFeatures
+            'building_features' => $floorBuildingFeatures,
         ]);
 
         $roofInsulationSavings = RoofInsulation::calculate($building, $user, [
@@ -1210,16 +1214,16 @@ class CsvService
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $user, [
             'building_services' => $buildingBoilerArray,
             'habit' => [
-                'amount_gas' => $userEnergyHabit->amount_gas ?? null
-            ]
+                'amount_gas' => $userEnergyHabit->amount_gas ?? null,
+            ],
         ]);
 
         $solarPanelSavings = SolarPanel::calculate($building, $user, [
             'building_pv_panels' => $buildingPvPanels instanceOf BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
-                'amount_electricity' => $userEnergyHabit->amount_electricity ?? null
+                'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
-            'interest' => $userInterestsForSolarPanels
+            'interest' => $userInterestsForSolarPanels,
         ]);
 
         $heaterSavings = Heater::calculate($building, $user, [
@@ -1227,7 +1231,7 @@ class CsvService
                 $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             ],
             'user_energy_habits' => [
-                'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null
+                'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
             'interest' => $userInterestsForHeater,
         ]);
@@ -1241,9 +1245,9 @@ class CsvService
             'roof-insulation' => $roofInsulationSavings,
             'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
             'solar-panels' => $solarPanelSavings,
-            'heater' => $heaterSavings
+            'heater' => $heaterSavings,
         ];
     }
-    
+
 
 }

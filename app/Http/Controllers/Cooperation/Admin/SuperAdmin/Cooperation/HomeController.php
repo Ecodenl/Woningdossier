@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Models\Cooperation;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -20,9 +21,11 @@ class HomeController extends Controller
             ]
         ];
 
-        $residentCount = $cooperationToManage->users()->role('resident')->count();
-        $coachCount = $cooperationToManage->users()->role('coach')->count();
-        $coordinatorCount = $cooperationToManage->users()->role('coordinator')->count();
+        $coachCount = $cooperationToManage->getUsersWithRole(Role::findByName('coach'))->count();
+
+        $residentCount = $cooperationToManage->getUsersWithRole(Role::findByName('resident'))->count();
+
+        $coordinatorCount = $cooperationToManage->getUsersWithRole(Role::findByName('coordinator'))->count();
 
         return view('cooperation.admin.super-admin.cooperations.home.index', compact(
             'coachCount', 'residentCount', 'coordinatorCount',

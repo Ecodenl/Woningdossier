@@ -38,11 +38,6 @@
                                         @lang('my-account.side-nav.import')
                                     </a>
                                 </li>
-                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.index', 'cooperation.my-account.messages.edit'])) active @endif">
-                                    <a href="{{route('cooperation.my-account.messages.index')}}">
-                                        @lang('my-account.side-nav.my-messages')
-                                    </a>
-                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.access.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.access.index')}}">
                                         @lang('my-account.side-nav.access')

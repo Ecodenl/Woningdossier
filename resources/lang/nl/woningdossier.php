@@ -528,13 +528,13 @@ return [
                                 'download'         => 'Download file',
                                 'available-report' => 'Beschikbaar rapport'
                             ],
-                            'report-in-queue' => 'Het rapport word gegenereerd',
+                            'report-in-queue' => 'Het rapport wordt gegenereerd',
                             'generate-btn' => 'Genereer'
                         ],
                     ],
 
                     'generate'    => [
-                        'success' => 'Het rapport word gemaakt.',
+                        'success' => 'Het rapport wordt gemaakt.',
                     ],
                     'csv-columns' => [
                         'created-at'         => 'Datum account',

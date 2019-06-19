@@ -534,7 +534,7 @@ return [
                     ],
 
                     'generate'    => [
-                        'success' => 'Het rapport wordt gemaakt.',
+                        'success' => 'Het rapport wordt gemaakt',
                     ],
                     'csv-columns' => [
                         'created-at'         => 'Datum account',

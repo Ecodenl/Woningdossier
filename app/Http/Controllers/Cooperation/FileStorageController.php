@@ -7,6 +7,7 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileStorageController extends Controller
 {
@@ -18,7 +19,7 @@ class FileStorageController extends Controller
      * @param  FileType     $fileType
      * @param               $fileStorageFilename
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return StreamedResponse|\Illuminate\Http\RedirectResponse
      */
     public function download(Cooperation $cooperation, FileType $fileType, $fileStorageFilename)
     {
@@ -29,9 +30,9 @@ class FileStorageController extends Controller
 
         if ($fileStorage instanceof FileStorage) {
 
-            if (\Storage::disk('downloads')->exists($fileStorageFilename, $fileType->name.'.csv')) {
+            if (\Storage::disk('downloads')->exists($fileStorageFilename)) {
 
-                return \Storage::disk('downloads')->download($fileStorageFilename, $fileType->name.'.csv', [
+                return \Storage::disk('downloads')->download($fileStorageFilename, $fileStorageFilename, [
                     'Content-type'  => $fileStorage->content_type,
                     'Pragma'        => 'no-cache',
                     'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',

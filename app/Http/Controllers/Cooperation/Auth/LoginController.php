@@ -110,36 +110,40 @@ class LoginController extends Controller
         // the IP address of the client making these requests into this application.
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
-
             return $this->sendLockoutResponse($request);
         }
 
         // validate the credentials from the user
-        if ($this->guard()->validate($this->credentials($request)) && $this->attemptLogin($request)) {
+        if ($this->guard()->validate($this->credentials($request))) {
 
             /** @var User $user */
-            $user = $this->guard()->user();
+            $user = $this->guard()->getLastAttempted();
 
-            // check if the user is associated with the current cooperation.
-            if ($user->isAssociatedWith($cooperation)) {
-
-                $role = Role::findByName($user->roles()->first()->name);
-
-                $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
-
-                return $this->sendLoginResponse($request);
-
-            } else {
+            if (!$user->isAssociatedWith($cooperation)) {
                 throw ValidationException::withMessages([
-                    'cooperation' => [__('auth.cooperation')],
+                    'cooperation' => [trans('auth.cooperation')],
                 ]);
             }
+        }
 
-        } else if ($this->accountIsNotConfirmed($request->get('email'))) {
+        // check if the account is confirmed.
+        if ($this->accountIsNotConfirmed($request->get('email'))) {
             $this->sendAccountNotConfirmedResponse();
         }
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
+        // everything is ok with the user at this point, now we log him in.
+        if ($this->attemptLogin($request)) {
+
+            $user = $this->guard()->user();
+
+            $role = Role::findByName($user->roles()->first()->name);
+
+            $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
+
+            return $this->sendLoginResponse($request);
+        }
+
+        // if the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);

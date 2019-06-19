@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Auth\ConfirmRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
@@ -136,18 +137,8 @@ class RegisterController extends Controller
         return $user;
     }
 
-    public function confirm(Request $request)
+    public function confirm(ConfirmRequest $request)
     {
-        $validator = \Validator::make($request->all(), [
-                'u' => 'required|email',
-                't' => 'required|alpha_num',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return redirect(route('cooperation.home'));
-        }
-
         $email = $request->get('u');
         $token = $request->get('t');
 

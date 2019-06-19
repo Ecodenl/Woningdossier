@@ -11,6 +11,7 @@ use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
+use App\Scopes\AvailableScope;
 use Illuminate\Support\Facades\Hash;
 
 class ReportController extends Controller
@@ -19,7 +20,9 @@ class ReportController extends Controller
     {
         $reportFileTypeCategory = FileTypeCategory::short('report')->with('fileTypes.files')->first();
 
-        return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory'));
+        $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope)->where('is_being_processed', true)->count();
+
+        return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }
 
     /**

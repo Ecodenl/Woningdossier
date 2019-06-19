@@ -1,5 +1,11 @@
 @extends('cooperation.admin.layouts.app')
 
+@push('meta')
+    @if($anyFilesBeingProcessed)
+        <meta http-equiv="refresh" content="5">
+    @endif
+@endpush
+
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.reports.index.title')</div>

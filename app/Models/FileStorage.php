@@ -77,7 +77,7 @@ class FileStorage extends Model
      */
     public function isBeingProcessed(): bool
     {
-        return $this->is_being_proccessed;
+        return $this->is_being_processed;
     }
 
     /**

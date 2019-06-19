@@ -161,15 +161,14 @@ class CsvService
 
         if ($anonymize) {
             $csvHeaders = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
             ];
         } else {
             $csvHeaders = [

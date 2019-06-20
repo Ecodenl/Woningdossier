@@ -6,6 +6,7 @@ use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
@@ -32,6 +33,8 @@ class ParticipantController extends Controller
 
         // the building from the user / resident
         $building = Building::find($buildingOwnerId);
+
+
 
         if ($building instanceof Building) {
             // revoke the access for the coach to talk with the resident

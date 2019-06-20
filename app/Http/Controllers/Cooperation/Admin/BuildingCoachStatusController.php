@@ -145,7 +145,8 @@ class BuildingCoachStatusController extends Controller
      */
     public function getStatusToSetForAppointment($mostRecentBuildingCoachStatus, $appointmentDate): string
     {
-        // if the appointment date is set to null, we set the status to no execution.
+        // old situation, keep for future reference.
+/*        // if the appointment date is set to null, we set the status to no execution.
         if (!is_null($appointmentDate)) {
             // if a coach tries to make a appointment date while the status is still set to pending, then we set the status to in progress ourself
             if ($mostRecentBuildingCoachStatus->status == BuildingCoachStatus::STATUS_PENDING) {
@@ -155,7 +156,8 @@ class BuildingCoachStatusController extends Controller
             }
         } else {
             $status = BuildingCoachStatus::STATUS_NO_EXECUTION;
-        }
-        return $status;
+        } */
+
+        return $mostRecentBuildingCoachStatus->status;
     }
 }

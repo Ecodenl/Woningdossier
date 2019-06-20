@@ -51,23 +51,24 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
-                        <select autocomplete="off" class="form-control" name="user[building_coach_status][status]"
-                                id="building-coach-status">
+                        <select autocomplete="off" class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                            {{-- !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
                             {{--the user got a coach connected and the building is active--}}
                             @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
                                 </option>
-                                {{--the user does not have a coach connected but the building is active--}}
+
+                            {{--the user does not have a coach connected but the building is active--}}
                             @elseif(!$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
-                                {{--The user had some sort of message history so, pending.--}}
+{{--                                The user had some sort of message history so, pending.--}}
                                 @if($publicMessages->isNotEmpty())
                                     <option disabled selected>
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
                                         {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_PENDING)}}
                                     </option>
-                                    {{--The user has no message history--}}
+{{--                                    The user has no message history--}}
                                 @else
                                     <option disabled selected>
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
@@ -81,47 +82,25 @@
                                     {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
                                 </option>
                             @endif
+                            {{-- !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
                             {{--
                                 If there is no active coach connected to the building, then there is no point in setting these statuses
                                 and, it also cant be set since there arent ant coaches to give a status.
                             --}}
                             @if($coachesWithActiveBuildingCoachStatus->isNotEmpty())
                                 @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                    <?php
-                                    // the if logic
-                                    $manageableStatusIsExecuted = $buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_EXECUTED;
-                                    $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
-                                    $mostRecentBuildingCoachStatusExists = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus;
-
-                                    if ($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->status != \App\Models\BuildingCoachStatus::STATUS_EXECUTED) {
-                                        // check if the appointment day is past.
-                                        $appointmentDayDateIsPast = ! $mostRecentBuildingCoachStatus->appointment_date->lessThan(\Carbon\Carbon::now()->format('Y-m-d'));
-                                    }
-                                    // if there is an appointment date then it isn't allowed to change the status
-                                    // but if that day is today and the manageable status is executed, then the coach may change it.
-                                    // else we just want to show all the manageable statuses
-                                    ?>
-                                    @if($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate() && (isset($appointmentDayDateIsPast) && $appointmentDayDateIsPast == true))
-                                        @if($hasAppointmentThatIsToday && $manageableStatusIsExecuted)
-                                            <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
-                                        @endif
-                                    @else
-                                        <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
-                                    @endif
-
+                                    <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
                                 @endforeach
                             @endif
 
-                            @if($building->isActive())
-                                {{--This status can ALWAYS be choosen.--}}
-                                <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
-                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
-                                </option>
-                            @else
-                                <option value="{{\App\Models\Building::STATUS_IS_ACTIVE}}">
-                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_ACTIVE)}}
-                                </option>
-                            @endif
+                            {{--These statuses can always be choosen.--}}
+                            <option value="{{\App\Models\Building::STATUS_IS_ACTIVE}}">
+                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_ACTIVE)}}
+                            </option>
+
+                            <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
+                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                            </option>
                         </select>
                     </div>
                 </div>

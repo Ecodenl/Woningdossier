@@ -16,6 +16,12 @@ class BuildingCoachStatusService
      */
     public static function revokeAccess($coachId, $buildingId): bool
     {
+        //get the most recent building coach statuses so we can use that status
+        $mostRecentBuildingCoachStatuses = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
+        // now we just retrieve the most recent one.
+        $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->first();
+
+
         BuildingCoachStatus::create([
             'coach_id' => $coachId, 'building_id' => $buildingId, 'status' => BuildingCoachStatus::STATUS_REMOVED,
         ]);

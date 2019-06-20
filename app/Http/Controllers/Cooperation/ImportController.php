@@ -291,4 +291,79 @@ class ImportController extends Controller
 
         return redirect()->back();
     }
+
+
+    public function copyToOtherBuilding()
+    {
+
+        // the tables that have a the where_column is used to query on the resident his answers.
+        $tables = [
+            'building_features',
+            'building_elements'           => [
+                'where_column'            => 'element_id',
+                'additional_where_column' => 'element_value_id',
+            ],
+            'building_services'           => [
+                'where_column'            => 'service_id',
+                'additional_where_column' => 'service_value_id',
+            ],
+            'building_roof_types'         => [
+                'where_column' => 'roof_type_id',
+            ],
+            'building_insulated_glazings' => [
+                'where_column' => 'measure_application_id',
+            ],
+            'building_user_usages',
+            'building_paintwork_statuses',
+            'building_user_usages',
+            'user_progresses'             => [
+                'where_column' => 'step_id',
+            ],
+            'questions_answers'           => [
+                'where_column' => 'question_id',
+            ],
+            'building_features',
+            'building_pv_panels',
+            'building_heaters',
+            'building_appliances',
+
+            'user_action_plan_advices' => [
+                'where_column' => 'measure_application_id',
+            ],
+            'user_energy_habits',
+            'user_interests'           => [
+                'where_column'            => 'interested_in_type',
+                'additional_where_column' => 'interested_in_id',
+            ],
+        ];
+
+
+        foreach ($tables as $tableOrInt => $tableOrWhereColumns) {
+            // now check if its a int
+            // if it isn't a int, the $tableOrId is a table and the $tableOrWhereColumns is a where column
+            // else the $tableOrWhereColumns is the table and we do not need to query further.
+            if ( ! is_int($tableOrInt)) {
+                $table       = $tableOrInt;
+                $whereColumn = $tableOrWhereColumns['where_column'];
+            } else {
+                $table = $tableOrWhereColumns;
+            }
+            // building to copy data from
+            $building = Building::find(HoomdossierSession::getBuilding());
+            $user     = $building->user()->first();
+
+            // set the building or user id, depending on which column exists on the table
+            if (\Schema::hasColumn($table, 'user_id')) {
+                $buildingOrUserId     = $user->id;
+                $buildingOrUserColumn = 'user_id';
+            } else {
+                $buildingOrUserId     = $building->id;
+                $buildingOrUserColumn = 'building_id';
+            }
+
+
+            // now we get all the answers from the desired input source
+            $dataToCopy = \DB::table($table)->where($buildingOrUserColumn, $buildingOrUserId)->get();
+        }
+    }
 }

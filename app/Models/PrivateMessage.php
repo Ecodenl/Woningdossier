@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\Scopes\CooperationScope;
+use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -52,6 +52,8 @@ use Illuminate\Support\Collection;
  */
 class PrivateMessage extends Model
 {
+    use HasCooperationTrait;
+
     const STATUS_LINKED_TO_COACH = 'gekoppeld aan coach';
     const STATUS_IN_CONSIDERATION = 'in behandeling';
     const STATUS_APPLICATION_SENT = 'aanvraag verzonden';
@@ -66,14 +68,6 @@ class PrivateMessage extends Model
         'message', 'from_user_id', 'cooperation_id', 'from_cooperation_id', 'to_cooperation_id',
         'request_type', 'allow_access', 'building_id', 'from_user', 'is_public',
     ];
-
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new CooperationScope());
-    }
 
     /**
      * The attributes that should be cast to native types.

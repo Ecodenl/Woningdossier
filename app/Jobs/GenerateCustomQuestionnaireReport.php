@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Exports\Cooperation\CsvExport;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\Str;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -48,6 +47,9 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
      */
     public function handle()
     {
+        if (\App::runningInConsole()) {
+            \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+        }
         // temporary session to get the right data for the dumb.
         $residentInputSource = InputSource::findByShort('resident');
         HoomdossierSession::setInputSource($residentInputSource);

@@ -15,10 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
-            \Log::debug('!!The application is running in the console!!');
-        }
-
         \Validator::extend('needs_to_be_lower_or_same_as', function ($attribute, $value, $parameters, $validator) {
             $formData = array_dot($validator->getData());
             $compareFieldValue = $formData[$parameters[0]];

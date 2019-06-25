@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
 use App\Models\Cooperation;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -18,7 +19,7 @@ class CooperationAdminController extends Controller
      */
     public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
     {
-        $users = $cooperationToManage->users()->role('cooperation-admin')->get();
+        $users = $cooperationToManage->getUsersWithRole(Role::findByName('cooperation-admin'));
 
         $breadcrumbs = [
             [

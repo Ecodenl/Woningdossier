@@ -96,8 +96,7 @@ $(document).ready(function () {
 
 });
 
-$(".has-address-data #street").focusin(
-    function(){
+$(".has-address-data #number, #house_number_extension").focusout(function(){
         var postalCode = $(".has-address-data #postal_code");
         var number = $(".has-address-data #number");
         var houseNumberExtension = $(".has-address-data #house_number_extension");
@@ -139,6 +138,8 @@ $(".has-address-data #street").focusin(
                 city.val(address.city);
             },
             error: function (request, status, error) {
+                removeErrorFields();
+
                 var helpBlock = '<span class="help-block"></span>';
                 var errorMessage = $.parseJSON(request.responseText);
 

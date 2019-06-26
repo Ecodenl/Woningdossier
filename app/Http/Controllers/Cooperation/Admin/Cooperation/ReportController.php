@@ -37,7 +37,7 @@ class ReportController extends Controller
         $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
         // get the users from the current cooperation that have the resident role
-        $usersFromCooperation = $currentCooperation->users()->role('resident')->with('buildings')->get();
+        $usersFromCooperation = $currentCooperation->users()->has('buildings')->role('resident')->with('buildings')->get();
 
         foreach ($questionnaires as $questionnaire) {
             foreach ($usersFromCooperation as $user) {

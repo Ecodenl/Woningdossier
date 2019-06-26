@@ -30,11 +30,16 @@ class DropVariousUserColumns extends Migration
             $table->dropColumn('phone_number');
             $table->dropColumn('mobile');
 
-            $table->dropColumn('last_visit');
-            $table->dropColumn('visit_count');
-
             $table->dropColumn('active');
             $table->dropColumn('is_admin');
+
+            // these are just unused currently (so they need no rollback)
+            if (Schema::hasColumn('users', 'last_visit')) {
+                $table->dropColumn('last_visit');
+            }
+            if (Schema::hasColumn('users', 'visit_count')) {
+                $table->dropColumn('visit_count');
+            }
         });
     }
 

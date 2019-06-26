@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Accounts;
+use App\Models\Account;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Spatie\Permission\Models\Role;
@@ -158,7 +158,7 @@ class LoginController extends Controller
     {
 
         // So it wasn't alright. Check if it was because of the confirm_token
-        $isPending = Accounts::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
+        $isPending = Account::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
 
         return $isPending;
     }

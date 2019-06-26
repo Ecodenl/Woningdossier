@@ -80,28 +80,71 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
+    /*protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'phone_number',
         'confirm_token', 'old_email', 'old_email_token'
-    ];
+    ];*/
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
+    /*protected $hidden = [
         'password', 'remember_token',
-    ];
+    ];*/
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
-        'is_admin' => 'boolean',
-    ];
+    //protected $casts = [
+    //    'is_admin' => 'boolean',
+    //];
+
+
+    // ------ User -> Account table / model migration stuff -------
+
+    public function getFirstNameAttribute(){
+        return $this->getAccountProperty('first_name');
+    }
+
+    public function getLastNameAttribute(){
+        return $this->getAccountProperty('last_name');
+    }
+
+    public function getEmailAttribute(){
+        return $this->getAccountProperty('email');
+    }
+
+    public function getOldEmailTokenAttribute(){
+        return $this->getAccountProperty('old_email_token');
+    }
+
+    public function getOldemailAttribute(){
+        return $this->getAccountProperty('old_email');
+    }
+
+    public function getIsAdminAttribute(){
+        return $this->getAccountProperty('is_admin');
+    }
+
+    /**
+     * Quick short hand helper for user to account data migration
+     * @param string $property
+     * @return mixed|null
+     */
+    public function getAccountProperty($property)
+    {
+        \Log::debug("Account property " . $property . " is accessed via User!");
+        if ($this->account instanceof Account){
+            return $this->account->$property;
+        }
+        return null;
+    }
+
+    // ------ End User -> Account table / model migration stuff -------
 
     public function buildings()
     {
@@ -460,7 +503,7 @@ class User extends Authenticatable
      */
     public function account()
     {
-        return $this->belongsTo(Accounts::class);
+        return $this->belongsTo(Account::class);
     }
 
     /**

@@ -452,6 +452,37 @@ class User extends Authenticatable
         return false;
     }
 
+
+    /**
+     * Return the user its account information
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function account()
+    {
+        return $this->belongsTo(Accounts::class);
+    }
+
+    /**
+     * Get the user its bcrypted password from the accounts table.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->account->password;
+    }
+
+    /**
+     * Get the user its email from the accounts table
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->account->email;
+    }
+
     public function logout()
     {
         HoomdossierSession::destroy();

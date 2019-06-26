@@ -86,6 +86,7 @@ class ResetPasswordController extends Controller
             : $this->sendResetFailedResponse($request, $response);
     }
 
+
     protected function resetPassword($user, $password)
     {
         $user->password = \Hash::make($password);

@@ -30,7 +30,7 @@ class AccountUserProvider extends EloquentUserProvider {
             if (! Str::contains($key, 'password')) {
                 $query->whereHas('account')->with(['account' => function ($query) use ($key, $value){
                     $query->where($key, $value);
-                }])->get();
+                }]);
             }
         }
 

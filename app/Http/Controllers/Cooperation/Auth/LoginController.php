@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Accounts;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Spatie\Permission\Models\Role;
@@ -82,7 +83,7 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request)
     {
-        return array_merge($request->only($this->username(), 'password'));
+        return array_merge($request->only($this->username(), 'password'), ['is_active' => 1, 'confirm_token' => null]);
     }
 
     /**
@@ -155,8 +156,9 @@ class LoginController extends Controller
      */
     private function accountIsNotConfirmed($email): bool
     {
+
         // So it wasn't alright. Check if it was because of the confirm_token
-        $isPending = User::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
+        $isPending = Accounts::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
 
         return $isPending;
     }

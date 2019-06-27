@@ -21,14 +21,18 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         )->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
-        Route::get('confirm',
-            'Auth\RegisterController@confirm')->name('confirm');
-        Route::get('check-existing-mail', 'Auth\RegisterController@checkExistingEmail')->name('check-existing-email');
-        Route::post('connect-existing-account', 'Auth\RegisterController@connectExistingAccount')->name('connect-existing-account');
 
-        Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
-        Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
+        Route::group(['namespace' => 'Auth'], function () {
 
+            Route::get('confirm', 'RegisterController@confirm')->name('confirm');
+            Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
+            Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
+
+            Route::group(['as' => 'auth.'], function () {
+                Route::get('resend-confirm-account-email', 'RegisterController@formResendConfirmMail')->name('form-resend-confirm-mail');
+                Route::post('resend-confirm-account-email', 'RegisterController@resendConfirmMail')->name('resend-confirm-mail');
+            });
+        });
         Auth::routes();
 
         Route::group(['prefix' => 'create-building', 'as' => 'create-building.'], function () {

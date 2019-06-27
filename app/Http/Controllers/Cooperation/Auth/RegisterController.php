@@ -10,6 +10,7 @@ use App\Http\Requests\Cooperation\Auth\ConfirmRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -172,22 +173,21 @@ class RegisterController extends Controller
     public function checkExistingEmail(Cooperation $cooperation, Request $request)
     {
         $email = $request->get('email');
-        $user  = User::where('email', $email)->first();
+        $account  = Account::where('email', $email)->first();
 
         $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
 
-        if ($user instanceof User) {
+        if ($account instanceof Account) {
             $response['email_exists'] = true;
 
-            // check if the is already attached
-            if ($user->cooperations->contains($cooperation)) {
+            if ($account->user() instanceof User && $account->user()->cooperation instanceof Cooperation) {
                 $response['user_is_already_member_of_cooperation'] = true;
             }
 
             return response()->json($response);
-        } else {
-            return response()->json($response);
         }
+
+        return response()->json($response);
     }
 
     /**

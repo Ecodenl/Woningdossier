@@ -64,10 +64,6 @@ class HaveUserForEachCooperation extends Migration
             // get related user
             $user = DB::table('users')->find($modelWithRoles->model_id);
 
-            /*if (in_array($modelWithRoles->model_id, [470, 519])) {
-                dump($modelWithRoles);
-            }*/
-
             if ($user instanceof stdClass) {
                 // get actual user by account_id and cooperation_id
                 $sibling = DB::table('users')
@@ -75,11 +71,6 @@ class HaveUserForEachCooperation extends Migration
                              ->where('cooperation_id', '=',
                                  $modelWithRoles->cooperation_id)
                              ->first();
-
-                /*if (in_array($modelWithRoles->model_id, [470, 519])) {
-                    dump("Sibling: ");
-                    dump($sibling);
-                }*/
 
                 if ($sibling instanceof stdClass && $sibling->id != $user->id) {
                     DB::table('model_has_roles')
@@ -100,6 +91,7 @@ class HaveUserForEachCooperation extends Migration
                 $table->dropColumn('cooperation_id');
             });
         }
+
 
     }
 

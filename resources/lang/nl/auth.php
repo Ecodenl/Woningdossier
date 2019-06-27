@@ -23,7 +23,7 @@ return [
             'connected-address'     => 'Adres:',
             'header'                => 'Registreren',
             'e-mail'                => 'E-mailadres',
-            'e-mail-exists'         => 'Het e-mailadres is al geregistreerd',
+            'e-mail-exists'         => 'Het e-mailadres is al geregistreerd, wij hebben nog een aantal gegevens van uw nodig. U kunt hierna inloggen met uw E-mailadres en huidige wachtwoord.',
             'already-member'        => 'U bent a lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
             'connect'               => 'Koppelen aan deze coöperatie',
             'first_name'            => 'Voornaam',

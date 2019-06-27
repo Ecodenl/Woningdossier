@@ -12,7 +12,7 @@
                         {{ csrf_field() }}
                         <input id="addressid" name="addressid" type="text" value="" style="display:none;">
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                        <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')<span class="required">*</span></label>
 
                             <div class="col-md-8">
@@ -38,8 +38,7 @@
                                 @endcomponent
                             </div>
                         </div>
-
-                        <div id="other-form-data">
+                        <div class="user-info">
                             <div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                                 <label for="first_name" class="col-md-4 control-label">@lang('auth.register.form.first_name')<span class="required">*</span></label>
 
@@ -172,7 +171,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }} account-info">
                                 <label for="password" class="col-md-4 control-label">@lang('auth.register.form.password')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
@@ -186,7 +185,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group account-info">
                                 <label for="password-confirm" class="col-md-4 control-label">@lang('auth.register.form.password_confirmation')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
@@ -239,33 +238,35 @@
                         passwordInput.prop('required', false);
                         passwordConfirmInput.prop('required', false);
 
-                        emailInput.val();
-                        // hide the account stuff
-                        passwordInput.parent().parent().hide();
-                        passwordConfirmInput.parent().parent().hide();
-                        emailInput.parent().parent().hide();
 
+                        console.log(data);
                         // check if the email is connected to the current cooperation
                         // and show the matching messages
                         if (data.user_is_already_member_of_cooperation) {
+                            // hide the account stuff
                             isAlreadyMemberMessage.show();
                             emailExistsDiv.hide();
+                            $('.user-info').hide();
                         } else {
+                            $('.account-info').hide();
                             isAlreadyMemberMessage.hide();
                             emailExistsDiv.show();
                         }
 
                     } else  {
                         emailIsAlreadyRegistered.hide();
-
-                        passwordInput.parent().show();
-                        passwordConfirmInput.parent().show();
-                        emailInput.parent().parent().show();
+                        $('.user-info').show();
+                        $('.account-info').show();
+                        emailInput.prop('required', true);
+                        passwordInput.prop('required', true);
+                        passwordConfirmInput.prop('required', true);
                     }
                 });
             });
 
-            email.trigger('change');
+            if ($('.form-error').length) {
+                email.trigger('change');
+            }
 
 
         });

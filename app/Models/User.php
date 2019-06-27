@@ -147,7 +147,7 @@ class User extends Model implements AuthorizableContract
 
     public function building()
     {
-        return $this->belongsTo(Building::class);
+        return $this->hasOne(Building::class);
     }
 
     /**

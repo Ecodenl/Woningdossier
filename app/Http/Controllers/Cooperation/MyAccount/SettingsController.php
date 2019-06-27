@@ -124,13 +124,9 @@ class SettingsController extends Controller
         $building->currentInsulatedGlazing()->delete();
         // remove the paintwork from a building
         $building->currentPaintworkStatus()->delete();
-        // remove the user usage from a building
-        $building->userUsage()->delete();
         // remove all progress made in the tool
         $building->progress()->delete();
 
-        // remove the building usages from the user
-        $user->buildingUsage()->delete();
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();
         // remove the user interests

@@ -134,6 +134,9 @@ class HaveUserForEachCooperation extends Migration
             }
         }
 
+
+        Schema::drop('building_user_usages');
+
     }
 
     /**
@@ -179,7 +182,34 @@ class HaveUserForEachCooperation extends Migration
      */
     public function down()
     {
+        // put building_user_usages back
+        if (!Schema::hasTable('building_user_usages')) {
+            Schema::create('building_user_usages', function (Blueprint $table) {
+                $table->increments('id');
+
+                $table->integer('building_id')->unsigned()->nullable()->default(null);
+                $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
+
+                $table->integer('input_source_id')->unsigned()->nullable()->default(1);
+                $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
+
+                $table->integer('user_id')->unsigned()->nullable()->default(null);
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+
+                $table->integer('usage_percentage')->nullable()->default(null);
+
+                $table->date('start_date')->nullable();
+                $table->date('end_date')->nullable();
+
+                $table->timestamps();
+            });
+        }
+
+
         // todo put a lot more stuff back
+        //
+        //
+        //
 
 
         // Put column back
@@ -192,6 +222,9 @@ class HaveUserForEachCooperation extends Migration
 
         // Set rights back
         // todo
+        //
+        //
+        //
 
         // Link cooperation and users back
         if ( ! Schema::hasTable('cooperation_user')) {

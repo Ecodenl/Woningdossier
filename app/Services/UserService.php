@@ -24,8 +24,6 @@ class UserService
                 $building->delete();
             }
 
-            // remove the building usages from the user
-            $user->buildingUsage()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the action plan advices from the user
             $user->actionPlanAdvices()->withoutGlobalScope(GetValueScope::class)->delete();
             // remove the user interests

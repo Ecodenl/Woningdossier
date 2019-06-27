@@ -55,7 +55,8 @@ class AuthServiceProvider extends ServiceProvider
 
     }
 
-    public function register(){
+    public function register()
+    {
 
         // custom user resolver via account
         \Auth::resolveUsersUsing(function($guard = null) {

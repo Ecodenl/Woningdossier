@@ -137,7 +137,8 @@ class Hoomdossier
      *
      * @return \App\Models\Account|null
      */
-    public static function account(){
+    public static function account()
+    {
         return \Auth::user();
     }
 }

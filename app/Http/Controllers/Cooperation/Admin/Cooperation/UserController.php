@@ -8,6 +8,7 @@ use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserRequest;
 use App\Mail\UserCreatedEmail;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -55,15 +56,22 @@ class UserController extends Controller
         $addressId = $request->get('addressid', null);
         $coachId = $request->get('coach_id', '');
 
-        // create the new user
+        // create the user
         $user = User::create(
             [
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'email' => $email,
-                'password' => \Hash::make(Str::randomPassword()),
             ]
         );
+
+        $user->account()->associate(
+            Account::create(
+                [
+                    'email' => $email,
+                    'password' => \Hash::make(Str::randomPassword()),
+                ]
+            )
+        )->save();
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(
@@ -100,7 +108,9 @@ class UserController extends Controller
         }
 
         // attach the new user to the cooperation
-        $user->cooperations()->attach($cooperation->id);
+        $user->cooperation()->associate($cooperation)->save();
+
+
         // assign the roles to the user
         $user->assignRole($cooperation->id, $roles);
 

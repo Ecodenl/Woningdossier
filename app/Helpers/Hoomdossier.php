@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Account;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -119,5 +120,24 @@ class Hoomdossier
             return $inputSourceShort;
         }
         return null;
+    }
+
+    /**
+     * Returns the current user.
+     *
+     * @return \App\Models\User|null
+     */
+    public static function user()
+    {
+        return (static::account() instanceof Account) ? static::account()->user() : null;
+    }
+
+    /**
+     * Returns the current account.
+     *
+     * @return \App\Models\Account|null
+     */
+    public static function account(){
+        return \Auth::user();
     }
 }

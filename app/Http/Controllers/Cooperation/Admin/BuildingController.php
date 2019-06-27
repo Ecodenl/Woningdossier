@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -12,6 +13,7 @@ use App\Models\PrivateMessageView;
 use App\Models\User;
 use App\Services\PrivateMessageViewService;
 use Carbon\Carbon;
+use Illuminate\Auth\AuthManager;
 use Spatie\Permission\Models\Role;
 
 class BuildingController extends Controller

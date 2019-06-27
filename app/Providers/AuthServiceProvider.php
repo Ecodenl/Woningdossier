@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Extensions\AccountUserProvider;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -15,7 +14,6 @@ use App\Policies\NotificationSettingPolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\UserPolicy;
-use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -54,9 +52,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
         Gate::define('talk-to-resident', UserPolicy::class.'@talkToResident');
 
-        \Auth::provider('account', function ($app, array $config) {
-            return new AccountUserProvider($app['hash'], $config['model']);
-        });
     }
 
     public function register(){

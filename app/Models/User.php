@@ -9,7 +9,9 @@ use App\Scopes\GetValueScope;
 use App\Traits\HasCooperationTrait;
 use App\Traits\HasRolesTrait;
 //use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
@@ -72,19 +74,18 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
  * @mixin \Eloquent
  */
-class User extends Model
+class User extends Model implements AuthorizableContract
 {
-    use Notifiable, HasRolesTrait, HasCooperationTrait;
+    use Notifiable, HasRolesTrait, HasCooperationTrait, Authorizable;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    /*protected $fillable = [
-        'first_name', 'last_name', 'email', 'password', 'phone_number',
-        'confirm_token', 'old_email', 'old_email_token'
-    ];*/
+    protected $fillable = [
+        'first_name', 'last_name', 'phone_number', 'mobile',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -106,14 +107,6 @@ class User extends Model
 
 
     // ------ User -> Account table / model migration stuff -------
-
-    public function getFirstNameAttribute(){
-        return $this->getAccountProperty('first_name');
-    }
-
-    public function getLastNameAttribute(){
-        return $this->getAccountProperty('last_name');
-    }
 
     public function getEmailAttribute(){
         return $this->getAccountProperty('email');

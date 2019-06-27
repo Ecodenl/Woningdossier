@@ -58,4 +58,12 @@ class AuthServiceProvider extends ServiceProvider
             return new AccountUserProvider($app['hash'], $config['model']);
         });
     }
+
+    public function register(){
+
+        // custom user resolver via account
+        \Auth::resolveUsersUsing(function($guard = null) {
+            return \Auth::guard($guard)->user()->user();
+        });
+    }
 }

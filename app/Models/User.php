@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * App\Models\User
@@ -76,7 +77,7 @@ use Illuminate\Support\Collection;
  */
 class User extends Model implements AuthorizableContract
 {
-    use Notifiable, HasRolesTrait, HasCooperationTrait, Authorizable;
+    use Notifiable, HasRoles, HasCooperationTrait, Authorizable;
 
     /**
      * The attributes that are mass assignable.
@@ -139,10 +140,14 @@ class User extends Model implements AuthorizableContract
     }
 
     // ------ End User -> Account table / model migration stuff -------
-
     public function buildings()
     {
         return $this->hasMany(Building::class);
+    }
+
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
     }
 
     /**

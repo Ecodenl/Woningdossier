@@ -8,10 +8,6 @@
                 <div class="panel-heading">@lang('auth.register.form.header')</div>
 
                 <div class="panel-body">
-                    <form action="{{route('cooperation.connect-existing-account')}}" method="post" id="connect-existing-account-form">
-                        {{csrf_field()}}
-                        <input type="hidden" name="existing_email" id="existing-email">
-                    </form>
                     <form class="form-horizontal has-address-data" method="POST" id="register" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
                         <input id="addressid" name="addressid" type="text" value="" style="display:none;">
@@ -40,9 +36,6 @@
                                         @lang('auth.register.form.e-mail-exists')
                                     </div>
                                 @endcomponent
-                                <div class="email-exist">
-                                    <a id="connect-account" class="btn btn-primary">@lang('auth.register.form.connect')</a>
-                                </div>
                             </div>
                         </div>
 
@@ -223,11 +216,6 @@
 
             var email = $('#email');
 
-            $('#connect-account').click(function () {
-                $('#existing-email').val($('#email').val());
-                $('#connect-existing-account-form').submit();
-            });
-
             email.on('keyup change', function () {
                 $.ajax({
                     url: '{{route('cooperation.check-existing-email')}}',
@@ -235,16 +223,27 @@
                     data: {email: $(this).val()},
                 }).done(function (data) {
                     var emailIsAlreadyRegistered =  $('#email-is-already-registered');
-                    var otherFormData = $('#other-form-data');
+
+                    var passwordInput = $('#password');
+                    var passwordConfirmInput = $('#password-confirm');
+                    var emailInput = $('#email');
 
                     // email exists
                     if (data.email_exists) {
                         var isAlreadyMemberMessage = $('#is-already-member');
                         var emailExistsDiv = $('.email-exist');
 
-                        // hide the other form inputs
-                        otherFormData.hide();
                         emailIsAlreadyRegistered.show();
+
+                        emailInput.prop('required', false);
+                        passwordInput.prop('required', false);
+                        passwordConfirmInput.prop('required', false);
+
+                        emailInput.val();
+                        // hide the account stuff
+                        passwordInput.parent().parent().hide();
+                        passwordConfirmInput.parent().parent().hide();
+                        emailInput.parent().parent().hide();
 
                         // check if the email is connected to the current cooperation
                         // and show the matching messages
@@ -257,8 +256,11 @@
                         }
 
                     } else  {
-                        otherFormData.show();
                         emailIsAlreadyRegistered.hide();
+
+                        passwordInput.parent().show();
+                        passwordConfirmInput.parent().show();
+                        emailInput.parent().parent().show();
                     }
                 });
             });

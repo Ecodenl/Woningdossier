@@ -20,6 +20,7 @@ use App\Observers\UserActionPlanAdviceObserver;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rule;
 
 class WoningdossierServiceProvider extends ServiceProvider
 {
@@ -44,6 +45,7 @@ class WoningdossierServiceProvider extends ServiceProvider
         SessionGuard::macro('account', function(){
             return auth()->user();
         });
+
     }
 
     /**

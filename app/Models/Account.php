@@ -55,9 +55,7 @@ class Account extends Authenticatable
      */
     public function isAssociatedWith(Cooperation $cooperation)
     {
-        return Account::whereHas('users', function($query) use($cooperation){
-            $query->where('cooperation_id', '=', $cooperation->id);
-        })->count() > 0;
+        return $this->users()->withoutGlobalScopes()->where('cooperation_id', '=', $cooperation->id)->count() > 0;
 
     }
 

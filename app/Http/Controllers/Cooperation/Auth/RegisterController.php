@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
+use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Auth\ConfirmRequest;
 use App\Http\Requests\RegisterFormRequest;
@@ -76,9 +77,46 @@ class RegisterController extends Controller
      */
     public function register(RegisterFormRequest $request, Cooperation $cooperation)
     {
-        event(new Registered($cooperation, $user = $this->create($request->all())));
+        // try to obtain the existing account
+        $account = Account::where('email', $request->get('email'))->first();
 
-        return redirect($this->redirectPath())->with('success', __('auth.register.form.message.success'));
+        // if its not found we will create a new one.
+        if (!$account instanceof Account) {
+            $account = $this->createNewAccount($request->only('email', 'password'));
+        }
+
+        $user = $this->createNewUser($request->except('email', 'password'));
+
+        // associate it with the user
+        $user->account()->associate(
+            $account
+        )->save();
+
+        $successMessage = __('auth.register.form.message.account-connected');
+
+        if ($account->wasRecentlyCreated) {
+            $successMessage = __('auth.register.form.message.success');
+            \Event::dispatch(new Registered($cooperation, $user));
+        }
+
+        return redirect($this->redirectPath())->with('success', $successMessage);
+    }
+
+    /**
+     * Create a new account
+     *
+     * @param  array  $data
+     *
+     * @return Account
+     */
+    private function createNewAccount(array $data): Account
+    {
+        return Account::create([
+            'email'         => $data['email'],
+            'password'      => \Hash::make($data['password']),
+            'confirm_token' => RegistrationHelper::generateConfirmToken(),
+        ]);
+
     }
 
     /**
@@ -86,24 +124,23 @@ class RegisterController extends Controller
      *
      * @param  array  $data
      *
-     * @return \App\Models\User
+     * @return User
      */
-    protected function create(array $data)
+    private function createNewUser(array $data): User
     {
-        $user = User::create([
-            'first_name'    => $data['first_name'],
-            'last_name'     => $data['last_name'],
-            'email'         => $data['email'],
-            'password'      => bcrypt($data['password']),
-            'phone_number'  => is_null($data['phone_number']) ? '' : $data['phone_number'],
-            'confirm_token' => RegistrationHelper::generateConfirmToken(),
-        ]);
+        // Create the user for an account
+        $user = User::create(
+            [
+                'first_name'    => $data['first_name'],
+                'last_name'     => $data['last_name'],
+                'phone_number'  => is_null($data['phone_number']) ? '' : $data['phone_number'],
+            ]
+        );
 
         // now get the picoaddress data.
         $picoAddressData = PicoHelper::getAddressData(
             $data['postal_code'], $data['number']
         );
-
 
         $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
 
@@ -112,13 +149,26 @@ class RegisterController extends Controller
             'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
         ]);
 
-        $address = new Building($data);
-        $address->user()->associate($user)->save();
+        // create the building for the user
+        $building = Building::create($data);
 
-        $features->building()->associate($address)->save();
+        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        $residentRole = Role::findByName('resident');
 
-        $cooperation   = Cooperation::find(HoomdossierSession::getCooperation());
-        $user->cooperations()->attach($cooperation);
+        // associate multiple models with each other
+        $building->user()->associate(
+            $user
+        )->save();
+
+        $features->building()->associate(
+            $building
+        )->save();
+
+        $user->cooperation()->associate(
+            $cooperation
+        )->save();
+
+        $user->roles()->attach($residentRole);
 
         $notificationTypes = NotificationType::all();
         $interval          = NotificationInterval::where('short', 'no-interest')->first();
@@ -131,9 +181,6 @@ class RegisterController extends Controller
                 'last_notified_at' => Carbon::now(),
             ]);
         }
-
-        $residentRole = Role::findByName('resident');
-        $user->roles()->attach($residentRole);
 
         return $user;
     }
@@ -180,7 +227,8 @@ class RegisterController extends Controller
         if ($account instanceof Account) {
             $response['email_exists'] = true;
 
-            if ($account->user() instanceof User && $account->user()->cooperation instanceof Cooperation) {
+            // check if the user is a member of the cooperation
+            if ($account->user() instanceof User) {
                 $response['user_is_already_member_of_cooperation'] = true;
             }
 
@@ -190,41 +238,6 @@ class RegisterController extends Controller
         return response()->json($response);
     }
 
-    /**
-     * Connect the existing email to a cooperation.
-     *
-     * @param  Cooperation  $cooperation
-     * @param  Request  $request
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function connectExistingAccount(Cooperation $cooperation, Request $request)
-    {
-        $email = $request->get('existing_email');
-        $user  = User::where('email', $email)->first();
-
-        // okay, the user does exists
-        if ($user instanceof User) {
-
-            // check if the is already attached
-            if ($user->cooperations->contains($cooperation)) {
-                return redirect()->back();
-            }
-
-            // if a users hop's from a cooperation, well assign him the role resident.
-            $residentRole = Role::findByName('resident');
-
-            $cooperation->users()->attach($user);
-            $user->assignRole($cooperation->id, $residentRole);
-
-            return redirect(
-                url('login')
-            )->with('account_connected', __('auth.register.form.message.account-connected'));
-        }
-
-        // user is playing, redirect them back
-        return redirect()->back();
-    }
 
     public function formResendConfirmMail()
     {

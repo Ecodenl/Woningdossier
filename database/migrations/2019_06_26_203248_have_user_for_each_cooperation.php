@@ -92,7 +92,84 @@ class HaveUserForEachCooperation extends Migration
             });
         }
 
+        // ---------------------------------------------------------------------------------------------------------------
+        dump("--------------------------- siblings copy user_action_plan_advice_comments");
+        $this->copyTableDataForSiblings('user_action_plan_advice_comments');
 
+        // ---------------------------------------------------------------------------------------------------------------
+        dump("--------------------------- siblings copy user_action_plan_advices");
+        $this->copyTableDataForSiblings('user_action_plan_advices');
+
+        // ---------------------------------------------------------------------------------------------------------------
+        dump("--------------------------- siblings copy user_energy_habits");
+        $this->copyTableDataForSiblings('user_energy_habits');
+
+        // ---------------------------------------------------------------------------------------------------------------
+        dump("--------------------------- siblings copy user_interests");
+        $this->copyTableDataForSiblings('user_interests');
+
+        // ---------------------------------------------------------------------------------------------------------------
+        dump("--------------------------- siblings copy user_motivations");
+        $this->copyTableDataForSiblings('user_motivations');
+
+
+        // ---------------------------------------------------------------------------------------------------------------
+        dump("Updating questionnaires..");
+        $completedQuestionnaires = DB::table('completed_questionnaires')->get();
+        foreach( $completedQuestionnaires as $completedQuestionnaire ) {
+            $questionnaire = DB::table('questionnaires')->find($completedQuestionnaire->questionnaire_id);
+            if ($questionnaire instanceof stdClass) {
+                $user = DB::table('users')
+                          ->where('id', '=', $completedQuestionnaire->user_id)
+                          ->where('cooperation_id', '=', $questionnaire->cooperation_id)
+                        ->first();
+                if ($user instanceof stdClass) {
+                    DB::table('completed_questionnaires')
+                      ->where('id', '=', $completedQuestionnaire->id)
+                      ->where('questionnaire_id', '=',
+                          $completedQuestionnaire->questionnaire_id)
+                      ->where('user_id', '=', $completedQuestionnaire->user_id)
+                      ->update(['user_id' => $user->id]);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Creates separate copies a table row for all users of an account.
+     *
+     * @param string $table
+     * @param string $userColumn
+     * @param string $tablePrimaryKey
+     */
+    protected function copyTableDataForSiblings($table, $userColumn = 'user_id', $tablePrimaryKey = 'id')
+    {
+        $rows = DB::table($table)->get();
+        /** @var stdClass $row */
+        foreach($rows as $row){
+            // get current attached user
+            $current = DB::table('users')->find($row->$userColumn);
+            if ($current instanceof stdClass){
+                // get all siblings for the current attached user
+                $siblings = DB::table('users')
+                              ->where('account_id', '=', $current->account_id)
+                              ->get();
+                foreach ($siblings as $sibling) {
+                    // only create a new row if the sibling is not the current user
+                    if ($sibling->id != $current->id) {
+                        $data = (array) $row;
+                        $data[$userColumn] = $sibling->id;
+                        // if primary key exists: remove it
+                        if (array_key_exists($tablePrimaryKey, $data)){
+                            unset($data[$tablePrimaryKey]);
+                        }
+                        dump("Copy " . $table . " " . $current->id . " -> " . $sibling->id);
+                        DB::table($table)->insert($data);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -102,6 +179,9 @@ class HaveUserForEachCooperation extends Migration
      */
     public function down()
     {
+        // todo put a lot more stuff back
+
+
         // Put column back
         if (!Schema::hasColumn('model_has_roles', 'cooperation_id')){
             Schema::table('model_has_roles', function (Blueprint $table) {

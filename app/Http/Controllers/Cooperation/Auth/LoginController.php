@@ -83,7 +83,7 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request)
     {
-        return array_merge($request->only($this->username(), 'password'), ['is_active' => 1, 'confirm_token' => null]);
+        return array_merge($request->only($this->username(), 'password'), ['active' => 1, 'confirm_token' => null]);
     }
 
     /**
@@ -111,15 +111,16 @@ class LoginController extends Controller
         // validate the credentials from the user
         if ($this->guard()->validate($this->credentials($request))) {
 
-            /** @var User $user */
-            $user = $this->guard()->getLastAttempted();
+            /** @var Account $account*/
+            $account = $this->guard()->getLastAttempted();
 
-            if (!$user->isAssociatedWith($cooperation)) {
+            if (!$account->isAssociatedWith($cooperation)) {
                 throw ValidationException::withMessages([
                     'cooperation' => [trans('auth.cooperation')],
                 ]);
             }
         }
+
 
         // check if the account is confirmed.
         if ($this->accountIsNotConfirmed($request->get('email'))) {
@@ -130,7 +131,7 @@ class LoginController extends Controller
         // everything is ok with the user at this point, now we log him in.
         if ($this->attemptLogin($request)) {
 
-            $user = $this->guard()->user();
+            $user = $this->guard()->user()->user();
 
             $role = Role::findByName($user->roles()->first()->name);
 
@@ -156,7 +157,6 @@ class LoginController extends Controller
      */
     private function accountIsNotConfirmed($email): bool
     {
-
         // So it wasn't alright. Check if it was because of the confirm_token
         $isPending = Account::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
 

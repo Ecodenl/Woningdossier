@@ -27,7 +27,7 @@ class isUserMemberOfCooperation implements Rule
      */
     public function passes($attribute, $value)
     {
-        $currentCooperation = \Auth::user()->cooperations()->find(session('cooperation'));
+        $currentCooperation = \Auth::account()->user()->cooperations()->find(session('cooperation'));
 
         if ($currentCooperation->users()->find($value) instanceof User) {
             return true;

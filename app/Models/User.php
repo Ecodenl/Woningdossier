@@ -6,8 +6,10 @@ use App\Helpers\HoomdossierSession;
 use App\Notifications\ResetPasswordNotification;
 use App\NotificationSetting;
 use App\Scopes\GetValueScope;
+use App\Traits\HasCooperationTrait;
 use App\Traits\HasRolesTrait;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+//use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
@@ -70,10 +72,9 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Model
 {
-    use Notifiable;
-    use HasRolesTrait;
+    use Notifiable, HasRolesTrait, HasCooperationTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -208,7 +209,15 @@ class User extends Authenticatable
      */
     public function cooperations()
     {
-        return $this->belongsToMany(Cooperation::class);
+        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
+    }
+
+    /**
+     * The cooperations the user is associated with.
+     */
+    public function cooperation()
+    {
+        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
     }
 
     /**
@@ -251,20 +260,6 @@ class User extends Authenticatable
         }
 
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
-    }
-
-    /**
-     * Returns whether or not a user is associated with a particular Cooperation.
-     *
-     * @param Cooperation $cooperation
-     *
-     * @return bool
-     */
-    public function isAssociatedWith(Cooperation $cooperation)
-    {
-        return $this->cooperations()
-                    ->where('id', $cooperation->id)
-                    ->count() > 0;
     }
 
     public function complete(Step $step)
@@ -525,6 +520,11 @@ class User extends Authenticatable
     {
         return $this->account->email;
     }
+
+//    public function getRememberTokenName()
+//    {
+//        return
+//    }
 
     public function logout()
     {

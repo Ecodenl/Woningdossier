@@ -16,9 +16,6 @@ class CreateAccountsTable extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('first_name')->default('');
-            $table->string('last_name')->default('');
-
             $table->string('email')->unique();
             $table->string('password');
 
@@ -27,9 +24,6 @@ class CreateAccountsTable extends Migration
 
             $table->string('old_email')->nullable()->default(null);
             $table->string('old_email_token')->nullable()->default(null);
-
-            $table->string('phone_number')->default('');
-            $table->string('mobile')->default('');
 
             $table->boolean('active')->default(1);
             $table->boolean('is_admin')->default(false);

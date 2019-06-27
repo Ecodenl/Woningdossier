@@ -112,7 +112,7 @@ class ReportController extends Controller
     public function downloadByYear()
     {
         // get user data
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
         $cooperation = $user->cooperations()->first();
 
         // get the users from the cooperations
@@ -203,7 +203,7 @@ class ReportController extends Controller
     public function downloadByMeasure()
     {
         // get user data
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
         $cooperation = $user->cooperations()->first();
 
         // get the users from the cooperations

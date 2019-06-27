@@ -64,7 +64,7 @@ class MyPlanController extends Controller
     public function export()
     {
         // get the data
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
         // Column names

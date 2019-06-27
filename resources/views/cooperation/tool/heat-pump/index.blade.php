@@ -74,7 +74,7 @@
                     {{--<label class="control-label">@lang('woningdossier.cooperation.tool.heat-pump.gas-usage-for-heating')</label>--}}
                     {{--<div class="input-group">--}}
                     {{--<span class="input-group-addon"><i class="glyphicon glyphicon-fire"></i></span>--}}
-                    {{--<input type="text" id="resident_count" class="form-control disabled" disabled="" value="{{isset(Auth::user()->energyHabit) ? Auth::user()->energyHabit->resident_count : ''}}">--}}
+                    {{--<input type="text" id="resident_count" class="form-control disabled" disabled="" value="{{isset(Auth::account()->user()->energyHabit) ? Auth::account()->user()->energyHabit->resident_count : ''}}">--}}
                     {{--</div>--}}
                     {{--</div>--}}
                     {{--</div>--}}

@@ -23,7 +23,7 @@ class SwitchRoleController extends Controller
         }
 
         /** @var User $user */
-        $user = $request->user();
+        $user = \Auth::account()->user();
         /** @var Building $building */
         $building = $user->buildings()->first();
 

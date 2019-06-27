@@ -15,9 +15,6 @@ class DropVariousUserColumns extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 
-            $table->dropColumn('first_name');
-            $table->dropColumn('last_name');
-
             $table->dropColumn('email')->unique();
             $table->dropColumn('password');
 
@@ -26,9 +23,6 @@ class DropVariousUserColumns extends Migration
 
             $table->dropColumn('old_email');
             $table->dropColumn('old_email_token');
-
-            $table->dropColumn('phone_number');
-            $table->dropColumn('mobile');
 
             $table->dropColumn('active');
             $table->dropColumn('is_admin');
@@ -51,8 +45,6 @@ class DropVariousUserColumns extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('first_name')->default('');
-            $table->string('last_name')->default('');
 
             $table->string('email');
             $table->string('password');
@@ -62,9 +54,6 @@ class DropVariousUserColumns extends Migration
 
             $table->string('old_email')->nullable()->default(null);
             $table->string('old_email_token')->nullable()->default(null);
-
-            $table->string('phone_number')->default('');
-            $table->string('mobile')->default('');
 
             $table->boolean('active')->default(1);
             $table->boolean('is_admin')->default(false);

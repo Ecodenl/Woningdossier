@@ -25,7 +25,7 @@ class MessagesController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
+        if (\Auth::account()->user()->hasRoleAndIsCurrentRole('coach')) {
             $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
             $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {

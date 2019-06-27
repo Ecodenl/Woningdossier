@@ -31,7 +31,7 @@ class LogAllowedAccessToBuilding
             'user_id'     => \Auth::id(),
             'building_id' => HoomdossierSession::getBuilding(),
             'message'     => __('woningdossier.log-messages.user-gave-access', [
-                'full_name' => \Auth::user()->getFullName(),
+                'full_name' => \Auth::account()->user()->getFullName(),
             ]),
         ]);
     }

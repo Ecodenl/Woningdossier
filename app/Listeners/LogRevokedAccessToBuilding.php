@@ -31,7 +31,7 @@ class LogRevokedAccessToBuilding
             'user_id' => \Auth::id(),
             'building_id' => HoomdossierSession::getBuilding(),
             'message' => __('woningdossier.log-messages.user-revoked-access', [
-                'full_name' => \Auth::user()->getFullName(),
+                'full_name' => \Auth::account()->user()->getFullName(),
             ]),
         ]);
     }

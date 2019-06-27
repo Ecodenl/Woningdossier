@@ -9,7 +9,7 @@ if (! isset($building)) {
 ?>
 
 <div class="row">
-    @if (Auth::user()->isFillingToolForOtherBuilding() && \App\Helpers\HoomdossierSession::isUserObserving())
+    @if (Auth::account()->user()->isFillingToolForOtherBuilding() && \App\Helpers\HoomdossierSession::isUserObserving())
         <div class="col-sm-6">
             @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                 @lang('woningdossier.cooperation.tool.observing-tool', [
@@ -19,7 +19,7 @@ if (! isset($building)) {
                 ])
             @endcomponent
         </div>
-    @elseif(Auth::user()->isFillingToolForOtherBuilding())
+    @elseif(Auth::account()->user()->isFillingToolForOtherBuilding())
         <div class="col-sm-6">
             @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                 @lang('woningdossier.cooperation.tool.filling-for', [
@@ -30,7 +30,7 @@ if (! isset($building)) {
             @endcomponent
         </div>
     @endif
-    <div class="@if(Auth::user()->isFillingToolForOtherBuilding())col-sm-6 @else col-sm-12 @endif">
+    <div class="@if(Auth::account()->user()->isFillingToolForOtherBuilding())col-sm-6 @else col-sm-12 @endif">
         @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
             @lang('woningdossier.cooperation.tool.current-building-address', [
                 'street' => $building->street,

@@ -40,14 +40,14 @@ class MessageService
                 'cooperation_id' => HoomdossierSession::getCooperation(),
                 'is_public' => $isPublic,
                 'to_cooperation_id' => HoomdossierSession::getCooperation(),
-                'from_user' => \Auth::user()->getFullName(),
+                'from_user' => \Auth::account()->user()->getFullName(),
                 'from_user_id' => \Auth::id(),
                 'message' => $message,
                 'building_id' => $buildingId,
             ];
 
             // users that have the role coordinator and cooperation admin dont talk from themself but from a cooperation
-            if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            if (\Auth::account()->user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageData['from_cooperation_id'] = HoomdossierSession::getCooperation();
                 $privateMessageData['from_user'] = Cooperation::find(HoomdossierSession::getCooperation())->name;
             }

@@ -18,7 +18,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
 
         // if the user only has one role we will redirect him to the right url
         if (1 == $user->getRoleNames()->count()) {

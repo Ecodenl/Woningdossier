@@ -60,7 +60,7 @@ class QuestionnaireController extends Controller
             }
         }
 
-        \Auth::user()->completeQuestionnaire($questionnaire);
+        \Auth::account()->user()->completeQuestionnaire($questionnaire);
 
         $nextStep = StepHelper::getNextStep($questionnaire->step, $questionnaire);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

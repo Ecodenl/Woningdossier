@@ -15,7 +15,7 @@ class ExampleBuildingRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
+        return \Auth::account()->user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
     }
 
     public function prepareForValidation()

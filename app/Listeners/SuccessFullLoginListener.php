@@ -31,7 +31,7 @@ class SuccessFullLoginListener
     public function handle($event)
     {
         /** @var User $user */
-        $user = $event->user;
+        $user = $event->user->user();
         // get the first building from the user
         $building = $user->buildings()->first();
         // just get the first available role from the user

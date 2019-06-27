@@ -21,7 +21,7 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
         $building = Building::find(HoomdossierSession::getBuilding());
 
         return view('cooperation.my-account.settings.index', compact('user', 'building'));
@@ -36,7 +36,7 @@ class SettingsController extends Controller
      */
     public function update(MyAccountSettingsFormRequest $request)
     {
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $data = $request->all();
@@ -101,7 +101,7 @@ class SettingsController extends Controller
      */
     public function resetFile()
     {
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
 
         // only remove the example building id from the building
         $building = $user->buildings()->first();
@@ -148,7 +148,7 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
-        $user = \Auth::user();
+        $user = \Auth::account()->user();
 
         UserService::deleteUser($user);
 

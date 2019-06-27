@@ -317,7 +317,7 @@
             }
         });
 
-        var userCooperationCount = {{Auth::user()->cooperations()->count()}};
+        var userCooperationCount = {{Auth::account()->user()->cooperations()->count()}};
 
         var areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.delete-from-cooperation')';
 

@@ -19,7 +19,7 @@
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
         @auth
             <ul class="nav navbar-nav">
-                @if (Auth::user()->isFillingToolForOtherBuilding())
+                @if (Auth::account()->user()->isFillingToolForOtherBuilding())
                     <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
             </ul>
@@ -70,7 +70,7 @@
                     <li><a href="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">@lang('auth.login.form.header')</a></li>
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
-                    @if (!Auth::user()->isFillingToolForOtherBuilding())
+                    @if (!Auth::account()->user()->isFillingToolForOtherBuilding())
                     <li>
                         <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
                     </li>
@@ -83,7 +83,7 @@
                         </a>
                     </li>
 
-                    @if (!Auth::user()->isFillingToolForOtherBuilding())
+                    @if (!Auth::account()->user()->isFillingToolForOtherBuilding())
                         @if (\App\Helpers\HoomdossierSession::currentRole() == 'resident')
                             <li>
                                 <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
@@ -91,7 +91,7 @@
                                     <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
                                 </a>
                             </li>
-                        @elseif(Auth::user()->can('access-admin') && Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
+                        @elseif(Auth::account()->user()->can('access-admin') && Auth::account()->user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                             <li>
                                 <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
                                 <a href="{{$messageUrl}}">
@@ -105,7 +105,7 @@
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                    {{ Auth::account()->first_name }} {{ Auth::account()->last_name }}<span class="caret"></span>
+                                    {{ Auth::account()->user()->first_name }} {{ Auth::account()->user()->last_name }}<span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu">

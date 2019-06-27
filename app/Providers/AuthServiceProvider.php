@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -58,7 +59,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // custom user resolver via account
         \Auth::resolveUsersUsing(function($guard = null) {
-            return \Auth::guard($guard)->user()->user();
+            return \Auth::guard($guard)->user() instanceof Account ? \Auth::guard()->user()->user() : null;
         });
     }
 }

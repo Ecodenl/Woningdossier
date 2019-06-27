@@ -23,13 +23,11 @@ class UsersTableSeeder extends Seeder
         /** @var \stdClass $cooperation */
         $cooperation = DB::table('cooperations')->where('slug', 'hoom')->first();
         foreach ($users as $user) {
-            $userId = DB::table('users')->insertGetId($user);
+            $user['cooperation_id'] = null;
             if ($cooperation instanceof stdClass) {
-                DB::table('cooperation_user')->insert([
-                    'cooperation_id' => $cooperation->id,
-                    'user_id'        => $userId,
-                ]);
+                $user['cooperation_id'] = $cooperation->id;
             }
+            DB::table('users')->insert($user);
         }
     }
 }

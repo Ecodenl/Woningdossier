@@ -22,6 +22,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
+        Auth::routes();
         Route::group(['namespace' => 'Auth'], function () {
 
             Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
@@ -39,7 +40,6 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
             });
         });
-        Auth::routes();
 
         Route::group(['prefix' => 'create-building', 'as' => 'create-building.'], function () {
             Route::get('', 'CreateBuildingController@index')->name('index');

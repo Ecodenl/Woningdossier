@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Account extends Authenticatable
 {
-
+    use Notifiable;
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'phone_number',
         'confirm_token', 'old_email', 'old_email_token'
@@ -29,6 +31,18 @@ class Account extends Authenticatable
     protected $casts = [
         'is_admin' => 'boolean',
     ];
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param string $token
+     *
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token, $this->user()->cooperation));
+    }
 
     /**
      *

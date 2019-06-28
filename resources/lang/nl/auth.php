@@ -70,6 +70,7 @@ return [
             'set-password' => 'Nieuw wachtwoord instellen',
         ],
         'inactive' => 'Uw wachtwoord is gereset, maar uw account is nog niet bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail.',
+        'success' => 'Uw wachtwoord is gereset, u kunt nu inloggen.'
     ],
     'confirm' => [
         'success' => 'Uw account is bevestigd. U kunt nu inloggen met uw gebruikersnaam en wachtwoord.',

@@ -3,16 +3,12 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\Notifications\ResetPasswordNotification;
 use App\NotificationSetting;
 use App\Scopes\GetValueScope;
 use App\Traits\HasCooperationTrait;
-use App\Traits\HasRolesTrait;
-//use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -77,7 +73,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
-    use Notifiable, HasRoles, HasCooperationTrait, Authorizable;
+    use HasRoles, HasCooperationTrait, Authorizable;
 
     /**
      * The attributes that are mass assignable.
@@ -285,17 +281,6 @@ class User extends Model implements AuthorizableContract
         return true;
     }
 
-    /**
-     * Send the password reset notification.
-     *
-     * @param string $token
-     *
-     * @return void
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
-    }
 
     /**
      * Get the human readable role name based on the role name.

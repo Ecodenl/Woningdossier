@@ -14,7 +14,7 @@ class BuildingNoteRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::account()->user()->hasRoleAndIsCurrentRole(['coach', 'coordinator', 'cooperation-admin']);
+        return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'coordinator', 'cooperation-admin']);
     }
 
     /**

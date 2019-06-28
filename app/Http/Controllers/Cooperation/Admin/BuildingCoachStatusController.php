@@ -56,7 +56,7 @@ class BuildingCoachStatusController extends Controller
             $building->status = Building::STATUS_IS_ACTIVE;
             // if the user is a coach, then he may only set the status for himself
             // if the user is a coordinator or cooperation-admin we set the status for every connected coach
-            if (\Auth::account()->user()->hasRoleAndIsCurrentRole(['coach'])) {
+            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach'])) {
 
                 $createData = [
                     'coach_id' => Hoomdossier::user()->id,
@@ -114,7 +114,7 @@ class BuildingCoachStatusController extends Controller
 
         // if the user is a coach, then he may only set the appointment date forhimself
         // if the user is a coordinator or cooperation-admin we set the building coach statuses for every connected active coach
-        if (\Auth::account()->user()->hasRoleAndIsCurrentRole(['coach'])) {
+        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach'])) {
             $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', \Auth::id())->first();
 
             // now create the new status for all the coaches
@@ -124,7 +124,7 @@ class BuildingCoachStatusController extends Controller
                 'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus, $appointmentDate),
                 'appointment_date' => $appointmentDate,
             ]);
-        } else if (\Auth::account()->user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+        } else if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->first();
             foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
                 // now create the new status for all the coaches

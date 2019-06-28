@@ -23,7 +23,7 @@ class SwitchRoleController extends Controller
         }
 
         /** @var User $user */
-        $user = \Auth::account()->user();
+        $user = \App\Helpers\Hoomdossier::user();
         /** @var Building $building */
         $building = $user->buildings()->first();
 

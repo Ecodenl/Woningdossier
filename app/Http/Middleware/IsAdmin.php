@@ -19,7 +19,7 @@ class IsAdmin
     public function handle($request, Closure $next)
     {
         /** @var User $user */
-        $user = \Auth::account()->user();
+        $user = \App\Helpers\Hoomdossier::user();
 
         if (! $user) {
             \Log::debug(__METHOD__.' !user');

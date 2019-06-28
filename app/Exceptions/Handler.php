@@ -95,13 +95,13 @@ class Handler extends ExceptionHandler
         if ($exception instanceof RoleInSessionHasNoAssociationWithUser) {
 
             // try to obtain a role from the user.
-            $role = \Auth::account()->user()->roles()->first();
+            $role = \App\Helpers\Hoomdossier::user()->roles()->first();
 
             if ($role instanceof Role) {
                 HoomdossierSession::setRole($role);
                 return redirect(route('cooperation.home'));
             } else {
-                \Auth::account()->user()->logout();
+                \App\Helpers\Hoomdossier::user()->logout();
                 return redirect()->route('cooperation.home');
             }
         }

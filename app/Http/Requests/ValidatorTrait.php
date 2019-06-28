@@ -26,7 +26,7 @@ trait ValidatorTrait
      */
     private function getRulesForRequest(): array
     {
-        return \Auth::account()->user()->isFillingToolForOtherBuilding() ? $this->isFillingToolForUserRules() : $this->rules();
+        return \App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding() ? $this->isFillingToolForUserRules() : $this->rules();
     }
 
     /**

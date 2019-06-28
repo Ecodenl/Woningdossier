@@ -107,7 +107,7 @@ class SettingsController extends Controller
      */
     public function resetFile()
     {
-        $user = \Auth::account()->user();
+        $user = \App\Helpers\Hoomdossier::user();
 
         // only remove the example building id from the building
         $building = $user->buildings()->first();
@@ -154,7 +154,7 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
-        $user = \Auth::account()->user();
+        $user = \App\Helpers\Hoomdossier::user();
 
         UserService::deleteUser($user);
 

@@ -13,7 +13,7 @@ class NotificationSettingsController extends Controller
 {
     public function index()
     {
-        $notificationSettings = \Auth::account()->user()->notificationSettings;
+        $notificationSettings = \App\Helpers\Hoomdossier::user()->notificationSettings;
 
         return view('cooperation.my-account.notification-settings.index', compact('notificationSettings'));
     }

@@ -17,7 +17,7 @@
                         <div class="row">
                             <?php
                                 // todo make this better maintainable (especially the col classes)
-                                $totalUserRoles = Auth::account()->user()->roles()->count();
+                                $totalUserRoles = \App\Helpers\Hoomdossier::user()->roles()->count();
 
                             ?>
                             @foreach($user->roles as $i => $role)

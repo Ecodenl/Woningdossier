@@ -34,7 +34,7 @@
                                     @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
                                     @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
                                 </a>
-                                @if(Auth::account()->user()->hasRoleAndIsCurrentRole('coach'))
+                                @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
                                     <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
                                        id="edit-building" class="btn btn-warning">
                                         @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
@@ -155,7 +155,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
-                            <select @if(Auth::account()->user()->hasRoleAndIsCurrentRole('coach')) disabled
+                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
                                     multiple="multiple">
                                 @foreach($coaches as $coach)
@@ -175,7 +175,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
-                            <select @if(Auth::account()->user()->hasRoleAndIsCurrentRole('coach')) disabled
+                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                     @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                                 @foreach($roles as $role)
                                     <option @if($user->hasNotMultipleRoles()) locked="locked"
@@ -210,7 +210,7 @@
                     @lang('woningdossier.cooperation.admin.users.show.tabs.comments-on-building.title')
                 </a>
             </li>
-            @if(Auth::account()->user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <li>
                     <a data-toggle="tab" id="trigger-fill-in-history-tab" href="#fill-in-history">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.fill-in-history.title')
@@ -260,7 +260,7 @@
                 </div>
             </div>
             {{-- Fill in history or the log --}}
-            @if(Auth::account()->user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">
                         <div class="panel-body">

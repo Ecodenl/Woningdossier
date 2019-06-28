@@ -14,7 +14,7 @@ class ConnectToResidentRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::account()->user();
+        return \App\Helpers\Hoomdossier::user();
     }
 
     /**

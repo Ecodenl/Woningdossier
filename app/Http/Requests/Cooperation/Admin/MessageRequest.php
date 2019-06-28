@@ -15,7 +15,7 @@ class MessageRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::account()->user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator', 'coach']);
+        return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator', 'coach']);
     }
 
     /**

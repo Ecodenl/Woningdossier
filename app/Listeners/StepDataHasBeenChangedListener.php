@@ -33,7 +33,7 @@ class StepDataHasBeenChangedListener
             'user_id' => Hoomdossier::user()->id,
             'building_id' => HoomdossierSession::getBuilding(),
             'message' => __('woningdossier.log-messages.step-data-has-been-changed', [
-                'full_name' => \Auth::account()->user()->getFullName(),
+                'full_name' => \App\Helpers\Hoomdossier::user()->getFullName(),
                 'time' => Carbon::now(),
             ]),
         ]);

@@ -24,7 +24,7 @@ class RoleMiddleware
             ? $role
             : explode('|', $role);
 
-        if (! \Auth::account()->user()->hasAnyRole($roles)) {
+        if (! \App\Helpers\Hoomdossier::user()->hasAnyRole($roles)) {
             throw UnauthorizedException::forRoles($roles);
         }
 

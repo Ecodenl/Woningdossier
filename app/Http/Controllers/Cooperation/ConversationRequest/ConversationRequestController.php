@@ -64,7 +64,7 @@ class ConversationRequestController extends Controller
                 // we get the selected option from the language file, we can do this cause the submitted value = key from localization
                 'is_public'         => true,
                 'from_user_id'      => Hoomdossier::user()->id,
-                'from_user'         => \Auth::account()->user()->getFullName(),
+                'from_user'         => \App\Helpers\Hoomdossier::user()->getFullName(),
                 'message'           => $message,
                 'to_cooperation_id' => $cooperationId,
                 'building_id'       => HoomdossierSession::getBuilding(),

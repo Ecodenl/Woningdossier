@@ -171,7 +171,7 @@ class LoginController extends Controller
         // throw validation exception, with a confirmation resend link.
         throw ValidationException::withMessages([
             'confirm_token' => [
-                __('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])
+                __('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')])
             ],
         ]);
     }

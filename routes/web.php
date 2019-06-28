@@ -24,13 +24,19 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::group(['namespace' => 'Auth'], function () {
 
-            Route::get('confirm', 'RegisterController@confirm')->name('confirm');
             Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
             Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
 
             Route::group(['as' => 'auth.'], function () {
-                Route::get('resend-confirm-account-email', 'RegisterController@formResendConfirmMail')->name('form-resend-confirm-mail');
-                Route::post('resend-confirm-account-email', 'RegisterController@resendConfirmMail')->name('resend-confirm-mail');
+
+                Route::group(['prefix' => 'confirm', 'as' => 'confirm.'], function () {
+                    Route::get('', 'ConfirmAccountController@store')->name('store');
+
+                    Route::group(['prefix' => 'resend', 'as' => 'resend.'], function () {
+                        Route::get('', 'ResendConfirmAccountController@show')->name('show');
+                        Route::post('', 'ResendConfirmAccountController@store')->name('store');
+                    });
+                });
             });
         });
         Auth::routes();

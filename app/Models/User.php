@@ -519,10 +519,6 @@ class User extends Model implements AuthorizableContract
         return $this->account->email;
     }
 
-//    public function getRememberTokenName()
-//    {
-//        return
-//    }
 
     public function logout()
     {

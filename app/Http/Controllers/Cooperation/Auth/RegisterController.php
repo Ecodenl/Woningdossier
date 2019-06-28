@@ -185,30 +185,6 @@ class RegisterController extends Controller
         return $user;
     }
 
-    public function confirm(ConfirmRequest $request)
-    {
-        $email = $request->get('u');
-        $token = $request->get('t');
-
-        $user = User::where('email', $email)->where('confirm_token', $token)->first();
-        if ( ! $user instanceof User) {
-            return redirect('register')->withErrors(trans('auth.confirm.error'));
-        } else {
-            $user->confirm_token = null;
-            $user->save();
-
-            if (0 == $user->roles()->count()) {
-                \Log::debug("A user confirmed his account and there was no role set, the id = {$user->id} we set the role to resident so no exception");
-
-                $residentRole = Role::findByName('resident');
-                $user->roles()->attach($residentRole);
-            }
-
-            return redirect()->route('cooperation.login', ['cooperation' => \App::make('Cooperation')])->with('success',
-                trans('auth.confirm.success'));
-        }
-    }
-
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
      *
@@ -239,27 +215,5 @@ class RegisterController extends Controller
     }
 
 
-    public function formResendConfirmMail()
-    {
-        return view('cooperation.auth.resend-confirm-mail');
-    }
-
-    public function resendConfirmMail(Cooperation $cooperation, ResendConfirmMailRequest $request)
-    {
-        $validated = $request->validated();
-
-        $user = User::where('email', '=', $validated['email'])->whereNotNull('confirm_token')->first();
-
-        if ( ! $user instanceof User) {
-            return redirect()->route('cooperation.auth.resend-confirm-mail', ['cooperation' => $cooperation])
-                             ->withInput()
-                             ->withErrors(['email' => trans('auth.confirm.email-error')]);
-        }
-
-        SendRequestAccountConfirmationEmail::dispatch($user, $cooperation);
-
-        return redirect()->route('cooperation.auth.resend-confirm-mail',
-            ['cooperation' => $cooperation])->with('success', trans('auth.confirm.email-success'));
-    }
 
 }

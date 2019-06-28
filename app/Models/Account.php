@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 
 class Account extends Authenticatable
 {
@@ -58,6 +57,4 @@ class Account extends Authenticatable
         return $this->users()->withoutGlobalScopes()->where('cooperation_id', '=', $cooperation->id)->count() > 0;
 
     }
-
-
 }

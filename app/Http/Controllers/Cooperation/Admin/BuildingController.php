@@ -95,7 +95,7 @@ class BuildingController extends Controller
         if ($userExists) {
             if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
 
-                $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
+                $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
 
                 $previous = $connectedBuildingsForUser->where('building_id', '<', $buildingId)->max('building_id');
                 $next     = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');

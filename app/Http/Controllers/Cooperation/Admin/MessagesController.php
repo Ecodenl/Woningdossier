@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Requests\Cooperation\Admin\MessageRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -26,7 +27,7 @@ class MessagesController extends Controller
     {
 
         if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
+            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
             $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {
             // get all the conversation requests that were send to my cooperation.

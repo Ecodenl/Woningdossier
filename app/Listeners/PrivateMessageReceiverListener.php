@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -53,7 +54,7 @@ class PrivateMessageReceiverListener
             }
 
             // if the message is private and the group member is the owner, we dont notify him because the message is not intended for him
-            if ($groupParticipant->id != \Auth::id() && ! $isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
+            if ($groupParticipant->id != Hoomdossier::user()->id && ! $isMessagePrivateAndGroupParticipantOwnerFromBuilding) {
                 PrivateMessageView::create([
                     'input_source_id' => $inputSourceId,
                     'private_message_id' => $event->privateMessage->id,

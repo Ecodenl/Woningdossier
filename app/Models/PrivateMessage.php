@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -275,7 +276,7 @@ class PrivateMessage extends Model
             // if a user would be a coach and a coordinator / cooperation-admin and he would be sending from the coordinator section.
             // after that switching back to the coach section and start to send message as a coach, he would be see the messages he sent as a coordinator as they were his messages
             // while this is true, its looks odd.
-        } else if (\Auth::id() == $this->from_user_id && is_null($this->from_cooperation_id)) {
+        } else if (Hoomdossier::user()->id == $this->from_user_id && is_null($this->from_cooperation_id)) {
             return true;
         }
 

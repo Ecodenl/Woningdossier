@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Requests\Cooperation\Admin\BuildingCoachStatusRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -58,7 +59,7 @@ class BuildingCoachStatusController extends Controller
             if (\Auth::account()->user()->hasRoleAndIsCurrentRole(['coach'])) {
 
                 $createData = [
-                    'coach_id' => \Auth::id(),
+                    'coach_id' => Hoomdossier::user()->id,
                     'building_id' => $buildingId,
                     'status' => $status,
                 ];
@@ -118,7 +119,7 @@ class BuildingCoachStatusController extends Controller
 
             // now create the new status for all the coaches
             BuildingCoachStatus::create([
-                'coach_id' => \Auth::id(),
+                'coach_id' => Hoomdossier::user()->id,
                 'building_id' => $buildingId,
                 'status' => $this->getStatusToSetForAppointment($mostRecentBuildingCoachStatus, $appointmentDate),
                 'appointment_date' => $appointmentDate,

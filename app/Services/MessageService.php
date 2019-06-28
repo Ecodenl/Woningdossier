@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -41,7 +42,7 @@ class MessageService
                 'is_public' => $isPublic,
                 'to_cooperation_id' => HoomdossierSession::getCooperation(),
                 'from_user' => \Auth::account()->user()->getFullName(),
-                'from_user_id' => \Auth::id(),
+                'from_user_id' => Hoomdossier::user()->id,
                 'message' => $message,
                 'building_id' => $buildingId,
             ];

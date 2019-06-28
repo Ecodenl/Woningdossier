@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -65,7 +66,7 @@ class UserService
 
 
             // we only want to do this if the user is deleting himself. Otherwise admins would randomly logout.
-            if (\Auth::id() == $user->id) {
+            if (Hoomdossier::user()->id == $user->id) {
                 // the user still exists, so we have to logout the user
                 HoomdossierSession::destroy();
                 \Auth::logout();

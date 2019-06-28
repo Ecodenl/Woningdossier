@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
 use App\Events\UserAllowedAccessToHisBuilding;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
@@ -62,7 +63,7 @@ class ConversationRequestController extends Controller
             [
                 // we get the selected option from the language file, we can do this cause the submitted value = key from localization
                 'is_public'         => true,
-                'from_user_id'      => \Auth::id(),
+                'from_user_id'      => Hoomdossier::user()->id,
                 'from_user'         => \Auth::account()->user()->getFullName(),
                 'message'           => $message,
                 'to_cooperation_id' => $cooperationId,

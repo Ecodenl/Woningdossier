@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\PrivateMessageReceiverEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -39,7 +40,7 @@ class PrivateMessageViewService
                     ->update(['read_at' => Carbon::now()]);
             } else {
                 $privateMessageQuery
-                    ->where('user_id', \Auth::id())
+                    ->where('user_id', Hoomdossier::user()->id)
                     ->update(['read_at' => Carbon::now()]);
             }
         }

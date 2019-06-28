@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
@@ -107,7 +108,7 @@ class BuildingCoachStatus extends Model
      */
     public function scopeCurrentStatus($query, $status)
     {
-        return $query->where('status', $status)->where('coach_id', \Auth::id());
+        return $query->where('status', $status)->where('coach_id', Hoomdossier::user()->id);
     }
 
     /**
@@ -309,7 +310,7 @@ class BuildingCoachStatus extends Model
         $buildingsTheCoachIsConnectedTo =
             \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
                 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission',
-                'cooperation_user.cooperation_id')
+                'users.cooperation_id')
                 // count the pending statuses
                ->from($pendingCount)
                 // count the removed count
@@ -319,14 +320,14 @@ class BuildingCoachStatus extends Model
                 // get the buildings
                ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
                 // check if the building its user / resident is associated with the given cooperation
-               ->join('cooperation_user', function ($joinCooperationUser) use ($cooperationId) {
-                   $joinCooperationUser->on('buildings.user_id', '=', 'cooperation_user.user_id')
-                                       ->where('cooperation_id', $cooperationId);
-               })
+                ->join('users', function ($joinUser) use ($cooperationId) {
+                    $joinUser->on('buildings.user_id', '=', 'users.id')
+                        ->where('cooperation_id', $cooperationId);
+                })
                 // check if the coach has access
                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                ->where('buildings.deleted_at', '=', null)
-               ->groupBy('building_id', 'cooperation_user.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
+               ->groupBy('building_id', 'users.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
                ->get();
 
 

@@ -67,7 +67,7 @@ class BuildingController extends Controller
             // if the user is a coach we can get the specific one for the current coach
             // else we just get the most recent one.
             if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-                $mostRecentBcs = $mostRecentStatusesForBuildingId->where('coach_id', \Auth::id())->all();
+                $mostRecentBcs = $mostRecentStatusesForBuildingId->where('coach_id', Hoomdossier::user()->id)->all();
             } else {
                 $mostRecentBuildingCoachStatusArray = $mostRecentStatusesForBuildingId->all();
                 $mostRecentBcs                      = [$mostRecentBuildingCoachStatusArray[0]];

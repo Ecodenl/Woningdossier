@@ -24,12 +24,12 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
-                                $mostRecentForBuildingAndCoachId = \App\Models\BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingCoachStatus->building_id)->where('coach_id', Auth::id())->first();
-                                $building = $buildingCoachStatus->building()->first();
+                                $mostRecentForBuildingAndCoachId = \App\Models\BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingCoachStatus->building_id)->where('coach_id', \App\Helpers\Hoomdossier::user()->id)->first();
+                                $building = $buildingCoachStatus->building;
                             ?>
                             @if($building instanceof \App\Models\Building)
                                 <?php
-                                    $user = $building->user;
+                                    $user = $building->user()->withoutGlobalScopes()->first();
                                     $userExists = $user instanceof \App\Models\User;
                                     $appointmentDate = !is_null($mostRecentForBuildingAndCoachId->appointment_date) ? \Carbon\Carbon::parse($mostRecentForBuildingAndCoachId->appointment_date)->format('d-m-Y') : '';
                                 ?>

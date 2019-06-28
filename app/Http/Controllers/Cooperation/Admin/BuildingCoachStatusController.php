@@ -65,7 +65,7 @@ class BuildingCoachStatusController extends Controller
                 ];
 
                 if ($status == BuildingCoachStatus::STATUS_EXECUTED) {
-                    $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', \Auth::id())->first();
+                    $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', Hoomdossier::user()->id)->first();
                     $createData['appointment_date'] = $mostRecentBuildingCoachStatus->appointment_date;
                 }
 
@@ -115,7 +115,7 @@ class BuildingCoachStatusController extends Controller
         // if the user is a coach, then he may only set the appointment date forhimself
         // if the user is a coordinator or cooperation-admin we set the building coach statuses for every connected active coach
         if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach'])) {
-            $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', \Auth::id())->first();
+            $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', Hoomdossier::user()->id)->first();
 
             // now create the new status for all the coaches
             BuildingCoachStatus::create([

@@ -145,7 +145,7 @@ class PrivateMessage extends Model
      */
     public function scopeMyPrivateMessages($query)
     {
-        return $query->where('to_user_id', \Auth::id());
+        return $query->where('to_user_id', Hoomdossier::user()->id);
     }
 
 

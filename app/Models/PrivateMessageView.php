@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use Carbon\Carbon;
 use App\Traits\GetMyValuesTrait;
@@ -156,7 +157,7 @@ class PrivateMessageView extends Model
             // the user is a coach or resident at this point.
             // so we get the private message views for the current user, that have not been read yet.
             $totalUnreadMessagesForCurrentRole = static::select('private_messages.*')
-                         ->where('private_message_views.user_id', \Auth::id())
+                         ->where('private_message_views.user_id', Hoomdossier::user()->id)
                          ->where('read_at', null)
                          ->join('private_messages', function ($query) {
                              $query->on('private_message_views.private_message_id', '=', 'private_messages.id')
@@ -192,7 +193,7 @@ class PrivateMessageView extends Model
                          ->whereNull('read_at')
                          ->count();
         } else {
-            return static::where('user_id', \Auth::id())
+            return static::where('user_id', Hoomdossier::user()->id)
                          ->forCurrentInputSource()
                          ->whereIn('private_message_id', $privateMessageIdsForBuilding)
                          ->whereNull('read_at')
@@ -221,7 +222,7 @@ class PrivateMessageView extends Model
         } else {
             $privateMessageView = static::where('private_message_id', $privateMessage->id)
                                         ->forCurrentInputSource()
-                                        ->where('user_id', \Auth::id())
+                                        ->where('user_id', Hoomdossier::user()->id)
                                         ->first();
 
             if ($privateMessageView instanceof PrivateMessageView && is_null($privateMessageView->read_at)) {

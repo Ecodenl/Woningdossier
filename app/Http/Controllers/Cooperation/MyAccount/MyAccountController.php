@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
-use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 

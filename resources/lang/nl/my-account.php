@@ -145,16 +145,18 @@ return [
                     'postal-code' => 'Postcode',
                     'city' => 'Stad'
                 ],
-                'user' => [
+                'account' => [
                     'e-mail'                => 'E-mailadres',
-                    'first-name'            => 'Voornaam',
-                    'last-name'             => 'Achternaam',
                     'password'              => 'Wachtwoord',
                     'password-confirmation' => 'Wachtwoord (bevestigen)',
-                    'phone_number'          => 'Telefoonnummer',
-                    'current-password'      => 'Huidig wachtwoord',
                     'new-password'          => 'Nieuw wachtwoord',
                     'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
+                    'current-password'      => 'Huidig wachtwoord',
+                ],
+                'user' => [
+                    'first-name'            => 'Voornaam',
+                    'last-name'             => 'Achternaam',
+                    'phone_number'          => 'Telefoonnummer',
                 ],
             ]
         ],

@@ -37,7 +37,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{$user->email}}
+                                    {{$user->account->email}}
                                 </td>
                                 <td>
                                     {{implode(',', $user->roles->pluck('human_readable_name')->toArray())}}

@@ -7,7 +7,7 @@
                 'name' => $userExists ? $user->getFullName() : '-',
                 'street-and-number' => $building->street.' '.$building->number,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
-                'email' => $userExists ? $user->email : ''
+                'email' => $userExists ? $user->account->email : ''
             ])
         </div>
 

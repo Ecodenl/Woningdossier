@@ -91,7 +91,7 @@ class BuildingController extends Controller
 
         // since a user can be deleted, a buildin
         if ($userExists) {
-            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+            if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
 
                 $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
 
@@ -99,7 +99,6 @@ class BuildingController extends Controller
                 $next     = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');
 
             } else {
-
                 // get previous user id
                 $previous = $cooperation
                     ->users()

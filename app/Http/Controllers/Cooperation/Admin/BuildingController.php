@@ -28,19 +28,17 @@ class BuildingController extends Controller
      */
     public function show(Cooperation $cooperation, $buildingId)
     {
-        $building = Building::hydrate(
-            $cooperation
-                ->users()
-                ->join('buildings', 'users.id', '=', 'buildings.user_id')
-                ->where('buildings.id', '=', $buildingId)
-                ->select('buildings.*')
-                ->get()->toArray()
-        )->first();
+        // retrieve the user from the building within the current cooperation;
+        $user = $cooperation->users()->whereHas('buildings', function ($query) use ($buildingId) {
+            $query->where('id', $buildingId);
+        })->first();
 
-        if ( ! $building instanceof Building) {
+        $building = $user->building;
+
+        if (!$user instanceof User && !$building instanceof Building) {
+            \Illuminate\Support\Facades\Log::debug('A admin tried to show a building that does not seem to exists with id: '.$buildingId);
             return redirect(route('cooperation.admin.index'));
         }
-        $user = $building->user()->first();
 
         $this->authorize('show', [$building, $cooperation]);
 

@@ -55,7 +55,7 @@ class SendNotifications extends Command {
 			$this->info( 'Notification type: ' . $this->option( 'type' ) . ' exists, let\'s do some work.' );
 
 			// get the cooperations with its users and buildings
-			$cooperations = Cooperation::with( [ 'users.buildings' ] )->has( 'users' )->get();
+            $cooperations = Cooperation::with( [ 'users.building'] )->withoutGlobalScopes()->get();
 
 			foreach ( $cooperations as $cooperation ) {
 

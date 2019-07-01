@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
+use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\OldEmail;
 use App\Models\User;

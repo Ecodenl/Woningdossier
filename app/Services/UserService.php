@@ -39,6 +39,7 @@ class UserService
             $building->privateMessages()->delete();
 
 
+            // remove the user itself.
             $user->delete();
 
             // we only want to do this if the user is deleting himself. Otherwise admins would randomly logout.

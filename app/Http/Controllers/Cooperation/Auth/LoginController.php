@@ -131,6 +131,8 @@ class LoginController extends Controller
         // everything is ok with the user at this point, now we log him in.
         if ($this->attemptLogin($request)) {
 
+            // the guard()->user() will return the auth model, in our case this is the Account model
+            // but we want the user from the account, so thats why we do ->user()->user();
             $user = $this->guard()->user()->user();
 
             $role = Role::findByName($user->roles()->first()->name);

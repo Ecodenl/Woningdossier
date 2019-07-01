@@ -62,11 +62,10 @@ class SendNotifications extends Command {
 				foreach ( $cooperation->users as $user ) {
 
 					// same goes for the building
-					$building = $user->buildings->first();
+					$building = $user->building;
 
 					// get their notification setting for the specific type.
-					$notificationSetting = $user->notificationSettings()->where( 'type_id',
-						$notificationType->id )->first();
+					$notificationSetting = $user->notificationSettings()->where( 'type_id', $notificationType->id )->first();
 
 					// if the notification setting, building and cooperation exists do some things.
 					if ( $notificationSetting instanceof NotificationSetting && $building instanceof Building && $cooperation instanceof Cooperation ) {

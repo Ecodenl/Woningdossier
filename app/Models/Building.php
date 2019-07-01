@@ -45,7 +45,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
  * @property-read \App\Models\User|null $user
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newQuery()
@@ -201,14 +200,6 @@ class Building extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function userUsage()
-    {
-        return $this->hasMany(BuildingUserUsage::class);
     }
 
     /**

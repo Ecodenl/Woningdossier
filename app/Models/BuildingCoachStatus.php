@@ -3,9 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -320,10 +318,10 @@ class BuildingCoachStatus extends Model
                 // get the buildings
                ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
                 // check if the building its user / resident is associated with the given cooperation
-                ->join('users', function ($joinUser) use ($cooperationId) {
-                    $joinUser->on('buildings.user_id', '=', 'users.id')
-                        ->where('cooperation_id', $cooperationId);
-                })
+               ->join('users', function ($joinUsers) use ($cooperationId) {
+                   $joinUsers->on('buildings.user_id', '=', 'users.id')
+                                       ->where('cooperation_id', $cooperationId);
+               })
                 // check if the coach has access
                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                ->where('buildings.deleted_at', '=', null)

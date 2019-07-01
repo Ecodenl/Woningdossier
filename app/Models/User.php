@@ -35,7 +35,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
@@ -135,11 +134,6 @@ class User extends Model implements AuthorizableContract
     public function notificationSettings()
     {
         return $this->hasMany(NotificationSetting::class);
-    }
-
-    public function buildingUsage()
-    {
-        return $this->hasMany(BuildingUserUsage::class);
     }
 
     public function energyHabit()

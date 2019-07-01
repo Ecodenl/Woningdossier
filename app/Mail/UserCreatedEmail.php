@@ -5,10 +5,11 @@ namespace App\Mail;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserCreatedEmail extends Mailable
+class UserCreatedEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

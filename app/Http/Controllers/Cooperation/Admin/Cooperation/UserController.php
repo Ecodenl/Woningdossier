@@ -107,7 +107,6 @@ class UserController extends Controller
             array_push($roles, $role->name);
         }
 
-        // attach the new user to the cooperation
         $user->cooperation()->associate($cooperation)->save();
 
 
@@ -156,12 +155,12 @@ class UserController extends Controller
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
     {
-        $user = User::where('email', $request->get('email'))->first();
+        $account = Account::where('email', $request->get('email'))->first();
 
-        $token = app('auth.password.broker')->createToken($user);
+        $token = app('auth.password.broker')->createToken($account);
 
         // send a mail to the user
-        \Mail::to($user->account->email)->sendNow(new UserCreatedEmail($cooperation, $user, $token));
+        \Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
     }
 
     /**

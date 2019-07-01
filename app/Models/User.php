@@ -74,6 +74,9 @@ class User extends Model implements AuthorizableContract
 {
     use HasRoles, HasCooperationTrait, Authorizable;
 
+
+    protected $guard_name = 'web';
+
     /**
      * The attributes that are mass assignable.
      *

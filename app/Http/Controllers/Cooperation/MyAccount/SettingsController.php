@@ -108,7 +108,7 @@ class SettingsController extends Controller
      */
     public function resetFile()
     {
-        $user = \App\Helpers\Hoomdossier::user();
+        $user = Hoomdossier::user();
 
         // only remove the example building id from the building
         $building = $user->building;

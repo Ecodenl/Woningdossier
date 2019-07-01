@@ -33,13 +33,13 @@ class BuildingController extends Controller
             $query->where('id', $buildingId);
         })->first();
 
-        $building = $user->building;
 
-        if (!$user instanceof User && !$building instanceof Building) {
+        if (!$user instanceof User) {
             \Illuminate\Support\Facades\Log::debug('A admin tried to show a building that does not seem to exists with id: '.$buildingId);
             return redirect(route('cooperation.admin.index'));
         }
 
+        $building = $user->building;
         $this->authorize('show', [$building, $cooperation]);
 
 
@@ -64,7 +64,7 @@ class BuildingController extends Controller
         if ($mostRecentStatusesForBuildingId->isNotEmpty()) {
             // if the user is a coach we can get the specific one for the current coach
             // else we just get the most recent one.
-            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+            if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
                 $mostRecentBcs = $mostRecentStatusesForBuildingId->where('coach_id', Hoomdossier::user()->id)->all();
             } else {
                 $mostRecentBuildingCoachStatusArray = $mostRecentStatusesForBuildingId->all();

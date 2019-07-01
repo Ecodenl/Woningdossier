@@ -64,7 +64,7 @@ class Account extends Authenticatable
      */
     public function users()
     {
-        return $this->hasMany(User::class)->withoutGlobalScopes();
+        return $this->hasMany(User::class);
     }
 
     /**

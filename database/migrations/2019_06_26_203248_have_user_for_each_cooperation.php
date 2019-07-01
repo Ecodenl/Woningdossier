@@ -84,6 +84,7 @@ class HaveUserForEachCooperation extends Migration
             }
 
         }
+
         // Now drop the cooperation column on the roles table
         if (Schema::hasColumn('model_has_roles', 'cooperation_id')){
             Schema::table('model_has_roles', function(Blueprint $table){

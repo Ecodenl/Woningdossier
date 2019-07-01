@@ -23,7 +23,7 @@ class RoleController extends Controller
         $role = Role::findById($roleId);
         $user = User::find($userId);
 
-        $user->assignRole($cooperationId, $role);
+        $user->assignRole($role);
 
         return redirect()->back();
     }

@@ -112,7 +112,7 @@ class UserController extends Controller
 
 
         // assign the roles to the user
-        $user->assignRole($cooperation->id, $roles);
+        $user->assignRole($roles);
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {

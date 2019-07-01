@@ -41,7 +41,7 @@ class ReportController extends Controller
 
         foreach ($questionnaires as $questionnaire) {
             foreach ($usersFromCooperation as $user) {
-                $building = $user->buildings()->first();
+                $building = $user->building;
 
                 $questionAnswersForCurrentQuestionnaire = \DB::table('questionnaires')
                     ->where('questionnaires.id', $questionnaire->id)
@@ -146,7 +146,7 @@ class ReportController extends Controller
         $residentInputSource = InputSource::findByShort('resident');
 
         foreach ($users as $key => $user) {
-            $building = $user->buildings()->first();
+            $building = $user->building;
             if ($building instanceof Building) {
                 $street = $building->street;
                 $number = $building->number;
@@ -238,7 +238,7 @@ class ReportController extends Controller
         $residentInputSource = InputSource::findByShort('resident');
 
         foreach ($users as $key => $user) {
-            $building = $user->buildings()->first();
+            $building = $user->building;
             if ($building instanceof Building) {
                 $street = $building->street;
                 $number = $building->number;

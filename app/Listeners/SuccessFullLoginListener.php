@@ -33,7 +33,7 @@ class SuccessFullLoginListener
         /** @var User $user */
         $user = $event->user->user();
         // get the first building from the user
-        $building = $user->buildings()->first();
+        $building = $user->building;
         // just get the first available role from the user
         $userRole = $user->roles()->first();
 

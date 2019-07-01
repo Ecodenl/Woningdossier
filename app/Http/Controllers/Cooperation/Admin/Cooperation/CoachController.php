@@ -35,7 +35,7 @@ class CoachController extends Controller
     {
 
         $userToShow = User::findOrFail($userId);
-        $buildingFromUser = $userToShow->buildings()->first();
+        $buildingFromUser = $userToShow->building;
 
         $buildingCoachStatuses = BuildingCoachStatus::hydrate(
             \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')

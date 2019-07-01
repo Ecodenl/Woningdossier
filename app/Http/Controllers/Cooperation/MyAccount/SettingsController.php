@@ -111,7 +111,7 @@ class SettingsController extends Controller
         $user = \App\Helpers\Hoomdossier::user();
 
         // only remove the example building id from the building
-        $building = $user->buildings()->first();
+        $building = $user->building;
         $building->example_building_id = null;
         $building->save();
 

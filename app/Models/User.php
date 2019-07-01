@@ -336,7 +336,7 @@ class User extends Model implements AuthorizableContract
         if (is_null(HoomdossierSession::getBuilding())) {
             return false;
         } else {
-            if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
+            if ($this->building->id != HoomdossierSession::getBuilding()) {
                 return true;
             }
 

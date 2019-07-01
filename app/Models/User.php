@@ -84,25 +84,6 @@ class User extends Model implements AuthorizableContract
         'first_name', 'last_name', 'phone_number', 'mobile',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    /*protected $hidden = [
-        'password', 'remember_token',
-    ];*/
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    //protected $casts = [
-    //    'is_admin' => 'boolean',
-    //];
-
-
     // ------ User -> Account table / model migration stuff -------
 
     public function getEmailAttribute(){
@@ -203,7 +184,7 @@ class User extends Model implements AuthorizableContract
      */
     public function cooperations()
     {
-        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
+        return $this->belongsToMany(Cooperation::class, 'cooperation_user');
     }
 
     /**

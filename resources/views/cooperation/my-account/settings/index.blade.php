@@ -317,7 +317,7 @@
             }
         });
 
-        var userCooperationCount = {{\App\Helpers\Hoomdossier::user()->cooperations()->count()}};
+        var userCooperationCount = {{$account->users()->count()}};
 
         var areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.delete-from-cooperation')';
 

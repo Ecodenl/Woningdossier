@@ -14,16 +14,9 @@ class UserService
     public static function deleteUser(User $user)
     {
 
-        // if the user is only associated with 1 cooperation, we delete the whole account with all its data
-        // else we delete the relation between the cooperation and the user.
-        if ($user->cooperations()->count() === 1) {
+            $building = $user->building;
 
-            $building = $user->buildings()->first();
-
-            /* @var Building */
-            if ($building instanceof Building) {
-                $building->delete();
-            }
+            $building->delete();
 
             // remove the building usages from the user
             $user->buildingUsage()->withoutGlobalScope(GetValueScope::class)->delete();
@@ -38,32 +31,15 @@ class UserService
             // remove the notification settings
             $user->notificationSettings()->delete();
             // remove the progress from a user
-            //$user->progress()->delete();
-            // delete the cooperation from the user, belongsToMany so no deleting here.
-            $user->cooperations()->detach();
-
-
-            // finally remove the user itself :(
-            $user->delete();
-        } else {
-
-            // get the user its first building
-            $building = $user->buildings()->first();
-
-            // delete the relation between the cooperation and the user
-            $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
 
             // first detach the roles from the user in its current cooperation.
             $user->roles()->detach($user->roles);
-            // now we can safely remove the cooperation itself from the user.
-            $user->cooperations()->detach($currentCooperation);
 
-            /* @var Building */
-            if ($building instanceof Building) {
-                // delete the building its private messages, on the current cooperation (cooperationScope)
-                $building->privateMessages()->delete();
-            }
+            // delete the private messages from the cooperation
+            $building->privateMessages()->delete();
 
+
+            $user->delete();
 
             // we only want to do this if the user is deleting himself. Otherwise admins would randomly logout.
             if (Hoomdossier::user()->id == $user->id) {
@@ -72,6 +48,5 @@ class UserService
                 \Auth::logout();
                 request()->session()->invalidate();
             }
-        }
     }
 }

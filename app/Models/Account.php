@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Account extends Authenticatable
 {
     use Notifiable;
+
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'phone_number',
         'confirm_token', 'old_email', 'old_email_token'
@@ -45,7 +46,9 @@ class Account extends Authenticatable
     }
 
     /**
+     * Will return the user from the account and cooperation that is being used
      *
+     * This will work because the global cooperation scope is applied.
      *
      * @return User|null
      */
@@ -54,9 +57,14 @@ class Account extends Authenticatable
         return $this->users()->first();
     }
 
+    /**
+     * Will return all the users from the account.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class)->withoutGlobalScopes();
     }
 
     /**

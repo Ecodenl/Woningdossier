@@ -49,12 +49,20 @@ class ReportController extends Controller
         // remove the / to prevent unwanted directories
         $fileName = str_replace('/', '',  $hash . \Illuminate\Support\Str::slug($fileType->name) . '.csv');
 
+        // and delete the other available files, will trigger the observer to delete the file on disk
+        foreach ($fileType->files as $fileStorage) {
+            $fileStorage->delete();
+            \Storage::disk('downloads')->delete($fileStorage->filename);
+        }
+
+        // and we create the new file
         $fileStorage = FileStorage::create([
             'cooperation_id' => $cooperation->id,
             'file_type_id' => $fileType->id,
             'content_type' => 'text/csv',
             'filename' => $fileName,
         ]);
+
 
 
         switch ($fileType->short) {

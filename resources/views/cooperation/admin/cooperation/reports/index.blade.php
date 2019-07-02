@@ -37,7 +37,9 @@
                                         <a
                                             @if($fileType->isBeingProcessed() )
                                                 disabled="disabled"
-                                                href="#" data-toggle="tooltip" title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                                                href="#"
+                                                data-toggle="tooltip"
+                                                title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
                                             @else
                                                 href="{{route('cooperation.admin.cooperation.reports.generate', ['fileType' => $fileType->short])}}"
                                             @endif
@@ -51,15 +53,16 @@
                                     </td>
                                     <td>
                                         <ul>
-                                            @foreach($fileType->files as $file)
+                                            <?php $file = $fileType->files()->mostRecent()->first();?>
+                                            @if($file instanceof \App\Models\FileStorage)
                                                 <li>
                                                     <a @if(!$fileType->isBeingProcessed() )
                                                        href="{{route('cooperation.file-storage.download', [
-                                                            'fileType' => $fileType->short,
-                                                            'fileStorageFilename' => $file->filename
-                                                        ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                                                        'fileType' => $fileType->short,
+                                                        'fileStorageFilename' => $file->filename
+                                                    ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
                                                 </li>
-                                            @endforeach
+                                            @endif
                                         </ul>
                                     </td>
                                 </tr>

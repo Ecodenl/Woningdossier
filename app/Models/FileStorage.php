@@ -44,6 +44,18 @@ class FileStorage extends Model
     {
         return $query->withoutGlobalScope(AvailableScope::class);
     }
+
+    /**
+     * Query to scope the most recent report.
+     *
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeMostRecent(Builder $query)
+    {
+        return $query->orderByDesc('created_at');
+    }
     
     /**
      * Return the belongsto relationship on a cooperation.

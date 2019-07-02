@@ -556,7 +556,7 @@ class CsvService
         }
 
         // get the content structure of the whole tool.
-        $structure = ToolHelper::getContentStructure();
+        $structure = ToolHelper::getToolStructure();
 
 
 

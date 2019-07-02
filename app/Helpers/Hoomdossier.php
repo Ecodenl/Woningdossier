@@ -120,9 +120,4 @@ class Hoomdossier
         }
         return null;
     }
-
-    public static function getToolStructure()
-    {
-
-    }
 }

@@ -52,37 +52,40 @@
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
                         <select autocomplete="off" class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
-                            {{-- !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
+                            {{-- begin !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
                             {{--the user got a coach connected and the building is active--}}
+                            {{--So we will get the status from the bcs table--}}
                             @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
                                 <option disabled selected value="">
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
                                     {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
                                 </option>
 
+                            {{--The user has no coach connected so we will have to determine the status ourself--}}
+
                             {{--the user does not have a coach connected but the building is active--}}
                             @elseif(!$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
-{{--                                The user had some sort of message history so, pending.--}}
+                                {{-- The user had some sort of message history so, pending.--}}
                                 @if($publicMessages->isNotEmpty())
                                     <option disabled selected>
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
                                         {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_PENDING)}}
                                     </option>
-{{--                                    The user has no message history--}}
+                                {{-- The user has no message history--}}
                                 @else
                                     <option disabled selected>
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
                                         {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_ACTIVE)}}
                                     </option>
                                 @endif
-                                {{--The user has no building coach status and his building is set to inactive--}}
+                            {{--The user has no building coach status and his building is set to inactive--}}
                             @else
                                 <option @if($building->isNotActive()) disabled selected @endif>
                                     @lang('woningdossier.cooperation.admin.users.show.status.current')
                                     {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
                                 </option>
                             @endif
-                            {{-- !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
+                            {{-- end !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
                             {{--
                                 If there is no active coach connected to the building, then there is no point in setting these statuses
                                 and, it also cant be set since there arent ant coaches to give a status.

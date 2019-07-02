@@ -23,7 +23,7 @@ return [
         ],
         'wall-painting' => [
             'year' => [
-                'title' => 'Jaar voegwerk'
+                'title' => 'Jaar gevelschilderwerk'
             ]
         ]
     ]

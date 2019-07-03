@@ -37,6 +37,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
             $originalBuilding = $building;
 
             foreach ($users as $user) {
+
                 // note every $user has a different cooperation_id now!
 
                 // we do everything in two steps:
@@ -48,8 +49,13 @@ class UpdateBuildingToUserAccountStructure extends Migration
                     $newBuildingData            = (array) $building;
                     $newBuildingData['user_id'] = $user->id;
                     unset($newBuildingData['id']);
+
+                    print "Copying building data from building ".$building->id;
+
                     $newBuildingId = DB::table('buildings')->insertGetId($newBuildingData);
                     $building      = DB::table('buildings')->find($newBuildingId);
+
+                    print "... to ".$building->id." (for user ".$user->id." != ".$originalUser->id.")".PHP_EOL;
                 }
 
                 // Check if the example building id is not specific or allowed for the current cooperation
@@ -68,7 +74,7 @@ class UpdateBuildingToUserAccountStructure extends Migration
                                            $building->building_type_id)
                                        ->whereNull('cooperation_id')
                                        ->first();
-                            if ($newEB instanceof stdClass){
+                            if ($newEB instanceof stdClass) {
                                 // There's a new example building, update the id
                                 DB::table('buildings')
                                   ->where('id', '=', $building->id)
@@ -79,69 +85,244 @@ class UpdateBuildingToUserAccountStructure extends Migration
                 } // example building updates
 
                 // ------------- COPY BUILDING ELEMENTS ------------------------
-                $this->copyTableDataForSiblings('building_elements', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_elements',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY BUILDING FEATURES ------------------------
-                $this->copyTableDataForSiblings('building_features', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_features',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY BUILDING HEATERS -------------------------
-                $this->copyTableDataForSiblings('building_heaters', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_heaters',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY BUILDING INSULATED GLAZINGS --------------
-                $this->copyTableDataForSiblings('building_insulated_glazings', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_insulated_glazings',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY BUILDING PAINTWORK STATUSE ---------------
-                $this->copyTableDataForSiblings('building_paintwork_statuses', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_paintwork_statuses',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY BUILDING PV PANELS -----------------------
-                $this->copyTableDataForSiblings('building_pv_panels', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_pv_panels',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY BUILDING ROOF TYPES ----------------------
-                $this->copyTableDataForSiblings('building_roof_types', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_roof_types',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY BUILDING SERVICES ------------------------
-                $this->copyTableDataForSiblings('building_services', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('building_services',
+                    $originalBuilding->id, $building->id);
 
-                // ------------- COPY QUESTION ANSWERS -------------------------
-                $this->copyTableDataForSiblings('question_answers', $originalBuilding->id, $building->id);
+                // ------------- COPY QUESTIONS ANSWERS ------------------------
+                $this->copyTableDataForSiblings('questions_answers',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY QUESTION TOOL SETTINGS -------------------
-                $this->copyTableDataForSiblings('tool_settings', $originalBuilding->id, $building->id);
+                $this->copyTableDataForSiblings('tool_settings',
+                    $originalBuilding->id, $building->id);
 
                 // ------------- COPY USER PROGRESSES --------------------------
-                $this->copyTableDataForSiblings('user_progresses', $originalBuilding->id, $building->id);
-
-
-                // Some special tables (with > 1 foreign keys which should be updated)
-
+                $this->copyTableDataForSiblings('user_progresses',
+                    $originalBuilding->id, $building->id);
 
             }
+        }
+                // Some special tables (with > 1 foreign keys which should be updated)
+
+            // get active buildings
+            $buildings = DB::table('buildings')
+                           ->whereNotNull('user_id')
+                           ->whereNull('deleted_at')
+                           ->get();
+
+            foreach ($buildings as $building) {
+
+                // building_coach_status
+                $buildingCoachStatuses = DB::table('building_coach_statuses')
+                                           ->whereNotNull('coach_id')
+                                           ->where('building_id', '=',
+                                               $building->id)
+                                           ->get();
+
+                foreach ($buildingCoachStatuses as $buildingCoachStatus) {
+
+                    $bcsBuilding = $buildingCoachStatus->building_id;
+                    $bcsCoach    = $buildingCoachStatus->coach_id;
+
+                    $updates = [];
+
+                    $allBuildings = $this->getBuildingSiblingPerCooperation($bcsBuilding);
+
+                    foreach ($allBuildings as $cooperationId => $stdBuilding) {
+                        //dump("stdBuilding: ", $stdBuilding);
+                        $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
+                    }
+
+                    $allCoaches = $this->getUserSiblingPerCooperation($bcsCoach);
+
+                    foreach ($allCoaches as $cooperationId => $stdCoach) {
+                        if (array_key_exists($cooperationId, $updates)) {
+                            $updates[$cooperationId]['coach_id'] = $stdCoach->id;
+                        }
+                    }
+
+                    foreach ($updates as $cooperationId => $replace) {
+                        $insertBcs = (array) $buildingCoachStatus;
+                        unset($insertBcs['id']);
+
+                        $insertBcs['building_id'] = $replace['building_id'];
+                        if ( ! array_key_exists('coach_id', $replace)) {
+                            print "No coach ID for cooperation ".$cooperationId.". Skipping.".PHP_EOL;
+                            continue;
+                        }
+                        $insertBcs['coach_id'] = $replace['coach_id'];
+
+                        DB::table('building_coach_statuses')->insert($insertBcs);
+                    }
+
+                    // remove original
+                    DB::table('building_coach_statuses')->where('id', '=',
+                        $buildingCoachStatus->id)->delete();
+
+                }
+
+                // building_notes
+                $buildingNotes = DB::table('building_notes')
+                                   ->whereNotNull('coach_id')
+                                   ->where('building_id', '=', $building->id)
+                                   ->get();
+
+                foreach ($buildingNotes as $buildingNote) {
+
+                    $bnBuilding = $buildingNote->building_id;
+                    $bnCoach    = $buildingNote->coach_id;
+
+                    $updates = [];
+
+                    $allBuildings = $this->getBuildingSiblingPerCooperation($bnBuilding);
+
+                    foreach ($allBuildings as $cooperationId => $stdBuilding) {
+                        //dump("stdBuilding: ", $stdBuilding);
+                        $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
+                    }
+
+                    $allCoaches = $this->getUserSiblingPerCooperation($bnCoach);
+
+                    foreach ($allCoaches as $cooperationId => $stdCoach) {
+                        if (array_key_exists($cooperationId, $updates)) {
+                            $updates[$cooperationId]['coach_id'] = $stdCoach->id;
+                        }
+                    }
+
+                    foreach ($updates as $cooperationId => $replace) {
+                        $insertBn = (array) $buildingNote;
+                        unset($insertBn['id']);
+
+                        $insertBn['building_id'] = $replace['building_id'];
+                        if ( ! array_key_exists('coach_id', $replace)) {
+                            print "No coach ID for cooperation ".$cooperationId.". Removing.".PHP_EOL;
+                            DB::table('building_notes')
+                              ->where('id', '=', $buildingNote->id)
+                              ->delete();
+                            continue;
+                        }
+                        $insertBn['coach_id'] = $replace['coach_id'];
+
+                        if (!DB::table('building_notes')
+                              ->where('building_id', '=', $insertBn['building_id'])
+                            ->where('coach_id', '=', $insertBn['coach_id'])->exists()) {
+                            // only insert if it doesn't exist yet
+                            DB::table('building_notes')->insert($insertBn);
+                        }
+                    }
+
+                } // foreach building notes
+
+                // building_permissions
 
 
+            } // foreach buildings
 
+        //}
+        dd("Done!");
+    }
+
+
+    protected function getUserSiblingPerCooperation($userId)
+    {
+        $result = [];
+
+        $userId = (int) $userId;
+        $user   = DB::table('users')->find($userId);
+
+        if ($user instanceof stdClass) {
+
+            $siblings = DB::table('users')->where('account_id', '=',
+                $user->account_id)->get();
+
+            foreach ($siblings as $sibling) {
+                if ($sibling instanceof stdClass) {
+                    $result[$sibling->cooperation_id] = $sibling;
+                }
+            }
         }
 
+        return $result;
+    }
+
+    protected function getBuildingSiblingPerCooperation($buildingId)
+    {
+        $result = [];
+
+        $buildingId = (int) $buildingId;
+        $building   = DB::table('buildings')->find($buildingId);
+
+        if ($building instanceof stdClass) {
+
+            // Get the sibling of this building's user
+            $users = $this->getUserSiblingPerCooperation($building->user_id);
+
+            foreach ($users as $cooperation => $user) {
+
+                $b = DB::table('buildings')->where('user_id',
+                    '=', $user->id)->first();
+
+                if ($b instanceof stdClass) {
+                    $result[$cooperation] = $b;
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
      * Creates separate copies a table row for all buildings.
      *
-     * @param string $table
-     * @param integer $fromBuildingId
-     * @param integer $toBuildingId
-     * @param string $buildingColumn
+     * @param  string  $table
+     * @param  integer  $fromBuildingId
+     * @param  integer  $toBuildingId
+     * @param  string  $buildingColumn
      */
-    protected function copyTableDataForSiblings($table, $fromBuildingId, $toBuildingId, $buildingColumn = 'building_id')
-    {
+    protected function copyTableDataForSiblings(
+        $table,
+        $fromBuildingId,
+        $toBuildingId,
+        $buildingColumn = 'building_id'
+    ) {
         $fromBuildingId = (int) $fromBuildingId;
-        $toBuildingId = (int) $toBuildingId;
-        if ($fromBuildingId == $toBuildingId){
+        $toBuildingId   = (int) $toBuildingId;
+        if ($fromBuildingId == $toBuildingId) {
             return;
         }
 
-        $rows = DB::table($table)->where($buildingColumn, '=', $fromBuildingId)->get();
+        $rows = DB::table($table)->where($buildingColumn, '=',
+            $fromBuildingId)->get();
         /** @var stdClass $row */
-        foreach($rows as $row){
+        foreach ($rows as $row) {
             $row = (array) $row;
             unset($row['id']);
             $row[$buildingColumn] = $toBuildingId;

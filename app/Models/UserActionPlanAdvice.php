@@ -11,6 +11,7 @@ use App\Traits\ToolSettingTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
@@ -211,6 +212,11 @@ class UserActionPlanAdvice extends Model
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
         $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
 
+
+        /* sun panel*/
+        $buildingPvPanelForMe = BuildingPvPanel::forMe()->get();
+        $allInputForMe->put('solar-panels', $buildingPvPanelForMe);
+
         foreach ($allInputForMe as $step => $inputForMe) {
             // get the coach his input from the collection
             $coachInputSource = InputSource::findByShort('coach');
@@ -220,26 +226,29 @@ class UserActionPlanAdvice extends Model
             // loop through them and extract the comments from them
             foreach ($coachInputs as $coachInput) {
                 if (! is_null($coachInput)) {
+                    if ($step == 'general-data') {
+//                        dd($coachInput);
+                    }
+
+
                     if (is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra)) {
-                        $comment = $coachInput->extra['comment'];
-                    } elseif (array_key_exists('additional_info', $coachInput->attributes)) {
-                        $comment = $coachInput->additional_info;
-                    } elseif (array_key_exists('living_situation_extra', $coachInput->attributes)) {
-                        $comment = $coachInput->living_situation_extra;
+                        $comments = [$coachInput->extra['comment']];
+                    } else {
+                        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+
+                        $comments = Arr::only($coachInput->attributes, $possibleAttributes);
                     }
 
                     // for the rooftype there are multiple comments
                     if ($coachInput instanceof BuildingRoofType) {
-                        $coachComments->put($step.'-'.str_slug(RoofType::find($coachInput->roof_type_id)->name), $comment);
+                        $coachComments->put($step.'-'.str_slug(RoofType::find($coachInput->roof_type_id)->name), $comments);
                     } else {
                         // comment as key, yes. Comments will be unique.
-                        $coachComments->put($step, $comment);
+                        $coachComments->put($step, $comments);
                     }
                 }
             }
         }
-
-        $coachComments = $coachComments->unique();
 
         return $coachComments;
     }

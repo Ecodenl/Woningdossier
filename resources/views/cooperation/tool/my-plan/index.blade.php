@@ -19,10 +19,12 @@
                 {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
             @endslot
 
-            @foreach($coachComments as $stepName => $coachComment)
+            @foreach($coachCommentsByStep as $stepName => $coachComments)
                 <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
-                <p>{{$coachComment}}</p>
-                <hr>
+                @foreach($coachComments as $coachComment)
+                    <p>{{$coachComment}}</p>
+                    <hr>
+                @endforeach
             @endforeach
         @endcomponent
     @endif

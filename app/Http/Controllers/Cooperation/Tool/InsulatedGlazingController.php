@@ -215,8 +215,11 @@ class InsulatedGlazingController extends Controller
                 $interest instanceof Interest &&
                 array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
                 $gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
-                    (int) $buildingInsulatedGlazingsData['m2'], $measureApplication,
-                    $buildingHeating, $insulatedGlazing
+                    // TODO: this will be in a merge conflict with the more-csv-branch, be sure to add the reverse format to the InsulatedGlazing::calc method
+                    NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
+                    $measureApplication,
+                    $buildingHeating,
+                    $insulatedGlazing
                 );
 
                 $result['measure'][$measureApplication->id] = [

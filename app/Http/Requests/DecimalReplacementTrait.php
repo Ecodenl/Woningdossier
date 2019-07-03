@@ -8,42 +8,45 @@ use App\Helpers\NumberFormatter;
 trait DecimalReplacementTrait
 {
 
-    private function getInput($answers)
-    {
-        foreach ($answers as $key) {
-
-        }
-    }
-
+    /**
+     * Returns a dotted array of subjects that match the $subject
+     *
+     * @param  array  $subjects
+     * @param  string  $subject
+     *
+     * @return array
+     */
     private function extractSubjects(array $subjects, string $subject): array
     {
         $subjects = \Illuminate\Support\Arr::dot($subjects);
         foreach ($subjects as $subjectToCheck => $value) {
-            if (!str_contains($subjectToCheck, $subject)) {
+            if (!array_key_exists($subject, array_flip(explode('.', $subjectToCheck)))) {
                 unset($subjects[$subjectToCheck]);
             }
         }
         return $subjects;
     }
 
+    /**
+     * Formats and replaces the decimals in the request
+     *
+     * @param  array  $keys
+     */
     protected function decimals(array $keys)
     {
-//
         $merges = [];
+
         foreach ($keys as $mainInputKey => $inputKey) {
 
-
+            // check if a main input key is set
             if (!is_int($mainInputKey)) {
+                // if so, we need so extract a given subject from the input values
                 $decimals = $this->input($mainInputKey);
-
                 $subjects = $this->extractSubjects($decimals, $inputKey);
 
                 foreach ($subjects as $subjectKey => $subjectValue) {
-                    dump($subjectKey);
-
                     $decimal = NumberFormatter::reverseFormat($subjectValue);
-                    dump(Arr::arrayUndot([$mainInputKey.'.'.$subjectKey => $decimal]));
-                    $merges = array_merge($merges, Arr::arrayUndot([$mainInputKey.'.'.$subjectKey => $decimal]));
+                    $merges = array_replace_recursive($merges, Arr::arrayUndot([$mainInputKey.'.'.$subjectKey => $decimal]));
                 }
 
             } else {
@@ -54,14 +57,6 @@ trait DecimalReplacementTrait
             }
 
         }
-
-//        $this->replace(array_replace_recursive($this->all(), $merges));
-
-        dd($this->all(), $merges, $this->replace(array_replace_recursive($this->all(), $merges))->all());
+        $this->replace(array_replace_recursive($this->all(), $merges));
     }
 }
-
-//foreach ($decimal as $dec) {
-//    $dec = NumberFormatter::reverseFormat($dec);
-//    $merges = array_merge_recursive($merges, Arr::arrayUndot([$key => $dec]));
-//}

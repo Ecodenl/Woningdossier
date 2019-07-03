@@ -212,10 +212,14 @@ class UserActionPlanAdvice extends Model
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
         $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
 
-
         /* sun panel*/
         $buildingPvPanelForMe = BuildingPvPanel::forMe()->get();
         $allInputForMe->put('solar-panels', $buildingPvPanelForMe);
+
+        /* heater */
+        $buildingHeaterForMe = BuildingHeater::forMe()->get();
+        $allInputForMe->put('heater', $buildingHeaterForMe);
+
 
         foreach ($allInputForMe as $step => $inputForMe) {
             // get the coach his input from the collection

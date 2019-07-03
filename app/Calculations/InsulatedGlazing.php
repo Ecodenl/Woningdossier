@@ -59,8 +59,10 @@ class InsulatedGlazing {
                 $interest instanceof Interest &&
                 array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
                 $gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
-                    (int) $buildingInsulatedGlazingsData['m2'], $measureApplication,
-                    $buildingHeating, $insulatedGlazing
+                    NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
+                    $measureApplication,
+                    $buildingHeating,
+                    $insulatedGlazing
                 );
 
                 $result['measure'][$measureApplication->id] = [

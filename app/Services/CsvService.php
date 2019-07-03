@@ -37,6 +37,7 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\RoofType;
 use App\Models\Service;
+use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
@@ -560,16 +561,22 @@ class CsvService
 
 
 
-        // build the header structure, we will set those in the csv and use it later on to get the answers form the users.
+        // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
+            $step = Step::whereSlug($stepSlug)->first();
             foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
-                if ($tableWithColumnOrAndId != 'calculations') {
-                    $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $contents['label'];
+                if ($tableWithColumnOrAndId == 'calculations') {
+
+                    // we will dot the array, map it so we can add the step name to it
+                    $deeperContents = array_map(function ($content) use ($step) {
+                        return $step->name.': '.$content;
+                    }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.calculation.'));
+
+                    $headers = array_merge($headers, $deeperContents);
+
                 } else {
-                    // here we can dot it tho
-                    $deeperContents = $contents;
-                    $headers        = array_merge($headers, array_dot($deeperContents, $stepSlug.'.calculation.'));
+                    $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.$contents['label'];
                 }
 
             }

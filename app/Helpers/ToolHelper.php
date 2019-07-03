@@ -1390,6 +1390,11 @@ class ToolHelper
 //        return $structure;
 //    }
 
+    /**
+     * Called the tool structure, which it is, but like the excel hoom logic
+     *
+     * @return array
+     */
     public static function getToolStructure()
     {
         // General data
@@ -1522,24 +1527,7 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                 ],
-                'user_interest.element.'.$wallInsulation->id    => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $wallInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
-                'user_interest.element.'.$floorInsulation->id   => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $floorInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
-                'user_interest.element.'.$roofInsulation->id    => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $roofInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
+
 
                 // services
                 'service.'.$heatpumpHybrid->id                  => [
@@ -1564,23 +1552,13 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => $interestOptions,
                 ],
-                'user_interest.service.'.$heater->id            => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $heater->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
+
                 'service.'.$hrBoiler->id                        => [
                     'label'   => $hrBoiler->name,
                     'type'    => 'select',
                     'options' => static::createOptions($hrBoiler->values()->orderBy('order')->get(), 'value'),
                 ],
-                'user_interest.service.'.$hrBoiler->id          => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $hrBoiler->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
+
                 'service.'.$boiler->id.'.service_value_id'      => [
                     'label'   => Translation::translate('boiler.boiler-type.title'),
                     'type'    => 'select',
@@ -1591,12 +1569,7 @@ class ToolHelper
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.pieces.title'),
                 ],
-                'user_interest.service.'.$solarPanels->id       => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $solarPanels->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
+
                 'service.'.$solarPanels->id.'.extra.year'       => [
                     'label' => Translation::translate('general-data.energy-saving-measures.solar-panels.if-yes.title'),
                     'type'  => 'text',
@@ -1681,6 +1654,8 @@ class ToolHelper
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.cubic-meters.title'),
                 ],
+
+
                 // user interests
             ],
 
@@ -1689,6 +1664,12 @@ class ToolHelper
                     'label'   => Translation::translate('wall-insulation.intro.filled-insulation.title'),
                     'type'    => 'select',
                     'options' => static::createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
+                ],
+                'user_interest.element.'.$wallInsulation->id    => [
+                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                    'label'   => $wallInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
+                    'type'    => 'select',
+                    'options' => $interestOptions,
                 ],
                 'building_features.cavity_wall'                 => [
                     'label'   => Translation::translate('wall-insulation.intro.has-cavity-wall.title'),
@@ -1815,6 +1796,12 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
+                'user_interest.element.'.$floorInsulation->id   => [
+                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                    'label'   => $floorInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
+                    'type'    => 'select',
+                    'options' => $interestOptions,
+                ],
                 'element.'.$crawlspace->id.'.extra.has_crawlspace' => [
                     'label'   => Translation::translate('floor-insulation.has-crawlspace.title'),
                     'type'    => 'select',
@@ -1856,6 +1843,12 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
+                'user_interest.element.'.$roofInsulation->id    => [
+                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                    'label'   => $roofInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
+                    'type'    => 'select',
+                    'options' => $interestOptions,
+                ],
                 'building_features.roof_type_id' => [
                     'label'        => Translation::translate('roof-insulation.current-situation.main-roof.title'),
                     'type'         => 'select',
@@ -1866,6 +1859,12 @@ class ToolHelper
             ],
 
             'high-efficiency-boiler' => [
+                'user_interest.service.'.$hrBoiler->id          => [
+                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                    'label'   => $hrBoiler->name.': '.Translation::translate('general.interested-in-improvement.title'),
+                    'type'    => 'select',
+                    'options' => $interestOptions,
+                ],
                 'user_energy_habits.resident_count' => [
                     'label' => Translation::translate('general-data.data-about-usage.total-citizens.title'),
                     'type' => 'text'
@@ -1897,6 +1896,12 @@ class ToolHelper
             ],
 
             'solar-panels' => [
+                'user_interest.service.'.$solarPanels->id       => [
+                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                    'label'   => $solarPanels->name.': '.Translation::translate('general.interested-in-improvement.title'),
+                    'type'    => 'select',
+                    'options' => $interestOptions,
+                ],
                 'user_energy_habits.amount_electricity'         => [
                     'label' => Translation::translate('solar-panels.electra-usage.title'),
                     'type'  => 'text',
@@ -1934,12 +1939,19 @@ class ToolHelper
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
                 ],
             ],
+
             'heater'       => [
-                'service.'.$heater->id                     => [
-                    'label'   => $heater->name,
+                'user_interest.service.'.$heater->id            => [
+                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                    'label'   => $heater->name.': '.Translation::translate('general.interested-in-improvement.title'),
                     'type'    => 'select',
-                    'options' => static::createOptions($heater->values()->orderBy('order')->get(), 'value'),
+                    'options' => $interestOptions,
                 ],
+//                'service.'.$heater->id                     => [
+//                    'label'   => $heater->name,
+//                    'type'    => 'select',
+//                    'options' => static::createOptions($heater->values()->orderBy('order')->get(), 'value'),
+//                ],
                 'user_energy_habits.water_comfort_id' => [
                     'label' => Translation::translate('heater.comfort-level-warm-tap-water.title'),
                     'type' => 'select',

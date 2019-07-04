@@ -130,121 +130,160 @@ class UpdateBuildingToUserAccountStructure extends Migration
 
             }
         }
-                // Some special tables (with > 1 foreign keys which should be updated)
+        // Some special tables (with > 1 foreign keys which should be updated)
 
-            // get active buildings
-            $buildings = DB::table('buildings')
-                           ->whereNotNull('user_id')
-                           ->whereNull('deleted_at')
-                           ->get();
+        // get active buildings
+        $buildings = DB::table('buildings')
+                       ->whereNotNull('user_id')
+                       ->whereNull('deleted_at')
+                       ->get();
 
-            foreach ($buildings as $building) {
+        foreach ($buildings as $building) {
 
-                // building_coach_status
-                $buildingCoachStatuses = DB::table('building_coach_statuses')
-                                           ->whereNotNull('coach_id')
-                                           ->where('building_id', '=',
-                                               $building->id)
-                                           ->get();
+            // building_coach_status
+            $buildingCoachStatuses = DB::table('building_coach_statuses')
+                                       ->whereNotNull('coach_id')
+                                       ->where('building_id', '=',
+                                           $building->id)
+                                       ->get();
 
-                foreach ($buildingCoachStatuses as $buildingCoachStatus) {
+            foreach ($buildingCoachStatuses as $buildingCoachStatus) {
 
-                    $bcsBuilding = $buildingCoachStatus->building_id;
-                    $bcsCoach    = $buildingCoachStatus->coach_id;
+                $bcsBuilding = $buildingCoachStatus->building_id;
+                $bcsCoach    = $buildingCoachStatus->coach_id;
 
-                    $updates = [];
+                $updates = [];
 
-                    $allBuildings = $this->getBuildingSiblingPerCooperation($bcsBuilding);
+                $allBuildings = $this->getBuildingSiblingPerCooperation($bcsBuilding);
 
-                    foreach ($allBuildings as $cooperationId => $stdBuilding) {
-                        //dump("stdBuilding: ", $stdBuilding);
-                        $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
-                    }
-
-                    $allCoaches = $this->getUserSiblingPerCooperation($bcsCoach);
-
-                    foreach ($allCoaches as $cooperationId => $stdCoach) {
-                        if (array_key_exists($cooperationId, $updates)) {
-                            $updates[$cooperationId]['coach_id'] = $stdCoach->id;
-                        }
-                    }
-
-                    foreach ($updates as $cooperationId => $replace) {
-                        $insertBcs = (array) $buildingCoachStatus;
-                        unset($insertBcs['id']);
-
-                        $insertBcs['building_id'] = $replace['building_id'];
-                        if ( ! array_key_exists('coach_id', $replace)) {
-                            print "No coach ID for cooperation ".$cooperationId.". Skipping.".PHP_EOL;
-                            continue;
-                        }
-                        $insertBcs['coach_id'] = $replace['coach_id'];
-
-                        DB::table('building_coach_statuses')->insert($insertBcs);
-                    }
-
-                    // remove original
-                    DB::table('building_coach_statuses')->where('id', '=',
-                        $buildingCoachStatus->id)->delete();
-
+                foreach ($allBuildings as $cooperationId => $stdBuilding) {
+                    //dump("stdBuilding: ", $stdBuilding);
+                    $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
                 }
 
-                // building_notes
-                $buildingNotes = DB::table('building_notes')
-                                   ->whereNotNull('coach_id')
-                                   ->where('building_id', '=', $building->id)
-                                   ->get();
+                $allCoaches = $this->getUserSiblingPerCooperation($bcsCoach);
 
-                foreach ($buildingNotes as $buildingNote) {
-
-                    $bnBuilding = $buildingNote->building_id;
-                    $bnCoach    = $buildingNote->coach_id;
-
-                    $updates = [];
-
-                    $allBuildings = $this->getBuildingSiblingPerCooperation($bnBuilding);
-
-                    foreach ($allBuildings as $cooperationId => $stdBuilding) {
-                        //dump("stdBuilding: ", $stdBuilding);
-                        $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
+                foreach ($allCoaches as $cooperationId => $stdCoach) {
+                    if (array_key_exists($cooperationId, $updates)) {
+                        $updates[$cooperationId]['coach_id'] = $stdCoach->id;
                     }
+                }
 
-                    $allCoaches = $this->getUserSiblingPerCooperation($bnCoach);
+                foreach ($updates as $cooperationId => $replace) {
+                    $insertBcs = (array) $buildingCoachStatus;
+                    unset($insertBcs['id']);
 
-                    foreach ($allCoaches as $cooperationId => $stdCoach) {
-                        if (array_key_exists($cooperationId, $updates)) {
-                            $updates[$cooperationId]['coach_id'] = $stdCoach->id;
-                        }
+                    $insertBcs['building_id'] = $replace['building_id'];
+                    if ( ! array_key_exists('coach_id', $replace)) {
+                        dump("No coach ID for cooperation ".$cooperationId.". Skipping.");
+                        continue;
                     }
+                    $insertBcs['coach_id'] = $replace['coach_id'];
 
-                    foreach ($updates as $cooperationId => $replace) {
-                        $insertBn = (array) $buildingNote;
-                        unset($insertBn['id']);
+                    DB::table('building_coach_statuses')->insert($insertBcs);
+                }
 
-                        $insertBn['building_id'] = $replace['building_id'];
-                        if ( ! array_key_exists('coach_id', $replace)) {
-                            print "No coach ID for cooperation ".$cooperationId.". Removing.".PHP_EOL;
-                            DB::table('building_notes')
-                              ->where('id', '=', $buildingNote->id)
-                              ->delete();
-                            continue;
-                        }
-                        $insertBn['coach_id'] = $replace['coach_id'];
+                // remove original
+                DB::table('building_coach_statuses')->where('id', '=',
+                    $buildingCoachStatus->id)->delete();
 
-                        if (!DB::table('building_notes')
-                              ->where('building_id', '=', $insertBn['building_id'])
-                            ->where('coach_id', '=', $insertBn['coach_id'])->exists()) {
+            }
+
+            // building_notes
+            $buildingNotes = DB::table('building_notes')
+                               ->whereNotNull('coach_id')
+                               ->where('building_id', '=', $building->id)
+                               ->get();
+
+            foreach ($buildingNotes as $buildingNote) {
+
+                $bnBuilding = $buildingNote->building_id;
+                $bnCoach    = $buildingNote->coach_id;
+
+                $updates = [];
+
+                $allBuildings = $this->getBuildingSiblingPerCooperation($bnBuilding);
+
+                foreach ($allBuildings as $cooperationId => $stdBuilding) {
+                    $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
+                }
+
+                $allCoaches = $this->getUserSiblingPerCooperation($bnCoach);
+
+                foreach ($allCoaches as $cooperationId => $stdCoach) {
+                    if (array_key_exists($cooperationId, $updates)) {
+                        $updates[$cooperationId]['coach_id'] = $stdCoach->id;
+                    }
+                }
+
+                foreach ($updates as $cooperationId => $replace) {
+                    $insertBn = (array) $buildingNote;
+                    unset($insertBn['id']);
+
+                    $insertBn['building_id'] = $replace['building_id'];
+                    if ( ! array_key_exists('coach_id', $replace)) {
+                        dump("No coach ID for cooperation ".$cooperationId.". Removing.");
+                        DB::table('building_notes')
+                          ->where('id', '=', $buildingNote->id)
+                          ->delete();
+                        continue;
+                    }
+                    $insertBn['coach_id'] = $replace['coach_id'];
+
+                    if ( ! DB::table('building_notes')
+                             ->where('building_id', '=',
+                                 $insertBn['building_id'])
+                             ->where('coach_id', '=',
+                                 $insertBn['coach_id'])->exists()) {
+                        // only insert if it doesn't exist yet
+                        DB::table('building_notes')->insert($insertBn);
+                    }
+                }
+
+            } // foreach building notes
+
+            // building_permissions
+            $buildingPermissions = DB::table('building_permissions')
+                                     ->where('building_id', '=', $building->id)
+                                     ->get();
+            foreach ($buildingPermissions as $buildingPermission) {
+                $bpBuilding = $buildingPermission->building_id;
+                $bpUser     = $buildingPermission->user_id;
+
+                DB::table('building_permissions')->where('id', '=', $buildingPermission->id)->delete();
+
+                $updates = [];
+
+                $allBuildings = $this->getBuildingSiblingPerCooperation($bpBuilding);
+
+                foreach ($allBuildings as $cooperationId => $stdBuilding) {
+                    $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
+                }
+
+                $allUsers = $this->getUserSiblingPerCooperation($bpUser);
+                foreach ($allUsers as $cooperationId => $stdUser) {
+                    if (array_key_exists($cooperationId, $updates)) {
+                        $updates[$cooperationId]['user_id'] = $stdUser->id;
+                    }
+                }
+
+                foreach ($updates as $cooperationId => $permissions) {
+                    if (array_key_exists('user_id', $permissions) && array_key_exists('building_id', $permissions)){
+                        if ( ! DB::table('building_permissions')
+                                 ->where('building_id', '=',
+                                     $permissions['building_id'])
+                                 ->where('user_id', '=',
+                                     $permissions['user_id'])->exists()) {
                             // only insert if it doesn't exist yet
-                            DB::table('building_notes')->insert($insertBn);
+                            DB::table('building_permissions')->insert($permissions);
                         }
                     }
-
-                } // foreach building notes
-
-                // building_permissions
+                }
+            }
 
 
-            } // foreach buildings
+
+        } // foreach buildings
 
         //}
         dd("Done!");

@@ -13,7 +13,7 @@ class UserReportController extends Controller
     {
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index');
-//        return $pdf->stream();
+        return $pdf->stream();
         return view('cooperation.pdf.user-report.index');
     }
 }

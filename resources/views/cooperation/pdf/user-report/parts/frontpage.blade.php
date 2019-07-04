@@ -10,6 +10,6 @@ $building = $user->buildings->first();
 <img src="{{asset('images/pdf-main-images.jpg')}}" alt="">
 
 <div class="capitalize">
-    <h1>Stappenplan voor het verduurzamen van uw woning</h1>
+    <h2>Stappenplan voor het verduurzamen van uw woning</h2>
     <p>U hebt het Hoomdossier voor uw woning ingevuld.</p>
 </div>

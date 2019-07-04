@@ -23,6 +23,12 @@
         }
         h1 {
             font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+            font-size: 26px;
+            font-weight: bold;
+            color: #29A082;
+        }
+        h2 {
+            font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
             font-size: 16px;
             font-weight: bold;
             color: #29A082;
@@ -60,7 +66,7 @@
     <p class="lead">inleidings tekst</p>
     <p>stukje tekst</p>
     <br>
-    <h1>Koptekst groot</h1>
+    <h2>Koptekst groot</h2>
     <br>
     <h4>koptekst klein</h4>
 </div>

@@ -250,7 +250,8 @@ class UpdateBuildingToUserAccountStructure extends Migration
                 $bpBuilding = $buildingPermission->building_id;
                 $bpUser     = $buildingPermission->user_id;
 
-                DB::table('building_permissions')->where('id', '=', $buildingPermission->id)->delete();
+                DB::table('building_permissions')->where('id', '=',
+                    $buildingPermission->id)->delete();
 
                 $updates = [];
 
@@ -268,7 +269,9 @@ class UpdateBuildingToUserAccountStructure extends Migration
                 }
 
                 foreach ($updates as $cooperationId => $permissions) {
-                    if (array_key_exists('user_id', $permissions) && array_key_exists('building_id', $permissions)){
+                    if (array_key_exists('user_id',
+                            $permissions) && array_key_exists('building_id',
+                            $permissions)) {
                         if ( ! DB::table('building_permissions')
                                  ->where('building_id', '=',
                                      $permissions['building_id'])
@@ -280,6 +283,59 @@ class UpdateBuildingToUserAccountStructure extends Migration
                     }
                 }
             }
+
+            // private_messages
+            $privateMessages = DB::table('private_messages')
+                                 ->where('building_id', '=', $building->id)
+                                 ->get();
+
+            foreach ($privateMessages as $privateMessage) {
+                $pmBuilding    = $privateMessage->building_id;
+                $pmUser        = $privateMessage->from_user_id;
+                $pmCooperation = $privateMessage->to_cooperation_id;
+
+
+                $updates = [];
+
+                $allBuildings = $this->getBuildingSiblingPerCooperation($pmBuilding);
+
+                foreach ($allBuildings as $cooperationId => $stdBuilding) {
+                    $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
+                }
+
+                $allUsers = $this->getUserSiblingPerCooperation($pmUser);
+                foreach ($allUsers as $cooperationId => $stdUser) {
+                    if (array_key_exists($cooperationId, $updates)) {
+                        $updates[$cooperationId]['from_user_id'] = $stdUser->id;
+                    }
+                }
+
+                foreach ($updates as $cooperationId => $update) {
+                    if ($cooperationId == $pmCooperation) {
+                        if (array_key_exists('from_user_id', $update) &&
+                            array_key_exists('building_id', $update)) {
+                            $updateNeeded = DB::table('private_messages')
+                                          ->where('id', '=',
+                                              $privateMessage->id)
+                                          ->where(function ($q) use ($update) {
+                                              $q->where('building_id', '!=',
+                                                  $update['building_id'])
+                                                ->orWhere('from_user_id', '!=',
+                                                    $update['from_user_id']);
+                                          })->exists();
+                            // only update if needed
+                            if ($updateNeeded){
+                                dump("Update needed for private message " . $privateMessage->id . " --> " . json_encode($update));
+                                DB::table('private_messages')->where('id', '=', $privateMessage->id)
+                                    ->update($update);
+                            }
+                        }
+                    }
+                }
+
+
+            }
+
 
 
 

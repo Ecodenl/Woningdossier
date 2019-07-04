@@ -295,54 +295,59 @@ class UpdateBuildingToUserAccountStructure extends Migration
                 $pmCooperation = $privateMessage->to_cooperation_id;
 
 
-                $updates = [];
+                //$updates = [];
 
                 $allBuildings = $this->getBuildingSiblingPerCooperation($pmBuilding);
 
                 foreach ($allBuildings as $cooperationId => $stdBuilding) {
-                    $updates[$cooperationId] = ['building_id' => $stdBuilding->id];
+
+                    if ($cooperationId == $pmCooperation && $stdBuilding->id != $pmBuilding){
+                        //dump($privateMessage->id . " | Updating building from " . $pmBuilding . " to " . $stdBuilding->id);
+                        DB::table('private_messages')->where('id', '=', $privateMessage->id)->update(['building_id' => $stdBuilding->id]);
+
+                    }
+                    //$updates[$cooperationId] = ['building_id' => $stdBuilding->id];
                 }
+
 
                 $allUsers = $this->getUserSiblingPerCooperation($pmUser);
                 foreach ($allUsers as $cooperationId => $stdUser) {
-                    if (array_key_exists($cooperationId, $updates)) {
-                        $updates[$cooperationId]['from_user_id'] = $stdUser->id;
+                    if ($cooperationId == $pmCooperation && $stdUser->id != $pmUser){
+                        //dump($privateMessage->id . " | Updating from_user_id from " . $pmUser . " to " . $stdUser->id);
+                        DB::table('private_messages')->where('id', '=', $privateMessage->id)->update(['from_user_id' => $stdUser->id]);
                     }
-                }
 
-                foreach ($updates as $cooperationId => $update) {
-                    if ($cooperationId == $pmCooperation) {
-                        if (array_key_exists('from_user_id', $update) &&
-                            array_key_exists('building_id', $update)) {
-                            $updateNeeded = DB::table('private_messages')
-                                          ->where('id', '=',
-                                              $privateMessage->id)
-                                          ->where(function ($q) use ($update) {
-                                              $q->where('building_id', '!=',
-                                                  $update['building_id'])
-                                                ->orWhere('from_user_id', '!=',
-                                                    $update['from_user_id']);
-                                          })->exists();
-                            // only update if needed
-                            if ($updateNeeded){
-                                dump("Update needed for private message " . $privateMessage->id . " --> " . json_encode($update));
-                                DB::table('private_messages')->where('id', '=', $privateMessage->id)
-                                    ->update($update);
-                            }
-                        }
-                    }
                 }
-
 
             }
 
-
-
-
         } // foreach buildings
 
-        //}
-        dd("Done!");
+        // private_message_views
+        $privateMessageViews = DB::table('private_message_views')->whereNull('to_cooperation_id')->get();
+        foreach($privateMessageViews as $privateMessageView){
+            $pmvUser = $privateMessageView->user_id;
+            $siblings = $this->getUserSiblingPerCooperation($pmvUser);
+
+            // get cooperation id from private messages
+            $pm = DB::table('private_messages')->where('id', '=', $privateMessageView->private_message_id)->first();
+            if ($pm instanceof stdClass){
+                $pmCooperation = $pm->to_cooperation_id;
+
+                if (array_key_exists($pmCooperation, $siblings)){
+                    $newPmvUser = $siblings[$pmCooperation];
+                    if ($newPmvUser->id != $pmvUser){
+                        //dump("Update for private message view " . $privateMessageView->id . " : user ID " . $pmvUser . " -> " . $newPmvUser->id);
+                        DB::table('private_message_views')->where('id', '=', $privateMessageView->id)->update(['user_id' => $newPmvUser->id]);
+                    }
+                }
+            }
+            else {
+                // No link, so delete it
+                DB::table('private_message_views')->where('private_message_id', '=', $privateMessageView->private_message_id)->delete();
+            }
+        }
+
     }
 
 

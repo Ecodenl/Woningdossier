@@ -27,7 +27,7 @@ class MessagesController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
             $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
             $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {

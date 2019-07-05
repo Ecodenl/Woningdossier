@@ -53,8 +53,6 @@ use Illuminate\Support\Collection;
  */
 class PrivateMessage extends Model
 {
-    use HasCooperationTrait;
-
     const STATUS_LINKED_TO_COACH = 'gekoppeld aan coach';
     const STATUS_IN_CONSIDERATION = 'in behandeling';
     const STATUS_APPLICATION_SENT = 'aanvraag verzonden';

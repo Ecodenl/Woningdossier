@@ -155,6 +155,12 @@ class SettingsController extends Controller
 
         UserService::deleteUser($user);
 
+        // delete, destroy and invalidate all session stuff.
+        HoomdossierSession::destroy();
+        \Auth::logout();
+        request()->session()->invalidate();
+
+
         return redirect(url(''));
     }
 }

@@ -38,7 +38,6 @@ class MessageService
         // if the building exist create a message
         if ($building instanceof Building) {
             $privateMessageData = [
-                'cooperation_id' => HoomdossierSession::getCooperation(),
                 'is_public' => $isPublic,
                 'to_cooperation_id' => HoomdossierSession::getCooperation(),
                 'from_user' => \App\Helpers\Hoomdossier::user()->getFullName(),

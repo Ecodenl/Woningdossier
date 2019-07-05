@@ -8,10 +8,8 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
-use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
-use Illuminate\Http\Request;
 
 class ConversationRequestController extends Controller
 {

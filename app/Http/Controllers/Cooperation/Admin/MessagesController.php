@@ -8,6 +8,7 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Models\User;
 use App\Services\MessageService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -30,8 +31,10 @@ class MessagesController extends Controller
             $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
             $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {
-            // get all the conversation requests that were send to my cooperation.
-            $privateMessages = PrivateMessage::forMyCooperation()->conversationRequest()->get();
+            $privateMessages = PrivateMessage::where('to_cooperation_id', $cooperation->id)
+                ->conversationRequest()
+                ->get();
+
             $buildingIds     = $privateMessages->pluck('building_id')->all();
         }
 

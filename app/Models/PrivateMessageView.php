@@ -78,8 +78,7 @@ class PrivateMessageView extends Model
             ->where('read_at', null)
             ->where('private_message_views.created_at', '>=', $specificDate)
             ->join('private_messages', function ($query) use ($cooperation) {
-                $query->on('private_message_views.private_message_id', '=', 'private_messages.id')
-                      ->where('cooperation_id', $cooperation->id);
+                $query->on('private_message_views.private_message_id', '=', 'private_messages.id');
             })->count();
 
 		$totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
@@ -160,8 +159,8 @@ class PrivateMessageView extends Model
                          ->where('private_message_views.user_id', Hoomdossier::user()->id)
                          ->where('read_at', null)
                          ->join('private_messages', function ($query) {
-                             $query->on('private_message_views.private_message_id', '=', 'private_messages.id')
-                                   ->where('cooperation_id', HoomdossierSession::getCooperation());
+                             $query->on('private_message_views.private_message_id', '=', 'private_messages.id');
+//                                   ->where('cooperation_id', HoomdossierSession::getCooperation());
                          })->count();
         }
 

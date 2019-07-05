@@ -79,8 +79,8 @@ class BuildingController extends Controller
 
         $logs = Log::forBuildingId($buildingId)->get();
 
-        $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
-        $publicMessages  = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
+        $privateMessages = PrivateMessage::private()->conversation($buildingId)->get();
+        $publicMessages  = PrivateMessage::public()->conversation($buildingId)->get();
 
         // and set them all to read.
         PrivateMessageViewService::setRead($privateMessages);

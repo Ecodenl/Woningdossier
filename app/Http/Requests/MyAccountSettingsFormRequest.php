@@ -31,7 +31,7 @@ class MyAccountSettingsFormRequest extends FormRequest
     {
         return [
             'account.password' => 'nullable|string|confirmed|min:6',
-            'account.email' => ['required', 'email', Rule::unique('accounts', 'email')->ignore(Hoomdossier::user()->id)],
+            'account.email' => ['required', 'email', Rule::unique('accounts', 'email')->ignore(Hoomdossier::account()->id)],
 
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',

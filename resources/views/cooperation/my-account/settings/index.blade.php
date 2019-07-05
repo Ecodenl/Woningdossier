@@ -24,7 +24,7 @@
 
 
                             <input id="first_name" type="text" class="form-control" name="user[first_name]"
-                                   value="{{ old('first_name', $user->first_name) }}" required autofocus>
+                                   value="{{ old('user.first_name', $user->first_name) }}" required autofocus>
 
                             @if ($errors->has('user.first_name'))
                                 <span class="help-block">

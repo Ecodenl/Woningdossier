@@ -168,7 +168,7 @@ class RegisterController extends Controller
             $cooperation
         )->save();
 
-        $user->roles()->attach($residentRole);
+        $user->assignRole($residentRole);
 
         $notificationTypes = NotificationType::all();
         $interval          = NotificationInterval::where('short', 'no-interest')->first();

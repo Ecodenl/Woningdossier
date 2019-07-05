@@ -28,13 +28,13 @@ class ReportController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function downloadQuestionnaireResults()
+    public function downloadQuestionnaireResults(Cooperation $cooperation)
     {
         $questionnaires = Questionnaire::all();
         $rows = [];
 
         // we only want to query on the buildings that belong to the cooperation of the current user
-        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        $currentCooperation = $cooperation;
 
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $currentCooperation->users()->has('buildings')->role('resident')->with('buildings')->get();
@@ -109,12 +109,8 @@ class ReportController extends Controller
         return CsvExportService::export($headers, $rows, 'questionnaire-results');
     }
 
-    public function downloadByYear()
+    public function downloadByYear(Cooperation $cooperation)
     {
-        // get user data
-        $user = \App\Helpers\Hoomdossier::user();
-        $cooperation = $user->cooperations()->first();
-
         // get the users from the cooperations
         $users = $cooperation->users;
 
@@ -200,13 +196,8 @@ class ReportController extends Controller
         return CsvExportService::export($csvHeaders, $rows, 'by-year');
     }
 
-    public function downloadByMeasure()
+    public function downloadByMeasure(Cooperation $cooperation)
     {
-        // get user data
-        $user = \App\Helpers\Hoomdossier::user();
-        $cooperation = $user->cooperations()->first();
-
-        // get the users from the cooperations
         $users = $cooperation->users;
 
         // set the csv headers

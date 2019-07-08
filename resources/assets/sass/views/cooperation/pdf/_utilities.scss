@@ -1,0 +1,25 @@
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.turquoise {
+  color: $color-main
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.container {
+  max-width: 960px;
+  padding-right: 80px;
+  padding-left:  80px;
+}
+
+// height should be given in the element itself
+.page-footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}

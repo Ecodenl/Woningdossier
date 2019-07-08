@@ -17,19 +17,15 @@
 </body>
 
 <script type="text/php">
-if ( isset($pdf) ) {
-    $pdf->page_script('
-        if ($PAGE_COUNT > 1) {
-            $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-            $size = 12;
-            $pageText = "Cooperatienaam - Pagina  " . $PAGE_COUNT;
-            $y = 750;
-            $x = 450;
-            $pdf->text($x, $y, $pageText, $font, $size);
-        }
-    ');
-}
+    if ( isset($pdf) ) {
+        $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+        $y = 750;
+        $x = 450;
+        $pdf->page_text($x, $y, "Cooperatienaam - Pagina {PAGE_NUM}", $font, 6, array(0,0,0));
+    }
 </script>
+
+
 @component('cooperation.pdf.components.new-page')
     <div class="container">
 

@@ -63,10 +63,8 @@ class BuildingCoachStatusController extends Controller
                     'status' => $status,
                 ];
 
-                if ($status == BuildingCoachStatus::STATUS_EXECUTED) {
-                    $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', \Auth::id())->first();
-                    $createData['appointment_date'] = $mostRecentBuildingCoachStatus->appointment_date;
-                }
+                $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->where('coach_id', \Auth::id())->first();
+                $createData['appointment_date'] = $mostRecentBuildingCoachStatus->appointment_date;
 
                 // now create the new status for all the coaches
                 BuildingCoachStatus::create($createData);
@@ -78,10 +76,10 @@ class BuildingCoachStatusController extends Controller
                         'building_id' => $buildingId,
                         'status' => $status
                     ];
-                    if ($status == BuildingCoachStatus::STATUS_EXECUTED) {
-                        $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->first();
-                        $createData['appointment_date'] = $mostRecentBuildingCoachStatus->appointment_date;
-                    }
+
+                    $mostRecentBuildingCoachStatus = $mostRecentBuildingCoachStatuses->first();
+                    $createData['appointment_date'] = $mostRecentBuildingCoachStatus->appointment_date;
+
                     // now create the new status for all the coaches
                     BuildingCoachStatus::create($createData);
                 }

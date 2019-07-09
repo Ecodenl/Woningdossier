@@ -14,7 +14,7 @@ class CooperationRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasRoleAndIsCurrentRole('super-admin');
+        return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin');
     }
 
     /**

@@ -44,7 +44,7 @@ class CreateBuildingController extends Controller
         $user = $cooperation->users()->where('email', $email)->first();
 
         // if the user already has a building, redirect him to the login page.
-        if ($user->buildings()->first() instanceof Building) {
+        if ($user->building instanceof Building) {
             return redirect(route('cooperation.home'));
         }
 

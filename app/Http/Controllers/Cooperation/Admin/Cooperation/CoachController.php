@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
+use App\Helpers\Hoomdossier;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Role;
@@ -22,7 +23,7 @@ class CoachController extends Controller
         $users = $cooperation
             ->users()
             ->role(['coach', 'coordinator'])
-            ->where('id', '!=', \Auth::id())
+            ->where('id', '!=', Hoomdossier::user()->id)
             ->get();
 
         $roles = Role::all();
@@ -34,7 +35,7 @@ class CoachController extends Controller
     {
 
         $userToShow = User::findOrFail($userId);
-        $buildingFromUser = $userToShow->buildings()->first();
+        $buildingFromUser = $userToShow->building;
 
         $buildingCoachStatuses = BuildingCoachStatus::hydrate(
             \DB::table('building_coach_statuses as bcs1')->select('coach_id', 'building_id', 'created_at', 'status', 'appointment_date')

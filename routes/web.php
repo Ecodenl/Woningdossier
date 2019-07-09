@@ -21,18 +21,25 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
         )->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
-        Route::get('confirm',
-            'Auth\RegisterController@confirm')->name('confirm');
-        Route::get('check-existing-mail', 'Auth\RegisterController@checkExistingEmail')->name('check-existing-email');
-        Route::post('connect-existing-account',
-            'Auth\RegisterController@connectExistingAccount')->name('connect-existing-account');
-
-        Route::get('resend-confirm-account-email',
-            'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
-        Route::post('resend-confirm-account-email',
-            'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
 
         Auth::routes();
+        Route::group(['namespace' => 'Auth'], function () {
+
+            Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
+            Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
+
+            Route::group(['as' => 'auth.'], function () {
+
+                Route::group(['prefix' => 'confirm', 'as' => 'confirm.'], function () {
+                    Route::get('', 'ConfirmAccountController@store')->name('store');
+
+                    Route::group(['prefix' => 'resend', 'as' => 'resend.'], function () {
+                        Route::get('', 'ResendConfirmAccountController@show')->name('show');
+                        Route::post('', 'ResendConfirmAccountController@store')->name('store');
+                    });
+                });
+            });
+        });
 
         Route::group(['prefix' => 'create-building', 'as' => 'create-building.'], function () {
             Route::get('', 'CreateBuildingController@index')->name('index');
@@ -57,8 +64,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             //Route::get('measures', 'MeasureController@index')->name('measures.index');
-            Route::get('input-source/{input_source_value_id}',
-                'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
+            Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                 Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {

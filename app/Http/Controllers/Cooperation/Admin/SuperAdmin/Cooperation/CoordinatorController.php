@@ -18,7 +18,7 @@ class CoordinatorController extends Controller
      */
     public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
     {
-        $users = $cooperationToManage->getUsersWithRole(Role::findByName('coordinator'));
+        $users = $cooperationToManage->users()->withoutGlobalScopes()->role('coordinator')->get();
 
         $breadcrumbs = [
             [

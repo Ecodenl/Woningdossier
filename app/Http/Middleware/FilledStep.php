@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -41,7 +42,7 @@ class FilledStep
             if ($buildingWithTrashed instanceof Building) {
                 $buildingDebugMsg .= 'the building has been thrashed.';
             } else {
-                $buildingDebugMsg .= 'The building is not trashed so the building session is empty for user_id: '.\Auth::id();
+                $buildingDebugMsg .= 'The building is not trashed so the building session is empty for user_id: '.Hoomdossier::user()->id;
             }
             \Log::debug($buildingDebugMsg);
 

@@ -12,7 +12,7 @@ class SuperAdminController extends Controller
     public function index()
     {
         $cooperationCount = Cooperation::count();
-        $userCount = User::count();
+        $userCount = User::withoutGlobalScopes()->count();
         $buildingCount = Building::count();
 
         return view('cooperation.admin.super-admin.index', compact('cooperationCount', 'userCount', 'buildingCount'));

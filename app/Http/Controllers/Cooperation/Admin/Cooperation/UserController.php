@@ -8,6 +8,7 @@ use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserRequest;
 use App\Mail\UserCreatedEmail;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -55,15 +56,22 @@ class UserController extends Controller
         $addressId = $request->get('addressid', null);
         $coachId = $request->get('coach_id', '');
 
-        // create the new user
+        // create the user
         $user = User::create(
             [
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'email' => $email,
-                'password' => \Hash::make(Str::randomPassword()),
             ]
         );
+
+        $user->account()->associate(
+            Account::create(
+                [
+                    'email' => $email,
+                    'password' => \Hash::make(Str::randomPassword()),
+                ]
+            )
+        )->save();
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(
@@ -99,10 +107,11 @@ class UserController extends Controller
             array_push($roles, $role->name);
         }
 
-        // attach the new user to the cooperation
-        $user->cooperations()->attach($cooperation->id);
+        $user->cooperation()->associate($cooperation)->save();
+
+
         // assign the roles to the user
-        $user->assignRole($cooperation->id, $roles);
+        $user->assignRole($roles);
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
@@ -146,12 +155,12 @@ class UserController extends Controller
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
     {
-        $user = User::where('email', $request->get('email'))->first();
+        $account = Account::where('email', $request->get('email'))->first();
 
-        $token = app('auth.password.broker')->createToken($user);
+        $token = app('auth.password.broker')->createToken($account);
 
         // send a mail to the user
-        \Mail::to($user->email)->sendNow(new UserCreatedEmail($cooperation, $user, $token));
+        \Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
     }
 
     /**

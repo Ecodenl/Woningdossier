@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -19,7 +20,7 @@ class BuildingController extends Controller
     {
         // get most recent building coach statuses for
         $buildingCoachStatuses = BuildingCoachStatus::hydrate(
-            BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation)->all()
+            BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation)->all()
         );
 
         return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildingCoachStatuses'));

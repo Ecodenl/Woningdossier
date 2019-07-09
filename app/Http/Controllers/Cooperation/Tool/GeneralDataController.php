@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Events\StepDataHasBeenChangedEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;

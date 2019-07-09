@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Events\UserChangedHisEmailEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
+use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\OldEmail;
 use App\Models\User;
@@ -21,10 +23,11 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $user = \Auth::user();
+        $user = Hoomdossier::user();
+        $account = Hoomdossier::account();
         $building = Building::find(HoomdossierSession::getBuilding());
 
-        return view('cooperation.my-account.settings.index', compact('user', 'building'));
+        return view('cooperation.my-account.settings.index', compact('user', 'building', 'account'));
     }
 
     /**
@@ -36,13 +39,15 @@ class SettingsController extends Controller
      */
     public function update(MyAccountSettingsFormRequest $request)
     {
-        $user = \Auth::user();
+        $user = Hoomdossier::user();
+        $account = Hoomdossier::account();
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $data = $request->all();
 
         $buildingData = $data['building'];
         $userData = $data['user'];
+        $accountData = $data['account'];
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(
@@ -61,28 +66,30 @@ class SettingsController extends Controller
 
         // if the password is empty we remove all the password stuff from the user data
         // else we do some checks and hash it!
-        if (empty($userData['password'])) {
-            unset($userData['password'], $userData['password_confirmation'], $userData['current_password']);
+        if (empty($accountData['password'])) {
+            unset($accountData['password'], $accountData['password_confirmation'], $accountData['current_password']);
         } else {
-            $currentPassword = $user->password;
-            $currentPasswordFromRequestToCheck = $userData['current_password'];
+            $currentPassword = $account->password;
+            $currentPasswordFromRequestToCheck = $accountData['current_password'];
 
             if (!\Hash::check($currentPasswordFromRequestToCheck, $currentPassword)) {
                 return redirect()->back()->withErrors(['current_password' => __('validation.current_password')]);
             }
-            $userData['password'] = \Hash::make($userData['password']);
+            $accountData['password'] = \Hash::make($accountData['password']);
         }
 
         // check if the user changed his email, if so. We set the old email and send the user a email so he can change it back.
-        if ($user->email != $userData['email']) {
-            event(new UserChangedHisEmailEvent($user, $user->email, $userData['email']));
+        if ($account->email != $accountData['email']) {
+            \Event::dispatch(new UserChangedHisEmailEvent($user, $account, $account->email, $accountData['email']));
         }
 
         // update the user stuff
         $user->update($userData);
-
-        // now update the building itself.
+        // now update the building itself
         $building->update($buildingData);
+        // update the account data
+        $account->update($accountData);
+
         // and update the building features with the data from pico.
         $building->buildingFeatures()->update([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
@@ -101,10 +108,10 @@ class SettingsController extends Controller
      */
     public function resetFile()
     {
-        $user = \Auth::user();
+        $user = Hoomdossier::user();
 
         // only remove the example building id from the building
-        $building = $user->buildings()->first();
+        $building = $user->building;
         $building->example_building_id = null;
         $building->save();
 
@@ -124,13 +131,9 @@ class SettingsController extends Controller
         $building->currentInsulatedGlazing()->delete();
         // remove the paintwork from a building
         $building->currentPaintworkStatus()->delete();
-        // remove the user usage from a building
-        $building->userUsage()->delete();
         // remove all progress made in the tool
         $building->progress()->delete();
 
-        // remove the building usages from the user
-        $user->buildingUsage()->delete();
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();
         // remove the user interests
@@ -148,9 +151,15 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
-        $user = \Auth::user();
+        $user = \App\Helpers\Hoomdossier::user();
 
         UserService::deleteUser($user);
+
+        // delete, destroy and invalidate all session stuff.
+        HoomdossierSession::destroy();
+        \Auth::logout();
+        request()->session()->invalidate();
+
 
         return redirect(url(''));
     }

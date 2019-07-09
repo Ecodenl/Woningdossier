@@ -19,7 +19,7 @@ class AddAndAssignRoles extends Migration
 
         $users = \App\Models\User::where('is_admin', 1)->get();
         foreach ($users as $user) {
-            $user->assignRole($user->cooperations->first()->id, $superAdmin);
+            $user->assignRole($superAdmin);
         }
     }
 

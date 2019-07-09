@@ -18,12 +18,10 @@ class RoleController extends Controller
         // the role we want to assign to a user
         $roleId = $request->get('role_id');
 
-        $cooperationId = $request->get('cooperation_id', null);
-
         $role = Role::findById($roleId);
         $user = User::find($userId);
 
-        $user->assignRole($cooperationId, $role);
+        $user->assignRole($role);
 
         return redirect()->back();
     }

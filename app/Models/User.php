@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\Notifications\ResetPasswordNotification;
 use App\NotificationSetting;
 use App\Scopes\GetValueScope;
-use App\Traits\HasRolesTrait;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Traits\HasCooperationTrait;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * App\Models\User
@@ -34,7 +35,6 @@ use Illuminate\Support\Collection;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $buildingUsage
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
@@ -70,10 +70,12 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Model implements AuthorizableContract
 {
-    use Notifiable;
-    use HasRolesTrait;
+    use HasRoles, HasCooperationTrait, Authorizable;
+
+
+    protected $guard_name = 'web';
 
     /**
      * The attributes that are mass assignable.
@@ -81,31 +83,50 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'email', 'password', 'phone_number',
-        'confirm_token', 'old_email', 'old_email_token'
+        'first_name', 'last_name', 'phone_number', 'mobile',
     ];
+
+    // ------ User -> Account table / model migration stuff -------
+
+    public function getEmailAttribute(){
+        return $this->getAccountProperty('email');
+    }
+
+    public function getOldEmailTokenAttribute(){
+        return $this->getAccountProperty('old_email_token');
+    }
+
+    public function getOldemailAttribute(){
+        return $this->getAccountProperty('old_email');
+    }
+
+    public function getIsAdminAttribute(){
+        return $this->getAccountProperty('is_admin');
+    }
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
+     * Quick short hand helper for user to account data migration
+     * @param string $property
+     * @return mixed|null
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    public function getAccountProperty($property)
+    {
+        \Log::debug("Account property " . $property . " is accessed via User!");
+        if ($this->account instanceof Account){
+            return $this->account->$property;
+        }
+        return null;
+    }
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_admin' => 'boolean',
-    ];
-
+    // ------ End User -> Account table / model migration stuff -------
     public function buildings()
     {
         return $this->hasMany(Building::class);
+    }
+
+    public function building()
+    {
+        return $this->hasOne(Building::class);
     }
 
     /**
@@ -116,11 +137,6 @@ class User extends Authenticatable
     public function notificationSettings()
     {
         return $this->hasMany(NotificationSetting::class);
-    }
-
-    public function buildingUsage()
-    {
-        return $this->hasMany(BuildingUserUsage::class);
     }
 
     public function energyHabit()
@@ -165,7 +181,15 @@ class User extends Authenticatable
      */
     public function cooperations()
     {
-        return $this->belongsToMany(Cooperation::class);
+        return $this->belongsToMany(Cooperation::class, 'cooperation_user');
+    }
+
+    /**
+     * The cooperations the user is associated with.
+     */
+    public function cooperation()
+    {
+        return $this->belongsTo(Cooperation::class, 'cooperation_id', 'id');
     }
 
     /**
@@ -210,20 +234,6 @@ class User extends Authenticatable
         return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
     }
 
-    /**
-     * Returns whether or not a user is associated with a particular Cooperation.
-     *
-     * @param Cooperation $cooperation
-     *
-     * @return bool
-     */
-    public function isAssociatedWith(Cooperation $cooperation)
-    {
-        return $this->cooperations()
-                    ->where('id', $cooperation->id)
-                    ->count() > 0;
-    }
-
     public function complete(Step $step)
     {
         \Log::debug(__METHOD__.' is still being used, this should not be');
@@ -249,17 +259,6 @@ class User extends Authenticatable
         return true;
     }
 
-    /**
-     * Send the password reset notification.
-     *
-     * @param string $token
-     *
-     * @return void
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPasswordNotification($token, $this->cooperations()->first()));
-    }
 
     /**
      * Get the human readable role name based on the role name.
@@ -334,7 +333,7 @@ class User extends Authenticatable
         if (is_null(HoomdossierSession::getBuilding())) {
             return false;
         } else {
-            if ($this->buildings()->first()->id != HoomdossierSession::getBuilding()) {
+            if ($this->building->id != HoomdossierSession::getBuilding()) {
                 return true;
             }
 
@@ -451,6 +450,38 @@ class User extends Authenticatable
         }
         return false;
     }
+
+
+    /**
+     * Return the user its account information
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    /**
+     * Get the user its bcrypted password from the accounts table.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->account->password;
+    }
+
+    /**
+     * Get the user its email from the accounts table
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->account->email;
+    }
+
 
     public function logout()
     {

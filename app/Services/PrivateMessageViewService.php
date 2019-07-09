@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\PrivateMessageReceiverEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -33,13 +34,13 @@ class PrivateMessageViewService
         foreach ($privateMessages as $privateMessage) {
             $privateMessageQuery = PrivateMessageView::where('private_message_id', $privateMessage->id);
 
-            if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageQuery
                     ->where('to_cooperation_id', HoomdossierSession::getCooperation())
                     ->update(['read_at' => Carbon::now()]);
             } else {
                 $privateMessageQuery
-                    ->where('user_id', \Auth::id())
+                    ->where('user_id', Hoomdossier::user()->id)
                     ->update(['read_at' => Carbon::now()]);
             }
         }

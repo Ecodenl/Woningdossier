@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\ViewComposers\AdminComposer;
 use App\Http\ViewComposers\CooperationComposer;
 use App\Http\ViewComposers\MyAccountComposer;
@@ -16,7 +17,10 @@ use App\Observer\CooperationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
 use App\Observers\UserActionPlanAdviceObserver;
+use Illuminate\Auth\SessionGuard;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rule;
 
 class WoningdossierServiceProvider extends ServiceProvider
 {
@@ -37,6 +41,10 @@ class WoningdossierServiceProvider extends ServiceProvider
         \View::creator('*', CooperationComposer::class);
         \View::creator('cooperation.admin.*', AdminComposer::class);
         \View::creator('cooperation.my-account.*', MyAccountComposer::class);
+
+        SessionGuard::macro('account', function(){
+            return auth()->user();
+        });
 
     }
 
@@ -67,5 +75,6 @@ class WoningdossierServiceProvider extends ServiceProvider
 
             return $cooperationStyle;
         });
+
     }
 }

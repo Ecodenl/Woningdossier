@@ -24,7 +24,7 @@
 
 
                             <input id="first_name" type="text" class="form-control" name="user[first_name]"
-                                   value="{{ old('first_name', $user->first_name) }}" required autofocus>
+                                   value="{{ old('user.first_name', $user->first_name) }}" required autofocus>
 
                             @if ($errors->has('user.first_name'))
                                 <span class="help-block">
@@ -55,17 +55,17 @@
                     <div class="col-sm-6">
 
 
-                        <div class="form-group{{ $errors->has('user.email') ? ' has-error' : '' }}">
+                        <div class="form-group{{ $errors->has('account.email') ? ' has-error' : '' }}">
                             <label for="email"
-                                   class="control-label">@lang('my-account.settings.index.form.user.e-mail')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.account.e-mail')</label>
 
 
-                            <input id="email" type="email" class="form-control" name="user[email]"
-                                   value="{{ old('email', $user->email) }}" required autofocus>
+                            <input id="email" type="email" class="form-control" name="account[email]"
+                                   value="{{ old('account.email', $account->email) }}" required autofocus>
 
-                            @if ($errors->has('user.email'))
+                            @if ($errors->has('account.email'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('user.email') }}</strong>
+                                        <strong>{{ $errors->first('account.email') }}</strong>
                                     </span>
                             @endif
                         </div>
@@ -94,32 +94,32 @@
                         <h3>@lang('my-account.settings.index.header-password')</h3>
                     </div>
                     <div class="col-sm-12">
-                        <div class="form-group{{ $errors->has('user.current_password') ? ' has-error' : '' }}">
+                        <div class="form-group{{ $errors->has('account.current_password') ? ' has-error' : '' }}">
                             <label for="current_password"
-                                   class="control-label">@lang('my-account.settings.index.form.user.current-password')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.account.current-password')</label>
 
 
                             <input id="current_password" type="password" class="form-control"
-                                   name="user[current_password]">
+                                   name="account[current_password]">
 
-                            @if ($errors->has('user.current_password'))
+                            @if ($errors->has('account.current_password'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('user.current_password') }}</strong>
+                                        <strong>{{ $errors->first('account.current_password') }}</strong>
                                     </span>
                             @endif
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group{{ $errors->has('user.password') ? ' has-error' : '' }}">
+                        <div class="form-group{{ $errors->has('account.password') ? ' has-error' : '' }}">
                             <label for="password"
-                                   class="control-label">@lang('my-account.settings.index.form.user.new-password')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.account.new-password')</label>
 
 
-                            <input id="password" type="password" class="form-control" name="user[password]">
+                            <input id="password" type="password" class="form-control" name="account[password]">
 
-                            @if ($errors->has('user.password'))
+                            @if ($errors->has('account.password'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('user.password') }}</strong>
+                                        <strong>{{ $errors->first('account.password') }}</strong>
                                     </span>
                             @endif
                         </div>
@@ -127,11 +127,11 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="password-confirm"
-                                   class="control-label">@lang('my-account.settings.index.form.user.new-password-confirmation')</label>
+                                   class="control-label">@lang('my-account.settings.index.form.account.new-password-confirmation')</label>
 
 
                             <input id="password-confirm" type="password" class="form-control"
-                                   name="user[password_confirmation]">
+                                   name="account[password_confirmation]">
                         </div>
                     </div>
 
@@ -317,7 +317,7 @@
             }
         });
 
-        var userCooperationCount = {{Auth::user()->cooperations()->count()}};
+        var userCooperationCount = {{$account->users()->count()}};
 
         var areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.delete-from-cooperation')';
 

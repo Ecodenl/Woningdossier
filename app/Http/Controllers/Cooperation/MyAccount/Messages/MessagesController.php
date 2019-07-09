@@ -16,15 +16,12 @@ class MessagesController extends Controller
     public function index(Cooperation $cooperation)
     {
         return redirect(route('cooperation.my-account.messages.edit'));
-
-//        return view('cooperation.my-account.messages.index', compact('myUnreadMessagesCount', 'groups'));
     }
 
     public function edit(Cooperation $cooperation)
     {
         $buildingId = HoomdossierSession::getBuilding();
-        $privateMessages = PrivateMessage::forMyCooperation()
-            ->public()
+        $privateMessages = PrivateMessage::public()
             ->conversation($buildingId)
             ->get();
 

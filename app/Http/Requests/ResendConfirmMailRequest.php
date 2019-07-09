@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ResendConfirmMailRequest extends FormRequest
 {
@@ -24,7 +25,13 @@ class ResendConfirmMailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                'email',
+                Rule::exists('accounts', 'email')->where(function ($query) {
+                    $query->where('confirm_token', '!=', null);
+                })
+            ],
         ];
     }
 }

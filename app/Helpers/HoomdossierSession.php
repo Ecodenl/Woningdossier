@@ -63,16 +63,22 @@ class HoomdossierSession extends Session
         return false;
     }
 
-    public static function getCooperation(): int
+    /**
+     * Retrieve the cooperation id.
+     *
+     * @return mixed
+     */
+    public static function getCooperation()
     {
-    	$cooperation = self::get('cooperation');
+        $cooperation = self::get('cooperation');
 
-    	if (!is_int($cooperation)){
-    		\Log::error("Cooperation was not an integer!! ");
-    		\Log::error($cooperation);
-	    }
+        // if there is no cooperation set and the application is not running in the console, we have a serious issue.
+        if (!is_int($cooperation) && !app()->runningInConsole()){
+            \Log::error("Cooperation was not an integer!! ");
+            \Log::error($cooperation);
+        }
 
-    	return $cooperation;
+        return $cooperation;
     }
 
     /**

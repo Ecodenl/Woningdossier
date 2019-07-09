@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Events\StepDataHasBeenChangedEvent;
+use App\Exports\Cooperation\CsvExport;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
@@ -16,6 +17,7 @@ use App\Models\UserActionPlanAdviceComments;
 use App\Services\CsvExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MyPlanController extends Controller
 {
@@ -108,7 +110,10 @@ class MyPlanController extends Controller
 
         $userPlanData = array_flatten($userPlanData, 1);
 
-        return CsvExportService::export($headers, $userPlanData, 'my-plan');
+        array_unshift($userPlanData, $headers);
+
+
+        return Excel::download(new CsvExport($userPlanData), 'my-plan.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function store(Request $request)

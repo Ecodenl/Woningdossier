@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Building;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,7 @@ use Illuminate\Support\Collection;
 
 trait GetMyValuesTrait
 {
+
     /**
      * Scope all the available input for a user.
      *
@@ -19,19 +21,56 @@ trait GetMyValuesTrait
      */
     public function scopeForMe($query)
     {
+        $whereUserOrBuildingId = $this->determineWhereColumn();
+
         return $query->withoutGlobalScope(GetValueScope::class)
-                     ->where('building_id', HoomdossierSession::getBuilding())
+                     ->where($whereUserOrBuildingId)
                      ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')
                      ->orderBy('input_sources.order', 'ASC')
                      ->select([$this->getTable().'.*']);
     }
 
     /**
+     * Get the input source.
+     *
      * @return BelongsTo
      */
     public function inputSource()
     {
         return $this->belongsTo(InputSource::class);
+    }
+
+    /**
+     * Determine if we should query on the user or building id.
+     *
+     * @return array
+     */
+    protected function determineWhereColumn(): array
+    {
+        // determine what table we are using
+        $currentTable = $this->table ?? $this->getTable();
+
+        // determine which column we should use.
+        if (\Schema::hasColumn($currentTable, 'building_id')) {
+            return [['building_id', '=', HoomdossierSession::getBuilding()]];
+        } else {
+            $building = Building::find(HoomdossierSession::getBuilding());
+            return [['user_id', '=', $building->user_id]];
+        }
+    }
+
+    /**
+     * Method to only scope the resident input source
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeResidentInput($query)
+    {
+        $residentInputSource = InputSource::findByShort('resident');
+
+        return $query->where('input_source_id', $residentInputSource->id);
     }
 
     /**

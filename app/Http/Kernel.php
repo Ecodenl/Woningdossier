@@ -52,6 +52,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'file-storage-download' => \App\Http\Middleware\FileStorageDownload::class,
         'is-admin' => \App\Http\Middleware\IsAdmin::class,
         'cooperation' => \App\Http\Middleware\CooperationMiddleware::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,

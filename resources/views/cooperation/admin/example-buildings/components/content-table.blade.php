@@ -42,7 +42,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
             </tr>
 
             @foreach($formFields as $formFieldName => $rowData)
-
+                @if($formFieldName != 'calculations')
 	            <?php
                     // full html array
                     $fname = 'content['.$fkey.'][content]['.$step.']['.$formFieldName.']';
@@ -108,6 +108,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                     </div>
                 </td>
             </tr>
+                @endif
 
             @endforeach
         @endforeach

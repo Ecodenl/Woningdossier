@@ -12,18 +12,20 @@ class UserReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        GenerateUserReport::dispatch($cooperation, \Auth::user());
-
-        dd('sdf');
+        $user = \Auth::user();
         /** @var \Barryvdh\DomPDF\PDF $pdf */
-        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact('cooperation'));
+        $pdf = PDF::loadView('cooperation.pdf.user-report.index', [
+            'cooperation' => $cooperation,
+            'user' => $user
+        ]);
 
         $pdfOptions = $pdf->getDomPDF()->getOptions();
         $pdfOptions->setIsPhpEnabled(true);
 
+        $GLOBALS['_cooperation'] = $cooperation;
 
 
         return $pdf->stream();
-        return view('cooperation.pdf.user-report.index');
+        return view('cooperation.pdf.user-report.index', compact('user', 'cooperation'));
     }
 }

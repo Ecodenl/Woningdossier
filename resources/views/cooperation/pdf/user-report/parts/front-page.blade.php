@@ -1,8 +1,3 @@
-
-<?php
-    $building = $user->buildings->first();
-?>
-
 <div id="front-page">
 
     <div class="container bg-white" id="user-info">

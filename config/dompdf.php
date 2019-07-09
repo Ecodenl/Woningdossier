@@ -12,7 +12,7 @@ return array(
     |
     */
 
-    'show_warnings' =>  false,   // Throw an Exception on warnings from dompdf
+    'show_warnings' =>  true,   // Throw an Exception on warnings from dompdf
     'orientation' => 'portrait',
     'defines' => array(
         /**

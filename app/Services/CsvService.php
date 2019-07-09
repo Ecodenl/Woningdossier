@@ -93,7 +93,9 @@ class CsvService
         $residentInputSource = InputSource::findByShort('resident');
 
         foreach ($users as $key => $user) {
-            $building = $user->buildings()->first();
+
+            $building = $user->building;
+
             $street      = $building->street;
             $number      = $building->number;
             $city        = $building->city;
@@ -102,7 +104,7 @@ class CsvService
 
             $firstName    = $user->first_name;
             $lastName     = $user->last_name;
-            $email        = $user->email;
+            $email        = $user->account->email;
             $phoneNumber  = "'".$user->phone_number;
             $mobileNumber = $user->mobile;
 
@@ -209,7 +211,7 @@ class CsvService
         $residentInputSource = InputSource::findByShort('resident');
 
         foreach ($users as $key => $user) {
-            $building = $user->buildings()->first();
+            $building = $user->building;
 
             /** @var Collection $conversationRequestsForBuilding */
             $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
@@ -230,7 +232,7 @@ class CsvService
 
             $firstName    = $user->first_name;
             $lastName     = $user->last_name;
-            $email        = $user->email;
+            $email        = $user->account->email;
             $phoneNumber  = "'".$user->phone_number;
             $mobileNumber = $user->mobile;
 
@@ -355,7 +357,7 @@ class CsvService
 
         /** @var User $user */
         foreach ($usersFromCooperation as $user) {
-            $building = $user->buildings()->first();
+            $building = $user->building;
             if ($building instanceof Building && $user->hasRole('resident', $cooperation->id)) {
 
                 /** @var Collection $conversationRequestsForBuilding */
@@ -377,7 +379,7 @@ class CsvService
 
                 $firstName    = $user->first_name;
                 $lastName     = $user->last_name;
-                $email        = $user->email;
+                $email        = $user->account->email;
                 $phoneNumber  = "'".$user->phone_number;
                 $mobileNumber = $user->mobile;
 
@@ -593,7 +595,7 @@ class CsvService
             $row = [];
 
             // collect basic info from a user.
-            $building   = $user->buildings()->first();
+            $building   = $user->building;
             $buildingId = $building->id;
 
             /** @var Collection $conversationRequestsForBuilding */
@@ -616,7 +618,7 @@ class CsvService
 
             $firstName    = $user->first_name;
             $lastName     = $user->last_name;
-            $email        = $user->email;
+            $email        = $user->account->email;
             $phoneNumber  = "'".$user->phone_number;
             $mobileNumber = $user->mobile;
 

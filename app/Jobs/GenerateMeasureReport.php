@@ -61,7 +61,6 @@ class GenerateMeasureReport implements ShouldQueue
 
         // forget the session since we dont need it.
         \Session::forget('hoomdossier_session');
-
         // export the csv file
         Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 

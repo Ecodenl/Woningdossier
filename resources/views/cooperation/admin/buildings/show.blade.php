@@ -113,7 +113,7 @@
                         <div class='input-group date' id="appointment-date">
                             <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
                             <input autocomplete="off"
-                                   @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive())
+                                   @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty())
                                    disabled
                                    @endif
                                    id="appointment-date" name="user[building_coach_status][appointment_date]"

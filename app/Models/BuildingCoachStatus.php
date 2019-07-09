@@ -161,8 +161,12 @@ class BuildingCoachStatus extends Model
 
             // check if a coach is connected with the building
             if ($buildingCoachStatuses->isNotEmpty()) {
-                $lastKnownBuildingCoachStatus = static::where('status', '!=',
-                    BuildingCoachStatus::STATUS_REMOVED)->get()->last();
+
+                $lastKnownBuildingCoachStatus = static::where('building_id', $buildingId)
+                                                      ->where('status', '!=', BuildingCoachStatus::STATUS_REMOVED)
+                                                      ->orderByDesc('created_at')
+                                                      ->first();
+
                 // and the status from it
                 $status = $lastKnownBuildingCoachStatus->status;
                 // get the translation

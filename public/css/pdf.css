@@ -1,0 +1,69 @@
+.text-uppercase {
+  text-transform: uppercase; }
+
+.turquoise {
+  color: #29A082; }
+
+.bg-white {
+  background-color: white; }
+
+.container {
+  max-width: 960px;
+  padding-right: 80px;
+  padding-left: 80px; }
+
+.page-footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0; }
+
+* {
+  margin: 0; }
+
+h1 {
+  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+  font-size: 26px;
+  font-weight: bold;
+  color: #29A082; }
+
+h2 {
+  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #29A082; }
+
+/* koptekst */
+h4 {
+  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+  font-size: 10px;
+  color: #29A082; }
+
+p .lead {
+  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+  font-weight: bold;
+  color: #000000;
+  font-size: 10px; }
+p :not(.lead) {
+  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+  color: #000000;
+  font-size: 10px;
+  line-height: 1.15; }
+
+#front-page #img-front-page {
+  position: fixed;
+  left: 0pt;
+  top: -25.515pt;
+  right: 0px;
+  bottom: 0px;
+  text-align: center;
+  z-index: -1000; }
+  #front-page #img-front-page img {
+    width: 595.28pt; }
+#front-page #user-info {
+  height: 150px;
+  padding-top: 5%; }
+#front-page #intro {
+  padding: 5rem; }
+
+/*# sourceMappingURL=pdf.css.map */

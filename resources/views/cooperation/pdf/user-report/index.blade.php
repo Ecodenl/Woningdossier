@@ -12,15 +12,16 @@
 </head>
 
 <body>
-    <input type="hidden" value="{{$cooperation->name}}" id="cooperation-name">
-    @include('cooperation.pdf.user-report.parts.front-page')
+    @include('cooperation.pdf.user-report.parts.front-page', ['user' => $user])
 </body>
 
 <script type="text/php">
     if ( isset($pdf) ) {
+{{--    dd($GLOBALS);--}}
         $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
         $y = 750;
         $x = 450;
+{{--        dd($x);--}}
         $pdf->page_text($x, $y, "Cooperatienaam - Pagina {PAGE_NUM}", $font, 6, array(0,0,0));
     }
 </script>

@@ -1,6 +1,5 @@
 
 <?php
-    $user     = Auth::user();
     $building = $user->buildings->first();
 ?>
 

@@ -38,19 +38,6 @@ class BuildingCoachStatusController extends Controller
         // and apply the chosen building coach status.
         if ($status == Building::STATUS_IS_NOT_ACTIVE) {
             $building->status = Building::STATUS_IS_NOT_ACTIVE;
-
-            // we need to copy the most recent status and see if it has an appointment date.
-            // if it has we need to create a new row without it otherwise the building is inactive and the appointment date is still set.
-            foreach ($mostRecentBuildingCoachStatuses as $mostRecentBuildingCoachStatus) {
-                if (!is_null($mostRecentBuildingCoachStatus->appointment_date)) {
-                    BuildingCoachStatus::create([
-                        'coach_id' => $mostRecentBuildingCoachStatus->coach_id,
-                        'building_id' => $mostRecentBuildingCoachStatus->building_id,
-                        'status' => $mostRecentBuildingCoachStatus->status,
-                    ]);
-                }
-            }
-
         } else {
             $building->status = Building::STATUS_IS_ACTIVE;
             // if the user is a coach, then he may only set the status for himself

@@ -19,9 +19,6 @@ class UserReportController extends Controller
             'user' => $user
         ]);
 
-        $pdfOptions = $pdf->getDomPDF()->getOptions();
-        $pdfOptions->setIsPhpEnabled(true);
-
         $GLOBALS['_cooperation'] = $cooperation;
 
 

@@ -68,16 +68,14 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-<!--                            --><?php //$hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
                             <input autocomplete="off"
                                    @if($userDoesNotExist)
-                                   disabled
+                                       disabled
                                    @endif
-                                   id="appointment-date" name="user[building_coach_status][appointment_date]"
-                                   type='text' class="form-control"
+                                       id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
                                    @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
-                                   value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
-                                    @endif
+                                       value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
+                                   @endif
                             />
 
 
@@ -94,16 +92,14 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
-                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
-                                    @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
-                                    multiple="multiple">
+                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
                                 @foreach($coaches as $coach)
-                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id',
-                                            $coach->id) instanceof stdClass ?>
+                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
                                     <option
                                             @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                            selected="selected"
-                                            @endif value="{{$coach->id}}">{{$coach->getFullName()}}
+                                                selected="selected"
+                                            @endif
+                                            value="{{$coach->id}}">{{$coach->getFullName()}}
                                     </option>
                                 @endforeach
                             </select>

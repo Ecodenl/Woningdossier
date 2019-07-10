@@ -23,7 +23,8 @@ class BuildingController extends Controller
      * @param  Cooperation  $cooperation
      * @param $buildingId
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Cooperation $cooperation, $buildingId)
     {
@@ -56,18 +57,12 @@ class BuildingController extends Controller
         $coaches = $cooperation->getCoaches()->get();
 
         $statuses = Status::ordered()->get();
+
         $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
-//        $mostRecentStatusesForBuildingId = $building->vi
 
         $mostRecentStatus = $building->getMostRecentStatus();
 
-//        $mostRecentBcs = [];
-
-//         hydrate the building coach status model so it will be easier to do stuff in the views
-//        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
-//            $mostRecentBcs
-//        )->first();
 
         $logs = Log::forBuildingId($buildingId)->get();
 

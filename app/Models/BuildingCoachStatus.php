@@ -50,18 +50,19 @@ class BuildingCoachStatus extends Model
 
     // status that wont be set in the database, its just here for reference to the coordinator and cooperation-admin
     // status will be shown when there isn't a message from the user to the cooperation (or any trace of communication to the cooperation)
-    const STATUS_ACTIVE = 'active';
+//    const STATUS_ACTIVE = 'active';
 
     // status used in 2 ways
     // it will be used when a user has sent a conversation request and when a coach get connected to a building
     // we have to do that otherwise we cant make up if a user has access to the building
-    const STATUS_PENDING = 'pending';
+//    const STATUS_PENDING = 'pending';
+    const STATUS_ADDED = 'added';
 
     // status that will be set in the database
     // will be set by a coach, coordinator or cooperation-admin
-    const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_EXECUTED = 'executed';
-    const STATUS_NO_EXECUTION = 'no_execution';
+//    const STATUS_IN_PROGRESS = 'in_progress';
+//    const STATUS_EXECUTED = 'executed';
+//    const STATUS_NO_EXECUTION = 'no_execution';
 
 
     // when a user is removed from a building
@@ -145,58 +146,58 @@ class BuildingCoachStatus extends Model
      *
      * @return string
      */
-    public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
-    {
-        // get the building, even if its deleted.
-        $building = Building::withTrashed()->find($buildingId);
-
-        $buildingCoachStatuses       = static::getConnectedCoachesByBuildingId($buildingId);
-        $buildingConversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
-
-        // first we need to check if the building is active
-        // this is the base for every status
-        // is the building is active, we try to get the building from the building coach status
-        // if the building is not active we return the in active status.
-        if ($building->isActive()) {
-
-            // check if a coach is connected with the building
-            if ($buildingCoachStatuses->isNotEmpty()) {
-
-                $lastKnownBuildingCoachStatus = static::where('building_id', $buildingId)
-                                                      ->where('status', '!=', BuildingCoachStatus::STATUS_REMOVED)
-                                                      ->orderByDesc('created_at')
-                                                      ->first();
-
-                // and the status from it
-                $status = $lastKnownBuildingCoachStatus->status;
-                // get the translation
-                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
-
-            } else if ($buildingConversationRequest instanceof PrivateMessage) {
-                // if a conversation request has been sent, the status is pending.
-                $status = static::STATUS_PENDING;
-                // get the translation
-                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
-
-            } else {
-                // no coach status and no conversation request, the status is active.
-                $status = static::STATUS_ACTIVE;
-                // get the translation
-                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
-            }
-        } else {
-            // see comments in the if statement above.
-            $status            = Building::STATUS_IS_NOT_ACTIVE;
-            $statusTranslation = __('woningdossier.building-statuses.'.Building::STATUS_IS_NOT_ACTIVE);
-        }
-
-
-        if ($returnTranslation) {
-            return $statusTranslation;
-        } else {
-            return $status;
-        }
-    }
+//    public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
+//    {
+//        // get the building, even if its deleted.
+//        $building = Building::withTrashed()->find($buildingId);
+//
+//        $buildingCoachStatuses       = static::getConnectedCoachesByBuildingId($buildingId);
+//        $buildingConversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
+//
+//        // first we need to check if the building is active
+//        // this is the base for every status
+//        // is the building is active, we try to get the building from the building coach status
+//        // if the building is not active we return the in active status.
+//        if ($building->isActive()) {
+//
+//            // check if a coach is connected with the building
+//            if ($buildingCoachStatuses->isNotEmpty()) {
+//
+//                $lastKnownBuildingCoachStatus = static::where('building_id', $buildingId)
+//                                                      ->where('status', '!=', BuildingCoachStatus::STATUS_REMOVED)
+//                                                      ->orderByDesc('created_at')
+//                                                      ->first();
+//
+//                // and the status from it
+//                $status = $lastKnownBuildingCoachStatus->status;
+//                // get the translation
+//                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+//
+//            } else if ($buildingConversationRequest instanceof PrivateMessage) {
+//                // if a conversation request has been sent, the status is pending.
+//                $status = static::STATUS_PENDING;
+//                // get the translation
+//                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+//
+//            } else {
+//                // no coach status and no conversation request, the status is active.
+////                $status = static::STATUS_ACTIVE;
+//                // get the translation
+//                $statusTranslation = __('woningdossier.building-coach-statuses.'.$status);
+//            }
+//        } else {
+//            // see comments in the if statement above.
+//            $status            = Building::STATUS_IS_NOT_ACTIVE;
+//            $statusTranslation = __('woningdossier.building-statuses.'.Building::STATUS_IS_NOT_ACTIVE);
+//        }
+//
+//
+//        if ($returnTranslation) {
+//            return $statusTranslation;
+//        } else {
+//            return $status;
+//        }
+//    }
 
     /**
      * Returns the 'connected' coaches from a given building id.
@@ -212,7 +213,7 @@ class BuildingCoachStatus extends Model
                 SELECT coach_id, building_id, count(`status`) AS count_pending
 	            FROM building_coach_statuses
 	            WHERE coach_id is not null
-	            AND building_id = '.$buildingId.' AND `status` = \''.BuildingCoachStatus::STATUS_PENDING.' \'
+	            AND building_id = '.$buildingId.' AND `status` = \''.BuildingCoachStatus::STATUS_ADDED.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
         $removedCount            = \DB::raw('(
@@ -256,25 +257,25 @@ class BuildingCoachStatus extends Model
      *
      * @return Collection
      */
-    public static function getMostRecentStatusesForBuildingId($buildingId): Collection
-    {
-        $coachesWithActiveBuildingCoachStatus = static::getConnectedCoachesByBuildingId($buildingId);
-
-        // so we can where in on the most recent statuses, so we only get the statuses for the coaches that aren't removed
-        $coachIdsThatAreConnectedToBuilding = $coachesWithActiveBuildingCoachStatus->pluck('coach_id')->toArray();
-
-        return \DB::table('building_coach_statuses as bcs1')
-                  ->select('coach_id', 'building_id', 'created_at', 'status', 'bcs1.appointment_date')
-                  ->where('created_at', function ($query) use ($buildingId) {
-                      $query->select(\DB::raw('MAX(created_at)'))
-                            ->from('building_coach_statuses as bcs2')
-                            ->whereRaw('building_id = '.$buildingId.' and bcs1.coach_id = bcs2.coach_id');
-                  })
-                  ->whereIn('coach_id', $coachIdsThatAreConnectedToBuilding)
-                  ->orderByDesc('created_at')
-                  ->get();
-
-    }
+//    public static function getMostRecentStatusesForBuildingId($buildingId): Collection
+//    {
+//        $coachesWithActiveBuildingCoachStatus = static::getConnectedCoachesByBuildingId($buildingId);
+//
+//        // so we can where in on the most recent statuses, so we only get the statuses for the coaches that aren't removed
+//        $coachIdsThatAreConnectedToBuilding = $coachesWithActiveBuildingCoachStatus->pluck('coach_id')->toArray();
+//
+//        return \DB::table('building_coach_statuses as bcs1')
+//                  ->select('coach_id', 'building_id', 'created_at', 'status', )
+//                  ->where('created_at', function ($query) use ($buildingId) {
+//                      $query->select(\DB::raw('MAX(created_at)'))
+//                            ->from('building_coach_statuses as bcs2')
+//                            ->whereRaw('building_id = '.$buildingId.' and bcs1.coach_id = bcs2.coach_id');
+//                  })
+//                  ->whereIn('coach_id', $coachIdsThatAreConnectedToBuilding)
+//                  ->orderByDesc('created_at')
+//                  ->get();
+//
+//    }
 
     /**
      * Returns all the connected buildings from a user (coach)

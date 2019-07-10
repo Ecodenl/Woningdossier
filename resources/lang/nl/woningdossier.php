@@ -21,16 +21,8 @@ return [
         'user-revoked-access' => ':full_name heeft de toegang ingetrokken voor zijn woning'
     ],
     'building-coach-statuses' => [
-        \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
-
-        \App\Models\BuildingCoachStatus::STATUS_PENDING => 'In afwachting',
-
-        \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS  => 'In uitvoering',
-        \App\Models\BuildingCoachStatus::STATUS_EXECUTED     => 'Uitgevoerd',
-        \App\Models\BuildingCoachStatus::STATUS_NO_EXECUTION => 'Geen uitvoering',
-
-
         \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
+        \App\Models\BuildingCoachStatus::STATUS_ADDED => 'Toegevoegd',
 
     ],
     'building-statuses'       => [

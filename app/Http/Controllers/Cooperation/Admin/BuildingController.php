@@ -9,6 +9,7 @@ use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\Status;
 use App\Models\User;
 use App\Services\PrivateMessageViewService;
 use Carbon\Carbon;
@@ -54,28 +55,19 @@ class BuildingController extends Controller
 
         $coaches = $cooperation->getCoaches()->get();
 
-        $manageableStatuses                   = BuildingCoachStatus::getManageableStatuses();
+        $statuses = Status::ordered()->get();
         $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
-        $mostRecentStatusesForBuildingId = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
+//        $mostRecentStatusesForBuildingId = $building->vi
 
-        $mostRecentBcs = [];
-        // first check if there are any.
-        if ($mostRecentStatusesForBuildingId->isNotEmpty()) {
-            // if the user is a coach we can get the specific one for the current coach
-            // else we just get the most recent one.
-            if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
-                $mostRecentBcs = $mostRecentStatusesForBuildingId->where('coach_id', \Auth::id())->all();
-            } else {
-                $mostRecentBuildingCoachStatusArray = $mostRecentStatusesForBuildingId->all();
-                $mostRecentBcs                      = [$mostRecentBuildingCoachStatusArray[0]];
-            }
-        }
+        $mostRecentStatus = $building->getMostRecentStatus();
 
-        // hydrate the building coach status model so it will be easier to do stuff in the views
-        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
-            $mostRecentBcs
-        )->first();
+//        $mostRecentBcs = [];
+
+//         hydrate the building coach status model so it will be easier to do stuff in the views
+//        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
+//            $mostRecentBcs
+//        )->first();
 
         $logs = Log::forBuildingId($buildingId)->get();
 
@@ -120,8 +112,8 @@ class BuildingController extends Controller
 
         return view('cooperation.admin.buildings.show', compact(
                 'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus',
-                'coachesWithActiveBuildingCoachStatus',
-                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses',
+                'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus',
+                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'statuses',
                 'mostRecentBuildingCoachStatus',
                 'userDoesNotExist', 'userExists', 'logs'
             )

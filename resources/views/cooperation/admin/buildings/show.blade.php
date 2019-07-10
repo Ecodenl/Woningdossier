@@ -52,58 +52,15 @@
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
                         <select autocomplete="off" class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
-                            {{-- begin !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
-                            {{--the user got a coach connected and the building is active--}}
-                            {{--So we will get the status from the bcs table--}}
-                            @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
-                                <option disabled selected value="">
-                                    @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
-                                </option>
 
-                            {{--The user has no coach connected so we will have to determine the status ourself--}}
-
-                            {{--the user does not have a coach connected but the building is active--}}
-                            @elseif(!$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
-                                {{-- The user had some sort of message history so, pending.--}}
-                                @if($publicMessages->isNotEmpty())
-                                    <option disabled selected>
+                            @foreach($statuses as $status)
+                                <option {{$mostRecentStatus->id == $status->id ? 'selected="selected" ' : ''}}value="{{$status->id}}">
+                                    @if($mostRecentStatus->id == $status->id)
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                        {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_PENDING)}}
-                                    </option>
-                                {{-- The user has no message history--}}
-                                @else
-                                    <option disabled selected>
-                                        @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                        {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_ACTIVE)}}
-                                    </option>
-                                @endif
-                            {{--The user has no building coach status and his building is set to inactive--}}
-                            @else
-                                <option @if($building->isNotActive()) disabled selected @endif>
-                                    @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                                    @endif
+                                    {{$status->name}}
                                 </option>
-                            @endif
-                            {{-- end !THIS IS ONLY TO SHOW THE CURRENT STATUS! --}}
-                            {{--
-                                If there is no active coach connected to the building, then there is no point in setting these statuses
-                                and, it also cant be set since there arent ant coaches to give a status.
-                            --}}
-                            @if($coachesWithActiveBuildingCoachStatus->isNotEmpty())
-                                @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                    <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
-                                @endforeach
-                            @endif
-
-                            {{--These statuses can always be choosen.--}}
-                            <option value="{{\App\Models\Building::STATUS_IS_ACTIVE}}">
-                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_ACTIVE)}}
-                            </option>
-
-                            <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
-                                {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
-                            </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -111,15 +68,15 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
+<!--                            --><?php //$hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
                             <input autocomplete="off"
-                                   @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty())
+                                   @if($userDoesNotExist)
                                    disabled
                                    @endif
                                    id="appointment-date" name="user[building_coach_status][appointment_date]"
                                    type='text' class="form-control"
-                                   @if($hasCoachStatusAndAppointmentIsNotNull)
-                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('d-m-Y')}}"
+                                   @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
+                                   value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
                                     @endif
                             />
 

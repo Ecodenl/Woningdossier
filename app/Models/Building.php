@@ -478,14 +478,18 @@ class Building extends Model
     }
 
     /**
-     * Return the translation from a status
+     * Get all the statuses from a building
      *
-     * @param $status
-     * @return string
+     * @return HasMany
      */
-    public static function getTranslationForStatus($status): string
+    public function buildingStatuses(): HasMany
     {
-        return __('woningdossier.building-statuses.'.$status);
+        return $this->hasMany(BuildingStatus::class, '');
+    }
+
+    public function getMostRecentStatus(): BuildingStatus
+    {
+        return $this->buildingStatuses()->mostRecent()->first();
     }
 
 }

@@ -4,48 +4,45 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.users.show.header', [
-                'name' => $userExists ? $user->getFullName() : '-',
+                'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
-                'email' => $userExists ? $user->email : ''
+                'email' => $user->email
             ])
         </div>
 
         <input type="hidden" name="building[id]" value="{{$building->id}}">
         <input type="hidden" id="cooperation-id" value="{{\App\Helpers\HoomdossierSession::getCooperation()}}">
-        @if($userExists)
-            <input type="hidden" name="user[id]" value="{{$user->id}}">
-        @endif
+
+        <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
             {{--delete a pipo--}}
-            @if($userExists)
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="btn-group">
-                            @can('delete-user', $user)
-                                <button type="button" id="delete-user" class="btn btn-danger">
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
-                                </button>
-                            @endcan
-                            @can('access-building', $building)
-                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
-                                   id="observe-building" class="btn btn-primary">
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        @can('delete-user', $user)
+                            <button type="button" id="delete-user" class="btn btn-danger">
+                                @lang('woningdossier.cooperation.admin.users.show.delete-account.label')
+                                @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
+                            </button>
+                        @endcan
+                        @can('access-building', $building)
+                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
+                               id="observe-building" class="btn btn-primary">
+                                @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
+                                @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
+                            </a>
+                            @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
+                                <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
+                                   id="edit-building" class="btn btn-warning">
+                                    @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
+                                    @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
                                 </a>
-                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
-                                    <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
-                                       id="edit-building" class="btn btn-warning">
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
-                                    </a>
-                                @endif
-                            @endcan
-                        </div>
+                            @endif
+                        @endcan
                     </div>
                 </div>
-            @endif
+            </div>
             {{--status and appointment date--}}
             <div class="row">
                 <div class="col-sm-6">
@@ -68,11 +65,7 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <input autocomplete="off"
-                                   @if($userDoesNotExist)
-                                       disabled
-                                   @endif
-                                       id="appointment-date" name="user[building_coach_status][appointment_date]" type='text' class="form-control"
+                            <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
                                    @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
                                        value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
                                    @endif
@@ -106,23 +99,21 @@
                         </div>
                     </div>
                 @endcan
-                @if($userExists)
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
-                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
-                                    @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
-                                @foreach($roles as $role)
-                                    <option @if($user->hasNotMultipleRoles()) locked="locked"
-                                            @endif @if($user->hasRole($role)) selected="selected"
-                                            @endif value="{{$role->id}}">
-                                        {{$role->human_readable_name}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
+                        <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
+                                @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                            @foreach($roles as $role)
+                                <option @if($user->hasNotMultipleRoles()) locked="locked"
+                                        @endif @if($user->hasRole($role)) selected="selected"
+                                        @endif value="{{$role->id}}">
+                                    {{$role->human_readable_name}}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
 
@@ -223,26 +214,24 @@
                 </div>
             @endif
         </div>
-        @if($userExists)
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="btn-group">
-                            <a @if(!is_null($previous)) href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}" @endif
-                               type="button" {{is_null($previous) ? 'disabled="disabled"' : '' }} id="previous" class="btn btn-default {{is_null($previous) ? 'btn-disabled' : '' }}">
-                                <i class="glyphicon glyphicon-chevron-left"></i>
-                                @lang('woningdossier.cooperation.admin.users.show.previous')
-                            </a>
-                            <a @if(!is_null($next)) href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}" @endif
-                               id="observe-building" {{is_null($next) ? 'disabled="disabled"' : '' }} class="btn btn-default {{is_null($next) ? 'btn-disabled' : '' }}">
-                                @lang('woningdossier.cooperation.admin.users.show.next')
-                                <i class="glyphicon glyphicon-chevron-right"></i>
-                            </a>
-                        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        <a @if(!is_null($previous)) href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}" @endif
+                           type="button" {{is_null($previous) ? 'disabled="disabled"' : '' }} id="previous" class="btn btn-default {{is_null($previous) ? 'btn-disabled' : '' }}">
+                            <i class="glyphicon glyphicon-chevron-left"></i>
+                            @lang('woningdossier.cooperation.admin.users.show.previous')
+                        </a>
+                        <a @if(!is_null($next)) href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}" @endif
+                           id="observe-building" {{is_null($next) ? 'disabled="disabled"' : '' }} class="btn btn-default {{is_null($next) ? 'btn-disabled' : '' }}">
+                            @lang('woningdossier.cooperation.admin.users.show.next')
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 @endsection
 

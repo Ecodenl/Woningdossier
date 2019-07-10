@@ -37,7 +37,7 @@ class BuildingController extends Controller
                 ->get()->toArray()
         )->first();
 
-        if ( ! $building instanceof Building) {
+        if (!$building instanceof Building) {
             return redirect(route('cooperation.admin.index'));
         }
         $user = $building->user()->first();
@@ -106,11 +106,9 @@ class BuildingController extends Controller
 
 
         return view('cooperation.admin.buildings.show', compact(
-                'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus',
-                'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus',
-                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'statuses',
-                'mostRecentBuildingCoachStatus',
-                'userDoesNotExist', 'userExists', 'logs'
+                'user', 'building', 'roles', 'coaches',
+                'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
+                'publicMessages', 'buildingNotes', 'previous', 'next', 'statuses', 'logs'
             )
         );
     }

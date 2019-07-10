@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuildingStatus extends Model
 {
+    protected $fillable = [
+        'status_id', 'building_id', 'appointment_date'
+    ];
+
     protected $casts = [
         'appointment_date' => 'datetime'
     ];

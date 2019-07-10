@@ -51,11 +51,11 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
-                        <select autocomplete="off" class="form-control" name="user[building_coach_status][status]" id="building-coach-status">
+                        <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
 
                             @foreach($statuses as $status)
-                                <option {{$mostRecentStatus->id == $status->id ? 'selected="selected" ' : ''}}value="{{$status->id}}">
-                                    @if($mostRecentStatus->id == $status->id)
+                                <option {{$mostRecentStatus->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
+                                    @if($mostRecentStatus->status_id == $status->id)
                                         @lang('woningdossier.cooperation.admin.users.show.status.current')
                                     @endif
                                     {{$status->name}}
@@ -337,7 +337,7 @@
                 }
             });
 
-            $('#building-coach-status').select2({}).on('select2:selecting', function (event) {
+            $('#building-status').select2({}).on('select2:selecting', function (event) {
                 var statusToSelect = $(event.params.args.data.element);
 
                 if (confirm('@lang('woningdossier.cooperation.admin.users.show.set-status')')) {
@@ -346,7 +346,7 @@
                         url: '{{route('cooperation.admin.building-coach-status.set-status')}}',
                         data: {
                             building_id: buildingOwnerId,
-                            status: statusToSelect.val(),
+                            status_id: statusToSelect.val(),
                         }
                     }).done(function () {
                         location.reload();

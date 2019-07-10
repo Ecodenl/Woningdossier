@@ -23,4 +23,9 @@ class BuildingStatus extends Model
     {
         return $this->appointment_date instanceof \DateTime;
     }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
 }

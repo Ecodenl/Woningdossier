@@ -23,9 +23,12 @@ class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-            $users = $cooperation
-                ->users()
-                ->get();
+        $users = $cooperation->users()->with(['buildings' => function ($query) {
+            $query->with(['buildingStatuses' => function ($query) {
+                $query->mostRecent();
+            }]);
+        }])->get();
+
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));

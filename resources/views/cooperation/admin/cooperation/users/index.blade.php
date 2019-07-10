@@ -23,7 +23,11 @@
                         <tbody>
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
-                            <?php $building = $user->buildings()->first(); ?>
+                            <?php
+                                // work on loading it inside the controller when all branches are merged
+                                $building = $user->buildings->first();
+                                $mostRecentBuildingStatus = $building->buildingStatuses->first();
+                            ?>
 
                             @if($building instanceof \App\Models\Building)
                             <tr>
@@ -41,7 +45,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusForBuildingId($building->id)}}
+                                    {{$mostRecentBuildingStatus->status->name}}
                                 </td>
                             </tr>
                             @else

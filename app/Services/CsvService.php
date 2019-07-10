@@ -697,7 +697,7 @@ class CsvService
                                 break;
                         }
 
-                        $row[$buildingId][$tableWithColumnOrAndIdKey] = "'".$calculationResult ?? '';
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
                     }
 
                     // handle the building_features table and its columns.

@@ -26,12 +26,14 @@
                             <?php
                                 // work on loading it inside the controller when all branches ar
                                 $building = $user->buildings->first();
-                            ?>
+                                $mostRecentBuildingStatus = $building->buildingStatuses->first();
 
-                            @if($building instanceof \App\Models\Building)
+                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                            ?>
                             <tr>
-                                <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                <td data-sort="{{$userCreatedAtStrotime}}">
+                                    {{$userCreatedAtFormatted ?? '-'}}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
@@ -47,9 +49,6 @@
                                     {{$mostRecentBuildingStatus->status->name}}
                                 </td>
                             </tr>
-                            @else
-                                {{Log::debug('View: cooperation.admin.cooperation.users.index: There is a user id '.$user->id.' without a building')}}
-                            @endif
                         @endforeach
                         </tbody>
                     </table>

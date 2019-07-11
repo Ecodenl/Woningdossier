@@ -33,18 +33,15 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
-                                $building = $buildingCoachStatus->building()->first();
+                                $building = $buildingCoachStatus->building;
+                                $user = $building->user;
+                                $buildingStatus = $building->buildingStatuses->first();
                             ?>
-                            @if($building instanceof \App\Models\Building)
-                                <?php
-                                    $user = $building->user;
-                                    $userExists = $user instanceof \App\Models\User;
-                                ?>
                             <tr>
-                                <td data-sort="{{$userExists && $user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$userExists && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
+                                    {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
                                 </td>
-                                <td>{{$userExists ? $user->getFullName() : '-'}}</td>
+                                <td>{{$user->getFullName()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['id' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
@@ -55,13 +52,12 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
+                                    {{optional($buildingStatus->status)->name}}
                                 </td>
-                                <td data-sort="{{$buildingCoachStatus->hasAppointmentDate() ? strtotime($buildingCoachStatus->appointment_date->format('d-m-Y')) : ''}}">
-                                    {{$buildingCoachStatus->hasAppointmentDate() ? $buildingCoachStatus->appointment_date->format('d-m-Y') : ''}}
+                                <td data-sort="{{$buildingStatus->hasAppointmentDate() ? strtotime($buildingStatus->appointment_date->format('d-m-Y')) : ''}}">
+                                    {{$buildingStatus->hasAppointmentDate() ? $buildingStatus->appointment_date->format('d-m-Y') : ''}}
                                 </td>
                             </tr>
-                            @endif
                         @endforeach
                         </tbody>
                     </table>

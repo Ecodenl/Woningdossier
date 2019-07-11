@@ -487,4 +487,9 @@ class Building extends Model
         return $this->hasMany(BuildingStatus::class);
     }
 
+    public function getMostRecentStatus(): BuildingStatus
+    {
+        return $this->buildingStatuses()->mostRecent()->first();
+    }
+
 }

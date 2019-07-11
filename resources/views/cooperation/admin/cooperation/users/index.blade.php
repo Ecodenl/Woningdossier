@@ -24,9 +24,8 @@
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
                             <?php
-                                // work on loading it inside the controller when all branches are merged
+                                // work on loading it inside the controller when all branches ar
                                 $building = $user->buildings->first();
-                                $mostRecentBuildingStatus = $building->buildingStatuses->first();
                             ?>
 
                             @if($building instanceof \App\Models\Building)

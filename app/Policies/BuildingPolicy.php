@@ -75,22 +75,6 @@ class BuildingPolicy
 
 
     /**
-     * Determine if a user is allowed to view the building info
-     *
-     * With building info we mean stuff like associate coaches, make appointments etc.
-     * This is authorized when a user gave access in the conversation request / the allow_access is set to true
-     *
-     * @param  User  $user
-     * @param  Building  $building
-     *
-     * @return bool
-     */
-    public function viewBuildingInfo(User $user, Building $building): bool
-    {
-        return PrivateMessage::allowedAccess($building->id);
-    }
-
-    /**
      * Determine if a user can access his building
      *
      * With access we mean observing / filling the tool.

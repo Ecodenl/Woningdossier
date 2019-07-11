@@ -81,7 +81,7 @@
             </div>
             {{--coaches and role--}}
             <div class="row">
-                @can('view-building-info', $building)
+                @if($publicMessages->isNotEmpty())
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
@@ -98,7 +98,7 @@
                             </select>
                         </div>
                     </div>
-                @endcan
+                @endif
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>

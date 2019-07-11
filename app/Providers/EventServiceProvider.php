@@ -9,12 +9,14 @@ use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
 use App\Events\StepDataHasBeenChangedEvent;
 use App\Events\UserAllowedAccessToHisBuilding;
+use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\LogAllowedAccessToBuilding;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\LogRevokedAccessToBuilding;
+use App\Listeners\LogUserAssociatedWithOtherCooperation;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
@@ -49,6 +51,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Registered::class => [
             LogRegisteredUserListener::class
+        ],
+        UserAssociatedWithOtherCooperation::class => [
+            LogUserAssociatedWithOtherCooperation::class
         ],
         FillingToolForUserEvent::class => [
             FillingToolForUserListener::class

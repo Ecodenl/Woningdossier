@@ -17,8 +17,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('/', function () {
             return view('cooperation.welcome');
-        }
-        )->name('welcome');
+        })->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 

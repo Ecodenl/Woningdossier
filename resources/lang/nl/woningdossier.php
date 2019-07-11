@@ -12,6 +12,7 @@ return [
     'log-messages'            => [
         'logged-in'                  => ':full_name heeft ingelogd op de applicatie',
         'registered-user'            => ':full_name heeft geregistreerd',
+        'user-associated-with-other-cooperation' => ':full_name heeft zich gekoppeld aan de coöperatie :cooperation_name' ,
         'step-data-has-been-changed' => ':full_name heeft een wijziging doorgevoerd in het actieplan',
         'filling-tool-for'           => ':full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
         'observing-tool-for'         => ':full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',

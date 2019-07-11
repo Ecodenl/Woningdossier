@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -492,21 +493,15 @@ class Building extends Model
     /**
      * Get the most recent BuildingStatus
      *
-     * @return BuildingStatus
+     * @return BuildingStatus|null
      */
-    public function getMostRecentStatus(): BuildingStatus
+    public function getMostRecentStatus()
     {
         return $this->buildingStatuses()->mostRecent()->first();
     }
 
-    /**
-     * convenient way of setting a status on a building
-     *
-     * @param string|Status $status
-     *
-     * @return void
-     */
-    public function setStatus($status)
+
+    private function resolveStatusModel($status)
     {
         $statusModel = null;
 
@@ -518,8 +513,39 @@ class Building extends Model
             $statusModel = $status;
         }
 
-        $this->buildingStatuses()->associate($statusModel);
+        return $statusModel;
+    }
 
+    /**
+     * convenient way of setting a status on a building
+     *
+     * @param string|Status $status
+     *
+     * @return void
+     */
+    public function setStatus($status)
+    {
+        $statusModel = $this->resolveStatusModel($status);
+
+        $this->buildingStatuses()->create([
+            'status_id' => $statusModel->id,
+            'appointment_date' => optional($this->getMostRecentStatus())->appointment_date,
+        ]);
+    }
+
+    /**
+     * convenient way of setting a appointment date on a building
+     *
+     * @param string
+     *
+     * @return void
+     */
+    public function setAppointmentDate($appointmentDate)
+    {
+        $this->buildingStatuses()->create([
+            'status_id' => $this->getMostRecentStatus()->status_id,
+            'appointment_date' => Carbon::parse($appointmentDate)
+        ]);
     }
 
 }

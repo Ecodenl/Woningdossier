@@ -12,6 +12,13 @@ use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+/**
+ * Class BuildingCoachStatusController
+ *
+ * @note: controller is not used at the moment.
+ *
+ * @package App\Http\Controllers\Cooperation\Admin
+ */
 class BuildingCoachStatusController extends Controller
 {
     /**

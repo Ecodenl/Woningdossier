@@ -289,7 +289,7 @@
                 if (confirm(confirmMessage)) {
                     $.ajax({
                         method: 'POST',
-                        url: '{{route('cooperation.admin.building-coach-status.set-appointment-date')}}',
+                        url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
                         data: {
                             building_id: buildingOwnerId,
                             appointment_date: date
@@ -328,7 +328,7 @@
                 if (confirm('@lang('woningdossier.cooperation.admin.users.show.set-status')')) {
                     $.ajax({
                         method: 'POST',
-                        url: '{{route('cooperation.admin.building-coach-status.set-status')}}',
+                        url: '{{route('cooperation.admin.building-status.set-status')}}',
                         data: {
                             building_id: buildingOwnerId,
                             status_id: statusToSelect.val(),

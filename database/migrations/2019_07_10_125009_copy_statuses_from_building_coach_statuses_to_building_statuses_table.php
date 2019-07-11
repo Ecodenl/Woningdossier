@@ -51,7 +51,7 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
         // copy the bcs to the building_statuses table
         foreach ($buildingCoachStatuses as $buildingCoachStatus) {
             if ($this->statusIsCopyable($buildingCoachStatus)) {
-                dump('Copying status '.$buildingCoachStatus->status.' for building id: '.$buildingCoachStatuses->building_id);
+                dump('Copying status '.$buildingCoachStatus->status.' for building id: '.$buildingCoachStatus->building_id);
 
                 $statusId = $this->getStatusId($buildingCoachStatus);
 
@@ -63,11 +63,18 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
                     'created_at' => $buildingCoachStatus->created_at
                 ]);
 
-                // and delete it, since its copied to the new table..
-                $this->deleteBuildingCoachStatus($buildingCoachStatus);
+                if ($this->statusIsDeletable($buildingCoachStatus)) {
+                    // and delete it, since its copied to the new table..
+                    $this->deleteBuildingCoachStatus($buildingCoachStatus);
+                }
             }
         }
 
+    }
+
+    private function statusIsDeletable($buildingCoachStatus)
+    {
+        return !in_array($buildingCoachStatus->status, ['pending', 'removed']);
     }
 
     private function setBuildingStatus($building, $status)

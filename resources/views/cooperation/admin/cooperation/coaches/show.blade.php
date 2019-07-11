@@ -36,10 +36,16 @@
                                 $building = $buildingCoachStatus->building;
                                 $user = $building->user;
                                 $buildingStatus = $building->buildingStatuses->first();
+
+                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+
+                                $appointmentDateFormatted = optional($buildingStatus->appointment_date)->format('d-m-Y');
+                                $appointmentDateStrotime = strtotime($appointmentDateFormatted);
                             ?>
                             <tr>
-                                <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                <td data-sort="{{$userCreatedAtStrotime}}">
+                                    {{$userCreatedAtFormatted ?? '-'}}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
@@ -52,10 +58,10 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{optional($buildingStatus->status)->name}}
+                                    {{$buildingStatus->status->name}}
                                 </td>
-                                <td data-sort="{{$buildingStatus->hasAppointmentDate() ? strtotime($buildingStatus->appointment_date->format('d-m-Y')) : ''}}">
-                                    {{$buildingStatus->hasAppointmentDate() ? $buildingStatus->appointment_date->format('d-m-Y') : ''}}
+                                <td data-sort="{{$appointmentDateStrotime}}">
+                                    {{$appointmentDateFormatted ?? '-'}}
                                 </td>
                             </tr>
                         @endforeach

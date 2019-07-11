@@ -29,10 +29,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                     
-                        <?php /** @var \App\Models\User $user */ ?>
+
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
+                                /**
+                                * @var \App\Models\Building $building
+                                */
                                 $building = $buildingCoachStatus->building;
                                 $user = $building->user;
                                 $buildingStatus = $building->buildingStatuses->first();

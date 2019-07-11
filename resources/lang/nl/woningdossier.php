@@ -25,10 +25,6 @@ return [
         \App\Models\BuildingCoachStatus::STATUS_ADDED => 'Toegevoegd',
 
     ],
-    'building-statuses'       => [
-        \App\Models\Building::STATUS_IS_ACTIVE     => 'Actief',
-        \App\Models\Building::STATUS_IS_NOT_ACTIVE => 'Inactief'
-    ],
     'cooperation'             => [
         'create-building' => [
             'current-login-info' => [

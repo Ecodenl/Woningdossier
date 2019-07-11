@@ -78,9 +78,6 @@ class Building extends Model
 {
     use SoftDeletes, ToolSettingTrait;
 
-    const STATUS_IS_ACTIVE = 'active';
-    const STATUS_IS_NOT_ACTIVE = 'in_active';
-
     protected $dates = [
         'deleted_at',
     ];
@@ -460,25 +457,6 @@ class Building extends Model
     {
         return $this->hasMany(PrivateMessage::class);
     }
-
-    /**
-     * Check if a building is active
-     *
-     * @return bool
-     */
-    public function isActive(): bool
-    {
-        if ($this->status == static::STATUS_IS_ACTIVE) {
-            return true;
-        }
-        return false;
-    }
-
-    public function isNotActive()
-    {
-        return !$this->isActive();
-    }
-
 
     /**
      * Get all the statuses from a building

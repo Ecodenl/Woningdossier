@@ -278,12 +278,10 @@
                 showClear: true,
             }).on('dp.hide', function (event) {
                 var date = appointmentDate.find('input').val();
-                var confirmMessage = '';
+                var confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-empty-appointment-date')";
 
                 if (date.length > 0) {
                     confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-appointment-date')"
-                } else {
-                    confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-empty-appointment-date')"
                 }
 
                 if (confirm(confirmMessage)) {

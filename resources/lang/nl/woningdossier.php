@@ -304,8 +304,8 @@ return [
                     'revoke-access'            => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
                     'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot de woning',
 
-                    'set-status'                 => 'Weet u zeker dat u deze status wilt zetten voor de gekoppelde coaches ?',
-                    'set-appointment-date'       => 'Weet u zeker dat u deze datum wilt zetten voor de gekoppelde coaches ?',
+                    'set-status'                 => 'Weet u zeker dat u deze status wilt zetten voor het huidige gebouw?',
+                    'set-appointment-date'       => 'Weet u zeker dat u deze datum wilt zetten voor het huidige gebouw?',
                     'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
                     'give-role'                  => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
                     'remove-role'                => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',

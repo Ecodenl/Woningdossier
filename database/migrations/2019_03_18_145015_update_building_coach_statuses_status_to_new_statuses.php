@@ -22,7 +22,7 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
 
         $bcsActives = DB::table('building_coach_statuses')->where('status', $statusActive)->get();
         DB::table('building_coach_statuses')->where('status', $statusActive)->update([
-            'status' => \App\Models\BuildingCoachStatus::STATUS_PENDING
+            'status' => 'pending'
         ]);
         // since we dont use the active status as a measurement to see if a coach has access or not
         // we have to update the active to pending and create a new row for it wit hstatus in progress
@@ -31,26 +31,26 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
             DB::table('building_coach_statuses')->insert([
                 'coach_id' => $bcsActive->coach_id,
                 'building_id' => $bcsActive->building_id,
-                'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS,
+                'status' => 'in_progress',
                 'created_at' => \Carbon\Carbon::now(),
             ]);
         }
 
         // update the remaining statuses.
         DB::table('building_coach_statuses')->where('status', $statusAppointment)->update([
-            'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS
+            'status' => 'in_progress',
         ]);
 
         DB::table('building_coach_statuses')->where('status', $statusNoAppointment)->update([
-            'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS,
+            'status' => 'in_progress',
         ]);
 
         DB::table('building_coach_statuses')->where('status', $statusNewAppointment)->update([
-            'status' => \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS
+            'status' => 'in_progress',
         ]);
 
         DB::table('building_coach_statuses')->where('status', $statusDone)->update([
-            'status' => \App\Models\BuildingCoachStatus::STATUS_EXECUTED
+            'status' => 'executed',
         ]);
     }
 

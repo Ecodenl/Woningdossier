@@ -71,10 +71,10 @@ class ParticipantController extends Controller
 
             if ($privateMessage->allow_access) {
                 // give the coach permission to the resident his building
-                BuildingPermissionService::givePermission($userId, $buildingId);
+                BuildingPermissionService::givePermission($user, $residentBuilding );
             }
 
-            BuildingCoachStatusService::giveAccess($userId, $buildingId);
+            BuildingCoachStatusService::giveAccess($user, $residentBuilding);
 
             event(new ParticipantAddedEvent($user, $residentBuilding));
         }

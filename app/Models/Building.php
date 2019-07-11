@@ -8,6 +8,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Contracts\Role;
 
 /**
  * App\Models\Building
@@ -477,6 +478,7 @@ class Building extends Model
         return !$this->isActive();
     }
 
+
     /**
      * Get all the statuses from a building
      *
@@ -487,9 +489,37 @@ class Building extends Model
         return $this->hasMany(BuildingStatus::class);
     }
 
+    /**
+     * Get the most recent BuildingStatus
+     *
+     * @return BuildingStatus
+     */
     public function getMostRecentStatus(): BuildingStatus
     {
         return $this->buildingStatuses()->mostRecent()->first();
+    }
+
+    /**
+     * convenient way of setting a status on a building
+     *
+     * @param string|Status $status
+     *
+     * @return void
+     */
+    public function setStatus($status)
+    {
+        $statusModel = null;
+
+        if (is_string($status)) {
+            $statusModel = Status::where('short', $status)->first();
+        }
+
+        if ($status instanceof Status) {
+            $statusModel = $status;
+        }
+
+        $this->buildingStatuses()->associate($statusModel);
+
     }
 
 }

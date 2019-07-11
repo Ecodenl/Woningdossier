@@ -128,8 +128,8 @@ class UserController extends Controller
 
             $coach = User::find($coachId);
             // now give the selected coach access with permission to the new created building
-            BuildingPermissionService::givePermission($coachId, $building->id);
-            BuildingCoachStatusService::giveAccess($coachId, $building->id);
+            BuildingPermissionService::givePermission($coach, $building);
+            BuildingCoachStatusService::giveAccess($coach, $building);
 
             // and fire the added event twice, for the user itself and for the coach.
             event(new ParticipantAddedEvent($user, $building));

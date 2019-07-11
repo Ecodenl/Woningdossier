@@ -6,6 +6,7 @@ use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\MeasureApplication;
@@ -71,6 +72,8 @@ class ConversationRequestController extends Controller
                 'allow_access'      => $allowAccess,
             ]
         );
+
+        Building::find(HoomdossierSession::getBuilding())->setStatus('pending');
 
         // if the user allows access to his building on the request, log the activity.
         if ($allowAccess) {

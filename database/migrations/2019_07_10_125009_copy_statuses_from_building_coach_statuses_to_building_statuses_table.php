@@ -51,7 +51,7 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
         // copy the bcs to the building_statuses table
         foreach ($buildingCoachStatuses as $buildingCoachStatus) {
             if ($this->statusIsCopyable($buildingCoachStatus)) {
-                dump('Copying status '.$buildingCoachStatus->status);
+                dump('Copying status '.$buildingCoachStatus->status.' for building id: '.$buildingCoachStatuses->building_id);
 
                 $statusId = $this->getStatusId($buildingCoachStatus);
 
@@ -92,7 +92,7 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
      */
     private function statusIsCopyable($buildingCoachStatus)
     {
-        return !in_array($buildingCoachStatus->status, ['pending', 'removed']);
+        return !in_array($buildingCoachStatus->status, ['removed']);
     }
 
     /**

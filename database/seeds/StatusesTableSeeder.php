@@ -11,6 +11,7 @@ class StatusesTableSeeder extends Seeder
      */
     public function run()
     {
+
         $statuses = [
             [
                 'names' => [
@@ -25,6 +26,13 @@ class StatusesTableSeeder extends Seeder
                     'en' => 'Inactive',
                 ],
                 'short' => 'inactive'
+            ],
+            [
+                'names' => [
+                    'nl' => 'In afwachting',
+                    'en' => 'Pending',
+                ],
+                'short' => 'pending'
             ],
             [
                 'names' => [

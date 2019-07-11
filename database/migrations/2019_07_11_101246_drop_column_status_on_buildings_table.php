@@ -25,8 +25,6 @@ class DropColumnStatusOnBuildingsTable extends Migration
      */
     public function down()
     {
-        Schema::table('buildings', function (Blueprint $table) {
-            $table->string('status');
-        });
+
     }
 }

@@ -34,14 +34,13 @@ class ParticipantController extends Controller
         // the building from the user / resident
         $building = Building::find($buildingOwnerId);
 
+        $revokedParticipant = User::find($groupParticipantUserId);
 
 
         if ($building instanceof Building) {
             // revoke the access for the coach to talk with the resident
-            BuildingPermissionService::revokePermission($groupParticipantUserId, $building->id);
-            BuildingCoachStatusService::revokeAccess($groupParticipantUserId, $building->id);
-            $revokedParticipant = User::find($groupParticipantUserId);
-
+            BuildingPermissionService::revokePermission($revokedParticipant, $building);
+            BuildingCoachStatusService::revokeAccess($revokedParticipant, $building);
             event(new ParticipantRevokedEvent($revokedParticipant, $building));
         }
 

@@ -48,7 +48,7 @@ class CoachController extends Controller
         $buildingCoachStatuses = BuildingCoachStatus::where('coach_id', $userId)
             ->whereHas('building')
             ->with(['building.buildingStatuses' => function ($query) {
-                $query->orderByDesc('created_at');
+                $query->mostRecent();
             }])
             ->groupBy(['building_id', 'coach_id'])
             ->select(['building_id', 'coach_id'])

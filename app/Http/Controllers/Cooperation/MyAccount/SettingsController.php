@@ -145,7 +145,7 @@ class SettingsController extends Controller
         // remove the progress from a user
         //$user->progress()->delete();
 
-        return redirect()->back()->with('success', __('my-account.settings.form.reset-file.success'));
+        return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }
 
     // Delete account

@@ -67,14 +67,18 @@
                             @endif
                         </div>
                     </div>
+
                     <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="password-confirm"
-                                   class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password-confirmation')</label>
+                        <div class="form-group{{ $errors->has('account.password') ? ' has-error' : '' }}">
+                            <label for="password-confirm" class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password-confirmation')</label>
 
 
-                            <input id="password-confirm" type="password" class="form-control"
-                                   name="account[password_confirmation]">
+                            <input id="password-confirm" type="password" class="form-control" name="account[password_confirmation]">
+                            @if ($errors->has('account.password'))
+                                <span class="help-block">
+                                        <strong>{{ $errors->first('account.password') }}</strong>
+                                    </span>
+                            @endif
                         </div>
                     </div>
 

@@ -28,8 +28,9 @@ class HoomSettingsRequest extends FormRequest
     {
         return [
             'account.email' => ['required', 'email', Rule::unique('accounts', 'email')->ignore(Hoomdossier::account()->id)],
-            'account.current_password' => [new HashCheck(Hoomdossier::account()->password)],
+            'account.current_password' => ['nullable', new HashCheck(Hoomdossier::account()->password)],
             'account.password' => 'required_with:account.current_password|nullable|string|confirmed|min:6',
+            'account.password_confirmation' => 'required_with:account.password',
         ];
     }
 }

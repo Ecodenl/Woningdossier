@@ -69,15 +69,16 @@
                     </div>
 
                     <div class="col-sm-6">
-                        <div class="form-group{{ $errors->has('account.password') ? ' has-error' : '' }}">
+                        <div class="form-group{{ $errors->has('account.password') || $errors->has('account.password_confirmation') ? ' has-error' : '' }}">
                             <label for="password-confirm" class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password-confirmation')</label>
 
 
                             <input id="password-confirm" type="password" class="form-control" name="account[password_confirmation]">
-                            @if ($errors->has('account.password'))
+                            @if ($errors->has('account.password') || $errors->has('account.password_confirmation'))
                                 <span class="help-block">
-                                        <strong>{{ $errors->first('account.password') }}</strong>
-                                    </span>
+                                    <strong>{{ $errors->first('account.password') }}</strong>
+                                    <strong>{{ $errors->first('account.password_confirmation') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>

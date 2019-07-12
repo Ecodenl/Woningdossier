@@ -133,6 +133,7 @@ return [
     'attributes' => [
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
+        'account.password_confirmation' => 'wachtwoord bevestigen',
         'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
         'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
         'building_insulated_glazings.*.m2' => 'hoeveel m2 glas wilt u vervangen?',

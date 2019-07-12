@@ -2,11 +2,12 @@
 
 return [
     'side-nav' => [
-        'home'        => 'Home',
+        'home'          => 'Home',
         'notification-settings' => 'Notificatie instellingen',
         'label'       => 'Mijn account',
         'import'      => 'Import centrum',
         'settings'    => 'Instellingen',
+        'hoom-settings' => 'Hoomdossier instellingen',
         'access'      => 'Gebruikers met toegang tot uw woning',
         'my-messages' => 'Mijn berichten',
         'my-requests' => 'Mijn aanvragen',
@@ -133,9 +134,9 @@ return [
 
     'settings'     => [
         'index' => [
+            'header' => 'Gebruikergegevens',
+            'text' => 'Hier kunt u uw gebruikers gegevens aanpassen, deze zijn per coöperatie aanpasbaar. Wat u dus hier aanpast heeft geen invloed op de andere coöperaties waar u bij bent aangesloten.',
             'header-building' => 'Adres',
-            'header-password' => 'Wachtwoord aanpassen',
-            'header-user' => 'Accountgegevens',
             'form' => [
                 'submit' => 'Update gevens',
                 'building' => [
@@ -144,14 +145,6 @@ return [
                     'extension' => 'Toevoeging',
                     'postal-code' => 'Postcode',
                     'city' => 'Stad'
-                ],
-                'account' => [
-                    'e-mail'                => 'E-mailadres',
-                    'password'              => 'Wachtwoord',
-                    'password-confirmation' => 'Wachtwoord (bevestigen)',
-                    'new-password'          => 'Nieuw wachtwoord',
-                    'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
-                    'current-password'      => 'Huidig wachtwoord',
                 ],
                 'user' => [
                     'first-name'            => 'Voornaam',
@@ -180,6 +173,28 @@ return [
 
             'label'        => 'Mijn account verwijderen',
             'submit'       => 'Verwijderen',
+        ],
+    ],
+    'hoom-settings'     => [
+        'index' => [
+            'header' => 'Accountgegevens',
+            'header-password' => 'Wachtwoord aanpassen',
+            'text' => 'Hier kunt u uw account gegevens aanpassen, deze hebben effect op het gehele Hoomdossier. Als u hier uw e-mail of / en wachtwoord aanpast, dan geld dit voor elke coöperatie waar u bij bent aangesloten.',
+            'form' => [
+                'submit' => 'Update gevens',
+
+                'account' => [
+                    'e-mail'                => 'E-mailadres',
+                    'password'              => 'Wachtwoord',
+                    'password-confirmation' => 'Wachtwoord (bevestigen)',
+                    'new-password'          => 'Nieuw wachtwoord',
+                    'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
+                    'current-password'      => 'Huidig wachtwoord',
+                ],
+            ]
+        ],
+        'store'      => [
+            'success' => 'Gegevens succesvol gewijzigd',
         ],
     ],
 ];

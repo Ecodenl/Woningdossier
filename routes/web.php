@@ -75,6 +75,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
 
+                Route::resource('hoom-settings', 'HoomSettingsController');
+
 
 
                 Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {

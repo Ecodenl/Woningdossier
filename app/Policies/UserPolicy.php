@@ -3,9 +3,6 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
-use App\Models\Building;
-use App\Models\BuildingCoachStatus;
-use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -81,7 +78,7 @@ class UserPolicy
     public function destroy(User $user, User $userToDestroy)
     {
         // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
-        if ($user->can('delete-user', $userToDestroy) && $userToDestroy->cooperations->contains('id', HoomdossierSession::getCooperation())) {
+        if ($user->can('delete-user', $userToDestroy) && $userToDestroy->cooperation->id == HoomdossierSession::getCooperation()) {
             return true;
         }
 

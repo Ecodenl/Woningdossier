@@ -13,9 +13,11 @@ return [
         'usage-info' => 'Gegevens over het gebruik van de woning',
         'current-state' => [
             'title' => 'Huidige staat van de woning',
-            'measure' => 'Maatregel',
-            'present-current-situation' => 'Aanwezig in huidige situatie',
-            'interested-in-improvement' => 'Interesse in verbetering',
+            'table' => [
+                'measure' => 'Maatregel',
+                'present-current-situation' => 'Aanwezig in huidige situatie',
+                'interested-in-improvement' => 'Interesse in verbetering',
+            ]
         ],
 
         'motivation' => 'Wat is de motivatie om aan de slag te gaan',
@@ -25,11 +27,13 @@ return [
         'resume-energy-saving-measures' => [
             'title' => 'Samenvatting van mogelijke energiebesparende maatregelen en onderhousmaatregelen',
             'text' => 'Is er iets veranderd of past de volgorde van maatregelen niet bij uw persoonlijke planning? In het Hoomdossier kunt u alle gegevens aanpassen en bijhouden. In de bijlage vindt u alle details per maatregel.',
-            'planned-year' => 'Jaar geplanned',
-            'interested' => 'Interesse',
-            'measure' => 'Maatregel',
-            'Kosten (€)',
-            'Besparing (€/jaar)'
+            'table' => [
+                'planned-year' => 'Jaar geplanned',
+                'interested' => 'Interesse',
+                'measure' => 'Maatregel',
+                'costs' => 'Kosten (€)',
+                'savings' => 'Besparing (€/jaar)'
+            ]
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',
@@ -41,7 +45,7 @@ return [
 
         'next-steps' => [
             'title' => 'Vervolgstappen',
-            'text' => 'Het Hoomdossier wordt u aangeboden door :cooperation_name. Bij vragen over het Hoomdossier of als u hulp bij de uitvoering van de hierboven genoemde maatregelen nodig hebt kunt u altijd contact opnemen met ons via :cooperation_email. We helpen u graag verder. Meer informatie en onze volledige contactgegevens kunt u vinden op '
+            'text' => 'Het Hoomdossier wordt u aangeboden door :cooperation_name. Bij vragen over het Hoomdossier of als u hulp bij de uitvoering van de hierboven genoemde maatregelen nodig hebt kunt u altijd contact opnemen met ons via info@:cooperation_name.nl. We helpen u graag verder. Meer informatie en onze volledige contactgegevens kunt u vinden op '
         ],
 
         'attachment' => [

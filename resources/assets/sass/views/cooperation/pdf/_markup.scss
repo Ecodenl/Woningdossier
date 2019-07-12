@@ -2,23 +2,19 @@
   margin: 0;
 }
 
-h1 {
+h1, h2, h4, p, table {
   font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+}
+
+h1 {
   font-size: 26px;
   font-weight: bold;
   color: $color-main;
 }
 
 h2 {
-  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
   font-size: 21.33px;
   font-weight: bold;
-  color: $color-main;
-}
-
-h4 {
-  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
-  font-size: 10px;
   color: $color-main;
 }
 
@@ -29,13 +25,38 @@ body {
 }
 
 p {
-  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
   color: #000000;
-  font-size: 13.33px;
+  font-size: $font-size-small;
   line-height: 1.15;
 
   &.lead {
     font-weight: bold;
     color: $color-main;
+  }
+}
+.question-answer-section {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  p.lead {
+    margin-bottom: 1px;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  font-size: $font-size-small;
+  margin-bottom: 5px;
+  thead {
+    background-color: $color-main;
+    color: $color-white;
+  }
+  tbody {
+    background-color: $color-white;
+    td {
+      border-top: 1px solid $color-main;
+    }
+    tr:first-child {
+      border-bottom: 1px solid $color-main;
+    }
   }
 }

@@ -27,7 +27,7 @@
                                 /** @var \App\Models\Building $building */
                                 $building = $buildingCoachStatus->building()->first();
                                 $user = $building->user;
-                                $buildingStatus = $building->getMostRecentStatus();
+                                $buildingStatus = $building->getMostRecentBuildingStatus();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);

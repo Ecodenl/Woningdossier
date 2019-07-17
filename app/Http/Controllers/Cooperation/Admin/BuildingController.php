@@ -44,9 +44,6 @@ class BuildingController extends Controller
 
         $this->authorize('show', [$building, $cooperation]);
 
-
-        $userDoesNotExist = ! $user instanceof User;
-        $userExists       = ! $userDoesNotExist;
         $buildingId       = $building->id;
 
         $roles = Role::where('name', '!=', 'superuser')
@@ -61,8 +58,7 @@ class BuildingController extends Controller
         $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
 
-        $mostRecentStatus = $building->getMostRecentStatus();
-
+        $mostRecentStatus = $building->getMostRecentBuildingStatus();
 
         $logs = Log::forBuildingId($buildingId)->get();
 
@@ -77,32 +73,30 @@ class BuildingController extends Controller
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
         // since a user can be deleted, a buildin
-        if ($userExists) {
-            if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
+        if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
 
-                $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
+            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
 
-                $previous = $connectedBuildingsForUser->where('building_id', '<', $buildingId)->max('building_id');
-                $next     = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');
+            $previous = $connectedBuildingsForUser->where('building_id', '<', $buildingId)->max('building_id');
+            $next     = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');
 
-            } else {
+        } else {
 
-                // get previous user id
-                $previous = $cooperation
-                    ->users()
-                    ->join('buildings', 'users.id', '=', 'buildings.user_id')
-                    ->where('buildings.id', '<', $buildingId)
-                    ->max('buildings.id');
+            // get previous user id
+            $previous = $cooperation
+                ->users()
+                ->join('buildings', 'users.id', '=', 'buildings.user_id')
+                ->where('buildings.id', '<', $buildingId)
+                ->max('buildings.id');
 
-                // get next user id
-                $next = $cooperation
-                    ->users()
-                    ->join('buildings', 'users.id', '=', 'buildings.user_id')
-                    ->where('buildings.id', '>', $buildingId)
-                    ->min('buildings.id');
-            }
-
+            // get next user id
+            $next = $cooperation
+                ->users()
+                ->join('buildings', 'users.id', '=', 'buildings.user_id')
+                ->where('buildings.id', '>', $buildingId)
+                ->min('buildings.id');
         }
+
 
 
         return view('cooperation.admin.buildings.show', compact(

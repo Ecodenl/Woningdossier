@@ -3,6 +3,9 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
+            {{--
+                When merging accept the $user->account stuff, remove all if else checks
+            --}}
             @lang('woningdossier.cooperation.admin.users.show.header', [
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number,

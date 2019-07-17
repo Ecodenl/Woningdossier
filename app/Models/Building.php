@@ -473,7 +473,7 @@ class Building extends Model
      *
      * @return BuildingStatus|null
      */
-    public function getMostRecentStatus()
+    public function getMostRecentBuildingStatus()
     {
         return $this->buildingStatuses()->mostRecent()->first();
     }
@@ -507,7 +507,7 @@ class Building extends Model
 
         $this->buildingStatuses()->create([
             'status_id' => $statusModel->id,
-            'appointment_date' => optional($this->getMostRecentStatus())->appointment_date,
+            'appointment_date' => optional($this->getMostRecentBuildingStatus())->appointment_date,
         ]);
     }
 
@@ -521,7 +521,7 @@ class Building extends Model
     public function setAppointmentDate($appointmentDate)
     {
         $this->buildingStatuses()->create([
-            'status_id' => $this->getMostRecentStatus()->status_id,
+            'status_id' => $this->getMostRecentBuildingStatus()->status_id,
             'appointment_date' => Carbon::parse($appointmentDate)
         ]);
     }

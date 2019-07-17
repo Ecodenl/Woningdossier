@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuildingDetailRequest;
@@ -89,6 +90,8 @@ class BuildingDetailController extends Controller
 
         // finish the step
         $building->complete($this->step);
+
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
 
         return redirect()->route('cooperation.tool.general-data.index');
     }

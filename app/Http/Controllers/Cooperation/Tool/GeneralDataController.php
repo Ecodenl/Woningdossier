@@ -361,6 +361,8 @@ class GeneralDataController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
+
         return redirect($url);
     }
 }

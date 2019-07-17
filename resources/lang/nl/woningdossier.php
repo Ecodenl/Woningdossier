@@ -12,11 +12,12 @@ return [
     'log-messages'            => [
         'logged-in'                  => ':full_name heeft ingelogd op de applicatie',
         'registered-user'            => ':full_name heeft geregistreerd',
+        'user-associated-with-other-cooperation' => ':full_name heeft zich gekoppeld aan de coöperatie :cooperation_name' ,
         'step-data-has-been-changed' => ':full_name heeft een wijziging doorgevoerd in het actieplan',
         'filling-tool-for'           => ':full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
         'observing-tool-for'         => ':full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',
-        'action-plan-changed'        => ':full_name heeft een wijziging doorgevoert op het actieplan',
-        'participant-added'          => ':full_name heeft :for_full_name gekoppeld aan dit woning',
+        'action-plan-changed'        => ':full_name heeft een wijziging doorgevoerd op het actieplan',
+        'participant-added'          => ':full_name heeft :for_full_name gekoppeld aan deze woning',
         'user-gave-access' => ':full_name heeft toegang gegeven tot zijn woning',
         'user-revoked-access' => ':full_name heeft de toegang ingetrokken voor zijn woning'
     ],
@@ -40,7 +41,7 @@ return [
     'cooperation'             => [
         'create-building' => [
             'current-login-info' => [
-                'header' => 'Voor uw huidige login gegevens in.',
+                'header' => 'Voer uw huidige login gegevens in.',
             ],
             'building'           => [
                 'header' => 'Vul uw adres in.',
@@ -63,7 +64,7 @@ return [
                 'private' => 'Privé',
             ],
             'group-participants' => [
-                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
+                'revoke-access' => 'Weet u zeker dat u deze gebruiker van uit het groepsgesprek wilt verwijderen? Deze gebruiker heeft hierna geen toegang meer tot de woning.',
             ],
             'messages'           => [
                 'participant-added'   => ':participant is toegevoegd aan het gesprek',

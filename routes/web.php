@@ -17,8 +17,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('/', function () {
             return view('cooperation.welcome');
-        }
-        )->name('welcome');
+        })->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
@@ -75,6 +74,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
+
+                Route::resource('hoom-settings', 'HoomSettingsController');
 
 
 

@@ -30,7 +30,7 @@ return [
     ],
     'boolean'              => 'De :attribute moet waar of onwaar zijn.',
     'confirmed'            => 'De :attribute bevestiging is niet correct.',
-    'current_password'     => 'Uw huidige password is niet correct.',
+    'hash_check'           => 'het :attribute is niet correct.',
     'date'                 => 'Vul een geldige datum in',
     'date_format'          => 'De :attribute is niet volgens het formaat :format.',
     'different'            => 'De :attribute en :other mogen niet hetzelfde zijn.',
@@ -107,9 +107,6 @@ return [
         'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
         'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
         'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
 
         'building_paintwork_statuses' => [
@@ -134,6 +131,9 @@ return [
     */
 
     'attributes' => [
+        'account.current_password' => 'huidig wachtwoord',
+        'account.password' => 'wachtwoord',
+        'account.password_confirmation' => 'wachtwoord bevestigen',
         'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
         'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
         'building_insulated_glazings.*.m2' => 'hoeveel m2 glas wilt u vervangen?',

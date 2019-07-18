@@ -522,7 +522,7 @@ class Building extends Model
     {
         $this->buildingStatuses()->create([
             'status_id' => $this->getMostRecentBuildingStatus()->status_id,
-            'appointment_date' => Carbon::parse($appointmentDate)
+            'appointment_date' => $appointmentDate
         ]);
     }
 

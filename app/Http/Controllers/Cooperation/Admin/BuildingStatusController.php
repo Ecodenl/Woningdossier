@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BuildingStatusController extends Controller
 {
@@ -25,9 +26,10 @@ class BuildingStatusController extends Controller
     {
         $statusId = $request->get('status_id');
         $buildingId = $request->get('building_id');
-        $building = Building::withTrashed()->findOrFail($buildingId);
-
         $status = Status::findOrFail($statusId);
+
+        /** @var Building $building */
+        $building = Building::withTrashed()->findOrFail($buildingId);
 
         $building->setStatus($status);
     }
@@ -45,9 +47,10 @@ class BuildingStatusController extends Controller
         $buildingId = $request->get('building_id');
         $appointmentDate = $request->get('appointment_date');
 
+        /** @var Building $building */
         $building = Building::withTrashed()->findOrFail($buildingId);
 
-        $building->setAppointmentDate($appointmentDate);
+        $building->setAppointmentDate(is_null($appointmentDate) ? null : Carbon::parse($appointmentDate));
 
     }
 }

@@ -14,7 +14,7 @@
                 // use the public DSN (dont include your secret!)
                 dsn: "{{ config('sentry.dsn') }}",
                 user: {
-                    'id': '{{ \App\Helpers\Hoomdossier::user()->id }}'
+                    'id': '{{ optional(\App\Helpers\Hoomdossier::user())->id }}'
                 }
             });
             @else

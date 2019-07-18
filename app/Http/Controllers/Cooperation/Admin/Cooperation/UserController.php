@@ -23,6 +23,7 @@ class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+        // change the relationship to building on merge.
         $users = $cooperation
             ->users()
             ->whereHas('buildings')

@@ -29,7 +29,7 @@ class BuildingController extends Controller
     public function show(Cooperation $cooperation, $buildingId)
     {
         // retrieve the user from the building within the current cooperation;
-        $user = $cooperation->users()->whereHas('buildings', function ($query) use ($buildingId) {
+        $user = $cooperation->users()->whereHas('building', function ($query) use ($buildingId) {
             $query->where('id', $buildingId);
         })->first();
 

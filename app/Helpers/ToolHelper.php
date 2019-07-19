@@ -1557,6 +1557,11 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($heatpumpFull->values()->orderBy('order')->get(), 'value'),
                 ],
+                'service.'.$heater->id                     => [
+                    'label'   => $heater->name,
+                    'type'    => 'select',
+                    'options' => static::createOptions($heater->values()->orderBy('order')->get(), 'value'),
+                ],
                 // no separate page.
 //                'user_interest.service.'.$heatpumpFull->id      => [
 //                    'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
@@ -1939,18 +1944,12 @@ class ToolHelper
             ],
 
             'heater'       => [
-
                 'user_interest.service.'.$heater->id            => [
                     //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                     'label'   => $heater->name.': '.Translation::translate('general.interested-in-improvement.title'),
                     'type'    => 'select',
                     'options' => $interestOptions,
                 ],
-//                'service.'.$heater->id                     => [
-//                    'label'   => $heater->name,
-//                    'type'    => 'select',
-//                    'options' => static::createOptions($heater->values()->orderBy('order')->get(), 'value'),
-//                ],
                 'user_energy_habits.water_comfort_id' => [
                     'label' => Translation::translate('heater.comfort-level-warm-tap-water.title'),
                     'type' => 'select',

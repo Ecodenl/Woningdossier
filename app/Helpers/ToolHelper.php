@@ -447,6 +447,7 @@ class ToolHelper
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
                 ]
             ],
+
             'roof-insulation'        => [
                 'element.'.$roofInsulation->id   => [
                     'label'   => $roofInsulation->name,
@@ -1528,6 +1529,22 @@ class ToolHelper
                     'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                 ],
 
+                'element.'.$wallInsulation->id                  => [
+                    'label'   => Translation::translate('wall-insulation.intro.filled-insulation.title'),
+                    'type'    => 'select',
+                    'options' => static::createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
+                ],
+
+                'element.'.$floorInsulation->id                    => [
+                    'label'   => Translation::translate('floor-insulation.floor-insulation.title'),
+                    'type'    => 'select',
+                    'options' => static::createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
+                ],
+                'element.'.$roofInsulation->id   => [
+                    'label'   => $roofInsulation->name,
+                    'type'    => 'select',
+                    'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
+                ],
 
                 // services
                 'service.'.$heatpumpHybrid->id                  => [
@@ -1535,23 +1552,18 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($heatpumpHybrid->values()->orderBy('order')->get(), 'value'),
                 ],
-                'user_interest.service.'.$heatpumpHybrid->id    => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $heatpumpHybrid->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
                 'service.'.$heatpumpFull->id                    => [
                     'label'   => $heatpumpFull->name,
                     'type'    => 'select',
                     'options' => static::createOptions($heatpumpFull->values()->orderBy('order')->get(), 'value'),
                 ],
-                'user_interest.service.'.$heatpumpFull->id      => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $heatpumpFull->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
+                // no separate page.
+//                'user_interest.service.'.$heatpumpFull->id      => [
+//                    'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+//                    'label'   => $heatpumpFull->name.': '.Translation::translate('general.interested-in-improvement.title'),
+//                    'type'    => 'select',
+//                    'options' => $interestOptions,
+//                ],
 
                 'service.'.$hrBoiler->id                        => [
                     'label'   => $hrBoiler->name,
@@ -1582,12 +1594,13 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($ventilation->values()->orderBy('order')->get(), 'value'),
                 ],
-                'user_interest.service.'.$ventilation->id       => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $ventilation->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
+                // no separate page.
+//                'user_interest.service.'.$ventilation->id       => [
+//                    'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+//                    'label'   => $ventilation->name.': '.Translation::translate('general.interested-in-improvement.title'),
+//                    'type'    => 'select',
+//                    'options' => $interestOptions,
+//                ],
                 'service.'.$ventilation->id.'.extra.year'       => [
                     'label' => Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.title'),
                     'type'  => 'text',
@@ -1660,11 +1673,6 @@ class ToolHelper
             ],
 
             'wall-insulation' => [
-                'element.'.$wallInsulation->id                  => [
-                    'label'   => Translation::translate('wall-insulation.intro.filled-insulation.title'),
-                    'type'    => 'select',
-                    'options' => static::createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
-                ],
                 'user_interest.element.'.$wallInsulation->id    => [
                     //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                     'label'   => $wallInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
@@ -1791,11 +1799,6 @@ class ToolHelper
             ],
 
             'floor-insulation'       => [
-                'element.'.$floorInsulation->id                    => [
-                    'label'   => Translation::translate('floor-insulation.floor-insulation.title'),
-                    'type'    => 'select',
-                    'options' => static::createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
-                ],
                 'user_interest.element.'.$floorInsulation->id   => [
                     //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                     'label'   => $floorInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
@@ -1838,11 +1841,6 @@ class ToolHelper
             ],
 
             'roof-insulation'        => [
-                'element.'.$roofInsulation->id   => [
-                    'label'   => $roofInsulation->name,
-                    'type'    => 'select',
-                    'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
-                ],
                 'user_interest.element.'.$roofInsulation->id    => [
                     //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                     'label'   => $roofInsulation->name.': '.Translation::translate('general.interested-in-improvement.title'),
@@ -1941,6 +1939,7 @@ class ToolHelper
             ],
 
             'heater'       => [
+
                 'user_interest.service.'.$heater->id            => [
                     //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                     'label'   => $heater->name.': '.Translation::translate('general.interested-in-improvement.title'),

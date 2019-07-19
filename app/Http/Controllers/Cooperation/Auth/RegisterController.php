@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Auth\ConfirmRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
@@ -136,18 +137,8 @@ class RegisterController extends Controller
         return $user;
     }
 
-    public function confirm(Request $request)
+    public function confirm(ConfirmRequest $request)
     {
-        $validator = \Validator::make($request->all(), [
-                'u' => 'required|email',
-                't' => 'required|alpha_num',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return redirect(route('cooperation.home'));
-        }
-
         $email = $request->get('u');
         $token = $request->get('t');
 
@@ -214,15 +205,21 @@ class RegisterController extends Controller
 
         // okay, the user does exists
         if ($user instanceof User) {
+
             // check if the is already attached
             if ($user->cooperations->contains($cooperation)) {
                 return redirect()->back();
             }
 
-            $cooperation->users()->attach($user);
+            // if a users hop's from a cooperation, well assign him the role resident.
+            $residentRole = Role::findByName('resident');
 
-            return redirect(url('login'))->with('account_connected',
-                __('auth.register.form.message.account-connected'));
+            $cooperation->users()->attach($user);
+            $user->assignRole($cooperation->id, $residentRole);
+
+            return redirect(
+                url('login')
+            )->with('account_connected', __('auth.register.form.message.account-connected'));
         }
 
         // user is playing, redirect them back

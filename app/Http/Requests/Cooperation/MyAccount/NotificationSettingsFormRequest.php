@@ -14,7 +14,7 @@ class NotificationSettingsFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasRoleAndIsCurrentRole('resident');
+        return \Auth::check();
     }
 
     /**

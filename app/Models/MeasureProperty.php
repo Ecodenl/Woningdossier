@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureProperty.
+ * App\Models\MeasureProperty
  *
  * @property int $id
  * @property int|null $measure_id
@@ -13,8 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $value
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Measure|null $measure
- *
+ * @property-read \App\Models\Measure|null $measure
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureProperty query()

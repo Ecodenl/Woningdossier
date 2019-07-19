@@ -308,24 +308,24 @@
 @push('js')
     <script>
         var areYouSure = '@lang('my-account.settings.reset-file.are-you-sure')';
-        $('#reset-account').click(function () {
+        $('#reset-account').click(function (event) {
             if (confirm(areYouSure)) {
                 $(this).closest('form').submit();
             } else {
-                return false;
                 event.preventDefault();
+                return false;
             }
         });
 
         var userCooperationCount = {{Auth::user()->cooperations()->count()}};
 
-        var areYouSureToDestroy = '@lang('my-account.settings.form.destroy.are-you-sure.delete-from-cooperation')';
+        var areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.delete-from-cooperation')';
 
         if (userCooperationCount === 1) {
             areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.complete-delete')';
         }
 
-        $('#delete-account').click(function () {
+        $('#delete-account').click(function (event) {
             if (confirm(areYouSureToDestroy)) {
                 $(this).closest('form').submit();
             } else {

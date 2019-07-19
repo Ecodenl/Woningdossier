@@ -26,25 +26,19 @@
                                         <span class="glyphicon glyphicon-cog"></span>
                                     </a>
                                 </li>
-{{--                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.notification-settings.index', 'cooperation.my-account.notification-settings.show'])) active @endif">--}}
-{{--                                    <a href="{{route('cooperation.my-account.notification-settings.index')}}">--}}
-{{--                                        @lang('my-account.side-nav.notification-settings')--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.notification-settings.index', 'cooperation.my-account.notification-settings.show'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.notification-settings.index')}}">
+                                        @lang('my-account.side-nav.notification-settings')
+                                    </a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.import-center.index')}}">
                                         @lang('my-account.side-nav.import')
                                     </a>
                                 </li>
-                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.messages.index', 'cooperation.my-account.messages.edit'])) active @endif">
-                                    <a href="{{route('cooperation.my-account.messages.index')}}">
-                                        @lang('my-account.side-nav.my-messages')
-                                    </a>
-                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.access.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.access.index')}}">
                                         @lang('my-account.side-nav.access')
-{{--                                        <span class="pull-right label label-success">{{$myUnreadMessages->count()}}</span>--}}
                                     </a>
                                 </li>
                             </ul>

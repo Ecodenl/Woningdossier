@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
@@ -17,10 +18,12 @@ class RoleController extends Controller
         // the role we want to assign to a user
         $roleId = $request->get('role_id');
 
+        $cooperationId = $request->get('cooperation_id', null);
+
         $role = Role::findById($roleId);
         $user = User::find($userId);
 
-        $user->assignRole($role);
+        $user->assignRole($cooperationId, $role);
 
         return redirect()->back();
     }

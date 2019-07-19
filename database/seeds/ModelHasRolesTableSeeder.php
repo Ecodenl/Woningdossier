@@ -78,7 +78,7 @@ class ModelHasRolesTableSeeder extends Seeder
         $users = \App\Models\User::where('is_admin', 1)->get();
         foreach ($users as $user) {
             if (! $user->hasRole($superAdmin)) {
-                $user->assignRole($superAdmin);
+                $user->assignRole($user->cooperations->first()->id, $superAdmin);
             }
         }
     }

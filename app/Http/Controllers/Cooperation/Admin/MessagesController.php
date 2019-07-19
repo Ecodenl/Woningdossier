@@ -6,20 +6,16 @@ use App\Http\Requests\Cooperation\Admin\MessageRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
-use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Services\MessageService;
-use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Log;
-use stdClass;
 
 class MessagesController extends Controller
 {
     protected $fragment;
 
-    public function __construct(Cooperation $coodperation, Request $request)
+    public function __construct(Cooperation $cooperation, Request $request)
     {
         if ($request->has('fragment')) {
             $this->fragment = $request->get('fragment');

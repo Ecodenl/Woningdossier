@@ -26,9 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule
-//            ->command('send:notifications --type=private-message')
-//            ->everyFifteenMinutes();
+        $schedule->command('send:notifications --type=private-message')->everyFifteenMinutes();
 
         // $schedule->command('inspire')
         //          ->hourly();

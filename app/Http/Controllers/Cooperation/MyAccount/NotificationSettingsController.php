@@ -13,8 +13,6 @@ class NotificationSettingsController extends Controller
 {
     public function index()
     {
-
-        return redirect()->back();
         $notificationSettings = \Auth::user()->notificationSettings;
 
         return view('cooperation.my-account.notification-settings.index', compact('notificationSettings'));
@@ -22,7 +20,6 @@ class NotificationSettingsController extends Controller
 
     public function show(Cooperation $cooperation, $notificationSettingId)
     {
-        return redirect()->back();
         $notificationSetting = NotificationSetting::find($notificationSettingId);
         $notificationIntervals = NotificationInterval::all();
 

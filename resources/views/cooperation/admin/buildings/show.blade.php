@@ -203,7 +203,9 @@
                 <li>
                     <a data-toggle="tab" href="#messages-public">
                         @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
-                            <i class="glyphicon glyphicon-inbox" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-will-be-notified')"></i>
+                            <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.yes')"></i>
+                        @else
+                            <i class="glyphicon glyphicon-ban-circle" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.no')"></i>
                         @endif
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
                     </a>

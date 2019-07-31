@@ -320,6 +320,7 @@ return [
 
                     'tabs'     => [
                         'messages-public'      => [
+                            'user-will-be-notified' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',
                             'title' => 'Berichten bewoner'
                         ],
                         'messages-intern'      => [

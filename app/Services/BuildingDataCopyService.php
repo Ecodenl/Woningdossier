@@ -131,6 +131,7 @@ class BuildingDataCopyService
                                 $toValueQuery->update(static::createUpdateArray($toValue,
                                     $fromValue));
                             } else {
+                                // we cant create an update array since there is no data from the target input source
                                 // unset the stuff we dont want to insert
                                 unset($fromValue['id'], $fromValue['input_source_id']);
                                 // change the input source id to the resident
@@ -154,13 +155,11 @@ class BuildingDataCopyService
                                 }
                             } else {
                                 // we cant create an update array since there is no data from the target input source
-
-                                $fromValue = (array) $fromValue;
                                 // unset the stuff we dont want to insert
                                 unset($fromValue['id'], $fromValue['input_source_id']);
                                 // change the input source id to the resident
                                 $fromValue['input_source_id'] = $to->id;
-
+                                // and insert a new row!
                                 \DB::table($table)->insert($fromValue);
                             }
                         }

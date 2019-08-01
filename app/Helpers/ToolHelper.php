@@ -29,7 +29,7 @@ class ToolHelper
 {
 
 
-    protected static function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
+    public static function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
     {
         $options = [];
         if ($nullPlaceholder) {

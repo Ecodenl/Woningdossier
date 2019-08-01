@@ -23,6 +23,7 @@
                             <br>
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'])
+
                                 @foreach($roofTypes as $roofType)
                                     <label class="checkbox-inline">
                                         <input data-calculate-value="{{$roofType->calculate_value}}"

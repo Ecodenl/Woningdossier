@@ -74,20 +74,6 @@ class UserActionPlanAdvice extends Model
         'planned' => 'boolean',
     ];
 
-    /**
-     * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeForMe($query)
-    {
-        $building = Building::find(HoomdossierSession::getBuilding());
-
-        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
-    }
 
     /**
      * Scope a query to only include results for the particular step.
@@ -100,26 +86,6 @@ class UserActionPlanAdvice extends Model
     public function scopeForStep($query, Step $step)
     {
         return $query->where('step_id', $step->id);
-    }
-
-    /**
-     * Get the input Sources.
-     *
-     * @return BelongsTo
-     */
-    public function inputSource()
-    {
-        return $this->belongsTo('App\Models\InputSource');
-    }
-
-    /**
-     * Get a input source name.
-     *
-     * @return InputSource name
-     */
-    public function getInputSourceName()
-    {
-        return $this->inputSource()->first()->name;
     }
 
     public function user()

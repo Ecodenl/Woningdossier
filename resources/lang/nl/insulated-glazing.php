@@ -7,4 +7,5 @@ return [
 			'title' => 'Opmerking over schilderwerk'
 		],
 	],
+
 ];

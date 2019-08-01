@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -126,4 +127,16 @@ class Cooperation extends Model
         );
 
     }
+
+
+//    public function scopeUsersWithRole(Builder $query, Role $role)
+//    {
+//        return $query
+//            ->leftJoin(config('permission.table_names.model_has_roles'), 'cooperations.id', '=', 'model_has_roles.cooperation_id')
+//            ->where('model_has_roles.role_id', $role->id)
+//            ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
+//            ->select('users.*');
+//    }
+//
+
 }

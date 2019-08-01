@@ -9,7 +9,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive" style="width: 100%">
+                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive"
+                           style="width: 100%">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.date')</th>
@@ -26,31 +27,30 @@
                             <?php $building = $user->buildings()->first(); ?>
 
                             @if($building instanceof \App\Models\Building)
-                            <tr>
-                                <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
-                                </td>
-                                <td>{{$user->getFullName()}}</td>
-                                <td>
-                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
-                                        {{$building->street}} {{$building->number}}
-                                    </a>
-                                </td>
-                                <td>{{$building->postal_code}}</td>
-                                <td>
-                                    {{$building->city}}
-                                </td>
-                                <td>
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusForBuildingId($building->id)}}
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
+                                        {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                    </td>
+                                    <td>{{$user->getFullName()}}</td>
+                                    <td>
+                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                            {{$building->street}} {{$building->number}}
+                                        </a>
+                                    </td>
+                                    <td>{{$building->postal_code}}</td>
+                                    <td>
+                                        {{$building->city}}
+                                    </td>
+                                    <td>
+                                        {{\App\Models\BuildingCoachStatus::getCurrentStatusForBuildingId($building->id)}}
+                                    </td>
+                                </tr>
                             @else
                                 {{Log::debug('View: cooperation.admin.cooperation.users.index: There is a user id '.$user->id.' without a building')}}
                             @endif
                         @endforeach
                         </tbody>
                     </table>
-                </div>
                 </div>
             </div>
         </div>
@@ -65,12 +65,12 @@
             table.DataTable({
                 responsive: true,
                 columns: [
-                    { responsivePriority: 1 },
-                    { responsivePriority: 2 },
-                    { responsivePriority: 3 },
-                    { responsivePriority: 4 },
-                    { responsivePriority: 6 },
-                    { responsivePriority: 5 }
+                    {responsivePriority: 1},
+                    {responsivePriority: 2},
+                    {responsivePriority: 3},
+                    {responsivePriority: 4},
+                    {responsivePriority: 6},
+                    {responsivePriority: 5}
                 ]
             });
         })

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
+use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -322,6 +323,8 @@ class ExampleBuildingService
     public static function getContentStructure()
     {
     	// General data
+
+        return ToolHelper::getContentStructure();
 
 	    // General data - Elements (that are not queried later on step basis)
 	    $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();

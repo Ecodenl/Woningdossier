@@ -63,10 +63,8 @@
                                         <select id="main_roof" class="form-control"
                                                 name="building_features[roof_type_id]">
                                             @foreach($roofTypes as $roofType)
-                                                @if($roofType->calculate_value < 5)
-                                                    <option @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected"
+                                                <option @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected"
                                                             @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
-                                                @endif
                                             @endforeach
                                         </select>
                                     @endcomponent

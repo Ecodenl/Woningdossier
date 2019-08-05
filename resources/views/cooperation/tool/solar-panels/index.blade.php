@@ -33,7 +33,7 @@
                             <select id="building_pv_panels_peak_power" class="form-control"
                                     name="building_pv_panels[peak_power]">
                                 @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers() as $peakPower)
-                                    <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected
+                                    <option @if(old('building_pv_panels.peak_power', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'peak_power') == $peakPower)) selected
                                             @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
                                 @endforeach
                             </select>

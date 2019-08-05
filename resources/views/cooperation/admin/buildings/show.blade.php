@@ -221,12 +221,12 @@
 
         <div class="tab-content">
             {{--messages intern (cooperation to cooperation --}}
-            <div id="messages-intern" class="tab-pane fade in active">
+            <div id="messages-intern" class="tab-pane fade">
                 @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
             @can('talk-to-resident', [$building, $cooperation])
                 {{--public messages / between the resident and cooperation--}}
-                <div id="messages-public" class="tab-pane fade">
+                <div id="messages-public" class="tab-pane fade in active">
                     @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
                 </div>
             @endcan
@@ -571,11 +571,26 @@
         function scrollChatToMostRecentMessage() {
             $('.nav-tabs a').on('shown.bs.tab', function () {
 
+                console.log('what de fuck');
                 var tabId = $(this).attr('href');
                 var tab = $(tabId);
                 var chat = tab.find('.panel-chat-body')[0];
+
                 if (typeof chat !== "undefined") {
+                    console.log('m8')
                     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+
+                    // var isChatPublic = tab.find('[name=is_public]').val();
+                    // var buildingId = tab.find('[name=building_id]').val();
+
+                    // $.ajax({
+                    {{--    url: '{{route('cooperation.messages.participants.set-read')}}',--}}
+                    //     method: 'post',
+                    //     data: {
+                    //         is_public: isChatPublic,
+                    //         building_id: buildingId
+                    //     },
+                    // })
                 }
             });
 

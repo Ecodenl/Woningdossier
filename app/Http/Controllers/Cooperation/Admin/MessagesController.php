@@ -13,15 +13,6 @@ use App\Http\Controllers\Controller;
 
 class MessagesController extends Controller
 {
-    protected $fragment;
-
-    public function __construct(Cooperation $cooperation, Request $request)
-    {
-        if ($request->has('fragment')) {
-            $this->fragment = $request->get('fragment');
-        }
-    }
-
     public function index(Cooperation $cooperation)
     {
 
@@ -51,6 +42,6 @@ class MessagesController extends Controller
     {
         MessageService::create($request);
 
-        return redirect(back()->getTargetUrl().$this->fragment);
+        return redirect(back());
     }
 }

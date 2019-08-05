@@ -52,6 +52,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {
                     Route::post('revoke-access', 'ParticipantController@revokeAccess')->name('revoke-access');
                     Route::post('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
+
+                    Route::post('set-read', 'ParticipantController@setRead')->name('set-read');
                 });
             });
 

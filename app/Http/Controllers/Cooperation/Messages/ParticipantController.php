@@ -11,7 +11,9 @@ use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
+use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
+use function Sodium\crypto_box_publickey_from_secretkey;
 
 class ParticipantController extends Controller
 {
@@ -79,5 +81,32 @@ class ParticipantController extends Controller
         // since the coordinator is the only one who can do this atm.
         return redirect()->back()
             ->with('success', __('woningdossier.cooperation.admin.cooperation.coordinator.connect-to-coach.store.success'));
+    }
+
+    /**
+     * Method to set a collection of messages to read
+     *
+     * @param  Cooperation  $cooperation
+     * @param  Request  $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function setRead(Cooperation $cooperation, Request $request)
+    {
+        $isPublic = $request->get('is_public');
+        $buildingId = $request->get('building_id');
+
+        // check which messages we have to set read
+        if ($isPublic) {
+            $messagesToSetRead = PrivateMessage::forMyCooperation()->public();
+        } else {
+            $messagesToSetRead = PrivateMessage::forMyCooperation()->private();
+        }
+
+
+        PrivateMessageViewService::setRead(
+            $messagesToSetRead->conversation($buildingId)->get()
+        );
+
     }
 }

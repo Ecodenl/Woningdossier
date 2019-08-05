@@ -571,26 +571,24 @@
         function scrollChatToMostRecentMessage() {
             $('.nav-tabs a').on('shown.bs.tab', function () {
 
-                console.log('what de fuck');
                 var tabId = $(this).attr('href');
                 var tab = $(tabId);
                 var chat = tab.find('.panel-chat-body')[0];
 
                 if (typeof chat !== "undefined") {
-                    console.log('m8')
                     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 
-                    // var isChatPublic = tab.find('[name=is_public]').val();
-                    // var buildingId = tab.find('[name=building_id]').val();
+                    var isChatPublic = tab.find('[name=is_public]').val();
+                    var buildingId = tab.find('[name=building_id]').val();
 
-                    // $.ajax({
-                    {{--    url: '{{route('cooperation.messages.participants.set-read')}}',--}}
-                    //     method: 'post',
-                    //     data: {
-                    //         is_public: isChatPublic,
-                    //         building_id: buildingId
-                    //     },
-                    // })
+                    $.ajax({
+                        url: '{{route('cooperation.messages.participants.set-read')}}',
+                        method: 'post',
+                        data: {
+                            is_public: isChatPublic,
+                            building_id: buildingId
+                        },
+                    })
                 }
             });
 

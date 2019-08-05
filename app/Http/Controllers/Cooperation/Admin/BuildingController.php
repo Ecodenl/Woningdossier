@@ -82,10 +82,6 @@ class BuildingController extends Controller
         $privateMessages = PrivateMessage::forMyCooperation()->private()->conversation($buildingId)->get();
         $publicMessages  = PrivateMessage::forMyCooperation()->public()->conversation($buildingId)->get();
 
-        // and set them all to read.
-        PrivateMessageViewService::setRead($privateMessages);
-        PrivateMessageViewService::setRead($publicMessages);
-
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 

@@ -119,6 +119,12 @@ class GeneralDataController extends Controller
 
         $exampleBuildingId = $request->get('example_building_id', null);
 
+        // if the example building id is 0, then the empty option has been chosen.
+        // so we will set it to null since its easier to work with
+        if ($exampleBuildingId === "0") {
+            $exampleBuildingId = null;
+        }
+
         $buildYear = $building->getBuildYear();
 
         // There is one strange option: "Er is geen passende voorbeeldwoning"

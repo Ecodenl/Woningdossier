@@ -30,7 +30,7 @@
                                                 @endif
                                                 value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                     @endforeach
-                                    <option value=""
+                                    <option value="0"
                                             <?php
                                             // if the example building is not in the $exampleBuildings collection,
                                             // we select this empty value as default.

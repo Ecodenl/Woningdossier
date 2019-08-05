@@ -193,13 +193,13 @@
 
         <ul class="nav nav-tabs">
 
-            <li class="active">
+            <li>
                 <a data-toggle="tab" href="#messages-intern">
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
             @can('talk-to-resident', [$building, $cooperation])
-                <li>
+                <li class="active">
                     <a data-toggle="tab" href="#messages-public">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
                     </a>

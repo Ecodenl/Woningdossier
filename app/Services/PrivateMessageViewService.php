@@ -35,9 +35,13 @@ class PrivateMessageViewService
      * @param  InputSource  $inputSource
      */
     public static function markAsReadByUser(Collection $privateMessages, User $user, InputSource $inputSource){
-        $privateMessages->where('user_id', '=', $user->id)
-            ->where('input_source_id', '=', $inputSource->id)
-            ->update(['read_at' => Carbon::now()]);
+        foreach($privateMessages as $privateMessage){
+            PrivateMessage::where('id', '=', $privateMessage->id)
+                ->where('user_id', '=', $user->id)
+                ->where('input_source_id', '=', $inputSource->id)
+                ->update(['read_at' => Carbon::now()]);
+
+        }
     }
 
     /**
@@ -48,11 +52,12 @@ class PrivateMessageViewService
      * @param  Cooperation  $cooperation
      */
     public static function markAsReadByCooperation(Collection $privateMessages, Cooperation $cooperation){
-        $privateMessages->where('to_cooperation_id', $cooperation->id)
-            ->update(['read_at' => Carbon::now()]);
+        foreach($privateMessages as $privateMessage){
+            PrivateMessage::where('id','=', $privateMessage->id)
+                ->where('to_cooperation_id', $cooperation->id)
+                ->update(['read_at' => Carbon::now()]);
+        }
     }
-
-
 
     /**
      * Sets the incoming messages to read.
@@ -61,6 +66,7 @@ class PrivateMessageViewService
      * @param null|InputSource $inputSource
      * @param null|Cooperation $cooperation
      */
+    /*
     public static function setRead(Collection $privateMessages, InputSource $inputSource = null, Cooperation $cooperation = null)
     {
 
@@ -82,5 +88,5 @@ class PrivateMessageViewService
                     ->update(['read_at' => Carbon::now()]);
             }
         }
-    }
+    }*/
 }

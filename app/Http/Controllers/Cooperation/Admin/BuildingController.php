@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -83,13 +85,23 @@ class BuildingController extends Controller
         $publicMessages  = PrivateMessage::public()->conversation($buildingId)->get();
 
         // and set them all to read.
-        PrivateMessageViewService::setRead($privateMessages);
-        PrivateMessageViewService::setRead($publicMessages);
+        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            PrivateMessageViewService::markAsReadByCooperation($privateMessages, $cooperation);
+            PrivateMessageViewService::markAsReadByCooperation($publicMessages, $cooperation);
+        }
+        elseif(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+            PrivateMessageViewService::markAsReadByUser($privateMessages, Hoomdossier::user(), $inputSource);
+            PrivateMessageViewService::markAsReadByUser($privateMessages, Hoomdossier::user(), $inputSource);
+        }
+
+        //PrivateMessageViewService::setRead($privateMessages);
+        //PrivateMessageViewService::setRead($publicMessages);
 
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
-        // since a user can be deleted, a buildin
+        // since a user can be deleted, a building
         if ($userExists) {
             if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
 

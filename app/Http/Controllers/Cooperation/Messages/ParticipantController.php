@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Cooperation\Messages;
 
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
+use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
@@ -96,17 +98,30 @@ class ParticipantController extends Controller
         $isPublic = $request->get('is_public');
         $buildingId = $request->get('building_id');
 
+        $messagesToSetRead = PrivateMessage::forMyCooperation()
+            ->conversation($buildingId);
+
         // check which messages we have to set read
         if ($isPublic) {
-            $messagesToSetRead = PrivateMessage::forMyCooperation()->public();
+            $messagesToSetRead = $messagesToSetRead->public();
         } else {
-            $messagesToSetRead = PrivateMessage::forMyCooperation()->private();
+            $messagesToSetRead = $messagesToSetRead->private();
         }
 
+        $messagesToSetRead = $messagesToSetRead->get();
 
-        PrivateMessageViewService::setRead(
-            $messagesToSetRead->conversation($buildingId)->get()
-        );
+        /*if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
+        }
+        elseif(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
+        }
+        else {
+            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+            PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
+        }*/
 
+        PrivateMessageViewService::setRead($messagesToSetRead);
     }
 }

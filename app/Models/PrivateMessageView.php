@@ -15,28 +15,26 @@ use Illuminate\Database\Query\Builder;
  * @property int $id
  * @property int $private_message_id
  * @property int|null $user_id
- * @property int|null $cooperation_id
+ * @property int|null $input_source_id
+ * @property int|null $to_cooperation_id
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource $inputSource
+ * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forCurrentInputSource()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView wherePrivateMessageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereReadAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereToCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUserId($value)
  * @mixin \Eloquent
- *
- *
- * @note the model contains a input_source_id, this does not behave like it does on most models.
- * the input_source_id will only be filled when its a coach or resident, otherwise we will just set the to_cooperation_id and no input_source_id needs to be set.
  */
 class PrivateMessageView extends Model
 {

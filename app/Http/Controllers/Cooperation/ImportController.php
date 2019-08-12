@@ -21,7 +21,7 @@ class ImportController extends Controller
      */
     private function keyNeedsUpdate($key)
     {
-        $keysToNotUpdate = ['id', 'building_id', 'input_source_id', 'created_at', 'updated_at', 'comment'];
+        $keysToNotUpdate = ['id', 'building_id', 'input_source_id', 'created_at', 'updated_at', 'comment', 'additional_info'];
         if ( ! in_array($key, $keysToNotUpdate, true)) {
             return true;
         }

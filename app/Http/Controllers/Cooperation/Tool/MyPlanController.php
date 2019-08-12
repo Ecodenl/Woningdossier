@@ -24,13 +24,13 @@ class MyPlanController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
-        $coachComments = UserActionPlanAdvice::getAllCoachComments();
+        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
 
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachComments', 'actionPlanComments'
+            'advices', 'coachCommentsByStep', 'actionPlanComments'
         ));
     }
 

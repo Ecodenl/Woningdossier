@@ -21,7 +21,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $first_name
  * @property string $last_name
  * @property string $phone_number
- * @property string $mobile
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
@@ -66,7 +65,7 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'phone_number', 'mobile',
+        'first_name', 'last_name', 'phone_number',
     ];
 
     // ------ User -> Account table / model migration stuff -------

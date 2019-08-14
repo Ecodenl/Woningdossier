@@ -22,12 +22,6 @@ class ToolSettingService
         int $changedInputSourceId,
         bool $hasChanged
     ) {
-        $changed = $hasChanged ? "true" : "false";
-        \Log::debug(__METHOD__." (source: ".$changedInputSourceId.") to ".$changed." for building ".$buildingId);
-
-        // get all existing input sources
-        $inputSources = InputSource::all();
-
         // if a example building get applied the input source = example-building
         // If a user changes the example building we dont to notify the all the other input-sources / users from this
         // so we only set the changed for the current input source.
@@ -45,6 +39,9 @@ class ToolSettingService
                            ]
                        );
         } else {
+            // Notify all other input sources
+            $inputSources = \App\Helpers\Cache\InputSource::getOrdered();
+
             foreach ($inputSources as $inputSource) {
                 ToolSetting::withoutGlobalScope(GetValueScope::class)
                            ->updateOrCreate(

@@ -22,6 +22,7 @@ use App\Listeners\LogUserAssociatedWithOtherCooperation;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
+use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
@@ -67,7 +68,8 @@ class EventServiceProvider extends ServiceProvider
             ObservingToolForUserListener::class
         ],
         StepDataHasBeenChanged::class             => [
-            StepDataHasBeenChangedListener::class
+            StepDataHasBeenChangedListener::class,
+            PreventChangeNotificationWhenStarting::class,
         ],
         UserChangedHisEmailEvent::class           => [
             SetOldEmailListener::class,

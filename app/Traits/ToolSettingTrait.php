@@ -117,8 +117,6 @@ trait ToolSettingTrait
 
             $hasChanged = static::hasChanged($model);
 
-            \Log::debug("ToolSettingService / relations for " . get_class($model) . " " . json_encode($model->relationsToArray()));
-
             if ($model instanceof Building) {
                 // When the first page (BuildingDetails) page is done, the example_building_id is ALWAYS set.
                 // SO: $building->example_building_id always has a value.

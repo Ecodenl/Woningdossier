@@ -5,7 +5,7 @@
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.users.show.header', [
                 'name' => $userExists ? $user->getFullName() : '-',
-                'street-and-number' => $building->street.' '.$building->number,
+                'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
                 'email' => $userExists ? $user->email : ''
             ])
@@ -17,7 +17,7 @@
             <input type="hidden" name="user[id]" value="{{$user->id}}">
         @endif
         <div class="panel-body">
-            {{--delete a pipo--}}
+            {{-- delete a user --}}
             @if($userExists)
                 <div class="row">
                     <div class="col-sm-12">
@@ -46,7 +46,7 @@
                     </div>
                 </div>
             @endif
-            {{--status and appointment date--}}
+            {{-- status and appointment date --}}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">

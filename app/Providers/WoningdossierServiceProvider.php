@@ -58,21 +58,8 @@ class WoningdossierServiceProvider extends ServiceProvider
         $this->app->bind('Cooperation', function () {
             $cooperation = null;
             if (\Session::has('cooperation')) {
-
                 $c = \Session::get('cooperation');
-
-                $cacheKey = 'Cooperation_%s';
-                $cooperation = \Cache::remember(
-                    sprintf($cacheKey, $c),
-                    config('woningdossier.cache.times.default'),
-                    function() use ($c){
-
-                        return Cooperation::find($c);
-
-                    });
-
-
-                //$cooperation = Cooperation::find(\Session::get('cooperation'));
+                $cooperation = \App\Helpers\Cache\Cooperation::find($c);
             }
 
             return $cooperation;
@@ -81,10 +68,10 @@ class WoningdossierServiceProvider extends ServiceProvider
         $this->app->bind('CooperationStyle', function () {
             $cooperationStyle = null;
             if (\Session::has('cooperation')) {
-                $cooperation = Cooperation::find(\Session::get('cooperation'));
-                if ($cooperation instanceof Cooperation) {
-                    $cooperationStyle = $cooperation->style;
-                }
+                // we know this as we've cached it earlier
+                $c = \Session::get('cooperation');
+
+                $cooperationStyle = \App\Helpers\Cache\Cooperation::getStyle($c);
             }
 
             return $cooperationStyle;

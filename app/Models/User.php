@@ -122,6 +122,29 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(NotificationSetting::class);
     }
 
+    /**
+     * Determine if a user retrieves a notification
+     *
+     * @param $notificationTypeShort
+     *
+     * @return bool
+     */
+    public function retrievesNotifications($notificationTypeShort)
+    {
+        $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
+        $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
+
+
+        $doesUserRetrievesNotifications =
+
+            $this->notificationSettings()
+                 ->where('type_id', $notificationType->id)
+                 ->where('interval_id', '!=', $notInterestedInterval->id)
+                 ->exists();
+
+        return $doesUserRetrievesNotifications;
+    }
+
     public function energyHabit()
     {
         return $this->hasOne(UserEnergyHabit::class);

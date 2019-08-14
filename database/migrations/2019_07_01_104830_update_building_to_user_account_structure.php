@@ -66,12 +66,15 @@ class UpdateBuildingToUserAccountStructure extends Migration
                     if ($exampleBuilding instanceof stdClass) {
                         if ( ! is_null($exampleBuilding->cooperation_id) && $exampleBuilding->cooperation_id != $user->cooperation_id) {
 
-                            dump("Building ".$building->id." has user with cooperation_id ".$user->cooperation_id." , but example building for cooperation_id ".$exampleBuilding->cooperation_id);
+                            dump("Building ".$building->id." has user with cooperation_id ".$user->cooperation_id.", but example building is for cooperation_id ".$exampleBuilding->cooperation_id);
+
+                            // building_type_id column is in building features
+                            $features = DB::table('building_features')->where('building_id', '=', $building->id)->first();
 
                             // Just select the "non-specific"
                             $newEB = DB::table('example_buildings')
                                        ->where('building_type_id', '=',
-                                           $building->building_type_id)
+                                           $features->building_type_id)
                                        ->whereNull('cooperation_id')
                                        ->first();
                             if ($newEB instanceof stdClass) {

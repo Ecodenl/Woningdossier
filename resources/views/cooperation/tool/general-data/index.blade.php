@@ -764,7 +764,8 @@
     <script>
         $(document).ready(function () {
 
-            var previous_eb = parseInt('{{ $building->example_building_id }}');
+            var previous_eb = parseInt($("select#example_building_id").val());
+            previous_eb = isNaN(previous_eb) ? "" : previous_eb;
 
             $("select#example_building_id").change(function () {
                 var current_eb = parseInt(this.value);

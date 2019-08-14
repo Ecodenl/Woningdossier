@@ -40,7 +40,7 @@ class UserService
         // remove the user itself.
         $user->delete();
 
-        // if the account has no users anymore then we delete the account itself to.
+        // if the account has no users anymore then we delete the account itself too.
         if (User::withoutGlobalScopes()->where('account_id', $accountId)->count() == 0) {
             // bye !
             Account::find($accountId)->delete();

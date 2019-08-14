@@ -33,6 +33,9 @@ use Illuminate\Http\Request;
 
 class WallInsulationController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -138,14 +141,13 @@ class WallInsulationController extends Controller
         );
 
 
-//        if (($buildingFeature->wasRecentlyCreated || $buildingFeature->wasChanged() || $buildingElement->wasChanged() || $buildingElement->wasRecentlyCreated)
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
 
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        $cooperation = HoomdossierSession::getCooperation(true);
 
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        \Event::dispatch(new StepDataHasBeenChangedEvent());
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

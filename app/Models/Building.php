@@ -130,22 +130,6 @@ class Building extends Model
     }
 
     /**
-     * Complete a step for a building.
-     *
-     * @param Step $step
-     *
-     * @return Model
-     */
-    public function complete(Step $step)
-    {
-        return UserProgress::firstOrCreate([
-            'step_id' => $step->id,
-            'input_source_id' => HoomdossierSession::getInputSource(),
-            'building_id' => HoomdossierSession::getBuilding(),
-        ]);
-    }
-
-    /**
      * Check if a user is interested in a step.
      *
      * @param string $type

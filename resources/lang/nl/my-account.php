@@ -168,11 +168,15 @@ return [
             'header'       => 'Account verwijderen',
             'are-you-sure' => [
                 'complete-delete' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
-                'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijderd uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen moet u bij elke coöperatie deze stap uitvoeren.'
+                'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijdert uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen dient u deze stap bij elke coöperatie uit te voeren.'
             ],
 
             'label'        => 'Mijn account verwijderen',
             'submit'       => 'Verwijderen',
+            'success'      => [
+                'cooperation' => 'Uw account is succesvol verwijderd voor deze coöperatie',
+                'full' => 'Uw account is volledig verwijderd',
+            ],
         ],
     ],
     'hoom-settings'     => [

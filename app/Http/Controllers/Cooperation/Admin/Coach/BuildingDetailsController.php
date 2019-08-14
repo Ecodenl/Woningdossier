@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 class BuildingDetailsController extends Controller
 {
 
-
     public function store(Request $request)
     {
         $note = strip_tags($request->get('note'));

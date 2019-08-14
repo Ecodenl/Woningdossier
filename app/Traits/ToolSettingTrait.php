@@ -89,6 +89,8 @@ trait ToolSettingTrait
     {
         static::created(function (Model $model) {
 
+            \Log::debug("static::created");
+
             $hasChanged = static::hasChanged($model);
             // this was a requested feature so no alert would be triggered after the first page was done
             // i'll just comment this out cause my sixth sense tell;s me this will be requested again.
@@ -105,6 +107,8 @@ trait ToolSettingTrait
         });
 
         static::updated(function (Model $model) {
+
+            \Log::debug("static::updated");
 
             $hasChanged = static::hasChanged($model);
             // this was a requested feature so no alert would be triggered after the first page was done

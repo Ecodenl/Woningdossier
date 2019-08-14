@@ -45,6 +45,9 @@ use Illuminate\Http\Request;
 
 class GeneralDataController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -351,8 +354,8 @@ class GeneralDataController extends Controller
         );
 
         // Save progress
-        $building->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

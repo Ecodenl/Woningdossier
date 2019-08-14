@@ -8,6 +8,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -53,9 +54,7 @@ class SettingsController extends Controller
         );
 
         $userData['phone_number'] = $userData['phone_number'] ?? '';
-
         $buildingData['extension'] = $buildingData['extension'] ?? '';
-
         $buildingData['number'] = $buildingData['house_number'] ?? '';
         // try to obtain the address id from the api, else get the one from the request.
         $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
@@ -118,8 +117,6 @@ class SettingsController extends Controller
         $user->energyHabit()->delete();
         // remove the motivations from a user
         $user->motivations()->delete();
-        // remove the progress from a user
-        //$user->progress()->delete();
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }
@@ -128,6 +125,8 @@ class SettingsController extends Controller
     public function destroy()
     {
         $user = \App\Helpers\Hoomdossier::user();
+        $accountId = $user->account_id;
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         UserService::deleteUser($user);
 
@@ -136,7 +135,12 @@ class SettingsController extends Controller
         \Auth::logout();
         request()->session()->invalidate();
 
+        $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
+        $success = __('my-account.settings.destroy.success.cooperation');
+        if (!$stillActiveForOtherCooperations){
+            $success = __('my-account.settings.destroy.success.full');
+        }
 
-        return redirect(url(''));
+        return redirect()->route('cooperation.welcome', compact('cooperation'))->with('success', $success);
     }
 }

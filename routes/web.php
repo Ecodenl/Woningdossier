@@ -132,11 +132,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Extra pages with downloadable or information content.
-                    Route::group(['namespace' => 'Information'], function () {
-                        Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
-                    });
-
+                    // Ventilation information: info for now
+                    Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                    // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
 
                     // Wall Insulation

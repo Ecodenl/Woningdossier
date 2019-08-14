@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuildingDetailRequest;
 use App\Models\Building;
@@ -18,6 +19,9 @@ use Illuminate\Http\Request;
 
 class BuildingDetailController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -89,7 +93,7 @@ class BuildingDetailController extends Controller
         }
 
         // finish the step
-        $building->complete($this->step);
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
 
         \Event::dispatch(new StepDataHasBeenChangedEvent());
 

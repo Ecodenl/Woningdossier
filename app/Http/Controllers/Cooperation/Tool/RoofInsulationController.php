@@ -31,6 +31,7 @@ use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use Carbon\Carbon;
+use function Couchbase\defaultDecoder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -159,17 +160,15 @@ class RoofInsulationController extends Controller
         // Remove old results
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
-        $roofTypes = $request->input('building_roof_types', []);
+        $roofTypes = $request->input('building_roof_types.id', []);
         foreach ($roofTypes as $i => $details) {
-            if (is_numeric($i) && is_numeric($details)) {
-                $roofType = RoofType::find($details);
-                if ($roofType instanceof RoofType) {
-                    $cat = $this->getRoofTypeCategory($roofType);
-                    // add as key to result array
-                    $result[$cat] = [
-                        'type' => $this->getRoofTypeSubCategory($roofType),
-                    ];
-                }
+            $roofType = RoofType::find($details);
+            if ($roofType instanceof RoofType) {
+                $cat = $this->getRoofTypeCategory($roofType);
+                // add as key to result array
+                $result[$cat] = [
+                    'type' => $this->getRoofTypeSubCategory($roofType),
+                ];
             }
         }
 
@@ -303,26 +302,30 @@ class RoofInsulationController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $user = $building->user;
 
-        $roofTypes = $request->input('building_roof_types', []);
-        foreach ($roofTypes as $i => $details) {
-            if (is_numeric($i) && is_numeric($details)) {
-                $roofType = RoofType::find($details);
-                if ($roofType instanceof RoofType) {
-                    $cat = $this->getRoofTypeCategory($roofType);
-                    // add as key to result array
-                    $result[$cat] = [
-                        'type' => $this->getRoofTypeSubCategory($roofType),
-                    ];
-                }
+        $roofTypeIds = $request->input('building_roof_types.id', []);
+        // TODO: this will cause a merge conflict when the csv branch will gets merged.
+        // TODO: add in the ->input the .id
+        // TODO: roof calculator remove the ifs on integer since the .id wil always contain an integer.
+        foreach ($roofTypeIds as $details) {
+            $roofType = RoofType::findOrFail($details);
+            if ($roofType instanceof RoofType) {
+                $cat = $this->getRoofTypeCategory($roofType);
+                // add as key to result array
+                $result[$cat] = [
+                    'type' => $this->getRoofTypeSubCategory($roofType),
+                ];
             }
         }
+
 
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $adviceMap = $this->getMeasureApplicationsAdviceMap();
         $totalSurface = 0;
 
-        foreach (array_keys($result) as $cat) {
 
+        // TODO: when csv branch gets merged, add this line in the calculator.
+        $roofTypes = $request->input('building_roof_types', []);
+        foreach (array_keys($result) as $cat) {
             $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
             $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
             $totalSurface += $insulationRoofSurface;

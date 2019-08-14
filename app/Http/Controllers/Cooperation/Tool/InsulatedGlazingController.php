@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
@@ -215,8 +216,10 @@ class InsulatedGlazingController extends Controller
                 $interest instanceof Interest &&
                 array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
                 $gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
-                    (int) $buildingInsulatedGlazingsData['m2'], $measureApplication,
-                    $buildingHeating, $insulatedGlazing
+                    NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
+                    $measureApplication,
+                    $buildingHeating,
+                    $insulatedGlazing
                 );
 
                 $result['measure'][$measureApplication->id] = [

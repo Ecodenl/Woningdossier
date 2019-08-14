@@ -16,7 +16,7 @@
                                 <ul>
                                     @foreach($files as $categoryImage => $categoryFiles)
                                         @foreach($categoryFiles as $file)
-                                            <li><img src="{{ asset('images/' . $categoryImage . '.png') }}"class="img-circle"/> <a download="" href="{{ asset($file) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($file))))) }}</a></li>
+                                            <li><img src="{{ asset('images/icons/' . $categoryImage . '.png') }}" class="img-circle"/> <a download="" href="{{ asset($file) }}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset($file))))) }}</a></li>
                                         @endforeach
                                     @endforeach
                                 </ul>

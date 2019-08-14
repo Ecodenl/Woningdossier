@@ -30,7 +30,7 @@
                                                 @endif
                                                 value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                     @endforeach
-                                    <option value="0"
+                                    <option value=""
                                             <?php
                                             // if the example building is not in the $exampleBuildings collection,
                                             // we select this empty value as default.
@@ -759,6 +759,8 @@
 
             $("select#example_building_id").change(function () {
                 var current_eb = parseInt(this.value);
+                // if "no specific": set to null
+                current_eb = isNaN(current_eb) ? null : current_eb;
                 // Do something with the previous value after the change
                 if (current_eb !== previous_eb) {
                     if (previous_eb === "" || confirm('{{ \App\Helpers\Translation::translate('general-data.example-building.apply-are-you-sure.title') }}')) {
@@ -772,7 +774,7 @@
 
                         $.ajax({
                             type: "POST",
-                            url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                            url: '{{ route('cooperation.tool.apply-example-building', compact('cooperation')) }}',
                             data: {example_building_id: current_eb},
                             success: function (data) {
                                 location.reload();

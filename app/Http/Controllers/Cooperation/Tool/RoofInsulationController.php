@@ -160,9 +160,10 @@ class RoofInsulationController extends Controller
         // Remove old results
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
-        $roofTypes = $request->input('building_roof_types.id', []);
-        foreach ($roofTypes as $i => $details) {
-            $roofType = RoofType::find($details);
+        // TODO: same as what we did in the calculations.
+        $roofTypeIds = $request->input('building_roof_types.id', []);
+        foreach ($roofTypeIds as $roofTypeId) {
+            $roofType = RoofType::find($roofTypeId);
             if ($roofType instanceof RoofType) {
                 $cat = $this->getRoofTypeCategory($roofType);
                 // add as key to result array
@@ -306,8 +307,8 @@ class RoofInsulationController extends Controller
         // TODO: this will cause a merge conflict when the csv branch will gets merged.
         // TODO: add in the ->input the .id
         // TODO: roof calculator remove the ifs on integer since the .id wil always contain an integer.
-        foreach ($roofTypeIds as $details) {
-            $roofType = RoofType::findOrFail($details);
+        foreach ($roofTypeIds as $roofTypeId) {
+            $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
                 $cat = $this->getRoofTypeCategory($roofType);
                 // add as key to result array

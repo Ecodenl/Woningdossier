@@ -4,6 +4,12 @@
 
 @section('step_content')
 
+    <?php
+        // Page wide usage
+        $myBuildingFeatures = $building->buildingFeatures()->forMe()->get();
+
+    ?>
+
     <form class="form-horizontal" method="POST" id="main-form"
           action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
@@ -50,7 +56,7 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'general-data.building-type.what-user-surface', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'surface', 'needsFormat' => true])
+                            ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'surface', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                                 <input id="surface" type="text" class="form-control" name="surface"
                                        value="{{ old('surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'surface'), 1)) }}"
@@ -65,7 +71,7 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'building_layers', 'translation' => 'general-data.building-type.how-much-building-layers', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
+                            ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
                                 <input id="building_layers" type="text" class="form-control" name="building_layers"
                                        value="{{ old('building_layers', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_layers')) }}"
                                        autofocus>
@@ -81,7 +87,7 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'roof_type_id', 'translation' => 'general-data.building-type.type-roof',])
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
+                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
                                 <select id="roof_type_id" class="form-control" name="roof_type_id">
                                     @foreach($roofTypes as $roofType)
                                         <option
@@ -119,7 +125,7 @@
                             }
                             ?>
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
+                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
                                 <select id="energy_label_id" class="form-control" name="energy_label_id">
                                     @foreach($energyLabels as $energyLabel)
                                         <option
@@ -166,7 +172,7 @@
                                 <ul class="dropdown-menu">
                                     <?php
                                     // we need to check if there is a answer from one input source
-                                    //$hasAnswerMonument = $building->buildingFeatures()->forMe()->get()->contains('monument', '!=', '');
+                                    //$hasAnswerMonument = $myBuildingFeatures->contains('monument', '!=', '');
                                     $monumentValues = $building->buildingFeatures()->forMe()->whereNotNull('monument')->get();
                                     ?>
                                     @if($monumentValues->count() <= 0)

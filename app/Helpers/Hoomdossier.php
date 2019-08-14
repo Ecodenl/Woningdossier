@@ -46,6 +46,7 @@ class Hoomdossier
             'wall_joints',
             'contaminated_wall_joints',
             'monument',
+            'building_layers',
         ];
 
         // Always check my own input source first. If that is properly filled

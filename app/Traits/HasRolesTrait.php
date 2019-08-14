@@ -5,10 +5,12 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Traits\HasRoles;
 
-trait HasRolesTrait {
+trait HasRolesTrait
+{
 
     use HasRoles;
 
@@ -36,48 +38,69 @@ trait HasRolesTrait {
     /**
      * Determine if the model has (one of) the given role(s).
      *
-     * @param null $cooperationId
-     * @param string|int|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
+     * @param  null  $cooperationId
+     * @param  string|int|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection  $roles
      *
      * @return bool
      */
     public function hasRole($roles, $cooperationId = null): bool
     {
-        $userRoles = $this->roles($cooperationId)->get();
-
-        if (is_string($roles) && false !== strpos($roles, '|')) {
-            $roles = $this->convertPipeToArray($roles);
+        $cacheKey = 'HasRolesTrait_hasRole_%s_%s';
+        $c = $cooperationId ?? '';
+        $r = $roles;
+        if ($roles instanceof Role){
+            $r = $roles->name;
+        }
+        if (is_array($roles)){
+            $r = implode('_', $roles);
         }
 
-        if (is_string($roles)) {
-            return $userRoles->contains('name', $roles);
-        }
+        return Cache::remember(
+            sprintf($cacheKey, $r, $c),
+            config('woningdossier.cache.times.default'),
+            function() use ($roles, $cooperationId){
 
-        if (is_int($roles)) {
-            return $userRoles->contains('id', $roles);
-        }
 
-        if ($roles instanceof Role) {
-            return $userRoles->contains('id', $roles->id);
-        }
+                $userRoles = $this->roles($cooperationId)->get();
 
-        if (is_array($roles)) {
-            foreach ($roles as $role) {
-                if ($this->hasRole($role, $cooperationId)) {
-                    return true;
+                if (is_string($roles) && false !== strpos($roles, '|')) {
+                    $roles = $this->convertPipeToArray($roles);
                 }
+
+                if (is_string($roles)) {
+                    return $userRoles->contains('name', $roles);
+                }
+
+                if (is_int($roles)) {
+                    return $userRoles->contains('id', $roles);
+                }
+
+                if ($roles instanceof Role) {
+                    return $userRoles->contains('id', $roles->id);
+                }
+
+                if (is_array($roles)) {
+                    foreach ($roles as $role) {
+                        if ($this->hasRole($role, $cooperationId)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                return $roles->intersect($userRoles)->isNotEmpty();
+
+
             }
+        );
 
-            return false;
-        }
-
-        return $roles->intersect($userRoles)->isNotEmpty();
     }
 
     /**
      * Assign the given role to the model.
      *
-     * @param array|string|\Spatie\Permission\Contracts\Role ...$roles
+     * @param  array|string|\Spatie\Permission\Contracts\Role  ...$roles
      *
      * @return $this
      */
@@ -89,6 +112,7 @@ trait HasRolesTrait {
                 if (empty($role)) {
                     return false;
                 }
+
                 return $this->getStoredRole($role);
             })
             ->filter(function ($role) {
@@ -138,6 +162,16 @@ trait HasRolesTrait {
      */
     public function getRoleNames($cooperationId = null): Collection
     {
-        return $this->roles($cooperationId)->pluck('name');
+        $c = $cooperationId ?? '';
+        $cacheKey = 'HasRolesTrait_getRoleNames_%s';
+        return Cache::remember(
+            sprintf($cacheKey, $c),
+            config('woningdossier.cache.times.default'),
+            function() use ($cooperationId){
+
+                return $this->roles($cooperationId)->pluck('name');
+
+            });
+
     }
 }

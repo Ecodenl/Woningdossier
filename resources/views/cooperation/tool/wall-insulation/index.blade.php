@@ -163,6 +163,47 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="hideable" id="surfaces">
+                    <div class="col-sm-6">
+                        @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
+
+                            @component('cooperation.tool.components.input-group',
+                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
+                                <input id="wall_surface" type="text" name="wall_surface"
+                                       value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}"
+                                       class="form-control">
+                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
+                            @endcomponent
+
+                        @endcomponent
+                    </div>
+                    <div class="col-sm-6">
+                        @component('cooperation.tool.components.step-question', ['id' => 'insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => false])
+
+                            @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
+                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface"
+                                       value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}"
+                                       class="form-control">
+                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
+                            @endcomponent
+
+                        @endcomponent
+                    </div>
+            </div>
+
+            <div class="hideable">
+                <div id="advice-help">
+                    <div class="col-sm-12 col-md-8 col-md-offset-2">
+                        <div class="alert alert-info" role="alert">
+                            <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
+                            <p id="insulation-advice"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div id="options">
             <hr>
@@ -201,46 +242,8 @@
 
             </div>
 
-            <div class="hideable" id="surfaces">
-                <div class="row">
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
-
-                            @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
-                                <input id="wall_surface" type="text" name="wall_surface"
-                                       value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}"
-                                       class="form-control">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            @endcomponent
-
-                        @endcomponent
-                    </div>
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => false])
-
-                            @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
-                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface"
-                                       value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}"
-                                       class="form-control">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            @endcomponent
-
-                        @endcomponent
-                    </div>
-                </div>
-            </div>
 
             <div class="hideable">
-                <div class="row" id="advice-help">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-info" role="alert">
-                            <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
-                            <p id="insulation-advice"></p>
-                        </div>
-                    </div>
-                </div>
                 <div class="row" id="cavity-wall-alert" style="display: none;">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">

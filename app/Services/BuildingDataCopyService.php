@@ -9,11 +9,15 @@ use App\Models\InputSource;
 class BuildingDataCopyService
 {
 
-    public static function copy(
-        Building $building,
-        InputSource $from,
-        InputSource $to
-    ) {
+    /**
+     * Method to copy data from a building and input source to a other input source on the same building.
+     *
+     * @param Building $building
+     * @param InputSource $from
+     * @param InputSource $to
+     */
+    public static function copy(Building $building, InputSource $from, InputSource $to)
+    {
 
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
@@ -94,29 +98,22 @@ class BuildingDataCopyService
                         // now build the query to get the resident his answers
                         $toValueQuery = \DB::table($table)
                                            ->where('input_source_id', $to->id)
-                                           ->where($buildingOrUserColumn,
-                                               $buildingOrUserId)
-                                           ->where($whereColumn,
-                                               $fromValue->$whereColumn);
+                                           ->where($buildingOrUserColumn, $buildingOrUserId)
+                                           ->where($whereColumn, $fromValue->$whereColumn);
 
                         // count the rows
                         $toValueCount = \DB::table($table)
                                            ->where('input_source_id', $to->id)
-                                           ->where($buildingOrUserColumn,
-                                               $buildingOrUserId)
-                                           ->where($whereColumn,
-                                               $fromValue->$whereColumn)
+                                           ->where($buildingOrUserColumn, $buildingOrUserId)
+                                           ->where($whereColumn, $fromValue->$whereColumn)
                                            ->count();
-
 
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
                         if ($toValueCount > 1) {
                             $additionalWhereColumn = $tableOrWhereColumns['additional_where_column'];
                             // add the where to the query
-                            $toValueQuery = $toValueQuery
-                                ->where($additionalWhereColumn,
-                                    $fromValue->$additionalWhereColumn);
+                            $toValueQuery = $toValueQuery->where($additionalWhereColumn, $fromValue->$additionalWhereColumn);
 
 
                             // get the result
@@ -128,14 +125,12 @@ class BuildingDataCopyService
 
                             // if it exists, we need to update it. Else we need to insert a new row.
                             if ( ! empty($toValue)) {
-                                $toValueQuery->update(static::createUpdateArray($toValue,
-                                    $fromValue));
+                                $toValueQuery->update(static::createUpdateArray($toValue, $fromValue));
                             } else {
-                                // we cant create an update array since there is no data from the target input source
-                                // unset the stuff we dont want to insert
-                                unset($fromValue['id'], $fromValue['input_source_id']);
-                                // change the input source id to the resident
+                                $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
+                                // change the input source id to the 'to' id
                                 $fromValue['input_source_id'] = $to->id;
+                                $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
                                 // and insert a new row!
                                 \DB::table($table)->insert($fromValue);
                             }
@@ -149,16 +144,15 @@ class BuildingDataCopyService
                             // YAY! data has been copied so update or create the target input source his records.
                             if ($toValueQuery->first() instanceof \stdClass) {
                                 // check if its empty ornot.
-                                if ( ! empty($updateData = static::createUpdateArray((array) $toValue,
-                                    (array) $fromValue))) {
+                                if ( ! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
                                     $toValueQuery->update($updateData);
                                 }
                             } else {
-                                // we cant create an update array since there is no data from the target input source
-                                // unset the stuff we dont want to insert
-                                unset($fromValue['id'], $fromValue['input_source_id']);
-                                // change the input source id to the resident
+
+                                $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
+                                // change the input source id to the 'to' id
                                 $fromValue['input_source_id'] = $to->id;
+                                $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
                                 // and insert a new row!
                                 \DB::table($table)->insert($fromValue);
                             }
@@ -169,8 +163,7 @@ class BuildingDataCopyService
                 // get the resident his input
                 $toValueQuery = \DB::table($table)
                                    ->where('input_source_id', $to->id)
-                                   ->where($buildingOrUserColumn,
-                                       $buildingOrUserId);
+                                   ->where($buildingOrUserColumn, $buildingOrUserId);
 
 
                 // get the first result from the desired input source
@@ -179,23 +172,22 @@ class BuildingDataCopyService
 
 
                 if ($toValue instanceof \stdClass) {
-                    if ( ! empty($updateData = static::createUpdateArray((array) $toValue,
-                        (array) $fromValue))) {
+                    if ( ! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
                         $toValueQuery->update($updateData);
                     }
                 } else {
                     $fromValue = (array) $fromValue;
                     // unset the stuff we dont want to insert
-                    unset($fromValue['id'], $fromValue['input_source_id']);
-                    // change the input source id to the resident
+                    $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
+                    // change the input source id to the 'to' id
                     $fromValue['input_source_id'] = $to->id;
+                    $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
 
                     // and insert a new row!
                     \DB::table($table)->insert($fromValue);
                 }
             }
         }
-
     }
 
     /**
@@ -208,14 +200,15 @@ class BuildingDataCopyService
     private static function keyNeedsUpdate($key)
     {
         $keysToNotUpdate = [
-            'id', 'building_id', 'input_source_id', 'created_at', 'updated_at',
-            'comment', 'additional_info'
+            'id', 'building_id', 'input_source_id', 'created_at', 'updated_at', 'comment', 'additional_info'
         ];
-        if ( ! in_array($key, $keysToNotUpdate, true)) {
-            return true;
+
+        // if the key does exists in the array it does not need a update
+        if (in_array($key, $keysToNotUpdate, true)) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -230,8 +223,21 @@ class BuildingDataCopyService
      */
     private static function isRadioInput($key)
     {
-        return in_array($key,
-            ['cavity_wall', 'monument', 'facade_plastered_painted']);
+        return in_array($key, ['cavity_wall', 'monument', 'facade_plastered_painted']);
+    }
+
+    /**
+     * Method to filter the value's from the extra column
+     *
+     * @param $extraColumnData
+     * @return array
+     */
+    private static function filterExtraColumn($extraColumnData): array
+    {
+        return array_filter($extraColumnData, function ($extraValue, $extraKey) {
+            // if the string is not considered empty, and its need an update. Then we add it
+            return ! Str::isConsideredEmptyAnswer($extraValue) && static::keyNeedsUpdate($extraKey);
+        }, ARRAY_FILTER_USE_BOTH);
     }
 
     /**
@@ -242,35 +248,29 @@ class BuildingDataCopyService
      *
      * @return array
      */
-    private static function createUpdateArray(
-        $inputSourceToUpdate,
-        $inputSourceToCopy
-    ): array {
+    private static function createUpdateArray($inputSourceToUpdate, $inputSourceToCopy): array
+    {
         $updateArray = [];
 
         // if the desired input source has a extra key and its not empty, then we start to compare and merge the extra column.
-        if (array_key_exists('extra',
-                $inputSourceToCopy) && ! empty($inputSourceToCopy['extra'])) {
-            // if the resident had nothing then we just use the desired input source extra.
+        if (array_key_exists('extra', $inputSourceToCopy) && ! empty($inputSourceToCopy['extra'])) {
+
             if (empty($inputSourceToUpdate['extra'])) {
-                $updateExtra = $inputSourceToCopy['extra'];
-            } else {
-                $inputSourceToCopyExtra   = json_decode($inputSourceToCopy['extra'],
-                    true);
-                $inputSourceToUpdateExtra = json_decode($inputSourceToUpdate['extra'],
-                    true);
+                $inputSourceToCopyExtra = json_decode($inputSourceToCopy['extra'], true);
 
                 // filter the values which are not considered to be empty.
-                $inputSourceToCopyNotNullExtraValues = array_filter($inputSourceToCopyExtra,
-                    function ($extraValue, $extraKey) {
-                        // if the string is not considered empty, then we want to update it.
-                        return ! Str::isConsideredEmptyAnswer($extraValue) && static::keyNeedsUpdate($extraKey);
-                    }, ARRAY_FILTER_USE_BOTH);
+                $inputSourceToCopyNotNullExtraValues = static::filterExtraColumn($inputSourceToCopyExtra);
+
+                $updateExtra = json_encode($inputSourceToCopyNotNullExtraValues);
+            } else {
+                $inputSourceToCopyExtra   = json_decode($inputSourceToCopy['extra'], true);
+                $inputSourceToUpdateExtra = json_decode($inputSourceToUpdate['extra'], true);
+
+                $inputSourceToCopyNotNullExtraValues = static::filterExtraColumn($inputSourceToCopyExtra);
 
                 // create the extra column json.
                 // merge those toes
-                $updateExtra = json_encode(array_merge($inputSourceToUpdateExtra,
-                    $inputSourceToCopyNotNullExtraValues));
+                $updateExtra = json_encode(array_merge($inputSourceToUpdateExtra, $inputSourceToCopyNotNullExtraValues));
             }
 
             // add the json to the extra ket

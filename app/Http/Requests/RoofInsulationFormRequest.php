@@ -104,6 +104,18 @@ class RoofInsulationFormRequest extends FormRequest
         ];
     }
 
+    /**
+     * small translation of the attribute.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'building_roof_types.id' => 'daktypes'
+        ];
+    }
+
     public function withValidator($validator)
     {
         // get the rooftypes

@@ -13,7 +13,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group add-space {{ $errors->has('building_roof_types.id.*') ? ' has-error' : '' }}">
+                        <div class="form-group add-space {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
                             <label for="building_roof_types" class="control-label">
                                 <i data-toggle="modal" data-target="#roof-type-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
@@ -28,7 +28,7 @@
                                         <input data-calculate-value="{{$roofType->calculate_value}}"
                                                type="checkbox" name="building_roof_types[id][]"
                                                value="{{ $roofType->id }}"
-                                               @if(in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
+                                               @if(empty(old()) && in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
                                                checked="checked"
                                                 @endif
                                                 {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
@@ -40,9 +40,9 @@
                                 @endforeach
                             @endcomponent
 
-                            @if($errors->has('building_roof_types.id.*'))
+                            @if($errors->has('building_roof_types.id'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('building_roof_types.id.*') }}</strong>
+                                    <strong>{{ $errors->first('building_roof_types.id') }}</strong>
                                 </span>
                             @endif
 

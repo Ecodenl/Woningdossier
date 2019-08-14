@@ -26,9 +26,6 @@ class CreateUsersTable extends Migration
 
             $table->string('phone_number')->default('');
 
-            $table->dateTime('last_visit')->nullable()->default(null);
-            $table->integer('visit_count')->default(0);
-
             $table->boolean('active')->default(1);
             $table->boolean('is_admin')->default(false);
 

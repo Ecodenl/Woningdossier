@@ -755,12 +755,13 @@
     <script>
         $(document).ready(function () {
 
-            var previous_eb = parseInt('{{ $building->example_building_id }}');
+            var previous_eb = parseInt($("select#example_building_id").val());
+            previous_eb = isNaN(previous_eb) ? "" : previous_eb;
 
             $("select#example_building_id").change(function () {
                 var current_eb = parseInt(this.value);
                 // if "no specific": set to null
-                current_eb = isNaN(current_eb) ? null : current_eb;
+                current_eb = isNaN(current_eb) ? "" : current_eb;
                 // Do something with the previous value after the change
                 if (current_eb !== previous_eb) {
                     if (previous_eb === "" || confirm('{{ \App\Helpers\Translation::translate('general-data.example-building.apply-are-you-sure.title') }}')) {

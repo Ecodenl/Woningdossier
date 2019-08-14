@@ -198,9 +198,15 @@
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
+
             @can('talk-to-resident', [$building, $cooperation])
                 <li>
                     <a data-toggle="tab" href="#messages-public">
+                        @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
+                            <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.yes')"></i>
+                        @else
+                            <i class="glyphicon glyphicon-ban-circle" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.no')"></i>
+                        @endif
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
                     </a>
                 </li>
@@ -332,6 +338,8 @@
             $('.nav-tabs a').on('shown.bs.tab', function (event) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
 
             // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
             var originalAppointmentDate = appointmentDate.find('input').val();

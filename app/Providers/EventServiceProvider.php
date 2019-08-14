@@ -8,7 +8,7 @@ use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
@@ -51,31 +51,31 @@ class EventServiceProvider extends ServiceProvider
         ParticipantAddedEvent::class => [
             ParticipantAddedListener::class,
         ],
-        Login::class => [
+        Login::class                              => [
             SuccessFullLoginListener::class,
         ],
-        Registered::class => [
+        Registered::class                         => [
             LogRegisteredUserListener::class
         ],
         UserAssociatedWithOtherCooperation::class => [
             LogUserAssociatedWithOtherCooperation::class
         ],
-        FillingToolForUserEvent::class => [
+        FillingToolForUserEvent::class            => [
             FillingToolForUserListener::class
         ],
-        ObservingToolForUserEvent::class => [
+        ObservingToolForUserEvent::class          => [
             ObservingToolForUserListener::class
         ],
-        StepDataHasBeenChangedEvent::class => [
+        StepDataHasBeenChanged::class             => [
             StepDataHasBeenChangedListener::class
         ],
-        UserChangedHisEmailEvent::class => [
+        UserChangedHisEmailEvent::class           => [
             SetOldEmailListener::class,
         ],
-        UserAllowedAccessToHisBuilding::class => [
+        UserAllowedAccessToHisBuilding::class     => [
             LogAllowedAccessToBuilding::class
         ],
-        UserRevokedAccessToHisBuilding::class => [
+        UserRevokedAccessToHisBuilding::class     => [
             LogRevokedAccessToBuilding::class
         ],
     ];

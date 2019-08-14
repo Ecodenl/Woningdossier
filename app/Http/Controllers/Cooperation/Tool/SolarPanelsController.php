@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
@@ -196,6 +197,7 @@ class SolarPanelsController extends Controller
         // Save progress
         $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
         $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
@@ -205,7 +207,6 @@ class SolarPanelsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
         return redirect($url);
     }
 

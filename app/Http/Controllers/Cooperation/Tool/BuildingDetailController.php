@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -94,8 +95,7 @@ class BuildingDetailController extends Controller
 
         // finish the step
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
-
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
         return redirect()->route('cooperation.tool.general-data.index');
     }

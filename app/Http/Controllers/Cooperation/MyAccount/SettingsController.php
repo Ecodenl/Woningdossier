@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\DossierResetPerformed;
 use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -15,6 +16,7 @@ use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\OldEmail;
 use App\Models\User;
+use App\Services\ToolSettingService;
 use App\Services\UserService;
 use function GuzzleHttp\Psr7\uri_for;
 use Illuminate\Auth\Passwords\DatabaseTokenRepository;
@@ -117,6 +119,8 @@ class SettingsController extends Controller
         $user->energyHabit()->delete();
         // remove the motivations from a user
         $user->motivations()->delete();
+
+        DossierResetPerformed::dispatch($building);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

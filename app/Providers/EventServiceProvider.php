@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\DossierResetPerformed;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
@@ -12,6 +13,7 @@ use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
+use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\LogAllowedAccessToBuilding;
 use App\Listeners\LogRegisteredUserListener;
@@ -37,6 +39,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        DossierResetPerformed::class => [
+            DossierResetListener::class,
+        ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
         ],

@@ -45,6 +45,7 @@ class Hoomdossier
             'facade_damaged_paintwork_id',
             'wall_joints',
             'contaminated_wall_joints',
+            'monument',
         ];
 
         // Always check my own input source first. If that is properly filled

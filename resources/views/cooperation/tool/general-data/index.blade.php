@@ -141,35 +141,38 @@
                     <div class="col-md-12">
                         <div class="input-group input-source-group">
                             @component('cooperation.tool.components.step-question', ['id' => 'monument', 'translation' => 'general-data.building-type.is-monument', 'required' => false])
-                                <?php $checked = (int)old('monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument')); ?>
+                                <?php
+                                $checked = old('monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument'));
+                                ?>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="1"
-                                           @if($checked == 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}
+                                           @if($checked === 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="2"
-                                           @if($checked == 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.no.title')}}
+                                           @if($checked === 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.no.title')}}
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="0"
-                                           @if($checked == 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.unknown.title')}}
+                                           @if($checked === 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.unknown.title')}}
                                 </label>
 
                             @endcomponent
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span></button>
+                                    <span class="caret"></span>
+                                </button>
                                 <ul class="dropdown-menu">
                                     <?php
                                     // we need to check if there is a answer from one input source
-                                    $hasAnswerMonument = $building->buildingFeatures()->forMe()->get()->contains('monument', '!=', '');
-
+                                    //$hasAnswerMonument = $building->buildingFeatures()->forMe()->get()->contains('monument', '!=', '');
+                                    $monumentValues = $building->buildingFeatures()->forMe()->whereNotNull('monument')->get();
                                     ?>
-                                    @if(!$hasAnswerMonument)
+                                    @if($monumentValues->count() <= 0)
                                             @include('cooperation.tool.includes.no-answer-available')
                                     @else
-                                        @foreach($building->buildingFeatures()->forMe()->get() as $userInputValue)
+                                        @foreach($monumentValues as $userInputValue)
                                             <?php
                                             // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
                                             $value = $userInputValue->monument;
@@ -177,16 +180,16 @@
                                                 $trans = __('woningdossier.cooperation.radiobutton.yes');
                                             } elseif (2 === $value) {
                                                 $trans = __('woningdossier.cooperation.radiobutton.no');
-                                            } else {
+                                            } elseif (0 === $value) {
                                                 $trans = __('woningdossier.cooperation.radiobutton.unknown');
                                             }
                                             ?>
 
                                             <li class="change-input-value"
                                                 data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"
-                                                data-input-value="{{ $value }}"><a
-                                                        href="#">{{ $userInputValue->getInputSourceName() }}
-                                                    : {{ $trans }}</a></li>
+                                                data-input-value="{{ $value }}">
+                                                <a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a>
+                                            </li>
                                         @endforeach
                                     @endif
                                 </ul>

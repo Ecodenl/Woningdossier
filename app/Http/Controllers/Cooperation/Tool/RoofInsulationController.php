@@ -163,7 +163,7 @@ class RoofInsulationController extends Controller
         // TODO: same as what we did in the calculations.
         $roofTypeIds = $request->input('building_roof_types.id', []);
         foreach ($roofTypeIds as $roofTypeId) {
-            $roofType = RoofType::find($roofTypeId);
+            $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
                 $cat = $this->getRoofTypeCategory($roofType);
                 // add as key to result array
@@ -454,56 +454,57 @@ class RoofInsulationController extends Controller
         UserInterest::saveUserInterests($user, $interests);
 
         // the selected roof types for the current situation
+        // get the selected roof type ids
+        $roofTypeIds = $request->input('building_roof_types.id', []);
+
         $roofTypes = $request->input('building_roof_types', []);
 
         $createData = [];
-        foreach ($roofTypes as $i => $details) {
-            if (is_numeric($i) && is_numeric($details)) {
-                $roofType = RoofType::find($details);
-                if ($roofType instanceof RoofType) {
-                    $cat = $this->getRoofTypeCategory($roofType);
-                    // add as key to result array
-                    $result[$cat] = [
-                        'type' => $this->getRoofTypeSubCategory($roofType),
-                    ];
+        foreach ($roofTypeIds as $roofTypeId) {
+            $roofType = RoofType::findOrFail($roofTypeId);
+            if ($roofType instanceof RoofType) {
+                $cat = $this->getRoofTypeCategory($roofType);
+                // add as key to result array
+                $result[$cat] = [
+                    'type' => $this->getRoofTypeSubCategory($roofType),
+                ];
 
-                    $roofSurface = isset($roofTypes[$cat]['roof_surface']) ? $roofTypes[$cat]['roof_surface'] : 0;
-                    $insulationRoofSurface = isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
-                    $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
+                $roofSurface = isset($roofTypes[$cat]['roof_surface']) ? $roofTypes[$cat]['roof_surface'] : 0;
+                $insulationRoofSurface = isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
+                $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
 
-                    $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : '';
-                    $extraBitumenReplacedDate = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
-                    $extraZincReplacedDate = isset($roofTypes[$cat]['extra']['zinc_replaced_date']) ? $roofTypes[$cat]['extra']['zinc_replaced_date'] : '';
-                    $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : '';
+                $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : '';
+                $extraBitumenReplacedDate = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
+                $extraZincReplacedDate = isset($roofTypes[$cat]['extra']['zinc_replaced_date']) ? $roofTypes[$cat]['extra']['zinc_replaced_date'] : '';
+                $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : '';
 
-                    $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
-                    $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
+                $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
+                $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
 
-                    BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                        [
-                            'building_id' => $buildingId,
-                            'input_source_id' => $inputSourceId,
-                        ],
-                        [
-                            'roof_type_id' => $request->input('building_features.roof_type_id'),
-                        ]
-                    );
+                BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+                    [
+                        'building_id' => $buildingId,
+                        'input_source_id' => $inputSourceId,
+                    ],
+                    [
+                        'roof_type_id' => $request->input('building_features.roof_type_id'),
+                    ]
+                );
 
-                    array_push($createData, [
-                        'roof_type_id' => $roofType->id,
-                        'element_value_id' => $elementValueId,
-                        'roof_surface' => $roofSurface,
-                        'insulation_roof_surface' => $insulationRoofSurface,
-                        'building_heating_id' => $buildingHeating,
-                        'extra' => [
-                            'measure_application_id' => $extraMeasureApplication,
-                            'bitumen_replaced_date' => $extraBitumenReplacedDate,
-                            'zinc_replaced_date' => $extraZincReplacedDate,
-                            'tiles_condition' => $extraTilesCondition,
-                            'comment' => $comment,
-                        ],
-                    ]);
-                }
+                array_push($createData, [
+                    'roof_type_id' => $roofType->id,
+                    'element_value_id' => $elementValueId,
+                    'roof_surface' => $roofSurface,
+                    'insulation_roof_surface' => $insulationRoofSurface,
+                    'building_heating_id' => $buildingHeating,
+                    'extra' => [
+                        'measure_application_id' => $extraMeasureApplication,
+                        'bitumen_replaced_date' => $extraBitumenReplacedDate,
+                        'zinc_replaced_date' => $extraZincReplacedDate,
+                        'tiles_condition' => $extraTilesCondition,
+                        'comment' => $comment,
+                    ],
+                ]);
             }
         }
 

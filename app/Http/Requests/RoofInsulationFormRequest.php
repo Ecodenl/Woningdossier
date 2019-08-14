@@ -89,9 +89,8 @@ class RoofInsulationFormRequest extends FormRequest
 //            }
 //        }
 //
-        dd($this->input('building_roof_types.*.roof_surface'));
         return [
-//            'building_roof_types.*' => 'required|exists:roof_types,id',
+            'building_roof_types.id' => 'required|exists:roof_types,id',
             'building_roof_types.*.roof_surface' => 'nullable|numeric',
             'building_roof_types.pitched.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.pitched.roof_surface',
             'building_roof_types.flat.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.flat.roof_surface',

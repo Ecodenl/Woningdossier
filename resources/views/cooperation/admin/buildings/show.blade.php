@@ -588,11 +588,14 @@
                             is_public: isChatPublic,
                             building_id: buildingId
                         },
+                        success: function () {
+                            updateTotalUnreadMessages();
+                        }
                     })
                 }
             });
-
         }
+        
 
     </script>
 @endpush

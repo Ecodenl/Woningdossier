@@ -116,6 +116,17 @@ $('i.glyphicon-info-sign').click(function () {
     $(this).parent().parent().find('.modal').modal();
 });
 
+function updateTotalUnreadMessageCount() {
+    console.log('wtf xxl');
+    $.ajax({
+        url: baseUrl + '/messages/count',
+        method: 'GET',
+        success: function success(response) {
+            $('#total-unread-message-count').html(response.count);
+        }
+    });
+}
+
 $(document).ready(function () {
 
     $('.input-source-group').on('click', 'li.change-input-value', function (event) {

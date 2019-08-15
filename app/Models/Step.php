@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -75,5 +76,9 @@ class Step extends Model
     public function measureApplications()
     {
         return $this->hasMany(MeasureApplication::class);
+    }
+
+    public function scopeOrdered(Builder $query){
+        return $query->orderBy('order', 'asc');
     }
 }

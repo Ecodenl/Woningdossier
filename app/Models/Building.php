@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property int $id
  * @property int|null $user_id
- * @property string $status
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -63,7 +62,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereOwner($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePrimary($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUserId($value)
@@ -129,22 +127,6 @@ class Building extends Model
     public function completedSteps()
     {
         return $this->hasMany(UserProgress::class);
-    }
-
-    /**
-     * Complete a step for a building.
-     *
-     * @param Step $step
-     *
-     * @return Model
-     */
-    public function complete(Step $step)
-    {
-        return UserProgress::firstOrCreate([
-            'step_id' => $step->id,
-            'input_source_id' => HoomdossierSession::getInputSource(),
-            'building_id' => HoomdossierSession::getBuilding(),
-        ]);
     }
 
     /**

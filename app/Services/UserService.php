@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
@@ -13,6 +14,7 @@ class UserService
 {
     public static function deleteUser(User $user)
     {
+        $accountId = $user->account_id;
 
         $building = $user->building;
 
@@ -38,10 +40,10 @@ class UserService
         // remove the user itself.
         $user->delete();
 
-        // if the account has no users anymore then we delete the account itself to.
-        if (Hoomdossier::account()->users()->withoutGlobalScopes()->count() == 0) {
+        // if the account has no users anymore then we delete the account itself too.
+        if (User::withoutGlobalScopes()->where('account_id', $accountId)->count() == 0) {
             // bye !
-            Hoomdossier::account()->delete();
+            Account::find($accountId)->delete();
         }
     }
 

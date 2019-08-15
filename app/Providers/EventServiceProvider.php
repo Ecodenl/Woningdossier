@@ -2,22 +2,28 @@
 
 namespace App\Providers;
 
+use App\Events\DossierResetPerformed;
+use App\Events\ExampleBuildingChanged;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Events\UserAllowedAccessToHisBuilding;
+use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
+use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\LogAllowedAccessToBuilding;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\LogRevokedAccessToBuilding;
+use App\Listeners\LogUserAssociatedWithOtherCooperation;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
+use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
@@ -35,6 +41,12 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        DossierResetPerformed::class => [
+            DossierResetListener::class,
+        ],
+        ExampleBuildingChanged::class => [
+            PreventChangeNotificationWhenStarting::class,
+        ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
         ],
@@ -44,28 +56,31 @@ class EventServiceProvider extends ServiceProvider
         ParticipantAddedEvent::class => [
             ParticipantAddedListener::class,
         ],
-        Login::class => [
+        Login::class                              => [
             SuccessFullLoginListener::class,
         ],
-        Registered::class => [
+        Registered::class                         => [
             LogRegisteredUserListener::class
         ],
-        FillingToolForUserEvent::class => [
+        UserAssociatedWithOtherCooperation::class => [
+            LogUserAssociatedWithOtherCooperation::class
+        ],
+        FillingToolForUserEvent::class            => [
             FillingToolForUserListener::class
         ],
-        ObservingToolForUserEvent::class => [
+        ObservingToolForUserEvent::class          => [
             ObservingToolForUserListener::class
         ],
-        StepDataHasBeenChangedEvent::class => [
-            StepDataHasBeenChangedListener::class
+        StepDataHasBeenChanged::class             => [
+            StepDataHasBeenChangedListener::class,
         ],
-        UserChangedHisEmailEvent::class => [
+        UserChangedHisEmailEvent::class           => [
             SetOldEmailListener::class,
         ],
-        UserAllowedAccessToHisBuilding::class => [
+        UserAllowedAccessToHisBuilding::class     => [
             LogAllowedAccessToBuilding::class
         ],
-        UserRevokedAccessToHisBuilding::class => [
+        UserRevokedAccessToHisBuilding::class     => [
             LogRevokedAccessToBuilding::class
         ],
     ];

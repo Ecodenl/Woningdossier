@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\DossierResetPerformed;
 use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\OldEmail;
 use App\Models\User;
+use App\Services\ToolSettingService;
 use App\Services\UserService;
 use function GuzzleHttp\Psr7\uri_for;
 use Illuminate\Auth\Passwords\DatabaseTokenRepository;
@@ -40,14 +43,12 @@ class SettingsController extends Controller
     public function update(MyAccountSettingsFormRequest $request)
     {
         $user = Hoomdossier::user();
-        $account = Hoomdossier::account();
         $building = Building::find(HoomdossierSession::getBuilding());
 
         $data = $request->all();
 
         $buildingData = $data['building'];
         $userData = $data['user'];
-        $accountData = $data['account'];
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(
@@ -55,40 +56,16 @@ class SettingsController extends Controller
         );
 
         $userData['phone_number'] = $userData['phone_number'] ?? '';
-
         $buildingData['extension'] = $buildingData['extension'] ?? '';
-
         $buildingData['number'] = $buildingData['house_number'] ?? '';
         // try to obtain the address id from the api, else get the one from the request.
         $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
 
 
-
-        // if the password is empty we remove all the password stuff from the user data
-        // else we do some checks and hash it!
-        if (empty($accountData['password'])) {
-            unset($accountData['password'], $accountData['password_confirmation'], $accountData['current_password']);
-        } else {
-            $currentPassword = $account->password;
-            $currentPasswordFromRequestToCheck = $accountData['current_password'];
-
-            if (!\Hash::check($currentPasswordFromRequestToCheck, $currentPassword)) {
-                return redirect()->back()->withErrors(['current_password' => __('validation.current_password')]);
-            }
-            $accountData['password'] = \Hash::make($accountData['password']);
-        }
-
-        // check if the user changed his email, if so. We set the old email and send the user a email so he can change it back.
-        if ($account->email != $accountData['email']) {
-            \Event::dispatch(new UserChangedHisEmailEvent($user, $account, $account->email, $accountData['email']));
-        }
-
         // update the user stuff
         $user->update($userData);
         // now update the building itself
         $building->update($buildingData);
-        // update the account data
-        $account->update($accountData);
 
         // and update the building features with the data from pico.
         $building->buildingFeatures()->update([
@@ -142,16 +119,18 @@ class SettingsController extends Controller
         $user->energyHabit()->delete();
         // remove the motivations from a user
         $user->motivations()->delete();
-        // remove the progress from a user
-        //$user->progress()->delete();
 
-        return redirect()->back()->with('success', __('my-account.settings.form.reset-file.success'));
+        DossierResetPerformed::dispatch($building);
+
+        return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }
 
     // Delete account
     public function destroy()
     {
         $user = \App\Helpers\Hoomdossier::user();
+        $accountId = $user->account_id;
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         UserService::deleteUser($user);
 
@@ -160,7 +139,12 @@ class SettingsController extends Controller
         \Auth::logout();
         request()->session()->invalidate();
 
+        $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
+        $success = __('my-account.settings.destroy.success.cooperation');
+        if (!$stillActiveForOtherCooperations){
+            $success = __('my-account.settings.destroy.success.full');
+        }
 
-        return redirect(url(''));
+        return redirect()->route('cooperation.welcome', compact('cooperation'))->with('success', $success);
     }
 }

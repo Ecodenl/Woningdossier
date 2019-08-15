@@ -16,22 +16,13 @@ use Spatie\Permission\Traits\HasRoles;
  * App\Models\User
  *
  * @property int $id
+ * @property int|null $account_id
+ * @property int|null $cooperation_id
  * @property string $first_name
  * @property string $last_name
- * @property string $email
- * @property string $password
- * @property string|null $remember_token
- * @property string|null $confirm_token
  * @property string $phone_number
- * @property string $mobile
- * @property string|null $last_visit
- * @property int $visit_count
- * @property int $active
- * @property bool $is_admin
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $old_email
- * @property string|null $old_email_token
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
@@ -44,30 +35,21 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[] $notificationSettings
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles, $guard = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereConfirmToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereFirstName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastVisit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereMobile($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereOldEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereOldEmailToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePhoneNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereVisitCount($value)
  * @mixin \Eloquent
  */
 class User extends Model implements AuthorizableContract
@@ -83,7 +65,7 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'phone_number', 'mobile',
+        'first_name', 'last_name', 'phone_number',
     ];
 
     // ------ User -> Account table / model migration stuff -------
@@ -137,6 +119,29 @@ class User extends Model implements AuthorizableContract
     public function notificationSettings()
     {
         return $this->hasMany(NotificationSetting::class);
+    }
+
+    /**
+     * Determine if a user retrieves a notification
+     *
+     * @param $notificationTypeShort
+     *
+     * @return bool
+     */
+    public function retrievesNotifications($notificationTypeShort)
+    {
+        $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
+        $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
+
+
+        $doesUserRetrievesNotifications =
+
+            $this->notificationSettings()
+                 ->where('type_id', $notificationType->id)
+                 ->where('interval_id', '!=', $notInterestedInterval->id)
+                 ->exists();
+
+        return $doesUserRetrievesNotifications;
     }
 
     public function energyHabit()

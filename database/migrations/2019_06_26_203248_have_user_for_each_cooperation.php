@@ -38,7 +38,6 @@ class HaveUserForEachCooperation extends Migration
                             'first_name'     => $user->first_name,
                             'last_name'      => $user->last_name,
                             'phone_number'   => $user->phone_number,
-                            'mobile'         => $user->mobile,
                             'account_id'     => $user->account_id,
                             'cooperation_id' => $combination->cooperation_id,
                             'created_at'     => $user->created_at,

@@ -9,4 +9,9 @@ abstract class TestCase extends BaseTestCase
 {
     use RefreshDatabase;
     use CreatesApplication;
+
+    public function setUp()
+    {
+        parent::setUp();
+    }
 }

@@ -17,8 +17,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('/', function () {
             return view('cooperation.welcome');
-        }
-        )->name('welcome');
+        })->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
@@ -85,6 +84,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
 
+                Route::resource('hoom-settings', 'HoomSettingsController');
+
 
 
                 Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
@@ -146,12 +147,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Extra pages with downloadable or information content.
-                    Route::group(['namespace' => 'Information'], function () {
-                        Route::resource('ventilation-information', 'VentilationController',
+                    // Ventilation information: info for now
+                    Route::resource('ventilation-information', 'VentilationController',
                             ['only' => ['index', 'store']]);
-                    });
-
+                    // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
 
                     // Wall Insulation

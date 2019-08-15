@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
@@ -11,6 +12,7 @@ use App\Http\Requests\Cooperation\Auth\ConfirmRequest;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ResendConfirmMailRequest;
 use App\Jobs\SendRequestAccountConfirmationEmail;
+use App\Listeners\LogUserAssociatedWithOtherCooperation;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -92,12 +94,15 @@ class RegisterController extends Controller
             $account
         )->save();
 
-        $successMessage = __('auth.register.form.message.account-connected');
 
         if ($account->wasRecentlyCreated) {
             $successMessage = __('auth.register.form.message.success');
             \Event::dispatch(new Registered($cooperation, $user));
+        } else {
+            $successMessage = __('auth.register.form.message.account-connected');
+            \Event::dispatch(new UserAssociatedWithOtherCooperation($cooperation, $user));
         }
+
 
         return redirect($this->redirectPath())->with('success', $successMessage);
     }
@@ -143,6 +148,7 @@ class RegisterController extends Controller
         );
 
         $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
+	    $data['extension'] = $data['house_number_extension'] ?? null;
 
         $features = new BuildingFeature([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
@@ -169,7 +175,8 @@ class RegisterController extends Controller
         )->save();
 
         $user->assignRole($residentRole);
-
+        // turn on when merged
+//        $building->setStatus('active');
         $notificationTypes = NotificationType::all();
         $interval          = NotificationInterval::where('short', 'no-interest')->first();
 

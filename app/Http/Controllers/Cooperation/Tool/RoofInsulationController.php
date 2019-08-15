@@ -31,7 +31,6 @@ use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use Carbon\Carbon;
-use function Couchbase\defaultDecoder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;

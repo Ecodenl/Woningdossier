@@ -131,9 +131,6 @@ class RegisterController extends Controller
             ]);
         }
 
-        $residentRole = Role::findByName('resident');
-        $user->roles()->attach($residentRole);
-
         return $user;
     }
 

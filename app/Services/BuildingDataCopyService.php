@@ -89,9 +89,11 @@ class BuildingDataCopyService
                              ->where($buildingOrUserColumn, $buildingOrUserId)
                              ->get();
 
-            // now check if the $whereColumn isset
+
+            // check if the $tableOrWhereColumns is a array and if a where column exists.
             // if so we need to add it to the query from the resident during the loop from the $fromValues
-            if (isset($whereColumn)) {
+            if (is_array($tableOrWhereColumns) && array_key_exists('where_column', $tableOrWhereColumns)) {
+
                 // loop through the answers from the desired input source
                 foreach ($fromValues as $fromValue) {
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
@@ -160,16 +162,15 @@ class BuildingDataCopyService
                     }
                 }
             } else {
+
                 // get the resident his input
                 $toValueQuery = \DB::table($table)
                                    ->where('input_source_id', $to->id)
                                    ->where($buildingOrUserColumn, $buildingOrUserId);
 
-
                 // get the first result from the desired input source
                 $fromValue = $fromValues->first();
                 $toValue   = $toValueQuery->first();
-
 
                 if ($toValue instanceof \stdClass) {
                     if ( ! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
@@ -188,6 +189,7 @@ class BuildingDataCopyService
                 }
             }
         }
+        dd('d');
     }
 
     /**

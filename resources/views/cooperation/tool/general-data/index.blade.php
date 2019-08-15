@@ -659,7 +659,7 @@
                         <div class="col-sm-12">
                             @component('cooperation.tool.components.step-question', ['id' => 'living_situation_extra', 'translation' => 'general-data.data-about-usage.additional-info', 'required' => false])
                                 <textarea id="additional-info" class="form-control"
-                                          name="living_situation_extra">{{ old('living_situation_extra', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'living_situation_extra')) }}</textarea>
+                                          name="living_situation_extra">{{ old('living_situation_extra', optional($energyHabit)->living_situation_extra) }}</textarea>
                             @endcomponent
                         </div>
                     </div>

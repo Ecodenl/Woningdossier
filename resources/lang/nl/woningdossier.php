@@ -930,6 +930,8 @@ return [
                     'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
                     'roof-insulation-plat-dak'    => 'Dakisolatie - Plat dak',
                     'high-efficiency-boiler'      => 'HR Ketel',
+                    'heater' => 'Zonneboiler',
+                    'solar-panels' => 'Zonnepanelen'
                 ],
 
                 'conversation-requests'                => [

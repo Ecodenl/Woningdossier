@@ -346,7 +346,7 @@ class Building extends Model
     public function getServiceValue($short)
     {
         /** @var BuildingService $buildingService */
-        $buildingService = $this->getBuildingService($short);
+        $buildingService = $this->getBuildingService($short); dd($this->buildingServices);
         $serviceValue = $buildingService->serviceValue;
 
         return $serviceValue;

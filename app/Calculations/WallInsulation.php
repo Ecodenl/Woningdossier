@@ -111,7 +111,7 @@ class WallInsulation {
         $result['impregnate_wall'] = compact('costs', 'year');
 
         // Note: these answer options are hardcoded in template
-        $isPlastered = 2 != (int) $calculateData['facade_plastered_painted'] ?? 2;
+        $isPlastered = 2 != (int) ($calculateData['facade_plastered_painted'] ?? 2);
 
         if ($isPlastered) {
             $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();

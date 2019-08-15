@@ -36,7 +36,6 @@ class BuildingDataCopyService
             'building_insulated_glazings' => [
                 'where_column' => 'measure_application_id',
             ],
-            'building_user_usages',
             'building_paintwork_statuses',
             'building_user_usages',
             'user_progresses' => [

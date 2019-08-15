@@ -17,12 +17,13 @@
         "spatie/laravel-translation-loader": "^2.2"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^2.4",
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
+        "laravel/dusk": "~2.0",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~6.0",
-        "laravel/dusk": "~2.0"
+        "phpunit/phpunit": "~6.0"
     },
     "autoload": {
         "classmap": [

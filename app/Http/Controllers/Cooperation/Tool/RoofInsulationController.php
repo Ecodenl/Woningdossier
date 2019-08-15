@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\NumberFormatter;
@@ -31,7 +30,6 @@ use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 

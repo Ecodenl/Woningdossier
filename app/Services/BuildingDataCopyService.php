@@ -37,7 +37,6 @@ class BuildingDataCopyService
                 'where_column' => 'measure_application_id',
             ],
             'building_paintwork_statuses',
-            'building_user_usages',
             'user_progresses' => [
                 'where_column' => 'step_id',
             ],

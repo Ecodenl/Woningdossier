@@ -26,6 +26,7 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereInputSourceId($value)

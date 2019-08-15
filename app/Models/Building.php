@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property int $id
  * @property int|null $user_id
+ * @property string $status
  * @property string $street
  * @property string $number
  * @property string $extension
@@ -62,6 +63,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereOwner($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePrimary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUserId($value)

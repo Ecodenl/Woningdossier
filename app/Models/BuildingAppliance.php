@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereApplianceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance whereCreatedAt($value)

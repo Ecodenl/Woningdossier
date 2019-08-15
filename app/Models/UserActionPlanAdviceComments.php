@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments whereId($value)

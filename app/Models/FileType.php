@@ -7,6 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * App\Models\FileType
+ *
+ * @property int $id
+ * @property int $file_type_category_id
+ * @property string $name
+ * @property string $short
+ * @property \Illuminate\Support\Carbon|null $duration
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\FileTypeCategory $category
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FileStorage[] $files
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereFileTypeCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class FileType extends Model
 {
     use TranslatableTrait;

@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInputSourceId($value)

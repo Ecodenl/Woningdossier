@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer whereAnswer($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer whereCreatedAt($value)

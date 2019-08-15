@@ -23,19 +23,27 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $phone_number
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Account|null $account
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property-read \App\Models\Building $building
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
  * @property-read \App\Models\UserEnergyHabit $energyHabit
+ * @property-read mixed $email
+ * @property-read mixed $is_admin
+ * @property-read mixed $old_email_token
+ * @property-read mixed $oldemail
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[] $notificationSettings
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User forMyCooperation($cooperationId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
@@ -47,7 +55,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereFirstName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePhoneNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent

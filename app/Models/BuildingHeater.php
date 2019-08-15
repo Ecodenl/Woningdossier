@@ -20,10 +20,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $comment
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\PvPanelOrientation|null $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater whereAngle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater whereComment($value)

@@ -10,6 +10,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
 use App\Helpers\Arr;
+use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\ToolHelper;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -71,7 +72,6 @@ class CsvService
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
@@ -105,12 +105,11 @@ class CsvService
             $firstName    = $user->first_name;
             $lastName     = $user->last_name;
             $email        = $user->account->email;
-            $phoneNumber  = "'".$user->phone_number;
-            $mobileNumber = $user->mobile;
+            $phoneNumber  = CsvHelper::escapeLeadingZero($user->phone_number);
 
             // set the personal userinfo
             $row[$key] = [
-                $firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode,
+                $firstName, $lastName, $email, $phoneNumber, $street, $number, $city, $postalCode,
                 $countryCode,
             ];
 
@@ -184,7 +183,6 @@ class CsvService
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
 
@@ -211,6 +209,7 @@ class CsvService
         $residentInputSource = InputSource::findByShort('resident');
 
         foreach ($users as $key => $user) {
+            /** @var Building $building */
             $building = $user->building;
 
             /** @var Collection $conversationRequestsForBuilding */
@@ -218,8 +217,9 @@ class CsvService
                                                              ->conversationRequestByBuildingId($building->id)
                                                              ->where('to_cooperation_id', $cooperation->id)->get();
 
-            $createdAt           = $user->created_at;
-            $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+            $createdAt           = $user->created_at->format('Y-m-d');
+            //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+            $buildingStatus = $building->status;
             $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
             $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
@@ -233,8 +233,7 @@ class CsvService
             $firstName    = $user->first_name;
             $lastName     = $user->last_name;
             $email        = $user->account->email;
-            $phoneNumber  = "'".$user->phone_number;
-            $mobileNumber = $user->mobile;
+            $phoneNumber  = CsvHelper::escapeLeadingZero($user->phone_number);
 
             $street     = $building->street;
             $number     = $building->number;
@@ -252,7 +251,7 @@ class CsvService
 
             $buildingType    = $buildingFeatures->buildingType->name ?? '';
             $buildYear       = $buildingFeatures->build_year ?? '';
-            $exampleBuilding = $building->exampleBuilding->name ?? '';
+            $exampleBuilding = $building->exampleBuilding->isSpecific() ? $building->exampleBuilding->name : '';
 
             if ($anonymize) {
                 // set the personal userinfo
@@ -264,7 +263,7 @@ class CsvService
                 // set the personal userinfo
                 $row[$key] = [
                     $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                    $firstName, $lastName, $email, $phoneNumber,
                     $street, $number, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
@@ -341,7 +340,6 @@ class CsvService
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
@@ -380,8 +378,7 @@ class CsvService
                 $firstName    = $user->first_name;
                 $lastName     = $user->last_name;
                 $email        = $user->account->email;
-                $phoneNumber  = "'".$user->phone_number;
-                $mobileNumber = $user->mobile;
+                $phoneNumber  = CsvHelper::escapeLeadingZero($user->phone_number);
 
                 $street     = $building->street;
                 $number     = $building->number;
@@ -409,7 +406,7 @@ class CsvService
 
                         $rows[$building->id] = [
                             $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                            $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                            $firstName, $lastName, $email, $phoneNumber,
                             $street, $number, $postalCode, $city,
                             $buildingType, $buildYear,
                         ];
@@ -546,7 +543,6 @@ class CsvService
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
 
@@ -619,8 +615,7 @@ class CsvService
             $firstName    = $user->first_name;
             $lastName     = $user->last_name;
             $email        = $user->account->email;
-            $phoneNumber  = "'".$user->phone_number;
-            $mobileNumber = $user->mobile;
+            $phoneNumber  = CsvHelper::escapeLeadingZero($user->phone_number);
 
             $street     = $building->street;
             $number     = $building->number;
@@ -636,7 +631,7 @@ class CsvService
 
             $buildingType    = $buildingFeatures->buildingType->name ?? '';
             $buildYear       = $buildingFeatures->build_year ?? '';
-            $exampleBuilding = $building->exampleBuilding->name ?? '';
+            $exampleBuilding = $building->exampleBuilding->isSpecific() ? $building->exampleBuilding->name : '';
 
             // set the personal userinfo
             if ($anonymized) {
@@ -648,7 +643,7 @@ class CsvService
             } else {
                 $row[$building->id] = [
                     $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                    $firstName, $lastName, $email, $phoneNumber, $mobileNumber,
+                    $firstName, $lastName, $email, $phoneNumber,
                     $street, $number, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];

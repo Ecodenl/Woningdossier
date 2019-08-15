@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
 use App\Exports\Cooperation\CsvExport;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
@@ -13,7 +12,6 @@ use App\Http\Requests\MyPlanRequest;
 use App\Models\Building;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
-use App\Services\CsvExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;

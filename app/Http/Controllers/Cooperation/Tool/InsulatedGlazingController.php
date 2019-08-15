@@ -6,13 +6,11 @@ use App\Calculations\InsulatedGlazing;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
-use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
@@ -37,7 +35,6 @@ use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Uuid;
 
 class InsulatedGlazingController extends Controller
 {

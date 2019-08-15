@@ -22,15 +22,15 @@ class BuildingDataCopyService
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
             'building_features',
-            'building_elements'           => [
-                'where_column'            => 'element_id',
+            'building_elements' => [
+                'where_column' => 'element_id',
                 'additional_where_column' => 'element_value_id',
             ],
-            'building_services'           => [
-                'where_column'            => 'service_id',
+            'building_services' => [
+                'where_column' => 'service_id',
                 'additional_where_column' => 'service_value_id',
             ],
-            'building_roof_types'         => [
+            'building_roof_types' => [
                 'where_column' => 'roof_type_id',
             ],
             'building_insulated_glazings' => [
@@ -39,10 +39,10 @@ class BuildingDataCopyService
             'building_user_usages',
             'building_paintwork_statuses',
             'building_user_usages',
-            'user_progresses'             => [
+            'user_progresses' => [
                 'where_column' => 'step_id',
             ],
-            'questions_answers'           => [
+            'questions_answers' => [
                 'where_column' => 'question_id',
             ],
             'building_features',
@@ -54,61 +54,61 @@ class BuildingDataCopyService
                 'where_column' => 'measure_application_id',
             ],
             'user_energy_habits',
-            'user_interests'           => [
-                'where_column'            => 'interested_in_type',
+            'user_interests' => [
+                'where_column' => 'interested_in_type',
                 'additional_where_column' => 'interested_in_id',
             ],
         ];
 
         foreach ($tables as $tableOrInt => $tableOrWhereColumns) {
-            // now check if its a int
-            // if it isn't a int, the $tableOrId is a table and the $tableOrWhereColumns is a where column
-            // else the $tableOrWhereColumns is the table and we do not need to query further.
-            if ( ! is_int($tableOrInt)) {
-                $table       = $tableOrInt;
-                $whereColumn = $tableOrWhereColumns['where_column'];
-            } else {
+
+            // if the $tableOrInt is an int the $tableOrWhereColumns contains a table, else it contains where columns which we will need later on.
+            if (is_int($tableOrInt)) {
                 $table = $tableOrWhereColumns;
+            } else {
+                $table = $tableOrInt;
             }
             // building to copy data from
-            $user     = $building->user()->first();
+            $user = $building->user()->first();
 
             // set the building or user id, depending on which column exists on the table
             if (\Schema::hasColumn($table, 'user_id')) {
-                $buildingOrUserId     = $user->id;
+                $buildingOrUserId = $user->id;
                 $buildingOrUserColumn = 'user_id';
             } else {
-                $buildingOrUserId     = $building->id;
+                $buildingOrUserId = $building->id;
                 $buildingOrUserColumn = 'building_id';
             }
 
 
             // now we get all the answers from the desired input source
             $fromValues = \DB::table($table)
-                             ->where('input_source_id', $from->id)
-                             ->where($buildingOrUserColumn, $buildingOrUserId)
-                             ->get();
+                ->where('input_source_id', $from->id)
+                ->where($buildingOrUserColumn, $buildingOrUserId)
+                ->get();
 
 
             // check if the $tableOrWhereColumns is a array and if a where column exists.
             // if so we need to add it to the query from the resident during the loop from the $fromValues
             if (is_array($tableOrWhereColumns) && array_key_exists('where_column', $tableOrWhereColumns)) {
 
+                $whereColumn = $tableOrWhereColumns['where_column'];
+
                 // loop through the answers from the desired input source
                 foreach ($fromValues as $fromValue) {
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
                         // now build the query to get the resident his answers
                         $toValueQuery = \DB::table($table)
-                                           ->where('input_source_id', $to->id)
-                                           ->where($buildingOrUserColumn, $buildingOrUserId)
-                                           ->where($whereColumn, $fromValue->$whereColumn);
+                            ->where('input_source_id', $to->id)
+                            ->where($buildingOrUserColumn, $buildingOrUserId)
+                            ->where($whereColumn, $fromValue->$whereColumn);
 
                         // count the rows
                         $toValueCount = \DB::table($table)
-                                           ->where('input_source_id', $to->id)
-                                           ->where($buildingOrUserColumn, $buildingOrUserId)
-                                           ->where($whereColumn, $fromValue->$whereColumn)
-                                           ->count();
+                            ->where('input_source_id', $to->id)
+                            ->where($buildingOrUserColumn, $buildingOrUserId)
+                            ->where($whereColumn, $fromValue->$whereColumn)
+                            ->count();
 
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
@@ -122,14 +122,14 @@ class BuildingDataCopyService
                             $toValue = $toValueQuery->first();
 
                             // cast the results to a array
-                            $toValue   = (array) $toValue;
-                            $fromValue = (array) $fromValue;
+                            $toValue = (array)$toValue;
+                            $fromValue = (array)$fromValue;
 
                             // if it exists, we need to update it. Else we need to insert a new row.
-                            if ( ! empty($toValue)) {
+                            if (!empty($toValue)) {
                                 $toValueQuery->update(static::createUpdateArray($toValue, $fromValue));
                             } else {
-                                $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
+                                $fromValue = static::createUpdateArray((array)$toValue, (array)$fromValue);
                                 // change the input source id to the 'to' id
                                 $fromValue['input_source_id'] = $to->id;
                                 $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
@@ -140,18 +140,18 @@ class BuildingDataCopyService
                             $toValue = $toValueQuery->first();
 
                             // cast the results to a array
-                            $toValue   = (array) $toValue;
-                            $fromValue = (array) $fromValue;
+                            $toValue = (array)$toValue;
+                            $fromValue = (array)$fromValue;
 
                             // YAY! data has been copied so update or create the target input source his records.
                             if ($toValueQuery->first() instanceof \stdClass) {
                                 // check if its empty ornot.
-                                if ( ! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
+                                if (!empty($updateData = static::createUpdateArray((array)$toValue, (array)$fromValue))) {
                                     $toValueQuery->update($updateData);
                                 }
                             } else {
 
-                                $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
+                                $fromValue = static::createUpdateArray((array)$toValue, (array)$fromValue);
                                 // change the input source id to the 'to' id
                                 $fromValue['input_source_id'] = $to->id;
                                 $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
@@ -165,21 +165,21 @@ class BuildingDataCopyService
 
                 // get the resident his input
                 $toValueQuery = \DB::table($table)
-                                   ->where('input_source_id', $to->id)
-                                   ->where($buildingOrUserColumn, $buildingOrUserId);
+                    ->where('input_source_id', $to->id)
+                    ->where($buildingOrUserColumn, $buildingOrUserId);
 
                 // get the first result from the desired input source
                 $fromValue = $fromValues->first();
-                $toValue   = $toValueQuery->first();
+                $toValue = $toValueQuery->first();
 
                 if ($toValue instanceof \stdClass) {
-                    if ( ! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
+                    if (!empty($updateData = static::createUpdateArray((array)$toValue, (array)$fromValue))) {
                         $toValueQuery->update($updateData);
                     }
                 } else {
-                    $fromValue = (array) $fromValue;
+                    $fromValue = (array)$fromValue;
                     // unset the stuff we dont want to insert
-                    $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
+                    $fromValue = static::createUpdateArray((array)$toValue, (array)$fromValue);
                     // change the input source id to the 'to' id
                     $fromValue['input_source_id'] = $to->id;
                     $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
@@ -189,13 +189,12 @@ class BuildingDataCopyService
                 }
             }
         }
-        dd('d');
     }
 
     /**
      * Check if a key / column name needs a update.
      *
-     * @param $key  | Column name
+     * @param $key | Column name
      *
      * @return bool
      */
@@ -219,7 +218,7 @@ class BuildingDataCopyService
      * radio buttons they should not be considered empty. We define these
      * fields here so we can test for !empty OR radio input.
      *
-     * @param  string  $key
+     * @param  string $key
      *
      * @return bool
      */
@@ -238,7 +237,7 @@ class BuildingDataCopyService
     {
         return array_filter($extraColumnData, function ($extraValue, $extraKey) {
             // if the string is not considered empty, and its need an update. Then we add it
-            return ! Str::isConsideredEmptyAnswer($extraValue) && static::keyNeedsUpdate($extraKey);
+            return !Str::isConsideredEmptyAnswer($extraValue) && static::keyNeedsUpdate($extraKey);
         }, ARRAY_FILTER_USE_BOTH);
     }
 
@@ -255,7 +254,7 @@ class BuildingDataCopyService
         $updateArray = [];
 
         // if the desired input source has a extra key and its not empty, then we start to compare and merge the extra column.
-        if (array_key_exists('extra', $inputSourceToCopy) && ! empty($inputSourceToCopy['extra'])) {
+        if (array_key_exists('extra', $inputSourceToCopy) && !empty($inputSourceToCopy['extra'])) {
 
             if (empty($inputSourceToUpdate['extra'])) {
                 $inputSourceToCopyExtra = json_decode($inputSourceToCopy['extra'], true);
@@ -265,7 +264,7 @@ class BuildingDataCopyService
 
                 $updateExtra = json_encode($inputSourceToCopyNotNullExtraValues);
             } else {
-                $inputSourceToCopyExtra   = json_decode($inputSourceToCopy['extra'], true);
+                $inputSourceToCopyExtra = json_decode($inputSourceToCopy['extra'], true);
                 $inputSourceToUpdateExtra = json_decode($inputSourceToUpdate['extra'], true);
 
                 $inputSourceToCopyNotNullExtraValues = static::filterExtraColumn($inputSourceToCopyExtra);
@@ -284,7 +283,7 @@ class BuildingDataCopyService
         // now update the "normal" values
         foreach ($inputSourceToCopy as $desiredInputSourceKey => $desiredInputSourceAnswer) {
             // if the answer from the desired input source is not empty and the key needs a update, then we update the resident his answer.
-            if (( ! empty($desiredInputSourceAnswer) || static::isRadioInput($desiredInputSourceKey)) && static::keyNeedsUpdate($desiredInputSourceKey)) {
+            if ((!empty($desiredInputSourceAnswer) || static::isRadioInput($desiredInputSourceKey)) && static::keyNeedsUpdate($desiredInputSourceKey)) {
                 $updateArray[$desiredInputSourceKey] = $desiredInputSourceAnswer;
             }
         }

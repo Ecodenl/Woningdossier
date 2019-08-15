@@ -45,7 +45,7 @@ trait HasRolesTrait
      */
     public function hasRole($roles, $cooperationId = null): bool
     {
-        $cacheKey = 'HasRolesTrait_hasRole_%s_%s';
+        $cacheKey = 'HasRolesTrait_hasRole_%s_%s_%s';
         $c = $cooperationId ?? '';
         $r = $roles;
         if ($roles instanceof Role){
@@ -56,7 +56,7 @@ trait HasRolesTrait
         }
 
         return Cache::remember(
-            sprintf($cacheKey, $r, $c),
+            sprintf($cacheKey,$this->id, $r, $c),
             config('woningdossier.cache.times.default'),
             function() use ($roles, $cooperationId){
 

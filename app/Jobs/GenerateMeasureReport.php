@@ -51,7 +51,7 @@ class GenerateMeasureReport implements ShouldQueue
         if (\App::runningInConsole()) {
             \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
         }
-        // temporary session to get the right data for the dumb.
+        // temporary session to get the right data for the dump.
         $residentInputSource = InputSource::findByShort('resident');
         HoomdossierSession::setInputSource($residentInputSource);
         HoomdossierSession::setInputSourceValue($residentInputSource);
@@ -61,6 +61,7 @@ class GenerateMeasureReport implements ShouldQueue
 
         // forget the session since we dont need it.
         \Session::forget('hoomdossier_session');
+
         // export the csv file
         Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 

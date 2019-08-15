@@ -194,8 +194,11 @@ class CsvService
             ];
         }
 
-        // get all the measures
-        $measures = MeasureApplication::all();
+        // get all the measures ordered by step
+        $measures = MeasureApplication::leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
+            ->orderBy('steps.order')
+            ->select(['measure_applications.*'])
+            ->get();
 
         // put the measures inside the header array
         foreach ($measures as $measure) {
@@ -217,7 +220,7 @@ class CsvService
                                                              ->conversationRequestByBuildingId($building->id)
                                                              ->where('to_cooperation_id', $cooperation->id)->get();
 
-            $createdAt           = $user->created_at->format('Y-m-d');
+            $createdAt           = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $buildingStatus = $building->status;
             $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
@@ -251,7 +254,7 @@ class CsvService
 
             $buildingType    = $buildingFeatures->buildingType->name ?? '';
             $buildYear       = $buildingFeatures->build_year ?? '';
-            $exampleBuilding = $building->exampleBuilding->isSpecific() ? $building->exampleBuilding->name : '';
+            $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
             if ($anonymize) {
                 // set the personal userinfo
@@ -363,7 +366,7 @@ class CsvService
                                                                  ->conversationRequestByBuildingId($building->id)
                                                                  ->where('to_cooperation_id', $cooperation->id)->get();
 
-                $createdAt           = $user->created_at;
+                $createdAt           = optional($user->created_at)->format('Y-m-d');
                 $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
                 $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
                 $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
@@ -599,7 +602,7 @@ class CsvService
                                                              ->conversationRequestByBuildingId($building->id)
                                                              ->where('to_cooperation_id', $cooperation->id)->get();
 
-            $createdAt           = $user->created_at;
+            $createdAt           = optional($user->created_at)->format('Y-m-d');
             $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
             $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);

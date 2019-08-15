@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
@@ -31,7 +30,6 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
-use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;

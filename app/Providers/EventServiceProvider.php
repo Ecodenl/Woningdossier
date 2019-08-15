@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\DossierResetPerformed;
+use App\Events\ExampleBuildingChanged;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
@@ -43,6 +44,9 @@ class EventServiceProvider extends ServiceProvider
         DossierResetPerformed::class => [
             DossierResetListener::class,
         ],
+        ExampleBuildingChanged::class => [
+            PreventChangeNotificationWhenStarting::class,
+        ],
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
         ],
@@ -69,7 +73,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         StepDataHasBeenChanged::class             => [
             StepDataHasBeenChangedListener::class,
-            PreventChangeNotificationWhenStarting::class,
         ],
         UserChangedHisEmailEvent::class           => [
             SetOldEmailListener::class,

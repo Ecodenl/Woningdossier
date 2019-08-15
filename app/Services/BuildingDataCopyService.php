@@ -199,7 +199,8 @@ class BuildingDataCopyService
     private static function keyNeedsUpdate($key)
     {
         $keysToNotUpdate = [
-            'id', 'building_id', 'input_source_id', 'created_at', 'updated_at', 'comment', 'additional_info'
+            'id', 'building_id', 'input_source_id', 'created_at', 'updated_at', 'comment', 'additional_info',
+            'living_situation_extra', 'motivation_extra'
         ];
 
         // if the key does exists in the array it does not need a update

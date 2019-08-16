@@ -7,7 +7,7 @@
                 'role' => implode(' / ', $roles),
                 'full_name' => $userToShow->getFullName(),
                 'street' => $buildingFromUser->street,
-                'number' => $buildingFromUser->number,
+                'number' => $buildingFromUser->number.' '.$buildingFromUser->extension,
                 'zip_code' => strtoupper($buildingFromUser->postal_code),
                 'city' => $buildingFromUser->city
             ])

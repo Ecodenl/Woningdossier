@@ -308,6 +308,10 @@ return [
 
                     'tabs'     => [
                         'messages-public'      => [
+                            'user-notification' => [
+                                'yes' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',
+                                'no' => 'Gebruiker ontvangt hier geen melding van.'
+                            ],
                             'title' => 'Berichten bewoner'
                         ],
                         'messages-intern'      => [
@@ -900,6 +904,8 @@ return [
                     'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
                     'roof-insulation-plat-dak'    => 'Dakisolatie - Plat dak',
                     'high-efficiency-boiler'      => 'HR Ketel',
+                    'heater' => 'Zonneboiler',
+                    'solar-panels' => 'Zonnepanelen'
                 ],
 
                 'conversation-requests'                => [

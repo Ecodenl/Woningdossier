@@ -10,7 +10,6 @@ use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
-use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
@@ -35,7 +34,6 @@ use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Uuid;
 
 class InsulatedGlazingController extends Controller
 {
@@ -215,8 +213,10 @@ class InsulatedGlazingController extends Controller
                 $interest instanceof Interest &&
                 array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
                 $gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
-                    (int) $buildingInsulatedGlazingsData['m2'], $measureApplication,
-                    $buildingHeating, $insulatedGlazing
+                    NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
+                    $measureApplication,
+                    $buildingHeating,
+                    $insulatedGlazing
                 );
 
                 $result['measure'][$measureApplication->id] = [

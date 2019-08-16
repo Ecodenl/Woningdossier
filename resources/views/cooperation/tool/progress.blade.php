@@ -60,7 +60,7 @@
         ">
         <?php $houseIconLink = $building->hasCompleted($buildingDetailStep) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation]); ?>
         <a href="{{$houseIconLink}}">
-            <img src="{{ asset('images/building-detail.png') }}" title="" alt="@lang('woningdossier.cooperation.step.building-detail')" class="img-circle"/>
+            <img src="{{ asset('images/icons/building-detail.png') }}" title="" alt="@lang('woningdossier.cooperation.step.building-detail')" class="img-circle"/>
         </a>
     </li>
     @foreach($steps as $step)
@@ -92,7 +92,7 @@
 
                             @if ($interestedInName == $step->slug)
                                 href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
-                                <img src="{{ asset('images/' . $step->slug . '.png') }}" title="{{ $step->name }}@if($building->isNotInterestedInStep($interestedInType, $interestedInIds)) - @lang('default.progress.disabled')@endif" alt="{{ $step->name }}" class="img-circle"/>
+                                <img src="{{ asset('images/icons/' . $step->slug . '.png') }}" title="{{ $step->name }}@if($building->isNotInterestedInStep($interestedInType, $interestedInIds)) - @lang('default.progress.disabled')@endif" alt="{{ $step->name }}" class="img-circle"/>
                             @endif
 
                         @endforeach
@@ -103,7 +103,7 @@
     @endforeach
     <li class="list-inline-item">
         <a href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
-            <img src="{{ asset('images/my-plan.png') }}" class="img-circle" />
+            <img src="{{ asset('images/icons/my-plan.png') }}" class="img-circle" />
         </a>
     </li>
 

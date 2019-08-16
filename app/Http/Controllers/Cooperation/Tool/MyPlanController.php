@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
@@ -10,7 +9,6 @@ use App\Helpers\NumberFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\Building;
-use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\CsvExportService;
@@ -24,13 +22,13 @@ class MyPlanController extends Controller
         $building = Building::find(HoomdossierSession::getBuilding());
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
-        $coachComments = UserActionPlanAdvice::getAllCoachComments();
+        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
 
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachComments', 'actionPlanComments'
+            'advices', 'coachCommentsByStep', 'actionPlanComments'
         ));
     }
 

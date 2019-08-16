@@ -5,9 +5,11 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Contracts\Role;
 
 /**
  * App\Models\Building
@@ -72,9 +74,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Building extends Model
 {
     use SoftDeletes, ToolSettingTrait;
-
-    const STATUS_IS_ACTIVE = 'active';
-    const STATUS_IS_NOT_ACTIVE = 'in_active';
 
     protected $dates = [
         'deleted_at',
@@ -433,32 +432,71 @@ class Building extends Model
     }
 
     /**
-     * Check if a building is active
+     * Get all the statuses from a building
      *
-     * @return bool
+     * @return HasMany
      */
-    public function isActive(): bool
+    public function buildingStatuses(): HasMany
     {
-        if ($this->status == static::STATUS_IS_ACTIVE) {
-            return true;
-        }
-        return false;
-    }
-
-    public function isNotActive()
-    {
-        return !$this->isActive();
+        return $this->hasMany(BuildingStatus::class);
     }
 
     /**
-     * Return the translation from a status
+     * Get the most recent BuildingStatus
      *
-     * @param $status
-     * @return string
+     * @return BuildingStatus|null
      */
-    public static function getTranslationForStatus($status): string
+    public function getMostRecentBuildingStatus()
     {
-        return __('woningdossier.building-statuses.'.$status);
+        return $this->buildingStatuses()->mostRecent()->first();
+    }
+
+
+    private function resolveStatusModel($status)
+    {
+        $statusModel = null;
+
+        if (is_string($status)) {
+            $statusModel = Status::where('short', $status)->first();
+        }
+
+        if ($status instanceof Status) {
+            $statusModel = $status;
+        }
+
+        return $statusModel;
+    }
+
+    /**
+     * convenient way of setting a status on a building
+     *
+     * @param string|Status $status
+     *
+     * @return void
+     */
+    public function setStatus($status)
+    {
+        $statusModel = $this->resolveStatusModel($status);
+
+        $this->buildingStatuses()->create([
+            'status_id' => $statusModel->id,
+            'appointment_date' => optional($this->getMostRecentBuildingStatus())->appointment_date,
+        ]);
+    }
+
+    /**
+     * convenient way of setting a appointment date on a building
+     *
+     * @param string
+     *
+     * @return void
+     */
+    public function setAppointmentDate($appointmentDate)
+    {
+        $this->buildingStatuses()->create([
+            'status_id' => $this->getMostRecentBuildingStatus()->status_id,
+            'appointment_date' => $appointmentDate
+        ]);
     }
 
 }

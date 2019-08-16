@@ -7,6 +7,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
@@ -56,6 +57,7 @@ class ConversationRequestController extends Controller
         $allowAccess = 'on' == $request->get('allow_access', '');
 
         $cooperationId = HoomdossierSession::getCooperation();
+        $building = Building::find(HoomdossierSession::getBuilding());
 
         PrivateMessage::create(
             [
@@ -65,11 +67,14 @@ class ConversationRequestController extends Controller
                 'from_user'         => \App\Helpers\Hoomdossier::user()->getFullName(),
                 'message'           => $message,
                 'to_cooperation_id' => $cooperationId,
-                'building_id'       => HoomdossierSession::getBuilding(),
+                'building_id'       => $building->id,
                 'request_type'      => $action,
                 'allow_access'      => $allowAccess,
             ]
         );
+
+
+        $building->setStatus('pending');
 
         // if the user allows access to his building on the request, log the activity.
         if ($allowAccess) {

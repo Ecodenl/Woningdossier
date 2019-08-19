@@ -41,13 +41,13 @@ class FileTypesTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Antwoorden van de bewoners op de customer vragenlijsten, met alle adresgegevens'
+                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'
                 ],
                 'short' => 'custom-questionnaires-report'
             ],
             [
                 'names' => [
-                    'nl' => 'Antwoorden van de bewoners op de customer vragenlijsten, zonder adresgegevens'
+                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens'
                 ],
                 'short' => 'custom-questionnaires-report-anonymized'
             ],

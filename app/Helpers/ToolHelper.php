@@ -1581,17 +1581,6 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
                 ],
-                'service.'.$solarPanels->id.'.extra.value'      => [
-                    'label' => $solarPanels->name,
-                    'type'  => 'text',
-                    'unit'  => Translation::translate('general.unit.pieces.title'),
-                ],
-
-                'service.'.$solarPanels->id.'.extra.year'       => [
-                    'label' => Translation::translate('general-data.energy-saving-measures.solar-panels.if-yes.title'),
-                    'type'  => 'text',
-                    'unit'  => Translation::translate('general.unit.year.title'),
-                ],
 
                 // ventilation
                 'service.'.$ventilation->id.'.service_value_id' => [
@@ -1608,6 +1597,18 @@ class ToolHelper
 //                ],
                 'service.'.$ventilation->id.'.extra.year'       => [
                     'label' => Translation::translate('general-data.energy-saving-measures.house-ventilation.if-mechanic.title'),
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.year.title'),
+                ],
+
+                'service.'.$solarPanels->id.'.extra.value'      => [
+                    'label' => $solarPanels->name,
+                    'type'  => 'text',
+                    'unit'  => Translation::translate('general.unit.pieces.title'),
+                ],
+
+                'service.'.$solarPanels->id.'.extra.year'       => [
+                    'label' => Translation::translate('general-data.energy-saving-measures.solar-panels.if-yes.title'),
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.year.title'),
                 ],

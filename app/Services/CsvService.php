@@ -53,11 +53,13 @@ class CsvService
     /**
      * CSV Report that returns the measures by year, not used anymore. Its just here in case
      *
+     * @deprecated
+     *
      * @param  string  $filename
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public static function byYear($filename = 'by-year')
+    /*public static function byYear($filename = 'by-year')
     {
         // get user data
         $user        = \Auth::user();
@@ -146,7 +148,7 @@ class CsvService
             $rows = $row;
         }
 
-    }
+    }*/
 
     /**
      * CSV Report that returns the measures with year with full address data
@@ -273,7 +275,7 @@ class CsvService
             }
 
 
-            // set alle the measures to the user
+            // Set a default: all measures to empty
             foreach ($measures as $measure) {
                 $row[$key][$measure->measure_name] = '';
             }
@@ -560,8 +562,6 @@ class CsvService
         // get the content structure of the whole tool.
         $structure = ToolHelper::getToolStructure();
 
-
-
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
@@ -585,11 +585,14 @@ class CsvService
 
         $rows[] = $headers;
 
+        dump($headers);
+
         /**
          * Get the data for every user.
          * @var User $user
          */
         foreach ($users as $user) {
+            dump("User " . $user->id);
             // for each user we create a new row.
             $row = [];
 
@@ -658,7 +661,6 @@ class CsvService
             foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
                 if (is_string($tableWithColumnOrAndIdKey)) {
 
-
                     // explode it so we can do stuff with it.
                     $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
 
@@ -667,6 +669,10 @@ class CsvService
                     $step       = $tableWithColumnOrAndId[0];
                     $table      = $tableWithColumnOrAndId[1];
                     $columnOrId = $tableWithColumnOrAndId[2];
+
+                    $maybe1 = isset($tableWithColumnOrAndId[3]) ? $tableWithColumnOrAndId[3] : '';
+                    $maybe2 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
+                    dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
                     // determine what column we need to query on to get the results for the user.
                     /* @note this will work in most cases, if not the variable will be set again in a specific case. */
@@ -702,7 +708,6 @@ class CsvService
 
                     // handle the building_features table and its columns.
                     if ($table == 'building_features') {
-
                         $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->where($whereUserOrBuildingId)->first();
 
                         if ($buildingFeature instanceof BuildingFeature) {
@@ -734,6 +739,7 @@ class CsvService
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
                                     break;
                                 case 'monument':
+                                case 'cavity_wall':
                                     $possibleAnswers                              = [
                                         1 => \App\Helpers\Translation::translate('general.options.yes.title'),
                                         2 => \App\Helpers\Translation::translate('general.options.no.title'),
@@ -845,7 +851,6 @@ class CsvService
                                 }
                                 break;
                             case 'service':
-
                                 $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
                                                                   ->where($whereUserOrBuildingId)
                                                                   ->where('service_id', $elementOrServiceId)
@@ -1010,9 +1015,13 @@ class CsvService
                 }
             }
 
+            dd($row);
+
             // no need to merge headers with the rows, we always set defaults so the count will always be the same.
             $rows[] = $row[$buildingId];
         }
+
+        dd($rows);
 
         return $rows;
     }

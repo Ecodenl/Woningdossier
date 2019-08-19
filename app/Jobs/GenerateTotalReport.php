@@ -63,7 +63,6 @@ class GenerateTotalReport implements ShouldQueue
         // export the csv file
         Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 
-
         $this->fileStorage->isProcessed();
     }
 

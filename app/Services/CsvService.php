@@ -563,6 +563,19 @@ class CsvService
         // get the content structure of the whole tool.
         $structure = ToolHelper::getToolStructure();
 
+        $leaveOutTheseDuplicates = [
+            // hoofddak
+            'roof-insulation.building_features.roof_type_id',
+            // bewoners, gasverbruik en type ketel
+            'high-efficiency-boiler.user_energy_habits.resident_count',
+            'high-efficiency-boiler.user_energy_habits.amount_gas',
+            'high-efficiency-boiler.service.5.service_value_id',
+            // elektriciteitsverbruik
+            'solar-panels.user_energy_habits.amount_electricity',
+            // comfort niveau
+            'heater.user_energy_habits.water_comfort_id',
+        ];
+
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
@@ -583,11 +596,18 @@ class CsvService
                         $headers = array_merge($headers, $deeperContents);
 
                     } else {
-                        $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.$contents['label'];
+                        $fullKey = sprintf('%s.%s', $stepSlug, $tableWithColumnOrAndId);
+                        if (!in_array($fullKey, $leaveOutTheseDuplicates)) {
+                            $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.str_replace([
+                                    '&euro;', '€'
+                                ], ['euro', 'euro'], $contents['label']);
+                        }
                     }
                 }
             }
         }
+
+        dump($headers);
 
         $rows[] = $headers;
 
@@ -707,8 +727,11 @@ class CsvService
                                 break;
                         }
 
-                        $calculationResult = self::formatOutput($column, $calculationResult);
-                        //dump("calculationResult: " . $calculationResult . " for step " . $step);
+                        if(!self::isYear($maybe1, $maybe2)){
+                            $calculationResult = self::formatOutput($column,
+                                $calculationResult);
+                        }
+                        dump("calculationResult: " . $calculationResult . " for step " . $step);
 
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
                     }
@@ -723,6 +746,7 @@ class CsvService
                                 case 'roof_type_id':
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
                                     break;
+
                                 case 'building_type_id':
                                 case 'build_year':
                                     //$row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->buildingType->name ?? '';
@@ -1021,7 +1045,7 @@ class CsvService
                 }
             }
 
-            //dd($row);
+            dd($row);
 
 
             // no need to merge headers with the rows, we always set defaults so the count will always be the same.
@@ -1200,9 +1224,6 @@ class CsvService
                 return [$item['interested_in_id'] => $item['interest_id']];
             })->toArray();
 
-
-
-
         $wallInsulationSavings = WallInsulation::calculate($building, $userEnergyHabit, [
             'cavity_wall'                 => $buildingFeature->cavity_wall ?? null,
             'element'                     => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
@@ -1270,15 +1291,37 @@ class CsvService
         ];
     }
 
-
+    /**
+     * Format the output of the given column and value.
+     *
+     * @param string $column
+     * @param mixed $value
+     * @param  int  $decimals
+     * @param  bool  $shouldRound
+     *
+     * @return float|int|string
+     */
     protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false){
+        //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
+        if (stristr($column, 'year') !== false){
+            // do nothing with it, just return
+            return $value;
+        }
         if (!is_numeric($value)){
             return $value;
+        }
+        if ($column == 'interest_comparable'){
+            $decimals = 1;
         }
         if (stristr($column, 'savings_') !== false || stristr($column, 'cost')){
             $value = NumberFormatter::round($value);
         }
-        return NumberFormatter::format($value, $decimals, $shouldRound);
+        if ($shouldRound){
+            $value = NumberFormatter::round($value);
+        }
+        // We should let Excel do the separation of thousands
+        return number_format($value, $decimals, ",", "");
+        //return NumberFormatter::format($value, $decimals, $shouldRound);
     }
 
     protected static function translateExtraValueIfNeeded($value){
@@ -1286,6 +1329,29 @@ class CsvService
             $key = 'general.options.%s.title';
             return Translation::translate(sprintf($key, $value));
         }
+    }
+
+    /**
+     * Returns whether or not two (optional!) columns contain a year or not
+     *
+     * @param string $column
+     * @param string $extraValue
+     *
+     * @return bool
+     */
+    protected static function isYear($column, $extraValue){
+        if (!is_null($column)){
+            if (stristr($column, 'year') !== false){
+                return true;
+            }
+            if ($column == 'extra'){
+                return in_array($extraValue, [
+                    'year',
+                ]);
+            }
+        }
+
+        return false;
     }
 
 }

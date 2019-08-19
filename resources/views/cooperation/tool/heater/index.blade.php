@@ -254,33 +254,33 @@
                     data: form,
                     success: function (data) {
                         if (data.hasOwnProperty('consumption')) {
-                            $("input#consumption_water").val(hoomdossierRound(data.consumption.water));
-                            $("input#consumption_gas").val(hoomdossierRound(data.consumption.gas));
+                            $("input#consumption_water").val(Hoomdossier.round(data.consumption.water));
+                            $("input#consumption_gas").val(Hoomdossier.round(data.consumption.gas));
                         }
                         if (data.hasOwnProperty('specs')) {
-                            $("input#size_boiler").val(hoomdossierRound(data.specs.size_boiler));
+                            $("input#size_boiler").val(Hoomdossier.round(data.specs.size_boiler));
                             $("input#size_collector").val(data.specs.size_collector);
                         }
                         if (data.hasOwnProperty('production_heat')) {
-                            $("input#production_heat").val(hoomdossierRound(data.production_heat));
+                            $("input#production_heat").val(Hoomdossier.round(data.production_heat));
                         }
                         if (data.hasOwnProperty('percentage_consumption')) {
-                            $("input#percentage_consumption").val(hoomdossierRound(data.percentage_consumption));
+                            $("input#percentage_consumption").val(Hoomdossier.round(data.percentage_consumption));
                         }
                         if (data.hasOwnProperty('savings_gas')) {
-                            $("input#savings_gas").val(hoomdossierRound(data.savings_gas));
+                            $("input#savings_gas").val(Hoomdossier.round(data.savings_gas));
                         }
                         if (data.hasOwnProperty('savings_co2')) {
-                            $("input#savings_co2").val(hoomdossierRound(data.savings_co2));
+                            $("input#savings_co2").val(Hoomdossier.round(data.savings_co2));
                         }
                         if (data.hasOwnProperty('savings_money')) {
-                            $("input#savings_money").val(hoomdossierRound(data.savings_money));
+                            $("input#savings_money").val(Hoomdossier.round(data.savings_money));
                         }
                         if (data.hasOwnProperty('cost_indication')) {
-                            $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
+                            $("input#cost_indication").val(Hoomdossier.round(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(data.interest_comparable);
+                            $("input#interest_comparable").val(Hoomdossier.number_format(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         if (data.hasOwnProperty('performance')) {
                             $("#performance-text").html("<strong>" + data.performance.text + "</strong>");

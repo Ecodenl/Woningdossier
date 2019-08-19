@@ -35,17 +35,27 @@
 <script src="{{ asset('js/app.js') }}"></script>
 
 <script>
-    function hoomdossierRound(valueToRound, bucket)
-    {
-        if (typeof bucket === "undefined") {
-            bucket = 5;
-        }
+    class Hoomdossier {
 
-        return Math.round(valueToRound / bucket) * bucket;
+        static round(value, bucket) {
+            if (typeof bucket === "undefined") {
+                bucket = 5;
+            }
 
+            return Math.round(value / bucket) * bucket;
+        };
+
+        static number_format(value, locale, decimals){
+            if (typeof value === "string"){
+                value = parseFloat(value);
+            }
+            return value.toLocaleString(locale, { minimumFractionDigits: decimals });
+        };
 
     }
+
 </script>
+
 @stack('js')
 </body>
 </html>

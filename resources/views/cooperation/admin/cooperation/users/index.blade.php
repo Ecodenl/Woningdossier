@@ -21,11 +21,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php /** @var \App\Models\User $user */ ?>
+                        <?php
+                        /**
+                         * @var \App\Models\User $user
+                         * @var \App\Models\Building $building
+                         */
+                        ?>
                         @foreach($users as $user)
                             <?php
                                 $building = $user->building;
-                                $mostRecentBuildingStatus = $building->buildingStatuses->first();
+                                $mostRecentBuildingStatus = $building->getMostRecentBuildingStatus();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);

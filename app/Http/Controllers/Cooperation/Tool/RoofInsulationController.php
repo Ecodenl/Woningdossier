@@ -257,9 +257,8 @@ class RoofInsulationController extends Controller
 
     public function calculate(Request $request)
     {
-
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         $result = \App\Calculations\RoofInsulation::calculate($building, $user, $request->all());

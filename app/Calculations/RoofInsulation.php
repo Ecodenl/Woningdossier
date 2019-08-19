@@ -26,7 +26,6 @@ class RoofInsulation {
 
         $roofTypes = $calculateData['building_roof_types'] ?? [];
 
-
         foreach ($roofTypes as $i => $details) {
             if (is_numeric($i) && is_numeric($details)) {
                 $roofType = RoofType::find($details);
@@ -43,7 +42,6 @@ class RoofInsulation {
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $adviceMap = RoofInsulationHelper::getMeasureApplicationsAdviceMap();
         $totalSurface = 0;
-
 
         foreach (array_keys($result) as $cat) {
             $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);

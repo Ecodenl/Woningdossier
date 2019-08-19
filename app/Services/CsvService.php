@@ -696,7 +696,7 @@ class CsvService
 
                     $maybe1 = isset($tableWithColumnOrAndId[3]) ? $tableWithColumnOrAndId[3] : '';
                     $maybe2 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
-                    //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
+                    dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
                     // determine what column we need to query on to get the results for the user.
                     /* @note this will work in most cases, if not the variable will be set again in a specific case. */
@@ -727,10 +727,8 @@ class CsvService
                                 break;
                         }
 
-                        if(!self::isYear($maybe1, $maybe2)){
-                            $calculationResult = self::formatOutput($column,
-                                $calculationResult);
-                        }
+                        $calculationResult = self::formatFieldOutput($column, $calculationResult, $maybe1, $maybe2);
+
                         dump("calculationResult: " . $calculationResult . " for step " . $step);
 
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
@@ -1291,6 +1289,38 @@ class CsvService
         ];
     }
 
+    protected static function formatFieldOutput($column, $value, $maybe1, $maybe2){
+        dump("formatFieldOutput (" . $column . ", " . $value . ", " . $maybe1 . ", " . $maybe2 . ")");
+        $decimals = 0;
+        $shouldRound = false;
+
+        if(self::isYear($column) || self::isYear($maybe1, $maybe2)){
+            return $value;
+        }
+
+        /*if (stristr($column, 'year') !== false){
+            // do nothing with it, just return
+            return $value;
+        }*/
+
+        if (!is_numeric($value)){
+            return $value;
+        }
+
+        if (in_array($column, ['interest_comparable',])){
+            $decimals = 1;
+        }
+        if ($column == 'specs' && $maybe1 == 'size_collector'){
+            $decimals = 1;
+        }
+        if ($column == 'paintwork' && $maybe1 == 'costs'){
+            /// round the cost for paintwork
+            $shouldRound = true;
+        }
+
+        return self::formatOutput($column, $value, $decimals, $shouldRound);
+    }
+
     /**
      * Format the output of the given column and value.
      *
@@ -1302,18 +1332,11 @@ class CsvService
      * @return float|int|string
      */
     protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false){
-        //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
-        if (stristr($column, 'year') !== false){
-            // do nothing with it, just return
-            return $value;
-        }
-        if (!is_numeric($value)){
-            return $value;
-        }
-        if ($column == 'interest_comparable'){
-            $decimals = 1;
-        }
-        if (stristr($column, 'savings_') !== false || stristr($column, 'cost')){
+        dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
+
+        if (in_array($column, ['percentage_consumption',]) ||
+            stristr($column, 'savings_') !== false ||
+            stristr($column, 'cost')){
             $value = NumberFormatter::round($value);
         }
         if ($shouldRound){
@@ -1339,7 +1362,7 @@ class CsvService
      *
      * @return bool
      */
-    protected static function isYear($column, $extraValue){
+    protected static function isYear($column, $extraValue = ''){
         if (!is_null($column)){
             if (stristr($column, 'year') !== false){
                 return true;

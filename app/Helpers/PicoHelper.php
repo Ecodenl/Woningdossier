@@ -45,9 +45,14 @@ class PicoHelper
 
         // get the best address option for the result.
         if (empty($houseNumberExtension) || !isset($options[$houseNumberExtension])) {
-            $option = $options['None'];
+            $best = 'None';
         } else {
-            $option = $options[$houseNumberExtension];
+            $best = $houseNumberExtension;
+        }
+
+        $option = [];
+        if ($options->has($best)){
+            $option = $options->get($best);
         }
 
         // best match
@@ -56,7 +61,7 @@ class PicoHelper
             'street'                 => $option['straat'] ?? '',
             'number'                 => $option['huisnummer'] ?? '',
             'postal_code'            => $option['postcode'] ?? '',
-                        'house_number_extension' => $houseNumberExtension,
+            'house_number_extension' => $houseNumberExtension,
             'city'                   => $option['woonplaats'] ?? '',
             'build_year'             => $option['bouwjaar'] ?? '',
             'surface'                => $option['adresopp'] ?? ''

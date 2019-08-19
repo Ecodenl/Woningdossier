@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\HoomdossierSession;
+use App\Helpers\Hoomdossier;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -164,7 +163,7 @@ class BuildingCoachStatus extends Model
             \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
                 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission',
                 // accept from the cooperation-building-link
-                'cooperation_user.cooperation_id')
+                'users.cooperation_id')
                 // count the pending statuses
                ->from($pendingCount)
                 // count the removed count
@@ -177,15 +176,15 @@ class BuildingCoachStatus extends Model
 
 
                 // accept from the cooperation-building-link
-               ->join('cooperation_user', function ($joinCooperationUser) use ($cooperationId) {
-                   $joinCooperationUser->on('buildings.user_id', '=', 'cooperation_user.user_id')
+               ->join('users', function ($joinUsers) use ($cooperationId) {
+                   $joinUsers->on('buildings.user_id', '=', 'users.id')
                                        ->where('cooperation_id', $cooperationId);
                })
                 // check if the coach has access
                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                ->where('buildings.deleted_at', '=', null)
                 // accept from the cooperation-building-link
-               ->groupBy('building_id', 'cooperation_user.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
+               ->groupBy('building_id', 'users.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
                ->get();
 
 

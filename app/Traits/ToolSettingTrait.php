@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Log;
 use App\Services\ToolSettingService;
 use Illuminate\Database\Eloquent\Model;
 
@@ -90,12 +91,20 @@ trait ToolSettingTrait
         static::created(function (Model $model) {
 
             $hasChanged = static::hasChanged($model);
-            // this was a requested feature so no alert would be triggered after the first page was done
-            // i'll just comment this out cause my sixth sense tell;s me this will be requested again.
-            //
-            //  if ($building instanceof Building) {
-            //     $hasChanged = null === $building->example_building_id ? false : true;
-            //  }
+
+            if ($model instanceof Building) {
+                // When the first page (BuildingDetails) page is done, the example_building_id is ALWAYS set.
+                // SO: $building->example_building_id always has a value.
+                // BUT: We want to check if the example_building_id is set in this action, so we check
+                // the original value of example_building_id. If the example_building_id is dirty we
+                // get a different example_building_id back. If it's null, we know that this action was
+                // performed on the BuildingDetails page and we set $hasChanged to false so no alert
+                // will be triggered.
+                $previousExampleBuildingId = $model->getOriginal('example_building_id');
+                if(is_null($previousExampleBuildingId)){
+                    $hasChanged = false;
+                }
+            }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
@@ -107,11 +116,20 @@ trait ToolSettingTrait
         static::updated(function (Model $model) {
 
             $hasChanged = static::hasChanged($model);
-            // this was a requested feature so no alert would be triggered after the first page was done
-            // i'll just comment this out cause my sixth sense tell;s me this will be requested again.
-            // if ($building instanceof Building) {
-            //     $hasChanged = null === $building->example_building_id ? false : true;
-            // }
+
+            if ($model instanceof Building) {
+                // When the first page (BuildingDetails) page is done, the example_building_id is ALWAYS set.
+                // SO: $building->example_building_id always has a value.
+                // BUT: We want to check if the example_building_id is set in this action, so we check
+                // the original value of example_building_id. If the example_building_id is dirty we
+                // get a different example_building_id back. If it's null, we know that this action was
+                // performed on the BuildingDetails page and we set $hasChanged to false so no alert
+                // will be triggered.
+                $previousExampleBuildingId = $model->getOriginal('example_building_id');
+                if(is_null($previousExampleBuildingId)){
+                    $hasChanged = false;
+                }
+            }
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 

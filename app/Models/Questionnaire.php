@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
-use App\Scopes\CooperationScope;
+use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -37,7 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Questionnaire extends Model
 {
-    use TranslatableTrait;
+    use TranslatableTrait, HasCooperationTrait;
 
     protected $fillable = [
         'name', 'step_id', 'cooperation_id', 'is_active', 'order',
@@ -46,18 +46,6 @@ class Questionnaire extends Model
     protected $casts = [
         'is_active' => 'bool',
     ];
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new CooperationScope());
-    }
 
     /**
      * Return the step that belongs to this questionnaire.

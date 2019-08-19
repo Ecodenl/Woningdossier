@@ -41,7 +41,7 @@ class ReportController extends Controller
 
         foreach ($questionnaires as $questionnaire) {
             foreach ($usersFromCooperation as $user) {
-                $building = $user->buildings()->first();
+                $building = $user->building;
 
                 $questionAnswersForCurrentQuestionnaire = \DB::table('questionnaires')
                     ->where('questionnaires.id', $questionnaire->id)
@@ -120,7 +120,6 @@ class ReportController extends Controller
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
@@ -142,7 +141,7 @@ class ReportController extends Controller
         $residentInputSource = InputSource::findByShort('resident');
 
         foreach ($users as $key => $user) {
-            $building = $user->buildings()->first();
+            $building = $user->building;
             if ($building instanceof Building) {
                 $street = $building->street;
                 $number = $building->number;
@@ -154,10 +153,9 @@ class ReportController extends Controller
                 $lastName = $user->last_name;
                 $email = $user->email;
                 $phoneNumber = "'".$user->phone_number;
-                $mobileNumber = $user->mobile;
 
                 // set the personal userinfo
-                $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
+                $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $street, $number, $city, $postalCode, $countryCode];
 
                 // set all the years in range
                 for ($startYear = $thisYear; $startYear <= ($thisYear + 100); ++$startYear) {
@@ -198,7 +196,6 @@ class ReportController extends Controller
 
     public function downloadByMeasure(Cooperation $cooperation)
     {
-        // get the users from the cooperations
         $users = $cooperation->users;
 
         // set the csv headers
@@ -207,7 +204,6 @@ class ReportController extends Controller
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-            __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.mobilenumber'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
             __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
@@ -230,7 +226,7 @@ class ReportController extends Controller
         $residentInputSource = InputSource::findByShort('resident');
 
         foreach ($users as $key => $user) {
-            $building = $user->buildings()->first();
+            $building = $user->building;
             if ($building instanceof Building) {
                 $street = $building->street;
                 $number = $building->number;
@@ -242,10 +238,9 @@ class ReportController extends Controller
                 $lastName = $user->last_name;
                 $email = $user->email;
                 $phoneNumber = "'".$user->phone_number;
-                $mobileNumber = $user->mobile;
 
                 // set the personal userinfo
-                $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $mobileNumber, $street, $number, $city, $postalCode, $countryCode];
+                $row[$key] = [$firstName, $lastName, $email, $phoneNumber, $street, $number, $city, $postalCode, $countryCode];
 
                 // set alle the measures to the user
                 foreach ($measures as $measure) {

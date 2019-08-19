@@ -21,12 +21,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php /** @var \App\Models\User $user */ ?>
+                        <?php
+                        /**
+                         * @var \App\Models\User $user
+                         * @var \App\Models\Building $building
+                         */
+                        ?>
                         @foreach($users as $user)
                             <?php
-                                // work on loading it inside the controller when all branches ar
-                                $building = $user->buildings->first();
-                                $mostRecentBuildingStatus = $building->buildingStatuses->first();
+                                $building = $user->building;
+                                $mostRecentBuildingStatus = $building->getMostRecentBuildingStatus();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);

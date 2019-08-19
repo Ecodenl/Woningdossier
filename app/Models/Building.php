@@ -46,7 +46,6 @@ use Spatie\Permission\Contracts\Role;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
  * @property-read \App\Models\User|null $user
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingUserUsage[] $userUsage
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newQuery()
@@ -130,22 +129,6 @@ class Building extends Model
     }
 
     /**
-     * Complete a step for a building.
-     *
-     * @param Step $step
-     *
-     * @return Model
-     */
-    public function complete(Step $step)
-    {
-        return UserProgress::firstOrCreate([
-            'step_id' => $step->id,
-            'input_source_id' => HoomdossierSession::getInputSource(),
-            'building_id' => HoomdossierSession::getBuilding(),
-        ]);
-    }
-
-    /**
      * Check if a user is interested in a step.
      *
      * @param string $type
@@ -198,14 +181,6 @@ class Building extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function userUsage()
-    {
-        return $this->hasMany(BuildingUserUsage::class);
     }
 
     /**
@@ -473,7 +448,7 @@ class Building extends Model
      */
     public function getMostRecentBuildingStatus()
     {
-        return $this->buildingStatuses()->mostRecent()->first();
+        return $this->buildingStatuses()->with('status')->mostRecent()->first();
     }
 
 

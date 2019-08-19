@@ -782,6 +782,9 @@ class CsvService
                                 case 'contaminated_wall_joints':
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->contaminatedWallJoints instanceof FacadeSurface ? $buildingFeature->contaminatedWallJoints->name : '';
                                     break;
+                                case 'window_surface':
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = NumberFormatter::format($buildingFeature->$columnOrId,2) ?? '';
+                                    break;
                                 default:
                                     // the column does not need a relationship, so just get the column
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->$columnOrId ?? '';

@@ -1883,7 +1883,7 @@ class ToolHelper
                     'type' => 'select',
                     'options' => $boilerTypes
                 ],
-                'service.'.$boiler->id.'.extra.year' => [
+                'service.'.$boiler->id.'.extra.date' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.year.title'),

@@ -13,6 +13,7 @@ use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
+use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingElement;
@@ -796,8 +797,7 @@ class CsvService
                                 default:
                                     // check if we need to get data from the extra column
                                     if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                        $extraKey                                     = explode('extra.',
-                                            $tableWithColumnOrAndIdKey)[1];
+                                        $extraKey                                     = explode('extra.', $tableWithColumnOrAndIdKey)[1];
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
                                     } else {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->$column ?? '';
@@ -847,7 +847,7 @@ class CsvService
                                     if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
                                         $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
 
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingElement->extra) ? $buildingElement->extra[$extraKey] ?? '' : '';
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingElement->extra) ? self::translateExtraValueIfNeeded($buildingElement->extra[$extraKey]) ?? '' : '';
                                     } else {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingElement->elementValue->value ?? '';
                                     }
@@ -1279,6 +1279,13 @@ class CsvService
             $value = NumberFormatter::round($value);
         }
         return NumberFormatter::format($value, $decimals, $shouldRound);
+    }
+
+    protected static function translateExtraValueIfNeeded($value){
+        if (in_array($value, ['yes', 'no', 'unknown'])){
+            $key = 'general.options.%s.title';
+            return Translation::translate(sprintf($key, $value));
+        }
     }
 
 }

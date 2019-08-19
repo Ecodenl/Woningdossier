@@ -95,7 +95,7 @@ class Heater {
                 $componentCostCollector = HeaterComponentCost::where('component', 'collector')->where('size', $result['specs']['size_collector'])->first();
                 $result['cost_indication'] = $componentCostBoiler->cost + $componentCostCollector->cost;
 
-                $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+                $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
                 foreach ($interests as $type => $interestTypes) {
                     foreach ($interestTypes as $typeId => $interestId) {

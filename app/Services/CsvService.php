@@ -11,6 +11,7 @@ use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
 use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
+use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
@@ -525,7 +526,6 @@ class CsvService
     {
         $users = $cooperation->users()->whereHas('buildings')->get();
 
-
         if ($anonymized) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -565,27 +565,30 @@ class CsvService
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
-            $step = Step::whereSlug($stepSlug)->first();
-            foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
-                if ($tableWithColumnOrAndId == 'calculations') {
+            // building-detail contains data that is already present in the columns above
+            if (!in_array($stepSlug, ['building-detail'])) {
+                $step = Step::whereSlug($stepSlug)->first();
+                foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
+                    if ($tableWithColumnOrAndId == 'calculations') {
 
-                    // we will dot the array, map it so we can add the step name to it
-                    $deeperContents = array_map(function ($content) use ($step) {
-                        return $step->name.': '.$content;
-                    }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.calculation.'));
+                        // we will dot the array, map it so we can add the step name to it
+                        $deeperContents = array_map(function ($content) use (
+                            $step
+                        ) {
+                            return $step->name.': '.$content;
+                        }, \Illuminate\Support\Arr::dot($contents,
+                            $stepSlug.'.calculation.'));
 
-                    $headers = array_merge($headers, $deeperContents);
+                        $headers = array_merge($headers, $deeperContents);
 
-                } else {
-                    $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.$contents['label'];
+                    } else {
+                        $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.$contents['label'];
+                    }
                 }
-
             }
         }
 
         $rows[] = $headers;
-
-        dump($headers);
 
         /**
          * Get the data for every user.
@@ -702,6 +705,9 @@ class CsvService
                                 $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$column] : $calculateData[$step][$column][$costsOrYear] ?? '';
                                 break;
                         }
+
+                        $calculationResult = self::formatOutput($column, $calculationResult);
+                        dump("calculationResult: " . $calculationResult . " for step " . $step);
 
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
                     }
@@ -1017,6 +1023,7 @@ class CsvService
 
             dd($row);
 
+
             // no need to merge headers with the rows, we always set defaults so the count will always be the same.
             $rows[] = $row[$buildingId];
         }
@@ -1252,8 +1259,6 @@ class CsvService
             'interest' => $userInterestsForHeater,
         ]);
 
-
-
         return [
             'wall-insulation' => $wallInsulationSavings,
             'insulated-glazing' => $insulatedGlazingSavings,
@@ -1265,5 +1270,15 @@ class CsvService
         ];
     }
 
+
+    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false){
+        if (!is_numeric($value)){
+            return $value;
+        }
+        if (stristr($column, 'savings_') !== false || stristr($column, 'cost')){
+            $value = NumberFormatter::round($value);
+        }
+        return NumberFormatter::format($value, $decimals, $shouldRound);
+    }
 
 }

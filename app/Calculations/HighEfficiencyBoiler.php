@@ -65,7 +65,7 @@ class HighEfficiencyBoiler {
                     //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure);
                     $result['replace_year'] = HighEfficiencyBoilerCalculator::determineApplicationYear($measure, $year);
                     $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'], false);
-                    $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+                    $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
                 }
             }
         }

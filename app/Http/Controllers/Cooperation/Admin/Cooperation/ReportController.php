@@ -65,8 +65,6 @@ class ReportController extends Controller
             'filename' => $fileName,
         ]);
 
-
-
         switch ($fileType->short) {
             case 'total-report':
                 GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage);

@@ -21,23 +21,25 @@
                         </thead>
                         <tbody>
                      
-                        <?php /** @var \App\Models\User $user */ ?>
+
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
-                                $mostRecentForBuildingAndCoachId = \App\Models\BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingCoachStatus->building_id)->where('coach_id', \App\Helpers\Hoomdossier::user()->id)->first();
-                                $building = $buildingCoachStatus->building;
+                                /** @var \App\Models\Building $building */
+                                $building = $buildingCoachStatus->building()->first();
+                                $user = $building->user;
+                                $buildingStatus = $building->getMostRecentBuildingStatus();
+
+                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+
+                                $appointmentDateFormatted = optional($buildingStatus->appointment_date)->format('d-m-Y');
+                                $appointmentDateStrotime = strtotime($appointmentDateFormatted);
                             ?>
-                            @if($building instanceof \App\Models\Building)
-                                <?php
-                                    $user = $building->user()->withoutGlobalScopes()->first();
-                                    $userExists = $user instanceof \App\Models\User;
-                                    $appointmentDate = !is_null($mostRecentForBuildingAndCoachId->appointment_date) ? \Carbon\Carbon::parse($mostRecentForBuildingAndCoachId->appointment_date)->format('d-m-Y') : '';
-                                ?>
                             <tr>
-                                <td data-sort="{{$userExists && $user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$userExists && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
+                                    {{$userCreatedAtFormatted ?? '-'}}
                                 </td>
-                                <td>{{$userExists ? $user->getFullName() : '-'}}</td>
+                                <td>{{$user->getFullName()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
@@ -48,17 +50,12 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    @if($building->isActive())
-                                        {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentForBuildingAndCoachId->status)}}
-                                    @else
-                                        {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
-                                    @endif
+                                    {{$buildingStatus->status->name}}
                                 </td>
-                                <td data-sort="{{strtotime($appointmentDate)}}">
-                                    {{$appointmentDate}}
+                                <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
+                                    {{$appointmentDateFormatted ?? '-'}}
                                 </td>
                             </tr>
-                            @endif
                         @endforeach
                         </tbody>
                     </table>

@@ -24,9 +24,15 @@ class UserController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-            $users = $cooperation
-                ->users()
-                ->get();
+        // change the relationship to building on merge.
+        $users = $cooperation
+            ->users()
+            ->whereHas('buildings')
+            ->with(['buildings' => function ($query) {
+                $query->with(['buildingStatuses' => function ($query) {
+                    $query->mostRecent();
+                }]);
+            }])->get();
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));
@@ -113,6 +119,8 @@ class UserController extends Controller
         // assign the roles to the user
         $user->assignRole($roles);
 
+        $building->setStatus('active');
+
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
             // so create a message, with the access allowed
@@ -132,8 +140,8 @@ class UserController extends Controller
 
             $coach = User::find($coachId);
             // now give the selected coach access with permission to the new created building
-            BuildingPermissionService::givePermission($coachId, $building->id);
-            BuildingCoachStatusService::giveAccess($coachId, $building->id);
+            BuildingPermissionService::givePermission($coach, $building);
+            BuildingCoachStatusService::giveAccess($coach, $building);
 
             // and fire the added event twice, for the user itself and for the coach.
             event(new ParticipantAddedEvent($user, $building));

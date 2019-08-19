@@ -230,10 +230,10 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('buildings/show/{buildingId}', 'BuildingController@show')->name('buildings.show');
                     Route::resource('building-notes', 'BuildingNoteController')->only('store');
 
-                    Route::group(['prefix' => 'building-coach-status', 'as' => 'building-coach-status.'], function () {
-                        Route::post('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');
+                    Route::group(['prefix' => 'building-status', 'as' => 'building-status.'], function () {
+                        Route::post('set-status', 'BuildingStatusController@setStatus')->name('set-status');
                         Route::post('set-appointment-date',
-                        'BuildingCoachStatusController@setAppointmentDate')->name('set-appointment-date');
+                        'BuildingStatusController@setAppointmentDate')->name('set-appointment-date');
                     });
                 });
 

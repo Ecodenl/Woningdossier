@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\Status;
 use App\Models\User;
 use App\Services\PrivateMessageViewService;
 use Carbon\Carbon;
@@ -26,7 +27,8 @@ class BuildingController extends Controller
      * @param  Cooperation  $cooperation
      * @param $buildingId
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Cooperation $cooperation, $buildingId)
     {
@@ -44,9 +46,6 @@ class BuildingController extends Controller
         $building = $user->building;
         $this->authorize('show', [$building, $cooperation]);
 
-
-        $userDoesNotExist = ! $user instanceof User;
-        $userExists       = ! $userDoesNotExist;
         $buildingId       = $building->id;
 
         $roles = Role::where('name', '!=', 'superuser')
@@ -56,28 +55,12 @@ class BuildingController extends Controller
 
         $coaches = $cooperation->getCoaches()->get();
 
-        $manageableStatuses                   = BuildingCoachStatus::getManageableStatuses();
+        $statuses = Status::ordered()->get();
+
         $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
-        $mostRecentStatusesForBuildingId = BuildingCoachStatus::getMostRecentStatusesForBuildingId($buildingId);
 
-        $mostRecentBcs = [];
-        // first check if there are any.
-        if ($mostRecentStatusesForBuildingId->isNotEmpty()) {
-            // if the user is a coach we can get the specific one for the current coach
-            // else we just get the most recent one.
-            if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-                $mostRecentBcs = $mostRecentStatusesForBuildingId->where('coach_id', Hoomdossier::user()->id)->all();
-            } else {
-                $mostRecentBuildingCoachStatusArray = $mostRecentStatusesForBuildingId->all();
-                $mostRecentBcs                      = [$mostRecentBuildingCoachStatusArray[0]];
-            }
-        }
-
-        // hydrate the building coach status model so it will be easier to do stuff in the views
-        $mostRecentBuildingCoachStatus = BuildingCoachStatus::hydrate(
-            $mostRecentBcs
-        )->first();
+        $mostRecentStatus = $building->getMostRecentBuildingStatus();
 
         $logs = Log::forBuildingId($buildingId)->get();
 
@@ -101,40 +84,35 @@ class BuildingController extends Controller
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
-        // since a user can be deleted, a building
-        if ($userExists) {
-            if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
 
-                $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
+        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
 
-                $previous = $connectedBuildingsForUser->where('building_id', '<', $buildingId)->max('building_id');
-                $next     = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');
+        $previous = $connectedBuildingsForUser->where('building_id', '<', $buildingId)->max('building_id');
+        $next     = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');
 
-            } else {
-                // get previous user id
-                $previous = $cooperation
-                    ->users()
-                    ->join('buildings', 'users.id', '=', 'buildings.user_id')
-                    ->where('buildings.id', '<', $buildingId)
-                    ->max('buildings.id');
+        } else {
+            // get previous user id
+            $previous = $cooperation
+                ->users()
+                ->join('buildings', 'users.id', '=', 'buildings.user_id')
+                ->where('buildings.id', '<', $buildingId)
+                ->max('buildings.id');
 
-                // get next user id
-                $next = $cooperation
-                    ->users()
-                    ->join('buildings', 'users.id', '=', 'buildings.user_id')
-                    ->where('buildings.id', '>', $buildingId)
-                    ->min('buildings.id');
-            }
-
+        // get next user id
+        $next = $cooperation
+            ->users()
+            ->join('buildings', 'users.id', '=', 'buildings.user_id')
+            ->where('buildings.id', '>', $buildingId)
+            ->min('buildings.id');
         }
 
 
+
         return view('cooperation.admin.buildings.show', compact(
-                'user', 'building', 'roles', 'coaches', 'lastKnownBuildingCoachStatus',
-                'coachesWithActiveBuildingCoachStatus',
-                'privateMessages', 'publicMessages', 'buildingNotes', 'previous', 'next', 'manageableStatuses',
-                'mostRecentBuildingCoachStatus',
-                'userDoesNotExist', 'userExists', 'logs'
+                'user', 'building', 'roles', 'coaches',
+                'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
+                'publicMessages', 'buildingNotes', 'previous', 'next', 'statuses', 'logs'
             )
         );
     }

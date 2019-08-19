@@ -176,7 +176,7 @@ class RegisterController extends Controller
 
         $user->assignRole($residentRole);
         // turn on when merged
-//        $building->setStatus('active');
+        $building->setStatus('active');
         $notificationTypes = NotificationType::all();
         $interval          = NotificationInterval::where('short', 'no-interest')->first();
 

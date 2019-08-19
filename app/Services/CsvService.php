@@ -596,7 +596,7 @@ class CsvService
          * @var User $user
          */
         foreach ($users as $user) {
-            dump("User " . $user->id);
+            //dump("User " . $user->id);
             // for each user we create a new row.
             $row = [];
 
@@ -641,7 +641,7 @@ class CsvService
 
             $buildingType    = $buildingFeatures->buildingType->name ?? '';
             $buildYear       = $buildingFeatures->build_year ?? '';
-            $exampleBuilding = $building->exampleBuilding->isSpecific() ? $building->exampleBuilding->name : '';
+            $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
             // set the personal userinfo
             if ($anonymized) {
@@ -676,7 +676,7 @@ class CsvService
 
                     $maybe1 = isset($tableWithColumnOrAndId[3]) ? $tableWithColumnOrAndId[3] : '';
                     $maybe2 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
-                    dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
+                    //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
                     // determine what column we need to query on to get the results for the user.
                     /* @note this will work in most cases, if not the variable will be set again in a specific case. */
@@ -708,7 +708,7 @@ class CsvService
                         }
 
                         $calculationResult = self::formatOutput($column, $calculationResult);
-                        dump("calculationResult: " . $calculationResult . " for step " . $step);
+                        //dump("calculationResult: " . $calculationResult . " for step " . $step);
 
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
                     }
@@ -1021,14 +1021,14 @@ class CsvService
                 }
             }
 
-            dd($row);
+            //dd($row);
 
 
             // no need to merge headers with the rows, we always set defaults so the count will always be the same.
             $rows[] = $row[$buildingId];
         }
 
-        dd($rows);
+        //dd($rows);
 
         return $rows;
     }

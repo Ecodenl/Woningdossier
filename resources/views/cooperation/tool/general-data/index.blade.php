@@ -769,6 +769,7 @@
 
             $("select#example_building_id").change(function () {
                 var current_eb = parseInt(this.value);
+                // if "no specific": set to null
                 current_eb = isNaN(current_eb) ? "" : current_eb;
                 // Do something with the previous value after the change
                 if (current_eb !== previous_eb) {
@@ -783,7 +784,7 @@
 
                         $.ajax({
                             type: "POST",
-                            url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                            url: '{{ route('cooperation.tool.apply-example-building', compact('cooperation')) }}',
                             data: {example_building_id: current_eb},
                             success: function (data) {
                                 location.reload();

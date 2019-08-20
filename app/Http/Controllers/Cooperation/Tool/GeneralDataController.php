@@ -118,10 +118,9 @@ class GeneralDataController extends Controller
 
     public function applyExampleBuilding(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
-
         $exampleBuildingId = $request->get('example_building_id', null);
 
+        $building = Building::find(HoomdossierSession::getBuilding());
         $buildYear = $building->getBuildYear();
 
         // There is one strange option: "Er is geen passende voorbeeldwoning"

@@ -11,15 +11,12 @@ use App\Http\Controllers\Controller;
 
 class BuildingNoteController extends Controller
 {
-    protected $fragment;
-
-    public function __construct(Cooperation $coodperation, Request $request)
-    {
-        if ($request->has('fragment')) {
-            $this->fragment = $request->get('fragment');
-        }
-    }
-
+    /**
+     * Method to store a note for a building
+     *
+     * @param BuildingNoteRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(BuildingNoteRequest $request)
     {
         $note = $request->input('building.note');
@@ -31,6 +28,6 @@ class BuildingNoteController extends Controller
             'coach_id' => Hoomdossier::user()->id,
         ]);
 
-        return redirect(back()->getTargetUrl().$this->fragment);
+        return redirect()->back()->with('fragment', $request->get('fragment'));;
     }
 }

@@ -50,12 +50,9 @@
                 @else
                     @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                         <li>
-                            <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                            <a href="{{$messageUrl}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessagesCount}}</span>
-                            </a>
+                            @include('cooperation.layouts.message-badge', ['messageUrl' => route('cooperation.admin.messages.index')])
                         </li>
+
                     @endif
 
                     @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin','superuser']))

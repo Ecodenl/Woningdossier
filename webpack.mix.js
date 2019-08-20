@@ -38,6 +38,11 @@ mix.js('resources/assets/js/app.js', 'public/js')
             'resources/assets/js/disable-auto-fill.js'
         ], 'public/js/disable-auto-fill.js'
     )
+    .scripts(
+        [
+            'resources/assets/js/hoomdossier.js'
+        ], 'public/js/hoomdossier.js'
+    )
     .copy('resources/assets/images', 'public/images')
     .sass('resources/assets/sass/app.scss', 'public/css')
     .sass('resources/assets/sass/datatables/_responsive_bootstrap.scss', 'public/css/datatables/responsive.bootstrap.min.css')

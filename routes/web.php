@@ -19,6 +19,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             return view('cooperation.welcome');
         })->name('welcome');
 
+
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
         Auth::routes();
@@ -51,6 +52,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
+
+            Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 

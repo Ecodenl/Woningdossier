@@ -84,22 +84,17 @@
                     </li>
 
                     @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
-                        @if (\App\Helpers\HoomdossierSession::currentRole() == 'resident')
-                            <li>
-                                <a href="{{route('cooperation.my-account.messages.index', ['cooperation' => $cooperation])}}">
-                                    <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
-                                </a>
-                            </li>
-                        @elseif(\App\Helpers\Hoomdossier::user()->can('access-admin') && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
-                            <li>
-                                <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                                <a href="{{$messageUrl}}">
-                                    <span class="glyphicon glyphicon-envelope"></span>
-                                    <span class="badge">{{\App\Models\PrivateMessageView::getTotalUnreadMessagesForCurrentRole()}}</span>
-                                </a>
-                            </li>
-                        @endif
+
+                        <?php
+                            $messageUrl = route('cooperation.my-account.messages.index');
+
+                            if(\App\Helpers\Hoomdossier::user()->can('access-admin') && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
+                                $messageUrl = route('cooperation.admin.messages.index');
+                            }
+                        ?>
+                        <li>
+                            @include('cooperation.layouts.message-badge', compact('messageUrl'))
+                        </li>
 
                         @include('cooperation.admin.layouts.navbar.role-switcher')
 

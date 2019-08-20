@@ -87,8 +87,11 @@
 <!-- tinymce -->
 <script src="{{asset('js/tinymce/tinymce.min.js')}}"></script>
 
+<script src="{{asset('js/hoomdossier.js')}}"></script>
+
 <script>
     $(document).ready(function () {
+        Hoomdossier.pollForMessageCount();
 
         $('.collapse').on('shown.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

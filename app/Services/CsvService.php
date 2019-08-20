@@ -588,10 +588,9 @@ class CsvService
                 foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
                     if ($tableWithColumnOrAndId == 'calculations') {
 
+                        // If you want to go ahead and translate in a different namespace, do it here
                         // we will dot the array, map it so we can add the step name to it
-                        $deeperContents = array_map(function ($content) use (
-                            $step
-                        ) {
+                        $deeperContents = array_map(function ($content) use ($step) {
                             return $step->name.': '.$content;
                         }, \Illuminate\Support\Arr::dot($contents,
                             $stepSlug.'.calculation.'));
@@ -611,6 +610,7 @@ class CsvService
         }
 
         //dump($headers);
+        dd($headers);
 
         $rows[] = $headers;
 

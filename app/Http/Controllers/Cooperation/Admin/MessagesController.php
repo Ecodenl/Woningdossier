@@ -46,6 +46,6 @@ class MessagesController extends Controller
     {
         MessageService::create($request);
 
-        return redirect()->back();
+        return redirect()->back()->with('fragment', $request->get('fragment'));
     }
 }

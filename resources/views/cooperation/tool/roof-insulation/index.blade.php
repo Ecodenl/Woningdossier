@@ -431,13 +431,11 @@
                                 }
                             }
                         } else {
-
                             $(".flat-roof").hide();
                         }
 
                         $(".cover-tiles").hide();
                         if (data.hasOwnProperty('pitched')) {
-
 
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')) {
@@ -463,7 +461,7 @@
                                 $("input#pitched_cost_indication").val(Hoomdossier.round(data.pitched.cost_indication));
                             }
                             if (data.pitched.hasOwnProperty('interest_comparable')) {
-                                $("input#pitched_interest_comparable").val(data.pitched.interest_comparable);
+                                $("input#pitched_interest_comparable").val(Hoomdossier.number_format(data.pitched.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
                             if (data.pitched.hasOwnProperty('replace')) {
                                 if (data.pitched.replace.hasOwnProperty('year')) {

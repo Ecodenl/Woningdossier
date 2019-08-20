@@ -24,7 +24,7 @@ class RoofInsulation {
     {
         $result = [];
 
-        $roofTypeIds = $calculateData['building_roof_types']['id'];
+        $roofTypeIds = $calculateData['building_roof_types']['id'] ?? [];
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
@@ -124,6 +124,7 @@ class RoofInsulation {
                 }
             }
 
+            /** @var \App\Models\MeasureApplication $replaceMeasure */
             // If tiles condition is set, use the status to calculate the replace moment
             $tilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? (int) $roofTypes[$cat]['extra']['tiles_condition'] : null;
             if (! is_null($tilesCondition)) {

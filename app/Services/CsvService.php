@@ -607,7 +607,7 @@ class CsvService
             }
         }
 
-        dump($headers);
+        //dump($headers);
 
         $rows[] = $headers;
 
@@ -696,7 +696,7 @@ class CsvService
 
                     $maybe1 = isset($tableWithColumnOrAndId[3]) ? $tableWithColumnOrAndId[3] : '';
                     $maybe2 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
-                    dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
+                    //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
                     // determine what column we need to query on to get the results for the user.
                     /* @note this will work in most cases, if not the variable will be set again in a specific case. */
@@ -729,7 +729,7 @@ class CsvService
 
                         $calculationResult = self::formatFieldOutput($column, $calculationResult, $maybe1, $maybe2);
 
-                        dump("calculationResult: " . $calculationResult . " for step " . $step);
+                        //dump("calculationResult: " . $calculationResult . " for step " . $step);
 
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
                     }
@@ -1046,7 +1046,7 @@ class CsvService
                 }
             }
 
-            //dd($row);
+            dd($row);
 
 
             // no need to merge headers with the rows, we always set defaults so the count will always be the same.
@@ -1079,8 +1079,6 @@ class CsvService
         $buildingHeater = $building->heater()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
 
         $userEnergyHabit = $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
-
-
 
         $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
@@ -1167,25 +1165,14 @@ class CsvService
         ];
 
         // now lets handle the roof insulation stuff.
-        $roofTypes = RoofType::all();
-        $buildingRoofTypesArray = [];
+        $buildingRoofTypesArray = ['id' => []];
 
-        $selectedRoofTypes = $buildingRoofTypes->pluck('roof_type_id')->toArray();
+        /** @var BuildingRoofType $buildingRoofType */
+        foreach($buildingRoofTypes as $buildingRoofType){
+            $buildingRoofTypesArray[$buildingRoofType->roofType->short] = $buildingRoofType->toArray();
+            $buildingRoofTypesArray['id'][] = $buildingRoofType->roofType->id;
 
-        foreach($roofTypes->where('calculate_value', '<', 5) as $roofType) {
-            $currentBuildingRoofType = $buildingRoofTypes->where('roof_type_id', $roofType->id)->first();
-            $buildingRoofTypesArray[$roofType->short] = [
-                'element_value_id' => $currentBuildingRoofType->element_value_id ?? null,
-                'roof_surface' => $currentBuildingRoofType->roof_surface ?? null,
-                'insulation_roof_surface' => $currentBuildingRoofType->insulation_roof_surface ?? null,
-                'extra' => $currentBuildingRoofType->extra ?? null,
-                'measure_application_id' => $currentBuildingRoofType->extra['measure_application_id'] ?? null,
-                'building_heating_id' => $currentBuildingRoofType->building_heating_id ?? null,
-            ];
         }
-
-        // merge them
-        $buildingRoofTypesArray = array_merge($selectedRoofTypes, $buildingRoofTypesArray);
 
         // now we handle the hr boiler stuff
         $buildingBoilerService = $buildingServices->where('service_id', $boilerService->id)->first();
@@ -1293,7 +1280,7 @@ class CsvService
     }
 
     protected static function formatFieldOutput($column, $value, $maybe1, $maybe2){
-        dump("formatFieldOutput (" . $column . ", " . $value . ", " . $maybe1 . ", " . $maybe2 . ")");
+        //dump("formatFieldOutput (" . $column . ", " . $value . ", " . $maybe1 . ", " . $maybe2 . ")");
         $decimals = 0;
         $shouldRound = false;
 
@@ -1335,7 +1322,7 @@ class CsvService
      * @return float|int|string
      */
     protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false){
-        dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
+        //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
 
         if (in_array($column, ['percentage_consumption',]) ||
             stristr($column, 'savings_') !== false ||

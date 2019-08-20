@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\HoomdossierSession;
+use App\Helpers\Hoomdossier;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 
 class RoleController extends Controller
 {
+
     public function assignRole(Cooperation $cooperation, Request $request)
     {
         // the user id to assign the role to
@@ -18,12 +19,16 @@ class RoleController extends Controller
         // the role we want to assign to a user
         $roleId = $request->get('role_id');
 
-        $cooperationId = $request->get('cooperation_id', null);
-
         $role = Role::findById($roleId);
-        $user = User::find($userId);
 
-        $user->assignRole($cooperationId, $role);
+        // if the user is a super-admin, then hey may be assigning roles to user from a other cooperation, so we remove the scope.
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin')) {
+            $user = User::withoutGlobalScopes()->find($userId);
+        } else {
+            $user = User::find($userId);
+        }
+
+        $user->assignRole($role);
 
         return redirect()->back();
     }
@@ -36,7 +41,13 @@ class RoleController extends Controller
         $roleId = $request->get('role_id');
 
         $role = Role::findById($roleId);
-        $user = User::find($userId);
+
+        // if the user is a super-admin, then hey may be removing roles from a user from a other cooperation, so we remove the scope.
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole('super-admin')) {
+            $user = User::withoutGlobalScopes()->find($userId);
+        } else {
+            $user = User::find($userId);
+        }
 
         // we cant delete a role if the user only has 1 role.
         if ($user->hasMultipleRoles()) {

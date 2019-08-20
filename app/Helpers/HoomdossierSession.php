@@ -63,7 +63,12 @@ class HoomdossierSession extends Session
         return false;
     }
 
-    public static function getCooperation(): int
+    /**
+     * @param  bool  $object Set to true if you want to get an object back
+     *
+     * @return int|null|Cooperation
+     */
+    public static function getCooperation($object = false)
     {
     	$cooperation = self::get('cooperation');
 
@@ -71,6 +76,10 @@ class HoomdossierSession extends Session
     		\Log::error("Cooperation was not an integer!! ");
     		\Log::error($cooperation);
 	    }
+
+    	if ($object){
+    	    $cooperation = \App\Helpers\Cache\Cooperation::find($cooperation);
+        }
 
     	return $cooperation;
     }
@@ -214,13 +223,19 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Returns the set role_id.
+     * Returns the role or role_id
      *
-     * @return int|null
+     * @param bool $object Set to true if you want an object returned
+     *
+     * @return int|null|Role
      */
-    public static function getRole()
+    public static function getRole($object = false)
     {
-        return self::getHoomdossierSession('role_id');
+        $id = self::getHoomdossierSession('role_id');
+        if(!$object){
+            return $id;
+        }
+        return \App\Helpers\Cache\Role::find($id);
     }
 
     public static function currentRole($column = 'name'): string
@@ -242,11 +257,17 @@ class HoomdossierSession extends Session
     /**
      * Get the input source id.
      *
-     * @return int|null
+     * @param bool $object Set to true if you want an object returned
+     *
+     * @return int|null|InputSource
      */
-    public static function getInputSource()
+    public static function getInputSource($object = false)
     {
-        return self::getHoomdossierSession('input_source_id');
+        $id = self::getHoomdossierSession('input_source_id');
+        if (!$object){
+            return $id;
+        }
+        return \App\Helpers\Cache\InputSource::find($id);
     }
 
     /**
@@ -263,11 +284,18 @@ class HoomdossierSession extends Session
     /**
      * Get the building id.
      *
-     * @return int|null
+     * @param bool $object Set to true if you want to get an object back
+     *
+     * @return int|null|Building
      */
-    public static function getBuilding()
+    public static function getBuilding($object = false)
     {
-        return self::getHoomdossierSession('building_id');
+        $building = self::getHoomdossierSession('building_id');
+        if ($object){
+            $building = Building::find($building);
+        }
+
+        return $building;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Tool\Information;
+namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 
 class VentilationController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -27,10 +30,7 @@ class VentilationController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
-        return view('cooperation.tool.ventilation-information.index', compact('steps'));
+        return view('cooperation.tool.ventilation-information.index');
     }
 
     /**
@@ -44,8 +44,8 @@ class VentilationController extends Controller
     {
         $building = Building::find(HoomdossierSession::getBuilding());
         // Save progress
-        $building->complete($this->step);
-        $cooperation = Cooperation::find($request->session()->get('cooperation'));
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

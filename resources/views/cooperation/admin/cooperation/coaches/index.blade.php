@@ -23,7 +23,7 @@
                         <tbody>
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
-                            <?php $building = $user->buildings()->first(); ?>
+                            <?php $building = $user->building; ?>
                             @if($building instanceof \App\Models\Building)
                             <tr>
                                 <td>{{$user->getFullName()}}</td>
@@ -37,7 +37,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{$user->email}}
+                                    {{$user->account->email}}
                                 </td>
                                 <td>
                                     {{implode(',', $user->roles->pluck('human_readable_name')->toArray())}}

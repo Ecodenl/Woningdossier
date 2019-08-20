@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
     {
-        $users = $cooperationToManage->users;
+        $users = $cooperationToManage->users()->withoutGlobalScopes()->get();
 
         $breadcrumbs = [
             [
@@ -39,7 +39,7 @@ class UserController extends Controller
 
     public function show(Cooperation $currentCooperation, Cooperation $cooperationToManage, $userId)
     {
-        $user = User::findOrFail($userId);
+        $user = User::withoutGlobalScopes()->findOrFail($userId);
         $roles = Role::where('name', '!=', 'superuser')
             ->where('name', '!=', 'super-admin')->get();
 

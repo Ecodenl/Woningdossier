@@ -8,15 +8,11 @@
                 <div class="panel-heading">@lang('auth.register.form.header')</div>
 
                 <div class="panel-body">
-                    <form action="{{route('cooperation.connect-existing-account')}}" method="post" id="connect-existing-account-form">
-                        {{csrf_field()}}
-                        <input type="hidden" name="existing_email" id="existing-email">
-                    </form>
                     <form class="form-horizontal has-address-data" method="POST" id="register" action="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
                         <input id="addressid" name="addressid" type="text" value="" style="display:none;">
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                        <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')<span class="required">*</span></label>
 
                             <div class="col-md-8">
@@ -40,13 +36,9 @@
                                         @lang('auth.register.form.e-mail-exists')
                                     </div>
                                 @endcomponent
-                                <div class="email-exist">
-                                    <a id="connect-account" class="btn btn-primary">@lang('auth.register.form.connect')</a>
-                                </div>
                             </div>
                         </div>
-
-                        <div id="other-form-data">
+                        <div class="user-info">
                             <div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                                 <label for="first_name" class="col-md-4 control-label">@lang('auth.register.form.first_name')<span class="required">*</span></label>
 
@@ -179,7 +171,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }} account-info">
                                 <label for="password" class="col-md-4 control-label">@lang('auth.register.form.password')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
@@ -193,7 +185,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group account-info">
                                 <label for="password-confirm" class="col-md-4 control-label">@lang('auth.register.form.password_confirmation')<span class="required">*</span></label>
 
                                 <div class="col-md-8">
@@ -223,11 +215,6 @@
 
             var email = $('#email');
 
-            $('#connect-account').click(function () {
-                $('#existing-email').val($('#email').val());
-                $('#connect-existing-account-form').submit();
-            });
-
             email.on('keyup change', function () {
                 $.ajax({
                     url: '{{route('cooperation.check-existing-email')}}',
@@ -235,35 +222,51 @@
                     data: {email: $(this).val()},
                 }).done(function (data) {
                     var emailIsAlreadyRegistered =  $('#email-is-already-registered');
-                    var otherFormData = $('#other-form-data');
+
+                    var passwordInput = $('#password');
+                    var passwordConfirmInput = $('#password-confirm');
+                    var emailInput = $('#email');
 
                     // email exists
                     if (data.email_exists) {
                         var isAlreadyMemberMessage = $('#is-already-member');
                         var emailExistsDiv = $('.email-exist');
 
-                        // hide the other form inputs
-                        otherFormData.hide();
                         emailIsAlreadyRegistered.show();
 
+                        emailInput.prop('required', false);
+                        passwordInput.prop('required', false);
+                        passwordConfirmInput.prop('required', false);
+
+
+                        console.log(data);
                         // check if the email is connected to the current cooperation
                         // and show the matching messages
                         if (data.user_is_already_member_of_cooperation) {
+                            // hide the account stuff
                             isAlreadyMemberMessage.show();
                             emailExistsDiv.hide();
+                            $('.user-info').hide();
                         } else {
+                            $('.account-info').hide();
                             isAlreadyMemberMessage.hide();
                             emailExistsDiv.show();
                         }
 
                     } else  {
-                        otherFormData.show();
                         emailIsAlreadyRegistered.hide();
+                        $('.user-info').show();
+                        $('.account-info').show();
+                        emailInput.prop('required', true);
+                        passwordInput.prop('required', true);
+                        passwordConfirmInput.prop('required', true);
                     }
                 });
             });
 
-            email.trigger('change');
+            if ($('.form-error').length) {
+                email.trigger('change');
+            }
 
 
         });

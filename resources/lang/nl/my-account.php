@@ -2,11 +2,12 @@
 
 return [
     'side-nav' => [
-        'home'        => 'Home',
+        'home'          => 'Home',
         'notification-settings' => 'Notificatie instellingen',
         'label'       => 'Mijn account',
         'import'      => 'Import centrum',
         'settings'    => 'Instellingen',
+        'hoom-settings' => 'Hoomdossier instellingen',
         'access'      => 'Gebruikers met toegang tot uw woning',
         'my-messages' => 'Mijn berichten',
         'my-requests' => 'Mijn aanvragen',
@@ -133,9 +134,9 @@ return [
 
     'settings'     => [
         'index' => [
+            'header' => 'Gebruikergegevens',
+            'text' => 'Hier kunt u uw gebruikers gegevens aanpassen, deze zijn per coöperatie aanpasbaar. Wat u dus hier aanpast heeft geen invloed op de andere coöperaties waar u bij bent aangesloten.',
             'header-building' => 'Adres',
-            'header-password' => 'Wachtwoord aanpassen',
-            'header-user' => 'Accountgegevens',
             'form' => [
                 'submit' => 'Update gevens',
                 'building' => [
@@ -146,15 +147,9 @@ return [
                     'city' => 'Stad'
                 ],
                 'user' => [
-                    'e-mail'                => 'E-mailadres',
                     'first-name'            => 'Voornaam',
                     'last-name'             => 'Achternaam',
-                    'password'              => 'Wachtwoord',
-                    'password-confirmation' => 'Wachtwoord (bevestigen)',
                     'phone_number'          => 'Telefoonnummer',
-                    'current-password'      => 'Huidig wachtwoord',
-                    'new-password'          => 'Nieuw wachtwoord',
-                    'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
                 ],
             ]
         ],
@@ -173,11 +168,37 @@ return [
             'header'       => 'Account verwijderen',
             'are-you-sure' => [
                 'complete-delete' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
-                'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijderd uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen moet u bij elke coöperatie deze stap uitvoeren.'
+                'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijdert uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen dient u deze stap bij elke coöperatie uit te voeren.'
             ],
 
             'label'        => 'Mijn account verwijderen',
             'submit'       => 'Verwijderen',
+            'success'      => [
+                'cooperation' => 'Uw account is succesvol verwijderd voor deze coöperatie',
+                'full' => 'Uw account is volledig verwijderd',
+            ],
+        ],
+    ],
+    'hoom-settings'     => [
+        'index' => [
+            'header' => 'Accountgegevens',
+            'header-password' => 'Wachtwoord aanpassen',
+            'text' => 'Hier kunt u uw account gegevens aanpassen, deze hebben effect op het gehele Hoomdossier. Als u hier uw e-mail of / en wachtwoord aanpast, dan geld dit voor elke coöperatie waar u bij bent aangesloten.',
+            'form' => [
+                'submit' => 'Update gevens',
+
+                'account' => [
+                    'e-mail'                => 'E-mailadres',
+                    'password'              => 'Wachtwoord',
+                    'password-confirmation' => 'Wachtwoord (bevestigen)',
+                    'new-password'          => 'Nieuw wachtwoord',
+                    'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
+                    'current-password'      => 'Huidig wachtwoord',
+                ],
+            ]
+        ],
+        'store'      => [
+            'success' => 'Gegevens succesvol gewijzigd',
         ],
     ],
 ];

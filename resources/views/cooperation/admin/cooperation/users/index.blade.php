@@ -21,14 +21,23 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php /** @var \App\Models\User $user */ ?>
+                        <?php
+                        /**
+                         * @var \App\Models\User $user
+                         * @var \App\Models\Building $building
+                         */
+                        ?>
                         @foreach($users as $user)
-                            <?php $building = $user->buildings()->first(); ?>
+                            <?php
+                                $building = $user->building;
+                                $mostRecentBuildingStatus = $building->getMostRecentBuildingStatus();
 
-                            @if($building instanceof \App\Models\Building)
+                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                            ?>
                             <tr>
-                                <td data-sort="{{$user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                <td data-sort="{{$userCreatedAtStrotime}}">
+                                    {{$userCreatedAtFormatted ?? '-'}}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
@@ -41,12 +50,9 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getCurrentStatusForBuildingId($building->id)}}
+                                    {{$mostRecentBuildingStatus->status->name}}
                                 </td>
                             </tr>
-                            @else
-                                {{Log::debug('View: cooperation.admin.cooperation.users.index: There is a user id '.$user->id.' without a building')}}
-                            @endif
                         @endforeach
                         </tbody>
                     </table>

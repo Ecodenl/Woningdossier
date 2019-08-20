@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
@@ -47,9 +48,18 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('participate-in-group-chat', 'App\Policies\UserPolicy@participateInGroupChat');
         Gate::define('remove-participant-from-chat', 'App\Policies\UserPolicy@removeParticipantFromChat');
 
-        Gate::define('view-building-info', BuildingPolicy::class.'@viewBuildingInfo');
         Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
         Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
         Gate::define('talk-to-resident', UserPolicy::class.'@talkToResident');
+
+    }
+
+    public function register()
+    {
+
+        // custom user resolver via account
+        \Auth::resolveUsersUsing(function($guard = null) {
+            return \Auth::guard($guard)->user() instanceof Account ? \Auth::guard()->user()->user() : null;
+        });
     }
 }

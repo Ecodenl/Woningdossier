@@ -88,9 +88,9 @@ class RoofInsulationFormRequest extends FormRequest
 //                }
 //            }
 //        }
-
+//
         return [
-//            'building_roof_types.*' => 'exists:roof_types,id',
+            'building_roof_types.id' => 'required|exists:roof_types,id',
             'building_roof_types.*.roof_surface' => 'nullable|numeric',
             'building_roof_types.pitched.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.pitched.roof_surface',
             'building_roof_types.flat.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.flat.roof_surface',
@@ -101,6 +101,18 @@ class RoofInsulationFormRequest extends FormRequest
             'building_roof_types.*.extra.tiles_condition' => 'numeric|exists:roof_tile_statuses,id',
             'building_roof_types.*.extra.measure_application_id' => 'exists:measure_applications,id',
             'building_roof_types.roof_type_id' => 'exists:roof_types,id',
+        ];
+    }
+
+    /**
+     * small translation of the attribute.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'building_roof_types.id' => 'daktypes'
         ];
     }
 

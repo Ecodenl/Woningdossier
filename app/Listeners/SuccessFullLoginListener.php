@@ -31,9 +31,9 @@ class SuccessFullLoginListener
     public function handle($event)
     {
         /** @var User $user */
-        $user = $event->user;
+        $user = $event->user->user();
         // get the first building from the user
-        $building = $user->buildings()->first();
+        $building = $user->building;
         // just get the first available role from the user
         $userRole = $user->roles()->first();
 
@@ -60,7 +60,7 @@ class SuccessFullLoginListener
         // if the user for some odd reason had no role attached, attach the resident rol to him.
         if (!$userRole instanceof Role) {
             $residentRole = Role::findByName('resident');
-            $user->assignRole($cooperation->id, $residentRole);
+            $user->assignRole($residentRole);
         }
 
         // if the user has a building, log him in.

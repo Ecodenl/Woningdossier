@@ -1046,7 +1046,7 @@ class CsvService
                 }
             }
 
-            dd($row);
+            //dd($row);
 
 
             // no need to merge headers with the rows, we always set defaults so the count will always be the same.
@@ -1169,9 +1169,25 @@ class CsvService
 
         /** @var BuildingRoofType $buildingRoofType */
         foreach($buildingRoofTypes as $buildingRoofType){
-            $buildingRoofTypesArray[$buildingRoofType->roofType->short] = $buildingRoofType->toArray();
+            $short = $buildingRoofType->roofType->short;
+            $buildingRoofTypesArray[$short] = [
+                'element_value_id' => $buildingRoofType->element_value_id,
+                'roof_surface' => $buildingRoofType->roof_surface,
+                'insulation_roof_surface' => $buildingRoofType->insulation_roof_surface,
+                'extra' => $buildingRoofType->extra,
+                'measure_application_id' => $buildingRoofType->extra['measure_application_id'] ?? null,
+                'building_heating_id' => $buildingRoofType->building_heating_id,
+            ];
             $buildingRoofTypesArray['id'][] = $buildingRoofType->roofType->id;
 
+            // if the roof is a flat roof OR the tiles_condition is empty: remove it!!
+            // this is needed as the tiles condition has a different type of calculation
+            // than bitumen has
+            if(array_key_exists('tiles_condition', $buildingRoofTypesArray[$short]['extra'])){
+                if ($short == 'flat' || empty($buildingRoofTypesArray[$short]['extra']['tiles_condition'])){
+                    unset($buildingRoofTypesArray[$short]['extra']['tiles_condition']);
+                }
+            }
         }
 
         // now we handle the hr boiler stuff
@@ -1242,7 +1258,6 @@ class CsvService
             'building_roof_types' => $buildingRoofTypesArray,
         ]);
 
-
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $user, [
             'building_services' => $buildingBoilerArray,
             'habit' => [
@@ -1287,11 +1302,6 @@ class CsvService
         if(self::isYear($column) || self::isYear($maybe1, $maybe2)){
             return $value;
         }
-
-        /*if (stristr($column, 'year') !== false){
-            // do nothing with it, just return
-            return $value;
-        }*/
 
         if (!is_numeric($value)){
             return $value;

@@ -105,6 +105,7 @@ class BuildingRoofType extends Model
 
     public function measureApplication()
     {
+        dd("Dit werkt niet!!");
         return $this->belongsTo(MeasureApplication::class);
     }
 }

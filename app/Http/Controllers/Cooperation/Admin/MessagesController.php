@@ -8,9 +8,7 @@ use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
-use App\Models\User;
 use App\Services\MessageService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class MessagesController extends Controller

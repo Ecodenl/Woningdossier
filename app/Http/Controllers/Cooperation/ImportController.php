@@ -22,11 +22,11 @@ class ImportController extends Controller
      */
     public function copy(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         // the input source to copy from.
         $desiredInputSourceName = $request->get('input_source');
         $desiredInputSource = InputSource::findByShort($desiredInputSourceName);
-        $targetInputSource  = InputSource::find(HoomdossierSession::getInputSource());
+        $targetInputSource = HoomdossierSession::getInputSource(true);
 
         BuildingDataCopyService::copy($building, $desiredInputSource, $targetInputSource);
 

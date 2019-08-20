@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Hoomdossier;
 use Closure;
 
 class RedirectIfIsFillingForOtherBuilding
@@ -16,7 +17,7 @@ class RedirectIfIsFillingForOtherBuilding
     public function handle($request, Closure $next)
     {
         if ($request->user()->isFillingToolForOtherBuilding()) {
-            \Log::debug('Wow, user id '.\Auth::id().' tried to do something fishy!');
+            \Log::debug('Wow, user id '.Hoomdossier::user()->id.' tried to do something fishy!');
             return redirect()->route('cooperation.tool.general-data.index');
         }
         return $next($request);

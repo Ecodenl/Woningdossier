@@ -19,13 +19,11 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
-
-
 
         return view('cooperation.tool.my-plan.index', compact(
             'advices', 'coachCommentsByStep', 'actionPlanComments'
@@ -62,7 +60,7 @@ class MyPlanController extends Controller
     public function export()
     {
         // get the data
-        $user = \Auth::user();
+        $user = \App\Helpers\Hoomdossier::user();
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
         // Column names

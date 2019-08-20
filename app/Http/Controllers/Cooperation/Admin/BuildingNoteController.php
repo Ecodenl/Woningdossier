@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Requests\Cooperation\Admin\BuildingNoteRequest;
 use App\Models\BuildingNotes;
 use App\Models\Cooperation;
@@ -27,7 +28,7 @@ class BuildingNoteController extends Controller
         BuildingNotes::create([
             'note' => $note,
             'building_id' => $buildingId,
-            'coach_id' => \Auth::id(),
+            'coach_id' => Hoomdossier::user()->id,
         ]);
 
         return redirect(back()->getTargetUrl().$this->fragment);

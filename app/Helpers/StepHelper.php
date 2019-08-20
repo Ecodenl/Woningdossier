@@ -4,8 +4,11 @@ namespace App\Helpers;
 
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
+use App\Models\UserProgress;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 
@@ -167,5 +170,25 @@ class StepHelper
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan
         return ['route' => 'cooperation.tool.my-plan.index', 'tab_id' => ''];
+    }
+
+    /**
+     * Complete a step for a building.
+     *
+     * @param Step $step
+     * @param Building $building
+     * @param InputSource $inputSource
+     *
+     * @return Model|UserProgress
+     */
+    public static function complete(Step $step, Building $building, InputSource $inputSource)
+    {
+        return UserProgress::firstOrCreate([
+            'step_id' => $step->id,
+            //'input_source_id' => HoomdossierSession::getInputSource(),
+            'input_source_id' => $inputSource->id,
+            //'building_id' => HoomdossierSession::getBuilding(),
+            'building_id' => $building->id,
+        ]);
     }
 }

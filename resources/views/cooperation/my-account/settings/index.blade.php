@@ -10,10 +10,16 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                @lang('my-account.settings.index.header-user')
+                @lang('my-account.settings.index.header')
             </div>
 
             <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{\App\Helpers\Translation::translate('my-account.settings.index.text')}}
+                    </div>
+                </div>
+                <br>
                 <div class="row">
                     <div class="col-sm-6">
 
@@ -24,7 +30,7 @@
 
 
                             <input id="first_name" type="text" class="form-control" name="user[first_name]"
-                                   value="{{ old('first_name', $user->first_name) }}" required autofocus>
+                                   value="{{ old('user.first_name', $user->first_name) }}" required autofocus>
 
                             @if ($errors->has('user.first_name'))
                                 <span class="help-block">
@@ -51,25 +57,10 @@
                             @endif
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-sm-6">
+                <div class="row">
 
-
-                        <div class="form-group{{ $errors->has('user.email') ? ' has-error' : '' }}">
-                            <label for="email"
-                                   class="control-label">@lang('my-account.settings.index.form.user.e-mail')</label>
-
-
-                            <input id="email" type="email" class="form-control" name="user[email]"
-                                   value="{{ old('email', $user->email) }}" required autofocus>
-
-                            @if ($errors->has('user.email'))
-                                <span class="help-block">
-                                        <strong>{{ $errors->first('user.email') }}</strong>
-                                    </span>
-                            @endif
-                        </div>
-                    </div>
                     <div class="col-sm-6">
 
 
@@ -89,59 +80,14 @@
                             @endif
                         </div>
                     </div>
-
-                    <div class="col-sm-12">
-                        <h3>@lang('my-account.settings.index.header-password')</h3>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="form-group{{ $errors->has('user.current_password') ? ' has-error' : '' }}">
-                            <label for="current_password"
-                                   class="control-label">@lang('my-account.settings.index.form.user.current-password')</label>
-
-
-                            <input id="current_password" type="password" class="form-control"
-                                   name="user[current_password]">
-
-                            @if ($errors->has('user.current_password'))
-                                <span class="help-block">
-                                        <strong>{{ $errors->first('user.current_password') }}</strong>
-                                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group{{ $errors->has('user.password') ? ' has-error' : '' }}">
-                            <label for="password"
-                                   class="control-label">@lang('my-account.settings.index.form.user.new-password')</label>
-
-
-                            <input id="password" type="password" class="form-control" name="user[password]">
-
-                            @if ($errors->has('user.password'))
-                                <span class="help-block">
-                                        <strong>{{ $errors->first('user.password') }}</strong>
-                                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="password-confirm"
-                                   class="control-label">@lang('my-account.settings.index.form.user.new-password-confirmation')</label>
-
-
-                            <input id="password-confirm" type="password" class="form-control"
-                                   name="user[password_confirmation]">
-                        </div>
-                    </div>
-
                 </div>
-                <!-- password change section -->
 
                 <div class="row">
+
                     <div class="col-sm-12">
                         <h3>@lang('my-account.settings.index.header-building')</h3>
                     </div>
+
                     <div class="col-sm-4">
 
                         <div class="form-group{{ $errors->has('building.postal_code') ? ' has-error' : '' }}">
@@ -317,7 +263,7 @@
             }
         });
 
-        var userCooperationCount = {{Auth::user()->cooperations()->count()}};
+        var userCooperationCount = {{$account->users()->count()}};
 
         var areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.delete-from-cooperation')';
 

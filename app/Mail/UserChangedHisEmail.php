@@ -2,30 +2,33 @@
 
 namespace App\Mail;
 
+use App\Models\Account;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UserChangedHisEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $account;
     public $user;
     public $newMail;
     public $oldMail;
 
     /**
-     * Create a new message instance.
+     * UserChangedHisEmail constructor.
      *
      * @param  User  $user
+     * @param  Account  $account
      * @param $newMail
      * @param $oldMail
      */
-    public function __construct(User $user, $newMail, $oldMail)
+    public function __construct(User $user, Account $account, $newMail, $oldMail)
     {
         $this->user = $user;
+        $this->account = $account;
         $this->newMail = $newMail;
         $this->oldMail = $oldMail;
     }

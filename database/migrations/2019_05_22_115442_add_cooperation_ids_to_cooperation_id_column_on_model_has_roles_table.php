@@ -13,14 +13,12 @@ class AddCooperationIdsToCooperationIdColumnOnModelHasRolesTable extends Migrati
      */
     public function up()
     {
-
-        // only get the users that are relevant to update.
-        $users = User::whereHas('roles')->whereHas('cooperations')->get();
+        $users = DB::table('users')->get();
 
         foreach ($users as $user) {
 
             /** @var Collection $userCooperations */
-            $userCooperations = $user->cooperations;
+            $userCooperations = DB::table('cooperation_user')->where('user_id', '=', $user->id)->get();
 
             // get the cooperation hoom
             $cooperationHoom = DB::table('cooperations')->where('slug', 'hoom')->first();

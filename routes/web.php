@@ -17,19 +17,28 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
         Route::get('/', function () {
             return view('cooperation.welcome');
-        }
-        )->name('welcome');
+        })->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
-        Route::get('confirm',
-            'Auth\RegisterController@confirm')->name('confirm');
-        Route::get('check-existing-mail', 'Auth\RegisterController@checkExistingEmail')->name('check-existing-email');
-        Route::post('connect-existing-account', 'Auth\RegisterController@connectExistingAccount')->name('connect-existing-account');
-
-        Route::get('resend-confirm-account-email', 'Auth\RegisterController@formResendConfirmMail')->name('auth.form-resend-confirm-mail');
-        Route::post('resend-confirm-account-email', 'Auth\RegisterController@resendConfirmMail')->name('auth.resend-confirm-mail');
 
         Auth::routes();
+        Route::group(['namespace' => 'Auth'], function () {
+
+            Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
+            Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
+
+            Route::group(['as' => 'auth.'], function () {
+
+                Route::group(['prefix' => 'confirm', 'as' => 'confirm.'], function () {
+                    Route::get('', 'ConfirmAccountController@store')->name('store');
+
+                    Route::group(['prefix' => 'resend', 'as' => 'resend.'], function () {
+                        Route::get('', 'ResendConfirmAccountController@show')->name('show');
+                        Route::post('', 'ResendConfirmAccountController@store')->name('store');
+                    });
+                });
+            });
+        });
 
         Route::group(['prefix' => 'create-building', 'as' => 'create-building.'], function () {
             Route::get('', 'CreateBuildingController@index')->name('index');
@@ -65,6 +74,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
+
+                Route::resource('hoom-settings', 'HoomSettingsController');
 
 
 
@@ -121,11 +132,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
                 });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Extra pages with downloadable or information content.
-                    Route::group(['namespace' => 'Information'], function () {
-                        Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
-                    });
-
+                    // Ventilation information: info for now
+                    Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                    // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
 
                     // Wall Insulation
@@ -194,9 +203,9 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::get('buildings/show/{buildingId}', 'BuildingController@show')->name('buildings.show');
                     Route::resource('building-notes', 'BuildingNoteController')->only('store');
 
-                    Route::group(['prefix' => 'building-coach-status', 'as' => 'building-coach-status.'], function () {
-                        Route::post('set-status', 'BuildingCoachStatusController@setStatus')->name('set-status');
-                        Route::post('set-appointment-date', 'BuildingCoachStatusController@setAppointmentDate')->name('set-appointment-date');
+                    Route::group(['prefix' => 'building-status', 'as' => 'building-status.'], function () {
+                        Route::post('set-status', 'BuildingStatusController@setStatus')->name('set-status');
+                        Route::post('set-appointment-date', 'BuildingStatusController@setAppointmentDate')->name('set-appointment-date');
                     });
                 });
 

@@ -40,7 +40,5 @@ class BuildingObserver
         $building->currentInsulatedGlazing()->withoutGlobalScope(GetValueScope::class)->delete();
         // remove the paintwork from a building
         $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->delete();
-        // remove the user usage from a building
-        $building->userUsage()->withoutGlobalScope(GetValueScope::class)->delete();
     }
 }

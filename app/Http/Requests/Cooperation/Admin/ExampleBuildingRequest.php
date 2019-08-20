@@ -15,7 +15,7 @@ class ExampleBuildingRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
+        return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
     }
 
     public function prepareForValidation()

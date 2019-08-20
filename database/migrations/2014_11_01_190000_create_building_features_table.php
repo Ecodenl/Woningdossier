@@ -58,7 +58,7 @@ class CreateBuildingFeaturesTable extends Migration
             $table->integer('volume')->nullable()->default(null);
             $table->integer('build_year')->nullable()->default(null);
             $table->integer('building_layers')->nullable()->default(null);
-            $table->boolean('monument')->default(false);
+            $table->unsignedInteger('monument')->nullable()->default(null);
             $table->longText('additional_info')->nullable()->default(null);
 
             $table->timestamps();

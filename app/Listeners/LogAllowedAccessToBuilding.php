@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Log;
 use Illuminate\Queue\InteractsWithQueue;
@@ -28,10 +29,10 @@ class LogAllowedAccessToBuilding
     public function handle($event)
     {
         Log::create([
-            'user_id'     => \Auth::id(),
+            'user_id'     => Hoomdossier::user()->id,
             'building_id' => HoomdossierSession::getBuilding(),
             'message'     => __('woningdossier.log-messages.user-gave-access', [
-                'full_name' => \Auth::user()->getFullName(),
+                'full_name' => \App\Helpers\Hoomdossier::user()->getFullName(),
             ]),
         ]);
     }

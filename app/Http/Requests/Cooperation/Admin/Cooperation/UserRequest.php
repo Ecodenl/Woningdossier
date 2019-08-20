@@ -27,14 +27,11 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        // collecting the rules for the fields that need to be required if the role field contains value 5 / resident
-        // finding a cleaner way would be nice
-
         return [
             'first_name' => ['required', new AlphaSpace()],
             'last_name' => ['required', new AlphaSpace()],
             'password' => 'nullable|min:6',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:accounts,email',
             'roles' => 'required|exists:roles,id',
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
 

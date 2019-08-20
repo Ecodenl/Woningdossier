@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
-use App\Helpers\HoomdossierSession;
-use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
@@ -35,7 +31,7 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     /**
      * Create a new controller instance.
@@ -70,7 +66,8 @@ class ResetPasswordController extends Controller
         // (https://stackoverflow.com/questions/40532296/laravel-5-3-password-broker-customization)
         // seems a LOT more overkill than this..
         $userEmail = $request->get('email');
-        $isPending = User::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
+
+        $isPending = Account::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
         if ($isPending) {
             //$this->guard()->logout();
             \Log::debug('The user has resetted his password, but has not confirmed his account. Redirecting to login page with a message..');
@@ -86,50 +83,18 @@ class ResetPasswordController extends Controller
             : $this->sendResetFailedResponse($request, $response);
     }
 
-    protected function resetPassword($user, $password)
+
+    protected function resetPassword(Account $account, $password)
     {
-        $user->password = \Hash::make($password);
+        $account->password = \Hash::make($password);
 
-        $user->setRememberToken(Str::random(60));
+        $account->setRememberToken(Str::random(60));
 
-        $user->save();
+        $account->save();
 
-        event(new PasswordReset($user));
+        event(new PasswordReset($account));
 
-        // only for confirmed users
-        if (is_null($user->confirm_token)) {
-            // get the first building from the user
-            $building = $user->buildings()->first();
-
-            // we cant query on the Spatie\Role model so we first get the result on the "original model"
-            $role = Role::findByName($user->roles->first()->name);
-
-            // get the input source
-            $inputSource = $role->inputSource;
-
-            // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-            if (! $inputSource instanceof InputSource) {
-                $inputSource = InputSource::findByShort('resident');
-            }
-
-            // set the required sessions
-            HoomdossierSession::setHoomdossierSessions($building,
-                $inputSource,
-                $inputSource,
-                $role);
-
-            // set the redirect url
-            if (1 == $user->roles->count()) {
-                // don't check the user as he's not logged in yet
-                $this->redirectTo = RoleHelper::getUrlByRole($role, false);
-            } else {
-                $this->redirectTo = '/admin';
-            }
-
-            \Log::debug('Redirect to: '.$this->redirectTo);
-
-            $this->guard()->login($user);
-        }
+        $this->guard()->login($account);
     }
 
     /**

@@ -11,7 +11,6 @@ class CooperationComposer
     {
         $view->with('cooperation', app()->make('Cooperation'));
         $view->with('cooperationStyle', app()->make('CooperationStyle'));
-
-        $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
+        $view->with('inputSources', \App\Helpers\Cache\InputSource::getOrdered());
     }
 }

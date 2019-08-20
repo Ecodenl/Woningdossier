@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingNotes;
@@ -11,7 +12,6 @@ use Illuminate\Http\Request;
 class BuildingDetailsController extends Controller
 {
 
-
     public function store(Request $request)
     {
         $note = strip_tags($request->get('note'));
@@ -19,7 +19,7 @@ class BuildingDetailsController extends Controller
 
         BuildingNotes::create([
             'note' => $note,
-            'coach_id' => \Auth::id(),
+            'coach_id' => Hoomdossier::user()->id,
             'building_id' => $buildingId,
         ]);
 

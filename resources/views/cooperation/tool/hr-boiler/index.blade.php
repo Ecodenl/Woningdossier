@@ -87,9 +87,9 @@
                     @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation', 'required' => false])
                         <?php
                         $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
-                        if (Auth::user()->hasRole('resident')) {
+                        if (\App\Helpers\Hoomdossier::user()->hasRole('resident')) {
                             $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
-                        } elseif (Auth::user()->hasRole('coach')) {
+                        } elseif (\App\Helpers\Hoomdossier::user()->hasRole('coach')) {
                             $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
 
                             $default = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';

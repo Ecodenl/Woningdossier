@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\ExampleBuildingChanged;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
@@ -55,6 +56,9 @@ class ExampleBuildingService
 
             return;
         }
+
+        // used for throwing the event at the end
+        $oldExampleBuilding = $userBuilding->exampleBuilding;
 
         // traverse the contents:
         $exampleData = $contents->content;
@@ -305,6 +309,7 @@ class ExampleBuildingService
         $buildingFeatures->save();
         self::log('Saving building features '.json_encode($buildingFeatures->toArray()));
 
+        ExampleBuildingChanged::dispatch($userBuilding, $oldExampleBuilding, $exampleBuilding);
     }
 
     public static function clearExampleBuilding(Building $building)

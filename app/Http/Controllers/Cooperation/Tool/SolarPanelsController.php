@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
@@ -16,7 +17,6 @@ use App\Models\Building;
 use App\Models\BuildingPvPanel;
 use App\Models\Cooperation;
 use App\Models\Interest;
-use App\Models\LanguageLine;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
@@ -32,6 +32,9 @@ use Illuminate\Http\Request;
 
 class SolarPanelsController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -192,9 +195,9 @@ class SolarPanelsController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);
-        ($this->step);
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
@@ -203,7 +206,6 @@ class SolarPanelsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
         return redirect($url);
     }
 

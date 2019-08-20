@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
@@ -29,6 +30,9 @@ use Illuminate\Http\Request;
 
 class FloorInsulationController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -222,12 +226,12 @@ class FloorInsulationController extends Controller
             ]
         );
 
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);
-        ($this->step);
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

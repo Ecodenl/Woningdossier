@@ -610,7 +610,6 @@ class CsvService
         }
 
         //dump($headers);
-        dd($headers);
 
         $rows[] = $headers;
 

@@ -19,6 +19,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\buildingHeater;
+use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingPvPanel;
@@ -38,6 +39,7 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Role;
+use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
@@ -226,7 +228,7 @@ class CsvService
 
             $createdAt           = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
-            $buildingStatus = $building->status;
+            $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
             $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
             $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
@@ -371,7 +373,8 @@ class CsvService
                                                                  ->where('to_cooperation_id', $cooperation->id)->get();
 
                 $createdAt           = optional($user->created_at)->format('Y-m-d');
-                $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+                //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+                $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
                 $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
@@ -630,7 +633,8 @@ class CsvService
                                                              ->where('to_cooperation_id', $cooperation->id)->get();
 
             $createdAt           = optional($user->created_at)->format('Y-m-d');
-            $buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+            //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
+            $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
             $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
             $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
@@ -736,7 +740,10 @@ class CsvService
 
                     // handle the building_features table and its columns.
                     if ($table == 'building_features') {
-                        $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->where($whereUserOrBuildingId)->first();
+                        $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)
+                                                          ->where($whereUserOrBuildingId)
+                                                          ->residentInput()
+                                                          ->first();
 
                         if ($buildingFeature instanceof BuildingFeature) {
 
@@ -798,32 +805,44 @@ class CsvService
                     // handle the building_roof_types table and its columns.
                     if ($table == 'building_roof_types') {
                         $roofTypeId = $columnOrId;
-                        $column     = $tableWithColumnOrAndId[3];
+                        //$column     = $tableWithColumnOrAndId[3];
+                        $column = $maybe1;
 
                         $buildingRoofType = BuildingRoofType::withoutGlobalScope(GetValueScope::class)
                                                             ->where('roof_type_id', $roofTypeId)
                                                             ->where($whereUserOrBuildingId)
+                                                            ->residentInput()
                                                             ->first();
 
                         if ($buildingRoofType instanceof BuildingRoofType) {
-
                             switch ($column) {
                                 case 'element_value_id':
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->elementValue instanceof ElementValue ? $buildingRoofType->elementValue->value : '';
                                     break;
                                 case 'building_heating_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->heating instanceof buildingHeater ? $buildingRoofType->heating->name : '';
-                                    break;
-                                case 'extra.measure_application_id':
-                                    $extraIsArray                                 = is_array($buildingRoofType->extra);
-                                    $measureApplicationId                         = $extraIsArray ? $buildingRoofType->extra['measure_application_id'] ?? null : null;
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = is_null($measureApplicationId) ? '' : MeasureApplication::find($measureApplicationId)->measure_name;
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->buildingHeating instanceof BuildingHeating ? $buildingRoofType->buildingHeating->name : '';
                                     break;
                                 default:
                                     // check if we need to get data from the extra column
                                     if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
                                         $extraKey                                     = explode('extra.', $tableWithColumnOrAndIdKey)[1];
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
+                                        if(in_array($extraKey, ['tiles_condition', 'measure_application_id'])){
+                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
+                                            if (!empty($buildingRoofType->extra[$extraKey])) {
+                                                if ($extraKey == 'tiles_condition') {
+                                                    $status = RoofTileStatus::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
+                                                }
+                                                if ($extraKey == 'measure_application_id') {
+                                                    $measureApplication = MeasureApplication::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : '';
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            // literal
+                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
+                                        }
                                     } else {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->$column ?? '';
                                     }

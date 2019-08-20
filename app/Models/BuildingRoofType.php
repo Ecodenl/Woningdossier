@@ -100,6 +100,10 @@ class BuildingRoofType extends Model
      */
     public function heating()
     {
+        return $this->belongsTo(BuildingHeating::class, 'building_heating_id');
+    }
+
+    public function buildingHeating(){
         return $this->belongsTo(BuildingHeating::class);
     }
 

@@ -55,7 +55,7 @@ class HeaterController extends Controller
     {
         $typeIds = [3];
 
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
@@ -101,7 +101,7 @@ class HeaterController extends Controller
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
         $interests = $request->input('interest', '');
 
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $habit = $user->energyHabit;
 
@@ -196,7 +196,7 @@ class HeaterController extends Controller
      */
     public function store(HeaterFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
@@ -247,7 +247,7 @@ class HeaterController extends Controller
 
     protected function saveAdvices(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         /** @var JsonResponse $results */

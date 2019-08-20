@@ -62,7 +62,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
         $buildingTypes = BuildingType::all();
@@ -120,7 +120,7 @@ class GeneralDataController extends Controller
     {
         $exampleBuildingId = $request->get('example_building_id', null);
 
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildYear = $building->getBuildYear();
 
         // There is one strange option: "Er is geen passende voorbeeldwoning"
@@ -161,7 +161,7 @@ class GeneralDataController extends Controller
     public function store(GeneralDataFormRequest $request)
     {
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
 

@@ -42,7 +42,7 @@ class VentilationController extends Controller
      */
     public function store(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         // Save progress
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         $cooperation = HoomdossierSession::getCooperation(true);

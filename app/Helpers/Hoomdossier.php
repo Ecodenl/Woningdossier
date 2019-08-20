@@ -51,7 +51,7 @@ class Hoomdossier
 
         // Always check my own input source first. If that is properly filled
         // return that.
-        $myInputSource = InputSource::find(HoomdossierSession::getInputSource());
+        $myInputSource = HoomdossierSession::getInputSource(true);
 
         if ($results->has($myInputSource->short)) {
             $value = $results->get($myInputSource->short);
@@ -110,7 +110,7 @@ class Hoomdossier
 
         // Always check my own input source first. If that is properly filled
         // return that.
-        $myInputSource = InputSource::find(HoomdossierSession::getInputSource());
+        $myInputSource = HoomdossierSession::getInputSource(true);
 
         // if the results contain answers from me.
         if ($results->contains($myInputSource->short)) {

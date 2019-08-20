@@ -23,7 +23,13 @@
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.settings.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.settings.index')}}">
                                         @lang('my-account.side-nav.settings')
-                                        <span class="glyphicon glyphicon-cog"></span>
+{{--                                        <span class="glyphicon glyphicon-cog"></span>--}}
+                                    </a>
+                                </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.hoom-settings.index'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.hoom-settings.index')}}">
+                                        @lang('my-account.side-nav.hoom-settings')
+{{--                                        <span class="glyphicon glyphicon-cog"></span>--}}
                                     </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.notification-settings.index', 'cooperation.my-account.notification-settings.show'])) active @endif">

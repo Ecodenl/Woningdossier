@@ -24,7 +24,7 @@
                         @foreach($users as $user)
                             <tr>
                                 <td>{{$user->getFullName()}}</td>
-                                <td>{{$user->email}}</td>
+                                <td>{{$user->account->email}}</td>
                                 <td>
                                     <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', [
                                         'cooperationToManage' => $cooperationToManage,

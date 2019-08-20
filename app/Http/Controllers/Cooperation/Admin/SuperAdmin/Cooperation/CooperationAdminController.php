@@ -19,7 +19,7 @@ class CooperationAdminController extends Controller
      */
     public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)
     {
-        $users = $cooperationToManage->getUsersWithRole(Role::findByName('cooperation-admin'));
+        $users = $cooperationToManage->users()->withoutGlobalScopes()->role('cooperation-admin')->get();
 
         $breadcrumbs = [
             [

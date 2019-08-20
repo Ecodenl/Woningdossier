@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
-use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
 use App\Models\Building;
@@ -36,10 +34,12 @@ use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Uuid;
 
 class InsulatedGlazingController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -493,12 +493,11 @@ class InsulatedGlazingController extends Controller
             ]
         );
 
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
         $this->saveAdvices($request);
         // Save progress
-        $building->complete($this->step);
-        ($this->step);
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

@@ -7,6 +7,7 @@ use App\Events\ParticipantRevokedEvent;
 use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
+use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
@@ -37,12 +38,13 @@ class ParticipantController extends Controller
         // the building from the user / resident
         $building = Building::find($buildingOwnerId);
 
+        $revokedParticipant = User::find($groupParticipantUserId);
+
+
         if ($building instanceof Building) {
             // revoke the access for the coach to talk with the resident
-            BuildingPermissionService::revokePermission($groupParticipantUserId, $building->id);
-            BuildingCoachStatusService::revokeAccess($groupParticipantUserId, $building->id);
-            $revokedParticipant = User::find($groupParticipantUserId);
-
+            BuildingPermissionService::revokePermission($revokedParticipant, $building);
+            BuildingCoachStatusService::revokeAccess($revokedParticipant, $building);
             event(new ParticipantRevokedEvent($revokedParticipant, $building));
         }
 
@@ -68,14 +70,14 @@ class ParticipantController extends Controller
         if ($user instanceof User) {
             $residentBuilding = Building::find($buildingId);
 
-            $privateMessage = PrivateMessage::forMyCooperation()->conversationRequestByBuildingId($buildingId)->first();
+            $privateMessage = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
 
             if ($privateMessage->allow_access) {
                 // give the coach permission to the resident his building
-                BuildingPermissionService::givePermission($userId, $buildingId);
+                BuildingPermissionService::givePermission($user, $residentBuilding );
             }
 
-            BuildingCoachStatusService::giveAccess($userId, $buildingId);
+            BuildingCoachStatusService::giveAccess($user, $residentBuilding);
 
             event(new ParticipantAddedEvent($user, $residentBuilding));
         }

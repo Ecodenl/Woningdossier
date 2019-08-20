@@ -12,35 +12,24 @@ return [
     'log-messages'            => [
         'logged-in'                  => ':full_name heeft ingelogd op de applicatie',
         'registered-user'            => ':full_name heeft geregistreerd',
+        'user-associated-with-other-cooperation' => ':full_name heeft zich gekoppeld aan de coöperatie :cooperation_name' ,
         'step-data-has-been-changed' => ':full_name heeft een wijziging doorgevoerd in het actieplan',
         'filling-tool-for'           => ':full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
         'observing-tool-for'         => ':full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',
-        'action-plan-changed'        => ':full_name heeft een wijziging doorgevoert op het actieplan',
-        'participant-added'          => ':full_name heeft :for_full_name gekoppeld aan dit woning',
+        'action-plan-changed'        => ':full_name heeft een wijziging doorgevoerd op het actieplan',
+        'participant-added'          => ':full_name heeft :for_full_name gekoppeld aan deze woning',
         'user-gave-access' => ':full_name heeft toegang gegeven tot zijn woning',
         'user-revoked-access' => ':full_name heeft de toegang ingetrokken voor zijn woning'
     ],
     'building-coach-statuses' => [
-        \App\Models\BuildingCoachStatus::STATUS_ACTIVE => 'Actief',
-
-        \App\Models\BuildingCoachStatus::STATUS_PENDING => 'In afwachting',
-
-        \App\Models\BuildingCoachStatus::STATUS_IN_PROGRESS  => 'In uitvoering',
-        \App\Models\BuildingCoachStatus::STATUS_EXECUTED     => 'Uitgevoerd',
-        \App\Models\BuildingCoachStatus::STATUS_NO_EXECUTION => 'Geen uitvoering',
-
-
         \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
+        \App\Models\BuildingCoachStatus::STATUS_ADDED => 'Toegevoegd',
 
-    ],
-    'building-statuses'       => [
-        \App\Models\Building::STATUS_IS_ACTIVE     => 'Actief',
-        \App\Models\Building::STATUS_IS_NOT_ACTIVE => 'Inactief'
     ],
     'cooperation'             => [
         'create-building' => [
             'current-login-info' => [
-                'header' => 'Voor uw huidige login gegevens in.',
+                'header' => 'Voer uw huidige login gegevens in.',
             ],
             'building'           => [
                 'header' => 'Vul uw adres in.',
@@ -63,7 +52,7 @@ return [
                 'private' => 'Privé',
             ],
             'group-participants' => [
-                'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
+                'revoke-access' => 'Weet u zeker dat u deze gebruiker van uit het groepsgesprek wilt verwijderen? Deze gebruiker heeft hierna geen toegang meer tot de woning.',
             ],
             'messages'           => [
                 'participant-added'   => ':participant is toegevoegd aan het gesprek',
@@ -312,14 +301,18 @@ return [
                     'revoke-access'            => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
                     'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot de woning',
 
-                    'set-status'                 => 'Weet u zeker dat u deze status wilt zetten voor de gekoppelde coaches ?',
-                    'set-appointment-date'       => 'Weet u zeker dat u deze datum wilt zetten voor de gekoppelde coaches ?',
+                    'set-status'                 => 'Weet u zeker dat u deze status wilt zetten voor het huidige gebouw?',
+                    'set-appointment-date'       => 'Weet u zeker dat u deze datum wilt zetten voor het huidige gebouw?',
                     'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
                     'give-role'                  => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
                     'remove-role'                => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
 
                     'tabs'     => [
                         'messages-public'      => [
+                            'user-notification' => [
+                                'yes' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',
+                                'no' => 'Gebruiker ontvangt hier geen melding van.'
+                            ],
                             'title' => 'Berichten bewoner'
                         ],
                         'messages-intern'      => [

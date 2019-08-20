@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Log;
 use App\Models\PrivateMessage;
@@ -41,10 +42,10 @@ class ParticipantAddedListener
         ]);
 
         Log::create([
-            'user_id' => \Auth::id(),
+            'user_id' => Hoomdossier::user()->id,
             'building_id' => $event->building->id,
             'message' => __('woningdossier.log-messages.participant-added', [
-                'full_name' => \Auth::user()->getFullName(),
+                'full_name' => \App\Helpers\Hoomdossier::user()->getFullName(),
                 'for_full_name' => $participantFullName,
                 'time' => Carbon::now(),
             ]),

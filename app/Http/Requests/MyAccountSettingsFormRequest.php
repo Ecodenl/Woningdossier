@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\Hoomdossier;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
@@ -29,10 +30,8 @@ class MyAccountSettingsFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'user.password' => 'nullable|string|confirmed|min:6',
             'user.first_name' => 'required|string|max:255',
             'user.last_name' => 'required|string|max:255',
-            'user.email' => ['required', 'email', Rule::unique('users', 'email')->ignore(\Auth::id())],
             'user.phone_number' => ['nullable', new PhoneNumber()],
 
 

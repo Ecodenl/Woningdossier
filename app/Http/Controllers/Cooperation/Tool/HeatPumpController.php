@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 
 class HeatPumpController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -30,9 +33,6 @@ class HeatPumpController extends Controller
      */
     public function index()
     {
-        // get the next page order
-        $nextPage = $this->step->order + 1;
-
         $heatpumpTypes = PresentHeatPump::all();
         $buildingCurrentHeatings = BuildingCurrentHeating::all();
         $heatSources = HeatSource::all();
@@ -58,9 +58,9 @@ class HeatPumpController extends Controller
      */
     public function store(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
-        $building->complete($this->step);
-        $cooperation = Cooperation::find($request->session()->get('cooperation'));
+        $building = HoomdossierSession::getBuilding(true);
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

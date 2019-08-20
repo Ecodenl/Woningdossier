@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -37,17 +38,16 @@ class MessageService
         // if the building exist create a message
         if ($building instanceof Building) {
             $privateMessageData = [
-                'cooperation_id' => HoomdossierSession::getCooperation(),
                 'is_public' => $isPublic,
                 'to_cooperation_id' => HoomdossierSession::getCooperation(),
-                'from_user' => \Auth::user()->getFullName(),
-                'from_user_id' => \Auth::id(),
+                'from_user' => \App\Helpers\Hoomdossier::user()->getFullName(),
+                'from_user_id' => Hoomdossier::user()->id,
                 'message' => $message,
                 'building_id' => $buildingId,
             ];
 
             // users that have the role coordinator and cooperation admin dont talk from themself but from a cooperation
-            if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageData['from_cooperation_id'] = HoomdossierSession::getCooperation();
                 $privateMessageData['from_user'] = Cooperation::find(HoomdossierSession::getCooperation())->name;
             }

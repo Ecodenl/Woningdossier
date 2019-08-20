@@ -24,20 +24,18 @@ class RoofInsulation {
     {
         $result = [];
 
-        $roofTypes = $calculateData['building_roof_types'] ?? [];
-
-        foreach ($roofTypes as $i => $details) {
-            if (is_numeric($i) && is_numeric($details)) {
-                $roofType = RoofType::find($details);
-                if ($roofType instanceof RoofType) {
-                    $cat = RoofInsulationHelper::getRoofTypeCategory($roofType);
-                    // add as key to result array
-                    $result[$cat] = [
-                        'type' => RoofInsulationHelper::getRoofTypeSubCategory($roofType),
-                    ];
-                }
+        $roofTypeIds = $calculateData['building_roof_types']['id'];
+        foreach ($roofTypeIds as $roofTypeId) {
+            $roofType = RoofType::findOrFail($roofTypeId);
+            if ($roofType instanceof RoofType) {
+                $cat = RoofInsulationHelper::getRoofTypeCategory($roofType);
+                // add as key to result array
+                $result[$cat] = [
+                    'type' => RoofInsulationHelper::getRoofTypeSubCategory($roofType),
+                ];
             }
         }
+
 
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $adviceMap = RoofInsulationHelper::getMeasureApplicationsAdviceMap();

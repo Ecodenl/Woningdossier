@@ -71,30 +71,12 @@
     <script src="{{ asset('js/datatables.js') }}"></script>
     <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
     <script src="{{asset('js/select2.js')}}"></script>
+    <script src="{{asset('js/hoomdossier.js')}}"></script>
 
     <script>
-        function updateTotalUnreadMessages()
-        {
-            // js wants to be funny cant be set in the app.js
-            $.ajax({
-                url: window.location.origin + '/messages/count',
-                method: 'GET',
-                success: function (response) {
-                    $('#total-unread-message-count').html(response.count);
-                }
-            });
-        }
-
-        function pollForMessageCount() {
-            setTimeout(function () {
-                updateTotalUnreadMessages();
-                pollForMessageCount();
-            }, 5000)
-        }
 
         $(document).ready(function () {
-            updateTotalUnreadMessages();
-            pollForMessageCount();
+            Hoomdossier.pollForMessageCount();
 
             $('.collapse').on('shown.bs.collapse', function(){
                 $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

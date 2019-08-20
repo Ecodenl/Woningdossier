@@ -112,7 +112,7 @@ class ParticipantController extends Controller
 
         $messagesToSetRead = $messagesToSetRead->get();
 
-        /*if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
         }
         elseif(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
@@ -122,8 +122,6 @@ class ParticipantController extends Controller
         else {
             $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
             PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
-        }*/
-
-        PrivateMessageViewService::setRead($messagesToSetRead);
+        }
     }
 }

@@ -26,7 +26,7 @@ class Hoomdossier {
         if (!this.hasOwnProperty('timeout')) {
             this.pollTimeout = 0;
         } else {
-            this.pollTimeout = 3000;
+            this.pollTimeout = 15000;
         }
 
         setTimeout(() => {

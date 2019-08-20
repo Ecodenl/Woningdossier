@@ -259,14 +259,10 @@
                 'order': [[0, 'desc']]
             });
 
-
-            $('.nav-tabs .active a').tab('show');
-
-
             // only initialize the datatable if the tab gets shown, if we wont do this the responsive ness wont work cause its hidden
-            // $('.nav-tabs a').on('shown.bs.tab', function (event) {
-            //     $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
-            // });
+            $('.nav-tabs a').on('shown.bs.tab', function (event) {
+                $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+            });
 
             $('[data-toggle="tooltip"]').tooltip();
 
@@ -484,7 +480,8 @@
                             building_id: buildingId
                         },
                         success: function () {
-                            updateTotalUnreadMessages();
+                            console.log('bier');
+                            Hoomdossier.updateTotalUnreadMessages();
                         }
                     })
                 }

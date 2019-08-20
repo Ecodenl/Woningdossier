@@ -480,7 +480,6 @@
                             building_id: buildingId
                         },
                         success: function () {
-                            console.log('bier');
                             Hoomdossier.updateTotalUnreadMessages();
                         }
                     })

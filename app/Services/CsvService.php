@@ -1038,8 +1038,6 @@ class CsvService
 
         $userEnergyHabit = $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
 
-
-
         $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
         $frames = Element::where('short', 'frames')->first();
@@ -1125,25 +1123,30 @@ class CsvService
         ];
 
         // now lets handle the roof insulation stuff.
-        $roofTypes = RoofType::all();
-        $buildingRoofTypesArray = [];
+        $buildingRoofTypesArray = ['id' => []];
 
-        $selectedRoofTypes = $buildingRoofTypes->pluck('roof_type_id')->toArray();
-
-        foreach($roofTypes->where('calculate_value', '<', 5) as $roofType) {
-            $currentBuildingRoofType = $buildingRoofTypes->where('roof_type_id', $roofType->id)->first();
-            $buildingRoofTypesArray[$roofType->short] = [
-                'element_value_id' => $currentBuildingRoofType->element_value_id ?? null,
-                'roof_surface' => $currentBuildingRoofType->roof_surface ?? null,
-                'insulation_roof_surface' => $currentBuildingRoofType->insulation_roof_surface ?? null,
-                'extra' => $currentBuildingRoofType->extra ?? null,
-                'measure_application_id' => $currentBuildingRoofType->extra['measure_application_id'] ?? null,
-                'building_heating_id' => $currentBuildingRoofType->building_heating_id ?? null,
+        /** @var BuildingRoofType $buildingRoofType */
+        foreach($buildingRoofTypes as $buildingRoofType){
+            $short = $buildingRoofType->roofType->short;
+            $buildingRoofTypesArray[$short] = [
+                'element_value_id' => $buildingRoofType->element_value_id,
+                'roof_surface' => $buildingRoofType->roof_surface,
+                'insulation_roof_surface' => $buildingRoofType->insulation_roof_surface,
+                'extra' => $buildingRoofType->extra,
+                'measure_application_id' => $buildingRoofType->extra['measure_application_id'] ?? null,
+                'building_heating_id' => $buildingRoofType->building_heating_id,
             ];
-        }
+            $buildingRoofTypesArray['id'][] = $buildingRoofType->roofType->id;
 
-        // merge them
-        $buildingRoofTypesArray = array_merge($selectedRoofTypes, $buildingRoofTypesArray);
+            // if the roof is a flat roof OR the tiles_condition is empty: remove it!!
+            // this is needed as the tiles condition has a different type of calculation
+            // than bitumen has
+            if(array_key_exists('tiles_condition', $buildingRoofTypesArray[$short]['extra'])){
+                if ($short == 'flat' || empty($buildingRoofTypesArray[$short]['extra']['tiles_condition'])){
+                    unset($buildingRoofTypesArray[$short]['extra']['tiles_condition']);
+                }
+            }
+        }
 
         // now we handle the hr boiler stuff
         $buildingBoilerService = $buildingServices->where('service_id', $boilerService->id)->first();
@@ -1183,9 +1186,6 @@ class CsvService
                 return [$item['interested_in_id'] => $item['interest_id']];
             })->toArray();
 
-
-
-
         $wallInsulationSavings = WallInsulation::calculate($building, $userEnergyHabit, [
             'cavity_wall'                 => $buildingFeature->cavity_wall ?? null,
             'element'                     => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
@@ -1216,7 +1216,6 @@ class CsvService
             'building_roof_types' => $buildingRoofTypesArray,
         ]);
 
-
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $user, [
             'building_services' => $buildingBoilerArray,
             'habit' => [
@@ -1241,8 +1240,6 @@ class CsvService
             ],
             'interest' => $userInterestsForHeater,
         ]);
-
-
 
         return [
             'wall-insulation' => $wallInsulationSavings,

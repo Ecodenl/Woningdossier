@@ -7,5 +7,6 @@
     "/js/are-you-sure.js": "/js/are-you-sure.js",
     "/js/datatables.js": "/js/datatables.js",
     "/js/select2.js": "/js/select2.js",
-    "/js/disable-auto-fill.js": "/js/disable-auto-fill.js"
+    "/js/disable-auto-fill.js": "/js/disable-auto-fill.js",
+    "/js/hoomdossier.js": "/js/hoomdossier.js"
 }

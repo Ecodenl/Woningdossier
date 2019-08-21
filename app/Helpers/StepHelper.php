@@ -3,14 +3,22 @@
 namespace App\Helpers;
 
 use App\Models\Building;
+use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
+use App\Models\BuildingHeater;
+use App\Models\BuildingPvPanel;
+use App\Models\BuildingRoofType;
 use App\Models\Cooperation;
+use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
+use App\Models\RoofType;
+use App\Models\Service;
 use App\Models\Step;
+use App\Models\UserEnergyHabit;
 use App\Models\UserProgress;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Redirect;
+use \Illuminate\Support\Arr;
 
 class StepHelper
 {
@@ -66,6 +74,81 @@ class StepHelper
             ],
         ],
     ];
+
+    /**
+     * Method to return a collection of all comments, categorized under step and input source.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getAllCommentsByStep()
+    {
+        $building = Building::find(HoomdossierSession::getBuilding());
+        $allInputForMe = collect();
+        $commentsByStep = collect();
+        $comment = '';
+
+        /* General-data */
+        $userEnergyHabitForMe = UserEnergyHabit::forMe()->get();
+        $allInputForMe->put('general-data', $userEnergyHabitForMe);
+
+        /* wall insulation */
+        $buildingFeaturesForMe = BuildingFeature::forMe()->get();
+        $allInputForMe->put('wall-insulation', $buildingFeaturesForMe);
+
+        /* floor insualtion */
+        $crawlspace = Element::where('short', 'crawlspace')->first();
+        $buildingElementsForMe = BuildingElement::forMe()->get();
+        $allInputForMe->put('floor-insulation', $buildingElementsForMe->where('element_id', $crawlspace->id));
+
+        /* beglazing */
+        $insulatedGlazingsForMe = $building->currentInsulatedGlazing()->forMe()->get();
+        $allInputForMe->put('insulated-glazing', $insulatedGlazingsForMe);
+
+        /* roof */
+        $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
+        $allInputForMe->put('roof-insulation', $currentRoofTypesForMe);
+
+        /* hr boiler ketel */
+        $boiler = Service::where('short', 'boiler')->first();
+        $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
+        $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
+
+        /* sun panel*/
+        $buildingPvPanelForMe = BuildingPvPanel::forMe()->get();
+        $allInputForMe->put('solar-panels', $buildingPvPanelForMe);
+
+        /* heater */
+        $buildingHeaterForMe = BuildingHeater::forMe()->get();
+        $allInputForMe->put('heater', $buildingHeaterForMe);
+
+
+        foreach ($allInputForMe as $step => $inputForMeByInputSource) {
+            foreach ($inputForMeByInputSource as $inputForMe) {
+
+                if (is_array($inputForMe->extra) && array_key_exists('comment', $inputForMe->extra)) {
+                    $comments = array_filter(
+                        [$inputForMe->inputSource->name => $inputForMe->extra['comment']]
+                    );
+                } else {
+                    $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+                    // get the comment fields, and filter out the empty ones.
+                    $comments = array_filter(
+                        [Arr::only($inputForMe->getAttributes(), $possibleAttributes)]
+                    );
+
+                    $comments = [$inputForMe->inputSource->name => $comments];
+
+                }
+
+                if ($inputForMe instanceof BuildingRoofType) {
+                    $commentsByStep->put($step.'-'.str_slug(RoofType::find($inputForMe->roof_type_id)->name), $comments);
+                } else {
+                    $commentsByStep->put($step, $comments);
+                }
+            }
+        }
+        return $commentsByStep;
+    }
 
     /**
      * Check is a user is interested in a step.

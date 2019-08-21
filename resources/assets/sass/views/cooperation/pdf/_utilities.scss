@@ -24,6 +24,12 @@
   left: 0;
 }
 
-.width-100 {
+.full-width {
   width: 100%;
+}
+
+@for $i from 100 through 500 {
+  .w-#{$i} {
+    width: unquote("#{$i}px")
+  }
 }

@@ -22,7 +22,7 @@
 
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.title')}}</p>
-        <table class="width-100">
+        <table class="full-width">
             <thead>
                 <tr>
                     <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.measure')}}</th>
@@ -57,7 +57,7 @@
 
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>
-        <table class="width-100">
+        <table class="full-width">
             <thead>
                 <tr>
                     <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year')}}</th>
@@ -68,13 +68,15 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach($userActionPlanAdvices as $userActionPlanAdvice)
                 <tr>
-                    <td>Jill</td>
-                    <td>Smith</td>
-                    <td>Smith</td>
-                    <td>Smith</td>
-                    <td>50</td>
+                    <td>{{$userActionPlanAdvice->getAdviceYear()}}</td>
+                    <td>{{$userActionPlanAdvice->planned ? 'Ja' : 'Nee'}}</td>
+                    <td>{{$userActionPlanAdvice->measureApplication->measure_name}}</td>
+                    <td>{{$userActionPlanAdvice->costs}}</td>
+                    <td>{{$userActionPlanAdvice->savings_money}}</td>
                 </tr>
+                @endforeach
             </tbody>
         </table>
         <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.text')}}</p>

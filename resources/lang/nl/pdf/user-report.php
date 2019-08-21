@@ -54,5 +54,15 @@ return [
 
             'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.'
         ]
-    ]
+    ],
+    'measure-pages' => [
+        'filled-in-data' => 'Ingevoerde gegevens',
+        'advice' => 'Geadviseerd wordt:',
+        'indicative-costs-and-benefits-for-measure' => 'Indicatieve kosten en baten voor deze maatregel',
+        'measures' => [
+            'title' => 'Onderhoudsmaatregelen',
+            'costs' => 'Kosten',
+            'year' => 'Geadviseerd word'
+        ],
+    ],
 ];

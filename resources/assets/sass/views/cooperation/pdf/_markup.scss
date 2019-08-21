@@ -40,6 +40,11 @@ p {
   p.lead {
     margin-bottom: 1px;
   }
+  .question-answer {
+    p {
+      display: inline-block;
+    }
+  }
 }
 
 table {

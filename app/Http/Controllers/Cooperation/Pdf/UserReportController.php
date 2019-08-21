@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Cooperation\Pdf;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\StepHelper;
 use App\Jobs\GenerateUserReport;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
+use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Services\CsvService;
 use App\Services\PdfService;
 use Barryvdh\DomPDF\Facade as PDF;
-use function Couchbase\defaultDecoder;
 
 class UserReportController extends Controller
 {
@@ -19,20 +21,24 @@ class UserReportController extends Controller
 
         $user = Hoomdossier::user()->load('building');
 
-        /** @var \Barryvdh\DomPDF\PDF $pdf */
-        $pdf = PDF::loadView('cooperation.pdf.user-report.index', [
-            'cooperation' => $cooperation,
-            'user' => $user
-        ]);
-
-
-
         $GLOBALS['_cooperation'] = $cooperation;
+        $userActionPlanAdvices = $user->actionPlanAdvices()->with('measureApplication')->get();
 
-        $this->pdfData();
+
+        set_time_limit(0);
+
+        $pdfData = \Cache::get('test3');
+        /** @var \Barryvdh\DomPDF\PDF $pdf */
+        $stepSlugs = \DB::table('steps')->select('slug')->get()->pluck('slug')->flip()->toArray();
+
+        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact('user', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices'));
+
+        dd(StepHelper::getAllCommentsByStep());
+        dd(UserActionPlanAdvice::getAllCoachComments());
+
 
         return $pdf->stream();
-        return view('cooperation.pdf.user-report.index', compact('user', 'cooperation'));
+        return view('cooperation.pdf.user-report.index',  compact('user', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices'));
     }
 
     public function pdfData()
@@ -40,7 +46,8 @@ class UserReportController extends Controller
         $user = Hoomdossier::user();
 
         $calculateData = CsvService::getCalculateData($user->building, $user);
-        dd($calculateData);
         $userData = PdfService::totalReportForUser($user);
+
+        return ['user-data' => $userData, 'calculate-data' => $calculateData];
     }
 }

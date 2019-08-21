@@ -58,7 +58,7 @@ class PdfService {
         $structure = PdfHelper::getPdfStructure();
 
 
-        $cooperation = $user->cooperations()->first();
+        $cooperation = $user->cooperation;
 
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
         // unfortunately we cant array dot the structure since we only need the labels
@@ -540,8 +540,8 @@ class PdfService {
         $rows[] = $row;
 
 
-        dd('bier', $row);
-        return $rows;
+        // 1 is the pdf content, 0 just the trans with keys. todo: remove that
+        return $rows[1];
     }
 
 

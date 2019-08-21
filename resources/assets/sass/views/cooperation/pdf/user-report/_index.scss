@@ -21,3 +21,23 @@
     padding: 5rem;
   }
 }
+
+
+.step-intro {
+  overflow: hidden;
+  h2 {
+    display: block;
+    margin: 13px 0 0 0;
+  }
+  img {
+    width: 50px;
+    height: 50px;
+    display: block;
+    float: left;
+  }
+}
+.measures {
+  p {
+    display: inline-block;
+  }
+}

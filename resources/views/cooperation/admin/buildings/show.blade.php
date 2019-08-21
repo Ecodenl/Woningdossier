@@ -480,7 +480,7 @@
                             building_id: buildingId
                         },
                         success: function () {
-                            Hoomdossier.updateTotalUnreadMessages();
+                            updateTotalUnreadMessageCount();
                         }
                     })
                 }

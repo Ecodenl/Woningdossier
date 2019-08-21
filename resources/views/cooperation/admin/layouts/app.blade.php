@@ -91,7 +91,7 @@
 
 <script>
     $(document).ready(function () {
-        Hoomdossier.pollForMessageCount();
+        pollForMessageCount();
 
         $('.collapse').on('shown.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

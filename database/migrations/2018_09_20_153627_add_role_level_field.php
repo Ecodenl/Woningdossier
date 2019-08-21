@@ -16,7 +16,6 @@ class AddRoleLevelField extends Migration
         Schema::table('roles', function (Blueprint $table) {
             $table->integer('level')->default(1); // bewoner
         });
-        Artisan::call('db:seed', ['--class' => 'ModelHasRolesTableSeeder']);
     }
 
     /**

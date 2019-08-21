@@ -24,7 +24,11 @@ class InsulatedGlazingFormRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        $this->decimals(['window_surface']);
+        $this->decimals(
+            [
+                'building_insulated_glazings' => 'm2',
+                'window_surface'
+            ]);
     }
 
     public function rules()

@@ -11,7 +11,6 @@ use App\Helpers\NumberFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\Building;
-use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\CsvExportService;
@@ -23,16 +22,14 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
-        $coachComments = UserActionPlanAdvice::getAllCoachComments();
+        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
-
-
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachComments', 'actionPlanComments'
+            'advices', 'coachCommentsByStep', 'actionPlanComments'
         ));
     }
 
@@ -66,7 +63,7 @@ class MyPlanController extends Controller
     public function export()
     {
         // get the data
-        $user = \Auth::user();
+        $user = \App\Helpers\Hoomdossier::user();
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
 
         // Column names

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Heater;
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
@@ -35,6 +36,9 @@ use Illuminate\Http\Request;
 
 class HeaterController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -127,11 +131,9 @@ class HeaterController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);
-        ($this->step);
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
-
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

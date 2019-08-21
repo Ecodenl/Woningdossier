@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
-use App\Scopes\CooperationScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -66,6 +66,10 @@ class Step extends Model
         }
 
         return false;
+    }
+
+    public function scopeOrdered(Builder $query){
+        return $query->orderBy('order', 'asc');
     }
 
     /**

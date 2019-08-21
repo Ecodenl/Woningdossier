@@ -7,7 +7,7 @@
                 'role' => implode(' / ', $roles),
                 'full_name' => $userToShow->getFullName(),
                 'street' => $buildingFromUser->street,
-                'number' => $buildingFromUser->number,
+                'number' => $buildingFromUser->number.' '.$buildingFromUser->extension,
                 'zip_code' => strtoupper($buildingFromUser->postal_code),
                 'city' => $buildingFromUser->city
             ])
@@ -29,22 +29,27 @@
                         </tr>
                         </thead>
                         <tbody>
-                     
-                        <?php /** @var \App\Models\User $user */ ?>
+
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
-                                $building = $buildingCoachStatus->building()->first();
+                                /**
+                                * @var \App\Models\Building $building
+                                */
+                                $building = $buildingCoachStatus->building;
+                                $user = $building->user;
+                                $buildingStatus = $building->buildingStatuses->first();
+
+                                $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
+                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+
+                                $appointmentDateFormatted = optional($buildingStatus->appointment_date)->format('d-m-Y');
+                                $appointmentDateStrotime = strtotime($appointmentDateFormatted);
                             ?>
-                            @if($building instanceof \App\Models\Building)
-                                <?php
-                                    $user = $building->user;
-                                    $userExists = $user instanceof \App\Models\User;
-                                ?>
                             <tr>
-                                <td data-sort="{{$userExists && $user->created_at instanceof \Carbon\Carbon ? strtotime($user->created_at->format('d-m-Y')) : '-'}}">
-                                    {{$userExists && $user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
+                                <td data-sort="{{$userCreatedAtStrotime}}">
+                                    {{$userCreatedAtFormatted ?? '-'}}
                                 </td>
-                                <td>{{$userExists ? $user->getFullName() : '-'}}</td>
+                                <td>{{$user->getFullName()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.buildings.show', ['id' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
@@ -55,13 +60,12 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($buildingCoachStatus->status)}}
+                                    {{$buildingStatus->status->name}}
                                 </td>
-                                <td data-sort="{{$buildingCoachStatus->hasAppointmentDate() ? strtotime($buildingCoachStatus->appointment_date->format('d-m-Y')) : ''}}">
-                                    {{$buildingCoachStatus->hasAppointmentDate() ? $buildingCoachStatus->appointment_date->format('d-m-Y') : ''}}
+                                <td data-sort="{{$appointmentDateStrotime}}">
+                                    {{$appointmentDateFormatted ?? '-'}}
                                 </td>
                             </tr>
-                            @endif
                         @endforeach
                         </tbody>
                     </table>

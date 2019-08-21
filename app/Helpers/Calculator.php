@@ -138,7 +138,8 @@ class Calculator
         $yearFactor = $toYear - $fromYear;
 
         if (is_null($index)) {
-            $index = PriceIndexing::where('short', 'common')->first();
+            //$index = PriceIndexing::where('short', 'common')->first();
+            $index = \App\Helpers\Cache\Calculator::getPriceIndex('common');
         }
         // default = 2%
         $costIndex = 2;

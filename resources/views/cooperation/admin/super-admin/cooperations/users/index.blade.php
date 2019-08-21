@@ -28,7 +28,7 @@
                                     {{$user->created_at instanceof \Carbon\Carbon ? $user->created_at->format('d-m-Y') : '-'}}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
-                                <td>{{$user->email}}</td>
+                                <td>{{$user->account->email}}</td>
                                 <td>
                                     <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', [
                                         'cooperationToManage' => $cooperationToManage,

@@ -4,6 +4,12 @@
 
 @section('step_content')
 
+    <?php
+        // Page wide usage
+        $myBuildingFeatures = $building->buildingFeatures()->forMe()->get();
+
+    ?>
+
     <form class="form-horizontal" method="POST" id="main-form"
           action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
@@ -50,7 +56,7 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'general-data.building-type.what-user-surface', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'surface', 'needsFormat' => true])
+                            ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'surface', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                                 <input id="surface" type="text" class="form-control" name="surface"
                                        value="{{ old('surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'surface'), 1)) }}"
@@ -65,7 +71,7 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'building_layers', 'translation' => 'general-data.building-type.how-much-building-layers', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
+                            ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
                                 <input id="building_layers" type="text" class="form-control" name="building_layers"
                                        value="{{ old('building_layers', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_layers')) }}"
                                        autofocus>
@@ -81,7 +87,7 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'roof_type_id', 'translation' => 'general-data.building-type.type-roof',])
 
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
+                            ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
                                 <select id="roof_type_id" class="form-control" name="roof_type_id">
                                     @foreach($roofTypes as $roofType)
                                         <option
@@ -119,7 +125,7 @@
                             }
                             ?>
                             @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
+                            ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
                                 <select id="energy_label_id" class="form-control" name="energy_label_id">
                                     @foreach($energyLabels as $energyLabel)
                                         <option
@@ -141,35 +147,38 @@
                     <div class="col-md-12">
                         <div class="input-group input-source-group">
                             @component('cooperation.tool.components.step-question', ['id' => 'monument', 'translation' => 'general-data.building-type.is-monument', 'required' => false])
-                                <?php $checked = (int)old('monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument')); ?>
+                                <?php
+                                $checked = old('monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument'));
+                                ?>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="1"
-                                           @if($checked == 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}
+                                           @if($checked === 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="2"
-                                           @if($checked == 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.no.title')}}
+                                           @if($checked === 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.no.title')}}
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="monument" value="0"
-                                           @if($checked == 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.unknown.title')}}
+                                           @if($checked === 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.unknown.title')}}
                                 </label>
 
                             @endcomponent
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span></button>
+                                    <span class="caret"></span>
+                                </button>
                                 <ul class="dropdown-menu">
                                     <?php
                                     // we need to check if there is a answer from one input source
-                                    $hasAnswerMonument = $building->buildingFeatures()->forMe()->get()->contains('monument', '!=', '');
-
+                                    //$hasAnswerMonument = $myBuildingFeatures->contains('monument', '!=', '');
+                                    $monumentValues = $building->buildingFeatures()->forMe()->whereNotNull('monument')->get();
                                     ?>
-                                    @if(!$hasAnswerMonument)
+                                    @if($monumentValues->count() <= 0)
                                             @include('cooperation.tool.includes.no-answer-available')
                                     @else
-                                        @foreach($building->buildingFeatures()->forMe()->get() as $userInputValue)
+                                        @foreach($monumentValues as $userInputValue)
                                             <?php
                                             // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
                                             $value = $userInputValue->monument;
@@ -177,16 +186,16 @@
                                                 $trans = __('woningdossier.cooperation.radiobutton.yes');
                                             } elseif (2 === $value) {
                                                 $trans = __('woningdossier.cooperation.radiobutton.no');
-                                            } else {
+                                            } elseif (0 === $value) {
                                                 $trans = __('woningdossier.cooperation.radiobutton.unknown');
                                             }
                                             ?>
 
                                             <li class="change-input-value"
                                                 data-input-source-short="{{$userInputValue->inputSource()->first()->short}}"
-                                                data-input-value="{{ $value }}"><a
-                                                        href="#">{{ $userInputValue->getInputSourceName() }}
-                                                    : {{ $trans }}</a></li>
+                                                data-input-value="{{ $value }}">
+                                                <a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $trans }}</a>
+                                            </li>
                                         @endforeach
                                     @endif
                                 </ul>
@@ -659,7 +668,7 @@
                         <div class="col-sm-12">
                             @component('cooperation.tool.components.step-question', ['id' => 'living_situation_extra', 'translation' => 'general-data.data-about-usage.additional-info', 'required' => false])
                                 <textarea id="additional-info" class="form-control"
-                                          name="living_situation_extra">{{ old('living_situation_extra', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'living_situation_extra')) }}</textarea>
+                                          name="living_situation_extra">{{ old('living_situation_extra', optional($energyHabit)->living_situation_extra) }}</textarea>
                             @endcomponent
                         </div>
                     </div>
@@ -692,7 +701,7 @@
                                                 <option
                                                         @if($motivation->id == old('motivation.'.$i))
                                                         selected
-                                                        @elseif(old() == false && isset(Auth::user()->motivations()->where('order', $i)->first()->motivation_id) && Auth::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id)
+                                                        @elseif(old() == false && isset(\App\Helpers\Hoomdossier::user()->motivations()->where('order', $i)->first()->motivation_id) && \App\Helpers\Hoomdossier::user()->motivations()->where('order', $i)->first()->motivation_id == $motivation->id)
                                                         selected
                                                         @endif value="{{ $motivation->id }}">{{ $motivation->name }}
                                                 </option>
@@ -755,13 +764,16 @@
     <script>
         $(document).ready(function () {
 
-            var previous_eb = parseInt('{{ $building->example_building_id }}');
+            var previous_eb = parseInt($("select#example_building_id").val());
+            previous_eb = isNaN(previous_eb) ? "" : previous_eb;
 
             $("select#example_building_id").change(function () {
                 var current_eb = parseInt(this.value);
+                // if "no specific": set to null
+                current_eb = isNaN(current_eb) ? "" : current_eb;
                 // Do something with the previous value after the change
                 if (current_eb !== previous_eb) {
-                    if (previous_eb === "" || confirm('{{ \App\Helpers\Translation::translate('general-data.example-building.apply-are-you-sure.title') }}')) {
+                    if (confirm('{{ \App\Helpers\Translation::translate('general-data.example-building.apply-are-you-sure.title') }}')) {
                         @if(App::environment('local'))
                         console.log("Let's save it. EB id: " + current_eb);
                         @endif
@@ -772,7 +784,7 @@
 
                         $.ajax({
                             type: "POST",
-                            url: '{{ route('cooperation.tool.apply-example-building', [ 'cooperation' => $cooperation ]) }}',
+                            url: '{{ route('cooperation.tool.apply-example-building', compact('cooperation')) }}',
                             data: {example_building_id: current_eb},
                             success: function (data) {
                                 location.reload();

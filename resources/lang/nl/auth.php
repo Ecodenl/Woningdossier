@@ -23,7 +23,7 @@ return [
             'connected-address'     => 'Adres:',
             'header'                => 'Registreren',
             'e-mail'                => 'E-mailadres',
-            'e-mail-exists'         => 'Het e-mailadres is al geregistreerd',
+            'e-mail-exists'         => 'Het e-mailadres is al geregistreerd, wij hebben nog een aantal gegevens van uw nodig. U kunt hierna inloggen met uw E-mailadres en huidige wachtwoord.',
             'already-member'        => 'U bent a lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
             'connect'               => 'Koppelen aan deze coöperatie',
             'first_name'            => 'Voornaam',
@@ -70,6 +70,7 @@ return [
             'set-password' => 'Nieuw wachtwoord instellen',
         ],
         'inactive' => 'Uw wachtwoord is gereset, maar uw account is nog niet bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail.',
+        'success' => 'Uw wachtwoord is gereset, u kunt nu inloggen.'
     ],
     'confirm' => [
         'success' => 'Uw account is bevestigd. U kunt nu inloggen met uw gebruikersnaam en wachtwoord.',

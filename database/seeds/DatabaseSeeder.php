@@ -102,6 +102,8 @@ class DatabaseSeeder extends Seeder
         $this->call(NotificationTypesTableSeeder::class);
         $this->call(NotificationIntervalsTableSeeder::class);
 
+        $this->call(StatusesTableSeeder::class);
+
         $this->call(SqlDumpSeeder::class);
     }
 }

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
@@ -31,7 +32,6 @@ use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\SolarWaterHeater;
 use App\Models\Step;
-use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\UserMotivation;
@@ -44,6 +44,9 @@ use Illuminate\Http\Request;
 
 class GeneralDataController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -115,10 +118,9 @@ class GeneralDataController extends Controller
 
     public function applyExampleBuilding(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
-
         $exampleBuildingId = $request->get('example_building_id', null);
 
+        $building = Building::find(HoomdossierSession::getBuilding());
         $buildYear = $building->getBuildYear();
 
         // There is one strange option: "Er is geen passende voorbeeldwoning"
@@ -182,7 +184,7 @@ class GeneralDataController extends Controller
             ],
             [
                 'surface' => $surface,
-                'monument' => $request->get('monument', 0),
+                'monument' => $request->get('monument'),
                 'building_layers' => $request->get('building_layers'),
             ]
         );
@@ -350,8 +352,10 @@ class GeneralDataController extends Controller
         );
 
         // Save progress
-        $building->complete($this->step);
-        $cooperation = Cooperation::find(\Session::get('cooperation'));
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);

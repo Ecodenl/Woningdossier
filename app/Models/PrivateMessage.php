@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Scopes\CooperationScope;
+use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -66,14 +67,6 @@ class PrivateMessage extends Model
         'message', 'from_user_id', 'cooperation_id', 'from_cooperation_id', 'to_cooperation_id',
         'request_type', 'allow_access', 'building_id', 'from_user', 'is_public',
     ];
-
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new CooperationScope());
-    }
 
     /**
      * The attributes that should be cast to native types.
@@ -150,7 +143,7 @@ class PrivateMessage extends Model
      */
     public function scopeMyPrivateMessages($query)
     {
-        return $query->where('to_user_id', \Auth::id());
+        return $query->where('to_user_id', Hoomdossier::user()->id);
     }
 
 
@@ -274,14 +267,14 @@ class PrivateMessage extends Model
     public function isMyMessage(): bool
     {
         // a coordinator and cooperation admin talks from a cooperation, not from his own name.
-        if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             if ($this->from_cooperation_id == HoomdossierSession::getCooperation()) {
                 return true;
             }
             // if a user would be a coach and a coordinator / cooperation-admin and he would be sending from the coordinator section.
             // after that switching back to the coach section and start to send message as a coach, he would be see the messages he sent as a coordinator as they were his messages
             // while this is true, its looks odd.
-        } else if (\Auth::id() == $this->from_user_id && is_null($this->from_cooperation_id)) {
+        } else if (Hoomdossier::user()->id == $this->from_user_id && is_null($this->from_cooperation_id)) {
             return true;
         }
 
@@ -329,7 +322,7 @@ class PrivateMessage extends Model
      */
     public static function allowedAccess($buildingId)
     {
-        return static::forMyCooperation()->conversationRequestByBuildingId($buildingId)->accessAllowed()->first() instanceof PrivateMessage;
+        return static::conversationRequestByBuildingId($buildingId)->accessAllowed()->first() instanceof PrivateMessage;
     }
 
     /**

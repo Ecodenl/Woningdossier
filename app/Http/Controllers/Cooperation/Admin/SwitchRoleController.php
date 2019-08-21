@@ -23,9 +23,9 @@ class SwitchRoleController extends Controller
         }
 
         /** @var User $user */
-        $user = $request->user();
+        $user = \App\Helpers\Hoomdossier::user();
         /** @var Building $building */
-        $building = $user->buildings()->first();
+        $building = $user->building;
 
         $role = Role::where('name', $newRole)->first();
 

@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\UserActionPlanAdvice;

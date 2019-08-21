@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class InputSource extends Model
 {
     const RESIDENT_SHORT = 'resident';
-    const RESIDENT_COACH = 'coach';
+    const COACH_SHORT = 'coach';
 
     public static function findByShort($short)
     {

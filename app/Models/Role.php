@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Scopes\CooperationScope;
-
 /**
  * App\Models\Role
  *

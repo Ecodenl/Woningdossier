@@ -30,7 +30,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group" {{ $errors->has('email') ? ' has-error' : '' }}>
                                     <label for="email">@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.edit.form.email')</label>
-                                    <input disabled value="{{$user->email}}"  type="email" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.edit.form.email')..." name="email">
+                                    <input disabled value="{{$user->account->email}}"  type="email" class="form-control" placeholder="@lang('woningdossier.cooperation.admin.cooperation.coordinator.assign-roles.edit.form.email')..." name="email">
                                 </div>
                             </div>
                         </div>

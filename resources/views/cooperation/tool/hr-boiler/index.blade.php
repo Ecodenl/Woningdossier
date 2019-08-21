@@ -226,7 +226,7 @@
                             $("input#replace_year").val(data.replace_year);
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(data.interest_comparable);
+                            $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         @if(App::environment('local'))
                         console.log(data);

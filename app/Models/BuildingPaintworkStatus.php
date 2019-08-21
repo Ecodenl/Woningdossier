@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus whereId($value)

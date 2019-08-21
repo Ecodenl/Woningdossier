@@ -8,6 +8,39 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * App\Models\FileStorage
+ *
+ * @property int $id
+ * @property int|null $cooperation_id
+ * @property int|null $user_id
+ * @property int $file_type_id
+ * @property string $filename
+ * @property string $content_type
+ * @property \Illuminate\Support\Carbon|null $available_until
+ * @property bool $is_being_processed
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Cooperation|null $cooperation
+ * @property-read \App\Models\FileType $fileType
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage mostRecent()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereAvailableUntil($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereContentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereFileTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereFilename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereIsBeingProcessed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage withExpired()
+ * @mixin \Eloquent
+ */
 class FileStorage extends Model
 {
 

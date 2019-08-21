@@ -22,35 +22,40 @@ class RoofInsulation {
 
     public static function calculate(Building $building, User $user, $calculateData)
     {
+        \Log::debug(__METHOD__);
         $result = [];
 
-        $roofTypes = $calculateData['building_roof_types'] ?? [];
-
-
-        foreach ($roofTypes as $i => $details) {
-            if (is_numeric($i) && is_numeric($details)) {
-                $roofType = RoofType::find($details);
-                if ($roofType instanceof RoofType) {
-                    $cat = RoofInsulationHelper::getRoofTypeCategory($roofType);
-                    // add as key to result array
-                    $result[$cat] = [
-                        'type' => RoofInsulationHelper::getRoofTypeSubCategory($roofType),
-                    ];
-                }
+        $roofTypeIds = $calculateData['building_roof_types']['id'] ?? [];
+        foreach ($roofTypeIds as $roofTypeId) {
+            $roofType = RoofType::findOrFail($roofTypeId);
+            if ($roofType instanceof RoofType) {
+                $cat = RoofInsulationHelper::getRoofTypeCategory($roofType);
+                // add as key to result array
+                $result[$cat] = [
+                    'type' => RoofInsulationHelper::getRoofTypeSubCategory($roofType),
+                ];
             }
         }
+
+        \Log::debug(json_encode($result));
 
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $adviceMap = RoofInsulationHelper::getMeasureApplicationsAdviceMap();
         $totalSurface = 0;
 
+        $roofTypes = $calculateData['building_roof_types'];
+
+        //dump("Roof types: ");
+        //dump($roofTypes);
 
         foreach (array_keys($result) as $cat) {
             $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
             $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
 
+            //dump($totalSurface . " += " . $insulationRoofSurface);
             $totalSurface += $insulationRoofSurface;
         }
+        //dump("Total surface: " . $totalSurface);
 
         foreach (array_keys($result) as $cat) {
             // defaults
@@ -83,7 +88,9 @@ class RoofInsulation {
             $isBitumenRoof = ! in_array($cat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
 
             if ($isBitumenRoof) {
+                \Log::debug("The roof is a bitumen roof");
                 $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
+                \Log::debug("Bitumen last replacement was set to " . $year);
             } else {
                 $year = Carbon::now()->year;
             }
@@ -121,18 +128,20 @@ class RoofInsulation {
                     $catData['savings_co2'] = Calculator::calculateCo2Savings($catData['savings_gas']);
                     $catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));
                     $catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice);
-                    $catData['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
+                    $catData['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
                     // The replace year is about the replacement of bitumen..
                     $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($objAdvice, $year, $factor);
                 }
             }
 
+            /** @var \App\Models\MeasureApplication $replaceMeasure */
             // If tiles condition is set, use the status to calculate the replace moment
             $tilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? (int) $roofTypes[$cat]['extra']['tiles_condition'] : null;
             if (! is_null($tilesCondition)) {
                 $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
                 // no year here. Default is this year. It is incremented by factor * maintenance years
                 $year = Carbon::now()->year;
+                \Log::debug("Tiles condition was set, year is set to this year as the tiles condition is used as a factor for replacement");
                 $roofTilesStatus = RoofTileStatus::find($tilesCondition);
                 if ($roofTilesStatus instanceof RoofTileStatus) {
                     $factor = ($roofTilesStatus->calculate_value / 100);
@@ -147,6 +156,7 @@ class RoofInsulation {
 
             if (isset($replaceMeasure)) {
                 $surface = $roofTypes[$cat]['roof_surface'] ?? 0;
+                \Log::debug("Calculating costs for replacement measure..");
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
                 $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);
             }
@@ -154,6 +164,7 @@ class RoofInsulation {
             $result[$cat] = array_merge($result[$cat], $catData);
         }
 
+        \Log::debug(__METHOD__ . " END");
         return $result;
     }
 }

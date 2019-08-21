@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
  * @property-read \App\Models\Step|null $step
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire active()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire forMyCooperation($cooperationId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Questionnaire query()

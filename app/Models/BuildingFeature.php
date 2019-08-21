@@ -33,20 +33,25 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $volume
  * @property int|null $build_year
  * @property int|null $building_layers
- * @property int $monument
+ * @property int|null $monument
  * @property string|null $additional_info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingCategory|null $buildingCategory
  * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \App\Models\FacadeSurface|null $contaminatedWallJoints
+ * @property-read \App\Models\FacadeDamagedPaintwork|null $damagedPaintwork
  * @property-read \App\Models\EnergyLabel|null $energyLabel
  * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
  * @property-read \App\Models\RoofType|null $roofType
+ * @property-read \App\Models\FacadeSurface|null $wallJoints
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereAdditionalInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildingCategoryId($value)

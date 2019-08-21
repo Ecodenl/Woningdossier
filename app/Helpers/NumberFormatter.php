@@ -68,11 +68,11 @@ class NumberFormatter
         if (is_numeric($number)) {
 
             if ($shouldRoundNumber) {
-                $roundedNumber = static::round($number);
+                $number = static::round($number);
             }
 
             $formattedNumber = number_format(
-                $roundedNumber ?? $number,
+                $number,
                 $decimals,
                 self::$formatLocaleSeparators[$locale]['decimal'],
                 self::$formatLocaleSeparators[$locale]['thousands']

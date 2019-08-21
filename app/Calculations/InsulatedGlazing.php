@@ -80,7 +80,7 @@ class InsulatedGlazing {
             }
         }
 
-        $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+        $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
         $result['paintwork'] = [
             'costs' => 0,

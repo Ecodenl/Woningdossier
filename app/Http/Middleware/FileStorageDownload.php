@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\FileStorage;
 use Closure;
@@ -23,7 +24,7 @@ class FileStorageDownload
 
 
         // some other logic for resident wil come in the near future.
-        if (\Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator'])) {
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator'])) {
             $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
 
             if ($fileStorage instanceof FileStorage && $fileStorage->cooperation->id == HoomdossierSession::getCooperation()) {

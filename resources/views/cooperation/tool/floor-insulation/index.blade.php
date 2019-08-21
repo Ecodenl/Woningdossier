@@ -301,7 +301,7 @@
                             $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(data.interest_comparable);
+                            $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         if (data.hasOwnProperty('crawlspace_access')) {
                             $("#crawlspace-no-access-error").show();

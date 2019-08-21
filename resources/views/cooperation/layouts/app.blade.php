@@ -33,19 +33,9 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-
-<script>
-    function hoomdossierRound(valueToRound, bucket)
-    {
-        if (typeof bucket === "undefined") {
-            bucket = 5;
-        }
-
-        return Math.round(valueToRound / bucket) * bucket;
+<script src="{{ asset('js/hoomdossier.js') }}"></script>
 
 
-    }
-</script>
 @stack('js')
 </body>
 </html>

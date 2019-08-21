@@ -34,26 +34,27 @@
                                 $mostRecentBuildingStatus = $building->getMostRecentBuildingStatus();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
-                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                                        $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
                             ?>
                             <tr>
                                 <td data-sort="{{$userCreatedAtStrotime}}">
                                     {{$userCreatedAtFormatted ?? '-'}}
-                                </td>
-                                <td>{{$user->getFullName()}}</td>
-                                <td>
-                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
-                                        {{$building->street}} {{$building->number}} {{$building->extension}}
-                                    </a>
-                                </td>
-                                <td>{{$building->postal_code}}</td>
-                                <td>
-                                    {{$building->city}}
-                                </td>
-                                <td>
-                                    {{$mostRecentBuildingStatus->status->name}}
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>{{$user->getFullName()}}</td>
+                                    <td>
+                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                            {{$building->street}} {{$building->number}} {{$building->extension}}
+                                        </a>
+                                    </td>
+                                    <td>{{$building->postal_code}}</td>
+                                    <td>
+                                        {{$building->city}}
+                                    </td>
+                                    <td>
+                                        {{$mostRecentBuildingStatus->status->name}}
+                                    </td>
+                                </tr>
+
                         @endforeach
                         </tbody>
                     </table>

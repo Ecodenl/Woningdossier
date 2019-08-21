@@ -375,14 +375,14 @@
     <script>
         $(document).ready(function () {
 
-
-            $('select[name*=element_value_id]').trigger('change');
+            //$('select[name*=element_value_id]').trigger('change');
 
             $("select, input[type=radio], input[type=text], input[type=number], input[type=checkbox]").change(formChange);
 
             function formChange() {
 
                 var form = $(this).closest("form").serialize();
+
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.roof-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
@@ -421,7 +421,7 @@
                                 $("input#flat_cost_indication").val(hoomdossierRound(data.flat.cost_indication));
                             }
                             if (data.flat.hasOwnProperty('interest_comparable')) {
-                                $("input#flat_interest_comparable").val(data.flat.interest_comparable);
+                                $("input#flat_interest_comparable").val(hoomdossierNumberFormat(data.flat.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
                             if (data.flat.hasOwnProperty('replace')) {
                                 if (data.flat.replace.hasOwnProperty('year')) {
@@ -432,13 +432,11 @@
                                 }
                             }
                         } else {
-
                             $(".flat-roof").hide();
                         }
 
                         $(".cover-tiles").hide();
                         if (data.hasOwnProperty('pitched')) {
-
 
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')) {
@@ -464,7 +462,7 @@
                                 $("input#pitched_cost_indication").val(hoomdossierRound(data.pitched.cost_indication));
                             }
                             if (data.pitched.hasOwnProperty('interest_comparable')) {
-                                $("input#pitched_interest_comparable").val(data.pitched.interest_comparable);
+                                $("input#pitched_interest_comparable").val(hoomdossierNumberFormat(data.pitched.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
                             if (data.pitched.hasOwnProperty('replace')) {
                                 if (data.pitched.replace.hasOwnProperty('year')) {
@@ -493,17 +491,19 @@
         $('input[name*=roof_surface]').on('change', function () {
             var insulationRoofSurface = $(this).parent().parent().parent().next().find('input');
             if (insulationRoofSurface.length > 0) {
-                if ($(insulationRoofSurface).val().length == 0 || $(insulationRoofSurface).val() == "0,0" || $(insulationRoofSurface).val() == "0.00") {
-                    $(insulationRoofSurface).val($(this).val())
+                if ($(insulationRoofSurface).val().length === 0 || $(insulationRoofSurface).val() === "0,0" || $(insulationRoofSurface).val() === "0.00") {
+                    $(insulationRoofSurface).val($(this).val());
                 }
             }
         });
 
 
-        $('select[name^=interest]').on('change', function () {
+        /*$('select[name^=interest]').on('change', function () {
             $('select[name*=element_value_id]').trigger('change');
-        });
+        });*/
+
         $('select[name*=element_value_id]').on('change', function () {
+            @if(App::environment('local')) console.log("element_value_id change"); @endif
             var interestedCalculateValue = $('#interest_element_{{$roofInsulation->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $(this).find(':selected').data('calculate-value');
 

@@ -69,7 +69,7 @@ class WallInsulation {
         $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
         $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
         $result['cost_indication'] = Calculator::calculateCostIndication($facadeSurface, $insulationAdvice);
-        $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+        $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
         $measureApplication = MeasureApplication::where('short', '=', 'repair-joint')->first();
         //$measureApplication = MeasureApplication::translated('measure_name', 'Reparatie voegwerk', 'nl')->first(['measure_applications.*']);
@@ -111,7 +111,7 @@ class WallInsulation {
         $result['impregnate_wall'] = compact('costs', 'year');
 
         // Note: these answer options are hardcoded in template
-        $isPlastered = 2 != (int) $calculateData['facade_plastered_painted'] ?? 2;
+        $isPlastered = 2 != (int) ($calculateData['facade_plastered_painted'] ?? 2);
 
         if ($isPlastered) {
             $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();

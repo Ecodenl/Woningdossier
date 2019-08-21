@@ -22,11 +22,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $comment
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\PvPanelOrientation $orientation
+ * @property-read \App\Models\PvPanelOrientation|null $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereAngle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel whereComment($value)

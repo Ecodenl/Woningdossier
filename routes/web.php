@@ -69,8 +69,7 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
             });
 
             //Route::get('measures', 'MeasureController@index')->name('measures.index');
-            Route::get('input-source/{input_source_value_id}',
-                'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
+            Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                 Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {
@@ -155,7 +154,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                 });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Ventilation information: info for now
-                    Route::resource('ventilation-information', 'VentilationController', ['only' => ['index', 'store']]);
+                    Route::resource('ventilation-information', 'VentilationController',
+                            ['only' => ['index', 'store']]);
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
 
@@ -238,7 +238,8 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'building-status', 'as' => 'building-status.'], function () {
                         Route::post('set-status', 'BuildingStatusController@setStatus')->name('set-status');
-                        Route::post('set-appointment-date', 'BuildingStatusController@setAppointmentDate')->name('set-appointment-date');
+                        Route::post('set-appointment-date',
+                        'BuildingStatusController@setAppointmentDate')->name('set-appointment-date');
                     });
                 });
 

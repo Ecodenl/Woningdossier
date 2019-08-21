@@ -42,6 +42,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountElectricity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountGas($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountWater($value)

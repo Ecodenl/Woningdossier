@@ -11,7 +11,7 @@
 </head>
 
 <?php
-$building = $user->buildings->first();
+    $building = $user->building;
 ?>
 
 {{-- This is the frontpage of the pdf, after this a new page must be started with the component. --}}

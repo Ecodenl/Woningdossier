@@ -100,7 +100,7 @@ class PdfService {
         $row = [];
 
         // collect basic info from a user.
-        $building   = $user->buildings()->first();
+        $building   = $user->building;
         $buildingId = $building->id;
 
         /** @var Collection $conversationRequestsForBuilding */

@@ -19,7 +19,7 @@ function pollForMessageCount() {
     var timeout = 0;
 
     if (beenPolled) {
-        timeout = 5000;
+        timeout = 10000;
     }
     setTimeout(function () {
         beenPolled = true;

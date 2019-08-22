@@ -203,6 +203,7 @@ class CsvService
         // get all the measures ordered by step
         $measures = MeasureApplication::leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
             ->orderBy('steps.order')
+            ->orderBy('measure_applications.measure_type')
             ->select(['measure_applications.*'])
             ->get();
 
@@ -217,6 +218,9 @@ class CsvService
         // since we only want the reports from the resident
         $residentInputSource = InputSource::findByShort('resident');
 
+        /**
+         * @var User $user
+         */
         foreach ($users as $key => $user) {
             /** @var Building $building */
             $building = $user->building;
@@ -289,6 +293,11 @@ class CsvService
                 ->actionPlanAdvices()
                 ->withOutGlobalScope(GetValueScope::class)
                 ->residentInput()
+                ->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
+                ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
+                ->orderBy('steps.order')
+                ->orderBy('measure_applications.measure_type')
+                ->select(['user_action_plan_advices.*'])
                 ->get();
 
             // get the user measures / advices
@@ -308,6 +317,8 @@ class CsvService
         }
 
         array_unshift($rows, $csvHeaders);
+
+        dd($rows);
 
         return $rows;
     }

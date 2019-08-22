@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $volume
  * @property int|null $build_year
  * @property int|null $building_layers
- * @property int $monument
+ * @property int|null $monument
  * @property string|null $additional_info
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

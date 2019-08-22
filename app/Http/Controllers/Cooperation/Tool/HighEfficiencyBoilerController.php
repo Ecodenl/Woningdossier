@@ -50,7 +50,7 @@ class HighEfficiencyBoilerController extends Controller
     {
         $typeIds = [4];
 
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $habit = $buildingOwner->energyHabit;
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
@@ -72,7 +72,7 @@ class HighEfficiencyBoilerController extends Controller
 
     public function calculate(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         $result = [
@@ -133,7 +133,7 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
@@ -194,7 +194,7 @@ class HighEfficiencyBoilerController extends Controller
 
     protected function saveAdvices(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         /** @var JsonResponse $results */

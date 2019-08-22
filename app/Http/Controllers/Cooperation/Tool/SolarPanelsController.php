@@ -52,7 +52,7 @@ class SolarPanelsController extends Controller
     {
         $typeIds = [7];
 
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
@@ -81,7 +81,7 @@ class SolarPanelsController extends Controller
             'year' => null,
         ];
 
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         $amountElectricity = $request->input('user_energy_habits.amount_electricity', 0);
         $peakPower = $request->input('building_pv_panels.peak_power', 0);
@@ -158,7 +158,7 @@ class SolarPanelsController extends Controller
      */
     public function store(SolarPanelFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
@@ -211,7 +211,7 @@ class SolarPanelsController extends Controller
 
     protected function saveAdvices(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         /** @var JsonResponse $results */

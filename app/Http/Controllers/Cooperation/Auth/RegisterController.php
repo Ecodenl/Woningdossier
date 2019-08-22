@@ -158,7 +158,7 @@ class RegisterController extends Controller
         // create the building for the user
         $building = Building::create($data);
 
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        $cooperation = HoomdossierSession::getCooperation(true);
         $residentRole = Role::findByName('resident');
 
         // associate multiple models with each other

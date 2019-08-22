@@ -54,7 +54,7 @@ class WallInsulationController extends Controller
         $typeIds = [3];
 
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         $facadeInsulation = $building->getBuildingElement('wall-insulation');
         $buildingFeature = $building->buildingFeatures;
@@ -86,7 +86,7 @@ class WallInsulationController extends Controller
      */
     public function store(WallInsulationRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
@@ -160,7 +160,7 @@ class WallInsulationController extends Controller
 
     protected function saveAdvices(Request $request)
     {
-        $user = Building::find(HoomdossierSession::getBuilding())->user;
+        $user = HoomdossierSession::getBuilding(true)->user;
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -206,7 +206,7 @@ class WallInsulationController extends Controller
         /**
          * @var Building
          */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $energyHabits = $user->energyHabit;
 

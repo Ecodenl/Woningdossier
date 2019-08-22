@@ -54,7 +54,7 @@ class UserInterest extends Model
      */
     public function scopeForMe($query)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
     }

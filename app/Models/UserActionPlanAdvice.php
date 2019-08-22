@@ -85,7 +85,7 @@ class UserActionPlanAdvice extends Model
      */
     public function scopeForMe($query)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
     }
@@ -181,7 +181,7 @@ class UserActionPlanAdvice extends Model
      */
     public static function getAllCoachComments(): Collection
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $allInputForMe = collect();
         $coachComments = collect();
         $comment = '';

@@ -56,8 +56,8 @@ class ConversationRequestController extends Controller
         $message     = $request->get('message', '');
         $allowAccess = 'on' == $request->get('allow_access', '');
 
-        $cooperationId = HoomdossierSession::getCooperation();
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $cooperation = HoomdossierSession::getCooperation(true);
+        $building = HoomdossierSession::getBuilding(true);
 
         PrivateMessage::create(
             [
@@ -66,7 +66,7 @@ class ConversationRequestController extends Controller
                 'from_user_id'      => Hoomdossier::user()->id,
                 'from_user'         => \App\Helpers\Hoomdossier::user()->getFullName(),
                 'message'           => $message,
-                'to_cooperation_id' => $cooperationId,
+                'to_cooperation_id' => $cooperation->id,
                 'building_id'       => $building->id,
                 'request_type'      => $action,
                 'allow_access'      => $allowAccess,
@@ -80,8 +80,6 @@ class ConversationRequestController extends Controller
         if ($allowAccess) {
             event(new UserAllowedAccessToHisBuilding());
         }
-
-        $cooperation = Cooperation::find($cooperationId);
 
         return redirect()->route('cooperation.tool.my-plan.index')
                          ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [

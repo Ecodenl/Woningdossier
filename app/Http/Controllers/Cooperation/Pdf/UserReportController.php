@@ -25,9 +25,9 @@ class UserReportController extends Controller
         $reportForUser = CsvService::totalReport($cooperation, false);
 
         $reportTranslations = $reportForUser[0];
-        $reportData = $reportForUser[1];
+        // undot it so we can handle the data in view later on
+        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser[1]);
 
-        dd(\App\Helpers\Arr::arrayUndot($reportData), $reportTranslations);
 //        $pdfData = \Cache::forever('test3', $this->pdfData());
         $pdfData = \Cache::get('test3');
 
@@ -39,7 +39,7 @@ class UserReportController extends Controller
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices',
-            'commentsByStep'
+            'commentsByStep', 'reportTranslations', 'reportData'
         ));
 
         return $pdf->stream();

@@ -24,6 +24,37 @@
 @endcomponent
 
 
+@foreach ($reportData as $step => $data)
+    @if (is_string($step))
+        @if(array_key_exists($step, $stepSlugs))
+            @component('cooperation.pdf.components.new-page')
+                <div class="container">
+
+                    {{--            <img class="width: 50px; height: 50px;" src="{{public_path('images/'.$step.'.png')}}" alt=""><h2>{{$step}}</h2>--}}
+                    <div class="step-intro">
+                        {{--                <img src="{{asset('images/'.$step.'.png')}}" alt="">--}}
+                        <h2>{{\App\Models\Step::whereSlug($step)->first()->name}}</h2>
+                    </div>
+
+
+                    <div class="question-answer-section">
+                        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
+                        @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
+                        <?php
+                            $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
+                        ?>
+                            <div class="question-answer">
+                                <p class="w-300">{{$translationForAnswer}}</p>
+                                <p>{{$value}}</p>
+                            </div>
+                    @endforeach
+                    </div>
+                </div>
+            @endcomponent
+        @endif
+    @endif
+@endforeach
+
 @foreach($pdfData['user-data'] as $step => $stepData)
     @if(array_key_exists($step, $stepSlugs))
         @component('cooperation.pdf.components.new-page')

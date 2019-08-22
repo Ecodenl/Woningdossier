@@ -89,14 +89,19 @@ class BuildingCoachStatus extends Model
                 SELECT coach_id, building_id, count(`status`) AS count_pending
 	            FROM building_coach_statuses
 	            WHERE coach_id is not null
-	            AND building_id = '.$buildingId.' AND `status` = \''.BuildingCoachStatus::STATUS_ADDED.' \'
+	            AND building_id = '.$buildingId.' 
+	            AND `coach_id` IS NOT NULL 
+	            AND `status` = \''.BuildingCoachStatus::STATUS_ADDED.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
         $removedCount            = \DB::raw('(
                 SELECT building_id, coach_id, count(`status`) AS count_removed
 	            FROM building_coach_statuses
-                WHERE coach_id is not null
-	            AND building_id = '.$buildingId.' AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
+	            
+	            WHERE coach_id is not null
+	            AND building_id = ' . $buildingId . ' 
+	            AND `coach_id` IS NOT NULL 
+	            AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
 	            group by coach_id, building_id
             ) AS bcs3');
         $buildingPermissionCount = \DB::raw('(
@@ -116,7 +121,8 @@ class BuildingCoachStatus extends Model
                ->from($pendingCount)
                ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
-               ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
+               ->where('bcs3.coach_id', '!=', null)
+                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                ->get();
 
         return $coachesWithPendingBuildingCoachStatus;

@@ -40,13 +40,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\BuildingCategory|null $buildingCategory
  * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \App\Models\FacadeSurface|null $contaminatedWallJoints
+ * @property-read \App\Models\FacadeDamagedPaintwork|null $damagedPaintwork
  * @property-read \App\Models\EnergyLabel|null $energyLabel
  * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
  * @property-read \App\Models\RoofType|null $roofType
+ * @property-read \App\Models\FacadeSurface|null $wallJoints
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereAdditionalInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature whereBuildingCategoryId($value)
@@ -108,6 +113,36 @@ class BuildingFeature extends Model
     public function building()
     {
         return $this->belongsTo(Building::class);
+    }
+
+    public function damagedPaintwork()
+    {
+        return $this->belongsTo(FacadeDamagedPaintwork::class, 'facade_damaged_paintwork_id', 'id');
+    }
+
+    public function plasteredSurface()
+    {
+        return $this->belongsTo(FacadePlasteredSurface::class, 'facade_plastered_surface_id', 'id');
+    }
+
+    /**
+     * Column is named wall_joints.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function wallJoints()
+    {
+        return $this->belongsTo(FacadeSurface::class, 'wall_joints', 'id');
+    }
+
+    /**
+     * Column is named contaminated_wall_joints.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contaminatedWallJoints()
+    {
+        return $this->belongsTo(FacadeSurface::class, 'contaminated_wall_joints', 'id');
     }
 
     public function buildingCategory()

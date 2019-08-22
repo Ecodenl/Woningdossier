@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\KeyFigures\RoofInsulation\Temperature;
-use App\Helpers\NumberFormatter;
+use App\Helpers\RoofInsulation;
 use App\Helpers\RoofInsulationCalculator;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -16,16 +15,13 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingRoofType;
-use App\Models\Cooperation;
 use App\Models\Element;
-use App\Models\ElementValue;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
@@ -70,7 +66,7 @@ class RoofInsulationController extends Controller
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $heatings = BuildingHeating::all();
-        $measureApplications = $this->getMeasureApplicationsAdviceMap();
+        $measureApplications = RoofInsulation::getMeasureApplicationsAdviceMap();
 
         $currentCategorizedRoofTypes = [
             'flat' => [],
@@ -85,14 +81,14 @@ class RoofInsulationController extends Controller
         if ($currentRoofTypes instanceof Collection) {
             /** var BuildingRoofType $currentRoofType */
             foreach ($currentRoofTypes as $currentRoofType) {
-                $cat = $this->getRoofTypeCategory($currentRoofType->roofType);
+                $cat = RoofInsulation::getRoofTypeCategory($currentRoofType->roofType);
                 if (! empty($cat)) {
                     $currentCategorizedRoofTypes[$cat] = $currentRoofType->toArray();
                 }
             }
 
             foreach ($currentRoofTypesForMe as $currentRoofTypeForMe) {
-                $cat = $this->getRoofTypeCategory($currentRoofTypeForMe->roofType);
+                $cat = RoofInsulation::getRoofTypeCategory($currentRoofTypeForMe->roofType);
                 if (! empty($cat)) {
                     // we do not want this to be an array, otherwise we would have to add additional functionality to the input group component.
                     $currentCategorizedRoofTypesForMe[$cat][] = $currentRoofTypeForMe;
@@ -104,47 +100,6 @@ class RoofInsulationController extends Controller
             'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
              'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
-    }
-
-    protected function getRoofTypeCategory(RoofType $roofType)
-    {
-        if ($roofType->calculate_value <= 2) {
-            return 'pitched';
-        }
-        if ($roofType->calculate_value <= 4) {
-            return 'flat';
-        }
-
-        return '';
-    }
-
-    protected function getRoofTypeSubCategory(RoofType $roofType)
-    {
-        if (1 == $roofType->calculate_value) {
-            return 'tiles';
-        }
-        if (2 == $roofType->calculate_value) {
-            return 'bitumen';
-        }
-        if (4 == $roofType->calculate_value) {
-            return 'zinc';
-        }
-
-        return '';
-    }
-
-    protected function getMeasureApplicationsAdviceMap()
-    {
-        return [
-            'flat' => [
-                Temperature::ROOF_INSULATION_FLAT_ON_CURRENT => MeasureApplication::where('short', 'roof-insulation-flat-current')->first(),
-                Temperature::ROOF_INSULATION_FLAT_REPLACE => MeasureApplication::where('short', 'roof-insulation-flat-replace-current')->first(),
-            ],
-            'pitched' => [
-                Temperature::ROOF_INSULATION_PITCHED_INSIDE => MeasureApplication::where('short', 'roof-insulation-pitched-inside')->first(),
-                Temperature::ROOF_INSULATION_PITCHED_REPLACE_TILES => MeasureApplication::where('short', 'roof-insulation-pitched-replace-tiles')->first(),
-            ],
-        ];
     }
 
     protected function saveAdvices(Request $request)
@@ -165,10 +120,10 @@ class RoofInsulationController extends Controller
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
-                $cat = $this->getRoofTypeCategory($roofType);
+                $cat = RoofInsulation::getRoofTypeCategory($roofType);
                 // add as key to result array
                 $result[$cat] = [
-                    'type' => $this->getRoofTypeSubCategory($roofType),
+                    'type' => RoofInsulation::getRoofTypeSubCategory($roofType),
                 ];
             }
         }
@@ -297,142 +252,11 @@ class RoofInsulationController extends Controller
 
     public function calculate(Request $request)
     {
-        $result = [];
-
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $roofTypeIds = $request->input('building_roof_types.id', []);
-        // TODO: this will cause a merge conflict when the csv branch will gets merged.
-        // TODO: add in the ->input the .id
-        // TODO: roof calculator remove the ifs on integer since the .id wil always contain an integer.
-        foreach ($roofTypeIds as $roofTypeId) {
-            $roofType = RoofType::findOrFail($roofTypeId);
-            if ($roofType instanceof RoofType) {
-                $cat = $this->getRoofTypeCategory($roofType);
-                // add as key to result array
-                $result[$cat] = [
-                    'type' => $this->getRoofTypeSubCategory($roofType),
-                ];
-            }
-        }
-
-
-        $roofInsulation = Element::where('short', 'roof-insulation')->first();
-        $adviceMap = $this->getMeasureApplicationsAdviceMap();
-        $totalSurface = 0;
-
-
-        // TODO: when csv branch gets merged, add this line in the calculator.
-        $roofTypes = $request->input('building_roof_types', []);
-        foreach (array_keys($result) as $cat) {
-            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
-            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
-            $totalSurface += $insulationRoofSurface;
-        }
-
-        foreach (array_keys($result) as $cat) {
-            // defaults
-            $catData = [
-                'savings_gas' => 0,
-                'savings_co2' => 0,
-                'savings_money' => 0,
-                'cost_indication' => 0,
-                'interest_comparable' => 0,
-                'replace' => [
-                    'costs' => 0,
-                    'year' => null,
-                ],
-            ];
-
-            $insulationRoofSurfaceFormatted = NumberFormatter::reverseFormat($roofTypes[$cat]['insulation_roof_surface'] ?? 0);
-            $insulationRoofSurface = is_numeric($insulationRoofSurfaceFormatted) ? $insulationRoofSurfaceFormatted : 0;
-            $surface =  $insulationRoofSurface;
-
-            $heating = null;
-            // should take the bitumen field
-
-            // A pitched roof with bitumen could be the case earlier on.
-            // Not sure if this can never be the case again in the future, but
-            // we account for it in this function. Therefor we have to calculate
-            // a little bit differently in the case of a pitched roof covered
-            // in bitumen instead of roof tiles
-            $isBitumenOnPitchedRoof = 'pitched' == $cat && $result['pitched']['type'] == 'bitumen';
-            // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
-            $isBitumenRoof = ! in_array($cat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
-
-            if ($isBitumenRoof) {
-                $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
-            } else {
-                $year = Carbon::now()->year;
-            }
-
-            // default, changes only for roof tiles effect
-            $factor = 1;
-
-            $advice = null;
-            $objAdvice = null;
-
-            if (isset($roofTypes[$cat]['building_heating_id'])) {
-                $heating = BuildingHeating::find($roofTypes[$cat]['building_heating_id']);
-            }
-            if (isset($roofTypes[$cat]['measure_application_id'])) {
-                $measureAdvices = $adviceMap[$cat];
-                foreach ($measureAdvices as $strAdvice => $measureAdvice) {
-                    if ($roofTypes[$cat]['measure_application_id'] == $measureAdvice->id) {
-                        $advice = $strAdvice;
-                        // we do this as we don't want the advice to be in
-                        // $result['insulation_advice'] as in other calculating
-                        // controllers
-                        $objAdvice = $measureAdvice;
-                    }
-                }
-            }
-
-            if (isset($roofTypes[$cat]['element_value_id'])) {
-                // Current roof insulation level
-                $roofInsulationValue = ElementValue::where('element_id', $roofInsulation->id)->where('id', $roofTypes[$cat]['element_value_id'])->first();
-
-                if ($roofInsulationValue instanceof ElementValue && $heating instanceof BuildingHeating && isset($advice)) {
-                    if ($user->energyHabit instanceof UserEnergyHabit) {
-                        $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $roofInsulationValue, $user->energyHabit, $heating, $surface, $totalSurface, $advice);
-                    }
-                    $catData['savings_co2'] = Calculator::calculateCo2Savings($catData['savings_gas']);
-                    $catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));
-                    $catData['cost_indication'] = Calculator::calculateCostIndication($surface, $objAdvice);
-                    $catData['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($catData['cost_indication'], $catData['savings_money']), 1);
-                    // The replace year is about the replacement of bitumen..
-                    $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($objAdvice, $year, $factor);
-                }
-            }
-
-            // If tiles condition is set, use the status to calculate the replace moment
-            $tilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? (int) $roofTypes[$cat]['extra']['tiles_condition'] : null;
-            if (! is_null($tilesCondition)) {
-                $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
-                // no year here. Default is this year. It is incremented by factor * maintenance years
-                $year = Carbon::now()->year;
-                $roofTilesStatus = RoofTileStatus::find($tilesCondition);
-                if ($roofTilesStatus instanceof RoofTileStatus) {
-                    $factor = ($roofTilesStatus->calculate_value / 100);
-                }
-            }
-
-            if ($isBitumenRoof) {
-                // If it is a bitumen roof, $year is already set to the best
-                // value.
-                $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
-            }
-
-            if (isset($replaceMeasure)) {
-                $surface = $roofTypes[$cat]['roof_surface'] ?? 0;
-                $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
-                $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);
-            }
-
-            $result[$cat] = array_merge($result[$cat], $catData);
-        }
+        $result = \App\Calculations\RoofInsulation::calculate($building, $user, $request->all());
 
         return response()->json($result);
     }
@@ -463,10 +287,10 @@ class RoofInsulationController extends Controller
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
-                $cat = $this->getRoofTypeCategory($roofType);
+                $cat = RoofInsulation::getRoofTypeCategory($roofType);
                 // add as key to result array
                 $result[$cat] = [
-                    'type' => $this->getRoofTypeSubCategory($roofType),
+                    'type' => RoofInsulation::getRoofTypeSubCategory($roofType),
                 ];
 
                 $roofSurface = isset($roofTypes[$cat]['roof_surface']) ? $roofTypes[$cat]['roof_surface'] : 0;

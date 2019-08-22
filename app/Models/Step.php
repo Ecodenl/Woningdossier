@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newQuery()
@@ -67,6 +68,16 @@ class Step extends Model
         }
 
         return false;
+    }
+
+    /**
+     * Get the measure applications from a step
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function measureApplications()
+    {
+        return $this->hasMany(MeasureApplication::class);
     }
 
     public function scopeOrdered(Builder $query){

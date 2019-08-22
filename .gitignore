@@ -10,8 +10,11 @@ npm-debug.log
 yarn-error.log
 .env
 
+
 # translation file
 resources/lang/*/uuid.php
+
+storage/app/downloads
 
 # IntelliJ project files
 *.iml

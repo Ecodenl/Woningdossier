@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereChangedInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereCreatedAt($value)

@@ -70,14 +70,15 @@ class HoomdossierSession extends Session
      */
     public static function getCooperation($object = false)
     {
-    	$cooperation = self::get('cooperation');
+        $cooperation = self::get('cooperation');
 
-    	if (!is_int($cooperation)){
-    		\Log::error("Cooperation was not an integer!! ");
-    		\Log::error($cooperation);
-	    }
+        // if there is no cooperation set and the application is not running in the console, we have a serious issue.
+        if (!is_int($cooperation) && !app()->runningInConsole()){
+            \Log::error("Cooperation was not an integer!! ");
+            \Log::error($cooperation);
+        }
 
-    	if ($object){
+        if ($object){
     	    $cooperation = \App\Helpers\Cache\Cooperation::find($cooperation);
         }
 

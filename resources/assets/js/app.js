@@ -151,7 +151,6 @@ $(".has-address-data #number, #house_number_extension").focusout(function(){
     }
 );
 
-
 function removeErrorFields()
 {
     $('.help-block').remove();

@@ -391,7 +391,6 @@
     <script>
         $(document).ready(function () {
 
-
             $("select, input[type=radio], input[type=text]").change(function () {
                 if ($('.is-painted').is(':checked')) {
                     $('#painted-options').show();
@@ -447,7 +446,7 @@
                             $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(data.interest_comparable);
+                            $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         if (data.hasOwnProperty('repair_joint')) {
                             $("input#repair_joint").val(hoomdossierRound(data.repair_joint.costs));

@@ -9,7 +9,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive" style="width: 100%">
+                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive"
+                           style="width: 100%">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.users.index.table.columns.date')</th>
@@ -33,30 +34,30 @@
                                 $mostRecentBuildingStatus = $building->getMostRecentBuildingStatus();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
-                                $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
+                                        $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
                             ?>
                             <tr>
                                 <td data-sort="{{$userCreatedAtStrotime}}">
                                     {{$userCreatedAtFormatted ?? '-'}}
-                                </td>
-                                <td>{{$user->getFullName()}}</td>
-                                <td>
-                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
-                                        {{$building->street}} {{$building->number}} {{$building->extension}}
-                                    </a>
-                                </td>
-                                <td>{{$building->postal_code}}</td>
-                                <td>
-                                    {{$building->city}}
-                                </td>
-                                <td>
-                                    {{$mostRecentBuildingStatus->status->name}}
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>{{$user->getFullName()}}</td>
+                                    <td>
+                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                            {{$building->street}} {{$building->number}} {{$building->extension}}
+                                        </a>
+                                    </td>
+                                    <td>{{$building->postal_code}}</td>
+                                    <td>
+                                        {{$building->city}}
+                                    </td>
+                                    <td>
+                                        {{$mostRecentBuildingStatus->status->name}}
+                                    </td>
+                                </tr>
+
                         @endforeach
                         </tbody>
                     </table>
-                </div>
                 </div>
             </div>
         </div>
@@ -71,12 +72,12 @@
             table.DataTable({
                 responsive: true,
                 columns: [
-                    { responsivePriority: 1 },
-                    { responsivePriority: 2 },
-                    { responsivePriority: 3 },
-                    { responsivePriority: 4 },
-                    { responsivePriority: 6 },
-                    { responsivePriority: 5 }
+                    {responsivePriority: 1},
+                    {responsivePriority: 2},
+                    {responsivePriority: 3},
+                    {responsivePriority: 4},
+                    {responsivePriority: 6},
+                    {responsivePriority: 5}
                 ]
             });
         })

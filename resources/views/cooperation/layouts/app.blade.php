@@ -39,17 +39,6 @@
     $(document).ready(function () {
         pollForMessageCount();
     });
-
-    function hoomdossierRound(valueToRound, bucket)
-    {
-        if (typeof bucket === "undefined") {
-            bucket = 5;
-        }
-
-        return Math.round(valueToRound / bucket) * bucket;
-
-
-    }
 </script>
 @stack('js')
 </body>

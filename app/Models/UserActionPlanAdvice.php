@@ -40,6 +40,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereCosts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereId($value)
@@ -75,20 +76,6 @@ class UserActionPlanAdvice extends Model
         'planned' => 'boolean',
     ];
 
-    /**
-     * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeForMe($query)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-
-        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
-    }
 
     /**
      * Scope a query to only include results for the particular step.
@@ -101,26 +88,6 @@ class UserActionPlanAdvice extends Model
     public function scopeForStep($query, Step $step)
     {
         return $query->where('step_id', $step->id);
-    }
-
-    /**
-     * Get the input Sources.
-     *
-     * @return BelongsTo
-     */
-    public function inputSource()
-    {
-        return $this->belongsTo('App\Models\InputSource');
-    }
-
-    /**
-     * Get a input source name.
-     *
-     * @return InputSource name
-     */
-    public function getInputSourceName()
-    {
-        return $this->inputSource()->first()->name;
     }
 
     public function user()
@@ -231,7 +198,7 @@ class UserActionPlanAdvice extends Model
             foreach ($coachInputs as $coachInput) {
                 if (! is_null($coachInput)) {
                     if ($step == 'general-data') {
-//                        dd($coachInput);
+
                     }
 
 

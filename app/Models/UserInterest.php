@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
+use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInputSourceId($value)
@@ -38,52 +40,23 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserInterest extends Model
 {
-    use GetValueTrait, ToolSettingTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     protected $fillable = [
         'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',
     ];
 
-    /**
-     * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead of the building_id.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeForMe($query)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-
-        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
-    }
-
-    /**
-     * Get the input sources.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function inputSource()
-    {
-        return $this->belongsTo(InputSource::class);
-    }
-
-    /**
-     * Get a input source name.
-     *
-     * @return InputSource name
-     */
-    public function getInputSourceName()
-    {
-        return $this->inputSource()->first()->name;
-    }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Return the user interest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function interest()
     {
         return $this->belongsTo(Interest::class);

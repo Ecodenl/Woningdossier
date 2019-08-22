@@ -19,6 +19,7 @@ function pollForMessageCount() {
     var timeout = 0;
 
     if (beenPolled) {
+        // 10 seconds
         timeout = 10000;
     }
     setTimeout(function () {
@@ -26,4 +27,19 @@ function pollForMessageCount() {
         updateTotalUnreadMessageCount();
         pollForMessageCount();
     }, timeout);
+};
+
+function hoomdossierRound(value, bucket) {
+    if (typeof bucket === "undefined") {
+        bucket = 5;
+    }
+
+    return Math.round(value / bucket) * bucket;
+};
+
+function hoomdossierNumberFormat(value, locale, decimals){
+    if (typeof value === "string"){
+        value = parseFloat(value);
+    }
+    return value.toLocaleString(locale, { minimumFractionDigits: decimals });
 };

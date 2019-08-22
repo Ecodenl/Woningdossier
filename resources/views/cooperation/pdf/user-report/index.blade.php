@@ -36,7 +36,6 @@
                         <h2>{{\App\Models\Step::whereSlug($step)->first()->name}}</h2>
                     </div>
 
-
                     <div class="question-answer-section">
                         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
                         @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
@@ -49,104 +48,76 @@
                             </div>
                     @endforeach
                     </div>
+
+                    {{--Todo: this should be refactored to the new $data / $reportData --}}
+                    @if(array_key_exists('calculation', $stepData))
+                        @foreach($stepData['calculation'] as $calculationResultType => $calculationResults)
+                            <div class="question-answer-section">
+                                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
+                                May change in the near future due to the new csv branch structure.
+                                @if($calculationResultType == 'indicative-costs-and-benefits-for-measure')
+                                    @foreach($calculationResults as $type => $calculationResult)
+                                        <div class="question-answer">
+                                            <p class="w-300">{{$type}}</p>
+                                            @if(!empty($calculationResult))
+                                                <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}}</p>
+                                            @else
+                                                <p>No value</p>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        @endforeach
+                    @endif
+
+                    <div class="question-answer-section">
+                        <div class="measures">
+                            <p class="lead w-300">
+                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.title')}}
+                            </p>
+                            <p class="lead w-150">
+                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.costs')}}
+                            </p>
+                            <p class="lead w-150">
+                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.year')}}
+                            </p>
+                        </div>
+
+                        @foreach($userActionPlanAdvices->where('step_id', $stepSlugs[$step]) as $userActionPlanAdvice)
+                            <div class="question-answer">
+                                <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
+                                <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}}</p>
+                                <p class="w-150">{{$userActionPlanAdvice->getAdviceYear()}}</p>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="question-answer-section">
+                        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.comments')}}</p>
+                        @if(isset($commentsByStep[$step]))
+                            @foreach($commentsByStep[$step] as $inputSourceName => $commentsCategorizedUnderColumn)
+                                {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
+                                @foreach($commentsCategorizedUnderColumn as $columnOrCategory => $comment)
+                                    <div class="question-answer">
+                                        @if(is_array($comment))
+                                            @foreach($comment as $column => $c)
+                                                <p class="w-300">{{$inputSourceName}} ({{$columnOrCategory}})</p>
+                                                <p>{{$c}}</p>
+                                            @endforeach
+                                        @else
+                                            <p class="w-300">{{$inputSourceName}}</p>
+                                            <p>{{$comment}}</p>
+                                        @endif
+                                @endforeach
+                            @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
             @endcomponent
         @endif
     @endif
 @endforeach
-
-@foreach($pdfData['user-data'] as $step => $stepData)
-    @if(array_key_exists($step, $stepSlugs))
-        @component('cooperation.pdf.components.new-page')
-            <div class="container">
-
-{{--            <img class="width: 50px; height: 50px;" src="{{public_path('images/'.$step.'.png')}}" alt=""><h2>{{$step}}</h2>--}}
-            <div class="step-intro">
-{{--                <img src="{{asset('images/'.$step.'.png')}}" alt="">--}}
-                <h2>{{\App\Models\Step::whereSlug($step)->first()->name}}</h2>
-            </div>
-
-            <div class="question-answer-section">
-                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
-                @foreach($stepData['filled-data'] as $question => $value)
-                    <div class="question-answer">
-                        <p class="w-300">{{$question}}</p>
-                        <p>{{$value}}</p>
-                    </div>
-                @endforeach
-            </div>
-
-            {{-- todo: find a better / cleaner way to handle this. --}}
-            @if(array_key_exists('calculation', $stepData))
-                @foreach($stepData['calculation'] as $calculationResultType => $calculationResults)
-                    <div class="question-answer-section">
-                        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
-                        {{-- May change in the near future due to the new csv branch structure. --}}
-                        @if($calculationResultType == 'indicative-costs-and-benefits-for-measure')
-                            @foreach($calculationResults as $type => $calculationResult)
-                                <div class="question-answer">
-                                    <p class="w-300">{{$type}}</p>
-                                    @if(!empty($calculationResult))
-                                        <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}}</p>
-                                    @else
-                                        <p>No value</p>
-                                    @endif
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
-                @endforeach
-            @endif
-
-            <div class="question-answer-section">
-                <div class="measures">
-                    <p class="lead w-300">
-                        {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.title')}}
-                    </p>
-                    <p class="lead w-150">
-                        {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.costs')}}
-                    </p>
-                    <p class="lead w-150">
-                        {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.year')}}
-                    </p>
-                </div>
-
-                @foreach($userActionPlanAdvices->where('step_id', $stepSlugs[$step]) as $userActionPlanAdvice)
-                    <div class="question-answer">
-                        <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
-                        <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}}</p>
-                        <p class="w-150">{{$userActionPlanAdvice->getAdviceYear()}}</p>
-                    </div>
-                @endforeach
-            </div>
-
-            <div class="question-answer-section">
-                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.comments')}}</p>
-                @if(isset($commentsByStep[$step]))
-                    @foreach($commentsByStep[$step] as $inputSourceName => $commentsCategorizedUnderColumn)
-                        {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
-                        @foreach($commentsCategorizedUnderColumn as $columnOrCategory => $comment)
-                            <div class="question-answer">
-                                @if(is_array($comment))
-                                    @foreach($comment as $column => $c)
-                                        <p class="w-300">{{$inputSourceName}} ({{$columnOrCategory}})</p>
-                                        <p>{{$c}}</p>
-                                    @endforeach
-                                @else
-                                <p class="w-300">{{$inputSourceName}}</p>
-                                <p>{{$comment}}</p>
-                                @endif
-                            @endforeach
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-
-
-            </div>
-        @endcomponent
-    @endif
-@endforeach
-
 
 </html>

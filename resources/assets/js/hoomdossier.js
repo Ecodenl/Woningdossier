@@ -1,14 +1,29 @@
-function hoomdossierRound(value, bucket) {
-    if (typeof bucket === "undefined") {
-        bucket = 5;
-    }
+// to determine if a poll has been done
+var beenPolled = false;
 
-    return Math.round(value / bucket) * bucket;
-};
+// function to update the total unread message badge
+function updateTotalUnreadMessageCount()
+{
+    $.ajax({
+        url: window.location.origin + '/messages/count',
+        type: "GET",
+        success: function (response) {
+            $('#total-unread-message-count').html(response.count);
+        },
+    });
+}
 
-function hoomdossierNumberFormat(value, locale, decimals){
-    if (typeof value === "string"){
-        value = parseFloat(value);
+// poll for the message count
+function pollForMessageCount() {
+
+    var timeout = 0;
+
+    if (beenPolled) {
+        timeout = 5000;
     }
-    return value.toLocaleString(locale, { minimumFractionDigits: decimals });
+    setTimeout(function () {
+        beenPolled = true;
+        updateTotalUnreadMessageCount();
+        pollForMessageCount();
+    }, timeout);
 };

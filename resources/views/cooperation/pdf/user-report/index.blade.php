@@ -51,10 +51,14 @@
                     <div class="question-answer-section">
                         {{-- May change in the near future due to the new csv branch structure. --}}
                         @if($calculationResultType == 'indicative-costs-and-benefits-for-measure')
-                            @foreach($calculationResults as $type => $value)
+                            @foreach($calculationResults as $type => $calculationResult)
                                 <div class="question-answer">
                                     <p class="w-300">{{$type}}</p>
-                                    <p>{{$value}}</p>
+                                    @if(!empty($calculationResult))
+                                        <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}}</p>
+                                    @else
+                                        <p>No value</p>
+                                    @endif
                                 </div>
                             @endforeach
                         @endif
@@ -76,7 +80,7 @@
                         @foreach($userActionPlanAdvices->where('step_id', $stepSlugs[$step]) as $userActionPlanAdvice)
                             <div class="question-answer">
                                 <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
-                                <p class="w-150">{{$userActionPlanAdvice->costs}}</p>
+                                <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}}</p>
                                 <p class="w-150">{{$userActionPlanAdvice->getAdviceYear()}}</p>
                             </div>
                         @endforeach
@@ -111,7 +115,6 @@
         @endcomponent
     @endif
 @endforeach
-
 
 
 </html>

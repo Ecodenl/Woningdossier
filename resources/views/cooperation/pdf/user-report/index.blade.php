@@ -45,10 +45,11 @@
                 @endforeach
             </div>
 
+            {{-- todo: find a better / cleaner way to handle this. --}}
             @if(array_key_exists('calculation', $stepData))
-                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
                 @foreach($stepData['calculation'] as $calculationResultType => $calculationResults)
                     <div class="question-answer-section">
+                        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
                         {{-- May change in the near future due to the new csv branch structure. --}}
                         @if($calculationResultType == 'indicative-costs-and-benefits-for-measure')
                             @foreach($calculationResults as $type => $calculationResult)
@@ -64,29 +65,29 @@
                         @endif
                     </div>
                 @endforeach
-                    <div class="question-answer-section">
-                        <div class="measures">
-                            <p class="lead w-300">
-                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.title')}}
-                            </p>
-                            <p class="lead w-150">
-                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.costs')}}
-                            </p>
-                            <p class="lead w-150">
-                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.year')}}
-                            </p>
-                        </div>
-
-                        @foreach($userActionPlanAdvices->where('step_id', $stepSlugs[$step]) as $userActionPlanAdvice)
-                            <div class="question-answer">
-                                <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
-                                <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}}</p>
-                                <p class="w-150">{{$userActionPlanAdvice->getAdviceYear()}}</p>
-                            </div>
-                        @endforeach
-                    </div>
-
             @endif
+
+            <div class="question-answer-section">
+                <div class="measures">
+                    <p class="lead w-300">
+                        {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.title')}}
+                    </p>
+                    <p class="lead w-150">
+                        {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.costs')}}
+                    </p>
+                    <p class="lead w-150">
+                        {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.year')}}
+                    </p>
+                </div>
+
+                @foreach($userActionPlanAdvices->where('step_id', $stepSlugs[$step]) as $userActionPlanAdvice)
+                    <div class="question-answer">
+                        <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
+                        <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}}</p>
+                        <p class="w-150">{{$userActionPlanAdvice->getAdviceYear()}}</p>
+                    </div>
+                @endforeach
+            </div>
 
             <div class="question-answer-section">
                 <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.comments')}}</p>

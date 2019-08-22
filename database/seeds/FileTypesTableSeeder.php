@@ -39,7 +39,7 @@ class FileTypesTableSeeder extends Seeder
                 ],
                 'short' => 'measure-report-anonymized'
             ],
-            [
+            /*[
                 'names' => [
                     'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'
                 ],
@@ -50,7 +50,7 @@ class FileTypesTableSeeder extends Seeder
                     'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens'
                 ],
                 'short' => 'custom-questionnaires-report-anonymized'
-            ],
+            ],*/
 
         ];
 
